@@ -1,0 +1,1934 @@
+{
+  "_comment": "Shared cases for test/federationService.test.js and test/federationService.test.php. Response keys are canonical URLs: origin+path, then the query params sorted by name, decoded. A response is {text}, {json} or {error}.",
+  "accounts": {
+    "valid": [
+      "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO",
+      "GAIOFLZKDOIVVZ432TQJMYVR5DKKRJSZ4ORIGQ4LEU7AXVOEOFCLLEQF"
+    ],
+    "invalid": [
+      "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCA",
+      "MALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FEAAAAAAAAAAAAAB3S",
+      "SCRPYZGNSRYQFVHFSPESG5RWUHPGCOAK2QVANLXB3SG4QBEAHJVTK56D",
+      "galqzgoubwai4osvlf4ukewg3kgdruecf7ao737pgecehgqfzs3ffxco",
+      "GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+      ""
+    ]
+  },
+  "cases": [
+    {
+      "description": "forward: resolves name*domain to account_id",
+      "query": {
+        "type": "name",
+        "q": "alice*example.com"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "text": "# SEP-1\nVERSION = \"2.0.0\"\nFEDERATION_SERVER = \"https://fed.example.com/federation\"\n\n[DOCUMENTATION]\nORG_NAME = \"Example\"\n"
+        },
+        "https://fed.example.com/federation?q=alice*example.com&type=name": {
+          "json": {
+            "stellar_address": "alice*example.com",
+            "account_id": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO"
+          }
+        }
+      },
+      "expect": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "stellar_address": "alice*example.com",
+          "account_id": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO"
+        }
+      }
+    },
+    {
+      "description": "forward: text memo is passed through",
+      "query": {
+        "type": "name",
+        "q": "alice*example.com"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "text": "# SEP-1\nVERSION = \"2.0.0\"\nFEDERATION_SERVER = \"https://fed.example.com/federation\"\n\n[DOCUMENTATION]\nORG_NAME = \"Example\"\n"
+        },
+        "https://fed.example.com/federation?q=alice*example.com&type=name": {
+          "json": {
+            "account_id": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO",
+            "memo_type": "text",
+            "memo": "hello"
+          }
+        }
+      },
+      "expect": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "stellar_address": "alice*example.com",
+          "account_id": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO",
+          "memo_type": "text",
+          "memo": "hello"
+        }
+      }
+    },
+    {
+      "description": "forward: numeric id memo becomes a string",
+      "query": {
+        "type": "name",
+        "q": "alice*example.com"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "text": "# SEP-1\nVERSION = \"2.0.0\"\nFEDERATION_SERVER = \"https://fed.example.com/federation\"\n\n[DOCUMENTATION]\nORG_NAME = \"Example\"\n"
+        },
+        "https://fed.example.com/federation?q=alice*example.com&type=name": {
+          "json": {
+            "account_id": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO",
+            "memo_type": "id",
+            "memo": 12345
+          }
+        }
+      },
+      "expect": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "stellar_address": "alice*example.com",
+          "account_id": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO",
+          "memo_type": "id",
+          "memo": "12345"
+        }
+      }
+    },
+    {
+      "description": "forward: base64 hash memo is accepted",
+      "query": {
+        "type": "name",
+        "q": "alice*example.com"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "text": "# SEP-1\nVERSION = \"2.0.0\"\nFEDERATION_SERVER = \"https://fed.example.com/federation\"\n\n[DOCUMENTATION]\nORG_NAME = \"Example\"\n"
+        },
+        "https://fed.example.com/federation?q=alice*example.com&type=name": {
+          "json": {
+            "account_id": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO",
+            "memo_type": "hash",
+            "memo": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+          }
+        }
+      },
+      "expect": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "stellar_address": "alice*example.com",
+          "account_id": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO",
+          "memo_type": "hash",
+          "memo": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+        }
+      }
+    },
+    {
+      "description": "forward: domain is lowercased, name kept",
+      "query": {
+        "type": "name",
+        "q": "Alice*Example.COM"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "text": "# SEP-1\nVERSION = \"2.0.0\"\nFEDERATION_SERVER = \"https://fed.example.com/federation\"\n\n[DOCUMENTATION]\nORG_NAME = \"Example\"\n"
+        },
+        "https://fed.example.com/federation?q=Alice*example.com&type=name": {
+          "json": {
+            "account_id": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO"
+          }
+        }
+      },
+      "expect": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "stellar_address": "Alice*example.com",
+          "account_id": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO"
+        }
+      }
+    },
+    {
+      "description": "forward: text memo over 28 bytes rejects the record",
+      "query": {
+        "type": "name",
+        "q": "alice*example.com"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "text": "# SEP-1\nVERSION = \"2.0.0\"\nFEDERATION_SERVER = \"https://fed.example.com/federation\"\n\n[DOCUMENTATION]\nORG_NAME = \"Example\"\n"
+        },
+        "https://fed.example.com/federation?q=alice*example.com&type=name": {
+          "json": {
+            "account_id": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO",
+            "memo_type": "text",
+            "memo": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          }
+        }
+      },
+      "expect": {
+        "status": 502,
+        "body": {
+          "ok": false,
+          "error": "federation.unavailable"
+        }
+      }
+    },
+    {
+      "description": "forward: id memo above uint64 rejects the record",
+      "query": {
+        "type": "name",
+        "q": "alice*example.com"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "text": "# SEP-1\nVERSION = \"2.0.0\"\nFEDERATION_SERVER = \"https://fed.example.com/federation\"\n\n[DOCUMENTATION]\nORG_NAME = \"Example\"\n"
+        },
+        "https://fed.example.com/federation?q=alice*example.com&type=name": {
+          "json": {
+            "account_id": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO",
+            "memo_type": "id",
+            "memo": "18446744073709551616"
+          }
+        }
+      },
+      "expect": {
+        "status": 502,
+        "body": {
+          "ok": false,
+          "error": "federation.unavailable"
+        }
+      }
+    },
+    {
+      "description": "forward: memo_type without memo rejects the record",
+      "query": {
+        "type": "name",
+        "q": "alice*example.com"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "text": "# SEP-1\nVERSION = \"2.0.0\"\nFEDERATION_SERVER = \"https://fed.example.com/federation\"\n\n[DOCUMENTATION]\nORG_NAME = \"Example\"\n"
+        },
+        "https://fed.example.com/federation?q=alice*example.com&type=name": {
+          "json": {
+            "account_id": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO",
+            "memo_type": "text"
+          }
+        }
+      },
+      "expect": {
+        "status": 502,
+        "body": {
+          "ok": false,
+          "error": "federation.unavailable"
+        }
+      }
+    },
+    {
+      "description": "forward: unknown memo_type rejects the record",
+      "query": {
+        "type": "name",
+        "q": "alice*example.com"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "text": "# SEP-1\nVERSION = \"2.0.0\"\nFEDERATION_SERVER = \"https://fed.example.com/federation\"\n\n[DOCUMENTATION]\nORG_NAME = \"Example\"\n"
+        },
+        "https://fed.example.com/federation?q=alice*example.com&type=name": {
+          "json": {
+            "account_id": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO",
+            "memo_type": "return",
+            "memo": "abc"
+          }
+        }
+      },
+      "expect": {
+        "status": 502,
+        "body": {
+          "ok": false,
+          "error": "federation.unavailable"
+        }
+      }
+    },
+    {
+      "description": "forward: account_id with bad checksum is rejected",
+      "query": {
+        "type": "name",
+        "q": "alice*example.com"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "text": "# SEP-1\nVERSION = \"2.0.0\"\nFEDERATION_SERVER = \"https://fed.example.com/federation\"\n\n[DOCUMENTATION]\nORG_NAME = \"Example\"\n"
+        },
+        "https://fed.example.com/federation?q=alice*example.com&type=name": {
+          "json": {
+            "account_id": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCA"
+          }
+        }
+      },
+      "expect": {
+        "status": 502,
+        "body": {
+          "ok": false,
+          "error": "federation.unavailable"
+        }
+      }
+    },
+    {
+      "description": "forward: muxed account_id is rejected",
+      "query": {
+        "type": "name",
+        "q": "alice*example.com"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "text": "# SEP-1\nVERSION = \"2.0.0\"\nFEDERATION_SERVER = \"https://fed.example.com/federation\"\n\n[DOCUMENTATION]\nORG_NAME = \"Example\"\n"
+        },
+        "https://fed.example.com/federation?q=alice*example.com&type=name": {
+          "json": {
+            "account_id": "MALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FEAAAAAAAAAAAAAB3S"
+          }
+        }
+      },
+      "expect": {
+        "status": 502,
+        "body": {
+          "ok": false,
+          "error": "federation.unavailable"
+        }
+      }
+    },
+    {
+      "description": "forward: JSON array response is rejected",
+      "query": {
+        "type": "name",
+        "q": "alice*example.com"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "text": "# SEP-1\nVERSION = \"2.0.0\"\nFEDERATION_SERVER = \"https://fed.example.com/federation\"\n\n[DOCUMENTATION]\nORG_NAME = \"Example\"\n"
+        },
+        "https://fed.example.com/federation?q=alice*example.com&type=name": {
+          "text": "[]"
+        }
+      },
+      "expect": {
+        "status": 502,
+        "body": {
+          "ok": false,
+          "error": "federation.unavailable"
+        }
+      }
+    },
+    {
+      "description": "forward: non-JSON response is rejected",
+      "query": {
+        "type": "name",
+        "q": "alice*example.com"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "text": "# SEP-1\nVERSION = \"2.0.0\"\nFEDERATION_SERVER = \"https://fed.example.com/federation\"\n\n[DOCUMENTATION]\nORG_NAME = \"Example\"\n"
+        },
+        "https://fed.example.com/federation?q=alice*example.com&type=name": {
+          "text": "<html>nope</html>"
+        }
+      },
+      "expect": {
+        "status": 502,
+        "body": {
+          "ok": false,
+          "error": "federation.unavailable"
+        }
+      }
+    },
+    {
+      "description": "forward: stellar.toml 404 means not found",
+      "query": {
+        "type": "name",
+        "q": "alice*example.com"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "error": "HTTP 404"
+        }
+      },
+      "expect": {
+        "status": 404,
+        "body": {
+          "ok": false,
+          "error": "federation.notFound"
+        }
+      }
+    },
+    {
+      "description": "forward: federation server 404 means not found",
+      "query": {
+        "type": "name",
+        "q": "alice*example.com"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "text": "# SEP-1\nVERSION = \"2.0.0\"\nFEDERATION_SERVER = \"https://fed.example.com/federation\"\n\n[DOCUMENTATION]\nORG_NAME = \"Example\"\n"
+        },
+        "https://fed.example.com/federation?q=alice*example.com&type=name": {
+          "error": "HTTP 404"
+        }
+      },
+      "expect": {
+        "status": 404,
+        "body": {
+          "ok": false,
+          "error": "federation.notFound"
+        }
+      }
+    },
+    {
+      "description": "forward: timeout on stellar.toml",
+      "query": {
+        "type": "name",
+        "q": "alice*example.com"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "error": "timeout"
+        }
+      },
+      "expect": {
+        "status": 502,
+        "body": {
+          "ok": false,
+          "error": "federation.unavailable"
+        }
+      }
+    },
+    {
+      "description": "forward: timeout on the federation server",
+      "query": {
+        "type": "name",
+        "q": "alice*example.com"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "text": "# SEP-1\nVERSION = \"2.0.0\"\nFEDERATION_SERVER = \"https://fed.example.com/federation\"\n\n[DOCUMENTATION]\nORG_NAME = \"Example\"\n"
+        },
+        "https://fed.example.com/federation?q=alice*example.com&type=name": {
+          "error": "timeout"
+        }
+      },
+      "expect": {
+        "status": 502,
+        "body": {
+          "ok": false,
+          "error": "federation.unavailable"
+        }
+      }
+    },
+    {
+      "description": "forward: redirect on stellar.toml is not followed",
+      "query": {
+        "type": "name",
+        "q": "alice*example.com"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "error": "redirect"
+        }
+      },
+      "expect": {
+        "status": 502,
+        "body": {
+          "ok": false,
+          "error": "federation.unavailable"
+        }
+      }
+    },
+    {
+      "description": "forward: stellar.toml without FEDERATION_SERVER",
+      "query": {
+        "type": "name",
+        "q": "alice*example.com"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "text": "VERSION = \"2.0.0\"\n"
+        }
+      },
+      "expect": {
+        "status": 404,
+        "body": {
+          "ok": false,
+          "error": "federation.notFound"
+        }
+      }
+    },
+    {
+      "description": "forward: FEDERATION_SERVER only inside a table is ignored",
+      "query": {
+        "type": "name",
+        "q": "alice*example.com"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "text": "[DOCUMENTATION]\nFEDERATION_SERVER = \"https://fed.example.com/federation\"\n"
+        }
+      },
+      "expect": {
+        "status": 404,
+        "body": {
+          "ok": false,
+          "error": "federation.notFound"
+        }
+      }
+    },
+    {
+      "description": "forward: http FEDERATION_SERVER is refused",
+      "query": {
+        "type": "name",
+        "q": "alice*example.com"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "text": "FEDERATION_SERVER = \"http://fed.example.com/federation\"\n"
+        }
+      },
+      "expect": {
+        "status": 404,
+        "body": {
+          "ok": false,
+          "error": "federation.notFound"
+        }
+      }
+    },
+    {
+      "description": "forward: FEDERATION_SERVER with credentials is refused",
+      "query": {
+        "type": "name",
+        "q": "alice*example.com"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "text": "FEDERATION_SERVER = \"https://user:pw@fed.example.com/federation\"\n"
+        }
+      },
+      "expect": {
+        "status": 404,
+        "body": {
+          "ok": false,
+          "error": "federation.notFound"
+        }
+      }
+    },
+    {
+      "description": "forward: FEDERATION_SERVER on an IP literal is refused",
+      "query": {
+        "type": "name",
+        "q": "alice*example.com"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "text": "FEDERATION_SERVER = \"https://10.0.0.1/federation\"\n"
+        }
+      },
+      "expect": {
+        "status": 404,
+        "body": {
+          "ok": false,
+          "error": "federation.notFound"
+        }
+      }
+    },
+    {
+      "description": "forward: HTML instead of stellar.toml",
+      "query": {
+        "type": "name",
+        "q": "alice*example.com"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "text": "<!DOCTYPE html><html>FEDERATION_SERVER = \"https://fed.example.com/federation\"</html>"
+        }
+      },
+      "expect": {
+        "status": 404,
+        "body": {
+          "ok": false,
+          "error": "federation.notFound"
+        }
+      }
+    },
+    {
+      "description": "forward: single-quoted FEDERATION_SERVER with comment",
+      "query": {
+        "type": "name",
+        "q": "alice*example.com"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "text": "FEDERATION_SERVER = 'https://fed.example.com/federation' # fed\n"
+        },
+        "https://fed.example.com/federation?q=alice*example.com&type=name": {
+          "json": {
+            "account_id": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO"
+          }
+        }
+      },
+      "expect": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "stellar_address": "alice*example.com",
+          "account_id": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO"
+        }
+      }
+    },
+    {
+      "description": "forward: FEDERATION_SERVER with a query string is refused",
+      "query": {
+        "type": "name",
+        "q": "alice*example.com"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "text": "FEDERATION_SERVER = \"https://fed.example.com/federation?v=1\"\n"
+        },
+        "https://fed.example.com/federation?q=alice*example.com&type=name&v=1": {
+          "json": {
+            "account_id": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO"
+          }
+        }
+      },
+      "expect": {
+        "status": 404,
+        "body": {
+          "ok": false,
+          "error": "federation.notFound"
+        }
+      }
+    },
+    {
+      "description": "forward: invalid address 'alice'",
+      "query": {
+        "type": "name",
+        "q": "alice"
+      },
+      "responses": {},
+      "expect": {
+        "status": 400,
+        "body": {
+          "ok": false,
+          "error": "federation.invalidInput"
+        }
+      }
+    },
+    {
+      "description": "forward: invalid address '*example.com'",
+      "query": {
+        "type": "name",
+        "q": "*example.com"
+      },
+      "responses": {},
+      "expect": {
+        "status": 400,
+        "body": {
+          "ok": false,
+          "error": "federation.invalidInput"
+        }
+      }
+    },
+    {
+      "description": "forward: invalid address 'alice*'",
+      "query": {
+        "type": "name",
+        "q": "alice*"
+      },
+      "responses": {},
+      "expect": {
+        "status": 400,
+        "body": {
+          "ok": false,
+          "error": "federation.invalidInput"
+        }
+      }
+    },
+    {
+      "description": "forward: invalid address 'a*b*example.com'",
+      "query": {
+        "type": "name",
+        "q": "a*b*example.com"
+      },
+      "responses": {},
+      "expect": {
+        "status": 400,
+        "body": {
+          "ok": false,
+          "error": "federation.invalidInput"
+        }
+      }
+    },
+    {
+      "description": "forward: invalid address 'alice*localhost'",
+      "query": {
+        "type": "name",
+        "q": "alice*localhost"
+      },
+      "responses": {},
+      "expect": {
+        "status": 400,
+        "body": {
+          "ok": false,
+          "error": "federation.invalidInput"
+        }
+      }
+    },
+    {
+      "description": "forward: invalid address 'alice*127.0.0.1'",
+      "query": {
+        "type": "name",
+        "q": "alice*127.0.0.1"
+      },
+      "responses": {},
+      "expect": {
+        "status": 400,
+        "body": {
+          "ok": false,
+          "error": "federation.invalidInput"
+        }
+      }
+    },
+    {
+      "description": "forward: invalid address 'alice*exa mple.com'",
+      "query": {
+        "type": "name",
+        "q": "alice*exa mple.com"
+      },
+      "responses": {},
+      "expect": {
+        "status": 400,
+        "body": {
+          "ok": false,
+          "error": "federation.invalidInput"
+        }
+      }
+    },
+    {
+      "description": "forward: invalid address 'al ice*example.com'",
+      "query": {
+        "type": "name",
+        "q": "al ice*example.com"
+      },
+      "responses": {},
+      "expect": {
+        "status": 400,
+        "body": {
+          "ok": false,
+          "error": "federation.invalidInput"
+        }
+      }
+    },
+    {
+      "description": "forward: invalid address 'alice*example.com:8443'",
+      "query": {
+        "type": "name",
+        "q": "alice*example.com:8443"
+      },
+      "responses": {},
+      "expect": {
+        "status": 400,
+        "body": {
+          "ok": false,
+          "error": "federation.invalidInput"
+        }
+      }
+    },
+    {
+      "description": "forward: invalid address 'alice*example.com/x'",
+      "query": {
+        "type": "name",
+        "q": "alice*example.com/x"
+      },
+      "responses": {},
+      "expect": {
+        "status": 400,
+        "body": {
+          "ok": false,
+          "error": "federation.invalidInput"
+        }
+      }
+    },
+    {
+      "description": "forward: invalid address 'alice*-example.com'",
+      "query": {
+        "type": "name",
+        "q": "alice*-example.com"
+      },
+      "responses": {},
+      "expect": {
+        "status": 400,
+        "body": {
+          "ok": false,
+          "error": "federation.invalidInput"
+        }
+      }
+    },
+    {
+      "description": "forward: invalid address 'alice*example.com.'",
+      "query": {
+        "type": "name",
+        "q": "alice*example.com."
+      },
+      "responses": {},
+      "expect": {
+        "status": 400,
+        "body": {
+          "ok": false,
+          "error": "federation.invalidInput"
+        }
+      }
+    },
+    {
+      "description": "forward: invalid address 'al>ice*example.com'",
+      "query": {
+        "type": "name",
+        "q": "al>ice*example.com"
+      },
+      "responses": {},
+      "expect": {
+        "status": 400,
+        "body": {
+          "ok": false,
+          "error": "federation.invalidInput"
+        }
+      }
+    },
+    {
+      "description": "forward: invalid address ''",
+      "query": {
+        "type": "name",
+        "q": ""
+      },
+      "responses": {},
+      "expect": {
+        "status": 400,
+        "body": {
+          "ok": false,
+          "error": "federation.invalidInput"
+        }
+      }
+    },
+    {
+      "description": "forward: invalid address 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'",
+      "query": {
+        "type": "name",
+        "q": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx*example.com"
+      },
+      "responses": {},
+      "expect": {
+        "status": 400,
+        "body": {
+          "ok": false,
+          "error": "federation.invalidInput"
+        }
+      }
+    },
+    {
+      "description": "unknown type is invalid input",
+      "query": {
+        "type": "txid",
+        "q": "alice*example.com"
+      },
+      "responses": {},
+      "expect": {
+        "status": 400,
+        "body": {
+          "ok": false,
+          "error": "federation.invalidInput"
+        }
+      }
+    },
+    {
+      "description": "missing type is invalid input",
+      "query": {
+        "q": "alice*example.com"
+      },
+      "responses": {},
+      "expect": {
+        "status": 400,
+        "body": {
+          "ok": false,
+          "error": "federation.invalidInput"
+        }
+      }
+    },
+    {
+      "description": "reverse: name with matching home_domain and cross-check",
+      "query": {
+        "type": "id",
+        "q": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "text": "# SEP-1\nVERSION = \"2.0.0\"\nFEDERATION_SERVER = \"https://fed.example.com/federation\"\n\n[DOCUMENTATION]\nORG_NAME = \"Example\"\n"
+        },
+        "https://fed.example.com/federation?q=GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO&type=id": {
+          "json": {
+            "stellar_address": "alice*example.com",
+            "account_id": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO"
+          }
+        },
+        "https://fed.example.com/federation?q=alice*example.com&type=name": {
+          "json": {
+            "account_id": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO"
+          }
+        }
+      },
+      "expect": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "found": true,
+          "stellar_address": "alice*example.com",
+          "domain": "example.com"
+        }
+      },
+      "homeDomain": "example.com"
+    },
+    {
+      "description": "reverse: domain comparison is case-insensitive",
+      "query": {
+        "type": "id",
+        "q": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "text": "# SEP-1\nVERSION = \"2.0.0\"\nFEDERATION_SERVER = \"https://fed.example.com/federation\"\n\n[DOCUMENTATION]\nORG_NAME = \"Example\"\n"
+        },
+        "https://fed.example.com/federation?q=GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO&type=id": {
+          "json": {
+            "stellar_address": "alice*EXAMPLE.com"
+          }
+        },
+        "https://fed.example.com/federation?q=alice*example.com&type=name": {
+          "json": {
+            "account_id": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO"
+          }
+        }
+      },
+      "expect": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "found": true,
+          "stellar_address": "alice*example.com",
+          "domain": "example.com"
+        }
+      },
+      "homeDomain": "Example.COM"
+    },
+    {
+      "description": "reverse: stellar_address on another domain is dropped",
+      "query": {
+        "type": "id",
+        "q": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "text": "# SEP-1\nVERSION = \"2.0.0\"\nFEDERATION_SERVER = \"https://fed.example.com/federation\"\n\n[DOCUMENTATION]\nORG_NAME = \"Example\"\n"
+        },
+        "https://fed.example.com/federation?q=GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO&type=id": {
+          "json": {
+            "stellar_address": "alice*evil.com"
+          }
+        },
+        "https://evil.com/.well-known/stellar.toml": {
+          "text": "# SEP-1\nVERSION = \"2.0.0\"\nFEDERATION_SERVER = \"https://fed.example.com/federation\"\n\n[DOCUMENTATION]\nORG_NAME = \"Example\"\n"
+        },
+        "https://fed.example.com/federation?q=alice*evil.com&type=name": {
+          "json": {
+            "account_id": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO"
+          }
+        }
+      },
+      "expect": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "found": false
+        }
+      },
+      "homeDomain": "example.com"
+    },
+    {
+      "description": "reverse: subdomain of home_domain is not the same domain",
+      "query": {
+        "type": "id",
+        "q": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "text": "# SEP-1\nVERSION = \"2.0.0\"\nFEDERATION_SERVER = \"https://fed.example.com/federation\"\n\n[DOCUMENTATION]\nORG_NAME = \"Example\"\n"
+        },
+        "https://fed.example.com/federation?q=GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO&type=id": {
+          "json": {
+            "stellar_address": "alice*sub.example.com"
+          }
+        }
+      },
+      "expect": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "found": false
+        }
+      },
+      "homeDomain": "example.com"
+    },
+    {
+      "description": "reverse: cross-check yields another account_id",
+      "query": {
+        "type": "id",
+        "q": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "text": "# SEP-1\nVERSION = \"2.0.0\"\nFEDERATION_SERVER = \"https://fed.example.com/federation\"\n\n[DOCUMENTATION]\nORG_NAME = \"Example\"\n"
+        },
+        "https://fed.example.com/federation?q=GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO&type=id": {
+          "json": {
+            "stellar_address": "alice*example.com"
+          }
+        },
+        "https://fed.example.com/federation?q=alice*example.com&type=name": {
+          "json": {
+            "account_id": "GAIOFLZKDOIVVZ432TQJMYVR5DKKRJSZ4ORIGQ4LEU7AXVOEOFCLLEQF"
+          }
+        }
+      },
+      "expect": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "found": false
+        }
+      },
+      "homeDomain": "example.com"
+    },
+    {
+      "description": "reverse: cross-check with an invalid record",
+      "query": {
+        "type": "id",
+        "q": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "text": "# SEP-1\nVERSION = \"2.0.0\"\nFEDERATION_SERVER = \"https://fed.example.com/federation\"\n\n[DOCUMENTATION]\nORG_NAME = \"Example\"\n"
+        },
+        "https://fed.example.com/federation?q=GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO&type=id": {
+          "json": {
+            "stellar_address": "alice*example.com"
+          }
+        },
+        "https://fed.example.com/federation?q=alice*example.com&type=name": {
+          "json": {
+            "account_id": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO",
+            "memo_type": "text",
+            "memo": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          }
+        }
+      },
+      "expect": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "found": false
+        }
+      },
+      "homeDomain": "example.com"
+    },
+    {
+      "description": "reverse: cross-check fails (404)",
+      "query": {
+        "type": "id",
+        "q": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "text": "# SEP-1\nVERSION = \"2.0.0\"\nFEDERATION_SERVER = \"https://fed.example.com/federation\"\n\n[DOCUMENTATION]\nORG_NAME = \"Example\"\n"
+        },
+        "https://fed.example.com/federation?q=GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO&type=id": {
+          "json": {
+            "stellar_address": "alice*example.com"
+          }
+        },
+        "https://fed.example.com/federation?q=alice*example.com&type=name": {
+          "error": "HTTP 404"
+        }
+      },
+      "expect": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "found": false
+        }
+      },
+      "homeDomain": "example.com"
+    },
+    {
+      "description": "reverse: reverse answer names another account_id",
+      "query": {
+        "type": "id",
+        "q": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "text": "# SEP-1\nVERSION = \"2.0.0\"\nFEDERATION_SERVER = \"https://fed.example.com/federation\"\n\n[DOCUMENTATION]\nORG_NAME = \"Example\"\n"
+        },
+        "https://fed.example.com/federation?q=GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO&type=id": {
+          "json": {
+            "stellar_address": "alice*example.com",
+            "account_id": "GAIOFLZKDOIVVZ432TQJMYVR5DKKRJSZ4ORIGQ4LEU7AXVOEOFCLLEQF"
+          }
+        },
+        "https://fed.example.com/federation?q=alice*example.com&type=name": {
+          "json": {
+            "account_id": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO"
+          }
+        }
+      },
+      "expect": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "found": false
+        }
+      },
+      "homeDomain": "example.com"
+    },
+    {
+      "description": "reverse: malformed stellar_address",
+      "query": {
+        "type": "id",
+        "q": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "text": "# SEP-1\nVERSION = \"2.0.0\"\nFEDERATION_SERVER = \"https://fed.example.com/federation\"\n\n[DOCUMENTATION]\nORG_NAME = \"Example\"\n"
+        },
+        "https://fed.example.com/federation?q=GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO&type=id": {
+          "json": {
+            "stellar_address": "alice"
+          }
+        }
+      },
+      "expect": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "found": false
+        }
+      },
+      "homeDomain": "example.com"
+    },
+    {
+      "description": "reverse: missing stellar_address",
+      "query": {
+        "type": "id",
+        "q": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "text": "# SEP-1\nVERSION = \"2.0.0\"\nFEDERATION_SERVER = \"https://fed.example.com/federation\"\n\n[DOCUMENTATION]\nORG_NAME = \"Example\"\n"
+        },
+        "https://fed.example.com/federation?q=GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO&type=id": {
+          "json": {}
+        }
+      },
+      "expect": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "found": false
+        }
+      },
+      "homeDomain": "example.com"
+    },
+    {
+      "description": "reverse: http FEDERATION_SERVER is refused",
+      "query": {
+        "type": "id",
+        "q": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "text": "FEDERATION_SERVER = \"http://fed.example.com/federation\"\n"
+        },
+        "https://fed.example.com/federation?q=GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO&type=id": {
+          "json": {
+            "stellar_address": "alice*example.com"
+          }
+        },
+        "https://fed.example.com/federation?q=alice*example.com&type=name": {
+          "json": {
+            "account_id": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO"
+          }
+        }
+      },
+      "expect": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "found": false
+        }
+      },
+      "homeDomain": "example.com"
+    },
+    {
+      "description": "reverse: timeout on the federation server",
+      "query": {
+        "type": "id",
+        "q": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "text": "# SEP-1\nVERSION = \"2.0.0\"\nFEDERATION_SERVER = \"https://fed.example.com/federation\"\n\n[DOCUMENTATION]\nORG_NAME = \"Example\"\n"
+        },
+        "https://fed.example.com/federation?q=GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO&type=id": {
+          "error": "timeout"
+        }
+      },
+      "expect": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "found": false
+        }
+      },
+      "homeDomain": "example.com"
+    },
+    {
+      "description": "reverse: timeout on stellar.toml",
+      "query": {
+        "type": "id",
+        "q": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "error": "timeout"
+        }
+      },
+      "expect": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "found": false
+        }
+      },
+      "homeDomain": "example.com"
+    },
+    {
+      "description": "reverse: redirect on stellar.toml is not followed",
+      "query": {
+        "type": "id",
+        "q": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "error": "redirect"
+        }
+      },
+      "expect": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "found": false
+        }
+      },
+      "homeDomain": "example.com"
+    },
+    {
+      "description": "reverse: account without home_domain",
+      "query": {
+        "type": "id",
+        "q": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO"
+      },
+      "responses": {},
+      "expect": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "found": false
+        }
+      },
+      "homeDomain": ""
+    },
+    {
+      "description": "reverse: home_domain longer than 32 characters",
+      "query": {
+        "type": "id",
+        "q": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO"
+      },
+      "responses": {},
+      "expect": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "found": false
+        }
+      },
+      "homeDomain": "aaaaaaaaaaaaaaaaaaaaaaaaa.example.com"
+    },
+    {
+      "description": "reverse: home_domain that is an IP literal",
+      "query": {
+        "type": "id",
+        "q": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO"
+      },
+      "responses": {},
+      "expect": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "found": false
+        }
+      },
+      "homeDomain": "127.0.0.1"
+    },
+    {
+      "description": "reverse: home_domain with scheme",
+      "query": {
+        "type": "id",
+        "q": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO"
+      },
+      "responses": {},
+      "expect": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "found": false
+        }
+      },
+      "homeDomain": "https://example.com"
+    },
+    {
+      "description": "reverse: Horizon lookup fails",
+      "query": {
+        "type": "id",
+        "q": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO"
+      },
+      "responses": {},
+      "expect": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "found": false
+        }
+      },
+      "homeDomain": {
+        "error": "HTTP 404"
+      }
+    },
+    {
+      "description": "reverse: invalid account input 'GALQZGOUBWAI'",
+      "query": {
+        "type": "id",
+        "q": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCA"
+      },
+      "responses": {},
+      "expect": {
+        "status": 400,
+        "body": {
+          "ok": false,
+          "error": "federation.invalidInput"
+        }
+      },
+      "homeDomain": "example.com"
+    },
+    {
+      "description": "reverse: invalid account input 'MALQZGOUBWAI'",
+      "query": {
+        "type": "id",
+        "q": "MALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FEAAAAAAAAAAAAAB3S"
+      },
+      "responses": {},
+      "expect": {
+        "status": 400,
+        "body": {
+          "ok": false,
+          "error": "federation.invalidInput"
+        }
+      },
+      "homeDomain": "example.com"
+    },
+    {
+      "description": "reverse: invalid account input 'SCRPYZGNSRYQ'",
+      "query": {
+        "type": "id",
+        "q": "SCRPYZGNSRYQFVHFSPESG5RWUHPGCOAK2QVANLXB3SG4QBEAHJVTK56D"
+      },
+      "responses": {},
+      "expect": {
+        "status": 400,
+        "body": {
+          "ok": false,
+          "error": "federation.invalidInput"
+        }
+      },
+      "homeDomain": "example.com"
+    },
+    {
+      "description": "reverse: invalid account input 'galqzgoubwai'",
+      "query": {
+        "type": "id",
+        "q": "galqzgoubwai4osvlf4ukewg3kgdruecf7ao737pgecehgqfzs3ffxco"
+      },
+      "responses": {},
+      "expect": {
+        "status": 400,
+        "body": {
+          "ok": false,
+          "error": "federation.invalidInput"
+        }
+      },
+      "homeDomain": "example.com"
+    },
+    {
+      "description": "reverse: invalid account input ''",
+      "query": {
+        "type": "id",
+        "q": ""
+      },
+      "responses": {},
+      "expect": {
+        "status": 400,
+        "body": {
+          "ok": false,
+          "error": "federation.invalidInput"
+        }
+      },
+      "homeDomain": "example.com"
+    },
+    {
+      "description": "reverse: invalid account input 'alice*exampl'",
+      "query": {
+        "type": "id",
+        "q": "alice*example.com"
+      },
+      "responses": {},
+      "expect": {
+        "status": 400,
+        "body": {
+          "ok": false,
+          "error": "federation.invalidInput"
+        }
+      },
+      "homeDomain": "example.com"
+    },
+    {
+      "description": "forward: FEDERATION_SERVER on a non-default port is refused",
+      "query": {
+        "type": "name",
+        "q": "alice*example.com"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "text": "FEDERATION_SERVER = \"https://fed.example.com:8443/federation\"\n"
+        }
+      },
+      "expect": {
+        "status": 404,
+        "body": {
+          "ok": false,
+          "error": "federation.notFound"
+        }
+      }
+    },
+    {
+      "description": "forward: FEDERATION_SERVER with explicit :443 is refused too",
+      "query": {
+        "type": "name",
+        "q": "alice*example.com"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "text": "FEDERATION_SERVER = \"https://fed.example.com:443/federation\"\n"
+        }
+      },
+      "expect": {
+        "status": 404,
+        "body": {
+          "ok": false,
+          "error": "federation.notFound"
+        }
+      }
+    },
+    {
+      "description": "forward: IDN FEDERATION_SERVER host is refused",
+      "query": {
+        "type": "name",
+        "q": "alice*example.com"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "text": "FEDERATION_SERVER = \"https://bücher.de/federation\"\n"
+        }
+      },
+      "expect": {
+        "status": 404,
+        "body": {
+          "ok": false,
+          "error": "federation.notFound"
+        }
+      }
+    },
+    {
+      "description": "forward: id memo 1.0 becomes 1",
+      "query": {
+        "type": "name",
+        "q": "alice*example.com"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "text": "FEDERATION_SERVER = \"https://fed.example.com/federation\"\n"
+        },
+        "https://fed.example.com/federation?q=alice*example.com&type=name": {
+          "text": "{\"account_id\":\"GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO\",\"memo_type\":\"id\",\"memo\":1.0}"
+        }
+      },
+      "expect": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "stellar_address": "alice*example.com",
+          "account_id": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO",
+          "memo_type": "id",
+          "memo": "1"
+        }
+      }
+    },
+    {
+      "description": "forward: id memo 1e3 becomes 1000",
+      "query": {
+        "type": "name",
+        "q": "alice*example.com"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "text": "FEDERATION_SERVER = \"https://fed.example.com/federation\"\n"
+        },
+        "https://fed.example.com/federation?q=alice*example.com&type=name": {
+          "text": "{\"account_id\":\"GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO\",\"memo_type\":\"id\",\"memo\":1e3}"
+        }
+      },
+      "expect": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "stellar_address": "alice*example.com",
+          "account_id": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO",
+          "memo_type": "id",
+          "memo": "1000"
+        }
+      }
+    },
+    {
+      "description": "forward: fractional id memo rejects the record",
+      "query": {
+        "type": "name",
+        "q": "alice*example.com"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "text": "FEDERATION_SERVER = \"https://fed.example.com/federation\"\n"
+        },
+        "https://fed.example.com/federation?q=alice*example.com&type=name": {
+          "text": "{\"account_id\":\"GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO\",\"memo_type\":\"id\",\"memo\":1.5}"
+        }
+      },
+      "expect": {
+        "status": 502,
+        "body": {
+          "ok": false,
+          "error": "federation.unavailable"
+        }
+      }
+    },
+    {
+      "description": "forward: negative id memo rejects the record",
+      "query": {
+        "type": "name",
+        "q": "alice*example.com"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "text": "FEDERATION_SERVER = \"https://fed.example.com/federation\"\n"
+        },
+        "https://fed.example.com/federation?q=alice*example.com&type=name": {
+          "json": {
+            "account_id": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO",
+            "memo_type": "id",
+            "memo": -1
+          }
+        }
+      },
+      "expect": {
+        "status": 502,
+        "body": {
+          "ok": false,
+          "error": "federation.unavailable"
+        }
+      }
+    },
+    {
+      "description": "forward: invalid address (trailing NBSP)",
+      "query": {
+        "type": "name",
+        "q": "alice*example.com "
+      },
+      "responses": {},
+      "expect": {
+        "status": 400,
+        "body": {
+          "ok": false,
+          "error": "federation.invalidInput"
+        }
+      }
+    },
+    {
+      "description": "forward: invalid address (leading NBSP)",
+      "query": {
+        "type": "name",
+        "q": " alice*example.com"
+      },
+      "responses": {},
+      "expect": {
+        "status": 400,
+        "body": {
+          "ok": false,
+          "error": "federation.invalidInput"
+        }
+      }
+    },
+    {
+      "description": "forward: invalid address (Kelvin sign in domain)",
+      "query": {
+        "type": "name",
+        "q": "alice*Keybase.io"
+      },
+      "responses": {},
+      "expect": {
+        "status": 400,
+        "body": {
+          "ok": false,
+          "error": "federation.invalidInput"
+        }
+      }
+    },
+    {
+      "description": "forward: invalid address (non-ASCII name)",
+      "query": {
+        "type": "name",
+        "q": "ålice*example.com"
+      },
+      "responses": {},
+      "expect": {
+        "status": 400,
+        "body": {
+          "ok": false,
+          "error": "federation.invalidInput"
+        }
+      }
+    },
+    {
+      "description": "forward: invalid address (fullwidth asterisk only)",
+      "query": {
+        "type": "name",
+        "q": "alice＊example.com"
+      },
+      "responses": {},
+      "expect": {
+        "status": 400,
+        "body": {
+          "ok": false,
+          "error": "federation.invalidInput"
+        }
+      }
+    },
+    {
+      "description": "forward: invalid address (IDN domain)",
+      "query": {
+        "type": "name",
+        "q": "alice*bücher.de"
+      },
+      "responses": {},
+      "expect": {
+        "status": 400,
+        "body": {
+          "ok": false,
+          "error": "federation.invalidInput"
+        }
+      }
+    },
+    {
+      "description": "forward: invalid address (zero-width space in name)",
+      "query": {
+        "type": "name",
+        "q": "ali​ce*example.com"
+      },
+      "responses": {},
+      "expect": {
+        "status": 400,
+        "body": {
+          "ok": false,
+          "error": "federation.invalidInput"
+        }
+      }
+    },
+    {
+      "description": "forward: surrounding ASCII whitespace is trimmed",
+      "query": {
+        "type": "name",
+        "q": " \talice*example.com\n"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "text": "FEDERATION_SERVER = \"https://fed.example.com/federation\"\n"
+        },
+        "https://fed.example.com/federation?q=alice*example.com&type=name": {
+          "json": {
+            "account_id": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO"
+          }
+        }
+      },
+      "expect": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "stellar_address": "alice*example.com",
+          "account_id": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO"
+        }
+      }
+    },
+    {
+      "description": "reverse: name with fullwidth asterisk lookalike is dropped",
+      "query": {
+        "type": "id",
+        "q": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "text": "FEDERATION_SERVER = \"https://fed.example.com/federation\"\n"
+        },
+        "https://fed.example.com/federation?q=GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO&type=id": {
+          "json": {
+            "stellar_address": "support＊lobstr.co*example.com"
+          }
+        },
+        "https://fed.example.com/federation?q=support＊lobstr.co*example.com&type=name": {
+          "json": {
+            "account_id": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO"
+          }
+        }
+      },
+      "expect": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "found": false
+        }
+      },
+      "homeDomain": "example.com"
+    },
+    {
+      "description": "reverse: name with bidi override is dropped",
+      "query": {
+        "type": "id",
+        "q": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "text": "FEDERATION_SERVER = \"https://fed.example.com/federation\"\n"
+        },
+        "https://fed.example.com/federation?q=GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO&type=id": {
+          "json": {
+            "stellar_address": "‮oc.rtsbol*example.com"
+          }
+        },
+        "https://fed.example.com/federation?q=‮oc.rtsbol*example.com&type=name": {
+          "json": {
+            "account_id": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO"
+          }
+        }
+      },
+      "expect": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "found": false
+        }
+      },
+      "homeDomain": "example.com"
+    },
+    {
+      "description": "reverse: name with zero-width character is dropped",
+      "query": {
+        "type": "id",
+        "q": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "text": "FEDERATION_SERVER = \"https://fed.example.com/federation\"\n"
+        },
+        "https://fed.example.com/federation?q=GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO&type=id": {
+          "json": {
+            "stellar_address": "supp​ort*example.com"
+          }
+        },
+        "https://fed.example.com/federation?q=supp​ort*example.com&type=name": {
+          "json": {
+            "account_id": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO"
+          }
+        }
+      },
+      "expect": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "found": false
+        }
+      },
+      "homeDomain": "example.com"
+    },
+    {
+      "description": "reverse: name with Cyrillic homoglyph is dropped",
+      "query": {
+        "type": "id",
+        "q": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "text": "FEDERATION_SERVER = \"https://fed.example.com/federation\"\n"
+        },
+        "https://fed.example.com/federation?q=GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO&type=id": {
+          "json": {
+            "stellar_address": "аlice*example.com"
+          }
+        },
+        "https://fed.example.com/federation?q=аlice*example.com&type=name": {
+          "json": {
+            "account_id": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO"
+          }
+        }
+      },
+      "expect": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "found": false
+        }
+      },
+      "homeDomain": "example.com"
+    },
+    {
+      "description": "reverse: stellar_address as array is dropped",
+      "query": {
+        "type": "id",
+        "q": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "text": "FEDERATION_SERVER = \"https://fed.example.com/federation\"\n"
+        },
+        "https://fed.example.com/federation?q=GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO&type=id": {
+          "json": {
+            "stellar_address": [
+              "alice*example.com"
+            ]
+          }
+        },
+        "https://fed.example.com/federation?q=alice*example.com&type=name": {
+          "json": {
+            "account_id": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO"
+          }
+        }
+      },
+      "expect": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "found": false
+        }
+      },
+      "homeDomain": "example.com"
+    },
+    {
+      "description": "reverse: home_domain with Kelvin sign is dropped",
+      "query": {
+        "type": "id",
+        "q": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO"
+      },
+      "responses": {
+        "https://keybase.io/.well-known/stellar.toml": {
+          "text": "FEDERATION_SERVER = \"https://fed.example.com/federation\"\n"
+        }
+      },
+      "expect": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "found": false
+        }
+      },
+      "homeDomain": "Keybase.io"
+    },
+    {
+      "description": "forward: FEDERATION_SERVER with a backslash is refused",
+      "query": {
+        "type": "name",
+        "q": "alice*example.com"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "text": "FEDERATION_SERVER = \"https:\\\\fed.example.com:443/federation\"\n"
+        }
+      },
+      "expect": {
+        "status": 404,
+        "body": {
+          "ok": false,
+          "error": "federation.notFound"
+        }
+      }
+    },
+    {
+      "description": "forward: FEDERATION_SERVER path with dot segments is used as written",
+      "query": {
+        "type": "name",
+        "q": "alice*example.com"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "text": "FEDERATION_SERVER = \"https://fed.example.com/a/../federation\"\n"
+        },
+        "https://fed.example.com/a/../federation?q=alice*example.com&type=name": {
+          "json": {
+            "account_id": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO"
+          }
+        }
+      },
+      "expect": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "stellar_address": "alice*example.com",
+          "account_id": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO"
+        }
+      }
+    }
+  ]
+}

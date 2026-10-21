@@ -11,6 +11,7 @@ const fsSync = require('fs');
 const crypto = require('crypto');
 const { searchAssets, fetchAssetFacts, fetchExpertDirectoryEntry } = require('./services/tradeService.js');
 const { createCorsMiddleware } = require('./services/corsConfig.js');
+const { handleFederationRequest, HOP_HEADER: FEDERATION_HOP_HEADER } = require('./services/federationService.js');
 const { writeJsonFileLocked } = require('./services/jsonFileStore.js');
 const { createChallenge, consumeChallenge, verifyChallengeSignature } = require('./services/challengeStore.js');
 const { filterValidSignatures, requiredWeightForOperations } = require('./services/txSignatures.js');
@@ -1043,6 +1044,37 @@ app.get('/trustlines', async (req, res) => {
     console.error('Error fetching trustlines:', error.message);
     res.status(500).json({ ok: false, error: 'Failed to fetch trustlines' });
   }
+});
+
+// SEP-2 federation via the backend (Backlog P1.2), so the frontend CSP's
+// connect-src doesn't have to allow arbitrary domains. type=name: forward
+// (name*domain -> account), type=id: reverse lookup with home_domain check
+// and forward cross-check - see services/federationService.js. Each lookup
+// fans out to up to three outbound requests, hence the own, tighter limit
+// on top of the global one. PHP twin: api/federation.php.
+const federationLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  limit: 30,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { ok: false, error: 'federation.rateLimited' },
+});
+// Loop guard (see HOP_HEADER in services/federationService.js): refused
+// before it costs rate-limit budget or outbound requests, same as PHP.
+async function refuseFederationHop(req, res, next) {
+  if (!req.get(FEDERATION_HOP_HEADER)) return next();
+  const { status, body } = await handleFederationRequest({}, { incomingHop: true });
+  res.status(status).json(body);
+}
+app.get('/api/federation', refuseFederationHop, federationLimiter, async (req, res) => {
+  const { status, body } = await handleFederationRequest(req.query || {}, {
+    loadHomeDomain: async (accountId) => {
+      const account = await getTradeHorizon(req.query?.network).loadAccount(accountId);
+      return account?.home_domain || '';
+    },
+  });
+  res.set('Cache-Control', 'no-store');
+  res.status(status).json(body);
 });
 
 app.get('/api/trade/assets/search', async (req, res) => {

@@ -109,9 +109,25 @@ function resolve_safe_fetch_target(string $url): array {
     ];
 }
 
-function fetch_url(string $url, string $acceptHeader, int $timeoutSeconds): string {
+// $options (all optional, defaults = previous behavior used by trade.php):
+//   httpsOnly    => bool, reject any non-https URL (also on redirects)
+//   maxRedirects => int, 0 turns every 3xx into 'too_many_redirects'
+//   maxBytes     => int, response size cap
+//   headers      => string[], extra request headers ("Name: value")
+// With maxRedirects 0 every 3xx status is a failure, not only the five
+// redirect codes (a 300/304/305 body is never returned).
+// Used by api/federationService.php with httpsOnly + maxRedirects 0.
+function fetch_url(string $url, string $acceptHeader, int $timeoutSeconds, array $options = []): string {
+    $httpsOnly = (bool)($options['httpsOnly'] ?? false);
+    $maxRedirects = (int)($options['maxRedirects'] ?? MAX_FETCH_REDIRECTS);
+    $maxBytes = (int)($options['maxBytes'] ?? MAX_FETCH_RESPONSE_BYTES);
+    $extraHeaders = array_values(array_filter((array)($options['headers'] ?? []), 'is_string'));
     $currentUrl = $url;
-    for ($redirect = 0; $redirect <= MAX_FETCH_REDIRECTS; $redirect++) {
+    for ($redirect = 0; $redirect <= $maxRedirects; $redirect++) {
+        // Before any DNS resolution, so a non-https target never causes a lookup.
+        if ($httpsOnly && strtolower((string)parse_url($currentUrl, PHP_URL_SCHEME)) !== 'https') {
+            throw new RuntimeException('ssrf_blocked_scheme');
+        }
         $target = resolve_safe_fetch_target($currentUrl);
 
         if (function_exists('curl_init')) {
@@ -134,14 +150,14 @@ function fetch_url(string $url, string $acceptHeader, int $timeoutSeconds): stri
                 CURLOPT_FOLLOWLOCATION => false,
                 CURLOPT_CONNECTTIMEOUT => $timeoutSeconds,
                 CURLOPT_TIMEOUT => $timeoutSeconds,
-                CURLOPT_HTTPHEADER => [
+                CURLOPT_HTTPHEADER => array_merge([
                     'Accept: ' . $acceptHeader,
                     'User-Agent: Stellar-Konto-Manager/1.0',
-                ],
+                ], $extraHeaders),
                 // N2: reject as soon as a declared Content-Length is too large,
                 // without waiting for the body to start arriving.
-                CURLOPT_HEADERFUNCTION => function ($handle, $headerLine) use (&$tooLarge) {
-                    if (preg_match('/^content-length:\s*(\d+)/i', $headerLine, $m) && (int)$m[1] > MAX_FETCH_RESPONSE_BYTES) {
+                CURLOPT_HEADERFUNCTION => function ($handle, $headerLine) use (&$tooLarge, $maxBytes) {
+                    if (preg_match('/^content-length:\s*(\d+)/i', $headerLine, $m) && (int)$m[1] > $maxBytes) {
                         $tooLarge = true;
                         return -1; // any value != strlen($headerLine) aborts the transfer
                     }
@@ -149,9 +165,9 @@ function fetch_url(string $url, string $acceptHeader, int $timeoutSeconds): stri
                 },
                 // N2: also enforced while streaming, in case Content-Length was
                 // absent, chunked, or understated.
-                CURLOPT_WRITEFUNCTION => function ($handle, $chunk) use (&$bodyChunks, &$bytesWritten, &$tooLarge) {
+                CURLOPT_WRITEFUNCTION => function ($handle, $chunk) use (&$bodyChunks, &$bytesWritten, &$tooLarge, $maxBytes) {
                     $bytesWritten += strlen($chunk);
-                    if ($bytesWritten > MAX_FETCH_RESPONSE_BYTES) {
+                    if ($bytesWritten > $maxBytes) {
                         $tooLarge = true;
                         return 0; // any value != strlen($chunk) aborts the transfer
                     }
@@ -176,6 +192,9 @@ function fetch_url(string $url, string $acceptHeader, int $timeoutSeconds): stri
                 continue;
             }
             curl_close($ch);
+            if ($maxRedirects === 0 && $status >= 300 && $status < 400) {
+                throw new RuntimeException('too_many_redirects');
+            }
             // curl_errno() (not the locale-dependent curl_error() text) tells
             // a real timeout apart from every other connection-level failure
             // (refused, reset, TLS) - DNS itself already succeeded via
@@ -200,7 +219,8 @@ function fetch_url(string $url, string $acceptHeader, int $timeoutSeconds): stri
             'http' => [
                 'method' => 'GET',
                 'timeout' => $timeoutSeconds,
-                'header' => "Accept: {$acceptHeader}\r\nUser-Agent: Stellar-Konto-Manager/1.0\r\nHost: {$target['hostHeader']}\r\n",
+                'header' => "Accept: {$acceptHeader}\r\nUser-Agent: Stellar-Konto-Manager/1.0\r\nHost: {$target['hostHeader']}\r\n"
+                    . implode('', array_map(fn($h) => $h . "\r\n", $extraHeaders)),
                 'ignore_errors' => true,
                 'follow_location' => 0,
             ],
@@ -214,7 +234,7 @@ function fetch_url(string $url, string $acceptHeader, int $timeoutSeconds): stri
         // N2: maxlen caps how many bytes PHP ever buffers for this call,
         // regardless of what the (possibly lying) remote end declares or how
         // much it actually sends.
-        $body = @file_get_contents($pinnedUrl, false, $context, 0, MAX_FETCH_RESPONSE_BYTES + 1);
+        $body = @file_get_contents($pinnedUrl, false, $context, 0, $maxBytes + 1);
         $status = 0;
         $location = null;
         foreach (($http_response_header ?? []) as $header) {
@@ -232,6 +252,9 @@ function fetch_url(string $url, string $acceptHeader, int $timeoutSeconds): stri
             $currentUrl = $location;
             continue;
         }
+        if ($maxRedirects === 0 && $status >= 300 && $status < 400) {
+            throw new RuntimeException('too_many_redirects');
+        }
         if ($body === false) {
             // No curl_errno() equivalent is available here (rare fallback
             // path, only used when the curl extension is absent); the last
@@ -243,7 +266,7 @@ function fetch_url(string $url, string $acceptHeader, int $timeoutSeconds): stri
         if ($status >= 400) {
             throw new RuntimeException('HTTP ' . $status);
         }
-        if (strlen($body) > MAX_FETCH_RESPONSE_BYTES) {
+        if (strlen($body) > $maxBytes) {
             throw new RuntimeException('ssrf_blocked_response_too_large');
         }
         return $body;

@@ -536,6 +536,8 @@ module.exports = {
   assertSafeScheme,
   ssrfSafeLookup,
   readTextWithLimit,
+  // Shared with services/federationService.js (same SSRF-safe connect path).
+  ssrfSafeAgent,
   MAX_TOML_RESPONSE_BYTES,
   classifyTomlError,
 };

@@ -1,8 +1,8 @@
 import { resolveFeePerOp } from './fees.js';
+import { apiUrl } from '../apiBase.js';
 import {
   Horizon,
   StrKey,
-  Federation,
   Keypair,
   Networks,
   Operation,
@@ -95,11 +95,24 @@ async function loadAccountCached(server, publicKey, { ttlMs = 15000 } = {}) {
   return p;
 }
 
+// Eigene Horizon-URL aus localStorage (SKM_HORIZON_URL) nur im Dev-Modus.
+// In Produktion erlaubt die CSP (connect-src, Backlog P1.2) ohnehin nur die
+// bekannten Horizon-Hosts; ein manipulierter localStorage-Wert soll den
+// Verkehr dort nicht umlenken koennen.
+function devHorizonOverride() {
+  if (!import.meta.env?.DEV) return null;
+  try {
+    return window?.localStorage?.getItem('SKM_HORIZON_URL') || null;
+  } catch {
+    return null;
+  }
+}
+
 function resolveHorizonUrl(url) {
-  // Global/Dev-Override: Hauptschalter über LocalStorage (SKM_NETWORK) oder explizite URL (SKM_HORIZON_URL)
+  // Global/Dev-Override: Hauptschalter über LocalStorage (SKM_NETWORK) oder explizite URL (SKM_HORIZON_URL, nur Dev)
   let base = url || HORIZON_URL || 'https://horizon.stellar.org';
   try {
-    const lsUrl = window?.localStorage?.getItem('SKM_HORIZON_URL');
+    const lsUrl = devHorizonOverride();
     const lsNet = window?.localStorage?.getItem('SKM_NETWORK'); // 'PUBLIC' | 'TESTNET'
 
     // Treat calls that pass the default (or nothing) as "not explicit" → network selection wins
@@ -128,10 +141,8 @@ function resolveHorizonUrl(url) {
   // Falls in .env bereits '/horizon' steht, in eine absolute URL umwandeln
   if (typeof base === 'string' && base.startsWith('/')) {
     // Allow override via SKM_HORIZON_URL; if set, prefer that instead of proxy
-    try {
-      const lsUrl2 = window?.localStorage?.getItem('SKM_HORIZON_URL');
-      if (lsUrl2) return lsUrl2;
-    } catch { /* noop */ }
+    const lsUrl2 = devHorizonOverride();
+    if (lsUrl2) return lsUrl2;
     return (window?.location?.origin || 'http://localhost:5173') + base;
   }
   return base;
@@ -152,23 +163,69 @@ export function getHorizonServer(url = HORIZON_URL) {
   return new Horizon.Server(resolved, { allowHttp: allowHttpFor(resolved) });
 }
 
+async function fetchFederation(params) {
+  const res = await fetch(`${apiUrl('federation')}?${new URLSearchParams(params).toString()}`, {
+    credentials: 'omit',
+    cache: 'no-store',
+  });
+  const data = await res.json().catch(() => null);
+  return { ok: res.ok, data };
+}
+
 /**
- * Wandelt eine Federation-Adresse (user*domain.tld) in einen Public Key um
+ * Wandelt eine Federation-Adresse (user*domain.tld) in einen Public Key um.
+ * SEP-2 laeuft ueber das eigene Backend (/api/federation), nicht direkt im
+ * Browser: so muss die CSP (connect-src) keine beliebigen Domains erlauben
+ * (Backlog P1.2). Das Backend prueft account_id und Memo bereits; hier wird
+ * die account_id trotzdem noch einmal validiert.
  * @param {string} federationAddress - z.B. user*lobstr.co
- * @returns {Promise<string>} - Der zugehörige Public Key (G...)
- * @throws {Error} - Wenn keine account_id gefunden wird
+ * @returns {Promise<{accountId: string, memo?: string, memoType?: string}>}
+ * @throws {Error} - error.noFederationId, wenn nichts Gueltiges gefunden wird
  */
 export async function resolveFederationAddress(federationAddress) {
-  // Use domain discovery per SEP-2 via stellar.toml → FEDERATION_SERVER.
-  // The static Federation.Server.resolve() performs discovery for the provided address domain
-  // (SDK 16 moved FederationServer under the Federation namespace, same as Horizon.Server).
-  const response = await Federation.Server.resolve(federationAddress);
-  if (!response?.account_id) throw new Error('error.noFederationId');
+  let result;
+  try {
+    result = await fetchFederation({ type: 'name', q: String(federationAddress || '').trim() });
+  } catch {
+    throw new Error('error.noFederationId');
+  }
+  const data = result.data;
+  if (!result.ok || !data?.ok || typeof data.account_id !== 'string' || !StrKey.isValidEd25519PublicKey(data.account_id)) {
+    throw new Error('error.noFederationId');
+  }
   return {
-    accountId: response.account_id,
-    memo: typeof response.memo === 'string' ? response.memo : undefined,
-    memoType: typeof response.memo_type === 'string' ? response.memo_type : undefined,
+    accountId: data.account_id,
+    memo: typeof data.memo === 'string' ? data.memo : undefined,
+    memoType: typeof data.memo_type === 'string' ? data.memo_type : undefined,
   };
+}
+
+/**
+ * Rueckwaertssuche Konto -> Federation-Name ueber das Backend. Das Backend
+ * nimmt die home_domain aus Horizon, verlangt name*<home_domain> und loest
+ * den Namen zur Gegenprobe wieder vorwaerts auf. Das Ergebnis ist trotzdem
+ * nur eine Angabe des Federation-Servers dieser Domain und wird so angezeigt.
+ * Liefert nie einen Fehler: bei jedem Problem null.
+ * @param {string} accountId - G... Public Key
+ * @param {'PUBLIC'|'TESTNET'} network
+ * @returns {Promise<{stellarAddress: string, domain: string}|null>}
+ */
+export async function reverseFederationLookup(accountId, network = 'PUBLIC') {
+  try {
+    if (!StrKey.isValidEd25519PublicKey(String(accountId || ''))) return null;
+    const { ok, data } = await fetchFederation({ type: 'id', q: accountId, network: network === 'TESTNET' ? 'TESTNET' : 'PUBLIC' });
+    if (!ok || !data?.ok || data.found !== true) return null;
+    const address = typeof data.stellar_address === 'string' ? data.stellar_address : '';
+    const domain = typeof data.domain === 'string' ? data.domain.toLowerCase() : '';
+    const star = address.lastIndexOf('*');
+    // Defensiv dieselben Regeln wie im Backend: nur druckbares ASCII (keine
+    // Unicode-Doppelgaenger), genau ein '*', Domain des Namens = home_domain.
+    if (!/^[\x21-\x7e]+$/.test(address) || !/^[\x21-\x7e]+$/.test(domain)) return null;
+    if (star <= 0 || star !== address.indexOf('*') || address.slice(star + 1).toLowerCase() !== domain) return null;
+    return { stellarAddress: address, domain };
+  } catch {
+    return null;
+  }
 }
 
 /**

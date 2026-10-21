@@ -33,6 +33,7 @@ const MUXED_DEST = new MuxedAccount(new Account(DEST_PK, '0'), '42').accountId()
 const hoisted = vi.hoisted(() => ({
   loadAccountMock: vi.fn(),
   resolveOrValidateAccountMock: vi.fn(),
+  reverseFederationLookupMock: vi.fn(),
   getSessionSecretMock: vi.fn(),
   submitTransactionSafelyMock: vi.fn(),
 }));
@@ -46,6 +47,7 @@ vi.mock('../../utils/stellar/stellarUtils.js', async (importOriginal) => ({
     ledgers: () => ({ order: () => ({ limit: () => ({ call: async () => ({ records: [] }) }) }) }),
   }),
   resolveOrValidateAccount: hoisted.resolveOrValidateAccountMock,
+  reverseFederationLookup: hoisted.reverseFederationLookupMock,
 }));
 
 vi.mock('../../utils/sessionSecrets.js', async (importOriginal) => ({
@@ -125,6 +127,7 @@ beforeEach(() => {
     }
     return { accountId: input, muxedAddress: null, address: input };
   });
+  hoisted.reverseFederationLookupMock.mockResolvedValue(null);
   hoisted.getSessionSecretMock.mockResolvedValue(SENDER.secret);
   hoisted.submitTransactionSafelyMock.mockResolvedValue({ hash: 'deadbeefcafe' });
 });
@@ -184,8 +187,9 @@ describe('same-tick keystroke survives a slow federation lookup (G1)', () => {
     // Lookup is still pending here - the user types their own memo before it returns.
     fireEvent.change(memoInput(), { target: { value: 'typed-before-lookup' } });
 
-    resolveLookup({ accountId: DEST_PK, muxedAddress: null, address: FED_WITH_MEMO, memo: '999', memoType: 'id' });
+    // The lookup starts after the typing pause (debounce), then returns.
     await waitFor(() => expect(hoisted.resolveOrValidateAccountMock).toHaveBeenCalled());
+    resolveLookup({ accountId: DEST_PK, muxedAddress: null, address: FED_WITH_MEMO, memo: '999', memoType: 'id' });
 
     // Give the resolved promise's continuation a chance to run and (incorrectly, if the
     // bug were present) overwrite the field.
@@ -937,5 +941,67 @@ describe('SEP-29 memo_required preflight before sending (P1.1)', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Weiter' }));
     await screen.findByText(MEMO_REQUIRED_ERROR);
     expect(screen.queryByText('XDR vorbereitet (nicht gesendet)')).not.toBeInTheDocument();
+  });
+});
+
+describe('reverse federation lookup display (P1.2)', () => {
+  it('shows the name neutrally as a claim of the home_domain federation server', async () => {
+    hoisted.reverseFederationLookupMock.mockResolvedValue({ stellarAddress: 'dest*example.com', domain: 'example.com' });
+    renderPage();
+    fireEvent.change(destInput(), { target: { value: DEST_PK } });
+    const line = await screen.findByTestId('reverse-federation');
+    expect(line.textContent).toContain('Name laut Federation-Server von example.com:');
+    expect(line.textContent).toContain('dest*example.com');
+    expect(line.textContent).not.toMatch(/verifiziert|bestätigt|geprüft/i);
+    expect(hoisted.reverseFederationLookupMock).toHaveBeenCalledWith(DEST_PK, expect.any(String));
+    // Not presented as the recipient's federation address.
+    expect(screen.queryByText('Keine Föderationsadresse definiert')).not.toBeInTheDocument();
+  });
+
+  it('looks up the base account for a muxed recipient', async () => {
+    renderPage();
+    fireEvent.change(destInput(), { target: { value: MUXED_DEST } });
+    await waitFor(() => expect(hoisted.reverseFederationLookupMock).toHaveBeenCalledWith(DEST_PK, expect.any(String)));
+  });
+
+  it('shows nothing extra when the lookup finds nothing', async () => {
+    renderPage();
+    fireEvent.change(destInput(), { target: { value: DEST_PK } });
+    await waitFor(() => expect(hoisted.reverseFederationLookupMock).toHaveBeenCalled());
+    expect(screen.queryByTestId('reverse-federation')).not.toBeInTheDocument();
+    expect(screen.getByText('Keine Föderationsadresse definiert')).toBeInTheDocument();
+  });
+
+  it('does not run a reverse lookup for a typed federation address', async () => {
+    renderPage();
+    fireEvent.change(destInput(), { target: { value: FED_NO_MEMO } });
+    await screen.findByText(FED_NO_MEMO, { selector: 'span' });
+    expect(hoisted.reverseFederationLookupMock).not.toHaveBeenCalled();
+    expect(screen.queryByTestId('reverse-federation')).not.toBeInTheDocument();
+  });
+
+  it('renders the claimed name isolated in a bdi element', async () => {
+    hoisted.reverseFederationLookupMock.mockResolvedValue({ stellarAddress: 'dest*example.com', domain: 'example.com' });
+    renderPage();
+    fireEvent.change(destInput(), { target: { value: DEST_PK } });
+    const line = await screen.findByTestId('reverse-federation');
+    expect(line.querySelector('bdi')?.textContent).toBe('dest*example.com');
+  });
+
+  it('resolves a typed federation address only after a typing pause', async () => {
+    renderPage();
+    fireEvent.change(destInput(), { target: { value: 'nomemo*example.co' } });
+    fireEvent.change(destInput(), { target: { value: FED_NO_MEMO } });
+    await waitFor(() => expect(hoisted.resolveOrValidateAccountMock).toHaveBeenCalledWith(FED_NO_MEMO));
+    expect(hoisted.resolveOrValidateAccountMock).not.toHaveBeenCalledWith('nomemo*example.co');
+  });
+
+  it('drops a previous reverse result when the recipient changes', async () => {
+    hoisted.reverseFederationLookupMock.mockResolvedValueOnce({ stellarAddress: 'dest*example.com', domain: 'example.com' });
+    renderPage();
+    fireEvent.change(destInput(), { target: { value: DEST_PK } });
+    await screen.findByTestId('reverse-federation');
+    fireEvent.change(destInput(), { target: { value: FED_NO_MEMO } });
+    await waitFor(() => expect(screen.queryByTestId('reverse-federation')).not.toBeInTheDocument());
   });
 });

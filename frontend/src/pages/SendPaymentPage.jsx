@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { getHorizonServer, resolveOrValidateAccount, isValidAccountId, extractBasePublicKeyFromMuxed } from '../utils/stellar/stellarUtils';
+import { getHorizonServer, resolveOrValidateAccount, isValidAccountId, extractBasePublicKeyFromMuxed, reverseFederationLookup } from '../utils/stellar/stellarUtils';
 import { Asset, Keypair, Networks, Operation, TransactionBuilder, Memo, StrKey } from '@stellar/stellar-sdk';
 import { Buffer } from 'buffer';
 import SecretKeyModal from '../components/SecretKeyModal';
@@ -179,6 +179,8 @@ function HistoryInput({
 // Maps a SEP-2 federation memo (memo_type/memo) onto SKM's local memo form model.
 // 'hash' memos are base64 per SEP-2 but SKM's hash field expects hex — convert and
 // validate length so a malformed federation response never silently mis-fills the form.
+const FEDERATION_RESOLVE_DEBOUNCE_MS = 400;
+
 function federationMemoToLocal(memoType, memoValue) {
   if (typeof memoValue !== 'string' || !memoValue) return null;
   if (memoType === 'text' || memoType === 'id') {
@@ -1251,6 +1253,10 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   // Resolve recipient helpers
   const [resolvedAccount, setResolvedAccount] = useState('');
   const [resolvedFederation, setResolvedFederation] = useState('');
+  // Rueckwaertssuche (Konto -> Name): nur Angabe des Federation-Servers der
+  // home_domain, nie als verifiziert behandelt - getrennt von resolvedFederation,
+  // damit sie nicht in Review-Dialog oder Empfaenger-Historie einfliesst.
+  const [reverseFederation, setReverseFederation] = useState(null); // { stellarAddress, domain } | null
   const [inputWasFederation, setInputWasFederation] = useState(false);
   const [federationMemoApplied, setFederationMemoApplied] = useState(false);
   const [recipientRefreshKey, setRecipientRefreshKey] = useState(0);
@@ -1315,6 +1321,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   const [destMemoRequired, setDestMemoRequired] = useState(false); // SEP-29, nur fuer den Hinweis am Formular
   useEffect(() => {
     let active = true;
+    setReverseFederation(null);
     async function resolve() {
       try {
         const v = (dest || '').trim();
@@ -1332,31 +1339,13 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
             ? extractBasePublicKeyFromMuxed(v)
             : v;
           setResolvedAccount(resolved);
+          setResolvedFederation('');
           setInputWasFederation(false);
           applyFederationMemo(null);
-          // Try reverse federation lookup via home_domain → stellar.toml → FEDERATION_SERVER
-          try {
-            const acct = await server.loadAccount(resolved);
-            const domain = acct?.home_domain || acct?.homeDomain || '';
-            if (domain) {
-              try {
-                const tomlUrl = `https://${domain}/.well-known/stellar.toml`;
-                const resp = await fetch(tomlUrl, { mode: 'cors' });
-                const txt = await resp.text();
-                const m = txt.match(/FEDERATION_SERVER\s*=\s*"([^"]+)"/i);
-                const fedUrl = m && m[1] ? m[1] : null;
-                if (fedUrl) {
-                  const q = `${fedUrl}?q=${encodeURIComponent(v)}&type=id`;
-                  const fr = await fetch(q, { mode: 'cors' });
-                  if (fr.ok) {
-                    const data = await fr.json();
-                    const addr = data?.stellar_address || data?.stellar_address || '';
-                    if (addr && active) setResolvedFederation(addr);
-                  }
-                }
-              } catch { /* ignore reverse federation failures */ }
-            }
-          } catch { /* ignore account/home_domain issues */ }
+          // Rueckwaertssuche ueber das Backend (home_domain aus Horizon,
+          // Domain-Abgleich, Gegenprobe). Scheitert sie, gibt es einfach keinen Namen.
+          const reverse = await reverseFederationLookup(resolved, netLabel);
+          if (active) setReverseFederation(reverse);
         } else {
           setResolvedAccount('');
           setResolvedFederation('');
@@ -1371,9 +1360,21 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
         applyFederationMemo(null);
       }
     }
-    resolve();
-    return () => { active = false; };
-  }, [dest, server, recipientRefreshKey, applyFederationMemo]);
+    // Federation-Adressen erst nach einer Tipp-Pause aufloesen: jeder Zwischenstand
+    // (z. B. user*example.co) waere sonst ein Backend-Aufruf an eine fremde Domain
+    // und verbraucht das Rate-Limit von /api/federation.
+    // Alles andere (G-/M-Adressen, leer) wie bisher sofort.
+    const isFederationInput = (dest || '').includes('*');
+    if (isFederationInput) {
+      // Waehrend der Tipp-Pause nicht das Konto des vorigen Empfaengers zeigen.
+      setResolvedAccount('');
+      setResolvedFederation('');
+      setInputWasFederation(false);
+    }
+    const timer = isFederationInput ? setTimeout(resolve, FEDERATION_RESOLVE_DEBOUNCE_MS) : null;
+    if (!timer) resolve();
+    return () => { active = false; if (timer) clearTimeout(timer); };
+  }, [dest, netLabel, recipientRefreshKey, applyFederationMemo]);
 
   // Load destination account XLM balance for the resolved recipient
   useEffect(() => {
@@ -1878,12 +1879,24 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
             <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] items-start gap-x-4 gap-y-1">
               {/* Links: Empfänger-Infos linksbündig */}
               <div className="min-w-0 space-y-0.5 text-left">
+                {(recipientFederationDisplay || !reverseFederation) && (
                 <div>
                   <span className="font-semibold">{t('wallet:federationDisplay.label', 'Föderationsadresse')}:</span>{' '}
                   {recipientFederationDisplay
                     ? <span className="font-mono break-all">{recipientFederationDisplay}</span>
                     : <span className="italic text-gray-500">{t('wallet:federationDisplay.none', 'Keine Föderationsadresse definiert')}</span>}
                 </div>
+                )}
+
+                {reverseFederation && !inputWasFederation && (
+                  <div data-testid="reverse-federation">
+                    <span className="font-semibold">
+                      {t('wallet:federationDisplay.reverseLabel', 'Name laut Federation-Server von {{domain}}', { domain: reverseFederation.domain })}:
+                    </span>{' '}
+                    {/* bdi: Fremdtext isoliert, kann die Leserichtung der Umgebung nicht drehen */}
+                    <bdi className="font-mono break-all">{reverseFederation.stellarAddress}</bdi>
+                  </div>
+                )}
 
                 {resolvedFederation && resolvedAccount && inputWasFederation && (
                   <div>

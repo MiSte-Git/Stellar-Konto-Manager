@@ -3,7 +3,8 @@
     "label": "Föderationsadresse",
     "none": "Keine Föderationsadresse definiert",
     "account": "Konto",
-    "accountLabel": "Label"
+    "accountLabel": "Label",
+    "reverseLabel": "Name laut Federation-Server von {{domain}}"
   },
   "flag": {
     "compromised": "Warnung: Diese Wallet ist in deiner VertrauListe als kompromittiert markiert.",

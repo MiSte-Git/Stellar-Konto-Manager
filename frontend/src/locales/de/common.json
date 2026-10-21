@@ -711,7 +711,8 @@
       "paymentsFetch": "Fehler beim Laden der Zahlungen",
       "serverInvalid": "Ungültiger Server"
     },
-    "rateLimited": "Horizon-Rate-Limit überschritten. Bitte ein paar Sekunden warten und erneut versuchen."
+    "rateLimited": "Horizon-Rate-Limit überschritten. Bitte ein paar Sekunden warten und erneut versuchen.",
+    "noFederationId": "Föderationsadresse konnte nicht aufgelöst werden."
   },
   "investedTokens": {
     "columns": {

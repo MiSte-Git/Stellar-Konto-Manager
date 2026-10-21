@@ -43,9 +43,8 @@ function migrateLegacyStorageKeys() {
     if (ls.getItem('STM_NETWORK') && !ls.getItem('SKM_NETWORK')) {
       ls.setItem('SKM_NETWORK', ls.getItem('STM_NETWORK'));
     }
-    if (ls.getItem('STM_HORIZON_URL') && !ls.getItem('SKM_HORIZON_URL')) {
-      ls.setItem('SKM_HORIZON_URL', ls.getItem('STM_HORIZON_URL'));
-    }
+    // STM_HORIZON_URL wird bewusst nicht mehr nach SKM_HORIZON_URL migriert
+    // (eigene Horizon-URL nur noch im Dev-Modus, CSP Backlog P1.2), nur entfernt.
     if (ls.getItem('STM_NET_INIT') && !ls.getItem('SKM_NET_INIT')) {
       ls.setItem('SKM_NET_INIT', ls.getItem('STM_NET_INIT'));
     }
