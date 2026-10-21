@@ -5,7 +5,7 @@ import MultisigJobStatusBadge from '../components/MultisigJobStatusBadge.jsx';
 import { Keypair, Networks, TransactionBuilder } from '@stellar/stellar-sdk';
 import { getSessionSecret } from '../utils/sessionSecrets.js';
 import { getMultisigJobToken } from '../utils/basePath.js';
-import { describeOperations } from '../utils/multisig/describeOperations.js';
+import { describeOperations, findOperationWarnings } from '../utils/multisig/describeOperations.js';
 import { formatValidUntil } from '../utils/multisig/formatValidUntil.js';
 import SecretKeyModal from '../components/SecretKeyModal.jsx';
 import { getHorizonServer } from '../utils/stellar/stellarUtils.js';
@@ -166,10 +166,19 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
     }
   }, [job]);
 
+  const txSourceAccountId = useMemo(() => getJobSequenceInfo(decodedTx)?.sourceAccountId || '', [decodedTx]);
   const operationLines = useMemo(
-    () => (decodedTx ? describeOperations(decodedTx.operations, t) : []),
-    [decodedTx, t]
+    () => (decodedTx ? describeOperations((decodedTx.innerTransaction || decodedTx).operations, t, txSourceAccountId) : []),
+    [decodedTx, t, txSourceAccountId]
   );
+  const operationWarnings = useMemo(
+    () => (decodedTx ? findOperationWarnings((decodedTx.innerTransaction || decodedTx).operations, txSourceAccountId) : { unknownTypes: [], pathPaymentToOther: false }),
+    [decodedTx, txSourceAccountId]
+  );
+  // Unbekannte Operationen: Signieren erst nach ausdruecklicher Bestaetigung.
+  const [unknownOpsConfirmed, setUnknownOpsConfirmed] = useState(false);
+  useEffect(() => { setUnknownOpsConfirmed(false); }, [decodedTx]);
+  const signingBlockedByUnknownOps = operationWarnings.unknownTypes.length > 0 && !unknownOpsConfirmed;
 
   const validUntilLabel = useMemo(
     () => formatValidUntil(decodedTx?.timeBounds?.maxTime, i18n.language, t),
@@ -222,11 +231,15 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
       setRevokeError(t('multisig:detail.revoke.networkUnknown'));
       return;
     }
-    if (job?.txHash && decodedTx.hash().toString('hex') !== String(job.txHash).toLowerCase()) {
+    if (!job?.txHash || !job?.accountId) {
+      setRevokeError(t('multisig:detail.revoke.missingJobData'));
+      return;
+    }
+    if (decodedTx.hash().toString('hex') !== String(job.txHash).toLowerCase()) {
       setRevokeError(t('multisig:detail.revoke.hashMismatch'));
       return;
     }
-    if (job?.accountId && job.accountId !== seqInfo.sourceAccountId) {
+    if (job.accountId !== seqInfo.sourceAccountId) {
       setRevokeError(t('multisig:detail.revoke.accountMismatch'));
       return;
     }
@@ -318,7 +331,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
   }, [describeRevokeError, fetchJob, revokePrep, t]);
 
   const signWithSecret = useCallback(async (secret) => {
-    if (!job) return;
+    if (!job || signingBlockedByUnknownOps) return;
     if (!canCurrentSign) {
       setError(t('multisig:detail.signatures.missing', 'fehlt'));
       return;
@@ -371,10 +384,10 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
     } finally {
       setLoading(false);
     }
-  }, [job, jobId, canCurrentSign, t, resolveToken]);
+  }, [job, jobId, canCurrentSign, signingBlockedByUnknownOps, t, resolveToken]);
 
   const handleSignWithSession = useCallback(async () => {
-    if (!job) return;
+    if (!job || signingBlockedByUnknownOps) return;
     if (!canCurrentSign) {
       setError(t('multisig:detail.signatures.missing', 'fehlt'));
       return;
@@ -386,7 +399,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
       return;
     }
     await signWithSecret(secret);
-  }, [job, canCurrentSign, currentPublicKey, t, signWithSecret]);
+  }, [job, canCurrentSign, currentPublicKey, signingBlockedByUnknownOps, t, signWithSecret]);
 
   if (!jobId) return null;
 
@@ -485,6 +498,22 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
                   {t('multisig:detail.operations.none', 'Keine Operationen erkennbar (XDR konnte nicht dekodiert werden).')}
                 </div>
               )}
+              {operationWarnings.pathPaymentToOther && (
+                <p role="alert" className="mt-2 rounded bg-amber-50 p-2 text-xs font-medium text-amber-900 dark:bg-amber-900/30 dark:text-amber-100">
+                  {t('multisig:detail.operations.warnPathPaymentToOther')}
+                </p>
+              )}
+              {operationWarnings.unknownTypes.length > 0 && (
+                <div role="alert" className="mt-2 space-y-1 rounded border border-red-300 bg-red-50 p-2 text-xs text-red-900 dark:border-red-700 dark:bg-red-900/30 dark:text-red-100">
+                  <p className="font-medium">{t('multisig:detail.operations.warnUnknown', { types: operationWarnings.unknownTypes.join(', ') })}</p>
+                  {canCurrentSign && !isFinalState && (
+                    <label className="flex items-center gap-2">
+                      <input type="checkbox" checked={unknownOpsConfirmed} onChange={(e) => setUnknownOpsConfirmed(e.target.checked)} />
+                      {t('multisig:detail.operations.confirmUnknown')}
+                    </label>
+                  )}
+                </div>
+              )}
             </div>
             <div className="flex flex-wrap gap-x-6 gap-y-1">
               <div>
@@ -523,7 +552,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
                 type="button"
                 className="text-xs px-3 py-1 rounded border border-green-200 text-green-700 dark:text-green-200 dark:border-green-700 hover:bg-green-50 dark:hover:bg-green-900"
                 onClick={handleSignWithSession}
-                disabled={loading || signingComplete}
+                disabled={loading || signingComplete || signingBlockedByUnknownOps}
               >
                 {t('multisig:detail.secretPrompt.signNow', 'Jetzt signieren')}
               </button>
@@ -560,7 +589,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
                   type="button"
                   className="px-3 py-1 rounded bg-green-600 text-white hover:bg-green-700 text-sm disabled:opacity-50"
                   onClick={() => signWithSecret(secretInput.trim())}
-                  disabled={loading || !secretInput.trim()}
+                  disabled={loading || !secretInput.trim() || signingBlockedByUnknownOps}
                 >
                   {t('multisig:detail.secretPrompt.signNow', 'Jetzt signieren')}
                 </button>

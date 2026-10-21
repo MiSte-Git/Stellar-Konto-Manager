@@ -162,7 +162,7 @@ describe('Multisig-Job widerrufen (P2.3)', () => {
     hoisted.getJobMock.mockImplementation(async () => makeJob({ txXdr: evil.toXDR(), txHash: evil.hash().toString('hex') }));
     renderPage();
     fireEvent.click(await screen.findByRole('button', { name: 'Job widerrufen' }));
-    await screen.findByText(/ungewöhnlich weit über der aktuellen Sequenz/);
+    await screen.findByText(/passt nicht zur aktuellen Sequenz des Kontos/);
     expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
     expect(hoisted.submitMock).not.toHaveBeenCalled();
   });
@@ -240,4 +240,53 @@ describe('Multisig-Job widerrufen (P2.3)', () => {
     expect(hoisted.loadAccountMock).not.toHaveBeenCalled();
     expect(hoisted.submitMock).not.toHaveBeenCalled();
   });
+
+  it('verweigert den Widerruf schon bei Sequenzabstand 2', async () => {
+    const tx = jobTx('101');
+    hoisted.getJobMock.mockImplementation(async () => makeJob({ txXdr: tx.toXDR(), txHash: tx.hash().toString('hex') }));
+    renderPage();
+    fireEvent.click(await screen.findByRole('button', { name: 'Job widerrufen' }));
+    await screen.findByText(/passt nicht zur aktuellen Sequenz des Kontos/);
+    expect(hoisted.submitMock).not.toHaveBeenCalled();
+  });
+
+  it('sperrt den Widerruf, wenn Hash oder Konto im Job fehlen', async () => {
+    for (const overrides of [{ txHash: undefined }, { accountId: undefined }]) {
+      hoisted.getJobMock.mockImplementation(async () => makeJob(overrides));
+      const view = renderPage();
+      fireEvent.click(await screen.findByRole('button', { name: 'Job widerrufen' }));
+      await screen.findByText(/fehlen Hash oder Konto/);
+      view.unmount();
+    }
+    expect(hoisted.loadAccountMock).not.toHaveBeenCalled();
+  });
+
+  it('sperrt das Signieren bei unbekannten Operationen bis zur ausdruecklichen Bestaetigung', async () => {
+    const tx = new TransactionBuilder(new Account(SOURCE, '100'), { fee: '1000', networkPassphrase: Networks.TESTNET })
+      .addOperation(Operation.manageData({ name: 'x', value: 'y' }))
+      .setTimeout(86400)
+      .build();
+    hoisted.getJobMock.mockImplementation(async () => makeJob({ txXdr: tx.toXDR(), txHash: tx.hash().toString('hex') }));
+    renderPage();
+    await screen.findByText(/nicht im Klartext anzeigen kann: manageData/);
+    const signButton = screen.getAllByRole('button', { name: 'Jetzt signieren' })[0];
+    expect(signButton).toBeDisabled();
+    fireEvent.click(screen.getByRole('checkbox', { name: /anderweitig geprüft/ }));
+    expect(signButton).not.toBeDisabled();
+  });
+
+  it('zeigt die Operationen eines Batch-Convert-Jobs im Klartext', async () => {
+    const spam = new Asset('SPAM', SIGNER_B.publicKey);
+    const tx = new TransactionBuilder(new Account(SOURCE, '100'), { fee: '1000', networkPassphrase: Networks.TESTNET })
+      .addOperation(Operation.claimClaimableBalance({ balanceId: `00000000${'b'.repeat(64)}` }))
+      .addOperation(Operation.pathPaymentStrictSend({ sendAsset: spam, sendAmount: '5', destination: SIGNER_A.publicKey, destAsset: Asset.native(), destMin: '1', path: [] }))
+      .setTimeout(86400)
+      .build();
+    hoisted.getJobMock.mockImplementation(async () => makeJob({ txXdr: tx.toXDR(), txHash: tx.hash().toString('hex') }));
+    renderPage();
+    await screen.findByText(/^Claimable Balance einlösen/);
+    expect(screen.getByText(/^Tausch: 5.0000000 SPAM/)).toBeInTheDocument();
+    expect(screen.getByText(/Erlös an ein anderes Konto/)).toBeInTheDocument();
+  });
 });
+

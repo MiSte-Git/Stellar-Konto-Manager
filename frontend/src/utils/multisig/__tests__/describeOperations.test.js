@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { Account, Asset, Keypair, Networks, Operation, StrKey, TransactionBuilder } from '@stellar/stellar-sdk';
-import { describeOperations, shortKey } from '../describeOperations.js';
+import { describeOperations, findOperationWarnings, shortKey } from '../describeOperations.js';
 
 // Mirrors react-i18next's t() signature closely enough for describeOperations()'s
 // purposes: interpolates {{var}} placeholders from the options object, ignoring
@@ -113,7 +113,7 @@ describe('describeOperations', () => {
     const asset = new Asset('TRUST', issuer);
     const tx = buildTx([Operation.changeTrust({ asset, limit: '1000' })]);
     const [line] = describeOperations(tx.operations, fakeT);
-    expect(line).toBe('Trustline für TRUST setzen (Limit: 1000.0000000)');
+    expect(line).toBe(`Trustline für TRUST (${shortKey(issuer)}) setzen (Limit: 1000.0000000)`);
   });
 
   it('describes accountMerge with the destination account', () => {
@@ -124,9 +124,9 @@ describe('describeOperations', () => {
   });
 
   it('falls back to a generic "unknown operation" line for an operation type this app never builds itself, without throwing', () => {
-    const tx = buildTx([Operation.bumpSequence({ bumpTo: '101' })]);
+    const tx = buildTx([Operation.manageData({ name: 'x', value: 'y' })]);
     const [line] = describeOperations(tx.operations, fakeT);
-    expect(line).toBe('Unbekannte Operation: bumpSequence');
+    expect(line).toBe('Unbekannte Operation: manageData');
   });
 
   it('produces one line per operation in a multi-operation transaction, in order', () => {
@@ -158,3 +158,49 @@ describe('describeOperations', () => {
     expect(StrKey.isValidEd25519PublicKey(kp.publicKey())).toBe(true);
   });
 });
+
+describe('neue Operationstypen und Warnungen', () => {
+  const issuer = Keypair.random().publicKey();
+  const source = Keypair.random();
+  function txFrom(ops) {
+    const builder = new TransactionBuilder(new Account(source.publicKey(), '100'), { fee: '100', networkPassphrase: Networks.TESTNET });
+    ops.forEach((op) => builder.addOperation(op));
+    return builder.setTimeout(60).build();
+  }
+
+  it('zeigt einen Token mit Code XLM mit Herausgeber, nicht als natives XLM', () => {
+    const fake = new Asset('XLM', issuer);
+    const [line] = describeOperations(txFrom([Operation.payment({ destination: issuer, asset: fake, amount: '1' })]).operations, fakeT);
+    expect(line).toContain(`XLM (${shortKey(issuer)})`);
+  });
+
+  it('beschreibt einen Batch-Convert-Eintrag vollstaendig', () => {
+    const spam = new Asset('SPAM', issuer);
+    const ops = txFrom([
+      Operation.changeTrust({ asset: spam }),
+      Operation.claimClaimableBalance({ balanceId: `00000000${'a'.repeat(64)}` }),
+      Operation.pathPaymentStrictSend({ sendAsset: spam, sendAmount: '5', destination: source.publicKey(), destAsset: Asset.native(), destMin: '1.2', path: [] }),
+      Operation.changeTrust({ asset: spam, limit: '0' }),
+    ]).operations;
+    const lines = describeOperations(ops, fakeT, source.publicKey());
+    expect(lines[1]).toMatch(/^Claimable Balance einlösen: /);
+    expect(lines[2]).toBe(`Tausch: 5.0000000 SPAM (${shortKey(issuer)}) gegen mindestens 1.2000000 XLM an das eigene Konto (Pfad: -)`);
+    expect(lines[3]).toBe(`Trustline für SPAM (${shortKey(issuer)}) entfernen`);
+    expect(findOperationWarnings(ops, source.publicKey())).toEqual({ unknownTypes: [], pathPaymentToOther: false });
+  });
+
+  it('warnt, wenn ein Tausch an ein anderes Konto geht', () => {
+    const other = Keypair.random().publicKey();
+    const ops = txFrom([Operation.pathPaymentStrictSend({ sendAsset: Asset.native(), sendAmount: '5', destination: other, destAsset: new Asset('USD', issuer), destMin: '1', path: [] })]).operations;
+    const [line] = describeOperations(ops, fakeT, source.publicKey());
+    expect(line).toContain(shortKey(other));
+    expect(findOperationWarnings(ops, source.publicKey()).pathPaymentToOther).toBe(true);
+  });
+
+  it('beschreibt bumpSequence und meldet unbekannte Typen', () => {
+    const ops = txFrom([Operation.bumpSequence({ bumpTo: '101' }), Operation.manageData({ name: 'x', value: 'y' })]).operations;
+    expect(describeOperations(ops, fakeT)[0]).toBe('Sequenz des Kontos erhöhen auf 101');
+    expect(findOperationWarnings(ops, source.publicKey()).unknownTypes).toEqual(['manageData']);
+  });
+});
+

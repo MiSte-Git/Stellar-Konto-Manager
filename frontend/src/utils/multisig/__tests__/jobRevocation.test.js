@@ -73,7 +73,6 @@ describe('buildJobRevocationTx', () => {
 describe('checkRevocationSequence', () => {
   it('erlaubt den normalen Fall: Job-Sequence = Konto-Sequence + 1', () => {
     expect(checkRevocationSequence('100', '101')).toBe('ok');
-    expect(checkRevocationSequence('100', '1100')).toBe('ok');
   });
 
   it('meldet bereits verbrauchte Jobs', () => {
@@ -81,7 +80,8 @@ describe('checkRevocationSequence', () => {
   });
 
   it('verweigert manipulierte Sequences weit ueber dem Konto (Schutz vor Konto-Sperre)', () => {
-    expect(checkRevocationSequence('100', '1101')).toBe('too_far');
+    expect(checkRevocationSequence('100', '102')).toBe('too_far');
+    expect(checkRevocationSequence('100', '1100')).toBe('too_far');
     expect(checkRevocationSequence('100', '9223372036854775806')).toBe('too_far');
   });
 

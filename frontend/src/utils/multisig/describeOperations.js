@@ -2,13 +2,47 @@
 // for the multisig job-detail transparency panel (G5 stage 2 - signers
 // previously saw only the raw tx hash, never what they were actually being
 // asked to sign). Covers the operation types this app's own multisig flows
-// actually build (SendPaymentPage.jsx: createAccount/payment;
-// MultisigEditPage.jsx: setOptions) - anything else falls back to a generic
-// "unknown operation type" line rather than failing to render.
+// actually build (SendPaymentPage: createAccount/payment; MultisigEditPage:
+// setOptions; ListTrustlines: changeTrust; Claimable Balances und Batch-Convert:
+// claimClaimableBalance/pathPaymentStrictSend; Widerruf: bumpSequence). Anything
+// else falls back to a generic "unknown operation type" line, and
+// findOperationWarnings() flags it so the signer must confirm explicitly.
 
+// Nur das echte native Asset heisst XLM. Ein Token mit dem Code XLM wird mit Herausgeber
+// angezeigt, damit es in der Job-Ansicht nicht wie natives XLM aussieht.
 function formatAsset(asset) {
-  if (!asset || asset.isNative?.() || asset.code === 'XLM') return 'XLM';
-  return asset.code || 'XLM';
+  if (!asset) return 'XLM';
+  if (typeof asset.isNative === 'function' ? asset.isNative() : asset.code === 'native') return 'XLM';
+  if (!asset.code) return 'XLM';
+  return asset.issuer ? `${asset.code} (${shortKey(asset.issuer)})` : asset.code;
+}
+
+function formatPath(path) {
+  const list = Array.isArray(path) ? path : [];
+  return list.length ? list.map(formatAsset).join(' → ') : '-';
+}
+
+// Operationstypen, die describeOperations im Klartext beschreibt.
+export const DESCRIBED_OPERATION_TYPES = new Set([
+  'payment', 'createAccount', 'setOptions', 'changeTrust', 'accountMerge',
+  'claimClaimableBalance', 'pathPaymentStrictSend', 'pathPaymentStrictReceive', 'bumpSequence',
+]);
+
+/**
+ * Hinweise fuer Signer, bevor sie einen Job signieren.
+ * unknownTypes: Operationen, die SKM nicht im Klartext zeigen kann.
+ * pathPaymentToOther: ein Tausch, dessen Erloes an ein anderes Konto als das Quellkonto geht.
+ * @param {Array<object>} operations
+ * @param {string} sourceAccountId - G-Adresse des Quellkontos der Transaktion
+ */
+export function findOperationWarnings(operations, sourceAccountId) {
+  const ops = Array.isArray(operations) ? operations : [];
+  const unknownTypes = [...new Set(ops.map((op) => op?.type || '?').filter((type) => !DESCRIBED_OPERATION_TYPES.has(type)))];
+  const pathPaymentToOther = ops.some((op) => (
+    (op?.type === 'pathPaymentStrictSend' || op?.type === 'pathPaymentStrictReceive')
+    && op.destination !== sourceAccountId
+  ));
+  return { unknownTypes, pathPaymentToOther };
 }
 
 function shortKey(pk) {
@@ -20,9 +54,10 @@ function shortKey(pk) {
 /**
  * @param {Array<object>} operations - decoded operations from a stellar-sdk Transaction (tx.operations)
  * @param {(key: string, opts?: object) => string} t - react-i18next translate function, bound to the 'multisig' namespace
+ * @param {string} [sourceAccountId] - Quellkonto, damit Tauschzahlungen an das eigene Konto als solche erkennbar sind
  * @returns {string[]} one human-readable line per operation (a single setOptions op can expand to several lines)
  */
-export function describeOperations(operations, t) {
+export function describeOperations(operations, t, sourceAccountId = '') {
   const ops = Array.isArray(operations) ? operations : [];
   const lines = [];
   ops.forEach((op) => {
@@ -84,10 +119,51 @@ export function describeOperations(operations, t) {
         }
         break;
       case 'changeTrust':
+        if (Number(op.limit) === 0) {
+          lines.push(t('detail.operations.changeTrustRemove', {
+            asset: formatAsset(op.line || op.asset),
+            defaultValue: 'Trustline für {{asset}} entfernen',
+          }));
+          break;
+        }
         lines.push(t('detail.operations.changeTrust', {
           asset: formatAsset(op.line || op.asset),
           limit: op.limit,
           defaultValue: 'Trustline für {{asset}} setzen (Limit: {{limit}})',
+        }));
+        break;
+      case 'claimClaimableBalance':
+        lines.push(t('detail.operations.claimClaimableBalance', {
+          id: shortKey(op.balanceId),
+          defaultValue: 'Claimable Balance einlösen: {{id}}',
+        }));
+        break;
+      case 'pathPaymentStrictSend':
+        lines.push(t('detail.operations.pathPaymentStrictSend', {
+          sendAmount: op.sendAmount,
+          sendAsset: formatAsset(op.sendAsset),
+          destMin: op.destMin,
+          destAsset: formatAsset(op.destAsset),
+          destination: op.destination === sourceAccountId ? t('detail.operations.ownAccount', { defaultValue: 'das eigene Konto' }) : shortKey(op.destination),
+          path: formatPath(op.path),
+          defaultValue: 'Tausch: {{sendAmount}} {{sendAsset}} gegen mindestens {{destMin}} {{destAsset}} an {{destination}} (Pfad: {{path}})',
+        }));
+        break;
+      case 'pathPaymentStrictReceive':
+        lines.push(t('detail.operations.pathPaymentStrictReceive', {
+          sendMax: op.sendMax,
+          sendAsset: formatAsset(op.sendAsset),
+          destAmount: op.destAmount,
+          destAsset: formatAsset(op.destAsset),
+          destination: op.destination === sourceAccountId ? t('detail.operations.ownAccount', { defaultValue: 'das eigene Konto' }) : shortKey(op.destination),
+          path: formatPath(op.path),
+          defaultValue: 'Tausch: höchstens {{sendMax}} {{sendAsset}} für genau {{destAmount}} {{destAsset}} an {{destination}} (Pfad: {{path}})',
+        }));
+        break;
+      case 'bumpSequence':
+        lines.push(t('detail.operations.bumpSequence', {
+          bumpTo: op.bumpTo,
+          defaultValue: 'Sequenz des Kontos erhöhen auf {{bumpTo}}',
         }));
         break;
       case 'accountMerge':

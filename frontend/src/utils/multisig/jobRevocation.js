@@ -42,12 +42,12 @@ export function isJobSequenceConsumed(accountSequence, jobSequence) {
   }
 }
 
-// Sicherheitsgrenze: bumpTo stammt aus dem Job-XDR. Ein manipulierter Job mit einer
-// Sequence nahe 2^63-1 wuerde das Konto dauerhaft unbenutzbar machen (keine weitere
-// Sequence mehr frei). Ein echter, noch gueltiger SKM-Job hat immer genau Konto-Sequence + 1,
-// weil er beim Erstellen von der aktuellen Sequence ausgeht. Alles deutlich darueber wird
-// verweigert.
-export const MAX_REVOCATION_SEQUENCE_GAP = 1000n;
+// Sicherheitsgrenze: bumpTo stammt aus dem Job-XDR. Ein manipulierter Job mit hoher Sequence
+// wuerde andere vorsignierte Transaktionen des Kontos zerstoeren oder (nahe 2^63-1) das Konto
+// dauerhaft unbenutzbar machen. Ein noch gueltiger SKM-Job hat immer genau Konto-Sequence + 1:
+// Er wird von der aktuellen Sequence aus gebaut, und sobald die Konto-Sequence steigt, ist er
+// verbraucht. Jeder andere Abstand stammt nicht von SKM und wird verweigert.
+export const MAX_REVOCATION_SEQUENCE_GAP = 1n;
 
 // 'ok' | 'consumed' (Job schon tot) | 'too_far' (verdaechtig, verweigern) | 'invalid'
 export function checkRevocationSequence(accountSequence, jobSequence) {
