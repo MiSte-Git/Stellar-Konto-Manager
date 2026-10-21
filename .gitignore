@@ -70,3 +70,6 @@ content_backups/
 
 # Verirrtes ImageMagick-PostScript-Artefakt (Title: "json"), kein Repo-Inhalt
 /frontend/src/locales/json
+
+# Lokale Kopie des Servers (enthaelt _config.php mit Zugangsdaten)
+_server_backup/
