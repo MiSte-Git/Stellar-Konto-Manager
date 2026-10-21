@@ -9,7 +9,7 @@
     "accountsKeys": "Accounts & Sleutels",
     "multisigSecurity": "Multisig & Accountbeveiliging",
     "walletsCustody": "Wallets & Bewaring",
-    "tokensAssets": "Token & Activa",
+    "tokensAssets": "Token & Assets",
     "transactionsFees": "Transacties & Kosten",
     "marketsTrading": "Markten & Handel",
     "networkProtocol": "Netwerk & Protocol",
@@ -28,16 +28,16 @@
     "desc": "Een blockchain is als een digitaal grootboek. Veel computers slaan dezelfde gegevens op, waardoor niemand stiekem wijzigingen kan aanbrengen."
   },
   "wallet": {
-    "title": "Portemonnee",
+    "title": "Wallet",
     "original": "Wallet",
-    "short": "Digitale portemonnee die je sleutels beheert.",
+    "short": "Digitale wallet die je sleutels beheert.",
     "desc": "Een Wallet is je digitale wallet. Hiermee beheer je de sleutels die je nodig hebt om toegang te krijgen tot je account en transacties te versturen. Een Wallet kan een programma, een app of zelfs gewoon een stukje papier zijn waarop je Secret Key staat geschreven."
   },
   "account": {
     "title": "Account",
     "original": "Account",
-    "short": "Een blockchain-account kan activa vasthouden en transacties verzenden.",
-    "desc": "Een account is de locatie op de blockchain waar je activa worden bewaard. Een account heeft een openbaar adres dat begint met een G. Meerdere wallets kunnen toegang krijgen tot hetzelfde account als ze de juiste sleutel hebben."
+    "short": "Een blockchain-account kan assets bevatten en transacties verzenden.",
+    "desc": "Een account is de plek op de blockchain waar je assets worden bewaard. Een account heeft een openbaar adres dat begint met G. Meerdere wallets kunnen toegang krijgen tot hetzelfde account als ze over de juiste sleutel beschikken."
   },
   "addressG": {
     "title": "G-adres",
@@ -223,7 +223,7 @@
     "desc": "Met Soroban ontstond een probleem: bestaande Stellar‑assets (zoals USDC of XLM) moesten ook bruikbaar zijn in smart contracts. De Stellar Asset Contract lost dit op: het is een gestandaardiseerde smart‑contract interface voor elk Stellar‑asset. Daardoor kunnen Soroban‑dApps direct native Stellar‑assets gebruiken zonder ze om te zetten naar nieuwe tokens. SAC’s bestaan automatisch voor alle Stellar‑assets en hoeven niet handmatig te worden gemaakt."
   },
   "anchor": {
-    "title": "Anker",
+    "title": "Anchor",
     "original": "Anchor",
     "short": "Gelicenseerde financiële dienstverlener die fiatgeld verbindt met Stellar.",
     "desc": "Een Anchor is een gelicenseerde financiële dienstverlener die echt geld verbindt met het Stellar-netwerk. Hij accepteert fiatgeld (bijv. via bankoverschrijving) en geeft daarvoor tokens uit op Stellar – en vice versa. Dit heet On-Ramp (geld erin) en Off-Ramp (geld eruit).\n\nBekende Anchors op Stellar:\n- Kado – USD, EUR, CHF (wereldwijd)\n- MoneyGram – geld in/uitstorten via USDC in 170+ landen\n- Tempo – EUR stablecoin, Europa\n- Bitso – MXN, USD, Latijns-Amerika\n- Circle – USDC en EURC, wereldwijd\n\nMomenteel zijn er meer dan 60 Anchors op Stellar die meer dan 170 valuta's dekken."
@@ -387,10 +387,10 @@
     "desc": "TVL is een belangrijke maatstaf in DeFi. Het toont hoeveel kapitaal is vastgezet in een protocol, een dApp of een liquiditeitspool. Een hoge TVL wijst op vertrouwen en actief gebruik. Op Stellar meet TVL de waarde van alle assets in liquiditeitspools. Platforms zoals DeFiLlama volgen TVL voor veel blockchains en protocollen."
   },
   "balanceClaimable": {
-    "title": "Opvorderbaar saldo",
+    "title": "Claimable Balance",
     "original": "Claimable Balance",
     "short": "Gereserveerd geld dat je nog moet ontvangen.",
-    "desc": "Een opeisbaar saldo is geld dat al voor jou gereserveerd is, maar dat je nog moet opeisen. Het wordt pas aan je rekening bijgeschreven nadat je het accepteert."
+    "desc": "Een claimable balance is geld dat al voor je is gereserveerd, maar dat je nog moet claimen. Het wordt pas op je rekening bijgeschreven zodra je het accepteert."
   },
   "protocolUpdate": {
     "title": "Protocolbijwerking",
@@ -503,8 +503,8 @@
   "seedPhrase": {
     "title": "Restoratiestelling",
     "original": "Seed Phrase / Recovery Phrase",
-    "short": "Een woordenlijst waarmee je je portemonnee kunt herstellen.",
-    "desc": "Zij is als de reserve sleutel van je kluis. Degene die het heeft, kan je portemonnee herstellen. Het moet daarom nooit online worden opgeslagen."
+    "short": "Een woordenlijst waarmee je je wallet kunt herstellen.",
+    "desc": "Ze is als de reservesleutel van je kluis. Wie die ook in bezit heeft, kan je wallet herstellen. Daarom mag deze nooit online worden opgeslagen."
   },
   "selfCustody": {
     "title": "Zelfbeheer",
@@ -527,13 +527,13 @@
   "hotWallet": {
     "title": "Hot wallet",
     "original": "Hot Wallet",
-    "short": "Een portemonnee met internettoegang.",
-    "desc": "Als een portemonnee in een jas: handig maar kwetsbaarder. Geschikt voor kleine bedragen en dagelijks gebruik. Niet ideaal voor grote sommen."
+    "short": "Een wallet met internettoegang.",
+    "desc": "Net als een wallet in je jas: handig, maar wel kwetsbaarder. Geschikt voor kleine bedragen en dagelijks gebruik. Niet ideaal voor grote bedragen."
   },
   "coldWallet": {
     "title": "Cold wallet",
     "original": "Cold Wallet",
-    "short": "Een portemonnee zonder internetverbinding.",
+    "short": "Een wallet zonder internetverbinding.",
     "desc": "Als een kluis in de kelder. Zeer veilig, maar onpraktisch voor dagelijks gebruik. Geschikt voor langdurige opslag."
   },
   "cryptocurrency": {
@@ -555,13 +555,13 @@
     "desc": "Zoals digitaal geld dat gekoppeld is aan een standaardvaluta. Dit maakt de prijs stabieler. Echter, vertrouwen in de aanbieder blijft belangrijk."
   },
   "utilityToken": {
-    "title": "Gebruikstoken",
+    "title": "Gebruik token",
     "original": "Utility Token",
     "short": "Een token dat kan worden gebruikt om toegang te krijgen tot een dienst.",
     "desc": "Zoals een tegoedbon op een marktkraam. Het biedt toegang of een korting. De waarde ervan hangt af van het nut van de dienst."
   },
   "securityToken": {
-    "title": "Beveiligingstokens",
+    "title": "Beveiliging tokens",
     "original": "Security Token",
     "short": "Een token met beveiligingseigenschappen.",
     "desc": "Net als een aandeelcertificaat. Het kan rechten of winsten beloven. Strengere regels zijn hier vaak van toepassing."
@@ -798,7 +798,7 @@
     "title": "Geld",
     "original": "Money",
     "short": "Geld is een algemeen geaccepteerd ruilmiddel voor goederen en diensten.",
-    "desc": "Geld vervult drie functies: het is een ruilmiddel, een oppotmiddel en een rekeneenheid. Historisch gezien heeft geld vele vormen aangenomen – van schelpen tot goud tot de huidige bankbiljetten en digitaal geld. Modern geld wordt vooral gedekt door vertrouwen in de uitgevende overheid, niet door fysieke waarden."
+    "desc": "Geld vervult drie functies: het is een ruilmiddel, een waardeopslag en een rekeneenheid. Door de geschiedenis heen heeft geld vele vormen aangenomen – van schelpen tot goud tot de huidige bankbiljetten en digitaal geld. Modern geld wordt voornamelijk gedekt door vertrouwen in de uitgevende overheid, niet door fysieke assets."
   },
   "fiatCurrency": {
     "title": "Fiatvaluta",
@@ -840,25 +840,25 @@
     "title": "Versleuteling",
     "original": "Encryption",
     "short": "Het omzetten van leesbare gegevens naar een onleesbaar formaat dat alleen met de juiste sleutel ontsleuteld kan worden.",
-    "desc": "Versleuteling beschermt gegevens tegen ongeautoriseerde toegang. Er zijn twee hoofdtypen: symmetrische versleuteling (één sleutel voor versleutelen en ontsleutelen) en asymmetrische versleuteling (publieke sleutel om te versleutelen, privésleutel om te ontsleutelen). Wallets en blockchaintransacties gebruiken asymmetrische versleuteling."
+    "desc": "Versleuteling beschermt gegevens tegen ongeoorloofde toegang. Er zijn twee hoofdtypen: symmetrische versleuteling (één sleutel voor zowel het versleutelen als het ontsleutelen) en asymmetrische versleuteling (public key om te versleutelen, privésleutel om te ontsleutelen). Wallets en blockchain-transacties maken gebruik van asymmetrische versleuteling."
   },
   "digitalSignature": {
     "title": "Digitale handtekening",
     "original": "Digital Signature",
     "short": "Cryptografisch bewijs dat een bericht of transactie door de rechtmatige eigenaar is geautoriseerd.",
-    "desc": "Een digitale handtekening werkt vergelijkbaar met een geschreven handtekening – alleen is hij onvervalsbaar. Op Stellar onderteken je elke transactie met je privésleutel. Het netwerk kan met je publieke sleutel controleren of de handtekening geldig is – zonder ooit je privésleutel te zien. Zonder geldige handtekening wordt een transactie door het netwerk afgewezen."
+    "desc": "Een digitale handtekening werkt op dezelfde manier als een handgeschreven handtekening, maar is dan vervalsingsbestendig. Op Stellar onderteken je elke transactie met je privésleutel. Het netwerk kan met je public key controleren of de handtekening geldig is – zonder ooit je privésleutel te zien. Zonder geldige handtekening wordt een transactie door het netwerk afgewezen."
   },
   "publicKeyCryptography": {
-    "title": "Publieke-sleutelcryptografie",
+    "title": "Public-Key Cryptografie",
     "original": "Public-Key Cryptography",
     "short": "Versleutelingsmethode met twee gekoppelde sleutels: een publieke en een privé.",
-    "desc": "Het principe: wat met de publieke sleutel versleuteld wordt, kan alleen met de privésleutel ontsleuteld worden – en omgekeerd. Je kunt je publieke sleutel (= je walletadres) vrij delen. Je privésleutel houd je geheim. Wie je privésleutel kent, heeft volledige toegang tot je account. Daarom geldt: deel nooit je privésleutel!"
+    "desc": "Het principe: wat met de public key is versleuteld, kan alleen met de privésleutel worden ontsleuteld – en omgekeerd. Je kunt je public key (= je wallet-adres) vrijelijk delen. Je privésleutel blijft geheim. Iedereen die je privésleutel kent, heeft volledige toegang tot je account. Daarom: deel je privésleutel nooit!"
   },
   "keyPair": {
     "title": "Sleutelpaar",
     "original": "Key Pair",
     "short": "De combinatie van publieke en privésleutel die samen een crypto-account vormen.",
-    "desc": "Een sleutelpaar bestaat uit de publieke sleutel (je adres dat anderen mogen zien) en de privésleutel (je wachtwoord dat geheim blijft). Op Stellar wordt de publieke sleutel weergegeven als een G-adres, de privésleutel begint met S. Het sleutelpaar wordt wiskundig gegenereerd en is praktisch onmogelijk te vervalsen of te raden."
+    "desc": "Een sleutelpaar bestaat uit de public key (je adres dat anderen kunnen zien) en de privésleutel (je wachtwoord dat geheim blijft). Op Stellar wordt de public key weergegeven als een G-adres, terwijl de privésleutel begint met een S. Het sleutelpaar wordt wiskundig gegenereerd en is praktisch onmogelijk te vervalsen of te raden."
   },
   "signing": {
     "title": "Ondertekenen",
@@ -867,7 +867,7 @@
     "desc": "Voordat een transactie op het Stellar-netwerk wordt uitgevoerd, moet deze worden ondertekend. Met de privésleutel wordt een digitale handtekening aangemaakt die bewijst dat de rechtmatige rekeninghouder de transactie heeft goedgekeurd. Zonder geldige handtekening wordt de transactie door het netwerk afgewezen. Bij multisig-accounts zijn meerdere handtekeningen vereist."
   },
   "sequenceNumber": {
-    "title": "Volgnummer",
+    "title": "Sequence Number",
     "original": "Sequence Number",
     "short": "Een oplopend nummer dat elke transactie van een account uniek identificeert en dubbele uitgaven voorkomt.",
     "desc": "Elke Stellar-rekening heeft een Sequence Number, die bij elke transactie met 1 wordt verhoogd. Een transactie wordt alleen geaccepteerd als de Sequence Number ervan precies gelijk is aan de huidige rekeningvolgorde +1. Dit voorkomt dat dezelfde transactie twee keer wordt uitgevoerd. Als je meerdere transacties tegelijk verstuurt, moeten deze in de juiste volgorde worden verwerkt."
@@ -899,7 +899,7 @@
   "fungibility": {
     "title": "Fungibiliteit",
     "original": "Fungibility",
-    "short": "De eigenschap van een activum waarbij elke eenheid identiek en uitwisselbaar is met elke andere.",
+    "short": "De eigenschap van een asset waarbij elke eenheid identiek is en onderling uitwisselbaar is met elke andere.",
     "desc": "Een fungibel asset is als een bankbiljet: elk biljet van 10 euro is evenveel waard als elk ander. Bij cryptovaluta's zoals XLM, BTC of USDC is elke eenheid identiek – één XLM is altijd gelijk aan een andere XLM. Het tegenovergestelde zijn NFT's (Non-Fungible Tokens): elke NFT is uniek en niet uitwisselbaar. Fungibiliteit is een belangrijke eigenschap voor gebruik als valuta."
   },
   "wrappedToken": {
@@ -911,8 +911,8 @@
   "syntheticAsset": {
     "title": "Synthetisch asset",
     "original": "Synthetic Asset",
-    "short": "Een token die de prijs van een echt activum nabootst zonder het direct te bezitten.",
-    "desc": "Synthetische assets bootsen de waarde van andere activa na – bijv. aandelen, goud of valuta – zonder het origineel te bezitten. Ze worden beveiligd door smart contracts en onderpand. Een voorbeeld: een synthetisch Apple-aandelentoken volgt de koers van het echte aandeel, maar is een cryptotoken. Synthetische assets zijn een geavanceerd DeFi-concept."
+    "short": "Een token die de koers van een echte asset volgt zonder deze rechtstreeks in bezit te hebben.",
+    "desc": "Synthetische assets bootsen de waarde van andere assets na – bijvoorbeeld aandelen, goud of valuta’s – zonder dat men de onderliggende activa in bezit heeft. Ze worden gedekt door slimme contracten en onderpand. Een voorbeeld: een synthetisch Apple-aandeel token volgt de koers van het echte aandeel, maar is een crypto token. Synthetische assets vormen een geavanceerd DeFi-concept."
   },
   "memeCoin": {
     "title": "Meme Coin",
@@ -923,8 +923,8 @@
   "stellarAsset": {
     "title": "Stellar Asset",
     "original": "Stellar Asset",
-    "short": "Elk op het Stellar-netwerk uitgegeven activum, gedefinieerd door assetcode en uitgeveradres.",
-    "desc": "Op Stellar kan iedereen een eigen asset aanmaken – een bedrijf zijn loyaliteitstoken, een bank zijn stablecoin. Elk Stellar-asset wordt uniek geïdentificeerd door twee componenten: de assetcode (bijv. 'USD', 'MOBI', 'USDC') en het G-adres van de uitgever (issuer). Twee assets met dezelfde code maar verschillende uitgevers zijn verschillende assets. Om een Stellar-asset te ontvangen, moet je eerst een trustline naar de uitgever instellen."
+    "short": "Elke asset die op het Stellar-netwerk is uitgegeven, gedefinieerd door de bijbehorende asset-code en het adres van de uitgever.",
+    "desc": "Op Stellar kan iedereen zijn eigen asset aanmaken – een bedrijf zijn loyaliteitsprogramma token, een bank zijn stablecoin. Elke Stellar asset wordt op unieke wijze geïdentificeerd door twee componenten: de asset-code (bijv. 'USD', 'MOBI', 'USDC') en het G-adres van de uitgever. Twee assets met dezelfde code maar verschillende uitgevers zijn verschillende assets. Om een Stellar asset te ontvangen, moet je eerst een trustline bij de uitgever instellen."
   },
   "issuedAsset": {
     "title": "Uitgegeven asset",
@@ -949,7 +949,7 @@
     "title": "Wallet Watcher / Drainer",
     "original": "Wallet Watcher / Drainer",
     "short": "Een automatisch script dat een gecompromitteerd account bewaakt en elke nieuwe storting onmiddellijk opneemt.",
-    "desc": "Zodra oplichters toegang krijgen tot een geheime sleutel, installeren ze vaak een automatische watcher. Die bewaakt het account dag en nacht en verplaatst elke nieuwe storting onmiddellijk naar het account van de oplichter – vaak binnen enkele seconden. Het account is blijvend gecompromitteerd. De enige oplossing: maak onmiddellijk een nieuw wallet met volledig nieuwe sleutels en gebruik het oude account nooit meer."
+    "desc": "Zodra oplichters toegang krijgen tot een secret key, zetten ze vaak een automatische monitor in. Deze houdt de rekening de klok rond in de gaten en maakt elke nieuwe storting onmiddellijk – vaak binnen enkele seconden – over naar de rekening van de oplichter. De rekening is dan voorgoed gecompromitteerd. De enige oplossing: maak onmiddellijk een nieuwe wallet aan met volledig nieuwe sleutels en gebruik de oude rekening nooit meer."
   },
   "lumio": {
     "title": "Lumio",
@@ -991,7 +991,7 @@
     "title": "Trustline-limiet",
     "original": "Trustline Limit",
     "short": "Maximaal saldo van een specifieke asset op een trustline.",
-    "desc": "De trustline-limiet bepaalt hoeveel eenheden van een bepaald activum je account maximaal mag bevatten. Het is geen kooporder en er worden geen tokens gereserveerd. Een lage limiet kan onbedoelde te hoge betalingen voorkomen, maar een te lage limiet kan een beoogde ontvangst of ruil blokkeren."
+    "desc": "De limiet trustline bepaalt hoeveel eenheden van een specifieke asset je account maximaal mag bevatten. Het is geen kooporder en reserveert geen tokens. Een lage limiet kan onbedoelde te hoge betalingen voorkomen, maar een te lage limiet kan een beoogde ontvangst of ruil blokkeren."
   },
   "authorizationFlags": {
     "title": "Autorisatievlaggen",
@@ -1006,15 +1006,15 @@
     "desc": "De hoofdsleutel van de uitgever is de hoofdsleutel van het account dat een asset uitgeeft. Als het gewicht ervan op 0 is ingesteld, kan de hoofdsleutel alleen geen nieuwe acties meer ondertekenen. Dit kan een goed teken zijn, omdat het voor de uitgever hierdoor moeilijker wordt om stilletjes regels te wijzigen. De volledige accountconfiguratie, inclusief andere signers en vlaggen, blijft echter van belang."
   },
   "assetCode": {
-    "title": "Activacode",
+    "title": "Asset Code",
     "original": "Asset Code",
     "short": "Korte naam van een Stellar-asset, zoals USDC of EURC.",
-    "desc": "De activacode is de zichtbare korte naam van een Stellar-actief. Op zichzelf is deze code niet uniek, omdat meerdere uitgevers dezelfde code kunnen gebruiken. Alleen de combinatie van de code en het adres van de uitgever identificeert een Stellar-actief op unieke wijze."
+    "desc": "De code asset is de zichtbare korte naam van een Stellar asset. Op zichzelf is deze code niet uniek, omdat meerdere uitgevers dezelfde code kunnen gebruiken. Alleen de combinatie van de code en het adres van de uitgever identificeert een Stellar asset op unieke wijze."
   },
   "issuer": {
     "title": "Uitgever",
     "original": "Issuer",
-    "short": "Het Stellar-account dat een activum uitgeeft en de regels daarvoor beheert.",
+    "short": "Het Stellar-account dat een asset uitgeeft en de regels daarvoor beheert.",
     "desc": "De uitgever is het Stellar-account dat een asset uitgeeft. Bij uitgegeven assets maakt de uitgever deel uit van de identiteit van het token. Afhankelijk van de accountvlaggen kan dit van invloed zijn op regels zoals autorisatie, terugvordering (Clawback) of bevroren rechten. Controleer daarom niet alleen de activacode, maar verifieer ook altijd het adres van de uitgever en de openbare projectinformatie."
   },
   "homeDomain": {
@@ -1027,7 +1027,7 @@
     "title": "stellar.toml",
     "original": "stellar.toml",
     "short": "Openbaar metadatabestand voor een Stellar-domein.",
-    "desc": "Het bestand stellar.toml is een openbaar bestand dat zich op het hoofddomein van een Stellar-project bevindt. Het kan informatie bevatten over de uitgever, activa, contactgegevens, documentatie en CURRENCIES-vermeldingen. Als een activum daar niet wordt vermeld of als het bestand niet toegankelijk is, is het raadzaam extra voorzichtig te zijn."
+    "desc": "Het bestand stellar.toml is een openbaar bestand dat zich op het hoofddomein van een Stellar-project bevindt. Het kan informatie bevatten over de uitgever, assets, contactgegevens, documentatie en CURRENCIES-vermeldingen. Als er geen asset in staat of als het bestand niet toegankelijk is, is het raadzaam extra voorzichtig te zijn."
   },
   "quote": {
     "title": "Citaat",
@@ -1051,19 +1051,19 @@
     "title": "Liquiditeitsroute",
     "original": "Liquidity Route",
     "short": "Het pad waarlangs een swap door orderboeken of pools wordt geleid.",
-    "desc": "De liquiditeitsroute geeft aan via welke activa en markten een swap verloopt. Een route kan rechtstreeks zijn of via tussenliggende activa lopen. Op Stellar kunnen zowel aanbiedingen in het orderboek als AMM-liquiditeitspools worden gebruikt om een pad te vinden."
+    "desc": "De liquiditeitsroute geeft aan via welke assets en markten een swap verloopt. Een route kan rechtstreeks zijn of via tussenliggende assets lopen. Op Stellar kunnen zowel aanbiedingen in het orderboek als AMM-liquiditeitspools worden gebruikt om een pad te vinden."
   },
   "bid": {
     "title": "Bid",
     "original": "Bid",
     "short": "Kooporder in het orderboek.",
-    "desc": "Een bod is een koopaanbod. Het geeft de prijs aan waarvoor iemand bereid is een activum te kopen. Het beste bod is doorgaans het hoogste actuele koopaanbod in het orderboek."
+    "desc": "Een bod is een koopaanbod. Het geeft de prijs aan waarvoor iemand bereid is een asset te kopen. Het beste bod is doorgaans het hoogste huidige koopaanbod in het orderboek."
   },
   "ask": {
     "title": "Vraag",
     "original": "Ask",
     "short": "Verkooporder in het orderboek.",
-    "desc": "Een ‘ask’ is een verkoopbod. Het geeft de prijs aan waartegen iemand bereid is een activum te verkopen. De beste ‘ask’ is doorgaans het laagste huidige verkoopbod in het orderboek."
+    "desc": "Een ‘ask’ is een verkoopaanbod. Het geeft de prijs aan waartegen iemand bereid is een asset te verkopen. De beste ‘ask’ is doorgaans het laagste actuele verkoopaanbod in het orderboek."
   },
   "marketDepth": {
     "title": "Marktdiepte",

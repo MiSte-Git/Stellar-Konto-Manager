@@ -5,7 +5,7 @@
   "signersCountLimit": "Remarque : limite du réseau (Stellar) : 20 Signer supplémentaires au maximum.",
   "bestPractices": {
     "title": "Meilleures pratiques",
-    "text": "Gardez les clés secrètes en sécurité et ne les distribuez pas inutilement."
+    "text": "Conservez les secret keys en lieu sûr et ne les diffusez pas inutilement."
   },
   "signerTypeNote": "Remarque : SKM utilise uniquement ed25519-Signer. Pour hashX/preAuthTx, utilisez",
   "signerTypeLink": "lab.stellar.org",

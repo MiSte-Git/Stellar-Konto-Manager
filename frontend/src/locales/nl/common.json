@@ -6,7 +6,7 @@
   },
   "asset": {
     "balance": "Saldo",
-    "code": "Activacode",
+    "code": "Asset-code",
     "creationDate": "Gemaakt op",
     "issuer": "Uitgever"
   },
@@ -27,12 +27,12 @@
       "noneConfigured": "Geen verkenners geconfigureerd.",
       "settingsHint": "Je kunt Explorer in de instellingen bewerken."
     },
-    "noPublicKey": "Voer eerst een openbare sleutel in.",
+    "noPublicKey": "Voer eerst een public key in.",
     "payments": {
       "all": "Alle",
       "columns": {
         "amount": "Bedrag",
-        "asset": "Activa",
+        "asset": "Asset",
         "counterparty": "Ontvangende rekening",
         "date": "Datum",
         "direction": "Richting",
@@ -379,7 +379,7 @@
         "discard": "Verwerpen",
         "save": "Opslaan"
       },
-      "title": "Mijn Vertrouwde Portemonnees",
+      "title": "Mijn vertrouwde Wallets",
       "validation": {
         "hint": "Er is ten minste één regel ongeldig (ontbrekend of dubbel adres)."
       }
@@ -398,7 +398,7 @@
       "title": "Betaling verzenden",
       "recipient": "Ontvanger",
       "amount": "Bedrag",
-      "asset": "Activa",
+      "asset": "Asset",
       "memo": "Memo",
       "memoType": "Memo type",
       "memoTypes": {
@@ -438,7 +438,7 @@
       "timeout": "Horizon Timeout (504). Probeer het over een paar ogenblikken opnieuw.",
       "httpError": "Horizon-fout (status {{status}}).",
       "horizonError": "Stellar heeft de transactie afgewezen.",
-      "destUnfundedNonNative": "Doelrekening is niet actief. Stuur eerst XLM om het te activeren of schakel het actief over naar XLM.",
+      "destUnfundedNonNative": "De ontvangstrekening is niet actief. Stuur eerst XLM om deze te activeren of wijzig de asset in XLM.",
       "activateConfirm": {
         "title": "Accountactivering vereist",
         "info": "De doelaccount is nog niet actief. Er is een minimumbedrag vereist voor activatie.",
@@ -709,7 +709,7 @@
       "amount": "Bedrag",
       "compromised": "Gecompromitteerd",
       "deactivated": "Gedeactiveerd.",
-      "destination": "Doelportemonnee",
+      "destination": "Doel wallet",
       "issuer": "Emitter",
       "label": "Etiket",
       "memo": "Memo",
@@ -722,16 +722,16 @@
       "label": "Decimale plaatsen:"
     },
     "filter": {
-      "memoPlaceholder": "Filter op memo, walletadres of label.",
+      "memoPlaceholder": "Filter op memo, het adres van wallet of een label",
       "tokenPlaceholder": "Filter op token (CODE:ISSUER)"
     },
-    "hintEnterPublicKey": "Voer eerst een openbare sleutel in.",
+    "hintEnterPublicKey": "Voer eerst een public key in.",
     "item": {
       "memo": "Memo: \"{{memo}}\" (Betalingen: {{occurrences}})",
       "token": "Token: {{token}} (Betalingen: {{occurrences}})",
       "tokenShort": "Token: {{token}}"
     },
-    "missingPublicKey": "Openbare sleutel ontbreekt.",
+    "missingPublicKey": "Public key ontbreekt.",
     "moreTruncated": "… en {{extra}} meer groepen",
     "toWallet": "naar Wallet: {{address}}",
     "total": "Aantal gekochte tokens: {{count}}",
@@ -750,10 +750,10 @@
       "qsiOnly": "Som QSI GF"
     },
     "hints": {
-      "qsiListSet": "Opmerking: Je kunt de GF-lijst vinden onder Instellingen → Vertrouwde portemonnees (QSI).",
+      "qsiListSet": "Opmerking: Je vindt de GF-lijst onder Instellingen → Vertrouwde Wallets (QSI).",
       "pageTime": "Het laden van een pagina duurt ongeveer 0,2 seconden → 100 pagina's ≈ 20 seconden → 1000 pagina's ≈ 200 seconden (≈ 3:20 minuten)."
     },
-    "walletCapInfo": "Let op: Een portemonnee kan maximaal 1000 trustlines bevatten.",
+    "walletCapInfo": "Opmerking: Een wallet kan maximaal 1000 trustlines bevatten.",
     "action": {
       "load": "Laden"
     },
@@ -822,19 +822,19 @@
     "deleteFromList": "Verwijderen van lijst",
     "destination": {
       "error": "Ongeldige doelsleutel.",
-      "input": "Voer het doelportefeuilleadres in"
+      "input": "Voer het doeladres wallet in"
     },
     "label": "Voer het bronadres van de federatie of de Public Key in:",
     "load": "Laden…",
     "placeholder": "bijv.",
-    "source": "Bronportemonnee-adres",
+    "source": "Bronadres wallet",
     "invalid": "Ongeldige Public Key.",
     "submit": {
       "button": "Verstuur"
     },
     "test": "Test",
     "historyLabel": "Geschiedenis",
-    "historyPlaceholder": "Selecteer de laatst gebruikte portemonnee"
+    "historyPlaceholder": "Selecteer de laatst gebruikte wallet"
   },
   "secretKey": {
     "cleared": "Secret Key is verwijderd.",
@@ -844,7 +844,7 @@
     "label": "Voer de bron Secret-Key (S-Key) in",
     "mismatch": "Secret Key komt niet overeen met het openbare adres.",
     "placeholder": "bijv.",
-    "valid": "✅ Geheime sleutel is geldig.",
+    "valid": "✅ Secret key is geldig.",
     "remember": {
       "label": "Secret Key Onthoud dit voor deze sessie",
       "hint": "Wanneer ingeschakeld, wordt de sleutel opgeslagen totdat het tabblad wordt gesloten en hergebruikt voor verdere betalingen."
@@ -867,16 +867,16 @@
       "desc": "Een blockchain is als een digitaal grootboek. Veel computers slaan dezelfde gegevens op, zodat niemand iets stiekem kan veranderen."
     },
     "wallet": {
-      "title": "Portemonnee",
+      "title": "Wallet",
       "original": "Wallet",
-      "short": "Digitale portemonnee die uw sleutels beheert.",
+      "short": "Digitale wallet die je sleutels beheert.",
       "desc": "Een Wallet is je digitale wallet. Hiermee beheer je de sleutels die je nodig hebt om toegang te krijgen tot je account en transacties te versturen. Een Wallet kan een programma, een app of zelfs gewoon een stukje papier zijn waarop je Secret Key staat geschreven."
     },
     "account": {
       "title": "Account",
       "original": "Account",
-      "short": "Een blockchain-account kan activa vasthouden en transacties verzenden.",
-      "desc": "Een account is de plaats op de blockchain waar je activa worden opgeslagen. Een account heeft een openbaar adres dat begint met G. Meerdere wallets kunnen toegang krijgen tot dezelfde account als ze de juiste sleutel hebben."
+      "short": "Een blockchain-account kan assets bevatten en transacties verzenden.",
+      "desc": "Een account is de plek op de blockchain waar je assets worden opgeslagen. Een account heeft een openbaar adres dat begint met G. Meerdere wallets kunnen toegang krijgen tot hetzelfde account als ze over de juiste sleutel beschikken."
     },
     "addressG": {
       "title": "G-adres",
@@ -927,10 +927,10 @@
       "desc": "Een token is een digitale eenheid op de blockchain. Een token kan geld, punten of tegoeden voor een dienst vertegenwoordigen."
     },
     "asset": {
-      "title": "Activa",
+      "title": "Asset",
       "original": "Asset",
       "short": "Tokens op Stellar zijn altijd gekoppeld aan een uitgever.",
-      "desc": "Op Stellar wordt een token een activum genoemd. Een activum is altijd verbonden aan een uitgevende account. Bijvoorbeeld, een account kan een Euro-token uitgeven. Dit Euro-token zou dan een activum zijn."
+      "desc": "Op Stellar wordt een token een asset genoemd. Een asset is altijd gekoppeld aan een uitgevende rekening. Een account kan bijvoorbeeld een Euro token uitgeven. Deze Euro token zou dan een asset zijn."
     },
     "xlm": {
       "title": "XLM",
@@ -981,7 +981,7 @@
       "desc": "Horizon is de dienst die programma's in staat stelt om te communiceren met de Stellar Blockchain. Onze tool bevraagt Horizon om accountbalansen en transacties te laden."
     },
     "anchor": {
-      "title": "Anker",
+      "title": "Anchor",
       "original": "Anchor",
       "short": "Bedrijf dat fiatgeld met Stellar verbindt.",
       "desc": "Een anchor is een bedrijf dat echt geld, zoals de euro of dollar, met Stellar verbindt. Bijvoorbeeld, je geeft de anchor euro's en ontvangt in ruil daarvoor een euro-token op Stellar."
@@ -1005,10 +1005,10 @@
       "desc": "Een liquiditeitspool is een gedeeld potje dat twee tokens bevat. Mensen storten beide tokens erin. Anderen kunnen deze tokens vervolgens direct uitwisselen. De storters verdienen kleine vergoedingen voor deze dienst."
     },
     "balanceClaimable": {
-      "title": "Opvorderbaar Saldo",
+      "title": "Claimable Balance",
       "original": "Claimable Balance",
       "short": "Gereserveerd geld dat je nog moet accepteren.",
-      "desc": "Een opeisbaar saldo is geld dat al voor jou is gereserveerd, maar dat je nog moet opeisen. Pas wanneer je het accepteert, wordt het aan je account toegevoegd."
+      "desc": "Een claimable balance is geld dat al voor je is gereserveerd, maar dat je nog moet claimen. Pas als je het accepteert, wordt het op je rekening bijgeschreven."
     },
     "protocolUpdate": {
       "title": "Protocoolupdate",
@@ -1066,7 +1066,7 @@
     },
     "debug": {
       "incoming": "Inkomend – aan: {{toMe}}, maak→mij: {{createToMe}}, native→mij: {{nativeInToMe}}",
-      "incomingOverview": "Invoeren: {{total}} • Deelnemende portemonnees: {{unique}}",
+      "incomingOverview": "Invoer: {{total}} • Deelnemende wallets: {{unique}}",
       "memo": "Memo's in venster: {{any}} • exacte memo's: {{exact}}",
       "types": "Typen – betaling: {{pay}}, pad: {{path}}, creëren: {{create}}, andere: {{other}}"
     },
@@ -1083,9 +1083,9 @@
       "label": "Memo zoektekst (substring, case sensitive)",
       "placeholder": "Memo (substring, case-sensitive)"
     },
-    "overviewLine": "Betalingsbewijzen: {{total}} • betrokken portemonnees: {{unique}}",
+    "overviewLine": "Betalingsbewijzen: {{total}} • wallets betrokken: {{unique}}",
     "page": {
-      "noPublicKey": "Voer eerst een openbare sleutel in of laad de account opnieuw.",
+      "noPublicKey": "Voer eerst een public key in, of laad het account opnieuw.",
       "title": "XLM-saldo volgens memo"
     },
     "result": {
@@ -1098,8 +1098,8 @@
       "count": "Hoeveelheid: {{n}}",
       "label": "Vergelijking (Comparison)",
       "otherCount": "Inzendingen met onjuiste/ontbrekende memo: {{n}}",
-      "unique": "Unieke portemonnees (totaal): {{n}}",
-      "uniqueWallets": "Unieke portemonnees: {{n}}"
+      "unique": "Uniek wallets (alle): {{n}}",
+      "uniqueWallets": "Uniek Wallets: {{n}}"
     },
     "time": {
       "setToNow": "Stel de huidige tijd in",
@@ -1124,7 +1124,7 @@
       "window": "Gebruikt UTC-tijdvenster: {{from}} → {{to}} (eindtijd niet inbegrepen)"
     },
     "wrongMemos": {
-      "button": "Portefeuilles met onjuiste/lege memo weergeven",
+      "button": "Geef wallets weer met een onjuiste of lege memo",
       "clipboard": "Kopiëren naar klembord",
       "columns": {
         "amount": "Bedrag",
@@ -1177,9 +1177,9 @@
     },
     "lesson4": {
       "title": "Uw account",
-      "goal": "Het begrijpen van de structuur en betekenis van Publieke/Geheime Sleutel.",
+      "goal": "Inzicht in de structuur en betekenis van Public/Secret Key",
       "task": "Matching Game: Wat is openbaar, wat is geheim",
-      "learningOutcome": "Alleen de geheime sleutel verleent toegang; de openbare sleutel mag gedeeld worden.",
+      "learningOutcome": "Alleen de secret key geeft toegang; de public key mag worden gedeeld.",
       "reward": "⭐ 1 – Sleutelbewaarder"
     },
     "lesson5": {
@@ -1206,7 +1206,7 @@
     "lesson8": {
       "title": "Verification & Identity",
       "goal": "Vertrouwen en regels begrijpen",
-      "task": "Echte versus neptokens vergelijken",
+      "task": "Vergelijking tussen echt en nep tokens",
       "learningOutcome": "KYC = Identiteitsverificatie, verificatie toont betrouwbare tokens aan.",
       "reward": "⭐ 2 – Examenexpert"
     },

@@ -1,10 +1,10 @@
 {
   "assetSearch": {
-    "title": "Vermogenszoektocht",
-    "description": "Zoek naar activa via het handelsendpoint (Horizon).",
+    "title": "Token zoeken",
+    "description": "Zoek op asset-code, adres van de uitgever of de exacte combinatie van CODE:ISSUER.",
     "form": {
       "code": {
-        "label": "Activacode",
+        "label": "Asset-code",
         "placeholder": "bijv. USDC"
       },
       "issuer": {
@@ -18,7 +18,7 @@
       }
     },
     "result": {
-      "empty": "Geen activa gevonden.",
+      "empty": "Er is geen assets gevonden.",
       "columns": {
         "code": "Code",
         "issuer": "Uitgever",
@@ -32,27 +32,27 @@
       "qualityHint": "Opmerking: Trustlines zijn, in combinatie met het domein en TOML, veelzeggender. Het totale aantal wordt in de details weergegeven, maar vormt geen indicator voor authenticiteit.",
       "columnHelp": {
         "numAccounts": "Aantal trustlines/accounts volgens Horizon.",
-        "amount": "Het totale bedrag van dit activum zoals gerapporteerd door Horizon. Als Horizon autorisatiebuckets retourneert, worden deze bij elkaar opgeteld."
+        "amount": "Het totale bedrag van deze asset zoals gerapporteerd door Horizon. Als Horizon autorisatiebuckets retourneert, worden deze bij elkaar opgeteld."
       },
       "sort": {
         "numAccounts": "Sorteren op trustlines"
       },
       "factLabels": {
         "domain": "De uitgeversaccount heeft een eigen domein",
-        "toml": "Het activum staat vermeld in het bestand stellar.toml van deze emittent"
+        "toml": "Asset staat vermeld in het bestand stellar.toml van deze uitgever"
       },
       "duplicateCodeWarning": "Let op: voor {{codes}} zijn er meerdere resultaten met verschillende uitgevers. De code alleen zegt niets over echtheid – alleen het uitgeveradres is doorslaggevend. Vergelijk dit zorgvuldig voordat je een trustline toevoegt of wisselt.",
-      "duplicateCodeBadge": "{{count}} verschillende uitgevers gebruiken deze activacode."
+      "duplicateCodeBadge": "{{count}} verschillende uitgevers gebruiken deze asset-code."
     },
     "invalidInput": {
-      "codeMissing": "Voer a.u.b. een activacode in.",
-      "queryMissing": "Voer een activacode, het adres van de emittent of CODE:ISSUER in.",
-      "queryInvalid": "Voer een geldige activacode, het adres van de emittent of CODE:ISSUER in.",
-      "codeInvalid": "Assetcodes mogen slechts 1 tot 12 letters of cijfers bevatten.",
+      "codeMissing": "Voer een asset-code in.",
+      "queryMissing": "Voer een asset-code, het adres van de uitgever of CODE:ISSUER in.",
+      "queryInvalid": "Voer een geldige asset-code, het adres van de uitgever of CODE:ISSUER in.",
+      "codeInvalid": "Asset-codes mogen slechts 1 tot 12 letters of cijfers bevatten.",
       "issuerInvalid": "Voer een geldig Stellar-uitgeversadres in."
     },
     "failed": {
-      "generic": "Het zoeken naar activa is mislukt. Probeer het later opnieuw."
+      "generic": "De zoekopdracht asset is mislukt. Probeer het later nog eens."
     },
     "ambiguousResult": {
       "title": "Status onduidelijk – niet opnieuw verzenden",
@@ -63,19 +63,19 @@
       "label": "Voorbeelden"
     },
     "help": {
-      "issuer": "Het Stellar-account dat dit token heeft uitgegeven. De code en de uitgever vormen samen een unieke identificatie van het activum.",
-      "trustlines": "Aantal accounts die volgens Horizon een trustline naar dit activum hebben. Dit is een gebruiksindicatie, geen bewijs van authenticiteit.",
-      "totalAmount": "Het totale bedrag van dit activum zoals gerapporteerd door Horizon – trustlines, opeisbare saldi, liquiditeitspools en contracten opgeteld. Het aanbod op zich zegt niets over de kwaliteit of betrouwbaarheid.",
-      "trustlineStatus": "Geeft aan of je huidige account dit activum al kan bevatten.",
-      "trustlineBalance": "Huidige stand van dit activum op uw Trustline.",
-      "trustlineLimit": "Het maximale saldo van dit activum dat op uw rekening via deze trustline mag worden aangehouden.",
+      "issuer": "Het Stellar-account dat deze token heeft uitgegeven. De code en de uitgever vormen samen een unieke identificatie van de asset.",
+      "trustlines": "Aantal accounts die volgens Horizon een trustline tot en met deze asset hebben. Dit is een indicatie van gebruik, geen bewijs van authenticiteit.",
+      "totalAmount": "Het totale bedrag van deze asset, zoals gerapporteerd door Horizon – trustlines, claimable balances, liquiditeitspools en contracten samen. Het aanbod op zich zegt niets over kwaliteit of betrouwbaarheid.",
+      "trustlineStatus": "Geeft aan of je huidige account deze asset al kan bevatten.",
+      "trustlineBalance": "Huidig saldo van deze asset op uw trustline.",
+      "trustlineLimit": "Het maximale saldo dat op uw rekening mag staan gedurende deze asset is trustline.",
       "authorization": "Bij assets waarvoor authenticatie vereist is (auth_required), moet de uitgever uw trustline goedkeuren voordat u het token kunt ontvangen of verhandelen.",
       "homeDomain": "Domein dat is opgeslagen op het account van de uitgever. Dit helpt bij het vinden van het bestand stellar.toml.",
       "issuerMasterWeight": "Gewicht van de hoofdcode van de uitgever. Een waarde van 0 betekent dat de hoofdcode alleen niet meer kan ondertekenen.",
       "issuerLocked": "Geeft aan of de masterkey van de uitgever nog steeds actief is. „Actief beheerd” is normaal voor lopende projecten zoals stablecoins en vormt geen waarschuwing. \"Volledig vergrendeld\" is een positief signaal voor tokens die onveranderbaarheid beloven. \"Lijkt vergrendeld\" betekent dat de hoofdsleutel is uitgeschakeld, maar dat andere signers nog steeds controle over de rekening kunnen uitoefenen.",
       "tomlStatus": "Status van het bestand stellar.toml onder het thuisdomein van de uitgever.",
       "tomlUrl": "Adres van het gevonden bestand stellar.toml.",
-      "tomlAssetListed": "Geeft aan of dit activum is opgenomen in de CURRENCIES-vermeldingen van het bestand stellar.toml.",
+      "tomlAssetListed": "Geeft aan of deze asset is opgenomen in de CURRENCIES-vermeldingen van het bestand stellar.toml.",
       "tomlCurrencyCount": "Aantal vermeldingen onder „CURRENCIES“ in het bestand stellar.toml.",
       "authRequired": "De uitgever moet elke trustline afzonderlijk goedkeuren.",
       "authRevocable": "De uitgever kan een bestaande machtiging later intrekken.",
@@ -87,13 +87,13 @@
       "spendableAfter": "Geschat XLM-saldo dat na de aanvullende reserve nog steeds vrij beschikbaar is.",
       "expected": "Geschat te ontvangen bedrag op basis van de huidige offerte.",
       "minimum": "Minimumbedrag na toepassing van de slippage-tolerantie. Onder dit bedrag wordt de swap afgebroken.",
-      "route": "Het pad naar het bestand dat Stellar zou gebruiken voor de swap.",
+      "route": "Asset pad dat Stellar zou gebruiken voor de swap.",
       "effectiveRate": "Verwachte werkelijke koers op basis van het verzonden en ontvangen bedrag.",
       "minimumRate": "Slechtste geaccepteerde koers na toepassing van de slippage-tolerantie.",
       "slippageBuffer": "Verschil tussen de verwachte offerte en het minimumbedrag.",
       "hops": "Aantal marktsegmenten op de route.",
       "quoteAge": "Leeftijd van de momenteel weergegeven offerte. Oudere offertes moeten vóór ondertekening worden vernieuwd.",
-      "routeDetailed": "Route met activacode en afgekorte uitgever, zodat tokens met dezelfde code van elkaar te onderscheiden blijven.",
+      "routeDetailed": "Route met de code asset en een verkorte uitgever, zodat de code tokens met dezelfde code herkenbaar blijft.",
       "spread": "Verschil tussen de hoogste biedprijs en de hoogste laatprijs.",
       "priceImpact": "Schatting van de mate waarin de transactie de gerealiseerde prijs negatief beïnvloedt ten opzichte van de marktprijs.",
       "topDepth": "De som van de eerste vijf vraagprijzen in het orderboek.",
@@ -102,17 +102,17 @@
       "bestAsk": "Het laagste huidige verkoopbod in het orderboek.",
       "depthCoversAmount": "Geeft aan of de zichtbare diepte van het orderboek het ingevoerde bedrag dekt.",
       "poolCount": "Aantal AMM-liquiditeitspools dat voor dit handelspaar is gevonden.",
-      "limitOfferDirection": "Hiermee wordt bepaald welk activum u verkoopt en welk activum u wilt ontvangen.",
-      "limitOfferAmount": "Het bedrag van het activum dat u via de limietorder wilt verkopen.",
-      "limitOfferPrice": "Prijs per verkocht activum, uitgedrukt in het gekochte activum.",
+      "limitOfferDirection": "Hiermee wordt bepaald welke asset je verkoopt en welke asset je wilt ontvangen.",
+      "limitOfferAmount": "Het bedrag van de asset dat u via de limietorder wilt verkopen.",
+      "limitOfferPrice": "Prijs per verkochte asset, uitgedrukt in de gekochte asset.",
       "expertDirectory": "Vergelijking met het openbaar bijgehouden register van stellar.expert (een derde partij). Een vermelding is slechts een aanwijzing, geen garantie voor echtheid of veiligheid. Het ontbreken van een vermelding is evenmin een teken van fraude. Controleer het uitgeveradres altijd ook via de officiële website van de uitgever.",
       "exchangeRateQuick": "Het gemiddelde van de beste bied- en laatkoersen in het eigen Stellar-orderboek voor dit valutapaar. Zonder handelsdiepte kan er geen koers worden weergegeven.",
       "exchangeRateExecution": "Gesimuleerde uitvoeringsprijs voor een referentiehoeveelheid van 1 eenheid, inclusief eventuele tussenstappen en liquiditeitspools. Bij grotere hoeveelheden kan de prijs minder gunstig uitvallen (slippage)."
     },
     "mode": {
-      "code": "Zoeken op activacode",
+      "code": "Asset code zoeken",
       "issuer": "Zoeken naar emittenten",
-      "exact": "Exacte activa"
+      "exact": "Exact asset"
     },
     "actions": {
       "details": "Details",
@@ -121,7 +121,7 @@
       "trustlinePresent": "Trustline bestaat",
       "trustlineNext": "Volgende stap: een trustline aanmaken vanuit het zoekresultaat",
       "swap": "Ruilen",
-      "swapNext": "Selecteer het activum en open het swap-voorbeeld"
+      "swapNext": "Selecteer asset en open het voorbeeld van de ruil"
     },
     "account": {
       "active": "Actief account",
@@ -177,7 +177,7 @@
       "invalidAmount": "Voer een geldig bedrag in bij {{asset}}.",
       "invalidSlippage": "Voer een slippage in tussen 0 en 50 procent.",
       "invalidTarget": "Zoek en selecteer een bestemmings-token of voer het precies in als CODE:ISSUER.",
-      "sameAsset": "De bron en de bestemming mogen niet hetzelfde activum zijn.",
+      "sameAsset": "De bron en de bestemming mogen niet hetzelfde zijn asset.",
       "destinationTrustlineMissing": "De trustline met het token ‘destination’ ontbreekt nog steeds op dit account.",
       "destinationTrustlineUnauthorized": "De trustline van de bestemming is nog niet geautoriseerd door de uitgever.",
       "minimumMissing": "Het minimumbedrag kon niet worden berekend.",
@@ -235,7 +235,7 @@
       "openOffers": "Openstaande biedingen op dit token",
       "noOffers": "Er zijn geen openstaande aanbiedingen gevonden voor dit token.",
       "loadFailed": "De openstaande aanbiedingen konden niet worden geladen.",
-      "invalidPair": "Bij deze limietorder ontbreekt een geldig activapaar.",
+      "invalidPair": "Bij deze limietorder ontbreekt een geldig asset-paar.",
       "invalidAmount": "Voer een geldig verkoopbedrag in voor {{asset}}.",
       "invalidPrice": "Voer een geldige prijs in die groter is dan 0.",
       "createSuccess": "Er is een limietorder geplaatst. Transactie:",
@@ -253,7 +253,7 @@
     "trustlineConfirm": {
       "title": "Trustline bevestigen",
       "limit": "Trustline-limiet",
-      "warning": "Met een trustline kan dit activum op je account worden aangehouden. Controleer de gegevens, met name de uitgever, het thuisdomein, het stellar.toml-bestand, de autorisatie en de terugvorderingsclausule, voordat je ondertekent.",
+      "warning": "Met een trustline kan deze asset in je account worden bewaard. Controleer de gegevens, met name de uitgever, het thuisdomein, het stellar.toml-bestand, de autorisatie en de terugvorderingsclausule, voordat je ondertekent.",
       "continue": "Ga verder naar de handtekening"
     },
     "trustlineFlow": {
@@ -325,7 +325,7 @@
       },
       "amountBreakdown": {
         "trustlines": "Waarvan {{amount}} op trustlines",
-        "claimable": "{{amount}} in opeisbare saldi",
+        "claimable": "{{amount}} in claimable balances",
         "pools": "{{amount}} in liquiditeitspools",
         "contracts": "{{amount}} in contracten"
       },
@@ -333,7 +333,7 @@
         "label": "StellarExpert-register",
         "listed": "Opgenomen in het register",
         "listedAs": "Opgenomen in het register als \"{{name}}\"",
-        "notListed": "Niet in het register – dit zegt niets over de echtheid; veel betrouwbare activa staan er niet in.",
+        "notListed": "Staat niet in de lijst – dit zegt niets over de authenticiteit; veel gerenommeerde assets staan daar niet in vermeld.",
         "unavailable": "StellarExpert niet bereikbaar – de aanwijzing kon niet worden geladen.",
         "notChecked": "Niet gecontroleerd (het register geldt alleen voor het openbare netwerk)."
       }
@@ -343,10 +343,10 @@
       "issuerLoadFailed": "De gegevens van de emittent konden niet worden geladen.",
       "noHomeDomain": "De uitgever heeft geen eigen domein.",
       "tomlNotLoaded": "Het bestand stellar.toml is niet geladen of niet bereikbaar.",
-      "tomlAssetMissing": "Dit activum staat niet vermeld in het bestand `stellar.toml` van de emittent.",
+      "tomlAssetMissing": "Deze asset staat niet vermeld in het bestand stellar.toml van de uitgever.",
       "issuerUnlocked": "De hoofdcode van de uitgever is niet vergrendeld.",
-      "authRequired": "Voor dit bestand is toestemming van de uitgever vereist.",
-      "clawbackEnabled": "Voor dit activum is clawback ingeschakeld.",
+      "authRequired": "Voor deze asset is toestemming van de uitgever vereist.",
+      "clawbackEnabled": "Voor deze asset is clawback ingeschakeld.",
       "issuerAppearsLocked": "Waarschuwing: de hoofdsleutel is uitgeschakeld, maar andere signers kunnen nog steeds de controle over de uitgeversrekening uitoefenen. Deze is namelijk niet daadwerkelijk vergrendeld.",
       "authRevocable": "De uitgever kan een reeds verleende machtiging intrekken en jouw tegoed van dit token bevriezen.",
       "expertFlagged": "Let op: deze uitgever is in het StellarExpert-register als schadelijk gemarkeerd ({{tags}}). Het toevoegen van een trustline, kopen of wisselen wordt sterk afgeraden."

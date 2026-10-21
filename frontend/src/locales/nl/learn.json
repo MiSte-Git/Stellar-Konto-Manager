@@ -50,7 +50,7 @@
     "retry": "Probeer het opnieuw alstublieft.",
     "noData": "Geen quiz beschikbaar",
     "comingSoon": "De oefening voor deze les volgt snel.",
-    "testnetOnly": "Gebruik alleen TESTNET. Voer nooit echte geheime sleutels in. Wij slaan geen geheimen op."
+    "testnetOnly": "Gebruik uitsluitend TESTNET. Voer nooit de echte secret keys in. Wij slaan geen vertrouwelijke gegevens op."
   },
   "import": {
     "title": "Importvoortgang",
@@ -105,14 +105,14 @@
     "title": "Token & Trading",
     "goal": "Leren over marktmechanismen",
     "task": "Plaats een token op een virtuele marktplaats en observeer prijsveranderingen.",
-    "learningOutcome": "De prijs wordt bepaald door vraag en aanbod.",
+    "learningOutcome": "Op de DEX handel je rechtstreeks vanuit de Wallet. De prijzen worden bepaald door vraag en aanbod.",
     "reward": "⭐ 2 – Marketplace-expert"
   },
   "lesson7": {
     "title": "Beveiliging",
-    "goal": "Veilige gedragingen leren",
+    "goal": "Ontdek hoe je jezelf tegen fraude kunt beschermen en hoe je het verschil kunt zien tussen echte en valse Token.",
     "task": "Correcte/onjuiste acties sorteren; valse tokens detecteren",
-    "learningOutcome": "Het sleutel vertrouwelijk houden, veilig opslaan en het testnet gebruiken.",
+    "learningOutcome": "Secret Key Splits ze nooit! Je herkent een echte Token aan de geverifieerde uitgever, niet aan de naam.",
     "reward": "⭐ 2 – Security Guard"
   },
   "lesson8": {
@@ -131,15 +131,15 @@
   },
   "lesson10": {
     "title": "Oefen met SKM",
-    "goal": "Pas geleerde kennis in de praktijk toe.",
+    "goal": "Weet hoe je de Stellar Account Manager veilig kunt gebruiken in Testnet.",
     "task": "Maak een account aan in de testnet, activeer deze, stel een trustline in en verstuur tokens.",
-    "learningOutcome": "Volg de technische processen van een transactie.",
+    "learningOutcome": "In de Testnet kun je alles uitproberen zonder echt geld op het spel te zetten.",
     "reward": "⭐ 3 – Blockchain Pilot"
   },
   "lesson11": {
     "title": "Verantwoordelijkheid",
     "goal": "De gevolgen van fouten begrijpen",
-    "task": "Beslissingsspel: correct handelen of niet",
+    "task": "Beantwoord vragen over fouten, terugboekingen en hoe je met de Secret Key moet omgaan.",
     "learningOutcome": "Blockchain is definitief; zorgvuldigheid is een vereiste.",
     "reward": "⭐ 1 – Verantwoordelijkheid Held"
   },
@@ -165,8 +165,8 @@
     "reward": "⭐ 2 – Consensus-expert"
   },
   "cashback-loyalty": {
-    "title": "Cashback & loyaliteitstoken",
-    "goal": "Ontdek hoe Custom Assets op Stellar als loyaliteitsmunten werken.",
+    "title": "Cashback & Loyaliteitsprogramma Token",
+    "goal": "Begrijp hoe Custom Assets werkt als loyaliteitsprogramma tokens op Stellar.",
     "task": "Beantwoord vragen over Loyalty Token, Trustlines en de verificatie van de uitgever.",
     "learningOutcome": "Dezelfde naam van een token betekent niet dat het om hetzelfde token gaat — het is de uitgever die het verschil maakt.",
     "reward": "⭐ 2 – Loyaliteitsexpert"

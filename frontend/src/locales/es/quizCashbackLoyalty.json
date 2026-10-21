@@ -3,11 +3,11 @@
   "introText": "Pon a prueba tus conocimientos sobre Loyalty Token, Trustlines y la verificación del emisor en Stellar.",
   "q1": {
     "question": "¿Qué es un token de fidelidad?",
-    "hint": "Piensa en activos personalizados en la blockchain.",
-    "a1": "Un activo personalizado en Stellar que una empresa emite como recompensa.",
-    "a1fb": "Correcto: Los tokens de fidelidad son activos personalizados que las empresas crean y emiten ellas mismas.",
+    "hint": "Piensa en un assets personalizado en la cadena de bloques.",
+    "a1": "Un asset personalizado en Stellar que una empresa emite a modo de recompensa.",
+    "a1fb": "Correcto: Los programas de fidelización tokens son programas personalizados assets que las propias empresas crean y emiten.",
     "a2": "Un bono especial de XLM.",
-    "a2fb": "Incorrecto: XLM es la moneda nativa de Stellar. Los tokens de fidelidad son activos personalizados independientes.",
+    "a2fb": "Incorrecto: XLM es la moneda nativa de Stellar. Los programas de fidelización tokens son programas personalizados independientes assets.",
     "a3": "Un token emitido por la Stellar Development Foundation.",
     "a3fb": "Incorrecto: La SDF no emite tokens de fidelidad. Cada empresa crea el suyo propio."
   },
@@ -17,8 +17,8 @@
     "a1": "Un Trustline al emisor del Tokens.",
     "a1fb": "Correcto: Sin Trustline por parte del emisor, no se puede recibir Token.",
     "a2": "Una cuenta verificada.",
-    "a2fb": "Incorrecto: Las cuentas de Stellar no requieren verificación externa para activos personalizados.",
-    "a3": "Al menos 10 XLM en la billetera.",
+    "a2fb": "Incorrecto: Las cuentas de Stellar no requieren verificación externa para el assets personalizado.",
+    "a3": "Al menos 10 XLM en el wallet.",
     "a3fb": "Incorrecto: No hay una cantidad mínima de XLM requerida para Trustlines."
   },
   "q3": {
@@ -42,7 +42,7 @@
     "a3fb": "Incorrecto: La SDF no establece reglas para los tokens de fidelidad privados."
   },
   "q5": {
-    "question": "Recibes una oferta de 50 BERRY gratis por mensaje. ¿Cuál es el primer paso más seguro?",
+    "question": "Recibes un mensaje con una oferta de 50 BERRY tokens gratis. ¿Cuál es el primer paso más seguro?",
     "hint": "¿Quién es el creador real de este token?",
     "a1": "Comparar la dirección del emisor con la dirección oficial de la empresa.",
     "a1fb": "Correcto: Solo comparar la dirección del emisor protege contra tokens falsos sin valor.",

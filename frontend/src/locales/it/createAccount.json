@@ -10,11 +10,11 @@
   "signersCount": "Numero Signer",
   "bestPractices": {
     "title": "Migliori Pratiche",
-    "text": "Tieni le chiavi segrete al sicuro e non distribuirle inutilmente."
+    "text": "Conserva secret keys in un luogo sicuro e non distribuirlo se non strettamente necessario."
   },
   "instructions": {
-    "public": "Condividi questa chiave pubblica con altri per i pagamenti.",
-    "secret": "Mantieni questa chiave segreta al sicuro; non condividerla mai."
+    "public": "Condividi questo public key con altri per effettuare pagamenti.",
+    "secret": "Conserva questo secret key in un luogo sicuro; non rivelarlo mai a nessuno."
   },
   "generateFirst": "Genera prima una coppia di chiavi, per favore.",
   "confirmLowBalance": "Il saldo iniziale {bal} in XLM è inferiore alla riserva raccomandata {req} in XLM (Signer: {count}). Procedere?",
@@ -32,7 +32,7 @@
     "title": "Informazioni importanti",
     "secureKeys": {
       "title": "Esegui il backup di Secret Key",
-      "text": "La chiave pubblica può essere condivisa in tutta sicurezza: è come un numero di conto.\n\nLa chiave segreta è la chiave di accesso al tuo account. Trattala come una password:\n• NON conservarla MAI su servizi cloud, nelle e-mail o in appunti non protetti\n• Annotala su carta o utilizza un portafoglio hardware\n• Crea più copie di backup e conservale in luoghi sicuri e separati\n• Se perdi la tua chiave segreta, l’accesso al tuo conto andrà irrimediabilmente perso"
+      "text": "Il public key può essere condiviso in tutta sicurezza: è come un numero di conto.\n\nIl secret key è la chiave del tuo account. Trattalo come una password:\n• NON conservarla MAI su servizi cloud, nelle e-mail o in appunti non protetti\n• Annotala su carta o utilizza un dispositivo hardware wallet\n• Crea più copie di backup e conservale in luoghi sicuri e separati\n• Se perdi il tuo secret key, l’accesso al tuo account andrà irrimediabilmente perso"
     },
     "multisigSection": {
       "title": "Multisig (Multi-signature)",
@@ -60,9 +60,9 @@
     "title": "⚠️ Acquisisci la chiave sicura ora!",
     "text1": "Hai generato una nuova coppia di chiavi.",
     "text2": "Assicurati di avere ENTRAMBI le chiavi IMMEDIATAMENTE prima di procedere:",
-    "list1": "Chiave pubblica: l'indirizzo del tuo account, può essere condiviso",
-    "list2": "Chiave segreta: la tua password – NON condividerla mai né salvarla online!",
-    "list3": "Se la chiave segreta viene persa, l'accesso è irrevocabilmente perso.",
+    "list1": "Public Key: L'indirizzo del tuo account, che può essere condiviso",
+    "list2": "Secret Key: la tua password – NON condividerla MAI né salvarla online!",
+    "list3": "Se si perde il secret key, l'accesso va irrimediabilmente perso.",
     "confirm": "Ho ottenuto entrambe le chiavi."
   },
   "muxedId": "Muxed-ID",

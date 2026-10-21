@@ -1,15 +1,15 @@
 {
-  "label": "Javni ključ ili adresa federacije",
-  "placeholder": "Unesite svoj javni ključ ili adresu federacije.",
+  "label": "Public key ili adresa federacije",
+  "placeholder": "Unesite svoju public key ili federacijsku adresu.",
   "load": "Učitaj",
   "loadHint": "Obično nije potrebno: odabir opcije s popisa ili pritiskanje Entera automatski učitava račun. Koristite ovo dugme kao rezervnu opciju ili za ponovno učitavanje stanja računa.",
   "deleteFromList": "Ukloni s popisa",
   "source": "Izvor",
   "destination": {
     "input": "Cilj",
-    "error": "Unesen je nevažeći javni ključ.",
-    "label": "Ciljani javni ključ",
-    "placeholder": "Unesite ciljani javni ključ"
+    "error": "Unesena neispravna public key.",
+    "label": "Cilj public key",
+    "placeholder": "Unesite cilj public key"
   },
   "invalid": "Neispravno Public Key.",
   "submit": {
@@ -17,5 +17,5 @@
   },
   "test": "Test",
   "historyLabel": "Povijest",
-  "historyPlaceholder": "Odaberite zadnji korišteni novčanik"
+  "historyPlaceholder": "Odaberite zadnji korišteni wallet"
 }

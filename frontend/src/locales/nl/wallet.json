@@ -7,8 +7,8 @@
     "reverseLabel": "Naam zoals gerapporteerd door de {{domain}} Federation Server"
   },
   "flag": {
-    "compromised": "Waarschuwing: Deze portemonnee is gemarkeerd als gecompromitteerd in uw TrustList.",
-    "deactivated": "Opmerking: Deze portemonnee is als uitgeschakeld gemarkeerd in uw Vertrouwenslijst."
+    "compromised": "Waarschuwing: Deze wallet is in je TrustList gemarkeerd als gecompromitteerd.",
+    "deactivated": "Opmerking: Deze wallet is in je vertrouwenslijst gemarkeerd als uitgeschakeld."
   },
   "xlmBalance": "XLM",
   "unfunded": "Niet geactiveerd",
@@ -107,7 +107,7 @@
     "fakeNativeHint": "Dit is een Token van een uitgever, niet de eigen XLM van het netwerk."
   },
   "claimable": {
-    "title": "Terugvorderbare saldi",
+    "title": "Claimable Balances",
     "intro": "Betalingen die op uw rekening zijn bijgeschreven, maar die eerst moeten worden verwerkt voordat ze in uw saldo worden weergegeven.",
     "claim": "Inwisselen",
     "hide": "Verbergen",
@@ -125,7 +125,7 @@
     "noTrustHide": "Verbergen",
     "noTrustNote": "Bij het inwisselen wordt een Trustline aangemaakt en wordt 0,5 XLM in reserve geblokkeerd. Ongevraagde Token worden vaak gebruikt bij pogingen tot fraude. SKM beoordeelt Token niet en doet geen uitspraak over de echtheid van een Token. Controleer indien nodig de feiten over Token met behulp van de Token-zoekfunctie.",
     "truncated": "Er worden slechts de eerste {{count}} vermeldingen weergegeven.",
-    "loadError": "De saldi waarvoor een vergoeding kan worden aangevraagd, konden niet worden geladen.",
+    "loadError": "Claimable balances kon niet worden geladen.",
     "insufficientReserve": "Trustline vereist {{reserve}} XLM in reserve; {{available}} XLM is beschikbaar.",
     "insufficientWeight": "De Signers die u hebt ingevoerd, voldoen samen niet aan het vereiste gewicht van {{required}}.",
     "success": "{{amount}} {{code}} ingewisseld. Transactie {{hash}}.",
@@ -134,13 +134,13 @@
     "networkMismatch": "De Horizon-server maakt geen deel uit van het geselecteerde netwerk. Er is niets ondertekend of verzonden.",
     "prepareJob": "Voorbereiden als een Multisig-taak",
     "insufficientWeightJob": "De Signers die u hebt ingevoerd, voldoen samen niet aan het vereiste gewicht {{required}}. Maak in plaats daarvan een Multisig-opdracht aan, waarna de andere Signers zich op de website kunnen aanmelden.",
-    "tooLittleTime": "Het saldo waarop aanspraak kan worden gemaakt, verloopt te snel om te worden ingewisseld als een Multisig-opdracht.",
+    "tooLittleTime": "De claimable balance verloopt te snel om te worden ingewisseld voor een Multisig-opdracht.",
     "jobSource": "Account",
     "jobClaim": "Inwisselen",
     "jobTrustline": "Maak Trustline aan",
     "jobNetwork": "Netwerk",
     "jobNoteLabel": "Opmerking",
-    "jobHint": "Het inwisselbare saldo kan verlopen of op een andere manier worden ingewisseld voordat iedereen heeft ondertekend. De opdracht zal dan bij het indienen mislukken, maar er gaat niets verloren. De geldigheid van de opdracht eindigt uiterlijk op het moment dat het inwisselbare saldo verloopt.",
+    "jobHint": "De Claimable Balance kan verlopen of op een andere manier worden ingewisseld voordat iedereen heeft ondertekend. De taak zal dan bij het indienen mislukken, maar er gaat niets verloren. De geldigheidsduur van de taak eindigt uiterlijk wanneer de Claimable Balance verloopt.",
     "empty": "Er is geen Claimable Balances gevonden."
   },
   "batchConvert": {

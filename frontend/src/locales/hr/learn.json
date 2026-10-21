@@ -50,7 +50,7 @@
     "retry": "Molimo pokušajte ponovno",
     "noData": "Nema dostupnog kviza",
     "comingSoon": "Vježba za ovu lekciju uslijedit će uskoro.",
-    "testnetOnly": "Koristite samo TESTNET. Nikada nemojte unositi prave tajne ključeve. Ne pohranjujemo tajne."
+    "testnetOnly": "Koristite samo TESTNET. Nikada ne unosite stvarni secret keys. Ne pohranjujemo tajne."
   },
   "import": {
     "title": "Uvoz napredak",
@@ -105,21 +105,21 @@
     "title": "Token & Trading",
     "goal": "Učenje o tržišnim mehanizmima",
     "task": "Postavite token na virtualno tržište i pratite promjene cijena.",
-    "learningOutcome": "Cijena se određuje prema ponudi i potražnji.",
+    "learningOutcome": "Na DEX-u trgujete izravno s Wallet. Cijene određuju ponuda i potražnja.",
     "reward": "⭐ 2 – Stručnjak za Tržnicu"
   },
   "lesson7": {
     "title": "Sigurnost",
-    "goal": "Učenje sigurnog ponašanja",
-    "task": "Sortiranje ispravnih/neispravnih radnji; detekcija lažnih tokena",
-    "learningOutcome": "Čuvanje ključa povjerljivo, sigurno ga pohranjivanje i korištenje testne mreže.",
+    "goal": "Naučite kako se zaštititi od prijevara i razlikovati prave od lažnih Token.",
+    "task": "Sortiranje ispravnih/neispravnih radnji; otkrivanje lažnih tokens",
+    "learningOutcome": "Secret Key Nikada ih ne dijelite! Pravi Token možete prepoznati po provjerenom izdavatelju, a ne po imenu.",
     "reward": "⭐ 2 – Zaštitar"
   },
   "lesson8": {
     "title": "Verification & Identity",
     "goal": "Razumijevanje povjerenja i pravila",
-    "task": "Usporedite stvarne i lažne tokene.",
-    "learningOutcome": "KYC = Provjera identiteta, provjera pokazuje pouzdane tokene.",
+    "task": "Usporedi stvarno naspram lažnog tokens.",
+    "learningOutcome": "KYC = provjera identiteta, provjera pokazuje pouzdanost tokens.",
     "reward": "⭐ 2 – Stručnjak za ispite"
   },
   "lesson9": {
@@ -131,15 +131,15 @@
   },
   "lesson10": {
     "title": "Vježbajte s SKM",
-    "goal": "Primijeni stečeno znanje u praksi.",
-    "task": "Kreirajte račun na testnetu, aktivirajte ga, postavite trustline, pošaljite tokene.",
-    "learningOutcome": "Prati proces tehničke obrade transakcije.",
+    "goal": "Znajte kako sigurno koristiti Stellar Account Manager u Testnet.",
+    "task": "Kreirajte račun u testnet, aktivirajte ga, postavite trustline, pošaljite tokens.",
+    "learningOutcome": "U Testnet možete isprobati sve bez rizika od stvarnog novca.",
     "reward": "⭐ 3 – Pilot projekt blockchaina"
   },
   "lesson11": {
     "title": "Odgovornost",
     "goal": "Razumijevanje posljedica pogrešaka",
-    "task": "Igra donošenja odluka: postupi ispravno ili ne",
+    "task": "Odgovorite na pitanja o pogreškama, povratima plaćanja i načinu rukovanja Secret Key.",
     "learningOutcome": "Blockchain je konačan; dubinska analiza je obavezna.",
     "reward": "⭐ 1 – Junak odgovornosti"
   },
@@ -166,7 +166,7 @@
   },
   "cashback-loyalty": {
     "title": "Cashback & Loyalty Token",
-    "goal": "Razumite kako prilagođena sredstva funkcioniraju kao tokeni lojalnosti na Stellaru.",
+    "goal": "Razumite kako prilagođeni Assets funkcioniraju kao lojalnost tokens na Stellaru.",
     "task": "Odgovorite na pitanja o Loyalty Token, Trustlines i provjeri izdavatelja.",
     "learningOutcome": "Isto ime tokena ne znači isti token—razliku čini izdavač.",
     "reward": "⭐ 2 – Stručnjak za lojalnost"

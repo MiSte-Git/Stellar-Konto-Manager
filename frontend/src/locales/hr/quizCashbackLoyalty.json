@@ -1,54 +1,54 @@
 {
-  "title": "Cashback i Loyalty Tokeni",
+  "title": "Povrat novca i vjernost Tokens",
   "introText": "Testirajte svoje znanje o Loyalty Token, Trustlines i provjeri izdavatelja na Stellaru.",
   "q1": {
     "question": "Što je loyalty token?",
-    "hint": "Razmisli o prilagođenim sredstvima na blockchainu.",
-    "a1": "Prilagođeno sredstvo na Stellaru koje tvrtka izdaje kao nagradu.",
-    "a1fb": "Točno: Loyalty tokeni su prilagođena sredstva koja tvrtke same stvaraju i izdaju.",
+    "hint": "Razmislite o prilagođenom assets na blockchainu.",
+    "a1": "Prilagođeni asset na Stellaru koji tvrtka izdaje kao nagradu.",
+    "a1fb": "Ispravno: Loyalty tokens su prilagođene assets koje tvrtke same stvaraju i izdaju.",
     "a2": "Poseban XLM bonus.",
-    "a2fb": "Netočno: XLM je izvorna valuta Stellara. Loyalty tokeni su neovisna prilagođena sredstva.",
+    "a2fb": "Pogrešno: XLM je nativna valuta Stellara. Loyalty tokens su neovisni prilagođeni assets.",
     "a3": "Token koji je izdala Stellar Development Foundation.",
-    "a3fb": "Netočno: SDF ne izdaje loyalty tokene. Svaka tvrtka kreira vlastiti."
+    "a3fb": "Pogrešno: SDF ne izdaje tokens lojalnosti. Svaka tvrtka stvara svoju."
   },
   "q2": {
-    "question": "Što kupac treba prije primanja loyalty tokena?",
+    "question": "Što kupac treba prije primitka nagrade za vjernost tokens?",
     "hint": "Stellar zahtijeva izričito povjerenje prije nego što se token može primiti.",
     "a1": "Trustline izdavatelju Tokens.",
     "a1fb": "Ispravno: Bez Trustline od izdavatelja, Token se ne može primiti.",
     "a2": "Verificirani račun.",
-    "a2fb": "Netočno: Stellar računi ne zahtijevaju vanjsku verifikaciju za prilagođena sredstva.",
-    "a3": "Najmanje 10 XLM u novčaniku.",
+    "a2fb": "Pogrešno: Stellar računi ne zahtijevaju vanjsku provjeru za prilagođeni assets.",
+    "a3": "Najmanje 10 XLM u wallet.",
     "a3fb": "Netočno: Za Trustlines nije potrebna minimalna količina XLM-a."
   },
   "q3": {
     "question": "Marco naziva svoj token \"BERRY\". Druga tvrtka čini isto. Jesu li tokeni isti?",
-    "hint": "Što razlikuje dva tokena s identičnim imenom na Stellaru?",
-    "a1": "Ne – izdavatelj je različit, dakle radi se o različitim tokenima.",
+    "hint": "Što razlikuje dva tokens s identičnim imenom na Stellaru?",
+    "a1": "Ne – izdavatelj je različit, pa su i oni različiti tokens.",
     "a1fb": "Točno: Na Stellaru token jedinstveno identificira ne samo naziv, već naziv + adresa izdavatelja.",
     "a2": "Da – isto ime znači isti token.",
     "a2fb": "Netočno: Isto ime ne znači isti token. Izdavatelj je odlučujući čimbenik.",
     "a3": "Ovisi o cijeni.",
-    "a3fb": "Netočno: Cijena je irelevantna. Dva BERRY tokena s različitim izdavateljima su temeljno različita."
+    "a3fb": "Pogrešno: Cijena je nebitna. Dvije BERRY tokens s različitim izdavateljima su u svojoj biti različite."
   },
   "q4": {
-    "question": "Što određuje vrijednost loyalty tokena?",
-    "hint": "Tko stoji iza tokena i odlučuje o njegovim pravilima?",
-    "a1": "Izdavatelj – on određuje vrijednost tokena i uvjete unovčavanja.",
+    "question": "Što određuje vrijednost lojalnosti token?",
+    "hint": "Tko stoji iza token i odlučuje o njegovim pravilima?",
+    "a1": "Izdavatelj – oni definiraju što token vrijedi i kako se može iskoristiti.",
     "a1fb": "Točno: Bez izdavatelja loyalty token nema vrijednost. On postavlja uvjete unovčavanja i količinu.",
     "a2": "Tržišna cijena na DEX-u.",
-    "a2fb": "Netočno: Loyalty tokeni često nemaju DEX cijenu. Njihova vrijednost dolazi od obećanja izdavatelja.",
+    "a2fb": "Pogrešno: Loyalty tokens često nemaju DEX cijenu. Njihova vrijednost proizlazi iz obećanja izdavatelja.",
     "a3": "Stellar Development Foundation.",
-    "a3fb": "Netočno: SDF ne postavlja pravila za privatne loyalty tokene."
+    "a3fb": "Pogrešno: SDF ne postavlja pravila za privatnu odanost tokens."
   },
   "q5": {
-    "question": "Dobivaš ponudu od 50 besplatnih BERRY putem poruke. Koji je najsigurniji prvi korak?",
-    "hint": "Tko je stvarni kreator ovog tokena?",
+    "question": "Primili ste ponudu za 50 besplatnih BERRY tokens putem poruke. Koji je najsigurniji prvi korak?",
+    "hint": "Tko je stvarni tvorac ovog token?",
     "a1": "Usporediti adresu izdavatelja sa službenom adresom tvrtke.",
-    "a1fb": "Točno: Samo usporedba adrese izdavatelja štiti od bezvrijednih lažnih tokena.",
+    "a1fb": "Ispravno: Samo usporedba adrese izdavatelja štiti od beskorisnih lažnih tokens.",
     "a2": "Dodajte Trustline odmah.",
     "a2fb": "Neispravno: Trustline povezan s neoverenim izdavačem može rezultirati bezvrijednim Tokens.",
-    "a3": "Potražiti naziv tokena na Internetu.",
+    "a3": "Pretraži ime token na internetu.",
     "a3fb": "Netočno: Sam naziv ne govori ništa – tko god može nazvati token \"BERRY\"."
   },
   "q6": {
@@ -57,17 +57,17 @@
     "a1": "Token je bezvrijedan – bez pravog izdavatelja nema vrijednost unovčavanja.",
     "a1fb": "Točno: Naziv + izdavatelj = jedinstven token. Drugačiji izdavatelj = drugačiji, bezvrijedan token.",
     "a2": "Isto je, samo s druge adrese.",
-    "a2fb": "Netočno: Radi se o temeljno drugačijem tokenu, ne o \"istom s drugog mjesta\".",
+    "a2fb": "Pogrešno: To je temeljno drugačiji token, a ne \"isti iz drugog izvora\".",
     "a3": "Sigurniji je jer je decentraliziraniji.",
     "a3fb": "Netočno: Drugačiji izdavatelj token ne čini sigurnijim, već beznačajnim."
   },
   "q7": {
     "question": "Može li tvrtka opozvati svoj loyalty token?",
-    "hint": "Koje zastavice izdavatelj može postaviti pri kreiranju tokena?",
+    "hint": "Koje zastavice izdavatelj može postaviti pri stvaranju token?",
     "a1": "Da, ako je token kreiran s clawback zastavicom.",
-    "a1fb": "Točno: Clawback zastavica omogućuje izdavatelju povrat tokena od primatelja.",
-    "a2": "Ne, blockchain tokeni su uvijek trajni.",
-    "a2fb": "Netočno: S clawback zastavicom tokeni se mogu opozvati. To je namjerna dizajnerska odluka.",
+    "a1fb": "Ispravno: zastavica povrata omogućuje izdavatelju da od primatelja povuče tokens.",
+    "a2": "Ne, blockchain tokens su uvijek trajni.",
+    "a2fb": "Pogrešno: Uz zastavicu clawback, tokens se može opozvati. To je namjeran dizajnerski izbor.",
     "a3": "Samo Stellar Development Foundation to može.",
     "a3fb": "Netočno: Samo sam izdavatelj može koristiti clawback, ne SDF."
   }

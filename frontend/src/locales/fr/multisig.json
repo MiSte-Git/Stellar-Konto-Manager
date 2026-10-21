@@ -41,8 +41,8 @@
       },
       "local": {
         "title": "Saisir toutes les signatures localement",
-        "desc": "Utilisez uniquement si toutes les clés secrètes peuvent être saisies de manière sécurisée sur cet appareil (Tests/Recovery/Admin).",
-        "warning": "Avertissement : Toutes les clés secrètes sont collectées au cours de cette session. N'utilisez que sur des appareils de confiance.",
+        "desc": "À utiliser uniquement si tous les éléments secret keys peuvent être saisis en toute sécurité sur cet appareil (Tests/Récupération/Administration).",
+        "warning": "Avertissement : tous les secret keys sont enregistrés au cours de cette session. À n'utiliser que sur des appareils de confiance.",
         "moreInfo": "Plus d'informations",
         "infoTitle": "Comment fonctionne « Toutes les signatures en local » ?",
         "infoBody": {
@@ -53,18 +53,18 @@
       },
       "xdr": {
         "title": "Exporter XDR (ne pas envoyer)",
-        "desc": "Générez une transaction XDR brute pour des outils hors ligne ou des portefeuilles matériels.",
+        "desc": "Générer une transaction XDR brute pour les outils hors ligne ou le matériel wallets.",
         "short": "Exportez la transaction au format XDR sans l'envoyer directement.",
         "moreInfo": "Plus d'informations.",
         "infoTitle": "Comment fonctionne l'exportation XDR ?",
         "infoBody": {
           "one": "XDR est le format de transaction brut de Stellar. Rien n'est envoyé automatiquement.",
-          "two": "Utilisez XDR pour les portefeuilles matériels, les ordinateurs hors ligne ou d'autres portefeuilles/outils pouvant importer XDR.",
+          "two": "Utilisez le format XDR pour le matériel wallets, les ordinateurs hors ligne ou tout autre wallets/outil capable d'importer le format XDR.",
           "three": "Il vous incombe de signer et/ou d'envoyer le fichier XDR ultérieurement (par exemple, à l'aide des tâches Multisig ou d'un outil externe)."
         },
         "steps": {
           "one": "Un XDR est généré, mais rien n'est envoyé.",
-          "two": "Vous pouvez signer le fichier XDR en externe (à l'aide d'un ordinateur hors ligne, d'un portefeuille matériel ou d'un autre outil).",
+          "two": "Vous pouvez signer le fichier XDR en externe (à l'aide d'un ordinateur hors ligne, d'un dispositif matériel wallet ou d'un autre outil).",
           "three": "Pour envoyer, vous devez réimporter le XDR (e.g., via multisig jobs or another tool) et le signer/l'envoyer là-bas."
         }
       }
@@ -127,7 +127,7 @@
   },
   "testMode": {
     "modalTitle": "Signature monoposte",
-    "modalDescription": "Ici, vous pouvez entrer toutes les clés secrètes nécessaires sur un seul appareil et envoyer directement la transaction. Dans de véritables configurations multipartites, les clés devraient rester sur des appareils distincts."
+    "modalDescription": "Ici, vous pouvez saisir tous les secret keys nécessaires sur un seul appareil et envoyer directement la transaction. Dans les configurations multipartites réelles, les clés doivent rester sur des appareils distincts."
   },
   "mode": {
     "test": {
@@ -164,7 +164,7 @@
       "progress": "Poids de la signature : {{collected}} / {{required}}",
       "signed": "signé",
       "missing": "manquant",
-      "noSessionSecret": "Aucune clé secrète n'est stockée dans le navigateur. Veuillez entrer la clé secrète ou importer un XDR signé.",
+      "noSessionSecret": "Aucun secret key n'est enregistré dans le navigateur. Veuillez saisir le secret ou importer un fichier XDR signé.",
       "signedLocalStatus": "Signature enregistrée. Statut actuel : {{status}}"
     },
     "changes": {
@@ -175,7 +175,7 @@
     },
     "xdr": {
       "title": "Transaction (XDR)",
-      "hint": "D'autres Signers peuvent charger et signer ce fichier XDR dans des portefeuilles compatibles.",
+      "hint": "D'autres Signers peuvent charger et signer ce XDR dans des Wallets compatibles.",
       "copy": "Copier XDR",
       "copy.success": "XDR copié dans le presse-papiers.",
       "copy.error": "XDR n'a pas pu être copié dans le presse-papiers."
@@ -192,14 +192,14 @@
     },
     "secretPrompt": {
       "title": "Entrez le secret pour signer",
-      "hint": "Veuillez entrer la clé secrète pour le compte {{account}}.",
+      "hint": "Veuillez saisir la valeur secret key pour le compte {{account}}.",
       "signNow": "Signez maintenant"
     },
     "submitFailed": "Une erreur s'est produite lors de l'envoi : {{raison}}",
     "submitNoExtras": "Aucun détail d'erreur supplémentaire disponible.",
     "noAccessToken": "Aucun accès token disponible. Veuillez d'abord charger le compte correspondant à un signer de cette tâche.",
     "notASigner": "Ce compte n'est pas un signer actif de cette mission.",
-    "noLocalSecretForToken": "Aucun secret n'est enregistré pour ce compte dans ce navigateur. Veuillez l'ouvrir à l'aide d'un lien partagé comportant un jeton d'accès, ou charger le compte une seule fois en utilisant l'option « Mémoriser le secret ».",
+    "noLocalSecretForToken": "Aucun mot de passe n'est enregistré pour ce compte dans ce navigateur. Veuillez l'ouvrir à l'aide d'un lien partagé dont la durée d'accès est de token, ou chargez le compte une seule fois en utilisant l'option « Mémoriser le mot de passe ».",
     "transparency": {
       "title": "Détails de la transaction"
     },
@@ -296,7 +296,7 @@
       "expired": "Expiré",
       "obsolete_seq": "Séquence obsolète"
     },
-    "deleteTestnet": "Supprimer les travaux sur le réseau de test",
+    "deleteTestnet": "Supprimer les tâches testnet",
     "deleteTestnetTitle": "Supprimez tous les travaux de testnet.",
     "deleteTestnetHint": "Cela supprimera tous les travaux multisig sur le testnet. Veuillez taper \"SUPPRIMER TESTNET JOBS\" pour confirmer.",
     "deleteTestnetConfirm": "Supprimer les travaux de testnet"

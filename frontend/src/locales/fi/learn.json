@@ -50,7 +50,7 @@
     "retry": "Yritä uudelleen, kiitos.",
     "noData": "Ei kyselyä saatavilla",
     "comingSoon": "Tämän oppitunnin harjoitus seuraa pian.",
-    "testnetOnly": "Käytä vain TESTNETtiä. Älä koskaan syötä oikeita salaisia avaimia. Emme tallenna salaisuuksia."
+    "testnetOnly": "Käytä ainoastaan TESTNET. Älä koskaan syötä todellista secret keys-arvoa. Emme tallenna salaisia tietoja."
   },
   "import": {
     "title": "Tuo edistyminen",
@@ -104,22 +104,22 @@
   "lesson6": {
     "title": "Token & Trading",
     "goal": "Oppiminen markkinamekanismeista",
-    "task": "Aseta merkki virtuaaliseen markkinapaikkaan ja tarkkaile hintamuutoksia.",
-    "learningOutcome": "Hinta määräytyy tarjonnan ja kysynnän mukaan.",
+    "task": "Lisää token virtuaaliseen markkinapaikkaan ja seuraa hinnan muutoksia.",
+    "learningOutcome": "DEX:ssä käydään kauppaa suoraan Wallet:stä. Hinnat määräytyvät kysynnän ja tarjonnan perusteella.",
     "reward": "⭐ 2 – Markkinapaikka-asiantuntija"
   },
   "lesson7": {
     "title": "Turvallisuus",
-    "goal": "Oppiminen turvallisista käyttäytymistavoista",
-    "task": "Oikeiden/väärien toimien lajittelu; väärennettyjen tunnusten havaitseminen",
-    "learningOutcome": "Pitämällä avain luottamuksellisena, säilyttämällä se turvallisesti ja käyttämällä testiverkkoa.",
+    "goal": "Opi suojautumaan petoksilta ja tunnistamaan aito ja väärennetty Token.",
+    "task": "Oikeiden ja väärien toimien lajittelu; väärennösten havaitseminen tokens",
+    "learningOutcome": "Secret Key Älä koskaan jaa niitä! Aito Token tunnistetaan sen varmennetun liikkeeseenlaskijan perusteella, ei nimen perusteella.",
     "reward": "⭐ 2 – Vartija"
   },
   "lesson8": {
     "title": "Verification & Identity",
     "goal": "Luottamuksen ja sääntöjen ymmärtäminen",
-    "task": "Vertaa aitoja ja väärennettyjä tokeneita.",
-    "learningOutcome": "KYC = Henkilöllisyyden varmentaminen, varmentaminen osoittaa luotettavat tunnukset.",
+    "task": "Vertaa aitoa ja väärennettyä tokens:tä.",
+    "learningOutcome": "KYC = Henkilöllisyyden todentaminen; todentaminen osoittaa, että tokens on luotettava.",
     "reward": "⭐ 2 – Kokeen asiantuntija"
   },
   "lesson9": {
@@ -131,15 +131,15 @@
   },
   "lesson10": {
     "title": "Harjoittele SKM:n kanssa",
-    "goal": "Sovella opittu tieto käytäntöön.",
+    "goal": "Opi käyttämään Stellar Account Manageria turvallisesti Testnet:ssa.",
     "task": "Luo tili testnet:ssä, aktivoi se, aseta trustline ja lähetä tokens.",
-    "learningOutcome": "Seuraa tapahtuman teknisiä prosesseja.",
+    "learningOutcome": "Testnet:n aikana voit kokeilla kaikkea ilman, että vaarannat oikeaa rahaa.",
     "reward": "⭐ 3 – Blockchain-pilotti"
   },
   "lesson11": {
     "title": "Vastuu",
     "goal": "Virheiden seurausten ymmärtäminen",
-    "task": "Päätöksentekopeli: toimi oikein tai ei",
+    "task": "Vastaa kysymyksiin, jotka koskevat virheitä, takaisinperintöjä ja Secret Key:n käsittelyä.",
     "learningOutcome": "Lohkoketju on lopullinen; huolellinen taustatutkimus on välttämätön.",
     "reward": "⭐ 1 – Vastuullisuussankari"
   },
@@ -166,9 +166,9 @@
   },
   "cashback-loyalty": {
     "title": "Cashback & Loyalty Token",
-    "goal": "Tutustu siihen, miten Custom Assets -varat toimivat kanta-asiakasmerkeinä Stellar-verkostossa.",
+    "goal": "Tutustu siihen, miten Custom Assets toimii Stellar-verkostossa kanta-asiakasohjelmana tokens.",
     "task": "Vastaa kysymyksiin, jotka koskevat Loyalty Token-, Trustlines-ohjelmia sekä kortinmyöntäjän todentamista.",
-    "learningOutcome": "Sama tokenin nimi ei tarkoita samaa tokenia – ero johtuu liikkeeseenlaskijasta.",
+    "learningOutcome": "Sama nimi token ei tarkoita samaa kuin token – ero johtuu liikkeeseenlaskijasta.",
     "reward": "⭐ 2 – Kanta-asiakasasiantuntija"
   },
   "scam-simulator": {

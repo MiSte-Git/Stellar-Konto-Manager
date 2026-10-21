@@ -28,16 +28,16 @@
     "desc": "Una blockchain è come un registro digitale. Molti computer memorizzano le stesse voci, garantendo che nessuno possa apportare modifiche segrete."
   },
   "wallet": {
-    "title": "Portafoglio",
+    "title": "Wallet",
     "original": "Wallet",
-    "short": "Portafoglio digitale che gestisce le tue chiavi.",
+    "short": "Digital wallet che gestisce le tue chiavi.",
     "desc": "Un Wallet è il tuo wallet digitale. Gestisce le chiavi necessarie per accedere al tuo account e inviare transazioni. Un Wallet può essere un programma, un’app o anche semplicemente un foglio di carta su cui è scritto il tuo Secret Key."
   },
   "account": {
     "title": "Account",
     "original": "Account",
     "short": "Un account blockchain può detenere asset e inviare transazioni.",
-    "desc": "Un account è la posizione sulla blockchain in cui sono detenuti i tuoi beni. Un account ha un indirizzo pubblico che inizia con G. Più wallet possono accedere allo stesso account se dispongono della chiave corretta."
+    "desc": "Un account è la posizione sulla blockchain in cui sono conservati i tuoi assets. Ogni account ha un indirizzo pubblico che inizia con la lettera G. Più wallets possono accedere allo stesso account se dispongono della chiave corretta."
   },
   "addressG": {
     "title": "G indirizzo",
@@ -108,7 +108,7 @@
     "desc": "Una \"trustline\" è come dire: \"Sì, accetto questo token\". Impostandola, stai indicando che il tuo account è pronto a detenere un token specifico da un emittente specifico. Senza una trustline, non puoi ricevere questo token.\n\nEsempio: una trustline è specificata come CODICE:EMITTENTE. Per EURT dall'emittente GDUKMGUGDZQK6Y…, sarebbe EURT:GDUKMGUGDZQK6Y…"
   },
   "token": {
-    "title": "Gettone",
+    "title": "Token",
     "original": "Token",
     "short": "Unità digitale — ad esempio, denaro, punti o credito.",
     "desc": "Un token è un'unità digitale sulla blockchain. Un token può rappresentare denaro, punti o crediti per un servizio."
@@ -132,7 +132,7 @@
     "desc": "La vera rete Stellar con valore effettivo. Le transazioni sono definitive e le commissioni sono pagate in XLM reale."
   },
   "testnet": {
-    "title": "Rete di prova",
+    "title": "Testnet",
     "original": "Testnet",
     "short": "Rete di formazione pubblica senza un reale valore.",
     "desc": "Una rete di pratica pubblica. I token non hanno valore reale. Ideale per apprendere e sperimentare senza rischi."
@@ -227,7 +227,7 @@
     "desc": "Con Soroban è emerso un problema: gli asset Stellar esistenti (come USDC o XLM) dovevano funzionare anche negli smart contract. Lo Stellar Asset Contract lo risolve: è un’interfaccia standard di smart contract per ogni asset Stellar. Le dApp Soroban possono usare direttamente gli asset nativi senza convertirli in nuovi token. I SAC esistono automaticamente per tutti gli asset Stellar e non devono essere creati manualmente."
   },
   "anchor": {
-    "title": "Ancora",
+    "title": "Anchor",
     "original": "Anchor",
     "short": "Fornitore di servizi finanziari autorizzato che collega la moneta fiat a Stellar.",
     "desc": "Un Anchor è un fornitore di servizi finanziari autorizzato che collega denaro reale alla rete Stellar. Accetta denaro fiat (p.es. tramite bonifico bancario) e in cambio emette token su Stellar – e viceversa. Questo si chiama On-Ramp (denaro in entrata) e Off-Ramp (denaro in uscita).\n\nAnchor noti su Stellar:\n- Kado – USD, EUR, CHF (globale)\n- MoneyGram – depositi/prelievi in contanti tramite USDC in 170+ paesi\n- Tempo – EUR stablecoin, Europa\n- Bitso – MXN, USD, America Latina\n- Circle – USDC e EURC, in tutto il mondo\n\nAttualmente esistono oltre 60 Anchor su Stellar che coprono più di 170 valute."
@@ -391,10 +391,10 @@
     "desc": "TVL è una metrica importante nella DeFi. Mostra quanto capitale è bloccato in un protocollo, una dApp o un pool di liquidità. Un TVL alto suggerisce fiducia e uso attivo. Su Stellar, il TVL misura il valore di tutti gli asset nei pool di liquidità. Piattaforme come DeFiLlama tracciano il TVL su molte blockchain e protocolli."
   },
   "balanceClaimable": {
-    "title": "Saldo richiedibile",
+    "title": "Claimable Balance",
     "original": "Claimable Balance",
     "short": "Denaro riservato che devi ancora ricevere.",
-    "desc": "Un saldo reclamabile è denaro che è già riservato per te, ma che devi ancora reclamare. Viene accreditato sul tuo conto solo dopo che lo accetti."
+    "desc": "Un claimable balance è una somma di denaro già riservata a te, ma che devi ancora richiedere. Verrà accreditata sul tuo conto solo dopo che l'avrai accettata."
   },
   "protocolUpdate": {
     "title": "Aggiornamento del Protocollo",
@@ -507,8 +507,8 @@
   "seedPhrase": {
     "title": "Teorema di restauro",
     "original": "Seed Phrase / Recovery Phrase",
-    "short": "Un elenco di parole con cui puoi ripristinare il tuo portafoglio.",
-    "desc": "È come la chiave di riserva della tua cassaforte. Chiunque la possieda può ripristinare il tuo portafoglio. Pertanto, non dovrebbe mai essere conservata online."
+    "short": "Un elenco di parole con cui puoi ripristinare il tuo wallet.",
+    "desc": "È come la chiave di riserva della tua cassaforte. Chiunque ne sia in possesso può ripristinare il tuo wallet. Pertanto, non dovrebbe mai essere conservata online."
   },
   "selfCustody": {
     "title": "Auto-custodia",
@@ -523,21 +523,21 @@
     "desc": "Come una banca che gestisce il tuo conto. Può essere conveniente ma ti toglie il pieno controllo. Devi fidarti di essa."
   },
   "hardwareWallet": {
-    "title": "Portafoglio hardware",
+    "title": "Hardware wallet",
     "original": "Hardware Wallet",
     "short": "Un dispositivo fisico per le tue chiavi.",
     "desc": "Come una piccola cassaforte in tasca. Le chiavi rimangono sul dispositivo e non vanno online. Questo protegge da molti attacchi online."
   },
   "hotWallet": {
-    "title": "Portafoglio caldo",
+    "title": "Caldo wallet",
     "original": "Hot Wallet",
-    "short": "Un portafoglio con accesso a Internet.",
-    "desc": "Come un portafoglio in una giacca: comodo ma più vulnerabile. Adatto per piccole somme e per l'uso quotidiano. Non ideale per grandi somme."
+    "short": "Un wallet con accesso a Internet.",
+    "desc": "Come un wallet in tasca: comodo, ma più esposto ai rischi. Adatto per piccole somme e per l’uso quotidiano. Non l’ideale per somme ingenti."
   },
   "coldWallet": {
-    "title": "Portafoglio freddo",
+    "title": "Freddo wallet",
     "original": "Cold Wallet",
-    "short": "Un portafoglio senza connessione internet.",
+    "short": "Un wallet senza connessione a Internet.",
     "desc": "Come una cassaforte nel seminterrato. Molto sicura, ma poco pratica per l'uso quotidiano. Adatta per la conservazione a lungo termine."
   },
   "cryptocurrency": {
@@ -573,8 +573,8 @@
   "governanceToken": {
     "title": "Token di governance",
     "original": "Governance Token",
-    "short": "Un gettone per avere voce in capitolo nelle regole.",
-    "desc": "Come una scheda di voto in un club. Coloro che hanno gettoni possono votare sulle regole. Ciò significa responsabilità."
+    "short": "Un token per avere voce in capitolo sulle regole.",
+    "desc": "Come una tessera di socio in un club. Chi possiede tokens può votare sulle regole. Questo comporta una responsabilità."
   },
   "liquidityToken": {
     "title": "Token di liquidità / Token LP",
@@ -802,7 +802,7 @@
     "title": "Denaro",
     "original": "Money",
     "short": "Il denaro è un mezzo di scambio universalmente accettato per beni e servizi.",
-    "desc": "Il denaro svolge tre funzioni: è mezzo di scambio, riserva di valore e unità di conto. Storicamente, il denaro ha assunto molte forme – dalle conchiglie all'oro fino alle banconote attuali e al denaro digitale. Il denaro moderno è perlopiù sostenuto dalla fiducia nel governo emittente, non da valori fisici."
+    "desc": "Il denaro svolge tre funzioni: è un mezzo di scambio, una riserva di valore e un'unità di conto. Nel corso della storia, il denaro ha assunto molte forme: dalle conchiglie all'oro, fino alle banconote e alla moneta digitale di oggi. Il denaro moderno è sostenuto principalmente dalla fiducia nel governo che lo emette, non da assets fisico."
   },
   "fiatCurrency": {
     "title": "Valuta fiat",
@@ -844,25 +844,25 @@
     "title": "Cifratura",
     "original": "Encryption",
     "short": "Conversione di dati leggibili in un formato illeggibile che può essere decifrato solo con la chiave corretta.",
-    "desc": "La cifratura protegge i dati dall'accesso non autorizzato. Esistono due tipi principali: cifratura simmetrica (una chiave per cifrare e decifrare) e cifratura asimmetrica (chiave pubblica per cifrare, chiave privata per decifrare). I portafogli e le transazioni blockchain utilizzano la cifratura asimmetrica."
+    "desc": "La crittografia protegge i dati da accessi non autorizzati. Esistono due tipi principali: la crittografia simmetrica (una sola chiave sia per la crittografia che per la decrittografia) e la crittografia asimmetrica (public key per la crittografia, chiave privata per la decrittografia). Wallets e le transazioni blockchain utilizzano la crittografia asimmetrica."
   },
   "digitalSignature": {
     "title": "Firma digitale",
     "original": "Digital Signature",
     "short": "Prova crittografica che un messaggio o una transazione è stata autorizzata dal legittimo proprietario.",
-    "desc": "Una firma digitale funziona in modo simile a una firma autografa – solo che è a prova di falsificazione. Su Stellar, firmi ogni transazione con la tua chiave privata. La rete può verificare con la tua chiave pubblica se la firma è valida – senza mai vedere la tua chiave privata. Senza una firma valida, una transazione viene rifiutata dalla rete."
+    "desc": "Una firma digitale funziona in modo simile a una firma autografa, con la differenza che è a prova di contraffazione. Su Stellar, ogni transazione viene firmata con la propria chiave privata. La rete può verificare, tramite il proprio public key, se la firma è valida, senza mai venire a conoscenza della chiave privata. In assenza di una firma valida, la transazione viene rifiutata dalla rete."
   },
   "publicKeyCryptography": {
-    "title": "Crittografia a chiave pubblica",
+    "title": "Public-Key Crittografia",
     "original": "Public-Key Cryptography",
     "short": "Metodo di cifratura con due chiavi collegate: una pubblica e una privata.",
-    "desc": "Il principio: ciò che viene cifrato con la chiave pubblica può essere decifrato solo con la chiave privata – e viceversa. Puoi condividere liberamente la tua chiave pubblica (= l'indirizzo del tuo portafoglio). La tua chiave privata rimane segreta. Chiunque conosca la tua chiave privata ha pieno accesso al tuo conto. Pertanto: non condividere mai la tua chiave privata!"
+    "desc": "Il principio: ciò che viene crittografato con la chiave public key può essere decrittografato solo con la chiave privata – e viceversa. Puoi condividere liberamente la tua chiave public key (= il tuo indirizzo wallet). La tua chiave privata rimane segreta. Chiunque conosca la tua chiave privata ha pieno accesso al tuo account. Pertanto: non condividere mai la tua chiave privata!"
   },
   "keyPair": {
     "title": "Coppia di chiavi",
     "original": "Key Pair",
     "short": "La combinazione di chiave pubblica e privata che insieme formano un conto crypto.",
-    "desc": "Una coppia di chiavi è composta dalla chiave pubblica (il tuo indirizzo che gli altri possono vedere) e dalla chiave privata (la tua password che rimane segreta). Su Stellar, la chiave pubblica è rappresentata come indirizzo G, mentre la chiave privata inizia con S. La coppia di chiavi viene generata matematicamente ed è praticamente impossibile da falsificare o indovinare."
+    "desc": "Una coppia di chiavi è composta dal public key (il tuo indirizzo visibile agli altri) e dalla chiave privata (la tua password che rimane segreta). Su Stellar, il public key è rappresentato come un indirizzo G, mentre la chiave privata inizia con la lettera S. La coppia di chiavi viene generata matematicamente ed è praticamente impossibile da falsificare o indovinare."
   },
   "signing": {
     "title": "Firma",
@@ -871,7 +871,7 @@
     "desc": "Prima che una transazione venga eseguita sulla rete Stellar, deve essere firmata. Con la chiave privata viene creata una firma digitale che dimostra che il legittimo titolare del conto ha approvato la transazione. Senza una firma valida, la transazione viene rifiutata dalla rete. Per i conti multisig sono necessarie più firme."
   },
   "sequenceNumber": {
-    "title": "Numero di sequenza",
+    "title": "Sequence Number",
     "original": "Sequence Number",
     "short": "Un numero progressivo che identifica in modo univoco ogni transazione di un conto e previene la doppia spesa.",
     "desc": "Ogni account Stellar ha un Sequence Number che aumenta di 1 a ogni transazione. Una transazione viene accettata solo se il suo Sequence Number corrisponde esattamente alla sequenza attuale dell'account +1. Questo impedisce che la stessa transazione venga eseguita due volte. Se invii più transazioni contemporaneamente, devono essere elaborate nell'ordine corretto."
@@ -953,7 +953,7 @@
     "title": "Wallet Watcher / Drainer",
     "original": "Wallet Watcher / Drainer",
     "short": "Uno script automatico che monitora un conto compromesso e preleva immediatamente ogni nuovo deposito.",
-    "desc": "Non appena i truffatori ottengono accesso a una chiave segreta, spesso impostano un osservatore automatico. Questo monitora il conto tutto il giorno e trasferisce immediatamente ogni nuovo deposito al conto del truffatore – spesso in pochi secondi. Il conto è definitivamente compromesso. L'unica soluzione: creare immediatamente un nuovo portafoglio con chiavi completamente nuove e non usare mai più il vecchio conto."
+    "desc": "Una volta che i truffatori ottengono l’accesso a un secret key, spesso configurano un sistema di monitoraggio automatico. Questo controlla il conto 24 ore su 24 e trasferisce immediatamente ogni nuovo deposito sul conto del truffatore – spesso nel giro di pochi secondi. Il conto è compromesso in modo permanente. L’unica soluzione: creare immediatamente un nuovo wallet con chiavi completamente nuove e non utilizzare mai più il vecchio conto."
   },
   "lumio": {
     "title": "Lumio",
@@ -982,8 +982,8 @@
   "keypair": {
     "title": "Coppia di chiavi",
     "original": "Keypair",
-    "short": "Combinazione abbinata di Chiave Pubblica e Chiave Segreta.",
-    "desc": "Un keypair è composto da due chiavi abbinate: la Chiave Pubblica (il tuo indirizzo) e la Chiave Segreta (la tua password). Entrambe le chiavi appartengono insieme e formano un'unità. Condividi la Chiave Pubblica pubblicamente – la Chiave Segreta la tieni sempre per te."
+    "short": "Combinazione corrispondente di Public Key e Secret Key.",
+    "desc": "Una coppia di chiavi è composta da due chiavi corrispondenti: la Public Key (il tuo indirizzo) e la Secret Key (la tua password). Entrambe le chiavi sono indissociabili e formano un’unica unità. Il Public Key va condiviso pubblicamente, mentre il Secret Key va sempre tenuto per sé."
   },
   "fba": {
     "title": "Federated Byzantine Agreement",
@@ -1010,7 +1010,7 @@
     "desc": "La chiave principale dell'emittente è la chiave principale dell'account che emette un asset. Se il suo peso è impostato a 0, la chiave principale da sola non può più firmare nuove azioni. Questo può essere un segnale positivo perché rende più difficile per l'emittente modificare le regole in modo silenzioso. La configurazione completa dell’account, inclusi altri signers e flag, rimane comunque rilevante."
   },
   "assetCode": {
-    "title": "Codice bene",
+    "title": "Asset Codice",
     "original": "Asset Code",
     "short": "Nome abbreviato di un asset Stellar, come USDC o EURC.",
     "desc": "Il codice dell'asset è il nome abbreviato visibile di un asset Stellar. Di per sé non è univoco, poiché diversi emittenti possono utilizzare lo stesso codice. Solo il codice, insieme all'indirizzo dell'emittente, identifica in modo univoco un asset Stellar."
@@ -1061,13 +1061,13 @@
     "title": "Prega",
     "original": "Bid",
     "short": "Offerta di acquisto nel libro degli ordini.",
-    "desc": "Un bid è un'offerta di acquisto. Indica il prezzo al quale qualcuno è disposto ad acquistare un titolo. Il miglior bid è solitamente l'offerta di acquisto più alta attualmente presente nel libro degli ordini."
+    "desc": "Un'offerta di acquisto è un'offerta di acquisto. Indica il prezzo al quale qualcuno è disposto ad acquistare un asset. L'offerta di acquisto migliore è solitamente l'offerta di acquisto più alta attualmente presente nel libro degli ordini."
   },
   "ask": {
     "title": "Chiedi",
     "original": "Ask",
     "short": "Offerta di vendita nel libro degli ordini.",
-    "desc": "Il prezzo di vendita è un'offerta di vendita. Indica il prezzo al quale qualcuno è disposto a vendere un titolo. Il miglior prezzo di vendita è solitamente l'offerta di vendita più bassa attualmente presente nel libro degli ordini."
+    "desc": "Un prezzo di vendita è un'offerta di vendita. Indica il prezzo al quale qualcuno è disposto a vendere un asset. Il miglior prezzo di vendita è solitamente l'offerta di vendita più bassa attualmente presente nel libro degli ordini."
   },
   "marketDepth": {
     "title": "Profondità di mercato",

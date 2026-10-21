@@ -7,8 +7,8 @@
     "reverseLabel": "Naziv kako ga je izvijestio poslužitelj Federacije {{domain}}"
   },
   "flag": {
-    "compromised": "Upozorenje: Ovaj novčanik je označen kao kompromitiran na vašem TrustListu.",
-    "deactivated": "Napomena: Ovaj novčanik je označen kao onemogućen na vašem popisu povjerenja."
+    "compromised": "Upozorenje: Ovaj wallet označen je kao kompromitiran na vašoj TrustList.",
+    "deactivated": "Napomena: Ovaj wallet označen je kao onemogućen na vašoj listi povjerenja."
   },
   "xlmBalance": "XLM",
   "unfunded": "Nije aktivirano",
@@ -107,7 +107,7 @@
     "fakeNativeHint": "Ovo je Token od izdavača, a ne mrežni izvorni XLM."
   },
   "claimable": {
-    "title": "Potraživanja",
+    "title": "Claimable Balances",
     "intro": "Uplate koje su dostupne na vašem računu, ali moraju biti potvrđene prije nego što se pojave na vašem stanju.",
     "claim": "Iskoristiti",
     "hide": "Sakrij",
@@ -125,7 +125,7 @@
     "noTrustHide": "Sakrij",
     "noTrustNote": "Otkupljivanje stvara Trustline i zaključava 0,5 XLM u rezervi. Nezatraženi Token često se koriste u pokušajima prijevare. SKM ne procjenjuje Token i ne donosi nikakvu odluku o tome je li Token autentičan. Ako je potrebno, provjerite činjenice o Token koristeći pretragu Token.",
     "truncated": "Prikazuju se samo prva {{count}} unosa.",
-    "loadError": "Salda za naplatu nisu mogla biti učitana.",
+    "loadError": "Claimable balances nije mogao biti učitani.",
     "insufficientReserve": "Trustline zahtijeva {{reserve}} XLM u rezervi; {{available}} XLM je dostupan.",
     "insufficientWeight": "Signers koje ste unijeli zajedno ne dostižu potrebnu težinu od {{required}}.",
     "success": "{{amount}} {{code}} iskorišteno. Transakcija {{hash}}.",
@@ -134,13 +134,13 @@
     "networkMismatch": "Poslužitelj Horizon nije dio odabrane mreže. Ništa nije potpisano niti poslano.",
     "prepareJob": "Pripremite se za posao Multisig",
     "insufficientWeightJob": "Signers koje ste unijeli zajedno ne dosežu potrebnu težinu {{required}}. Umjesto toga pripremite Multisig posao, a zatim se drugi Signers mogu prijaviti na web stranici.",
-    "tooLittleTime": "Potraživani iznos isteći će prerano da bi se iskoristio kao Multisig posao.",
+    "tooLittleTime": "claimable balance će isteći prerano da bi se iskoristio kao Multisig posao.",
     "jobSource": "Račun",
     "jobClaim": "Iskoristiti",
     "jobTrustline": "Stvorite Trustline",
     "jobNetwork": "Mreža",
     "jobNoteLabel": "Napomena",
-    "jobHint": "Potraživani iznos može isteći ili biti iskorišten na neki drugi način prije nego što svi potpišu. Tada će zadatak prilikom podnošenja propasti, ali ništa neće biti izgubljeno. Valjanost zadatka ne prestaje prije isteka potraživanog iznosa.",
+    "jobHint": "Claimable Balance može isteći ili biti iskorišten na neki drugi način prije nego što svi potpišu. Tada će zadatak prilikom podnošenja propasti, ali ništa neće biti izgubljeno. Valjanost zadatka ne prestaje prije isteka Claimable Balance.",
     "empty": "Nije pronađen Claimable Balances."
   },
   "batchConvert": {

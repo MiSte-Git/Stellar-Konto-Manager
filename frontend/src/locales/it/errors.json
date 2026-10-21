@@ -51,9 +51,9 @@
       "unknown": "Errore sconosciuto nella transazione",
       "signingFailed": "Non è stato possibile creare una o più firme. Riprova.",
       "multisig": {
-        "invalidSecret": "Una delle chiavi segrete inserite non è valida.",
+        "invalidSecret": "Uno dei valori inseriti per secret keys non è valido.",
         "notASigner": "Uno dei valori inseriti secret keys non corrisponde al valore registrato signers.",
-        "noKeysProvided": "Non sono state inserite chiavi segrete valide.",
+        "noKeysProvided": "Non è stato inserito alcun valore valido per secret keys.",
         "insufficientWeight": "Le firme raccolte sono insufficienti per autorizzare questo cambiamento. Necessarie: {{required}}, disponibili: {{current}}.",
         "txBadAuth": "Transazione rifiutata: Le firme non sono sufficienti (tx_bad_auth).",
         "zeroWeightSigner": "Il valore secret key inserito appartiene a un signer con peso 0 e non può autorizzare una transazione.",

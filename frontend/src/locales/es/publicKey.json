@@ -1,15 +1,15 @@
 {
-  "label": "Clave pública o dirección de federación",
-  "placeholder": "Ingrese su clave pública o una dirección de federación.",
+  "label": "Public key o dirección de la federación",
+  "placeholder": "Introduce tu public key o una dirección de la federación.",
   "load": "Cargar",
   "loadHint": "Normalmente no es necesario: al seleccionar una opción de la lista o al pulsar Intro, la cuenta se carga automáticamente. Utiliza este botón como alternativa o para volver a cargar el saldo de la cuenta.",
   "deleteFromList": "Eliminar de la lista",
   "source": "Fuente",
   "destination": {
     "input": "Objetivo",
-    "error": "Clave pública no válida ingresada.",
-    "label": "Clave pública de destino",
-    "placeholder": "Ingrese la clave pública de destino"
+    "error": "Se ha introducido un valor no válido para public key.",
+    "label": "Objetivo public key",
+    "placeholder": "Introduce el destino public key"
   },
   "invalid": "Public Key no es válido.",
   "submit": {
@@ -17,5 +17,5 @@
   },
   "test": "Prueba",
   "historyLabel": "Historia",
-  "historyPlaceholder": "Seleccionar la cartera utilizada por última vez"
+  "historyPlaceholder": "Seleccionar el último utilizado wallet"
 }

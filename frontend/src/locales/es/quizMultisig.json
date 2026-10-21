@@ -42,13 +42,13 @@
     "a3fb": "Incorrecto: Solo hay firmas suficientes para cumplir con el threshold."
   },
   "q5": {
-    "question": "¿Cómo se deben almacenar las claves secretas en configuraciones reales de multisig?",
+    "question": "¿Cómo se debe almacenar secret keys en configuraciones reales de multisig?",
     "hint": "La separación es seguridad.",
     "a1": "Separados en diferentes dispositivos/ubicaciones.",
     "a1fb": "Correcto: Las firmas deben recogerse por separado.",
     "a2": "Todo en el mismo portátil por conveniencia.",
     "a2fb": "Incorrecto: Un dispositivo implica un solo punto de falla.",
     "a3": "Comparte en texto plano en un chat.",
-    "a3fb": "Incorrecto: Nunca compartas las claves secretas."
+    "a3fb": "Incorrecto: Nunca compartas secret keys."
   }
 }

@@ -41,8 +41,8 @@
       },
       "local": {
         "title": "Syötä kaikki allekirjoitukset paikallisesti",
-        "desc": "Käytä vain, jos kaikki salaiset avaimet voidaan syöttää turvallisesti tähän laitteeseen (Tests/Recovery/Admin).",
-        "warning": "Varoitus: Kaikki salaiset avaimet kerätään tässä istunnossa. Käytä vain luotettavilla laitteilla.",
+        "desc": "Käytä vain, jos kaikki secret keys-arvot voidaan syöttää turvallisesti tällä laitteella (Testit/Palautus/Järjestelmänvalvoja).",
+        "warning": "Varoitus: Kaikki secret keys-tiedot kerätään tässä istunnossa. Käytä vain luotettavissa laitteissa.",
         "moreInfo": "Lisätietoja",
         "infoTitle": "Miten \"Kaikki allekirjoitukset paikallisesti\" toimii?",
         "infoBody": {
@@ -53,18 +53,18 @@
       },
       "xdr": {
         "title": "Vie XDR (älä lähetä)",
-        "desc": "Luo raaka XDR-tapahtuma offline-työkaluille tai laitekolikoille.",
+        "desc": "Luo raaka XDR-tapahtuma offline-työkaluja tai laitteistoa varten wallets.",
         "short": "Vie tapahtuma XDR-muotoon lähettämättä sitä suoraan.",
         "moreInfo": "Lisätietoja.",
         "infoTitle": "Kuinka XDR-vienti toimii?",
         "infoBody": {
           "one": "XDR on Stellarin raakatransaktiomuoto. Mitään ei lähetetä automaattisesti.",
-          "two": "Käytä XDR:ää laitteistolompakoihin, offline-tietokoneisiin tai muihin lompakoihin/työkaluihin, jotka voivat tuoda XDR:ää.",
+          "two": "Käytä XDR-muotoa laitteistolle wallets, offline-tietokoneille tai muille wallets/työkaluille, jotka pystyvät tuomaan XDR-tiedostoja.",
           "three": "Sinun vastuullasi on allekirjoittaa ja/tai lähettää XDR myöhemmin (esim. käyttämällä Multisig-tehtäviä tai ulkoista työkalua)."
         },
         "steps": {
           "one": "XDR luodaan, mutta mitään ei lähetetä.",
-          "two": "Voit allekirjoittaa XDR:n ulkoisesti (offline-tietokoneella, laitteistolompakolla tai jollain muulla työkalulla).",
+          "two": "Voit allekirjoittaa XDR-tiedoston ulkoisesti (offline-tietokoneella, wallet-laitteella tai jollain muulla työkalulla).",
           "three": "Lähettääksesi sinun täytyy tuoda XDR (e.g., via multisig jobs or another tool) uudelleen ja allekirjoittaa/lähettää se siellä."
         }
       }
@@ -127,7 +127,7 @@
   },
   "testMode": {
     "modalTitle": "Yhden käyttäjän allekirjoitus",
-    "modalDescription": "Tässä voit syöttää kaikki tarvittavat salaiset avaimet yhdelle laitteelle ja lähettää tapahtuman suoraan. Todellisissa moniosapu-asetuksissa avaimien tulisi pysyä erillisillä laitteilla."
+    "modalDescription": "Täällä voit syöttää kaikki tarvittavat secret keys-arvot yhdelle laitteelle ja lähettää tapahtuman suoraan. Todellisissa monen osapuolen järjestelyissä avaimet tulisi säilyttää erillisillä laitteilla."
   },
   "mode": {
     "test": {
@@ -164,7 +164,7 @@
       "progress": "Allekirjoituksen paino: {{collected}} / {{required}}",
       "signed": "allekirjoitettu",
       "missing": "puuttuu",
-      "noSessionSecret": "Selaimessa ei ole tallennettu salaista avainta. Anna salaisuus tai tuo allekirjoitettu XDR.",
+      "noSessionSecret": "Selaimeen ei ole tallennettu secret key-tunnusta. Syötä salainen avain tai tuo allekirjoitettu XDR-tiedosto.",
       "signedLocalStatus": "Allekirjoitus tallennettu. Nykyinen tila: {{status}}"
     },
     "changes": {
@@ -175,7 +175,7 @@
     },
     "xdr": {
       "title": "Tapahtuma (XDR)",
-      "hint": "Muut Signers-laitteet voivat ladata ja allekirjoittaa tämän XDR-tiedoston yhteensopivissa lompakoissa.",
+      "hint": "Muut Signers voivat ladata ja allekirjoittaa tämän XDR:n yhteensopivissa Wallet-sovelluksissa.",
       "copy": "Kopioi XDR",
       "copy.success": "XDR kopioitu leikepöydälle.",
       "copy.error": "XDR:ää ei voitu kopioida leikepöydälle."
@@ -192,14 +192,14 @@
     },
     "secretPrompt": {
       "title": "Anna salaisuus allekirjoitusta varten",
-      "hint": "Anna tilin {{account}} salainen avain.",
+      "hint": "Syötä tilille {{account}} arvo secret key.",
       "signNow": "Allekirjoita nyt"
     },
     "submitFailed": "Virhe tapahtui lähetettäessä: {{reason}}",
     "submitNoExtras": "Ei lisätietoja virheestä saatavilla.",
     "noAccessToken": "Pääsyä token ei ole käytettävissä. Lataa ensin tili, joka on tämän työn signer.",
     "notASigner": "Tämä tili ei ole tämän työn aktiivinen signer.",
-    "noLocalSecretForToken": "Tälle selaimelle ei ole tallennettu tämän tilin salasanaa. Avaa tili käyttämällä jaettua linkkiä, jossa on pääsytunnus, tai lataa tili kerran valitsemalla ”Muista salasana”.",
+    "noLocalSecretForToken": "Tälle selaimelle ei ole tallennettu tämän tilin salasanaa. Avaa tili käyttämällä jaettua linkkiä, jonka käyttöoikeus on token, tai lataa tili kerran käyttämällä ”Muista salasana” -toimintoa.",
     "transparency": {
       "title": "Tapahtuman tiedot"
     },
@@ -299,7 +299,7 @@
     "deleteTestnet": "Poista testnet-tehtävät",
     "deleteTestnetTitle": "Poista kaikki testnet-työt.",
     "deleteTestnetHint": "Tämä poistaa kaikki multisig-työt testiverkosta. Vahvista kirjoittamalla \"DELETE TESTNET JOBS\".",
-    "deleteTestnetConfirm": "Poista testiverkkojen tehtävät"
+    "deleteTestnetConfirm": "Poista testnet-työtehtävät"
   },
   "actions": {
     "createMultisigJob": "Luo Multisig TaskJob"

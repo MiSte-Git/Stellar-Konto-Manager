@@ -62,7 +62,7 @@
     "watcher": {
       "title": "⚠️ Tärkeää: Painajainen ei lopu",
       "body": "Huijarit asettavat usein automaattisen tarkkailijan. Jokainen uusi talletus vaarantuneelle tilille nostetaan välittömästi ja automaattisesti.",
-      "solution": "AINOA RATKAISU: Luo heti täysin uusi lompakko uusilla avaimilla. Vanha tili on menetetty ikuisesti."
+      "solution": "AINOA RATKAISU: Luo välittömästi aivan uusi wallet uusilla avaimilla. Vanha tili on menetetty lopullisesti."
     },
     "timeskip": {
       "laterText": "Tunteja, päiviä myöhemmin...",
@@ -78,11 +78,11 @@
       },
       "messages": {
         "01": "Hei! Täällä on Stellar-tukitiimi. Olemme havainneet epätavallista toimintaa tililläsi.",
-        "02": "Tilisi on väliaikaisesti rajoitettu. Rajoituksen poistamiseksi tarvitsemme salaisen avaimesi vahvistusta varten. Tämä on standardimenettely.",
+        "02": "Tilisi on väliaikaisesti rajoitettu. Rajoituksen poistamiseksi tarvitsemme vahvistusta varten Secret Key. Tämä on vakiomenettely.",
         "03": "⚠️ Vastaa nopeasti – tilisi suljetaan pysyvästi 24 tunnin kuluttua, jos emme saa vahvistusta."
       },
       "options": {
-        "shareKey": "Jaa salainen avain",
+        "shareKey": "Jaa Secret Key",
         "askOfficial": "Onko tähän virallinen kanava?",
         "blockIgnore": "Estä ja ohita"
       },
@@ -96,12 +96,12 @@
         }
       },
       "redFlags": {
-        "asksForKey": "Aito tuki ei koskaan pyydä salaista avaintasi",
+        "asksForKey": "Todellinen tuki ei koskaan pyydä sinulta Secret Key:tä",
         "urgency": "Keinotekoinen aikapaine on klassinen manipulointikeino",
         "noVerification": "Ei viittausta virallisiin kanaviin tai verkkosivustoon",
         "accountSuspension": "Tilin sulkeminen ilman virallista sähköpostia tai sovelluksen ilmoitusta"
       },
-      "explanation": "Salainen avain on kuin yksityisen kassakaapin avain: joka sen tietää, saa täyden pääsyn koko saldoosi. Mikään laillinen palvelu – ei edes Stellar itse – ei koskaan pyydä sitä. Älä jaa sitä kenellekään, riippumatta siitä kuinka kiireeltä pyyntö kuulostaa tai kuinka virallinen lähettäjä näyttää."
+      "explanation": "Secret Key on kuin yksityisen kassakaapin avain: kuka tahansa, joka tietää sen, pääsee käsiksi koko saldoosi. Mikään laillinen palvelu – ei edes Stellar itse – ei koskaan pyydä sitä. Älä koskaan jaa sitä kenellekään, riippumatta siitä, kuinka kiireelliseltä pyyntö kuulostaa tai kuinka viralliselta lähettäjä vaikuttaa."
     },
     "fakeWebsite01": {
       "contact": {
@@ -111,11 +111,11 @@
       "messages": {
         "01": "Hei, huomasin että etsit yleiskatsausta Stellar-maksuistasi?",
         "02": "Minulla oli sama ongelma. Tämä sivusto auttoi minua: stellar-payment-tools.com ✅",
-        "03": "Sinun täytyy vain syöttää salainen avaimesi vahvistusta varten – kestää 10 sekuntia"
+        "03": "Sinun tarvitsee vain syöttää Secret Key vahvistusta varten – se kestää 10 sekuntia"
       },
       "options": {
-        "enterKey": "Syötä salainen avain",
-        "askWhy": "Miksi verkkosivusto tarvitsee salaisen avaimeni?",
+        "enterKey": "Kirjoita Secret Key",
+        "askWhy": "Miksi verkkosivusto tarvitsee minun Secret Key:ni?",
         "ignoreSearch": "Ohita linkki ja etsi viralliset lähteet"
       },
       "followUp": {
@@ -127,15 +127,15 @@
         "ask": {
           "01": "Se on vain turvallisuutta varten, täysin normaalia Stellar-työkaluille 😊",
           "02": "Kaikki käyttäjämme tekevät tämän, katso arvostelut ⭐⭐⭐⭐⭐",
-          "03": "Varoitus: Väärennetyt arvostelut on helppo luoda. Mikään työkalu ei tarvitse salaista avaintasi."
+          "03": "Varoitus: Vääriä arvosteluja on helppo keksiä. Mikään työkalu ei vaadi sinulta Secret Key:tä."
         }
       },
       "redFlags": {
         "targeted": "Tuntematon henkilö otti yhteyttä juuri sinun ongelmaasi koskien (he tarkkailivat)",
-        "websiteKey": "Ulkoinen verkkosivusto pyytää salaista avainta",
+        "websiteKey": "Ulkoinen verkkosivusto, jolla pyydetään Secret Key",
         "fakeReviews": "Sosiaalinen todiste väärennettyjen arvostelujen kautta"
       },
-      "explanation": "Mikään laillinen työkalu, verkkosivusto tai palvelu ei koskaan tarvitse salaista avaintasi. Sen syöttäminen antaa operaattorille täyden pääsyn tilillesi. Kohdistettu lähestyminen ja väärennetyt arvostelut ovat klassisia taktiikoita väärän luottamuksen rakentamiseen."
+      "explanation": "Mikään laillinen työkalu, verkkosivusto tai palvelu ei koskaan pyydä sinulta Secret Key-tunnusta. Sen syöttäminen antaa palvelun ylläpitäjälle täyden pääsyn tiliisi. Kohdennettu markkinointi ja väärennetyt arvostelut ovat klassisia keinoja luoda väärää luottamusta."
     },
     "fakeAirdrop01": {
       "contact": {
@@ -248,7 +248,7 @@
       "followUp": {
         "scam": {
           "01": "Trustline on lisätty onnistuneesti! 50 BERRY-pisteesi ovat tulossa. 🍓",
-          "02": "Sait 50 BERRY-tokenia väärältä liikkeeseenlaskijalta – mutta yksikään kauppa ei hyväksy niitä. Liikkeeseenlaskija on tuntematon. Nämä tokenit ovat arvottomia ja saattavat olla alku lisäyrityksilleen."
+          "02": "Olet saanut 50 BERRY-pistettä väärältä lähettäjältä – mutta yksikään kauppa ei hyväksy niitä. Lähettäjä on tuntematon. Nämä tokens ovat arvottomia ja saattavat olla alku uusille tietojenkalasteluyrityksille."
         },
         "generous": {
           "01": "Se todella on kertaluonteinen tarjous! Virallinen liikkeeseenlaskijan osoite on verkkosivustollamme.",
@@ -256,21 +256,21 @@
         },
         "issuer": {
           "01": "Virallinen BERRY-liikkeeseenlaskija (Marcon sivuston mukaan):\nGDMARCXXX7XXBXXXXX3XXXXXKXXXXX4XXXXXNXXXXX2XXXPXXXARCO77",
-          "02": "Tässä viestissä oleva liikkeeseenlaskija:\nGDFAKEXX6XXXXRXXXXX5XXXXXMXXXXX3XXXXXYXXXXX7XXXQXXFAKE77\n\n❌ Ei sama! Sama tokenin nimi, eri liikkeeseenlaskija – tämä BERRY on arvoton."
+          "02": "Tämän viestin lähettäjä:\nGDFAKEXX6XXXXRXXXXX5XXXXXMXXXXX3XXXXXYXXXXX7XXXQXXFAKE77\n\n❌ Ei identtinen! Sama token-nimi, eri lähettäjä – tämä BERRY on arvoton."
         },
         "addAnyway": {
           "01": "Trustline on lisätty onnistuneesti! Saat 50 BERRY:tä pian. 🍓",
           "02": "Vaikka huomasitkin eron liikkeeseenlaskijoiden välillä, lisäsit silti Trustline:n. 50 BERRY:tä oli peräisin väärältä liikkeeseenlaskijalta, ja ne ovat arvottomia – yksikään kauppa ei hyväksy niitä."
         },
         "buyDex": {
-          "01": "⚠️ DEX:ssä on monia BERRY-nimisiä tokeneita eri liikkeeseenlaskijoilta. Ilman virallista liikkeeseenlaskijan osoitetta saatat myös ostaa arvottomia tokeneita. Liikkeeseenlaskija on ratkaiseva – myös DEX:stä ostaessa."
+          "01": "⚠️ DEX:ssä on useita eri liikkeeseenlaskijoiden tarjoamia tokens-nimisiä BERRY-tokenia. Ilman virallista liikkeeseenlaskijan osoitetta saatat ostaa myös arvottomia tokens-tokenia. Liikkeeseenlaskija on avaintekijä – myös DEX:ssä ostettaessa."
         }
       },
       "redFlags": {
-        "freeTokens": "Ilmaiset tokenit ilman todellista vastiketta ovat aina epäilyttäviä",
+        "freeTokens": "Ilmaiset tokens-tarjoukset, joihin ei liity mitään todellista vastinetta, ovat aina epäilyttäviä",
         "fakeIssuer": "Viestissä oleva liikkeeseenlaskija ei vastaa virallista",
         "urgency": "\"Vain tänään\" – keinotekoinen kiire estää kriittistä ajattelua",
-        "sameNameDifferentIssuer": "Sama tokenin nimi (BERRY) ei tarkoita samaa tokenia – vain liikkeeseenlaskija tekee eron"
+        "sameNameDifferentIssuer": "Sama token-nimi (BERRY) ei tarkoita samaa token:ta – vain liikkeeseenlaskija ratkaisee asian"
       },
       "explanation": "Stellar-verkostossa olevat mukautetut Token-tunnukset määritellään niiden liikkeeseenlaskijan perusteella – ei niiden nimen perusteella. Kaksi Token-tunnusta voi molemmat olla nimeltään ”BERRY”, mutta ne voivat olla peräisin täysin eri liikkeeseenlaskijoilta. Ainoastaan Marco’s Marketplacen virallinen liikkeeseenlaskija laskee liikkeeseen aitoja, lunastettavissa olevia BERRY-tokenia. Ennen kuin lisäät Trustline-tokenin, tarkista aina liikkeeseenlaskijan osoite palveluntarjoajan virallisilta verkkosivuilta."
     }

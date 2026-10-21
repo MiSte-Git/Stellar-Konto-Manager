@@ -786,6 +786,12 @@ class TechTermTests(unittest.TestCase):
         # Echte Codes mit Schrägstrich bleiben geschützt
         self.assertTrue(usd._looks_like_kept_english_term("CODE/ISSUER"))
 
+    def test_no_double_plural_s_after_placeholder(self):
+        protected, ph = usd.protect_for_translation("in kompatiblen Wallets laden", "en")
+        with mock.patch.object(usd, "translate_text", return_value="load in compatible __KEEP_TERM_1__s"):
+            out = usd.translate_protected(protected, ph, "en", "deepl", None, "k", "p")
+        self.assertEqual(usd.restore_parenthesized_english(out, ph), "load in compatible Wallets")
+
     def test_find_term_mismatches(self):
         src = {"a": "Create trustline", "b": "Add memo", "c": "Plain text", "x.original": "Trustline"}
         tgt = {"a": "Créer une ligne de crédit", "b": "Ajouter un memo", "c": "Texte", "x.original": "-"}

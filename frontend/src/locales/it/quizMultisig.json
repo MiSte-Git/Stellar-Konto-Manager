@@ -42,13 +42,13 @@
     "a3fb": "Errato: solo le firme necessarie per soddisfare il threshold."
   },
   "q5": {
-    "question": "Come dovrebbero essere conservate le chiavi segrete in configurazioni multisig reali?",
+    "question": "Come dovrebbe essere memorizzato secret keys nelle configurazioni reali di multisig?",
     "hint": "La separazione è sicurezza.",
     "a1": "Separati su diversi dispositivi/luoghi.",
     "a1fb": "Corretto: Le firme dovrebbero essere raccolte separatamente.",
     "a2": "Tutto sullo stesso laptop per comodità.",
     "a2fb": "Errato: Un dispositivo comporta un singolo punto di guasto.",
     "a3": "Condividi in testo semplice in una chat.",
-    "a3fb": "Errato: Mai condividere chiavi segrete."
+    "a3fb": "Errato: Non condividere mai secret keys."
   }
 }

@@ -73,7 +73,7 @@
       "testnetUrlInvalid": "Si prega di inserire un URL testnet valido."
     },
     "mainnetLabel": "Mainnet",
-    "testnetLabel": "Rete di prova",
+    "testnetLabel": "Testnet",
     "edit": "Modifica"
   },
   "export": {
@@ -123,7 +123,7 @@
       "discard": "Scartare",
       "save": "Salvare"
     },
-    "title": "I miei portafogli fidati",
+    "title": "Il mio fidato Wallets",
     "validation": {
       "hint": "Almeno una riga non è valida (indirizzo mancante o duplicato)."
     }

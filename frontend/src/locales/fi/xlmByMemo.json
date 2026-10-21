@@ -1,7 +1,7 @@
 {
   "page": {
     "title": "Suodata XLM:ää termillä Memo",
-    "noPublicKey": "Ei julkista avainta ladattu. Syötä ensin julkinen avain."
+    "noPublicKey": "public key-arvoa ei ole ladattu. Syötä ensin public key-arvo."
   },
   "action": {
     "calculate": "Laskea",
@@ -13,7 +13,7 @@
   },
   "debug": {
     "incoming": "Saapuva – vastaanottaja: {{toMe}}, luo→minulle: {{createToMe}}, alkuperäinen→minulle: {{nativeInToMe}}",
-    "incomingOverview": "Merkinnät: {{total}} • Mukana olevat lompakot: {{unique}}",
+    "incomingOverview": "Merkinnät: {{total}} • Mukana olevat wallets: {{unique}}",
     "memo": "Memos ikkunassa: {{any}} • tarkka memos: {{exact}}",
     "types": "Tyypit – maksu: {{pay}}, polku: {{path}}, luo: {{create}}, muu: {{other}}"
   },
@@ -30,7 +30,7 @@
     "label": "Memo hakuteksti (osajono, kirjainkokoa erottava)",
     "placeholder": "Memo (osamerkkijono, kirjainkokoa erottava)"
   },
-  "overviewLine": "Maksukuittaukset: {{total}} • mukana olevat lompakot: {{unique}}",
+  "overviewLine": "Maksukuitit: {{total}} • mukana olevia wallets: {{unique}}",
   "result": {
     "label": "Kokonaissumma:",
     "value": "{{amount}} XLM"
@@ -41,8 +41,8 @@
     "count": "Määrä: {{n}}",
     "label": "Vertailu (all inputs)",
     "otherCount": "Tietueet, joissa memo on virheellinen tai puuttuu: {{n}}",
-    "unique": "Ainutlaatuiset lompakot (kaikki): {{n}}",
-    "uniqueWallets": "Uniikit lompakot: {{n}}"
+    "unique": "Ainutlaatuinen wallets (kaikki): {{n}}",
+    "uniqueWallets": "Ainutlaatuinen wallets: {{n}}"
   },
   "time": {
     "setToNow": "Aseta nykyinen aika",
@@ -80,7 +80,7 @@
     "failed": "Virhe maksujen lataamisessa: memo on virheellinen tai tyhjä.",
     "hint": "Suodattaa kyseisen ajanjakson aikana saapuneet maksut ja näyttää lähettäjät, joiden memo-kenttä on virheellinen tai tyhjä.",
     "scanning": "… skannaus virheellinen/tyhjä memos",
-    "summary": "Lukumäärä: {{count}} • Yhteensä: {{sum}} XLM • Uniikit lompakot: {{unique}}",
+    "summary": "Määrä: {{count}} • Yhteensä: {{sum}} XLM • Ainutlaatuisia Wallets: {{unique}}",
     "title": "Virheellinen/tyhjä memos kyseisenä ajanjaksona"
   }
 }

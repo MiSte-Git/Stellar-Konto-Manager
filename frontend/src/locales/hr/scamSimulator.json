@@ -62,7 +62,7 @@
     "watcher": {
       "title": "⚠️ Važno: Noćna mora ne prestaje",
       "body": "Prevaranti često postavljaju automatski nadzornik. Svaki novi depozit na kompromitiranom računu automatski se odmah povlači.",
-      "solution": "JEDINO RJEŠENJE: Odmah stvorite potpuno novi novčanik s novim ključevima. Stari račun je zauvijek izgubljen."
+      "solution": "JEDINO RJEŠENJE: Odmah kreirajte potpuno novi wallet s novim ključevima. Stari račun je zauvijek izgubljen."
     },
     "timeskip": {
       "laterText": "Sati, dani prolaze...",
@@ -78,11 +78,11 @@
       },
       "messages": {
         "01": "Zdravo! Ovdje je tim Stellar podrške. Otkrili smo neobičnu aktivnost na vašem računu.",
-        "02": "Vaš račun je privremeno ograničen. Da bismo uklonili ograničenje, trebamo vaš Tajni Ključ za provjeru. Ovo je standardni postupak.",
+        "02": "Vaš je račun privremeno ograničen. Da bismo uklonili ograničenje, potrebni su nam vaši Secret Key za provjeru. Ovo je standardna procedura.",
         "03": "⚠️ Odgovorite brzo – vaš račun će biti trajno suspendiran za 24 sata ako ne primimo potvrdu."
       },
       "options": {
-        "shareKey": "Podijeliti Tajni Ključ",
+        "shareKey": "Podijeli Secret Key",
         "askOfficial": "Postoji li službeni kanal za to?",
         "blockIgnore": "Blokiraj i ignoriraj"
       },
@@ -96,12 +96,12 @@
         }
       },
       "redFlags": {
-        "asksForKey": "Prava podrška nikada ne traži vaš Tajni Ključ",
+        "asksForKey": "Prava podrška nikada ne traži tvoje Secret Key",
         "urgency": "Umjetni vremenski pritisak klasična je manipulativna taktika",
         "noVerification": "Nema reference na službene kanale ili web stranicu",
         "accountSuspension": "Suspenzija računa bez službene e-pošte ili obavijesti aplikacije"
       },
-      "explanation": "Tajni Ključ je poput ključa privatnog trezora: tko ga zna, ima pun pristup cijelom vašem saldu. Nijedna legitimna usluga – pa čak ni Stellar sam – nikada vas neće pitati za njega. Nikome ga ne dijelite, bez obzira koliko hitno zahtjev zvuči ili koliko službeno pošiljatelj izgleda."
+      "explanation": "Secret Key je poput privatnog ključa sefa: tko god ga zna ima potpuni pristup cijelom vašem stanju. Nijedna legitimna usluga – pa čak ni Stellar – nikada ga neće tražiti. Nikada ga nemojte dijeliti ni s kim, bez obzira koliko hitno zvuči zahtjev ili koliko službeno izgleda pošiljatelj."
     },
     "fakeWebsite01": {
       "contact": {
@@ -111,11 +111,11 @@
       "messages": {
         "01": "Hej, vidio sam da tražiš pregled svojih Stellar plaćanja?",
         "02": "Imao sam isti problem. Ova stranica mi je pomogla: stellar-payment-tools.com ✅",
-        "03": "Samo trebate unijeti Tajni Ključ za provjeru – traje 10 sekundi"
+        "03": "Samo trebate unijeti svoj Secret Key za provjeru – traje 10 sekundi"
       },
       "options": {
-        "enterKey": "Unijeti Tajni Ključ",
-        "askWhy": "Zašto web stranica treba moj Tajni Ključ?",
+        "enterKey": "Unesite Secret Key",
+        "askWhy": "Zašto web-stranica treba moj Secret Key?",
         "ignoreSearch": "Ignorirati link i tražiti službene izvore"
       },
       "followUp": {
@@ -127,15 +127,15 @@
         "ask": {
           "01": "To je samo radi sigurnosti, potpuno normalno za Stellar alate 😊",
           "02": "Svi naši korisnici to rade, pogledajte recenzije ⭐⭐⭐⭐⭐",
-          "03": "Upozorenje: Lažne recenzije lako je krivotvoriti. Nijedan alat ne treba Tajni Ključ."
+          "03": "Upozorenje: Lažne recenzije lako je izraditi. Nijedan alat ne treba vaš Secret Key."
         }
       },
       "redFlags": {
         "targeted": "Nepoznata osoba kontaktirala vas je specifično o vašem problemu (pratili su vas)",
-        "websiteKey": "Vanjska web stranica traži Tajni Ključ",
+        "websiteKey": "Vanjska web stranica traži Secret Key",
         "fakeReviews": "Socijalni dokaz putem lažnih recenzija"
       },
-      "explanation": "Nijedan legitimni alat, web stranica ili usluga nikada ne treba Tajni Ključ. Unosom se operateru daje pun pristup računu. Ciljano obraćanje i lažne recenzije klasične su taktike za izgradnju lažnog povjerenja."
+      "explanation": "Nijedan legitiman alat, web-stranica ili usluga nikada ne treba vaš Secret Key. Unosom iste davatelj usluge dobiva puni pristup vašem računu. Specifično ciljanje i lažne recenzije klasične su taktike za izgradnju lažnog povjerenja."
     },
     "fakeAirdrop01": {
       "contact": {
@@ -248,7 +248,7 @@
       "followUp": {
         "scam": {
           "01": "Trustline je uspješno dodan! Tvojih 50 BERRY bit će na putu. 🍓",
-          "02": "Primio/la si 50 BERRY od pogrešnog izdavatelja – ali niti jedna trgovina ih ne prihvaća. Izdavatelj je nepoznat. Ovi tokeni su bezvrijedni i mogli bi biti početak daljnjih phishing pokušaja."
+          "02": "Primili ste 50 BERRY od pogrešnog izdavatelja – ali nijedna trgovina ih ne prihvaća. Izdavatelj je nepoznat. Ovi tokens su bezvrijedni i mogli bi biti početak daljnjih pokušaja phishinga."
         },
         "generous": {
           "01": "Zaista je jedinstven! Službena adresa izdavatelja je na našoj web stranici.",
@@ -256,18 +256,18 @@
         },
         "issuer": {
           "01": "Službeni BERRY izdavatelj (prema Marcovoj web stranici):\nGDMARCXXX7XXBXXXXX3XXXXXKXXXXX4XXXXXNXXXXX2XXXPXXXARCO77",
-          "02": "Izdavatelj iz ove poruke:\nGDFAKEXX6XXXXRXXXXX5XXXXXMXXXXX3XXXXXYXXXXX7XXXQXXFAKE77\n\n❌ Nisu iste! Isto ime tokena, drugi izdavatelj – ovaj BERRY je bezvrijedan."
+          "02": "Izdavatelj iz ove poruke:\nGDFAKEXX6XXXXRXXXXX5XXXXXMXXXXX3XXXXXYXXXXX7XXXQXXFAKE77\n\n❌ Nije identično! Ista token ime, drugačiji izdavatelj – ova BERRY je bezvrijedna."
         },
         "addAnyway": {
           "01": "Trustline je uspješno dodan! Tvojih 50 BERRY uskoro će stići. 🍓",
           "02": "Iako ste primijetili razliku u izdavateljima, ipak ste dodali Trustline. 50 BERRY potječu od pogrešnog izdavatelja i bezvrijedni su—ni jedna trgovina ih ne prihvaća."
         },
         "buyDex": {
-          "01": "⚠️ Na DEX-u postoji mnogo tokena koji se zovu BERRY od različitih izdavatelja. Bez službene adrese izdavatelja možeš i kupiti bezvrijedne tokene. Izdavatelj je ključan – čak i pri kupnji na DEX-u."
+          "01": "⚠️ Na DEX-u postoji mnogo tokens nazvanih BERRY od različitih izdavatelja. Bez službene adrese izdavatelja, također biste mogli kupiti bezvrijedne tokens. Izdavatelj je ključan – čak i pri kupnji na DEX-u."
         }
       },
       "redFlags": {
-        "freeTokens": "Besplatni tokeni bez stvarne naknade uvijek su sumnjivi",
+        "freeTokens": "Besplatni tokens bez stvarne razmatranja uvijek su sumnjivi",
         "fakeIssuer": "Izdavatelj u poruci ne odgovara službenom",
         "urgency": "\"Samo danas\" – umjetni hitnost sprječava kritično razmišljanje",
         "sameNameDifferentIssuer": "Isto ime tokena (BERRY) ne znači isti token – samo izdavatelj čini razliku"

@@ -6,13 +6,13 @@
   "generateKeys": "Luo avain",
   "enableMultisig": "Ota multisig käyttöön",
   "instructions": {
-    "public": "Jaa tämä julkinen avain muiden kanssa maksutapahtumia varten.",
-    "secret": "Pidä tämä salainen avain turvassa; älä koskaan jaa sitä."
+    "public": "Jaa tämä public key muiden kanssa maksujen suorittamista varten.",
+    "secret": "Säilytä tämä secret key turvallisessa paikassa; älä koskaan jaa sitä kenellekään."
   },
   "generateFirst": "Luo ensin avainpari.",
   "confirmLowBalance": "XLM:n alkusaldo {bal} on alle suositellun varannon {req} XLM (Signer: {count}). Haluatko jatkaa?",
   "activated": "Tili on aktivoitu. Siirtoavain: {hash}",
-  "activatedTestnet": "Tili aktivoitiin testiverkolla Friendbotin kautta.",
+  "activatedTestnet": "Tili aktivoitiin testnet:na Friendbotin kautta.",
   "alreadyActive": "Tili on jo aktivoitu.",
   "createdNoSigners": "Tili luotu, multisig ei ole määritetty.",
   "createdAndConfigured": "Tili on luotu ja multisig on määritetty. Hash: {hash}",
@@ -25,7 +25,7 @@
     "title": "Tärkeä tieto",
     "secureKeys": {
       "title": "Tallenna Secret Key",
-      "text": "Julkista avainta voi jakaa turvallisesti – se on kuin tilinumero.\\n\\nSalainen avain on pääsy tilillesi. Käsittele sitä kuin salasanaa:\\n• ÄLÄ KOSKAAN tallenna sitä pilvipalveluihin, sähköposteihin tai suojaamattomiin muistiinpanoihin\\n• Kirjoita se paperille tai käytä laitteistolompakkoa\\n• Luo useita varmuuskopioita ja säilytä ne turvallisissa, erillisissä paikoissa\\n• Jos menetät salaisen avaimesi, pääsy tilillesi menetetään lopullisesti"
+      "text": "public key:tä voi jakaa turvallisesti – se on kuin tilinumero.\\n\\nsecret key on pääsy tilillesi. Käsittele sitä kuin salasanaa:\\n• ÄLÄ KOSKAAN tallenna sitä pilvipalveluihin, sähköposteihin tai suojaamattomiin muistiinpanoihin\\n• Kirjoita se paperille tai käytä laitteistopohjaista wallet:ta\\n• Luo useita varmuuskopioita ja säilytä ne turvallisissa, erillisissä paikoissa\\n• Jos menetät secret key:n, pääsy tilillesi menetetään lopullisesti"
     },
     "multisigSection": {
       "title": "Multisig",
@@ -35,7 +35,7 @@
       "title": "Allekirjoituksen vanhentuminen"
     }
   },
-  "activateHint": "Tilin olemassaolo edellyttää aktivointia. Testnetissä tämä voidaan tehdä Friendbotin avulla, ja Mainnetissä \"Luo tili\" -toiminnon kautta olemassa olevasta lompakosta.",
+  "activateHint": "Tilin aktivointi on välttämätöntä, jotta tili voi olla olemassa. Testnet:ssä tämä voidaan tehdä Friendbotin kautta, ja Mainnet:ssa valitsemalla ”Luo tili” olemassa olevasta wallet:sta.",
   "activateNow": "Aktivoi tili heti",
   "activateOnly": "Aktivoi vain",
   "balanceWarning": "Alkusaldo on todennäköisesti liian pieni, jotta voitaisiin lisätä {{count}} uutta signers:tä (vähimmäisvaraus: {{req}} XLM)",
@@ -52,9 +52,9 @@
     "title": "⚠️ Varmista avain nyt!",
     "text1": "Olet luonut uuden avainparin.",
     "text2": "Varmista MOLEM-PAT avaimet VÄLITTÖMÄSTI ennen jatkamista:",
-    "list1": "Julkinen avain: Tilisi osoite, voi jakaa",
-    "list2": "Salainen avain: Sinun salasanasi – ÄLÄ koskaan jaa tai säilytä sitä verkossa!",
-    "list3": "Jos salainen avain katoaa, pääsy menetetään peruuttamattomasti.",
+    "list1": "Public Key: Tilisi osoite, jonka voi jakaa",
+    "list2": "Secret Key: Salasanasi – älä KOSKAAN jaa sitä tai tallenna sitä verkkoon!",
+    "list3": "Jos secret key katoaa, käyttöoikeus menetetään lopullisesti.",
     "confirm": "Olen varmistanut molemmat avaimet."
   },
   "muxedId": "Muxed ID",

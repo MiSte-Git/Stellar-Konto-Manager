@@ -527,6 +527,11 @@ def translate_protected(
     if translated_raw is None:
         return None
     missing = [ph for ph in placeholders if ph not in translated_raw]
+    # DeepL hängt an einen Platzhalter, der schon für einen Plural steht, gern noch ein
+    # Plural-s an ("__KEEP_TERM_1__s"). Konkret beobachtet: "Wallets" -> "Walletss".
+    for ph, original in placeholders.items():
+        if ph.startswith("__KEEP_TERM_") and original[-1:].lower() == "s":
+            translated_raw = re.sub(re.escape(ph) + r"s(?!\w)", ph, translated_raw)
     if missing:
         if counters is not None:
             counters["lostPlaceholderKeys"] = counters.get("lostPlaceholderKeys", 0) + 1

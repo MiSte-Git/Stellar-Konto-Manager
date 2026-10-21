@@ -10,11 +10,11 @@
   "signersCount": "Nummer Signer",
   "bestPractices": {
     "title": "Beste praktijken",
-    "text": "Houd geheime sleutels veilig en verspreid ze niet onnodig."
+    "text": "Bewaar secret keys op een veilige plek en verspreid ze niet onnodig."
   },
   "instructions": {
-    "public": "Deel deze openbare sleutel met anderen voor betalingen.",
-    "secret": "Houd deze geheime sleutel veilig; deel hem nooit."
+    "public": "Deel deze public key met anderen voor betalingen.",
+    "secret": "Bewaar deze secret key op een veilige plek; deel hem nooit met anderen."
   },
   "generateFirst": "Maak alstublieft eerst een sleutelpaar aan.",
   "confirmLowBalance": "Het beginsaldo {bal} XLM ligt onder de aanbevolen reserve {req} XLM (Signer: {count}). Wilt u doorgaan?",
@@ -32,7 +32,7 @@
     "title": "Belangrijke informatie",
     "secureKeys": {
       "title": "Maak een back-up van Secret Key",
-      "text": "De openbare sleutel kun je veilig delen – het is net als een rekeningnummer.\n\nDe geheime sleutel is de sleutel tot je account. Behandel deze als een wachtwoord:\n• Sla hem NOOIT op in clouddiensten, e-mails of onbeveiligde notities\n• Schrijf hem op papier op of gebruik een hardware-wallet\n• Maak meerdere back-ups en bewaar deze op veilige, afzonderlijke locaties\n• Als je je geheime sleutel kwijtraakt, is de toegang tot je account onherstelbaar verloren"
+      "text": "De public key kun je veilig delen – het is net als een rekeningnummer.\n\nDe secret key is de sleutel tot je account. Behandel deze als een wachtwoord:\n• Sla het NOOIT op in clouddiensten, e-mails of onbeveiligde notities\n• Schrijf het op papier of gebruik een hardware-wallet\n• Maak meerdere back-ups en bewaar deze op veilige, afzonderlijke locaties\n• Als u uw secret key kwijtraakt, is de toegang tot uw account onherroepelijk verloren"
     },
     "multisigSection": {
       "title": "Multisig (Multi-signature)",
@@ -60,9 +60,9 @@
     "title": "⚠️ Beveilig de sleutel nu!",
     "text1": "Je hebt een nieuw sleutelpaar gegenereerd.",
     "text2": "Beveilig BEIDE sleutels ONMIDDELLIJK voordat u verdergaat:",
-    "list1": "Openbare Sleutel: Uw accountadres, kan worden gedeeld",
-    "list2": "Geheime sleutel (Geheim sleutels): Je wachtwoord – NOOIT delen of online opslaan!",
-    "list3": "Als de geheime sleutel verloren gaat, is de toegang onherroepelijk verloren.",
+    "list1": "Public Key: Het adres van je account; dit mag worden gedeeld",
+    "list2": "Secret Key: je wachtwoord – deel het NOOIT met anderen en sla het nooit online op!",
+    "list3": "Als de secret key verloren gaat, is de toegang onherroepelijk verloren.",
     "confirm": "Ik heb beide sleutels veiliggesteld."
   },
   "muxedId": "Muxed-ID",

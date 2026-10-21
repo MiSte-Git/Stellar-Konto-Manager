@@ -51,15 +51,15 @@
       "unknown": "Erreur inconnue dans la transaction",
       "signingFailed": "Une ou plusieurs signatures n'ont pas pu être créées. Veuillez réessayer.",
       "multisig": {
-        "invalidSecret": "L'une des clés secrètes saisies est invalide.",
+        "invalidSecret": "L'une des valeurs saisies pour secret keys n'est pas valide.",
         "notASigner": "L'une des valeurs saisies pour secret keys n'appartient pas à la valeur enregistrée pour signers.",
-        "noKeysProvided": "Aucune clé secrète valide n'a été entrée.",
+        "noKeysProvided": "Aucune valeur valide pour secret keys n'a été saisie.",
         "insufficientWeight": "Les signatures collectées sont insuffisantes pour autoriser ce changement. Requis : {{required}}, disponibles : {{current}}.",
         "txBadAuth": "Transaction refusée : Les signatures ne sont pas suffisantes (tx_bad_auth).",
         "zeroWeightSigner": "Le secret key saisi appartient à un signer de poids 0 et ne permet pas d'autoriser une transaction.",
         "invalidConfig": "La configuration prévue pour signers et thresholds ne peut pas être signée. Veuillez vérifier les poids et thresholds.",
         "trustlines": {
-          "invalidInput": "Veuillez vérifier le code de l'actif, l'émetteur et la limite. Au moins un des champs est invalide."
+          "invalidInput": "Veuillez vérifier le code asset, l'émetteur et la limite. Au moins l'un de ces champs n'est pas valide."
         }
       },
       "trustlines": {

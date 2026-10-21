@@ -41,8 +41,8 @@
       },
       "local": {
         "title": "Unesite sve potpise lokalno",
-        "desc": "Koristi samo ako svi tajni ključevi mogu biti sigurno uneseni na ovaj uređaj (Tests/Recovery/Admin).",
-        "warning": "Upozorenje: Svi tajni ključevi se prikupljaju u ovoj sesiji. Koristite samo na pouzdanim uređajima.",
+        "desc": "Koristite samo ako se svi secret keys mogu sigurno unijeti na ovom uređaju (Testovi/Oporavak/Administracija).",
+        "warning": "Upozorenje: Svi secret keys prikupljaju se u ovoj sesiji. Koristite samo na pouzdanim uređajima.",
         "moreInfo": "Više informacija",
         "infoTitle": "Kako funkcioniše „Svi potpisi lokalno“?",
         "infoBody": {
@@ -53,18 +53,18 @@
       },
       "xdr": {
         "title": "Izvoz XDR-a (ne šalji)",
-        "desc": "Generiraj sirovu XDR transakciju za offline alate ili hardverske novčanike.",
+        "desc": "Generirajte sirovu XDR transakciju za offline alate ili hardver wallets.",
         "short": "Izvezite transakciju kao XDR bez izravnog slanja.",
         "moreInfo": "Više informacija.",
         "infoTitle": "Kako funkcionira izvoz XDR-a?",
         "infoBody": {
           "one": "XDR je sirovi format transakcije za Stellar. Ništa se ne šalje automatski.",
-          "two": "Koristite XDR za hardverske novčanike, offline računala ili druge novčanike/alate koji mogu uvoziti XDR.",
+          "two": "Koristite XDR za hardver wallets, računala bez internetske veze ili druge wallets/alate koji mogu uvoziti XDR.",
           "three": "Odgovorni ste za potpisivanje i/ili slanje XDR-a kasnije (npr. koristeći Multisig zadatke ili vanjski alat)."
         },
         "steps": {
           "one": "XDR je generiran, ali ništa nije poslano.",
-          "two": "Možete potpisati XDR izvana (koristeći offline računalo, hardverski novčanik ili neki drugi alat).",
+          "two": "Možete vanjski potpisati XDR (koristeći offline računalo, hardverski wallet ili neki drugi alat).",
           "three": "Da biste poslali, trebate ponovo uvesti XDR (e.g., via multisig jobs or another tool) i tamo ga potpisati/poslati."
         }
       }
@@ -127,7 +127,7 @@
   },
   "testMode": {
     "modalTitle": "Jednokorisnički potpis",
-    "modalDescription": "Ovdje možete unijeti sve potrebne tajne ključeve na jednom uređaju i poslati transakciju izravno. U pravim višestranačkim postavkama, ključevi bi trebali ostati na odvojenim uređajima."
+    "modalDescription": "Ovdje možete unijeti sve potrebne secret keys na jednom uređaju i izravno poslati transakciju. U stvarnim višestranačkim postavkama ključevi bi trebali ostati na odvojenim uređajima."
   },
   "mode": {
     "test": {
@@ -164,7 +164,7 @@
       "progress": "Potpisana težina: {{collected}} / {{required}}",
       "signed": "potpisano",
       "missing": "nedostaje",
-      "noSessionSecret": "U pregledniku nema pohranjeno tajnog ključa. Molimo unesite tajni ključ ili uvezite potpisani XDR.",
+      "noSessionSecret": "Nema secret key pohranjenog u pregledniku. Molimo unesite lozinku ili uvezite potpisani XDR.",
       "signedLocalStatus": "Potpis spremljen. Trenutni status: {{status}}"
     },
     "changes": {
@@ -175,7 +175,7 @@
     },
     "xdr": {
       "title": "Transakcija (XDR)",
-      "hint": "Ostali Signers mogu učitati i potpisati ovaj XDR u kompatibilnim novčanicima.",
+      "hint": "Ostali Signers mogu učitati i potpisati ovaj XDR u kompatibilnim Wallet aplikacijama.",
       "copy": "Kopiraj XDR",
       "copy.success": "XDR kopiran u međuspremnik.",
       "copy.error": "XDR nije mogao biti kopiran u međuspremnik."
@@ -192,14 +192,14 @@
     },
     "secretPrompt": {
       "title": "Unesite tajnu da biste potpisali",
-      "hint": "Molimo unesite tajni ključ za račun {{account}}.",
+      "hint": "Molimo unesite secret key za račun {{account}}.",
       "signNow": "Potpiši sada"
     },
     "submitFailed": "Došlo je do pogreške prilikom slanja: {{razlog}}",
     "submitNoExtras": "Nema dodatnih detalja o grešci.",
     "noAccessToken": "Nema dostupnog pristupa token. Molimo najprije učitajte račun koji je signer ovog posla.",
     "notASigner": "Ovaj račun nije aktivni signer ove posla.",
-    "noLocalSecretForToken": "Za ovaj račun u ovom pregledniku nije pohranjena tajna. Molimo otvorite ga pomoću zajedničke poveznice s pristupnim tokenom ili jednom učitajte račun pomoću opcije \"Zapamti tajnu\".",
+    "noLocalSecretForToken": "Za ovaj račun u ovom pregledniku nije pohranjena tajna. Molimo otvorite ga pomoću zajedničke poveznice s pristupom token ili jednom učitajte račun koristeći \"Zapamti tajnu\".",
     "transparency": {
       "title": "Detalji transakcije"
     },
@@ -296,10 +296,10 @@
       "expired": "Istekao",
       "obsolete_seq": "Zastarjela sekvenca"
     },
-    "deleteTestnet": "Izbriši poslove na testnoj mreži",
-    "deleteTestnetTitle": "Izbriši sve poslove na testnetu.",
+    "deleteTestnet": "Izbrisati testnet poslove",
+    "deleteTestnetTitle": "Izbrisati sve testnet zadatke.",
     "deleteTestnetHint": "Ovo će ukloniti sve multisig poslove na testnetu. Molimo upišite \"DELETE TESTNET JOBS\" za potvrdu.",
-    "deleteTestnetConfirm": "Izbriši poslove testne mreže"
+    "deleteTestnetConfirm": "Izbrisati testnet poslove"
   },
   "actions": {
     "createMultisigJob": "Kreiraj Multisig TaskJob."

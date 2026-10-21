@@ -50,7 +50,7 @@
     "retry": "Veuillez réessayer.",
     "noData": "Aucun quiz disponible",
     "comingSoon": "La pratique pour cette leçon suivra sous peu.",
-    "testnetOnly": "Utilisez uniquement TESTNET. N'entrez jamais de véritables clés secrètes. Nous ne stockons pas les secrets."
+    "testnetOnly": "Utilisez uniquement TESTNET. Ne saisissez jamais la valeur réelle de secret keys. Nous ne conservons pas de données confidentielles."
   },
   "import": {
     "title": "Progrès d'importation",
@@ -76,7 +76,7 @@
   "lesson2": {
     "title": "Comprendre Stellar",
     "goal": "Connaître la différence par rapport aux autres blockchains.",
-    "task": "Envoyez un Simulation à un ami et observez la vitesse",
+    "task": "Envoyez token à un ami (simulation) et observez la vitesse",
     "learningOutcome": "Stellar est rapide, abordable et ne nécessite pas de minage.",
     "reward": "⭐ 1 – Envoi rapide"
   },
@@ -102,24 +102,24 @@
     "reward": "⭐ 2 – Débutant Trustline"
   },
   "lesson6": {
-    "title": "Jeton & Commerce",
+    "title": "Token & Trading",
     "goal": "Apprendre les mécanismes du marché",
-    "task": "Placez un jeton sur une place de marché virtuelle et observez les variations de prix.",
-    "learningOutcome": "Le prix est déterminé par l'offre et la demande.",
+    "task": "Mettez un token en vente sur une place de marché virtuelle et observez l'évolution des prix.",
+    "learningOutcome": "Sur le DEX, vous effectuez vos transactions directement depuis le Wallet. Les prix sont déterminés par l'offre et la demande.",
     "reward": "⭐ 2 – Expert Marketplace"
   },
   "lesson7": {
     "title": "Sécurité",
-    "goal": "Apprendre des comportements sûrs",
-    "task": "Trier les actions correctes/incorrectes; détecter les faux jetons",
-    "learningOutcome": "Garder la clé confidentielle, la stocker en toute sécurité et utiliser le testnet.",
+    "goal": "Découvrez comment vous protéger contre la fraude et comment distinguer les vrais Token des faux.",
+    "task": "Classification des actions correctes/incorrectes ; détection des faux tokens",
+    "learningOutcome": "Secret Key Ne les séparez jamais ! Vous pouvez reconnaître un véritable Token grâce à son émetteur certifié, et non à son nom.",
     "reward": "⭐ 2 – Agent de sécurité"
   },
   "lesson8": {
     "title": "Verification & Identity",
     "goal": "Comprendre la Confiance et les Règles",
-    "task": "Comparer les jetons réels aux jetons faux.",
-    "learningOutcome": "KYC = Vérification d'identité, la vérification montre des jetons de confiance.",
+    "task": "Comparez le vrai tokens et le faux.",
+    "learningOutcome": "KYC = Vérification d'identité ; cette vérification atteste de la fiabilité de tokens.",
     "reward": "⭐ 2 – Expert en examens"
   },
   "lesson9": {
@@ -131,15 +131,15 @@
   },
   "lesson10": {
     "title": "Pratique avec SKM",
-    "goal": "Appliquer les connaissances acquises dans la pratique.",
+    "goal": "Savoir utiliser le Stellar Account Manager en toute sécurité dans Testnet.",
     "task": "Créez un compte dans le testnet, activez-le, définissez un trustline, envoyez tokens.",
-    "learningOutcome": "Retracez les processus techniques d'une transaction.",
+    "learningOutcome": "Pendant la période Testnet, vous pouvez tout tester sans risquer de perdre de l'argent réel.",
     "reward": "⭐ 3 – Projet pilote Blockchain"
   },
   "lesson11": {
     "title": "Responsabilité",
     "goal": "Comprendre les conséquences des erreurs",
-    "task": "Jeu de prise de décision : agir correctement ou non",
+    "task": "Répondez aux questions concernant les erreurs, les rétrofacturations et la manière de gérer le Secret Key.",
     "learningOutcome": "La blockchain est définitive ; une diligence raisonnable est indispensable.",
     "reward": "⭐ 1 – Héros de la responsabilité"
   },
@@ -166,9 +166,9 @@
   },
   "cashback-loyalty": {
     "title": "Cashback & Loyalty Token",
-    "goal": "Découvrez comment les « Custom Assets » fonctionnent en tant que jetons de fidélité sur Stellar.",
+    "goal": "Comprendre le fonctionnement de Custom Assets en tant que programme de fidélité tokens sur Stellar.",
     "task": "Répondez aux questions concernant la fidélité Token, Trustlines et la vérification de l'émetteur.",
-    "learningOutcome": "Le fait que deux jetons portent le même nom ne signifie pas qu’il s’agit du même jeton : c’est l’émetteur qui fait la différence.",
+    "learningOutcome": "Le fait que deux éléments portent le même nom, par exemple token et token, ne signifie pas qu’ils sont identiques : c’est l’émetteur qui fait la différence.",
     "reward": "⭐ 2 – Expert en fidélisation"
   },
   "scam-simulator": {

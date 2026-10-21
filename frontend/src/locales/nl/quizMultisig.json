@@ -42,13 +42,13 @@
     "a3fb": "Onjuist: Er zijn slechts voldoende handtekeningen om aan de threshold te voldoen."
   },
   "q5": {
-    "question": "Hoe moeten geheime sleutels worden opgeslagen in echte multisig-opstellingen?",
+    "question": "Hoe moet secret keys worden opgeslagen in daadwerkelijke multisig-configuraties?",
     "hint": "Scheiding is veiligheid.",
     "a1": "Gescheiden op verschillende apparaten/locaties.",
     "a1fb": "Correct: Handtekeningen moeten apart worden verzameld.",
     "a2": "Alles op dezelfde laptop voor gemak.",
     "a2fb": "Incorrect: Een apparaat omvat een enkel storingspunt.",
     "a3": "Deel in platte tekst in een chat.",
-    "a3fb": "Onjuist: Deel nooit geheime sleutels."
+    "a3fb": "Onjuist: Deel secret keys nooit."
   }
 }

@@ -7,8 +7,8 @@
     "reverseLabel": "Nom tel qu'il apparaît sur le serveur de la Fédération {{domain}}"
   },
   "flag": {
-    "compromised": "Avertissement : Ce portefeuille est marqué comme compromis dans votre TrustList.",
-    "deactivated": "Remarque : Ce portefeuille est marqué comme désactivé dans votre liste de confiance."
+    "compromised": "Avertissement : ce wallet est signalé comme compromis dans votre TrustList.",
+    "deactivated": "Remarque : ce wallet est marqué comme désactivé dans votre liste de confiance."
   },
   "xlmBalance": "XLM",
   "unfunded": "Non activé",
@@ -107,7 +107,7 @@
     "fakeNativeHint": "Il s'agit d'un Token provenant d'un éditeur, et non du format XLM natif du réseau."
   },
   "claimable": {
-    "title": "Soldes donnant droit à un remboursement",
+    "title": "Claimable Balances",
     "intro": "Paiements disponibles sur votre compte mais qui doivent être validés avant d'apparaître dans votre solde.",
     "claim": "Utiliser",
     "hide": "Masquer",
@@ -125,7 +125,7 @@
     "noTrustHide": "Masquer",
     "noTrustNote": "L'opération d'échange génère un Trustline et bloque 0,5 XLM en réserve. Les Token non sollicités sont souvent utilisés dans le cadre de tentatives de fraude. SKM n'évalue pas les Token et ne se prononce pas sur l'authenticité d'un Token. Si nécessaire, vérifiez les informations relatives aux Token à l'aide de la recherche Token.",
     "truncated": "Seules les {{count}} premières entrées sont affichées.",
-    "loadError": "Les soldes donnant droit à un remboursement n'ont pas pu être chargés.",
+    "loadError": "Impossible de charger Claimable balances.",
     "insufficientReserve": "Trustline nécessite {{reserve}} XLM en réserve ; {{available}} XLM est disponible.",
     "insufficientWeight": "Les Signers que vous avez saisis n'atteignent pas, pris dans leur ensemble, le poids requis de {{required}}.",
     "success": "{{amount}} {{code}} a été utilisé. Transaction {{hash}}.",
@@ -134,13 +134,13 @@
     "networkMismatch": "Le serveur Horizon ne fait pas partie du réseau sélectionné. Aucun document n'a été signé ni envoyé.",
     "prepareJob": "Préparer en tant que tâche Multisig",
     "insufficientWeightJob": "Les Signers que vous avez saisis ne totalisent pas le poids requis {{required}}. Veuillez plutôt créer une offre d'emploi Multisig ; les autres Signers pourront alors postuler sur le site web.",
-    "tooLittleTime": "Le solde pouvant faire l'objet d'une demande d'indemnisation expirera trop tôt pour pouvoir être utilisé dans le cadre d'une mission Multisig.",
+    "tooLittleTime": "Le claimable balance expirera trop tôt pour pouvoir être converti en mission Multisig.",
     "jobSource": "Compte",
     "jobClaim": "Utiliser",
     "jobTrustline": "Créer Trustline",
     "jobNetwork": "Réseau",
     "jobNoteLabel": "Remarque",
-    "jobHint": "Le « solde à réclamer » peut expirer ou être utilisé d'une autre manière avant que tout le monde ait signé. La tâche échouera alors lors de sa soumission, mais aucune donnée ne sera perdue. La validité de la tâche prend fin au plus tard à l'expiration du « solde à réclamer ».",
+    "jobHint": "Le Claimable Balance peut expirer ou être utilisé d'une autre manière avant que tout le monde ait signé. La tâche échouera alors lors de sa soumission, mais aucune donnée ne sera perdue. La validité de la tâche prend fin au plus tard à l'expiration du Claimable Balance.",
     "empty": "Aucun Claimable Balances n'a été trouvé."
   },
   "batchConvert": {

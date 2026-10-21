@@ -1,7 +1,7 @@
 {
   "page": {
     "title": "Filtra XLM per Memo",
-    "noPublicKey": "Nessuna chiave pubblica caricata. Si prega di inserire prima una chiave pubblica."
+    "noPublicKey": "Non è stato caricato alcun public key. Inserisci prima un public key."
   },
   "action": {
     "calculate": "Calcolare",
@@ -13,7 +13,7 @@
   },
   "debug": {
     "incoming": "In entrata – to: {{toMe}}, create→me: {{createToMe}}, native→me: {{nativeInToMe}}",
-    "incomingOverview": "Voci: {{total}} • Portafogli coinvolti: {{unique}}",
+    "incomingOverview": "Voci: {{total}} • Coinvolti wallets: {{unique}}",
     "memo": "Memo in finestra: {{any}} • memo esatti: {{exact}}",
     "types": "Tipi – pagamento: {{pay}}, percorso: {{path}}, creare: {{create}}, altro: {{other}}"
   },
@@ -30,7 +30,7 @@
     "label": "Memo testo da cercare (sottostringa, distingue maiuscole e minuscole)",
     "placeholder": "Memo (substring, case-sensitive)"
   },
-  "overviewLine": "Ricevute di pagamento: {{total}} • portafogli coinvolti: {{unique}}",
+  "overviewLine": "Ricevute di pagamento: {{total}} • wallets coinvolti: {{unique}}",
   "result": {
     "label": "Importo totale:",
     "value": "{{amount}} XLM"
@@ -41,8 +41,8 @@
     "count": "Quantità: {{n}}",
     "label": "Confronto (all inputs)",
     "otherCount": "Voci con memo errato/mancante: {{n}}",
-    "unique": "Portafogli unici (totale): {{n}}",
-    "uniqueWallets": "Portafogli unici: {{n}}"
+    "unique": "Unico wallets (tutti): {{n}}",
+    "uniqueWallets": "Unico wallets: {{n}}"
   },
   "time": {
     "setToNow": "Imposta l'ora corrente",
@@ -67,7 +67,7 @@
     "window": "Intervallo di tempo UTC utilizzato: {{from}} → {{to}} (fine esclusa)"
   },
   "wrongMemos": {
-    "button": "Mostra portafogli con memo errato/vuoto.",
+    "button": "Visualizza wallets con memo errato/vuoto",
     "clipboard": "Copia negli appunti",
     "columns": {
       "amount": "Quantità",
@@ -80,7 +80,7 @@
     "failed": "Errore nel caricamento dei pagamenti con memo errato/vuoto.",
     "hint": "Filtra i pagamenti in entrata nel periodo e visualizza i mittenti con memo errati/vuoti.",
     "scanning": "… scansiona memo falsi/vuoti",
-    "summary": "Conteggio: {{count}} • Totale: {{sum}} XLM • Portafogli Unici: {{unique}}",
+    "summary": "Conteggio: {{count}} • Totale: {{sum}} XLM • Unico Wallets: {{unique}}",
     "title": "Valore errato/vuoto per memos durante il periodo"
   }
 }

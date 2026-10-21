@@ -6,8 +6,8 @@
   "generateKeys": "Generar clave",
   "enableMultisig": "Habilitar multisig",
   "instructions": {
-    "public": "Comparte esta clave pública con otros para pagos.",
-    "secret": "Mantén esta clave secreta segura; nunca la compartas."
+    "public": "Comparte este public key con otras personas para realizar pagos.",
+    "secret": "Guarda bien este secret key; no lo compartas nunca."
   },
   "generateFirst": "Por favor, genera un par de claves primero.",
   "confirmLowBalance": "El saldo inicial {bal} en XLM es inferior a la reserva recomendada {req} en XLM (Signer: {count}). ¿Deseas continuar?",
@@ -25,7 +25,7 @@
     "title": "Información importante",
     "secureKeys": {
       "title": "Guardar Secret Key",
-      "text": "La clave pública se puede compartir de forma segura: es como un número de cuenta.\\n\\nLa clave secreta es la forma de acceder a tu cuenta. Trátala como si fuera una contraseña:\\n• NUNCA la guardes en servicios en la nube, correos electrónicos o notas sin proteger\\n• Anótala en un papel o utiliza un monedero físico\\n• Crea varias copias de seguridad y guárdalas en lugares seguros e independientes\\n• Si pierdes tu clave secreta, el acceso a tu cuenta se perderá de forma irremediable"
+      "text": "El public key se puede compartir con total seguridad: es como un número de cuenta.\\n\\nEl secret key es la clave de acceso a tu cuenta. Trátalo como si fuera una contraseña:\\n• NUNCA lo guardes en servicios en la nube, correos electrónicos o notas sin proteger\\n• Anótalo en un papel o utiliza un dispositivo físico wallet\\n• Crea varias copias de seguridad y guárdalas en lugares seguros e independientes\\n• Si pierdes tu secret key, perderás irremediablemente el acceso a tu cuenta"
     },
     "multisigSection": {
       "title": "Multisig",
@@ -35,7 +35,7 @@
       "title": "Expiración de la firma"
     }
   },
-  "activateHint": "La activación es necesaria para que la cuenta exista. En la Testnet, esto se puede hacer a través de Friendbot, y en la Mainnet, a través de \"Crear cuenta\" desde una billetera existente.",
+  "activateHint": "Es necesario activar la cuenta para que esta sea válida. En el Testnet, esto se puede hacer a través de Friendbot, y en el Mainnet, mediante la opción «Crear cuenta» desde un wallet ya existente.",
   "activateNow": "Activar cuenta inmediatamente",
   "activateOnly": "Activar solo",
   "balanceWarning": "Es probable que el saldo inicial sea demasiado bajo para añadir los {{count}} signers adicionales (reserva mínima: {{req}} XLM)",
@@ -52,9 +52,9 @@
     "title": "⚠️ ¡Asegura tu clave ahora!",
     "text1": "Has generado un nuevo par de claves.",
     "text2": "Asegure AMBAS llaves INMEDIATAMENTE antes de continuar:",
-    "list1": "Clave pública: La dirección de tu cuenta, se puede compartir.",
-    "list2": "Clave secreta: Tu contraseña – ¡NUNCA la compartas ni la guardes en línea!",
-    "list3": "Si se pierde la clave secreta, el acceso se pierde irrevocablemente.",
+    "list1": "Public Key: La dirección de tu cuenta; se puede compartir",
+    "list2": "Secret Key: Tu contraseña: ¡NUNCA la compartas ni la guardes en Internet!",
+    "list3": "Si se pierde el secret key, el acceso se pierde de forma irrevocable.",
     "confirm": "He asegurado ambas llaves."
   },
   "muxedId": "Muxed ID",

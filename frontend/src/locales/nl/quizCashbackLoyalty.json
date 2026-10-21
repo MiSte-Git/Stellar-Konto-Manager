@@ -1,24 +1,24 @@
 {
-  "title": "Cashback en Loyaliteitstokens",
+  "title": "Cashback & Loyaliteitsprogramma Tokens",
   "introText": "Test je kennis over Loyalty Token, Trustlines en de verificatie van uitgevers op Stellar.",
   "q1": {
-    "question": "Wat is een loyaliteitstoken?",
-    "hint": "Denk aan aangepaste activa op de blockchain.",
-    "a1": "Een aangepast actief op Stellar dat een bedrijf uitgeeft als beloning.",
-    "a1fb": "Juist: Loyaliteitstokens zijn aangepaste activa die bedrijven zelf aanmaken en uitgeven.",
+    "question": "Wat is een loyaliteitsprogramma token?",
+    "hint": "Denk eens na over een aangepaste assets op de blockchain.",
+    "a1": "Een op maat gemaakte asset op Stellar die een bedrijf uitgeeft als beloning.",
+    "a1fb": "Juist: Loyaliteitsprogramma’s tokens zijn op maat gemaakte assets die bedrijven zelf opzetten en uitgeven.",
     "a2": "Een speciale XLM-bonus.",
-    "a2fb": "Onjuist: XLM is de native valuta van Stellar. Loyaliteitstokens zijn onafhankelijke aangepaste activa.",
+    "a2fb": "Onjuist: XLM is de eigen munteenheid van Stellar. Loyaliteitsprogramma’s tokens zijn onafhankelijke, op maat gemaakte assets.",
     "a3": "Een token uitgegeven door de Stellar Development Foundation.",
-    "a3fb": "Onjuist: De SDF geeft geen loyaliteitstokens uit. Elk bedrijf maakt zijn eigen aan."
+    "a3fb": "Onjuist: De SDF stelt geen loyaliteitsverklaring tokens op. Elk bedrijf stelt zijn eigen verklaring op."
   },
   "q2": {
-    "question": "Wat heeft een klant nodig voordat hij loyaliteitstokens kan ontvangen?",
+    "question": "Wat moet een klant doen voordat hij de loyaliteitsbeloning tokens ontvangt?",
     "hint": "Stellar vereist expliciete toestemming voordat een token ontvangen kan worden.",
     "a1": "Een Trustline aan de uitgever van de Tokens.",
     "a1fb": "Juist: Zonder Trustline van de uitgever kan Token niet worden ontvangen.",
     "a2": "Een geverifieerd account.",
-    "a2fb": "Onjuist: Stellar-accounts vereisen geen externe verificatie voor aangepaste activa.",
-    "a3": "Minimaal 10 XLM in de portemonnee.",
+    "a2fb": "Onjuist: Voor Stellar-accounts is geen externe verificatie vereist voor aangepaste assets.",
+    "a3": "Ten minste 10 XLM in de wallet.",
     "a3fb": "Onjuist: Er geldt geen minimumhoeveelheid XLM voor Trustlines."
   },
   "q3": {
@@ -32,23 +32,23 @@
     "a3fb": "Onjuist: De prijs is irrelevant. Twee BERRY-tokens met verschillende uitgevers zijn fundamenteel anders."
   },
   "q4": {
-    "question": "Wat bepaalt de waarde van een loyaliteitstoken?",
+    "question": "Wat bepaalt de waarde van een loyaliteitsprogramma token?",
     "hint": "Wie staat achter de token en beslist over de regels?",
     "a1": "De uitgever – hij bepaalt wat de token waard is en hoe hij ingewisseld kan worden.",
-    "a1fb": "Juist: Zonder uitgever heeft een loyaliteitstoken geen waarde. Hij stelt inwisselingsvoorwaarden en aanbod vast.",
+    "a1fb": "Juist: Zonder uitgever heeft een loyaliteitskaart token geen waarde. Zij bepalen de inwisselvoorwaarden en het aanbod.",
     "a2": "De marktprijs op de DEX.",
-    "a2fb": "Onjuist: Loyaliteitstokens hebben vaak geen DEX-prijs. Hun waarde komt van de belofte van de uitgever.",
+    "a2fb": "Onjuist: Loyaliteitsprogramma’s tokens hebben vaak geen DEX-prijs. Hun waarde is gebaseerd op de belofte van de uitgever.",
     "a3": "De Stellar Development Foundation.",
-    "a3fb": "Onjuist: De SDF stelt geen regels voor privé-loyaliteitstokens."
+    "a3fb": "Onjuist: De SDF stelt geen regels vast voor persoonlijke loyaliteit tokens."
   },
   "q5": {
-    "question": "Je ontvangt een aanbod van 50 gratis BERRY per bericht. Wat is de veiligste eerste stap?",
+    "question": "Je ontvangt via een bericht een aanbieding van 50 gratis BERRY tokens. Wat is de veiligste eerste stap?",
     "hint": "Wie is de werkelijke maker van deze token?",
     "a1": "Het uitgeveradres vergelijken met het officiële adres van het bedrijf.",
     "a1fb": "Juist: Alleen het vergelijken van het uitgeveradres beschermt tegen waardeloze nep-tokens.",
     "a2": "Voeg de Trustline onmiddellijk toe.",
     "a2fb": "Onjuist: Een Trustline die gekoppeld is aan een niet-geverifieerde uitgever kan leiden tot een waardeloze Tokens.",
-    "a3": "De tokennaam op internet zoeken.",
+    "a3": "Zoek online naar de naam token.",
     "a3fb": "Onjuist: De naam alleen zegt niets – iedereen kan een token \"BERRY\" noemen."
   },
   "q6": {
@@ -62,7 +62,7 @@
     "a3fb": "Onjuist: Een andere uitgever maakt de token niet veiliger, maar betekenisloos."
   },
   "q7": {
-    "question": "Kan een bedrijf zijn loyaliteitstoken terugroepen?",
+    "question": "Kan een bedrijf zijn loyaliteitsprogramma token intrekken?",
     "hint": "Welke vlaggen kan een uitgever instellen bij het aanmaken van een token?",
     "a1": "Ja, als de token is aangemaakt met de clawback-vlag.",
     "a1fb": "Juist: De clawback-vlag stelt de uitgever in staat tokens van ontvangers terug te vorderen.",

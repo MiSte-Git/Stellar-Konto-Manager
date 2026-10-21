@@ -10,11 +10,11 @@
   "signersCount": "Número Signer",
   "bestPractices": {
     "title": "Mejores prácticas",
-    "text": "Mantén las claves secretas seguras y no las distribuyas innecesariamente."
+    "text": "Mantén a salvo los secret keys y no los distribuyas a menos que sea estrictamente necesario."
   },
   "instructions": {
-    "public": "Comparte esta clave pública con otros para pagos.",
-    "secret": "Mantén esta clave secreta segura; nunca la compartas."
+    "public": "Comparte este public key con otras personas para realizar pagos.",
+    "secret": "Guarda este secret key en un lugar seguro; no lo compartas nunca."
   },
   "generateFirst": "Por favor, genera primero un par de claves.",
   "confirmLowBalance": "El saldo inicial {bal} en XLM es inferior a la reserva recomendada {req} en XLM (Signer: {count}). ¿Deseas continuar?",
@@ -32,7 +32,7 @@
     "title": "Información importante",
     "secureKeys": {
       "title": "Copia de seguridad de Secret Key",
-      "text": "La clave pública se puede compartir de forma segura; es como un número de cuenta.\n\nLa clave secreta es la clave de tu cuenta. Trátala como si fuera una contraseña:\n• NUNCA la guardes en servicios en la nube, correos electrónicos o notas sin proteger\n• Anótala en un papel o utiliza un monedero físico\n• Crea varias copias de seguridad y guárdalas en lugares seguros e independientes\n• Si pierdes tu clave secreta, el acceso a tu cuenta se perderá de forma irremediable"
+      "text": "El public key se puede compartir con total seguridad; es como un número de cuenta.\n\nEl secret key es la clave de tu cuenta. Trátalo como si fuera una contraseña:\n• NUNCA la guardes en servicios en la nube, correos electrónicos o notas sin proteger\n• Anótala en un papel o utiliza un dispositivo físico wallet\n• Crea varias copias de seguridad y guárdalas en lugares seguros e independientes\n• Si pierdes tu secret key, perderás irremediablemente el acceso a tu cuenta"
     },
     "multisigSection": {
       "title": "Multisig (Multi-signature)",
@@ -42,7 +42,7 @@
       "title": "Vencimiento de la firma"
     }
   },
-  "activateHint": "La activación es necesaria para que la cuenta exista. En la Testnet, a través de Friendbot; en la Mainnet, a través de \"Crear Cuenta\" desde una billetera existente.",
+  "activateHint": "Es necesario activar la cuenta para que esta sea válida. En el Testnet, a través de Friendbot; en el Mainnet, mediante la opción «Crear cuenta» desde un wallet ya existente.",
   "activateNow": "Activa la cuenta inmediatamente",
   "activateOnly": "Solo activa",
   "balanceWarning": "Es probable que el saldo inicial sea demasiado bajo para añadir los {{count}} signers adicionales (reserva mínima: {{req}} XLM)",
@@ -60,9 +60,9 @@
     "title": "⚠️ ¡Asegura la clave ahora!",
     "text1": "Has generado un nuevo par de claves.",
     "text2": "Asegura AMBAS llaves INMEDIATAMENTE antes de proceder:",
-    "list1": "Clave pública: La dirección de tu cuenta, se puede compartir.",
-    "list2": "Llave secreta (Geheimschlüssel): Tu contraseña – ¡NUNCA la compartas ni la guardes en línea!",
-    "list3": "Si se pierde la clave secreta, el acceso se pierde irrevocablemente.",
+    "list1": "Public Key: La dirección de tu cuenta; se puede compartir",
+    "list2": "Secret Key: tu contraseña. ¡NO la compartas ni la guardes en Internet bajo ningún concepto!",
+    "list3": "Si se pierde el secret key, el acceso se pierde de forma irrevocable.",
     "confirm": "He asegurado ambas llaves."
   },
   "muxedId": "Muxed-ID",

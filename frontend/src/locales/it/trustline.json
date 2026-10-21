@@ -6,7 +6,7 @@
   "nonZeroBalance": "Questo trustline presenta un saldo diverso da zero e non può essere eliminato.",
   "destination": {
     "label": "Indirizzo di destinazione",
-    "placeholder": "Chiave pubblica di destinazione o indirizzo di federazione",
+    "placeholder": "Destinazione public key o indirizzo della federazione",
     "error": "Indirizzo di destinazione non valido"
   },
   "deleted": {
@@ -22,12 +22,12 @@
     "success": "{count} trustlines è stato rimosso con successo."
   },
   "noDuplicates": "Non è stato trovato alcun duplicato di trustlines.",
-  "showSecret": "Visualizza Chiave Segreta",
+  "showSecret": "Visualizza Secret Key",
   "notFound": "Nessuna Trustline(s) trovata.",
   "add": {
     "button": "Aggiungi trustline",
     "title": "Stabilire una nuova trustline",
-    "assetCodeLabel": "Codice Assetto",
+    "assetCodeLabel": "Asset Codice",
     "assetCodePlaceholder": "ad es., USDC",
     "assetCodeHelp": "Nome breve dell'asset (1–12 caratteri, ad esempio, TESTUSD).",
     "issuerLabel": "Emittente (Public Key)",
@@ -35,7 +35,7 @@
     "issuerHelp": "Public Key (indirizzo G) del conto dell'emittente che emette il Asset.",
     "limitLabel": "Limite",
     "limitPlaceholder": "ad es., 1.000.000 (un milione)",
-    "limitHelp": "Il limite è la quantità massima di questo bene che questo conto può accettare. In pratica, dovrebbe essere impostato tanto quanto il saldo massimo previsto in questo bene.",
+    "limitHelp": "Il limite corrisponde all'importo massimo di questo asset che questo conto può considerare attendibile. In pratica, dovrebbe essere impostato a un valore pari al saldo massimo previsto in questo asset.",
     "submit": "Crea un trustline",
     "cancel": "Annulla",
     "success": "Trustline per {{code}} è stato creato con successo."

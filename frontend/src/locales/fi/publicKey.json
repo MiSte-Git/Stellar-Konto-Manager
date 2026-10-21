@@ -1,15 +1,15 @@
 {
-  "label": "Julkinen avain tai federaatio-osoite",
-  "placeholder": "Syötä julkinen avaimensi tai liittoutuman osoite.",
+  "label": "Public key tai federaatio-osoite",
+  "placeholder": "Syötä public key tai federaatio-osoite.",
   "load": "Lataa",
   "loadHint": "Yleensä ei tarvita: Kun valitset vaihtoehdon luettelosta tai painat Enter-näppäintä, tili ladataan automaattisesti. Käytä tätä painiketta varavaihtoehtona tai tilisaldon lataamiseen uudelleen.",
   "deleteFromList": "Poista luettelosta",
   "source": "Lähde",
   "destination": {
     "input": "Tavoite",
-    "error": "Virheellinen julkinen avain syötetty.",
-    "label": "Kohdejulkinen avain",
-    "placeholder": "Anna kohdeyleisön julkinen avain"
+    "error": "Syötetty arvo public key on virheellinen.",
+    "label": "Tavoite public key",
+    "placeholder": "Syötä kohde public key"
   },
   "invalid": "Public Key on virheellinen.",
   "submit": {
@@ -17,5 +17,5 @@
   },
   "test": "Testi",
   "historyLabel": "Historia",
-  "historyPlaceholder": "Valitse viimeksi käytetty lompakko"
+  "historyPlaceholder": "Valitse viimeksi käytetty wallet"
 }

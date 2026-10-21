@@ -1,16 +1,16 @@
 {
-  "hintEnterPublicKey": "Veuillez d'abord entrer une clé publique.",
+  "hintEnterPublicKey": "Veuillez d'abord saisir un public key.",
   "columns": {
     "amount": "Montant",
     "compromised": "Compromis",
     "deactivated": "Désactivé",
-    "destination": "Portefeuille cible",
+    "destination": "Cible wallet",
     "issuer": "Émetteur",
     "label": "Étiquette",
     "memo": "Memo",
     "payments": "Paiements",
     "date": "Date",
-    "token": "Jeton"
+    "token": "Token"
   },
   "decimals": {
     "auto": "Automatiquement",
@@ -18,18 +18,18 @@
   },
   "filter": {
     "memoPlaceholder": "Filtrer par memo, adresse wallet ou étiquette",
-    "tokenPlaceholder": "Filtrer par jeton (CODE:ISSUER)"
+    "tokenPlaceholder": "Filtrer par token (CODE : ÉMETTEUR)"
   },
   "item": {
     "memo": "Memo : « {{memo}} » (Paiements : {{occurrences}})",
-    "token": "Jeton : {{token}} (Paiements : {{occurrences}})",
-    "tokenShort": "Jeton : {{token}}"
+    "token": "Token : {{token}} (Paiements : {{occurrences}})",
+    "tokenShort": "Token : {{token}}"
   },
-  "missingPublicKey": "Clé publique manquante.",
+  "missingPublicKey": "Public key manquant.",
   "moreTruncated": "… et {{extra}} autres groupes",
-  "toWallet": "vers le portefeuille : {{adresse}}",
-  "total": "Nombre de jetons achetés : {{count}}",
-  "totalTokens": "Nombre de jetons investis (Assets) : {{count}}",
+  "toWallet": "à Wallet : {{address}}",
+  "total": "Nombre de tokens achetés : {{count}}",
+  "totalTokens": "Nombre de tokens (Assets) investis : {{count}}",
   "value": {
     "units": "{{amount}} pièces",
     "xlm": "{{amount}} XLM"
@@ -37,14 +37,14 @@
   "view": {
     "label": "Filtrer par :",
     "memo": "Mémos (Memos)",
-    "token": "Jeton"
+    "token": "Token"
   },
   "toggles": {
     "showTotals": "Montant total",
     "qsiOnly": "Somme QSI GF"
   },
   "hints": {
-    "qsiListSet": "Remarque : Vous pouvez trouver la liste GF sous Paramètres → Portefeuilles de confiance (QSI).",
+    "qsiListSet": "Remarque : vous trouverez la liste GF dans Paramètres → Sources fiables Wallets (QSI).",
     "pageTime": "Le chargement d'une page prend environ 0,2 seconde → 100 pages ≈ 20 secondes → 1000 pages ≈ 200 secondes (≈ 3:20 minutes)."
   },
   "walletCapInfo": "Remarque : un wallet peut contenir au maximum 1 000 trustlines.",

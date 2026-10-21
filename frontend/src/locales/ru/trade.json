@@ -1,10 +1,10 @@
 {
   "assetSearch": {
-    "title": "Поиск активов",
-    "description": "Поиск активов через торговую конечную точку (Horizon).",
+    "title": "Asset поиск",
+    "description": "Выполните поиск по параметру assets через торговый интерфейс (Horizon).",
     "form": {
       "code": {
-        "label": "Код актива",
+        "label": "Код Asset",
         "placeholder": "например, USDC"
       },
       "issuer": {
@@ -14,7 +14,7 @@
       "submit": "Поиск"
     },
     "result": {
-      "empty": "Активы не найдены.",
+      "empty": "Не найдено assets.",
       "columns": {
         "code": "Код",
         "issuer": "Эмитент",
@@ -23,10 +23,10 @@
       }
     },
     "invalidInput": {
-      "codeMissing": "Пожалуйста, введите код актива."
+      "codeMissing": "Введите код asset."
     },
     "failed": {
-      "generic": "Поиск актива не удался. Пожалуйста, попробуйте позже."
+      "generic": "Asset Поиск не удался. Пожалуйста, попробуйте позже."
     }
   }
 }

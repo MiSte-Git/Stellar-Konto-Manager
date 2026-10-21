@@ -5313,5 +5313,6 @@
   "wallet.batchConvert.trustlineSearch": "11569cc5c0fef7bc6c0ccd0a725e1304426cc78188608c881c1ef99d24268ca7",
   "wallet.batchConvert.trustlineNoMatch": "573514cf57aeb23f1e13a6526608e4b5d3eb3f68f8414260e257174a59b2611c",
   "wallet.batchConvert.selectTrustline": "867b65a1adc50c7fbdaa2cd7344a8119d24b52b92e47c30c8da33111186e94f6",
-  "wallet.batchConvert.trustlineMore": "dfb025c485453288d4689fda365258629946b750b307943ad0009aaaf3f2d8d6"
+  "wallet.batchConvert.trustlineMore": "dfb025c485453288d4689fda365258629946b750b307943ad0009aaaf3f2d8d6",
+  "wallet.batchConvert.button": "9736b7d674e37600287a6734818635cdf580febbdf30c71e9059c808ef5863d4"
 }

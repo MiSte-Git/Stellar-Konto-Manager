@@ -42,13 +42,13 @@
     "a3fb": "Netočno: Samo dovoljno potpisa za ispunjenje threshold."
   },
   "q5": {
-    "question": "Kako bi tajni ključevi trebali biti pohranjeni u stvarnim multisig postavkama?",
+    "question": "Kako bi se secret keys trebao pohraniti u stvarnim multisig postavkama?",
     "hint": "Razdvajanje je sigurnost.",
     "a1": "Razdvojeni na različitim uređajima/lokacijama.",
     "a1fb": "Ispravno: Potpisi bi se trebali prikupljati odvojeno.",
     "a2": "Sve na istom laptopu radi praktičnosti.",
     "a2fb": "Netačno: Uređaj uključuje jednu tačku kvara.",
     "a3": "Dijeli u običnom tekstu u chatu.",
-    "a3fb": "Pogrešno: Nikad ne dijelite tajne ključeve."
+    "a3fb": "Pogrešno: Nikada ne dijelite secret keys."
   }
 }

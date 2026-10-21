@@ -50,7 +50,7 @@
     "retry": "Riprova",
     "noData": "Nessun quiz disponibile",
     "comingSoon": "La pratica per questa lezione seguirà a breve.",
-    "testnetOnly": "Usa solo TESTNET. Non inserire mai chiavi segrete reali. Non memorizziamo segreti."
+    "testnetOnly": "Utilizza solo TESTNET. Non inserire mai il vero secret keys. Non conserviamo dati riservati."
   },
   "import": {
     "title": "Progresso dell'importazione",
@@ -105,14 +105,14 @@
     "title": "Token & Trading",
     "goal": "Apprendere i meccanismi di mercato",
     "task": "Colloca un token su un mercato virtuale e osserva le variazioni di prezzo.",
-    "learningOutcome": "Il prezzo è determinato dall'offerta e dalla domanda.",
+    "learningOutcome": "Sul DEX, si effettuano operazioni direttamente dal Wallet. I prezzi sono determinati dalla domanda e dall'offerta.",
     "reward": "⭐ 2 – Esperto del Marketplace"
   },
   "lesson7": {
     "title": "Sicurezza",
-    "goal": "Apprendimento di comportamenti sicuri",
+    "goal": "Scopri come proteggerti dalle frodi e come distinguere tra Token autentici e contraffatti.",
     "task": "Ordinare azioni corrette/errate; rilevare token falsi",
-    "learningOutcome": "Mantenere la chiave riservata, conservarla in modo sicuro e utilizzare il testnet.",
+    "learningOutcome": "Secret Key Non separarli mai! È possibile riconoscere un vero Token dall'emittente verificato, non dal nome.",
     "reward": "⭐ 2 – Guardia di Sicurezza"
   },
   "lesson8": {
@@ -131,15 +131,15 @@
   },
   "lesson10": {
     "title": "Pratica con SKM",
-    "goal": "Applica la conoscenza appresa nella pratica.",
+    "goal": "Imparare a utilizzare in modo sicuro Stellar Account Manager in Testnet.",
     "task": "Crea un account nel testnet, attivalo, imposta una trustline, invia token.",
-    "learningOutcome": "Traccia i processi tecnici di una transazione.",
+    "learningOutcome": "Nel Testnet puoi provare tutto senza rischiare denaro reale.",
     "reward": "⭐ 3 – Progetto Pilota Blockchain"
   },
   "lesson11": {
     "title": "Responsabilità",
     "goal": "Comprendere le conseguenze degli errori",
-    "task": "Gioco di decisione: agire correttamente o no",
+    "task": "Rispondi alle domande relative agli errori, ai chargeback e alle modalità di gestione del Secret Key.",
     "learningOutcome": "La blockchain è definitiva; la due diligence è indispensabile.",
     "reward": "⭐ 1 – Eroe della Responsabilità"
   },

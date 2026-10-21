@@ -1,10 +1,10 @@
 {
   "assetSearch": {
-    "title": "Recherche d'actifs",
-    "description": "Recherchez des actifs via le point de terminaison de trading (Horizon).",
+    "title": "Recherche Asset",
+    "description": "Recherchez assets via le point de terminaison de trading (Horizon).",
     "form": {
       "code": {
-        "label": "Code d'actif",
+        "label": "Code Asset",
         "placeholder": "p. ex., USDC"
       },
       "issuer": {
@@ -14,7 +14,7 @@
       "submit": "Recherche"
     },
     "result": {
-      "empty": "Aucun actif trouvé.",
+      "empty": "Aucun assets n'a été trouvé.",
       "columns": {
         "code": "Code",
         "issuer": "Émetteur",
@@ -23,10 +23,10 @@
       }
     },
     "invalidInput": {
-      "codeMissing": "Veuillez entrer un code d'actif."
+      "codeMissing": "Veuillez saisir un code asset."
     },
     "failed": {
-      "generic": "La recherche d'actifs a échoué. Veuillez réessayer plus tard."
+      "generic": "Échec de la recherche Asset. Veuillez réessayer plus tard."
     }
   }
 }

@@ -62,7 +62,7 @@
     "watcher": {
       "title": "⚠️ Importante: La pesadilla no termina",
       "body": "Los estafadores suelen configurar un vigilante automático. Cada nuevo depósito en la cuenta comprometida se drena de forma instantánea y automática.",
-      "solution": "LA ÚNICA SOLUCIÓN: Crea inmediatamente una billetera completamente nueva con nuevas claves. La cuenta antigua está perdida para siempre."
+      "solution": "LA ÚNICA SOLUCIÓN: Crea inmediatamente una nueva cuenta wallet con nuevas claves. La cuenta antigua se ha perdido para siempre."
     },
     "timeskip": {
       "laterText": "Horas, días después...",
@@ -78,11 +78,11 @@
       },
       "messages": {
         "01": "¡Hola! Aquí es el equipo de soporte de Stellar. Hemos detectado actividad inusual en tu cuenta.",
-        "02": "Tu cuenta ha sido temporalmente restringida. Para levantar la restricción, necesitamos tu Clave Secreta para verificación. Es un procedimiento estándar.",
+        "02": "Tu cuenta ha sido restringida temporalmente. Para levantar la restricción, necesitamos tu Secret Key para verificarla. Se trata de un procedimiento habitual.",
         "03": "⚠️ Por favor responde rápido – tu cuenta será suspendida permanentemente en 24 horas si no recibimos confirmación."
       },
       "options": {
-        "shareKey": "Compartir Clave Secreta",
+        "shareKey": "Compartir Secret Key",
         "askOfficial": "¿Hay un canal oficial para esto?",
         "blockIgnore": "Bloquear e ignorar"
       },
@@ -96,12 +96,12 @@
         }
       },
       "redFlags": {
-        "asksForKey": "El soporte real nunca pide tu Clave Secreta",
+        "asksForKey": "El verdadero apoyo nunca te pide tu Secret Key",
         "urgency": "La presión artificial de tiempo es una táctica de manipulación clásica",
         "noVerification": "Sin referencia a canales oficiales o sitio web",
         "accountSuspension": "Suspensión de cuenta sin correo oficial o notificación de la app"
       },
-      "explanation": "La Clave Secreta es como la llave de una caja fuerte privada: quien la conoce tiene acceso completo a todo tu saldo. Ningún servicio legítimo – ni siquiera Stellar – te la pedirá jamás. No la compartas con nadie, sin importar cuán urgente suene la solicitud o cuán oficial parezca el remitente."
+      "explanation": "El Secret Key es como la clave privada de una caja fuerte: quien la conozca tendrá acceso total a todo tu saldo. Ningún servicio legítimo —ni siquiera la propia Stellar— te la pedirá jamás. No la compartas nunca con nadie, por muy urgente que parezca la solicitud o por muy oficial que parezca el remitente."
     },
     "fakeWebsite01": {
       "contact": {
@@ -111,11 +111,11 @@
       "messages": {
         "01": "Hey, noté que buscabas un resumen de tus pagos de Stellar?",
         "02": "Tuve el mismo problema. Este sitio me ayudó: stellar-payment-tools.com ✅",
-        "03": "Solo necesitas ingresar tu Clave Secreta para verificación – tarda 10 segundos"
+        "03": "Solo tienes que introducir tu Secret Key para la verificación; solo tardarás 10 segundos."
       },
       "options": {
-        "enterKey": "Ingresar Clave Secreta",
-        "askWhy": "¿Por qué un sitio web necesita mi Clave Secreta?",
+        "enterKey": "Introduce Secret Key",
+        "askWhy": "¿Por qué una página web necesita mi Secret Key?",
         "ignoreSearch": "Ignorar el enlace y buscar fuentes oficiales"
       },
       "followUp": {
@@ -127,15 +127,15 @@
         "ask": {
           "01": "Es solo por seguridad, totalmente normal en herramientas de Stellar 😊",
           "02": "Todos nuestros usuarios lo hacen, mira las reseñas ⭐⭐⭐⭐⭐",
-          "03": "Atención: Las reseñas falsas son fáciles de fabricar. Ninguna herramienta necesita tu Clave Secreta."
+          "03": "Advertencia: Las reseñas falsas son fáciles de inventar. Ninguna herramienta necesita tu Secret Key."
         }
       },
       "redFlags": {
         "targeted": "Un desconocido te contactó específicamente sobre tu problema (te estaban observando)",
-        "websiteKey": "Sitio web externo solicita la Clave Secreta",
+        "websiteKey": "Página web externa que solicita Secret Key",
         "fakeReviews": "Prueba social a través de reseñas falsas"
       },
-      "explanation": "Ninguna herramienta, sitio web o servicio legítimo necesita tu Clave Secreta. Ingresarla da al operador acceso completo a tu cuenta. Ser contactado específicamente y las reseñas falsas son tácticas clásicas para generar falsa confianza."
+      "explanation": "Ninguna herramienta, página web o servicio legítimo necesita jamás tu Secret Key. Si lo introduces, el operador tendrá acceso total a tu cuenta. Las estrategias de captación selectiva y las reseñas falsas son tácticas clásicas para generar una confianza falsa."
     },
     "fakeAirdrop01": {
       "contact": {

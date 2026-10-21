@@ -1,73 +1,73 @@
 {
-  "title": "Cashback ja Kanta-asiakastokenit",
+  "title": "Käteispalautus ja kanta-asiakasohjelma Tokens",
   "introText": "Testaa tietosi Stellar-verkoston kanta-asiakasohjelmista Token, Trustlines sekä kortinmyöntäjän todentamisesta.",
   "q1": {
-    "question": "Mikä on kanta-asiakastoken?",
-    "hint": "Mieti mukautettuja omaisuuseriä lohkoketjussa.",
-    "a1": "Mukautettu omaisuuserä Stellarissa, jonka yritys laskee liikkeelle palkkiona.",
-    "a1fb": "Oikein: Kanta-asiakastokenit ovat mukautettuja omaisuuseriä, jotka yritykset luovat ja laskevat liikkeelle itse.",
+    "question": "Mikä on kanta-asiakasohjelma token?",
+    "hint": "Mieti räätälöityä assets-muuttujaa lohkoketjussa.",
+    "a1": "Stellar-verkostossa toimiva räätälöity asset, jonka yritys laskee liikkeeseen palkkiona.",
+    "a1fb": "Oikein: Kanta-asiakaskortit tokens ovat yritysten itse luomia ja myöntämiä yksilöllisiä kortteja assets.",
     "a2": "Erityinen XLM-bonus.",
-    "a2fb": "Väärin: XLM on Stellarin natiivivaluutta. Kanta-asiakastokenit ovat siitä riippumattomia mukautettuja omaisuuseriä.",
+    "a2fb": "Väärin: XLM on Stellarin oma valuutta. Kanta-asiakasohjelmat tokens ovat itsenäisiä, räätälöityjä ohjelmia assets.",
     "a3": "Stellar Development Foundationin liikkeelle laskema token.",
-    "a3fb": "Väärin: SDF ei laske liikkeelle kanta-asiakastokeneita. Jokainen yritys luo omansa."
+    "a3fb": "Väärin: SDF ei myönnä uskollisuusmerkkiä tokens. Jokainen komppania laatii oman merkkinsä."
   },
   "q2": {
-    "question": "Mitä asiakas tarvitsee ennen kanta-asiakastokenien vastaanottamista?",
-    "hint": "Stellar vaatii nimenomaista luottamusta ennen kuin tokeni voidaan vastaanottaa.",
+    "question": "Mitä asiakas tarvitsee ennen kuin hän saa kanta-asiakasetun tokens?",
+    "hint": "Stellar vaatii nimenomaista luottamusta, ennen kuin token voidaan vastaanottaa.",
     "a1": "Trustline:n myöntäjälle, joka on Tokens:n myöntäjä.",
     "a1fb": "Oikein: Ilman liikkeeseenlaskijan antamaa Trustline:tä ei voida vastaanottaa Token:ta.",
     "a2": "Vahvistettu tili.",
-    "a2fb": "Väärin: Stellar-tilit eivät vaadi ulkoista vahvistusta mukautetuille omaisuuserille.",
-    "a3": "Vähintään 10 XLM lompakossa.",
+    "a2fb": "Väärin: Stellar-tileillä ei vaadita ulkoista vahvistusta mukautetulle assets-arvolle.",
+    "a3": "Vähintään 10 XLM:ää wallet:ssä.",
     "a3fb": "Väärin: Trustlines:lle ei ole asetettu XLM:n vähimmäismäärää."
   },
   "q3": {
-    "question": "Marco nimeää tokeninsa \"BERRYksi\". Toinen yritys tekee samoin. Ovatko tokenit samat?",
-    "hint": "Mikä erottaa kaksi identtisen nimen omaavaa tokenia Stellarissa?",
-    "a1": "Ei – liikkeeseenlaskija on eri, joten ne ovat eri tokeneita.",
-    "a1fb": "Oikein: Stellarissa tokenin yksilöi pelkän nimen sijaan nimi + liikkeeseenlaskijan osoite.",
-    "a2": "Kyllä – sama nimi tarkoittaa samaa tokenia.",
-    "a2fb": "Väärin: Sama nimi ei tarkoita samaa tokenia. Liikkeeseenlaskija on ratkaiseva tekijä.",
+    "question": "Marco nimeää token:n ”BERRY”:ksi. Toinen yritys tekee samoin. Ovatko tokens:t samat?",
+    "hint": "Mikä erottaa toisistaan kaksi nimeltään identtistä tokens:tä Stellar-verkossa?",
+    "a1": "Ei – liikkeeseenlaskija on eri, joten ne ovat eri tokens.",
+    "a1fb": "Correct: On Stellar, not just the name but name + issuer address uniquely identifies a token.",
+    "a2": "Kyllä – sama nimi tarkoittaa samaa token.",
+    "a2fb": "Väärin: Sama nimi ei tarkoita samaa token:tä. Ratkaiseva tekijä on liikkeeseenlaskija.",
     "a3": "Se riippuu hinnasta.",
-    "a3fb": "Väärin: Hinta on merkityksetön. Kaksi BERRY-tokenia eri liikkeeseenlaskijoilla ovat perustavanlaatuisesti erilaisia."
+    "a3fb": "Väärin: Hinnalla ei ole merkitystä. Kaksi BERRY tokens -arvopaperia, joiden liikkeeseenlaskijat ovat eri tahoja, ovat luonteeltaan täysin erilaisia."
   },
   "q4": {
-    "question": "Mikä määrittää kanta-asiakastokenin arvon?",
-    "hint": "Kuka seisoo tokenin takana ja päättää sen säännöistä?",
-    "a1": "Liikkeeseenlaskija – hän määrittää tokenin arvon ja lunastusehdot.",
-    "a1fb": "Oikein: Ilman liikkeeseenlaskijaa kanta-asiakastokenilla ei ole arvoa. Hän asettaa lunastusehdot ja määrän.",
+    "question": "Mikä määrää kanta-asiakaskortin token arvon?",
+    "hint": "Kuka on token:n takana ja päättää sen säännöistä?",
+    "a1": "Liikkeeseenlaskija – se määrittelee, mikä on token:n arvo ja miten se voidaan lunastaa.",
+    "a1fb": "Oikein: Ilman liikkeeseenlaskijaa kanta-asiakasohjelma token ei ole minkään arvoinen. Liikkeeseenlaskija määrittelee lunastusehdot ja tarjonnan.",
     "a2": "Markkinahinta DEX:ssä.",
-    "a2fb": "Väärin: Kanta-asiakastokeneilla ei usein ole DEX-hintaa. Niiden arvo perustuu liikkeeseenlaskijan lupaukseen.",
+    "a2fb": "Väärin: Loyalty tokens -tunnuksilla ei usein ole DEX-hintaa. Niiden arvo perustuu liikkeeseenlaskijan lupaukseen.",
     "a3": "Stellar Development Foundation.",
-    "a3fb": "Väärin: SDF ei aseta sääntöjä yksityisille kanta-asiakastokeneille."
+    "a3fb": "Väärin: SDF ei aseta sääntöjä yksityiselle lojaalisuudelle tokens."
   },
   "q5": {
-    "question": "Saat tarjouksen 50 ilmaisesta BERRY-tokenista viestissä. Mikä on turvallisin ensimmäinen askel?",
-    "hint": "Kuka on tämän tokenin todellinen luoja?",
+    "question": "Saat viestinä tarjouksen, jossa sinulle tarjotaan 50 ilmaista BERRY tokens:tä. Mikä on turvallisin ensimmäinen askel?",
+    "hint": "Kuka on tämän token:n varsinainen luoja?",
     "a1": "Vertaa liikkeeseenlaskijan osoitetta yrityksen viralliseen osoitteeseen.",
-    "a1fb": "Oikein: Vain liikkeeseenlaskijan osoitteen vertaaminen suojaa arvottomilta väärennöksiltä.",
+    "a1fb": "Oikein: Ainoastaan liikkeeseenlaskijan osoitteen vertaaminen suojaa arvottomilta väärennöksiltä tokens.",
     "a2": "Lisää Trustline välittömästi.",
     "a2fb": "Väärä: Todentamattomaan liikkeeseenlaskijaan liitetty Trustline voi johtaa arvottomaan Tokens:een.",
-    "a3": "Etsi tokenin nimi Internetistä.",
-    "a3fb": "Väärin: Pelkkä nimi ei kerro mitään – kuka tahansa voi nimetä tokenin \"BERRYksi\"."
+    "a3": "Etsi nimellä token verkosta.",
+    "a3fb": "Väärin: Pelkkä nimi ei merkitse mitään – kuka tahansa voi nimetä token:n ”BERRYksi”."
   },
   "q6": {
-    "question": "Tokenilla on sama nimi kuin oikealla kanta-asiakastokenilla, mutta eri liikkeeseenlaskija. Mitä se tarkoittaa?",
-    "hint": "Mikä tekee tokenista yksilöllisen Stellarissa?",
+    "question": "token:llä on sama nimi kuin oikealla kanta-asiakaskortilla token, mutta sen myöntäjä on eri. Mitä se tarkoittaa?",
+    "hint": "Mikä tekee token:stä ainutlaatuisen Stellar-verkostossa?",
     "a1": "Token on arvoton – ilman oikeaa liikkeeseenlaskijaa sillä ei ole lunastusarvoa.",
     "a1fb": "Oikein: Nimi + liikkeeseenlaskija = yksilöllinen token. Eri liikkeeseenlaskija = eri, arvoton token.",
     "a2": "Se on sama asia, vain eri osoitteesta.",
     "a2fb": "Väärin: Se on perustavanlaatuisesti eri token, ei \"sama muualta\".",
     "a3": "Se on turvallisempi, koska se on hajautetumpi.",
-    "a3fb": "Väärin: Eri liikkeeseenlaskija ei tee tokenista turvallisempaa, vaan merkityksettömän."
+    "a3fb": "Väärin: Erilainen liikkeeseenlaskija ei tee token:stä turvallisempaa, vaan se tekee siitä merkityksettömän."
   },
   "q7": {
-    "question": "Voiko yritys peruuttaa kanta-asiakastokeninsa?",
-    "hint": "Mitä lippuja liikkeeseenlaskija voi asettaa tokenia luodessaan?",
+    "question": "Voiko yritys peruuttaa kanta-asiakasohjelmansa token?",
+    "hint": "Mitä lippuja liikkeeseenlaskija voi asettaa luodessaan token-kohteen?",
     "a1": "Kyllä, jos token luotiin clawback-lipulla.",
-    "a1fb": "Oikein: Clawback-lippu sallii liikkeeseenlaskijan takaisinperiä tokeneita vastaanottajilta.",
-    "a2": "Ei, lohkoketjutokenit ovat aina pysyviä.",
-    "a2fb": "Väärin: Clawback-lipulla tokeneita voidaan periä takaisin. Se on tietoinen suunnitteluvalinta.",
+    "a1fb": "Oikein: Takaisinperintälippu antaa liikkeeseenlaskijalle mahdollisuuden periä tokens takaisin vastaanottajilta.",
+    "a2": "Ei, lohkoketjun tokens ovat aina pysyviä.",
+    "a2fb": "Väärin: Clawback-lipun avulla tokens voidaan peruuttaa. Kyseessä on tarkoituksellinen suunnitteluratkaisu.",
     "a3": "Vain Stellar Development Foundation voi tehdä sen.",
     "a3fb": "Väärin: Vain itse liikkeeseenlaskija voi käyttää clawbackia, ei SDF."
   }

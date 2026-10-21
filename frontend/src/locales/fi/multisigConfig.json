@@ -5,7 +5,7 @@
   "signersCountLimit": "Huomautus: Verkon rajoitus (Stellar): enintään 20 ylimääräistä Signer.",
   "bestPractices": {
     "title": "Parhaat käytännöt",
-    "text": "Pidä salausavaimet turvassa äläkä jaa niitä tarpeettomasti."
+    "text": "Säilytä secret keys turvallisessa paikassa äläkä jaa niitä tarpeettomasti."
   },
   "signerTypeNote": "Huomautus: SKM käyttää ainoastaan ed25519-Signer:tä. HashX/preAuthTx:n yhteydessä käytä",
   "signerTypeLink": "lab.stellar.org",

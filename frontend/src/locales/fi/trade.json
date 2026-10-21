@@ -1,10 +1,10 @@
 {
   "assetSearch": {
-    "title": "Omaisuuden haku",
-    "description": "Etsi varoja kaupankäyntipisteen (Horizon) kautta.",
+    "title": "Asset haku",
+    "description": "Etsi assets kaupankäynnin rajapinnan (Horizon) kautta.",
     "form": {
       "code": {
-        "label": "Omaisuuskoodi",
+        "label": "Asset-koodi",
         "placeholder": "esim. USDC"
       },
       "issuer": {
@@ -14,7 +14,7 @@
       "submit": "Haku"
     },
     "result": {
-      "empty": "Varoja ei löytynyt.",
+      "empty": "assets:tä ei löytynyt.",
       "columns": {
         "code": "Koodi",
         "issuer": "Liikkeeseenlaskija",
@@ -23,10 +23,10 @@
       }
     },
     "invalidInput": {
-      "codeMissing": "Anna oma omaisuuskoodi."
+      "codeMissing": "Syötä asset-koodi."
     },
     "failed": {
-      "generic": "Varojen haku epäonnistui. Yritä myöhemmin uudelleen."
+      "generic": "Asset haku epäonnistui. Yritä myöhemmin uudelleen."
     }
   }
 }

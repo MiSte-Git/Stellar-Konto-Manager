@@ -175,7 +175,7 @@
     },
     "xdr": {
       "title": "Transaction (XDR)",
-      "hint": "Other Signers can load and sign this XDR in compatible Walletss.",
+      "hint": "Other Signers can load and sign this XDR in compatible Wallets.",
       "copy": "Copy XDR",
       "copy.success": "XDR copied to the clipboard.",
       "copy.error": "XDR could not be copied to the clipboard."

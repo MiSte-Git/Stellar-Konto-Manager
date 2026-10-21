@@ -105,14 +105,14 @@
     "title": "Token & Trading",
     "goal": "Learning about market mechanisms",
     "task": "Place a token on a virtual marketplace and observe price changes.",
-    "learningOutcome": "Price is determined by supply and demand.",
+    "learningOutcome": "On the DEX, you trade directly from the Wallet. Prices are determined by supply and demand.",
     "reward": "⭐ 2 – Marketplace Expert"
   },
   "lesson7": {
     "title": "Security",
-    "goal": "Learning safe behaviors",
+    "goal": "Learn how to protect yourself from fraud and tell the difference between real and fake Token.",
     "task": "Sorting correct/incorrect actions; detecting fake tokens",
-    "learningOutcome": "Keeping the key confidential, storing it securely, and using the testnet.",
+    "learningOutcome": "Secret Key Never split them! You can recognize a genuine Token by its verified issuer, not by its name.",
     "reward": "⭐ 2 – Security Guard"
   },
   "lesson8": {
@@ -131,15 +131,15 @@
   },
   "lesson10": {
     "title": "Practice with SKM",
-    "goal": "Apply learned knowledge in practice.",
+    "goal": "Know how to use the Stellar Account Manager securely in Testnet.",
     "task": "Create an account in the testnet, activate it, set a trustline, send tokens.",
-    "learningOutcome": "Trace the technical processes of a transaction.",
+    "learningOutcome": "In the Testnet, you can try everything out without risking any real money.",
     "reward": "⭐ 3 – Blockchain Pilot"
   },
   "lesson11": {
     "title": "Responsibility",
     "goal": "Understanding the consequences of mistakes",
-    "task": "Decision-making game: act correctly or not",
+    "task": "Answer questions about errors, chargebacks, and how to handle the Secret Key.",
     "learningOutcome": "Blockchain is final; due diligence is a must.",
     "reward": "⭐ 1 – Responsibility Hero"
   },

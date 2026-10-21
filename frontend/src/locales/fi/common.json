@@ -6,7 +6,7 @@
   },
   "asset": {
     "balance": "Tase",
-    "code": "Omaisuuskoodi",
+    "code": "Asset-koodi",
     "creationDate": "Luotu",
     "issuer": "Liikkeeseenlaskija"
   },
@@ -27,12 +27,12 @@
       "noneConfigured": "Ei tutkimusmatkailijoita määritetty.",
       "settingsHint": "Voit muokata Exploreria asetuksissa."
     },
-    "noPublicKey": "Anna ensin julkinen avain.",
+    "noPublicKey": "Syötä ensin public key.",
     "payments": {
       "all": "Kaikki",
       "columns": {
         "amount": "Määrä",
-        "asset": "Omaisuus",
+        "asset": "Asset",
         "counterparty": "Vastaanottajan tili",
         "date": "Päivämäärä",
         "direction": "Suunta",
@@ -208,7 +208,7 @@
       "balance": "Näytä tilitiedot",
       "xlmByMemo": "Suodata memo:n mukaan",
       "sendPayment": "Lähetä maksu",
-      "investedTokens": "Suodata rahakkeet/varat",
+      "investedTokens": "Suodata tokens/assets",
       "createAccount": "Luo tili",
       "multisigEdit": "Muokkaa multisig-tiliä",
       "settings": "Asetukset",
@@ -251,7 +251,7 @@
     "title": "Stellar-tilinhoitaja"
   },
   "badges": {
-    "testnet": "Testiverkko"
+    "testnet": "Testnet"
   },
   "noIssuerTrustlinesFound": "Liikkeeseenlaskijalle {{issuer}} ei löytynyt trustlines-tietoa.",
   "option": {
@@ -379,7 +379,7 @@
         "discard": "Hylätä",
         "save": "Tallenna"
       },
-      "title": "Luotettavat lompakkoni",
+      "title": "Luotettava Wallets",
       "validation": {
         "hint": "Ainakin yksi rivi on virheellinen (osoite puuttuu tai on toistunut)."
       }
@@ -391,14 +391,14 @@
       "success": "Onnistui: {{count}} Trustline(s) poistettu."
     },
     "skippedDueToBalance": "{{count}} Trustline(s) ohitettu (jäljellä oleva aika).",
-    "deleteConfirm": "Poistetaanko valitut trustlinet?"
+    "deleteConfirm": "Haluatko poistaa valitun trustlines?"
   },
   "payment": {
     "send": {
       "title": "Lähetä maksu",
       "recipient": "Vastaanottaja",
       "amount": "Määrä",
-      "asset": "Varallisuus",
+      "asset": "Asset",
       "memo": "Memo",
       "memoType": "Memo-tyyppi",
       "memoTypes": {
@@ -438,7 +438,7 @@
       "timeout": "Horizon Timeout (504). Yritä hetken kuluttua uudelleen.",
       "httpError": "Horisonttivirhe (tila {{status}}).",
       "horizonError": "Stellar on hylännyt tapahtuman.",
-      "destUnfundedNonNative": "Kohdetili ei ole aktiivinen. Lähetä ensin XLM aktivoidaksesi sen tai vaihda omaisuus XLM:ään.",
+      "destUnfundedNonNative": "Vastaanottajan tili ei ole aktiivinen. Aktivoi tili lähettämällä ensin XLM:ää tai vaihda asset-asetukseksi XLM.",
       "activateConfirm": {
         "title": "Tilin aktivointi vaaditaan",
         "info": "Kohdetili ei ole vielä aktiivinen. Aktivointia varten vaaditaan minimimäärä.",
@@ -514,7 +514,7 @@
       "examplesTitle": "Esimerkkejä – Mihin aliosoitteita käytetään?",
       "examples": {
         "ex1": "Yritysmaksut: Jokainen työntekijä saa oman Muxed‑ID:n, jotta palkanmaksut voidaan yksiselitteisesti kohdistaa.",
-        "ex2": "Pörssit tai alustat: jokainen käyttäjä saa oman Muxed-ID:n, jotta talletukset yhteisen lompakon kautta kirjataan automaattisesti oikein.",
+        "ex2": "Pörssit tai alustat: Jokaiselle käyttäjälle annetaan oma Muxed-tunnus, joten jaetun wallet:n kautta tehdyt talletukset kirjataan automaattisesti oikein.",
         "ex3": "Hankkeet tai alatilit: Organisaatio voi kohdentaa budjetteja tai tuloja yksittäisille hankkeille.",
         "ex4": "Asiakastiedot: Yksi M-osoite asiakasta kohti; tunniste vastaa asiakastunnusta – maksut voidaan kohdistaa selkeästi, vaikka memo puuttuisi.",
         "ex5": "Palvelut, joissa ei ole memos: Erottele talletukset toisistaan, kun palvelu ei tue memos:ta.",
@@ -709,13 +709,13 @@
       "amount": "Määrä",
       "compromised": "Kompromittoitu",
       "deactivated": "Ei käytettävissä",
-      "destination": "Tavoitelompakko",
+      "destination": "Tavoite wallet",
       "issuer": "Lähetin",
       "label": "Merkintä",
       "memo": "Memo",
       "payments": "Maksut",
       "date": "Päivämäärä",
-      "token": "Poletin"
+      "token": "Token"
     },
     "decimals": {
       "auto": "Automaattisesti",
@@ -723,19 +723,19 @@
     },
     "filter": {
       "memoPlaceholder": "Suodata memo:n, wallet:n osoitteen tai tunnisteen mukaan",
-      "tokenPlaceholder": "Suodata tokenin mukaan (CODE:ISSUER)"
+      "tokenPlaceholder": "Suodata token:n mukaan (CODE:ISSUER)"
     },
-    "hintEnterPublicKey": "Anna ensin julkinen avain.",
+    "hintEnterPublicKey": "Syötä ensin public key.",
     "item": {
       "memo": "Memo: \"{{memo}}\" (Maksut: {{occurrences}})",
       "token": "Token: {{token}} (Maksut: {{occurrences}})",
       "tokenShort": "Token: {{token}}"
     },
-    "missingPublicKey": "Julkinen avain puuttuu.",
+    "missingPublicKey": "Public key puuttuu.",
     "moreTruncated": "… ja {{extra}} muuta ryhmää",
-    "toWallet": "lompakkoon: {{address}}",
-    "total": "Ostettujen merkkien määrä: {{count}}",
-    "totalTokens": "Sijoitettujen tokenien määrä (Assets): {{count}}",
+    "toWallet": "Wallet: {{address}}",
+    "total": "Ostettujen tokens:ien lukumäärä: {{count}}",
+    "totalTokens": "Sijoitettujen tokens (Assets) lukumäärä: {{count}}",
     "value": {
       "units": "{{amount}} kappaletta",
       "xlm": "{{amount}} XLM"
@@ -750,7 +750,7 @@
       "qsiOnly": "Summa KSI GH"
     },
     "hints": {
-      "qsiListSet": "Huom: Löydät GF-listan kohdasta Asetukset → Luotetut lompakot (QSI).",
+      "qsiListSet": "Huomautus: GF-luettelon löydät kohdasta Asetukset → Luotetut Wallets (QSI).",
       "pageTime": "Sivun lataaminen kestää noin 0,2 sekuntia → 100 sivua ≈ 20 sekuntia → 1000 sivua ≈ 200 sekuntia (≈ 3:20 minuuttia)."
     },
     "walletCapInfo": "Huomautus: Yksi wallet voi sisältää enintään 1000 trustlines:ta.",
@@ -763,7 +763,7 @@
   },
   "network": {
     "mainnet": "Mainnet",
-    "testnet": "Testiverkko"
+    "testnet": "Testnet"
   },
   "multisigEdit": {
     "confirm": {
@@ -822,19 +822,19 @@
     "deleteFromList": "Poista listalta",
     "destination": {
       "error": "Virheellinen kohdeavain.",
-      "input": "Syötä kohdelompakon osoite"
+      "input": "Syötä kohdeosoite wallet"
     },
     "label": "Syötä lähdefederaation osoite tai Public Key:",
     "load": "Laden…",
     "placeholder": "esim.",
-    "source": "Lähdelompakon osoite",
+    "source": "Lähde wallet -osoite",
     "invalid": "Public Key on virheellinen.",
     "submit": {
       "button": "Lähetä"
     },
     "test": "Testi",
     "historyLabel": "Historia",
-    "historyPlaceholder": "Valitse viimeksi käytetty lompakko"
+    "historyPlaceholder": "Valitse viimeksi käytetty wallet"
   },
   "secretKey": {
     "cleared": "Secret Key on poistettu.",
@@ -844,14 +844,14 @@
     "label": "Syötä lähdekoodi Secret-Key (S-avain)",
     "mismatch": "Secret Key ei täsmää julkisen osoitteen kanssa.",
     "placeholder": "esim.",
-    "valid": "✅ Salainen avain on voimassa.",
+    "valid": "✅ Secret key on voimassa.",
     "remember": {
       "label": "Secret Key Muista tämä tämän oppitunnin osalta",
       "hint": "Kun ominaisuus on käytössä, avain tallennetaan, kunnes välilehti suljetaan, ja sitä käytetään uudelleen tuleviin maksuihin."
     }
   },
   "token": {
-    "purchases": "Suodata tokeneita/varoja"
+    "purchases": "Suodata tokens/assets"
   },
   "glossary": {
     "pageTitle": "Sanasto",
@@ -867,16 +867,16 @@
       "desc": "Lohkoketju on kuin digitaalinen tilikirja. Monet tietokoneet tallentavat samat merkinnät, joten kukaan ei voi salaa muuttaa mitään."
     },
     "wallet": {
-      "title": "Lompakko",
+      "title": "Wallet",
       "original": "Wallet",
-      "short": "Digitaalinen lompakko, joka hallitsee avaimiasi.",
+      "short": "Digitaalinen wallet, joka hallinnoi avaimiasi.",
       "desc": "Wallet on digitaalinen wallet. Se hallinnoi avaimia, joita tarvitset tilillesi pääsemiseksi ja tapahtumien lähettämiseksi. Wallet voi olla ohjelma, sovellus tai jopa pelkkä paperilappu, johon on kirjoitettu Secret Key."
     },
     "account": {
       "title": "Tili",
       "original": "Account",
-      "short": "Lohkoketjutili voi pitää hallussaan omaisuutta ja lähettää tapahtumia.",
-      "desc": "Tili on paikka lohkoketjussa, jossa varasi säilytetään. Tilillä on julkinen osoite, joka alkaa kirjaimella G. Useat lompakot voivat käyttää samaa tiliä, jos niillä on oikea avain."
+      "short": "Lohkoketjutili voi sisältää assets ja lähettää tapahtumia.",
+      "desc": "Tili on se paikka lohkoketjussa, johon assets-tiedot tallennetaan. Tilillä on julkinen osoite, joka alkaa kirjaimella G. Useat wallets-käyttäjät voivat käyttää samaa tiliä, jos heillä on oikea avain."
     },
     "addressG": {
       "title": "G-osoite",
@@ -917,20 +917,20 @@
     "trustline": {
       "title": "Trustline",
       "original": "Trustline",
-      "short": "Suostumus pitää hallussaan tietyn liikkeeseenlaskijan tokenia.",
+      "short": "Suostumus pitää hallussaan token tiettyltä liikkeeseenlaskijalta.",
       "desc": "trustline on kuin ”Kyllä, hyväksyn tämän token:n”. Määrittämällä trustline:n ilmoitat, että tilisi on valmis pitämään hallussaan tietyn liikkeeseenlaskijan tiettyä token:ää. Ilman trustline:tä et voi vastaanottaa kyseistä token:ta.\n\nEsimerkki: trustline määritetään muodossa CODE:ISSUER. Liikkeeseenlaskijan GDUKMGUGDZQK6Y… EURT-arvopaperin kohdalla se on EURT:GDUKMGUGDZQK6Y…."
     },
     "token": {
-      "title": "Tunnus",
+      "title": "Token",
       "original": "Token",
       "short": "Digitaalinen yksikkö – esim. raha, pisteet tai hyvitys.",
       "desc": "Token on digitaalinen yksikkö lohkoketjussa. Token voi edustaa rahaa, pisteitä tai palvelun krediittejä."
     },
     "asset": {
-      "title": "Omaisuus",
+      "title": "Asset",
       "original": "Asset",
-      "short": "Stellarin tokenit ovat aina liitetty liikkeeseenlaskijaan.",
-      "desc": "Stellarissa tokenia kutsutaan omaisuudeksi. Omaisuus on aina sidottu liikkeeseen laskevaan tiliin. Esimerkiksi tili voi laskea liikkeeseen euro-tokenin. Tämä euro-token olisi silloin omaisuus."
+      "short": "Stellar-verkostossa olevat Tokens-tokenit ovat aina sidoksissa liikkeeseenlaskijaan.",
+      "desc": "Stellar-verkostossa token-tiliä kutsutaan nimellä asset. asset-tili on aina liitetty liikkeeseenlaskijatilille. Esimerkiksi tili voi laskea liikkeeseen euro-määräisen token:n. Tämä euro-määräinen token olisi tällöin asset."
     },
     "xlm": {
       "title": "XLM",
@@ -939,16 +939,16 @@
       "desc": "XLM on Stellarin perusvaluutta. Tarvitset XLM:ää maksujen suorittamiseen ja uuden tilin avaamiseen."
     },
     "mainnet": {
-      "title": "Pääverkko",
+      "title": "Mainnet",
       "original": "Mainnet",
       "short": "Todellinen Stellar-verkko todellisella arvolla.",
       "desc": "Todellinen Stellar-verkko todellisella arvolla. Tapahtumat ovat lopullisia, ja maksut suoritetaan aidoilla XLM:llä."
     },
     "testnet": {
-      "title": "Testiverkko",
+      "title": "Testnet",
       "original": "Testnet",
       "short": "Julkisen käytännön verkosto ilman todellista arvoa.",
-      "desc": "Julkinen harjoitusverkko. Tokeneilla ei ole todellista arvoa. Ihanteellinen oppimiseen ja kokeilemiseen ilman riskiä."
+      "desc": "Julkinen harjoitteluverkosto. Tokens:llä ei ole todellista arvoa. Ihanteellinen oppimiseen ja kokeilemiseen ilman riskiä."
     },
     "memo": {
       "title": "Memo",
@@ -981,16 +981,16 @@
       "desc": "Horizon on palvelu, jonka avulla ohjelmat voivat kommunikoida Stellar-lohkoketjun kanssa. Työkalumme tekee kyselyjä Horizonille ladatakseen tilien saldot ja tapahtumat."
     },
     "anchor": {
-      "title": "Ankkuri",
+      "title": "Anchor",
       "original": "Anchor",
       "short": "Yritys, joka yhdistää fiat-rahan Stellariin.",
-      "desc": "Ankkuri on yritys, joka yhdistää oikean rahan, kuten euron tai dollarin, Stellariin. Esimerkiksi annat ankkurille euroja ja saat vastineeksi euron tokenin Stellarissa."
+      "desc": "anchor on yritys, joka yhdistää oikeaa rahaa, kuten euroa tai dollaria, Stellar-verkostoon. Esimerkiksi, kun annat anchor euroa, saat vastineeksi yhden euron arvoisen token:n Stellar-verkostossa."
     },
     "exchange": {
       "title": "Pörssi",
       "original": "Exchange",
-      "short": "Paikka ostaa ja myydä tokeneita.",
-      "desc": "Pörssi on paikka, jossa voit ostaa tai myydä tokeneita. Monet pörssit vaativat KYC-prosessin, mikä tarkoittaa henkilöllisyyden varmistusta, ennen kuin voit nostaa rahaa euroina tai frangeina."
+      "short": "Paikka, jossa voi ostaa ja myydä tokens.",
+      "desc": "Pörssi on paikka, jossa voi ostaa tai myydä tokens. Monet pörssit vaativat KYC-menettelyn, eli henkilöllisyyden todentamisen, ennen kuin voit nostaa rahaa euroina tai frankeina."
     },
     "dex": {
       "title": "DEX",
@@ -1001,14 +1001,14 @@
     "liquidityPool": {
       "title": "Likviditeettipooli",
       "original": "Liquidity Pool",
-      "short": "Jaettu allas, jossa on kaksi tokenia välittömään vaihtoon.",
-      "desc": "Likviditeettipoimi on jaettu rahasto, joka sisältää kahta tokenia. Ihmiset tallettavat molempia tokeneita siihen. Muut voivat sitten vaihtaa näitä tokeneita välittömästi. Talletuksen tekijät ansaitsevat pieniä palkkioita tästä palvelusta."
+      "short": "Jaettu muistialue, jossa on kaksi tokens-muuttujaa välitöntä vaihtoa varten.",
+      "desc": "Likviditeettipooli on yhteinen varanto, joka sisältää kaksi tokens:tä. Ihmiset tallettavat siihen molempia tokens:ta. Muut voivat sitten vaihtaa nämä tokens:t välittömästi. Tallettajat ansaitsevat tästä palvelusta pieniä palkkioita."
     },
     "balanceClaimable": {
-      "title": "Vaatimiskelpoiset Saldo",
+      "title": "Claimable Balance",
       "original": "Claimable Balance",
       "short": "Varatut rahat, jotka sinun on vielä hyväksyttävä.",
-      "desc": "Vaatimuksenalainen saldo on rahaa, joka on jo varattu sinulle, mutta sinun täytyy vielä vaatia se. Vasta kun hyväksyt sen, se siirtyy tilillesi."
+      "desc": "claimable balance on rahaa, joka on jo varattu sinulle, mutta sinun on vielä lunastettava se. Vasta kun hyväksyt sen, se siirretään tilillesi."
     },
     "protocolUpdate": {
       "title": "Protokollin päivitys",
@@ -1066,7 +1066,7 @@
     },
     "debug": {
       "incoming": "Saapuva – kenelle: {{toMe}}, luo→minulle: {{createToMe}}, alkuperäinen→minulle: {{nativeInToMe}}",
-      "incomingOverview": "Syötteet: {{total}} • Osallistuvat lompakot: {{unique}}",
+      "incomingOverview": "Syötteet: {{total}} • Osallistujia wallets: {{unique}}",
       "memo": "Memos ikkunassa: {{any}} • tarkka memos: {{exact}}",
       "types": "Tyypit – maksu: {{pay}}, polku: {{path}}, luo: {{create}}, muu: {{other}}"
     },
@@ -1083,9 +1083,9 @@
       "label": "Memo hakuteksti (osajono, kirjainkoko huomioidaan)",
       "placeholder": "Memo (osamerkkijono, kirjainkokoa erottava)"
     },
-    "overviewLine": "Maksutositteet: {{total}} • osalliset lompakot: {{unique}}",
+    "overviewLine": "Maksukuitit: {{total}} • mukana olevia wallets: {{unique}}",
     "page": {
-      "noPublicKey": "Anna ensin julkinen avain tai lataa tili uudelleen.",
+      "noPublicKey": "Syötä ensin public key tai lataa tili uudelleen.",
       "title": "XLM-saldon määrä memo:n mukaan"
     },
     "result": {
@@ -1098,8 +1098,8 @@
       "count": "Määrä: {{n}}",
       "label": "Vertailu (all inputs)",
       "otherCount": "Tietueet, joissa memo on virheellinen tai puuttuu: {{n}}",
-      "unique": "Ainutlaatuiset lompakot (kaikki): {{n}}",
-      "uniqueWallets": "Ainutlaatuiset lompakot: {{n}}"
+      "unique": "Ainutlaatuinen wallets (kaikki): {{n}}",
+      "uniqueWallets": "Ainutlaatuinen Wallets: {{n}}"
     },
     "time": {
       "setToNow": "Aseta nykyinen aika",
@@ -1137,7 +1137,7 @@
       "failed": "Virhe maksujen lataamisessa: memo on virheellinen tai tyhjä.",
       "hint": "Suodattaa kyseisen ajanjakson aikana saapuneet maksut ja näyttää lähettäjät, joiden memos-kenttä on virheellinen tai tyhjä.",
       "scanning": "… skannaus virheellinen/tyhjä memos",
-      "summary": "Määrä: {{count}} • Yhteensä: {{sum}} XLM • Yksilölliset lompakot: {{unique}}",
+      "summary": "Määrä: {{count}} • Yhteensä: {{sum}} XLM • Ainutlaatuisia Wallets: {{unique}}",
       "title": "Virheellinen/tyhjä Memos ajanjaksossa"
     }
   },
@@ -1177,9 +1177,9 @@
     },
     "lesson4": {
       "title": "Tilisi",
-      "goal": "Yleistäminen julkisen/salaisen avaimen rakenteesta ja merkityksestä",
+      "goal": "Julkisen sektorin rakenteen ja merkityksen ymmärtäminen/Secret Key",
       "task": "Yhteensovituspeli: Mikä on julkista, mikä on salassa",
-      "learningOutcome": "Vain salainen avain antaa pääsyn; julkista avainta voidaan jakaa.",
+      "learningOutcome": "Vain secret key antaa käyttöoikeuden; public key voidaan jakaa.",
       "reward": "⭐ 1 – Avaimen Vartija"
     },
     "lesson5": {
@@ -1199,15 +1199,15 @@
     "lesson7": {
       "title": "Turvallisuus",
       "goal": "Turvallisten käyttäytymistapojen oppiminen",
-      "task": "Lajittele oikeat/väärät toimet; havaitaan väärennetyt rahakkeet",
-      "learningOutcome": "Pidä avain luottamuksellisena, säilytä se turvallisesti ja käytä testiverkkoa.",
+      "task": "Oikeiden ja väärien toimien erottelu; väärennösten havaitseminen tokens",
+      "learningOutcome": "Pidä avain salaisena, säilytä se turvallisesti ja käytä testnet:tä.",
       "reward": "⭐ 2 – Vartija"
     },
     "lesson8": {
       "title": "Verification & Identity",
       "goal": "Ymmärtäminen luottamus ja säännöt",
-      "task": "Todellisten ja väärennettyjen polettien vertailu",
-      "learningOutcome": "KYC = Henkilöllisyyden todentaminen, todentaminen osoittaa luotettavia tunnuksia.",
+      "task": "Aitojen ja väärennettyjen vertailu tokens",
+      "learningOutcome": "KYC = Henkilöllisyyden todentaminen; todentaminen osoittaa, että tokens on luotettava.",
       "reward": "⭐ 2 – Kokeiden asiantuntija"
     },
     "lesson9": {

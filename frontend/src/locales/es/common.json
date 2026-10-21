@@ -6,7 +6,7 @@
   },
   "asset": {
     "balance": "Saldo",
-    "code": "Código de activo",
+    "code": "Código Asset",
     "creationDate": "Creado el",
     "issuer": "Emisor"
   },
@@ -27,12 +27,12 @@
       "noneConfigured": "No se han configurado exploradores.",
       "settingsHint": "Puedes editar Explorer en la configuración."
     },
-    "noPublicKey": "Por favor, introduzca primero una clave pública.",
+    "noPublicKey": "Introduce primero un public key.",
     "payments": {
       "all": "Todo",
       "columns": {
         "amount": "Cantidad",
-        "asset": "Activo",
+        "asset": "Asset",
         "counterparty": "Cuenta del destinatario",
         "date": "Fecha",
         "direction": "Dirección",
@@ -208,7 +208,7 @@
       "balance": "Mostrar información de la cuenta",
       "xlmByMemo": "Filtrar por memo",
       "sendPayment": "Enviar pago",
-      "investedTokens": "Filtrar tokens/activos",
+      "investedTokens": "Filtro tokens/assets",
       "createAccount": "Crear cuenta",
       "multisigEdit": "Editar cuenta multisig",
       "settings": "Configuraciones",
@@ -251,7 +251,7 @@
     "title": "Gerente de Cuentas de Stellar"
   },
   "badges": {
-    "testnet": "Red de prueba"
+    "testnet": "Testnet"
   },
   "noIssuerTrustlinesFound": "No se ha encontrado ningún trustlines para el emisor {{issuer}}.",
   "option": {
@@ -379,7 +379,7 @@
         "discard": "Descartar",
         "save": "Guardar"
       },
-      "title": "Mis Carteras de Confianza",
+      "title": "Mi de confianza Wallets",
       "validation": {
         "hint": "Al menos una línea no es válida (falta la dirección o hay una dirección duplicada)."
       }
@@ -398,7 +398,7 @@
       "title": "Enviar pago",
       "recipient": "Destinatario",
       "amount": "Cantidad",
-      "asset": "Activo",
+      "asset": "Asset",
       "memo": "Memo",
       "memoType": "Tipo de memo",
       "memoTypes": {
@@ -438,7 +438,7 @@
       "timeout": "Tiempo de espera de Horizon (504). Por favor, inténtelo de nuevo en breve.",
       "httpError": "Error de horizonte (estado {{status}}).",
       "horizonError": "Stellar ha rechazado la transacción.",
-      "destUnfundedNonNative": "La cuenta de destino no está activa. Por favor, envíe XLM primero para activarla o cambie el activo a XLM.",
+      "destUnfundedNonNative": "La cuenta de destino no está activa. Envía primero XLM para activarla o cambia el asset a XLM.",
       "activateConfirm": {
         "title": "Se requiere activación de cuenta",
         "info": "La cuenta objetivo aún no está activa. Se requiere una cantidad mínima para la activación.",
@@ -500,7 +500,7 @@
   "muxed": {
     "seo": {
       "title": "Crear/Gestionar subdirecciones",
-      "description": "Crea y gestiona alias de cuentas multiplexadas (M...) para una cuenta Stellar. Genera ID, agrega etiquetas/notas, exporta/importa CSV."
+      "description": "Crear y gestionar alias muxed account (M...) para una cuenta de Stellar. Generar identificadores, añadir etiquetas/notas, exportar/importar archivos CSV."
     },
     "title": "Crear/Gestionar subdirecciones",
     "explainer": "Crea direcciones alias (M...) con un ID multiplexado único para una cuenta existente. La dirección alias siempre apuntará a la misma cuenta.",
@@ -514,7 +514,7 @@
       "examplesTitle": "Ejemplos: ¿Para qué se utilizan las subdirecciones?",
       "examples": {
         "ex1": "Pagos de la empresa: Cada empleada/empleado recibe una Muxed‑ID única para que los pagos de salario puedan ser asignados de manera clara.",
-        "ex2": "Bolsas o plataformas: cada usuario recibe su propio Muxed ID para que los depósitos a través de una billetera compartida se contabilicen correctamente de forma automática.",
+        "ex2": "Exchanges o plataformas: cada usuario dispone de su propio Muxed ID, por lo que los depósitos realizados a través de un wallet compartido se contabilizan correctamente de forma automática.",
         "ex3": "Proyectos o subcuentas: Una organización puede asignar presupuestos o ingresos a proyectos concretos.",
         "ex4": "Asignación de clientes: una dirección M por cliente; el ID coincide con el ID del cliente, los pagos se pueden asignar claramente incluso sin memo.",
         "ex5": "Servicios sin memos: Distinguir los depósitos cuando el servicio no admite memos.",
@@ -709,32 +709,32 @@
       "amount": "Cantidad",
       "compromised": "Comprometido",
       "deactivated": "Desactivado",
-      "destination": "Cartera objetivo",
+      "destination": "Objetivo wallet",
       "issuer": "Emisor",
       "label": "Etiqueta",
       "memo": "Memo",
       "payments": "Pagos",
       "date": "Fecha",
-      "token": "Ficha"
+      "token": "Token"
     },
     "decimals": {
       "auto": "Automáticamente",
       "label": "Lugares decimales:"
     },
     "filter": {
-      "memoPlaceholder": "Filtrar por memo, dirección de cartera o etiqueta.",
+      "memoPlaceholder": "Filtrar por memo, la dirección de wallet o una etiqueta",
       "tokenPlaceholder": "Filtrar por token (CODE:ISSUER)"
     },
-    "hintEnterPublicKey": "Por favor, ingrese primero una clave pública.",
+    "hintEnterPublicKey": "Introduce primero un public key.",
     "item": {
       "memo": "Memo: «{{memo}}» (Pagos: {{occurrences}})",
       "token": "Token: {{token}} (Pagos: {{occurrences}})",
       "tokenShort": "Token: {{token}}"
     },
-    "missingPublicKey": "Clave pública faltante.",
+    "missingPublicKey": "Falta Public key.",
     "moreTruncated": "… y {{extra}} grupos más",
-    "toWallet": "a Cartera: {{address}}",
-    "total": "Número de fichas compradas: {{count}}",
+    "toWallet": "a Wallet: {{address}}",
+    "total": "Número de tokens adquiridos: {{count}}",
     "totalTokens": "Número de tokens invertidos (Assets): {{count}}",
     "value": {
       "units": "{{amount}} piezas",
@@ -750,7 +750,7 @@
       "qsiOnly": "Suma QSI GF"
     },
     "hints": {
-      "qsiListSet": "Nota: Puedes encontrar la lista de GF en Configuración → Carteras de confianza (QSI).",
+      "qsiListSet": "Nota: Puedes encontrar la lista de GF en Ajustes → De confianza Wallets (QSI).",
       "pageTime": "Cargar una página toma aproximadamente 0.2 segundos → 100 páginas ≈ 20 segundos → 1000 páginas ≈ 200 segundos (≈ 3:20 minutos)."
     },
     "walletCapInfo": "Nota: Un wallet puede contener un máximo de 1000 trustlines.",
@@ -762,8 +762,8 @@
     }
   },
   "network": {
-    "mainnet": "Red principal",
-    "testnet": "Red de prueba"
+    "mainnet": "Mainnet",
+    "testnet": "Testnet"
   },
   "multisigEdit": {
     "confirm": {
@@ -822,19 +822,19 @@
     "deleteFromList": "Eliminar de la lista",
     "destination": {
       "error": "Clave de destino no válida.",
-      "input": "Introduzca la dirección de la cartera de destino"
+      "input": "Introduce la dirección de destino wallet"
     },
     "label": "Introduce la dirección de la federación de origen o el valor Public Key:",
     "load": "Cargando…",
     "placeholder": "por ejemplo",
-    "source": "Dirección de la billetera de origen",
+    "source": "Dirección de origen wallet",
     "invalid": "Public Key no es válido.",
     "submit": {
       "button": "Enviar"
     },
     "test": "Prueba",
     "historyLabel": "Historia",
-    "historyPlaceholder": "Seleccione la última billetera utilizada"
+    "historyPlaceholder": "Selecciona el último utilizado wallet"
   },
   "secretKey": {
     "cleared": "Secret Key se ha eliminado.",
@@ -844,14 +844,14 @@
     "label": "Introduce la clave de origen Secret-Key (S-Key)",
     "mismatch": "Secret Key no coincide con la dirección pública.",
     "placeholder": "por ejemplo",
-    "valid": "✅ La clave secreta es válida.",
+    "valid": "✅ Secret key es válido.",
     "remember": {
       "label": "Secret Key Recuerda esto para esta sesión",
       "hint": "Cuando está habilitada, la clave se guardará hasta que se cierre la pestaña y se reutilizará para pagos posteriores."
     }
   },
   "token": {
-    "purchases": "Filtrar tokens/activos"
+    "purchases": "Filtro tokens/assets"
   },
   "glossary": {
     "pageTitle": "Glosario",
@@ -867,16 +867,16 @@
       "desc": "Una blockchain es como un libro mayor digital. Muchos ordenadores almacenan las mismas entradas, por lo que nadie puede alterar nada en secreto."
     },
     "wallet": {
-      "title": "Billetera",
+      "title": "Wallet",
       "original": "Wallet",
-      "short": "Billetera digital que gestiona tus claves.",
+      "short": "Digital wallet, que gestiona tus claves.",
       "desc": "Un Wallet es tu wallet digital. Gestiona las claves que necesitas para acceder a tu cuenta y enviar transacciones. Un Wallet puede ser un programa, una aplicación o incluso simplemente un trozo de papel en el que hayas escrito tu Secret Key."
     },
     "account": {
       "title": "Cuenta",
       "original": "Account",
-      "short": "Una cuenta de blockchain puede tener activos y enviar transacciones.",
-      "desc": "Una cuenta es el lugar en la cadena de bloques donde se almacenan tus activos. Una cuenta tiene una dirección pública que comienza con G. Múltiples billeteras pueden acceder a la misma cuenta si tienen la clave correcta."
+      "short": "Una cuenta de blockchain puede contener assets y enviar transacciones.",
+      "desc": "Una cuenta es el lugar de la cadena de bloques donde se almacenan tus assets. Una cuenta tiene una dirección pública que comienza por G. Varios wallets pueden acceder a la misma cuenta si disponen de la clave correcta."
     },
     "addressG": {
       "title": "G-dirección",
@@ -906,7 +906,7 @@
       "title": "Subdirección",
       "original": "Muxed Account",
       "short": "Dirección M con un ID adicional: comparte una cuenta base.",
-      "desc": "Una subdirección (M-dirección, oficialmente denominada «cuenta multiplexada») remite a una cuenta Stellar ya existente, pero también tiene su propio número (ID). Esto permite, por ejemplo, distinguir entre varias personas o departamentos que comparten la misma G-dirección. Técnicamente, los fondos siguen perteneciendo a la cuenta principal."
+      "desc": "Una subdirección (M-dirección, oficialmente denominada «Muxed Account») apunta a una cuenta de Stellar ya existente, pero también tiene su propio número (ID). Esto te permite, por ejemplo, distinguir entre varias personas o departamentos que se encuentran bajo la misma G-dirección. Técnicamente, los fondos siguen perteneciendo a la cuenta principal."
     },
     "multisig": {
       "title": "Multisig",
@@ -921,16 +921,16 @@
       "desc": "Un trustline equivale a decir «Sí, acepto este token». Al configurar un trustline, estás indicando que tu cuenta está preparada para mantener un token específico de un emisor concreto. Sin un trustline, no puedes recibir ese token.\n\nEjemplo: Un trustline se especifica como CODE:ISSUER. Para el EURT del emisor GDUKMGUGDZQK6Y…, es EURT:GDUKMGUGDZQK6Y…."
     },
     "token": {
-      "title": "Ficha",
+      "title": "Token",
       "original": "Token",
       "short": "Unidad digital: por ejemplo, dinero, puntos o crédito.",
       "desc": "Un token es una unidad digital en la blockchain. Un token puede representar dinero, puntos o créditos para un servicio."
     },
     "asset": {
-      "title": "Activo",
+      "title": "Asset",
       "original": "Asset",
       "short": "Los tokens en Stellar siempre están vinculados a un emisor.",
-      "desc": "En Stellar, un token se llama activo. Un activo siempre está vinculado a una cuenta emisora. Por ejemplo, una cuenta puede emitir un token en euros. Este token en euros sería entonces un activo."
+      "desc": "En Stellar, un token se denomina asset. Un asset siempre está vinculado a una cuenta emisora. Por ejemplo, una cuenta puede emitir un token en euros. Este token en euros sería entonces un asset."
     },
     "xlm": {
       "title": "XLM",
@@ -939,13 +939,13 @@
       "desc": "XLM es la moneda base de Stellar. Necesitas XLM para pagar tarifas y para iniciar una nueva cuenta."
     },
     "mainnet": {
-      "title": "Red principal",
+      "title": "Mainnet",
       "original": "Mainnet",
       "short": "Red Stellar real con valor real.",
       "desc": "La red Stellar real con valor actual. Las transacciones son finales y las tarifas se pagan en XLM genuinos."
     },
     "testnet": {
-      "title": "Red de prueba",
+      "title": "Testnet",
       "original": "Testnet",
       "short": "Red de práctica pública sin valor real.",
       "desc": "Una red de práctica pública. Los tokens no tienen valor real. Ideal para aprender y experimentar sin riesgo."
@@ -981,7 +981,7 @@
       "desc": "Horizon es el servicio que permite a los programas comunicarse con la Blockchain de Stellar. Nuestra herramienta consulta Horizon para cargar saldos de cuentas y transacciones."
     },
     "anchor": {
-      "title": "Ancla",
+      "title": "Anchor",
       "original": "Anchor",
       "short": "Empresa que conecta dinero fiat con Stellar.",
       "desc": "Un anchor es una empresa que conecta dinero real, como el euro o el dólar, con Stellar. Por ejemplo, entregas euros al anchor y recibes a cambio un token de euro en Stellar."
@@ -1005,10 +1005,10 @@
       "desc": "Un grupo de liquidez es un fondo compartido que contiene dos tokens. Las personas depositan ambos tokens en él. Otros pueden luego intercambiar instantáneamente estos tokens. Los depositantes ganan pequeñas comisiones por este servicio."
     },
     "balanceClaimable": {
-      "title": "Saldo reclamable",
+      "title": "Claimable Balance",
       "original": "Claimable Balance",
       "short": "Dinero reservado que aún necesitas aceptar.",
-      "desc": "Un saldo reclamable es dinero que ya ha sido reservado para ti, pero aún necesitas reclamarlo. Solo cuando lo aceptas, se ingresa en tu cuenta."
+      "desc": "Un claimable balance es dinero que ya se te ha reservado, pero que aún tienes que reclamar. Solo cuando lo aceptes se ingresará en tu cuenta."
     },
     "protocolUpdate": {
       "title": "Actualización del Protocolo",
@@ -1066,7 +1066,7 @@
     },
     "debug": {
       "incoming": "Entrante – para: {{toMe}}, crear→me: {{createToMe}}, nativo→me: {{nativeInToMe}}",
-      "incomingOverview": "Entradas: {{total}} • Carteras participantes: {{unique}}",
+      "incomingOverview": "Datos de entrada: {{total}} • Participantes wallets: {{unique}}",
       "memo": "Memos en la ventana: {{any}} • memos exactos: {{exact}}",
       "types": "Tipos – pago: {{pay}}, ruta: {{path}}, crear: {{create}}, otro: {{other}}"
     },
@@ -1083,9 +1083,9 @@
       "label": "Búsqueda de texto de memo (substring, case sensitive)",
       "placeholder": "Memo (subcadena, distingue entre mayúsculas y minúsculas)"
     },
-    "overviewLine": "Recibos de pago: {{total}} • monederos involucrados: {{unique}}",
+    "overviewLine": "Recibos de pago: {{total}} • wallets implicados: {{unique}}",
     "page": {
-      "noPublicKey": "Por favor, introduce una clave pública primero, o recarga la cuenta.",
+      "noPublicKey": "Introduce primero un public key o actualiza la cuenta.",
       "title": "Saldo de XLM según el memo"
     },
     "result": {
@@ -1098,8 +1098,8 @@
       "count": "Cantidad: {{n}}",
       "label": "Comparación (all inputs)",
       "otherCount": "Entradas con memo incorrecto/faltante: {{n}}",
-      "unique": "Carteras únicas (todas): {{n}}",
-      "uniqueWallets": "Carteras Únicas: {{n}}"
+      "unique": "Único wallets (todos): {{n}}",
+      "uniqueWallets": "Único Wallets: {{n}}"
     },
     "time": {
       "setToNow": "Establecer hora actual",
@@ -1124,7 +1124,7 @@
       "window": "Intervalo de tiempo UTC utilizado: {{from}} → {{to}} (sin incluir el final)"
     },
     "wrongMemos": {
-      "button": "Mostrar carteras con memo incorrecto/vacío",
+      "button": "Mostrar wallets con memo incorrecto o vacío",
       "clipboard": "Copiar al portapapeles",
       "columns": {
         "amount": "Cantidad",
@@ -1137,7 +1137,7 @@
       "failed": "Error al cargar pagos con memo incorrecto/vacío.",
       "hint": "Filtra los pagos recibidos durante el periodo y muestra los remitentes con un valor incorrecto o vacío en memos.",
       "scanning": "… escaneando memos incorrectos/vacíos",
-      "summary": "Recuento: {{count}} • Total: {{sum}} XLM • Billeteras Únicas: {{unique}}",
+      "summary": "Recuento: {{count}} • Total: {{sum}} XLM • Únicos Wallets: {{unique}}",
       "title": "Memos falso/vacío en el periodo de tiempo"
     }
   },
@@ -1177,9 +1177,9 @@
     },
     "lesson4": {
       "title": "Tu cuenta",
-      "goal": "Comprender la estructura y el significado de la clave pública/privada.",
+      "goal": "Comprender la estructura y la importancia de «Público»/Secret Key",
       "task": "Juego de emparejamiento: Qué es público, qué es secreto",
-      "learningOutcome": "Solo la clave secreta otorga acceso; la clave pública puede ser compartida.",
+      "learningOutcome": "Solo el secret key permite el acceso; el public key puede compartirse.",
       "reward": "⭐ 1 – Guardián Clave"
     },
     "lesson5": {

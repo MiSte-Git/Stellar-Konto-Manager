@@ -1,10 +1,10 @@
 {
-  "hintEnterPublicKey": "Voer alstublieft eerst een openbare sleutel in.",
+  "hintEnterPublicKey": "Voer eerst een public key in.",
   "columns": {
     "amount": "Bedrag",
     "compromised": "Gecompromitteerd",
     "deactivated": "Gedeactiveerd",
-    "destination": "Doelportemonnee",
+    "destination": "Doel wallet",
     "issuer": "Uitgever",
     "label": "Label",
     "memo": "Memo",
@@ -17,7 +17,7 @@
     "label": "Decimale plaatsen:"
   },
   "filter": {
-    "memoPlaceholder": "Filter op memo, walletadres of label",
+    "memoPlaceholder": "Filter op memo, het adres van wallet of een label",
     "tokenPlaceholder": "Filter op token (CODE:ISSUER)"
   },
   "item": {
@@ -25,9 +25,9 @@
     "token": "Token: {{token}} (Betalingen: {{occurrences}})",
     "tokenShort": "Token: {{token}}"
   },
-  "missingPublicKey": "Openbare sleutel ontbreekt.",
+  "missingPublicKey": "Public key ontbreekt.",
   "moreTruncated": "… en {{extra}} andere groepen",
-  "toWallet": "naar portemonnee: {{address}}",
+  "toWallet": "aan Wallet: {{address}}",
   "total": "Aantal gekochte tokens: {{count}}",
   "totalTokens": "Aantal geïnvesteerde tokens (Assets): {{count}}",
   "value": {

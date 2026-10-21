@@ -6,7 +6,7 @@
   "nonZeroBalance": "Ovaj trustline ima ne-nulovni saldo i ne može se izbrisati.",
   "destination": {
     "label": "Ciljana adresa",
-    "placeholder": "Javni ključ odredišta ili savezna adresa",
+    "placeholder": "Odredište public key ili adresa federacije",
     "error": "Nevažeća odredišna adresa"
   },
   "deleted": {
@@ -22,20 +22,20 @@
     "success": "Uspješno uklonjen {count} trustlines."
   },
   "noDuplicates": "Nije pronađen duplicirani trustlines.",
-  "showSecret": "Prikaži Tajni Ključ",
+  "showSecret": "Prikaži Secret Key",
   "notFound": "Nije pronađen nijedan Trustline.",
   "add": {
     "button": "Dodaj povjerenje (trustline)",
     "title": "Uspostavite novi trustline",
-    "assetCodeLabel": "Šifra imovine",
+    "assetCodeLabel": "Asset Kôd",
     "assetCodePlaceholder": "z.B. USDC",
-    "assetCodeHelp": "Kratki naziv imovine (1–12 znakova, npr. TESTUSD).",
+    "assetCodeHelp": "Asset kratko ime (1–12 znakova, npr. TESTUSD).",
     "issuerLabel": "Izdavatelj (Public Key)",
     "issuerPlaceholder": "z.B., G...Izdavatelj",
     "issuerHelp": "Public Key (G-adresa) računa izdavatelja koji izdaje Asset.",
     "limitLabel": "Ograničenje",
     "limitPlaceholder": "npr., 1.000.000 (jedan milijun)",
-    "limitHelp": "Limit je maksimalan iznos ove imovine kojem ovaj račun može vjerovati. U praksi, trebao bi biti postavljen tako visoko koliko očekujete da će biti vaš maksimalni saldo u ovoj imovini.",
+    "limitHelp": "Ograničenje je maksimalni iznos ovog asset kojemu ovaj račun može vjerovati. U praksi bi ga trebalo postaviti na razinu vašeg očekivanog maksimalnog stanja na ovom asset.",
     "submit": "Stvorite trustline",
     "cancel": "Otkazati",
     "success": "Trustline za {{code}} je uspješno uspostavljen."

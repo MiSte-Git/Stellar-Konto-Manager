@@ -60,8 +60,8 @@
     "defaultLabel": "Стандартный исследователь",
     "nameLabel": "Имя",
     "urlLabel": "URL",
-    "testnetUrlLabel": "URL тестовой сети (optional)",
-    "testnetUrlPlaceholder": "https://…{address} (оставьте поле пустым, чтобы использовать URL основной сети и для тестовой сети)",
+    "testnetUrlLabel": "Testnet URL (необязательно)",
+    "testnetUrlPlaceholder": "https://…{address} (оставьте поле пустым, чтобы использовать URL-адрес mainnet также для testnet)",
     "addButton": "Добавить Explorer",
     "removeButton": "Удалить",
     "setDefault": "Установить по умолчанию",
@@ -70,10 +70,10 @@
       "nameRequired": "Пожалуйста, введите имя.",
       "urlRequired": "Пожалуйста, введите URL.",
       "urlInvalid": "Пожалуйста, введите корректный URL.",
-      "testnetUrlInvalid": "Пожалуйста, введите действительный URL тестовой сети."
+      "testnetUrlInvalid": "Пожалуйста, введите действительный URL-адрес testnet."
     },
-    "mainnetLabel": "Основная сеть",
-    "testnetLabel": "Тестовая сеть",
+    "mainnetLabel": "Mainnet",
+    "testnetLabel": "Testnet",
     "edit": "Редактировать"
   },
   "export": {
@@ -123,7 +123,7 @@
       "discard": "Удалить",
       "save": "Сохранить"
     },
-    "title": "Мои доверенные кошельки",
+    "title": "Мой надежный Wallets",
     "validation": {
       "hint": "По крайней мере одна строка содержит ошибку (отсутствует адрес или адрес повторяется)."
     }
@@ -154,7 +154,7 @@
   },
   "inputHistory": {
     "title": "Сохраненные вводы",
-    "description": "Удаляет локально сохраненные подсказки для кошельков, получателей платежей, сумм и memo.",
+    "description": "Удаляет сохраненные локально предложения по wallets, получателям платежей, суммам и memos.",
     "clearAll": "Очистить всю историю текстовых полей",
     "confirm": "Очистить все сохраненные вводы? Это удалит записи истории для всех текстовых полей.",
     "done": "История текстовых полей очищена."

@@ -62,7 +62,7 @@
     "watcher": {
       "title": "⚠️ Importante: L'incubo non finisce",
       "body": "I truffatori spesso impostano un osservatore automatico. Ogni nuovo deposito sul conto compromesso viene prelevato immediatamente e automaticamente.",
-      "solution": "L'UNICA SOLUZIONE: Crea immediatamente un nuovo portafoglio con nuove chiavi. Il vecchio conto è perduto per sempre."
+      "solution": "L'UNICA SOLUZIONE: creare immediatamente un nuovo wallet con nuove chiavi. Il vecchio account è perso per sempre."
     },
     "timeskip": {
       "laterText": "Ore, giorni dopo...",
@@ -78,11 +78,11 @@
       },
       "messages": {
         "01": "Ciao! Qui il team di supporto Stellar. Abbiamo rilevato attività insolita sul tuo account.",
-        "02": "Il tuo account è stato temporaneamente limitato. Per rimuovere la limitazione, abbiamo bisogno della tua Chiave Segreta per la verifica. Questa è una procedura standard.",
+        "02": "Il tuo account è stato temporaneamente bloccato. Per sbloccarlo, abbiamo bisogno del tuo Secret Key a scopo di verifica. Si tratta di una procedura standard.",
         "03": "⚠️ Rispondi rapidamente – il tuo account verrà sospeso definitivamente entro 24 ore se non riceviamo conferma."
       },
       "options": {
-        "shareKey": "Condividi la Chiave Segreta",
+        "shareKey": "Condividi Secret Key",
         "askOfficial": "Esiste un canale ufficiale per questo?",
         "blockIgnore": "Blocca e ignora"
       },
@@ -96,12 +96,12 @@
         }
       },
       "redFlags": {
-        "asksForKey": "Il vero supporto non chiede mai la tua Chiave Segreta",
+        "asksForKey": "Un vero sostegno non ti chiede mai il tuo Secret Key",
         "urgency": "La pressione artificiale del tempo è una classica tattica di manipolazione",
         "noVerification": "Nessun riferimento a canali ufficiali o al sito web",
         "accountSuspension": "Sospensione dell'account senza e-mail ufficiale o notifica dell'app"
       },
-      "explanation": "La Chiave Segreta è come la chiave di una cassaforte privata: chi la conosce ha pieno accesso a tutto il tuo saldo. Nessun servizio legittimo – nemmeno Stellar stesso – te la chiederà mai. Non condividerla con nessuno, indipendentemente da quanto urgente sembri la richiesta o da quanto ufficiale appaia il mittente."
+      "explanation": "Il codice Secret Key è come la chiave di una cassaforte privata: chiunque lo conosca ha pieno accesso al tuo intero saldo. Nessun servizio legittimo – nemmeno Stellar stessa – te lo chiederà mai. Non condividerlo mai con nessuno, indipendentemente da quanto urgente possa sembrare la richiesta o da quanto ufficiale possa apparire il mittente."
     },
     "fakeWebsite01": {
       "contact": {
@@ -111,11 +111,11 @@
       "messages": {
         "01": "Hey, ho visto che stavi cercando una panoramica dei tuoi pagamenti Stellar?",
         "02": "Avevo lo stesso problema. Questo sito mi ha aiutato: stellar-payment-tools.com ✅",
-        "03": "Devi solo inserire la tua Chiave Segreta per la verifica – ci vogliono 10 secondi"
+        "03": "Basta inserire il tuo Secret Key per la verifica: ci vogliono 10 secondi"
       },
       "options": {
-        "enterKey": "Inserire la Chiave Segreta",
-        "askWhy": "Perché un sito web ha bisogno della mia Chiave Segreta?",
+        "enterKey": "Inserisci Secret Key",
+        "askWhy": "Perché un sito web ha bisogno del mio Secret Key?",
         "ignoreSearch": "Ignorare il link e cercare fonti ufficiali"
       },
       "followUp": {
@@ -127,15 +127,15 @@
         "ask": {
           "01": "È solo per sicurezza, del tutto normale per gli strumenti Stellar 😊",
           "02": "Tutti i nostri utenti lo fanno, guarda le recensioni ⭐⭐⭐⭐⭐",
-          "03": "Attenzione: Le recensioni false sono facili da fabbricare. Nessuno strumento ha bisogno della tua Chiave Segreta."
+          "03": "Attenzione: le recensioni false sono facili da inventare. Nessuno strumento richiede il tuo Secret Key."
         }
       },
       "redFlags": {
         "targeted": "Uno sconosciuto ti ha contattato specificamente riguardo al tuo problema (ti stavano osservando)",
-        "websiteKey": "Sito web esterno che richiede la Chiave Segreta",
+        "websiteKey": "Sito web esterno che richiede Secret Key",
         "fakeReviews": "Prova sociale tramite recensioni false"
       },
-      "explanation": "Nessuno strumento, sito web o servizio legittimo ha mai bisogno della tua Chiave Segreta. Inserirla dà all'operatore pieno accesso al tuo account. Essere contattati specificatamente e le recensioni false sono tattiche classiche per costruire una falsa fiducia."
+      "explanation": "Nessuno strumento, sito web o servizio legittimo richiede mai il tuo Secret Key. Inserirlo significa concedere all'operatore pieno accesso al tuo account. Essere presi di mira in modo specifico e le recensioni false sono tattiche classiche per creare una falsa sensazione di fiducia."
     },
     "fakeAirdrop01": {
       "contact": {

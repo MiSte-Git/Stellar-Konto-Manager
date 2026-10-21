@@ -61,7 +61,7 @@
     "nameLabel": "Ime",
     "urlLabel": "URL",
     "testnetUrlLabel": "Testnet URL (optional)",
-    "testnetUrlPlaceholder": "https://…{address} (ostavite prazno kako biste koristili glavnu mrežu i za test mrežu)",
+    "testnetUrlPlaceholder": "https://…{address} (ostavite prazno kako biste koristili mainnet URL i za testnet)",
     "addButton": "Dodaj Explorer",
     "removeButton": "Ukloni",
     "setDefault": "Postavi kao zadano",
@@ -72,8 +72,8 @@
       "urlInvalid": "Unesite važeći URL.",
       "testnetUrlInvalid": "Unesite važeći testnet URL."
     },
-    "mainnetLabel": "Glavna mreža",
-    "testnetLabel": "Testna mreža",
+    "mainnetLabel": "Mainnet",
+    "testnetLabel": "Testnet",
     "edit": "Uredi"
   },
   "export": {
@@ -123,7 +123,7 @@
       "discard": "Odbaciti",
       "save": "Spremi"
     },
-    "title": "Moji pouzdani novčanici",
+    "title": "Moje pouzdano Wallets",
     "validation": {
       "hint": "Najmanje jedna linija je nevažeća (nedostaje adresa ili je adresa duplikirana)."
     }

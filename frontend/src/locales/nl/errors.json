@@ -51,15 +51,15 @@
       "unknown": "Onbekende fout in de transactie",
       "signingFailed": "Een of meer handtekeningen konden niet worden aangemaakt. Probeer het opnieuw.",
       "multisig": {
-        "invalidSecret": "Een van de ingevoerde geheime sleutels is ongeldig.",
+        "invalidSecret": "Een van de ingevoerde secret keys-waarden is ongeldig.",
         "notASigner": "Een van de ingevoerde secret keys-waarden hoort niet bij de geregistreerde signers-waarde.",
-        "noKeysProvided": "Er zijn geen geldige geheime sleutels ingevoerd.",
+        "noKeysProvided": "Er is geen geldige secret keys ingevoerd.",
         "insufficientWeight": "De verzamelde handtekeningen zijn onvoldoende om deze wijziging te autoriseren. Vereist: {{required}}, beschikbaar: {{current}}.",
         "txBadAuth": "Transactie geweigerd: Handtekeningen zijn niet voldoende (tx_bad_auth).",
         "zeroWeightSigner": "De ingevoerde secret key hoort bij een signer met gewicht 0 en kan geen transactie autoriseren.",
         "invalidConfig": "De geplande configuratie van signers en thresholds kan niet worden ondertekend. Controleer de gewichten en thresholds.",
         "trustlines": {
-          "invalidInput": "Controleer de activacode, de uitgever en de limiet. Ten minste één van de velden is ongeldig."
+          "invalidInput": "Controleer de code asset, de uitgever en de limiet. Ten minste één van de velden is ongeldig."
         }
       },
       "trustlines": {

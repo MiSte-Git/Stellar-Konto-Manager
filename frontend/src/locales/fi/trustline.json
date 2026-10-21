@@ -6,7 +6,7 @@
   "nonZeroBalance": "Tämän trustline:n saldo on eri kuin nolla, joten sitä ei voida poistaa.",
   "destination": {
     "label": "Kohdeosoite",
-    "placeholder": "Määränpään julkinen avain tai federaatio-osoite",
+    "placeholder": "Kohde public key tai liittovaltion osoite",
     "error": "Virheellinen vastaanottajan osoite"
   },
   "deleted": {
@@ -22,20 +22,20 @@
     "success": "{count} trustlines on poistettu onnistuneesti."
   },
   "noDuplicates": "Kaksoiskappaletta trustlines ei löytynyt.",
-  "showSecret": "Näytä salainen avain",
+  "showSecret": "Näytä Secret Key",
   "notFound": "Trustline-merkintöjä ei löytynyt.",
   "add": {
     "button": "Lisää trustline",
     "title": "Määritä uusi trustline",
-    "assetCodeLabel": "Omaisuuskoodi",
+    "assetCodeLabel": "Asset Koodi",
     "assetCodePlaceholder": "esim. USDC",
-    "assetCodeHelp": "Omaisuusero nimi (1–12 merkkiä, esim. TESTUSD).",
+    "assetCodeHelp": "Asset lyhyt nimi (1–12 merkkiä, esim. TESTUSD).",
     "issuerLabel": "Laskija (Public Key)",
     "issuerPlaceholder": "z. B. G...liikkeeseenlaskija",
     "issuerHelp": "Public Key (G-osoite) sen liikkeeseenlaskijan tilillä, joka laskee liikkeeseen Asset:n.",
     "limitLabel": "Raja",
     "limitPlaceholder": "esim. 1 000 000 (yksi miljoona)",
-    "limitHelp": "Raja on tämän varan enimmäismäärä, jonka tämä tili voi luottaa. Käytännössä sen tulisi olla asetettu niin korkeaksi kuin odotettu enimmäissaldosi tässä varassa.",
+    "limitHelp": "Raja on se enimmäismäärä, jonka tämä tili voi luottaa tämän asset:n osalta. Käytännössä se tulisi asettaa yhtä suureksi kuin tämän asset:n odotettu enimmäissaldo.",
     "submit": "Luo trustline",
     "cancel": "Peruuttaa",
     "success": "Trustline valuutalle {{code}} on onnistuneesti perustettu."

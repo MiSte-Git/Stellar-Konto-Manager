@@ -1,10 +1,10 @@
 {
-  "hintEnterPublicKey": "Molimo vas da prvo unesete javni ključ.",
+  "hintEnterPublicKey": "Molimo unesite public key prvo.",
   "columns": {
     "amount": "Iznos",
     "compromised": "Kompromitiran",
     "deactivated": "Deaktivirano",
-    "destination": "Ciljani novčanik",
+    "destination": "Cilj wallet",
     "issuer": "Izdavatelj",
     "label": "Oznaka",
     "memo": "Memo",
@@ -18,18 +18,18 @@
   },
   "filter": {
     "memoPlaceholder": "Filtriraj po memo, wallet adresi ili oznaci",
-    "tokenPlaceholder": "Filtriraj prema tokenu (CODE:ISSUER)"
+    "tokenPlaceholder": "Filtriraj po token (KOD:EMITENT)"
   },
   "item": {
     "memo": "Memo: \"{{memo}}\" (Plaćanja: {{occurrences}})",
     "token": "Token: {{token}} (Plaćanja: {{occurrences}})",
     "tokenShort": "Token: {{token}}"
   },
-  "missingPublicKey": "Javni ključ nedostaje.",
+  "missingPublicKey": "Public key nedostaje.",
   "moreTruncated": "… i {{extra}} više grupa",
-  "toWallet": "na novčanik: {{address}}",
-  "total": "Broj kupljenih tokena: {{count}}",
-  "totalTokens": "Broj uloženih tokena (Assets): {{count}}",
+  "toWallet": "za Wallet: {{address}}",
+  "total": "Broj kupljenih tokens: {{count}}",
+  "totalTokens": "Broj uloženo tokens (Assets): {{count}}",
   "value": {
     "units": "{{amount}} komada",
     "xlm": "{{amount}} XLM"
@@ -44,10 +44,10 @@
     "qsiOnly": "Zbroj QSI GF"
   },
   "hints": {
-    "qsiListSet": "Napomena: Popis GF možete pronaći pod Postavke → Pouzdani novčanici (QSI).",
+    "qsiListSet": "Napomena: GF-listu možete pronaći pod Postavke → Pouzdani Wallets (QSI).",
     "pageTime": "Učitavanje jedne stranice traje oko 0,2 sekunde → 100 stranica ≈ 20 sekundi → 1000 stranica ≈ 200 sekundi (≈ 3:20 minuta)."
   },
-  "walletCapInfo": "Napomena: Novčanik može držati maksimalno 1000 trustlines.",
+  "walletCapInfo": "Napomena: wallet može držati najviše 1000 trustlines.",
   "action": {
     "load": "Trgovina"
   },

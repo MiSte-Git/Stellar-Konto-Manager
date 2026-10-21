@@ -1,15 +1,15 @@
 {
-  "label": "Clé publique ou adresse de fédération",
-  "placeholder": "Entrez votre clé publique ou une adresse de fédération.",
+  "label": "Public key ou adresse de fédération",
+  "placeholder": "Saisissez votre public key ou une adresse de fédération.",
   "load": "Charger",
   "loadHint": "Généralement inutile : le fait de sélectionner une option dans la liste ou d'appuyer sur Entrée charge automatiquement le compte. Utilisez ce bouton en dernier recours ou pour actualiser le solde du compte.",
   "deleteFromList": "Supprimer de la liste",
   "source": "Source",
   "destination": {
     "input": "Objectif",
-    "error": "Clé publique invalidée entrée.",
-    "label": "Clé publique cible",
-    "placeholder": "Entrez la clé publique cible"
+    "error": "La valeur public key saisie n'est pas valide.",
+    "label": "Cible public key",
+    "placeholder": "Saisissez la cible public key"
   },
   "invalid": "Public Key n'est pas valide.",
   "submit": {
@@ -17,5 +17,5 @@
   },
   "test": "Test",
   "historyLabel": "Histoire",
-  "historyPlaceholder": "Sélectionner le dernier portefeuille utilisé"
+  "historyPlaceholder": "Sélectionner le dernier utilisé wallet"
 }

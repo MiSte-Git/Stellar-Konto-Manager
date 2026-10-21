@@ -1,15 +1,15 @@
 {
-  "label": "Openbare sleutel of federatieadres",
-  "placeholder": "Voer uw openbare sleutel of een federatieadres in.",
+  "label": "Public key of federatieadres",
+  "placeholder": "Voer uw public key of een federatieadres in.",
   "load": "Laden",
   "loadHint": "Meestal niet nodig: als je een optie uit de lijst selecteert of op Enter drukt, wordt het account automatisch geladen. Gebruik deze knop als noodoplossing of om het saldo van het account opnieuw te laden.",
   "deleteFromList": "Verwijderen uit lijst",
   "source": "Bron",
   "destination": {
     "input": "Doelstelling",
-    "error": "Ongeldige publieke sleutel ingevoerd.",
-    "label": "Doel openbaar sleutel",
-    "placeholder": "Voer de doel publieke sleutel in."
+    "error": "Er is een ongeldige public key ingevoerd.",
+    "label": "Doel public key",
+    "placeholder": "Voer de doelwaarde public key in"
   },
   "invalid": "Ongeldige Public Key.",
   "submit": {
@@ -17,5 +17,5 @@
   },
   "test": "Test",
   "historyLabel": "Geschiedenis",
-  "historyPlaceholder": "Selecteer de laatst gebruikte portemonnee"
+  "historyPlaceholder": "Selecteer het laatst gebruikte wallet"
 }

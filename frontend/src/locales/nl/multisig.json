@@ -41,8 +41,8 @@
       },
       "local": {
         "title": "Voer alle handtekeningen lokaal in",
-        "desc": "Alleen gebruiken als alle geheime sleutels veilig op dit apparaat kunnen worden ingevoerd (Tests/Recovery/Admin).",
-        "warning": "Waarschuwing: Alle geheime sleutels worden in deze sessie verzameld. Gebruik alleen op vertrouwde apparaten.",
+        "desc": "Gebruik dit alleen als alle secret keys veilig op dit apparaat kunnen worden ingevoerd (Tests/Herstel/Beheer).",
+        "warning": "Waarschuwing: Alle secret keys worden in deze sessie verzameld. Gebruik dit alleen op vertrouwde apparaten.",
         "moreInfo": "Meer informatie",
         "infoTitle": "Hoe werkt \"Alle handtekeningen lokaal\"?",
         "infoBody": {
@@ -127,7 +127,7 @@
   },
   "testMode": {
     "modalTitle": "Enkelvoudige gebruikershandtekening",
-    "modalDescription": "Hier kun je alle benodigde geheime sleutels op één apparaat invoeren en de transactie direct verzenden. In echte multi-party setups moeten de sleutels op afzonderlijke apparaten blijven."
+    "modalDescription": "Hier kun je alle benodigde secret keys op één apparaat invoeren en de transactie direct verzenden. In echte opstellingen met meerdere partijen moeten de sleutels op afzonderlijke apparaten blijven staan."
   },
   "mode": {
     "test": {
@@ -164,7 +164,7 @@
       "progress": "Handtekeningengewicht: {{collected}} / {{required}}",
       "signed": "ondertekend",
       "missing": "ontbrekend",
-      "noSessionSecret": "Geen geheime sleutel opgeslagen in de browser. Voer alstublieft de geheime sleutel in of importeer ondertekende XDR.",
+      "noSessionSecret": "Er is geen secret key opgeslagen in de browser. Voer het geheim in of importeer een ondertekend XDR-bestand.",
       "signedLocalStatus": "Handtekening opgeslagen. Huidige status: {{status}}"
     },
     "changes": {
@@ -175,7 +175,7 @@
     },
     "xdr": {
       "title": "Transactie (XDR)",
-      "hint": "Andere Signers kunnen dit XDR-bestand in compatibele wallets laden en ondertekenen.",
+      "hint": "Andere Signers kunnen deze XDR in compatibele Wallets laden en ondertekenen.",
       "copy": "Kopieer XDR",
       "copy.success": "XDR naar het klembord gekopieerd.",
       "copy.error": "XDR kon niet naar het klembord worden gekopieerd."
@@ -192,14 +192,14 @@
     },
     "secretPrompt": {
       "title": "Voer geheim in om te tekenen",
-      "hint": "Voer alstublieft de geheime sleutel in voor account {{account}}.",
+      "hint": "Voer de secret key in voor account {{account}}.",
       "signNow": "Nu ondertekenen"
     },
     "submitFailed": "Er is een fout opgetreden bij het verzenden: {{reason}}",
     "submitNoExtras": "Er zijn geen verdere foutdetails beschikbaar.",
     "noAccessToken": "Er is geen toegang tot token beschikbaar. Laad eerst het account dat een signer van deze taak is.",
     "notASigner": "Dit account is geen actieve signer van deze opdracht.",
-    "noLocalSecretForToken": "Er is geen geheim opgeslagen voor dit account in deze browser. Open het account via een gedeelde link met een toegangstoken, of laad het account eenmalig via de optie „Geheim onthouden“.",
+    "noLocalSecretForToken": "Er is geen geheim opgeslagen voor dit account in deze browser. Open het account via een gedeelde link met een toegangsrecht van token, of laad het account eenmalig via de optie \"Geheim onthouden\".",
     "transparency": {
       "title": "Transactiegegevens"
     },

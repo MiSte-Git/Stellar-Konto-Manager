@@ -18,7 +18,7 @@
     "a1fb": "Corretto: senza Trustline da parte dell'emittente, non è possibile ricevere Token.",
     "a2": "Un account verificato.",
     "a2fb": "Sbagliato: Gli account Stellar non richiedono verifica esterna per gli asset personalizzati.",
-    "a3": "Almeno 10 XLM nel portafoglio.",
+    "a3": "Almeno 10 XLM nel wallet.",
     "a3fb": "Errato: non è previsto un importo minimo di XLM richiesto per Trustlines."
   },
   "q3": {
@@ -42,7 +42,7 @@
     "a3fb": "Sbagliato: La SDF non stabilisce regole per i token fedeltà privati."
   },
   "q5": {
-    "question": "Ricevi un'offerta di 50 BERRY gratis tramite messaggio. Qual è il primo passo più sicuro?",
+    "question": "Hai ricevuto un messaggio con un'offerta di 50 BERRY tokens gratuiti. Qual è la prima mossa più sicura da fare?",
     "hint": "Chi è il vero creatore di questo token?",
     "a1": "Confrontare l'indirizzo dell'emittente con l'indirizzo ufficiale dell'azienda.",
     "a1fb": "Corretto: Solo il confronto dell'indirizzo dell'emittente protegge dai token falsi senza valore.",

@@ -768,11 +768,11 @@
       },
       "action": {
         "label": "Create Escrow",
-        "description": "Locks 50 XLM on the testnet for a demo buyer. The buyer can claim them immediately; you can reclaim them after 1 hour if nothing happens.",
+        "description": "Stellar maps this Testnet escrow as Claimable Balance (Escrow). This is not a checkmark in the account, but a separate operation within a Stellar transaction.",
         "success": "Escrow successfully created!",
         "escrow_id_label": "Claimable Balance ID",
         "testnet_note": "Testnet only – no real money.",
-        "locked_note": "The 50 XLM are now locked – neither you nor the buyer can simply withdraw them. The funds are waiting for the condition.",
+        "locked_note": "The 50 XLM are now in a Claimable Balance (Escrow). This is the holding period: The funds are no longer freely available in your Wallet, but they haven't automatically reached the seller yet either.",
         "how_title": "This Is How Escrow Works",
         "step1": "Your testnet account is loaded from your key pair.",
         "step2": "The code creates a transaction using the `createClaimableBalance` operation.",
@@ -789,7 +789,7 @@
       },
       "post": {
         "dialog1": "That was simpler than I thought!",
-        "dialog2": "That is how decentralized trust works. The contract now runs on the blockchain – no middleman, no exceptions."
+        "dialog2": "This is how decentralized trust works. The rules governing claims are now stored directly on the blockchain—with no middlemen and no hidden switch in Wallet."
       }
     },
     "scene5": {
@@ -1148,13 +1148,13 @@
         "cta": "Got it!"
       },
       "lumio1": "In the Stellar Consensus Protocol – SCP for short – each node votes with a group of other nodes it trusts.",
-      "sofia1": "And who decides which nodes to trust?",
-      "lumio2": "Each node decides for itself! That's called a Quorum Slice."
+      "sofia1": "So my Wallet alone doesn't determine whether my payment is valid?",
+      "lumio2": "Exactly. Your Wallet creates and signs the transaction. The network then verifies it collectively."
     },
     "s3": {
       "card": {
         "title": "Quorum Slice",
-        "body": "Each node in the network chooses its own group of nodes it trusts – its Quorum Slice. When the Quorum Slices of nodes overlap, the whole network can reach consensus. Nobody has to trust everyone – just enough overlap is needed.",
+        "body": "A quorum slice is the group of other validators whose approval a validator considers sufficient. Important: This is set up by a validator operator, not by a regular Wallet user. If these trust groups overlap sufficiently across the network, Stellar can reach a consensus.",
         "cta": "Continue"
       },
       "glossary_btn": "What is a Quorum Set? (Open glossary)",
@@ -1187,7 +1187,7 @@
     },
     "summary": {
       "learning1": "SCP is Stellar's consensus mechanism – no central authority needed.",
-      "learning2": "Each node chooses its own Quorum Slice – its group of trusted nodes.",
+      "learning2": "Validator operators select quorum sets—ordinary Wallet users do not.",
       "learning3": "Consensus emerges from overlapping Quorum Slices, not mining.",
       "learning4": "Stellar reaches consensus in 3–5 seconds – energy-efficient and fast."
     },
@@ -1257,10 +1257,10 @@
     },
     "s5c": {
       "section": "Who do I really trust?",
-      "lumio1": "That's a very good question! As a user you don't explicitly trust anyone – you just click 'Send'.",
+      "lumio1": "It's important to note that, as a regular user, you don't express trust in any specific node when sending a transaction. You typically don't even have a choice in the matter within your Wallet.",
       "lumio2": "The trust is configured by validator operators: companies, exchanges, and universities that run a Stellar node and decide in advance which other validators they trust.",
       "sofia1": "And how does that work when I send a payment?",
-      "lumio3": "Imagine 30 accountants in different cities – they agreed among themselves whom to trust. When you send, they vote automatically in the background. You don't notice a thing. Once 2/3 agree, it's confirmed.",
+      "lumio3": "Exactly. Your Wallet signs the payment. After that, validators on the network check whether it's valid and vote according to their quorum sets.",
       "lumio4": "Important: you are implicitly trusting these operators. That's why transparency matters so much – you should be able to see who secures the network."
     },
     "s5d": {

@@ -51,15 +51,15 @@
       "unknown": "Error desconocido en la transacción.",
       "signingFailed": "No se pudieron crear una o más firmas. Inténtalo de nuevo.",
       "multisig": {
-        "invalidSecret": "Una de las claves secretas ingresadas no es válida.",
+        "invalidSecret": "Uno de los valores introducidos para secret keys no es válido.",
         "notASigner": "Uno de los valores introducidos, secret keys, no corresponde al valor registrado signers.",
-        "noKeysProvided": "No se introdujeron claves secretas válidas.",
+        "noKeysProvided": "No se ha introducido ningún valor válido para secret keys.",
         "insufficientWeight": "Las firmas recogidas son insuficientes para autorizar este cambio. Requeridas: {{required}}, disponibles: {{current}}.",
         "txBadAuth": "Transacción rechazada: Las firmas no son suficientes (tx_bad_auth).",
         "zeroWeightSigner": "El valor introducido secret key pertenece a un signer con peso 0 y no puede autorizar una transacción.",
         "invalidConfig": "La configuración prevista de signers y thresholds no se puede firmar. Comprueba los pesos y thresholds.",
         "trustlines": {
-          "invalidInput": "Por favor, verifica el código del activo, el emisor y el límite. Al menos uno de los campos es inválido."
+          "invalidInput": "Comprueba el código asset, el emisor y el límite. Al menos uno de los campos no es válido."
         }
       },
       "trustlines": {

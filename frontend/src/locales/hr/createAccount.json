@@ -10,16 +10,16 @@
   "signersCount": "Broj Signer",
   "bestPractices": {
     "title": "Najbolje prakse",
-    "text": "Čuvajte tajne ključeve sigurnima i nemojte ih distribuirati nepotrebno."
+    "text": "Održavajte secret keys sigurnima i ne distribuirajte ih nepotrebno."
   },
   "instructions": {
-    "public": "Podijelite ovaj javni ključ s drugima za plaćanja.",
-    "secret": "Čuvajte ovaj tajni ključ sigurnim; nikad ga nemojte dijeliti."
+    "public": "Podijelite ovaj public key s drugima za plaćanja.",
+    "secret": "Očuvajte ovu secret key sigurnom; nikada je ne dijelite."
   },
   "generateFirst": "Molimo, prvo generirajte par ključeva.",
   "confirmLowBalance": "Početni saldo {bal} XLM je ispod preporučene rezerve {req} XLM (Signer: {count}). Nastaviti?",
   "activated": "Račun je aktiviran. Hash: {hash}",
-  "activatedTestnet": "Račun je aktiviran na testnetu putem Friendbota.",
+  "activatedTestnet": "Račun je aktiviran na testnet putem Friendbota.",
   "alreadyActive": "Korisnički račun je već aktiviran.",
   "createdNoSigners": "Račun je kreiran, multisig nije konfigurisan.",
   "createdAndConfigured": "Račun je kreiran i multisig je konfigurisan. Hash: {hash}",
@@ -32,7 +32,7 @@
     "title": "Važne informacije",
     "secureKeys": {
       "title": "Sigurnosna kopija Secret Key",
-      "text": "Javni ključ možete sigurno dijeliti — to je poput broja računa.\n\nTajni ključ je ključ do vašeg računa. Postupajte s njim kao s lozinkom:\n• NIKADA ga ne pohranjujte u uslugama u oblaku, e-pošti ili nezaštićenim bilješkama\n• Zapišite ga na papir ili upotrijebite hardverski novčanik\n• Napravite više sigurnosnih kopija i pohranite ih na sigurne, odvojene lokacije\n• Ako izgubite svoju tajnu ključnu riječ, pristup vašem računu je nepovratno izgubljen"
+      "text": "public key može se sigurno dijeliti — to je poput broja računa.\n\nsecret key je ključ za vaš račun. Postupajte s njim kao s lozinkom:\n• NIKADA ga ne pohranjujte u uslugama u oblaku, e-pošti ili nezaštićenim bilješkama\n• Zapišite ga na papir ili upotrijebite hardverski wallet\n• Napravite više sigurnosnih kopija i pohranite ih na sigurnim, odvojenim mjestima\n• Ako izgubite svoj secret key, pristup vašem računu je nepovratno izgubljen"
     },
     "multisigSection": {
       "title": "Multisig (Multi-signature)",
@@ -42,7 +42,7 @@
       "title": "Istek potpisa"
     }
   },
-  "activateHint": "Aktivacija je potrebna kako bi račun postojao. Na Testnetu, putem Friendbot-a; na Mainnetu, putem \"Create Account\" iz postojećeg novčanika.",
+  "activateHint": "Aktivacija je potrebna da bi račun postojao. U Testnet putem Friendbota; u Mainnet putem opcije \"Create Account\" iz postojećeg wallet.",
   "activateNow": "Odmah aktivirajte račun.",
   "activateOnly": "Samo aktiviraj",
   "balanceWarning": "Početni saldo je vjerojatno prenizak za dodavanje {{count}} dodatnih signers (minimalna rezerva: {{req}} XLM)",
@@ -60,9 +60,9 @@
     "title": "⚠️ Osiguraj ključ sada!",
     "text1": "Generirali ste novi par ključeva.",
     "text2": "Odmah osiguraj OBA ključa prije nastavka:",
-    "list1": "Javni ključ: Vaša adresa računa, može se dijeliti",
-    "list2": "Tajni ključ (Geheimschlüssel): Vaša lozinka – NIKADA ne dijelite niti čuvajte online!",
-    "list3": "Ako je tajni ključ izgubljen, pristup je nepovratno izgubljen.",
+    "list1": "Public Key: adresa vašeg računa, može se podijeliti",
+    "list2": "Secret Key: vaša lozinka – NIKADA je ne dijelite niti pohranjujte na internetu!",
+    "list3": "Ako se secret key izgubi, pristup je nepovratno izgubljen.",
     "confirm": "Osigurao sam oba ključa."
   },
   "muxedId": "Muxed-ID",

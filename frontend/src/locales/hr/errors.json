@@ -51,15 +51,15 @@
       "unknown": "Nepoznata greška u transakciji",
       "signingFailed": "Jedan ili više potpisa nije bilo moguće izraditi. Pokušajte ponovno.",
       "multisig": {
-        "invalidSecret": "Jedan od unesenih tajnih ključeva je nevažeći.",
+        "invalidSecret": "Jedan od unesenih secret keys je neispravan.",
         "notASigner": "Jedan od unesenih secret keys ne pripada registriranom signers.",
-        "noKeysProvided": "Nisu uneseni valjani tajni ključevi.",
+        "noKeysProvided": "Nije uneseno nijedno važeće secret keys.",
         "insufficientWeight": "Prikupljeni potpisi nisu dovoljni za odobrenje ove promjene. Potrebno: {{required}}, dostupno: {{current}}.",
         "txBadAuth": "Transakcija odbijena: Potpisi nisu dovoljno (tx_bad_auth).",
         "zeroWeightSigner": "Uneseni secret key pripada signer s težinom 0 i ne može autorizirati transakciju.",
         "invalidConfig": "Planirana konfiguracija signers i thresholds ne može se potpisati. Molimo provjerite težine i thresholds.",
         "trustlines": {
-          "invalidInput": "Provjerite šifru imovine, izdavatelja i limit. Barem jedno od polja je nevažeće."
+          "invalidInput": "Molimo provjerite kod asset, izdavatelja i limit. Najmanje jedno od polja je neispravno."
         }
       },
       "trustlines": {

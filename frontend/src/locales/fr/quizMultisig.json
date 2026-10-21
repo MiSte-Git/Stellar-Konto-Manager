@@ -42,13 +42,13 @@
     "a3fb": "Incorrect : Il n'y a que suffisamment de signatures pour respecter le threshold."
   },
   "q5": {
-    "question": "Comment les clés secrètes doivent-elles être stockées dans des configurations multisig réelles ?",
+    "question": "Comment faut-il stocker secret keys dans des configurations réelles de multisig ?",
     "hint": "La séparation est une sécurité.",
     "a1": "Séparé sur différents appareils/emplacements.",
     "a1fb": "Correction : Les signatures doivent être recueillies séparément.",
     "a2": "Tout sur le même ordinateur portable pour plus de commodité.",
     "a2fb": "Incorrect : Un appareil comporte un point de défaillance unique.",
     "a3": "Partager en texte clair dans une discussion.",
-    "a3fb": "Incorrect : Ne partagez jamais de clés secrètes."
+    "a3fb": "Incorrect : Ne partagez jamais secret keys."
   }
 }

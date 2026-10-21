@@ -1,10 +1,10 @@
 {
   "assetSearch": {
-    "title": "Búsqueda de activos",
-    "description": "Busca activos a través del punto final de trading (Horizon).",
+    "title": "Token búsqueda",
+    "description": "Busca por el código asset, la dirección del emisor o la combinación exacta de CÓDIGO:EMISOR.",
     "form": {
       "code": {
-        "label": "Código de activo",
+        "label": "Código Asset",
         "placeholder": "p. ej., USDC"
       },
       "issuer": {
@@ -18,7 +18,7 @@
       }
     },
     "result": {
-      "empty": "No se encontraron activos.",
+      "empty": "No se ha encontrado assets.",
       "columns": {
         "code": "Código",
         "issuer": "Emisor",
@@ -28,31 +28,31 @@
         "toml": "TOML",
         "actions": "Acciones"
       },
-      "count": "Fichas encontradas: {{count}}",
+      "count": "Se ha encontrado tokens: {{count}}",
       "qualityHint": "Nota: Las «Trustlines», junto con el dominio y el TOML, aportan más información. La cantidad total aparece en los detalles, pero no constituye una señal de autenticidad.",
       "columnHelp": {
         "numAccounts": "Número de cuentas trustlines según Horizon.",
-        "amount": "Importe total de este activo declarado por Horizon. Si Horizon devuelve bloques de autorización, estos se suman."
+        "amount": "Importe total de este asset comunicado por Horizon. Si Horizon devuelve grupos de autorizaciones, estos se suman."
       },
       "sort": {
         "numAccounts": "Ordenar por trustlines"
       },
       "factLabels": {
         "domain": "La cuenta del emisor tiene un dominio propio",
-        "toml": "El activo figura en el archivo «stellar.toml» de este emisor."
+        "toml": "Asset aparece en el archivo stellar.toml de este emisor"
       },
       "duplicateCodeWarning": "Atención: {{codes}} tiene varios resultados de emisores distintos. El código por sí solo no dice nada sobre la autenticidad; solo la dirección del emisor lo determina. Compárala con atención antes de añadir una trustline o intercambiar.",
-      "duplicateCodeBadge": "{{count}} emisores distintos utilizan este código de activo."
+      "duplicateCodeBadge": "{{count}} emisores diferentes utilizan este código asset."
     },
     "invalidInput": {
-      "codeMissing": "Por favor, introduzca un código de activo.",
-      "queryMissing": "Introduce un código de activo, la dirección del emisor o CODE:ISSUER.",
-      "queryInvalid": "Introduce un código de activo válido, una dirección de emisor o «CODE:ISSUER».",
-      "codeInvalid": "Los códigos de activos solo pueden contener entre 1 y 12 letras o números.",
+      "codeMissing": "Introduce un código asset.",
+      "queryMissing": "Introduce un código asset, una dirección de emisor o CODE:ISSUER.",
+      "queryInvalid": "Introduce un código asset válido, una dirección de emisor o CODE:ISSUER.",
+      "codeInvalid": "Los códigos Asset solo pueden contener entre 1 y 12 letras o números.",
       "issuerInvalid": "Introduce una dirección válida de emisor de Stellar."
     },
     "failed": {
-      "generic": "La búsqueda de activos ha fallado. Por favor, inténtelo de nuevo más tarde."
+      "generic": "La búsqueda de asset ha fallado. Inténtalo de nuevo más tarde."
     },
     "ambiguousResult": {
       "title": "Estado poco claro – no reenviar",
@@ -63,19 +63,19 @@
       "label": "Ejemplos"
     },
     "help": {
-      "issuer": "La cuenta de Stellar que emitió este token. El código y el emisor identifican de forma única el activo.",
-      "trustlines": "Número de cuentas que tienen una «trustline» con este activo según Horizon. Se trata de un indicador de uso, no de una prueba de autenticidad.",
-      "totalAmount": "Cantidad total de este activo declarada por Horizon: trustlines, saldos reclamables, pools de liquidez y contratos sumados. La oferta por sí sola no dice nada sobre la calidad ni la fiabilidad.",
-      "trustlineStatus": "Indica si tu cuenta corriente ya puede albergar este activo.",
-      "trustlineBalance": "Saldo actual de este activo en tu cuenta «Trustline».",
+      "issuer": "La cuenta de Stellar que emitió este token. El código y el emisor identifican de forma única el asset.",
+      "trustlines": "Número de cuentas que tienen un trustline hasta este asset según Horizon. Se trata de un indicador de uso, no de una prueba de autenticidad.",
+      "totalAmount": "Importe total de este asset declarado por Horizon: trustlines, claimable balances, fondos de liquidez y contratos combinados. El suministro por sí solo no dice nada sobre la calidad ni la fiabilidad.",
+      "trustlineStatus": "Indica si tu cuenta corriente ya puede albergar este asset.",
+      "trustlineBalance": "Saldo actual de este asset en tu trustline.",
       "trustlineLimit": "Saldo máximo que puede tener tu cuenta durante este asset a lo largo de este trustline.",
-      "authorization": "En el caso de los activos «auth_required», el emisor debe autorizar tu «trustline» antes de que puedas recibir o negociar el token.",
+      "authorization": "En el caso de auth_required assets, el emisor debe autorizar tu trustline antes de que puedas recibir o negociar el token.",
       "homeDomain": "Dominio almacenado en la cuenta del emisor. Sirve para localizar el archivo stellar.toml.",
       "issuerMasterWeight": "Peso de la clave maestra del emisor. Un valor de 0 significa que la clave maestra ya no puede firmar por sí sola.",
       "issuerLocked": "Indica si la clave maestra del emisor sigue activa. «Gestionada activamente» es lo habitual en proyectos en curso, como las stablecoins, y no supone ninguna advertencia. «Totalmente bloqueada» es una señal positiva para los tokens que prometen inmutabilidad. «Parece bloqueada» significa que la clave maestra está desactivada, pero que otros signers podrían seguir controlando la cuenta.",
       "tomlStatus": "Estado del archivo «stellar.toml» en el dominio principal del emisor.",
       "tomlUrl": "Dirección del archivo «stellar.toml» encontrado.",
-      "tomlAssetListed": "Indica si este activo figura en las entradas «CURRENCIES» del archivo stellar.toml.",
+      "tomlAssetListed": "Indica si este asset aparece en las entradas de CURRENCIES del archivo stellar.toml.",
       "tomlCurrencyCount": "Número de entradas de «CURRENCIES» en el archivo stellar.toml.",
       "authRequired": "El emisor debe autorizar trustlines de forma individual.",
       "authRevocable": "El emisor puede revocar posteriormente una autorización ya concedida.",
@@ -87,13 +87,13 @@
       "spendableAfter": "Saldo estimado de XLM que sigue estando disponible libremente tras la reserva adicional.",
       "expected": "Importe estimado a recibir según el presupuesto actual.",
       "minimum": "Importe mínimo tras aplicar la tolerancia al deslizamiento. Por debajo de este importe, la operación de swap se cancela.",
-      "route": "Ruta del activo que Stellar utilizaría para el intercambio.",
+      "route": "Asset ruta que Stellar utilizaría para el intercambio.",
       "effectiveRate": "Tipo de cambio real previsto en función del importe enviado y del importe recibido.",
       "minimumRate": "La peor tasa aceptada tras aplicar la tolerancia al deslizamiento.",
       "slippageBuffer": "Diferencia entre el presupuesto previsto y el importe mínimo.",
       "hops": "Número de segmentos de mercado en la ruta.",
       "quoteAge": "Antigüedad de la cotización que se muestra actualmente. Las cotizaciones más antiguas deben actualizarse antes de firmar.",
-      "routeDetailed": "Ruta con el código del activo y el nombre abreviado del emisor, de modo que los tokens con el mismo código sigan siendo distinguibles.",
+      "routeDetailed": "Ruta con el código asset y el emisor abreviado, de modo que el código tokens, que es el mismo, siga siendo distinguible.",
       "spread": "Diferencia entre el mejor precio de compra y el mejor precio de venta.",
       "priceImpact": "Estimación de en qué medida la operación empeora el precio obtenido en comparación con el precio de mercado.",
       "topDepth": "Suma de los cinco primeros niveles de oferta del libro de órdenes.",
@@ -102,17 +102,17 @@
       "bestAsk": "La oferta de venta más baja actual en el libro de órdenes.",
       "depthCoversAmount": "Indica si la profundidad visible de la cartera de órdenes superior cubre la cantidad introducida.",
       "poolCount": "Número de fondos de liquidez de AMM encontrados para este par de negociación.",
-      "limitOfferDirection": "Define qué activo vendes y qué activo quieres recibir.",
-      "limitOfferAmount": "Cantidad del activo que deseas vender en la orden a precio límite.",
-      "limitOfferPrice": "Precio por unidad del activo vendido, expresado en la moneda del activo comprado.",
+      "limitOfferDirection": "Define qué asset vendes y qué asset quieres recibir.",
+      "limitOfferAmount": "Cantidad de asset que deseas vender en la orden limitada.",
+      "limitOfferPrice": "Precio por 1 unidad vendida de asset, expresado en la moneda de compra asset.",
       "expertDirectory": "Comparación con el directorio público de stellar.expert (un tercero). Una entrada es solo una indicación, no una garantía de autenticidad ni de seguridad. La ausencia de una entrada tampoco es indicio de fraude. Verifica siempre la dirección del emisor también a través de su sitio web oficial.",
       "exchangeRateQuick": "La media entre el mejor precio de compra y el mejor precio de venta en el libro de órdenes nativo de Stellar para este par. Si no hay profundidad de mercado, no se puede mostrar ningún precio.",
       "exchangeRateExecution": "Precio de ejecución simulado para una cantidad de referencia de 1 unidad, incluyendo posibles pasos intermedios y fondos de liquidez. Las cantidades mayores pueden dar lugar a un precio menos favorable (deslizamiento)."
     },
     "mode": {
-      "code": "Búsqueda por código de activo",
+      "code": "Asset búsqueda de código",
       "issuer": "Búsqueda de emisores",
-      "exact": "Activo exacto"
+      "exact": "Exacto asset"
     },
     "actions": {
       "details": "Detalles",
@@ -121,7 +121,7 @@
       "trustlinePresent": "Trustline existe",
       "trustlineNext": "Siguiente paso: crear trustline a partir del resultado de la búsqueda",
       "swap": "Intercambio",
-      "swapNext": "Selecciona un activo y abre la vista previa del swap"
+      "swapNext": "Selecciona asset y abre la vista previa del intercambio"
     },
     "account": {
       "active": "Cuenta activa",
@@ -177,7 +177,7 @@
       "invalidAmount": "Introduce un importe válido en {{asset}}.",
       "invalidSlippage": "Introduce un valor de deslizamiento comprendido entre el 0 y el 50 por ciento.",
       "invalidTarget": "Busca y selecciona un token de destino o introdúcelo exactamente en el formato CODE:ISSUER.",
-      "sameAsset": "El origen y el destino no deben ser el mismo activo.",
+      "sameAsset": "El origen y el destino no deben ser el mismo asset.",
       "destinationTrustlineMissing": "El destino token trustline sigue sin aparecer en esta cuenta.",
       "destinationTrustlineUnauthorized": "El destino trustline aún no ha sido autorizado por el emisor.",
       "minimumMissing": "No se ha podido calcular el importe mínimo.",
@@ -235,7 +235,7 @@
       "openOffers": "Ofertas activas para este token",
       "noOffers": "No se han encontrado ofertas abiertas para este token.",
       "loadFailed": "No se han podido cargar las ofertas abiertas.",
-      "invalidPair": "A esta orden limitada le falta un par de activos válido.",
+      "invalidPair": "A esta orden limitada le falta un par válido de asset.",
       "invalidAmount": "Introduce un importe de venta válido en {{asset}}.",
       "invalidPrice": "Introduce un precio válido superior a 0.",
       "createSuccess": "Se ha realizado una orden limitada. Transacción:",
@@ -253,7 +253,7 @@
     "trustlineConfirm": {
       "title": "Confirmar trustline",
       "limit": "Límite de Trustline",
-      "warning": "Una «trustline» permite que este activo se mantenga en tu cuenta. Comprueba los datos, especialmente el emisor, el dominio de origen, el archivo «stellar.toml», la autorización y la cláusula de recuperación antes de firmar.",
+      "warning": "Un trustline permite que este asset se mantenga en tu cuenta. Comprueba los datos, especialmente el emisor, el dominio de origen, el archivo stellar.toml, la autorización y la cláusula de recuperación antes de firmar.",
       "continue": "Continuar hasta la firma"
     },
     "trustlineFlow": {
@@ -262,14 +262,14 @@
       "reserveIncrease": "Reserva mínima adicional",
       "reserveAfter": "Reserva mínima tras",
       "spendableAfter": "XLM disponible para gastar tras la reserva",
-      "authRequiredHint": "Este activo utiliza «auth_required». La «trustline» se puede crear, pero el emisor debe autorizarla antes de que puedas recibir o comprar el token mediante un intercambio.",
+      "authRequiredHint": "Este asset utiliza auth_required. El trustline se puede crear, pero el emisor debe autorizarlo antes de que puedas recibir o comprar el token mediante un intercambio.",
       "combinedTitle": "Opcional: trustline + swap",
       "combinedAction": "Ejecutar «trustline + swap»",
       "combinedConfirmTitle": "Confirmar «trustline» + intercambio",
       "combinedWarning": "Esta transacción crea primero el trustline y, a continuación, ejecuta el intercambio. La ruta se comprueba de nuevo justo antes de la firma.",
       "combinedContinue": "Continuar hasta la firma",
       "combinedOnlyXlm": "El flujo combinado solo está disponible para XLM → token en este caso.",
-      "authRequiredCombinedBlocked": "La combinación de Trustline+Swap está desactivada para los activos «auth_required», ya que el emisor debe autorizar primero la nueva Trustline.",
+      "authRequiredCombinedBlocked": "La combinación de Trustline+Swap está desactivada para auth_required assets, ya que el emisor debe autorizar primero el nuevo Trustline.",
       "invalidLimit": "Introduce un límite de Trustline válido superior a 0.",
       "limitBelowExpected": "El límite trustline es inferior al importe que se esperaba recibir.",
       "alreadyPresent": "El trustline ya existe. Vuelve a cargar la página y utiliza el intercambio habitual.",
@@ -301,7 +301,7 @@
         "loaded": "Se ha cargado el archivo «stellar.toml»",
         "failed": "No se puede acceder a «stellar.toml»",
         "noHomeDomain": "No hay dominio principal en la cuenta del emisor",
-        "assetListed": "Recurso incluido en el archivo «stellar.toml»",
+        "assetListed": "Asset aparece en el archivo stellar.toml",
         "currencyCount": "Entradas de «DIVISAS»",
         "errors": {
           "notFound": "Este dominio no proporciona un archivo «stellar.toml». Se trata de un problema relacionado con los datos por parte del editor, no de un problema con SKM.",
@@ -325,7 +325,7 @@
       },
       "amountBreakdown": {
         "trustlines": "De ello, {{amount}} en trustlines",
-        "claimable": "{{amount}} en saldos reclamables",
+        "claimable": "{{amount}} en claimable balances",
         "pools": "{{amount}} en pools de liquidez",
         "contracts": "{{amount}} en contratos"
       },
@@ -333,7 +333,7 @@
         "label": "Directorio de StellarExpert",
         "listed": "Incluido en el directorio",
         "listedAs": "Incluido en el directorio como «{{name}}»",
-        "notListed": "No figura en el directorio; esto no dice nada sobre la autenticidad: muchos activos serios no están incluidos.",
+        "notListed": "No aparece en el directorio: esto no dice nada sobre su autenticidad; muchos assets de buena reputación no figuran en él.",
         "unavailable": "StellarExpert no está disponible; no se pudo cargar la indicación.",
         "notChecked": "No comprobado (el directorio solo cubre la red pública)."
       }
@@ -343,10 +343,10 @@
       "issuerLoadFailed": "No se han podido cargar los datos del emisor.",
       "noHomeDomain": "El emisor no tiene dominio propio.",
       "tomlNotLoaded": "El archivo «stellar.toml» no se ha cargado o no es accesible.",
-      "tomlAssetMissing": "Este activo no figura en el archivo «stellar.toml» del emisor.",
+      "tomlAssetMissing": "Este asset no aparece en el archivo stellar.toml del emisor.",
       "issuerUnlocked": "La clave maestra del emisor no está bloqueada.",
-      "authRequired": "Este activo requiere la autorización del emisor.",
-      "clawbackEnabled": "La cláusula de recuperación está activa para este activo.",
+      "authRequired": "Este asset requiere la autorización del emisor.",
+      "clawbackEnabled": "La recuperación está habilitada para este asset.",
       "issuerAppearsLocked": "Advertencia: la clave maestra está desactivada, pero otros signers podrían seguir controlando la cuenta del emisor. En realidad, no está bloqueada.",
       "authRevocable": "El emisor puede revocar una autorización ya concedida y congelar tu saldo de este token.",
       "expertFlagged": "Atención: este emisor está marcado como dañino en el directorio de StellarExpert ({{tags}}). Se desaconseja encarecidamente añadir una trustline, comprar o intercambiar."

@@ -7,8 +7,8 @@
     "reverseLabel": "Nome riportato dal server della Federazione {{domain}}"
   },
   "flag": {
-    "compromised": "Attenzione: Questo portafoglio è segnalato come compromesso nella tua TrustList.",
-    "deactivated": "Nota: Questo portafoglio è contrassegnato come disabilitato nella tua Lista di Fiducia."
+    "compromised": "Avviso: questo wallet è contrassegnato come compromesso nella tua TrustList.",
+    "deactivated": "Nota: questo wallet è contrassegnato come disabilitato nel tuo elenco di siti attendibili."
   },
   "xlmBalance": "XLM",
   "unfunded": "Non attivato",
@@ -107,7 +107,7 @@
     "fakeNativeHint": "Si tratta di un Token proveniente da un editore, non dell'XLM nativo della rete."
   },
   "claimable": {
-    "title": "Saldi rimborsabili",
+    "title": "Claimable Balances",
     "intro": "Pagamenti disponibili sul tuo conto, ma che devono essere accreditati prima di comparire nel tuo saldo.",
     "claim": "Riscatta",
     "hide": "Nascondi",
@@ -125,7 +125,7 @@
     "noTrustHide": "Nascondi",
     "noTrustNote": "Il riscatto genera un Trustline e blocca 0,5 XLM in riserva. I Token non richiesti vengono spesso utilizzati in tentativi di frode. SKM non valuta i Token e non determina se un Token sia autentico. Se necessario, verificare i dettagli relativi ai Token utilizzando la ricerca Token.",
     "truncated": "Vengono visualizzate solo le prime {{count}} voci.",
-    "loadError": "Non è stato possibile caricare i saldi rimborsabili.",
+    "loadError": "Impossibile caricare Claimable balances.",
     "insufficientReserve": "Trustline richiede {{reserve}} XLM in riserva; sono disponibili {{available}} XLM.",
     "insufficientWeight": "I valori Signers inseriti non raggiungono complessivamente il peso richiesto di {{required}}.",
     "success": "{{amount}} {{code}} riscattato. Transazione {{hash}}.",
@@ -134,13 +134,13 @@
     "networkMismatch": "Il server Horizon non fa parte della rete selezionata. Non è stato firmato né inviato nulla.",
     "prepareJob": "Preparare come attività Multisig",
     "insufficientWeightJob": "I Signers che hai inserito non soddisfano complessivamente il peso richiesto {{required}}. Prepara invece un lavoro Multisig, dopodiché gli altri Signers potranno registrarsi sul sito web.",
-    "tooLittleTime": "Il saldo riscattabile scadrà troppo presto per poter essere utilizzato come incarico Multisig.",
+    "tooLittleTime": "Il claimable balance scadrà troppo presto per poter essere convertito in un lavoro Multisig.",
     "jobSource": "Account",
     "jobClaim": "Riscatta",
     "jobTrustline": "Crea Trustline",
     "jobNetwork": "Rete",
     "jobNoteLabel": "Nota",
-    "jobHint": "Il saldo riscattabile potrebbe scadere o essere riscattato in altro modo prima che tutti abbiano firmato. In tal caso, l'incarico non andrà a buon fine al momento dell'invio, ma non andrà perso nulla. La validità dell'incarico termina al più tardi alla scadenza del saldo riscattabile.",
+    "jobHint": "Il Claimable Balance potrebbe scadere o essere riscattato in altro modo prima che tutti abbiano firmato. In tal caso, il processo fallirà al momento dell'invio, ma non andrà perso nulla. La validità del processo termina al più tardi alla scadenza del Claimable Balance.",
     "empty": "Non è stato trovato alcun Claimable Balances."
   },
   "batchConvert": {

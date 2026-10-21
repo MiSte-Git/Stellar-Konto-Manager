@@ -1,7 +1,7 @@
 {
   "page": {
     "title": "Filtriraj XLM po Memo",
-    "noPublicKey": "Nije učitan javan ključ. Molimo vas da prvo unesete javan ključ."
+    "noPublicKey": "Nema public key učitano. Molimo prvo unesite public key."
   },
   "action": {
     "calculate": "Izračunaj",
@@ -13,7 +13,7 @@
   },
   "debug": {
     "incoming": "Dolazno – za: {{toMe}}, stvoreno→meni: {{createToMe}}, izvorno→meni: {{nativeInToMe}}",
-    "incomingOverview": "Unosi: {{total}} • Uključeni novčanici: {{unique}}",
+    "incomingOverview": "Unosi: {{total}} • Uključeni wallets: {{unique}}",
     "memo": "Memos u prozoru: {{any}} • točno memos: {{exact}}",
     "types": "Vrste – plaćanje: {{pay}}, putanja: {{path}}, kreirati: {{create}}, ostalo: {{other}}"
   },
@@ -30,7 +30,7 @@
     "label": "Memo tekst za pretraživanje (podnizor, s osjetljivošću na velika i mala slova)",
     "placeholder": "Memo (podnizak, osjetljivo na velika i mala slova)"
   },
-  "overviewLine": "Potvrde o plaćanju: {{total}} • uključeni novčanici: {{unique}}",
+  "overviewLine": "Potvrde o uplati: {{total}} • wallets uključen: {{unique}}",
   "result": {
     "label": "Ukupan iznos:",
     "value": "{{amount}} XLM"
@@ -41,8 +41,8 @@
     "count": "Količina: {{n}}",
     "label": "Poređenje (all inputs)",
     "otherCount": "Unosi s netočnim/nepostojećim memo: {{n}}",
-    "unique": "Jedinstveni novčanici (svi): {{n}}",
-    "uniqueWallets": "Jedinstveni novčanici: {{n}}"
+    "unique": "Jedinstveni wallets (sve): {{n}}",
+    "uniqueWallets": "Jedinstveno wallets: {{n}}"
   },
   "time": {
     "setToNow": "Postavi trenutno vrijeme.",
@@ -80,7 +80,7 @@
     "failed": "Greška pri učitavanju plaćanja s netočnim/praznim memo.",
     "hint": "Filtrira dolazna plaćanja unutar razdoblja i prikazuje pošiljatelje s netočnim/praznim memo.",
     "scanning": "… skeniranje pogrešno/prazno memos",
-    "summary": "Broj: {{count}} • Ukupno: {{sum}} XLM • Jedinstveni novčanici: {{unique}}",
+    "summary": "Broj: {{count}} • Ukupno: {{sum}} XLM • Jedinstveno Wallets: {{unique}}",
     "title": "Lažni/prazni memos tijekom razdoblja"
   }
 }

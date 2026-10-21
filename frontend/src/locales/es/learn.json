@@ -50,7 +50,7 @@
     "retry": "Por favor, inténtalo de nuevo",
     "noData": "No hay cuestionario disponible",
     "comingSoon": "La práctica para esta lección seguirá en breve.",
-    "testnetOnly": "Utiliza solo TESTNET. Nunca ingreses claves secretas reales. No almacenamos secretos."
+    "testnetOnly": "Utiliza únicamente TESTNET. Nunca introduzcas el valor real de secret keys. No almacenamos información confidencial."
   },
   "import": {
     "title": "Progreso de importación",
@@ -105,14 +105,14 @@
     "title": "Token & Trading",
     "goal": "Aprender sobre los mecanismos del mercado",
     "task": "Coloca un token en un mercado virtual y observa los cambios de precio.",
-    "learningOutcome": "El precio se determina por la oferta y la demanda.",
+    "learningOutcome": "En el DEX, operas directamente desde el Wallet. Los precios vienen determinados por la oferta y la demanda.",
     "reward": "⭐ 2 – Experto en Marketplace"
   },
   "lesson7": {
     "title": "Seguridad",
-    "goal": "Aprender comportamientos seguros",
+    "goal": "Aprende a protegerte del fraude y a distinguir entre los Token auténticos y los falsos.",
     "task": "Clasificación de acciones correctas/incorrectas; detección de tokens falsos",
-    "learningOutcome": "Mantener la clave confidencial, almacenarla de forma segura y utilizar la testnet.",
+    "learningOutcome": "Secret Key ¡Nunca los separes! Un auténtico Token se reconoce por su emisor verificado, no por su nombre.",
     "reward": "⭐ 2 – Guardia de Seguridad"
   },
   "lesson8": {
@@ -131,15 +131,15 @@
   },
   "lesson10": {
     "title": "Practica con SKM",
-    "goal": "Aplicar el conocimiento aprendido en la práctica.",
+    "goal": "Aprende a utilizar el Gestor de cuentas de Stellar de forma segura en Testnet.",
     "task": "Crea una cuenta en el testnet, actívala, establece un trustline y envía tokens.",
-    "learningOutcome": "Rastrear los procesos técnicos de una transacción.",
+    "learningOutcome": "En el Testnet, puedes probarlo todo sin arriesgar dinero real.",
     "reward": "⭐ 3 – Piloto de Blockchain"
   },
   "lesson11": {
     "title": "Responsabilidad",
     "goal": "Comprender las consecuencias de los errores",
-    "task": "Juego de toma de decisiones: actuar correctamente o no",
+    "task": "Responde a preguntas sobre errores, devoluciones y cómo gestionar el Secret Key.",
     "learningOutcome": "Blockchain es definitivo; la debida diligencia es imprescindible.",
     "reward": "⭐ 1 – Héroe de la Responsabilidad"
   },

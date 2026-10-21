@@ -6,7 +6,7 @@
   "nonZeroBalance": "У этого trustline есть остаток, отличный от нуля, и его нельзя удалить.",
   "destination": {
     "label": "Целевой адрес",
-    "placeholder": "Публичный ключ назначения или адрес федерации",
+    "placeholder": "Пункт назначения public key или адрес федерации",
     "error": "Неверный адрес назначения"
   },
   "deleted": {
@@ -22,20 +22,20 @@
     "success": "{count} trustlines успешно удалено."
   },
   "noDuplicates": "Дубликат trustlines не найден.",
-  "showSecret": "Показать секретный ключ",
+  "showSecret": "Отобразить Secret Key",
   "notFound": "Не найдено Trustline(s).",
   "add": {
     "button": "Добавить trustline",
     "title": "Установить новый trustline",
-    "assetCodeLabel": "Код актива",
+    "assetCodeLabel": "Asset Код",
     "assetCodePlaceholder": "например, USDC",
-    "assetCodeHelp": "Короткое название актива (1–12 символов, например, TESTUSD).",
+    "assetCodeHelp": "Asset краткое название (1–12 символов, например, TESTUSD).",
     "issuerLabel": "Эмитент (Public Key)",
     "issuerPlaceholder": "например, G...Эмитент",
     "issuerHelp": "Public Key (G-адрес) счета эмитента, выпускающего Asset.",
     "limitLabel": "Предел",
     "limitPlaceholder": "например, 1 000 000 (один миллион)",
-    "limitHelp": "Лимит — это максимальная сумма данного актива, на которую эта учетная запись может доверять. На практике он должен быть установлен на уровне, соответствующем ожидаемому максимальному балансу в этом активе.",
+    "limitHelp": "Лимит представляет собой максимальную сумму в единицах asset, которой данный счет может доверять. На практике его следует установить на уровне, не превышающем ожидаемый максимальный остаток на счете в единицах asset.",
     "submit": "Создать trustline",
     "cancel": "Отменить",
     "success": "Trustline для {{code}} успешно установлен."

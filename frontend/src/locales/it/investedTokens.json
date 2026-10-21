@@ -1,23 +1,23 @@
 {
-  "hintEnterPublicKey": "Per favore, inserisci prima una chiave pubblica.",
+  "hintEnterPublicKey": "Inserisci prima un public key.",
   "columns": {
     "amount": "Quantità",
     "compromised": "Compromesso",
     "deactivated": "Disattivato",
-    "destination": "Portafoglio target",
+    "destination": "Obiettivo wallet",
     "issuer": "Emittente",
     "label": "Etichetta",
     "memo": "Memo",
     "payments": "Pagamenti",
     "date": "Data",
-    "token": "Gettone"
+    "token": "Token"
   },
   "decimals": {
     "auto": "Automaticamente",
     "label": "Posizioni decimali:"
   },
   "filter": {
-    "memoPlaceholder": "Filtra per memo, indirizzo del portafoglio o etichetta",
+    "memoPlaceholder": "Filtra per memo, indirizzo wallet o etichetta",
     "tokenPlaceholder": "Filtra per token (CODE:ISSUER)"
   },
   "item": {
@@ -25,9 +25,9 @@
     "token": "Token: {{token}} (Pagamenti: {{occurrences}})",
     "tokenShort": "Token: {{token}}"
   },
-  "missingPublicKey": "Chiave pubblica mancante.",
+  "missingPublicKey": "Manca Public key.",
   "moreTruncated": "… e {{extra}} altri gruppi",
-  "toWallet": "a Portafoglio: {{address}}",
+  "toWallet": "a Wallet: {{address}}",
   "total": "Numero di token acquistati: {{count}}",
   "totalTokens": "Numero di token investiti (Assets): {{count}}",
   "value": {
@@ -37,7 +37,7 @@
   "view": {
     "label": "Filtra per:",
     "memo": "Memos (Memos)",
-    "token": "Gettone"
+    "token": "Token"
   },
   "toggles": {
     "showTotals": "Importo totale",
@@ -47,7 +47,7 @@
     "qsiListSet": "Nota: Puoi trovare l'elenco GF sotto Impostazioni → Trusted Wallets (QSI).",
     "pageTime": "Il caricamento di una pagina impiega circa 0,2 secondi → 100 pagine ≈ 20 secondi → 1000 pagine ≈ 200 secondi (≈ 3 minuti e 20 secondi)."
   },
-  "walletCapInfo": "Nota: Un portafoglio può contenere un massimo di 1000 trustline.",
+  "walletCapInfo": "Nota: un wallet può contenere al massimo 1000 trustlines.",
   "action": {
     "load": "Negozio"
   },

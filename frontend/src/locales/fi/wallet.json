@@ -7,8 +7,8 @@
     "reverseLabel": "{{domain}}-liiton palvelimen ilmoittama nimi"
   },
   "flag": {
-    "compromised": "Varoitus: Tämä lompakko on merkitty vaarantuneeksi TrustListissasi.",
-    "deactivated": "Huom: Tämä lompakko on merkitty poistetuksi käytöstä luottamuslistassasi."
+    "compromised": "Varoitus: Tämä wallet on merkitty vaarantuneeksi TrustList-luettelossasi.",
+    "deactivated": "Huomautus: Tämä wallet on merkitty käytöstä poistetuksi luottoluettelossasi."
   },
   "xlmBalance": "XLM",
   "unfunded": "Ei aktivoitu",
@@ -107,7 +107,7 @@
     "fakeNativeHint": "Tämä on julkaisijan Token, ei verkoston omaa XLM-muotoa."
   },
   "claimable": {
-    "title": "Korvattavat saldot",
+    "title": "Claimable Balances",
     "intro": "Maksut, jotka ovat tililläsi käytettävissä, mutta jotka on ensin kirjattava, ennen kuin ne näkyvät saldossasi.",
     "claim": "Lunasta",
     "hide": "Piilota",
@@ -125,7 +125,7 @@
     "noTrustHide": "Piilota",
     "noTrustNote": "Lunastaminen luo Trustline-tunnuksen ja lukitsee 0,5 XLM:ää varantoon. Pyytämättömiä Token-tunnuksia käytetään usein petosyrityksissä. SKM ei arvioi Token:ta eikä tee päätöstä siitä, onko Token aito. Tarvittaessa tarkista Token:n tiedot käyttämällä Token-hakua.",
     "truncated": "Vain ensimmäiset {{count}} tulosta näytetään.",
-    "loadError": "Korvattavia saldoja ei voitu ladata.",
+    "loadError": "Claimable balances:tä ei voitu ladata.",
     "insufficientReserve": "Trustline edellyttää {{reserve}} XLM:n varantoa; käytettävissä on {{available}} XLM.",
     "insufficientWeight": "Syöttämäsi Signers-arvot eivät yhteensä täytä vaadittua painoarvoa {{required}}.",
     "success": "{{amount}} {{code}} on lunastettu. Tapahtuma {{hash}}.",
@@ -134,13 +134,13 @@
     "networkMismatch": "Horizon-palvelin ei kuulu valittuun verkkoon. Mitään ei allekirjoitettu eikä lähetetty.",
     "prepareJob": "Valmistele Multisig-tehtävänä",
     "insufficientWeightJob": "Syöttämäsi Signers eivät yhteensä täytä vaadittua painoarvoa {{required}}. Laadi sen sijaan Multisig-tehtävä, minkä jälkeen muut Signers voivat kirjautua verkkosivustolle.",
-    "tooLittleTime": "Hyvityskelpoinen saldo vanhenee liian pian, jotta se voitaisiin lunastaa Multisig-tehtävänä.",
+    "tooLittleTime": "claimable balance vanhenee liian pian, jotta sitä voitaisiin lunastaa Multisig-työnä.",
     "jobSource": "Tili",
     "jobClaim": "Lunasta",
     "jobTrustline": "Luo Trustline",
     "jobNetwork": "Verkko",
     "jobNoteLabel": "Huomautus",
-    "jobHint": "Lunastettavissa oleva saldo voi vanhentua tai tulla lunastetuksi jollain muulla tavalla ennen kuin kaikki ovat allekirjoittaneet. Tällöin työ epäonnistuu lähetettäessä, mutta mitään ei menetetä. Työn voimassaolo päättyy viimeistään silloin, kun lunastettavissa oleva saldo vanhenee.",
+    "jobHint": "Claimable Balance voi vanhentua tai se voidaan lunastaa jollain muulla tavalla ennen kuin kaikki ovat allekirjoittaneet. Tällöin työ epäonnistuu lähetettäessä, mutta mitään ei menetetä. Työn voimassaolo päättyy viimeistään silloin, kun Claimable Balance vanhenee.",
     "empty": "Claimable Balances:tä ei löytynyt."
   },
   "batchConvert": {

@@ -1,7 +1,7 @@
 {
   "page": {
     "title": "Filter XLM op Memo",
-    "noPublicKey": "Geen openbare sleutel geladen. Voer eerst een openbare sleutel in."
+    "noPublicKey": "Er is geen public key geladen. Voer eerst een public key in."
   },
   "action": {
     "calculate": "Berekenen",
@@ -13,7 +13,7 @@
   },
   "debug": {
     "incoming": "Inkomend – naar: {{toMe}}, aanmaken→mij: {{createToMe}}, origineel→mij: {{nativeInToMe}}",
-    "incomingOverview": "Inzendingen: {{total}} • Betrokken portemonnees: {{unique}}",
+    "incomingOverview": "Vermeldingen: {{total}} • Betrokken wallets: {{unique}}",
     "memo": "Memo's in venster: {{any}} • exacte memo's: {{exact}}",
     "types": "Typen – betaling: {{pay}}, pad: {{path}}, maken: {{create}}, andere: {{other}}"
   },
@@ -30,7 +30,7 @@
     "label": "Memo zoektekst (substring, case-sensitive)",
     "placeholder": "Memo (substring, case-sensitive)"
   },
-  "overviewLine": "Betalingsbewijzen: {{total}} • betrokken portemonnees: {{unique}}",
+  "overviewLine": "Betalingsbewijzen: {{total}} • wallets betrokken: {{unique}}",
   "result": {
     "label": "Totaalbedrag:",
     "value": "{{amount}} XLM"
@@ -41,7 +41,7 @@
     "count": "Hoeveelheid: {{n}}",
     "label": "Vergelijking (all inputs)",
     "otherCount": "Vermeldingen met een onjuiste of ontbrekende memo: {{n}}",
-    "unique": "Unieke portemonnees (totaal): {{n}}",
+    "unique": "Uniek wallets (alle): {{n}}",
     "uniqueWallets": "Unieke wallets: {{n}}"
   },
   "time": {
@@ -67,7 +67,7 @@
     "window": "Gebruikt UTC-tijdvenster: {{from}} → {{to}} (eindtijd niet meegerekend)"
   },
   "wrongMemos": {
-    "button": "Portemonnees weergeven met onjuiste/lege memo",
+    "button": "Geef wallets weer met een onjuiste of lege memo",
     "clipboard": "Kopiëren naar klembord",
     "columns": {
       "amount": "Bedrag",

@@ -1,10 +1,10 @@
 {
   "assetSearch": {
-    "title": "Vermogenszoektocht",
-    "description": "Zoek naar activa via de trading endpoint (Horizon).",
+    "title": "Asset zoeken",
+    "description": "Zoek naar assets via het handels-endpoint (Horizon).",
     "form": {
       "code": {
-        "label": "Assetcode",
+        "label": "Asset-code",
         "placeholder": "bijv., USDC"
       },
       "issuer": {
@@ -14,7 +14,7 @@
       "submit": "Zoeken"
     },
     "result": {
-      "empty": "Geen activa gevonden.",
+      "empty": "Er is geen assets gevonden.",
       "columns": {
         "code": "Code",
         "issuer": "Uitgever",
@@ -23,10 +23,10 @@
       }
     },
     "invalidInput": {
-      "codeMissing": "Voer een assetcode in."
+      "codeMissing": "Voer een asset-code in."
     },
     "failed": {
-      "generic": "Zoeken naar activa mislukt. Probeer het later opnieuw."
+      "generic": "Asset Zoeken is mislukt. Probeer het later nog eens."
     }
   }
 }

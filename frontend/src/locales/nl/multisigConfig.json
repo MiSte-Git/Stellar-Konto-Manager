@@ -5,7 +5,7 @@
   "signersCountLimit": "Opmerking: Netwerkbeperking (Stellar): max. 20 extra Signer.",
   "bestPractices": {
     "title": "Best practices",
-    "text": "Houd geheime sleutels veilig en verspreid ze niet onnodig."
+    "text": "Bewaar secret keys op een veilige plek en verspreid ze niet onnodig."
   },
   "signerTypeNote": "Opmerking: SKM gebruikt uitsluitend ed25519-Signer. Gebruik voor hashX/preAuthTx",
   "signerTypeLink": "lab.stellar.org",

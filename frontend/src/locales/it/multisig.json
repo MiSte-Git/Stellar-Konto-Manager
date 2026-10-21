@@ -41,8 +41,8 @@
       },
       "local": {
         "title": "Inserire tutte le firme localmente",
-        "desc": "Usare solo se tutte le chiavi segrete possono essere inserite in modo sicuro su questo dispositivo (Tests/Recovery/Admin).",
-        "warning": "Avviso: Tutte le chiavi segrete vengono raccolte in questa sessione. Utilizzare solo su dispositivi fidati.",
+        "desc": "Da utilizzare solo se è possibile inserire in modo sicuro tutti i valori secret keys su questo dispositivo (Test/Ripristino/Amministrazione).",
+        "warning": "Avviso: tutti i dati secret keys vengono raccolti in questa sessione. Utilizzare solo su dispositivi affidabili.",
         "moreInfo": "Ulteriori informazioni",
         "infoTitle": "Come funziona \"Tutte le firme in locale\"?",
         "infoBody": {
@@ -53,18 +53,18 @@
       },
       "xdr": {
         "title": "Esporta XDR (non inviare)",
-        "desc": "Genera una transazione XDR grezza per strumenti offline o portafogli hardware.",
+        "desc": "Genera una transazione XDR non elaborata per strumenti offline o hardware wallets.",
         "short": "Esporta la transazione come XDR senza inviarla direttamente.",
         "moreInfo": "Ulteriori informazioni.",
         "infoTitle": "Come funziona l'esportazione XDR?",
         "infoBody": {
           "one": "XDR è il formato di transazione grezza di Stellar. Nulla viene inviato automaticamente.",
-          "two": "Usa XDR per portafogli hardware, computer offline o altri portafogli/strumenti che possono importare XDR.",
+          "two": "Utilizzare XDR per l'hardware wallets, i computer non connessi a Internet o altri wallets/strumenti in grado di importare XDR.",
           "three": "Spetta a te firmare e/o inviare l'XDR in un secondo momento (ad esempio, utilizzando i job Multisig o uno strumento esterno)."
         },
         "steps": {
           "one": "Viene generato un XDR, ma non viene inviato nulla.",
-          "two": "È possibile firmare l'XDR esternamente (utilizzando un computer offline, un portafoglio hardware o un altro strumento).",
+          "two": "È possibile firmare l'XDR esternamente (utilizzando un computer offline, un dispositivo hardware wallet o un altro strumento).",
           "three": "Per inviare, è necessario reimportare l'XDR (e.g., via multisig jobs or another tool) e firmarlo/inviarlo lì."
         }
       }
@@ -127,7 +127,7 @@
   },
   "testMode": {
     "modalTitle": "Firma di un singolo utente",
-    "modalDescription": "Qui, puoi inserire tutte le chiavi segrete necessarie su un unico dispositivo e inviare la transazione direttamente. In configurazioni reali a più parti, le chiavi dovrebbero rimanere su dispositivi separati."
+    "modalDescription": "Qui è possibile inserire tutti i secret keys necessari su un unico dispositivo e inviare direttamente la transazione. Nelle configurazioni multiparte reali, le chiavi dovrebbero rimanere su dispositivi separati."
   },
   "mode": {
     "test": {
@@ -164,7 +164,7 @@
       "progress": "Peso delle firme: {{collected}} / {{required}}",
       "signed": "firmato",
       "missing": "mancante",
-      "noSessionSecret": "Nessuna chiave segreta memorizzata nel browser. Inserisci il segreto o importa XDR firmato.",
+      "noSessionSecret": "Nel browser non è presente alcun file secret key. Inserisci il segreto oppure importa un file XDR firmato.",
       "signedLocalStatus": "Firma salvata. Stato attuale: {{status}}"
     },
     "changes": {
@@ -175,7 +175,7 @@
     },
     "xdr": {
       "title": "Transazione (XDR)",
-      "hint": "Altri Signers possono caricare e firmare questo XDR in portafogli compatibili.",
+      "hint": "Altri Signers possono caricare e firmare questo XDR in Wallets compatibili.",
       "copy": "Copia XDR",
       "copy.success": "XDR copiato negli appunti.",
       "copy.error": "XDR non può essere copiato negli appunti."
@@ -192,7 +192,7 @@
     },
     "secretPrompt": {
       "title": "Inserisci il codice segreto per firmare",
-      "hint": "Per favore, inserisci la chiave segreta per l'account {{account}}.",
+      "hint": "Inserisci il codice secret key per l'account {{account}}.",
       "signNow": "Firma ora"
     },
     "submitFailed": "Si è verificato un errore durante l'invio: {{reason}}",

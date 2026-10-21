@@ -61,7 +61,7 @@
     "nameLabel": "Nombre",
     "urlLabel": "URL",
     "testnetUrlLabel": "URL de Testnet (optional)",
-    "testnetUrlPlaceholder": "https://…{address} (déjelo en blanco para utilizar la URL de la red principal también en la red de pruebas)",
+    "testnetUrlPlaceholder": "https://…{dirección} (déjalo en blanco para utilizar la URL mainnet también para testnet)",
     "addButton": "Agregar Explorador",
     "removeButton": "Eliminar",
     "setDefault": "Establecer como predeterminado",
@@ -72,8 +72,8 @@
       "urlInvalid": "Por favor, introduce una URL válida.",
       "testnetUrlInvalid": "Por favor, introduce una URL válida de testnet."
     },
-    "mainnetLabel": "Red principal",
-    "testnetLabel": "Red de pruebas",
+    "mainnetLabel": "Mainnet",
+    "testnetLabel": "Testnet",
     "edit": "Editar"
   },
   "export": {
@@ -123,7 +123,7 @@
       "discard": "Descartar",
       "save": "Guardar"
     },
-    "title": "Mis monederos de confianza",
+    "title": "Mi de confianza Wallets",
     "validation": {
       "hint": "Al menos una línea no es válida (falta la dirección o hay una dirección duplicada)."
     }
@@ -154,7 +154,7 @@
   },
   "inputHistory": {
     "title": "Entradas guardadas",
-    "description": "Elimina las sugerencias guardadas localmente para billeteras, destinatarios de pago, importes y memos.",
+    "description": "Elimina las sugerencias guardadas localmente para wallets, los destinatarios de los pagos, los importes y memos.",
     "clearAll": "Borrar todos los historiales de campos de texto",
     "confirm": "¿Borrar todas las entradas guardadas? Esta acción elimina el historial de todos los campos de texto.",
     "done": "Se borraron los historiales de los campos de texto."

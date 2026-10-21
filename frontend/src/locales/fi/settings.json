@@ -61,7 +61,7 @@
     "nameLabel": "Nimi",
     "urlLabel": "URL",
     "testnetUrlLabel": "Testnet-URL (valinnainen)",
-    "testnetUrlPlaceholder": "https://…{address} (jätä tyhjäksi, jos haluat käyttää pääverkon URL-osoitetta myös testiverkossa)",
+    "testnetUrlPlaceholder": "https://…{osoite} (jätä tyhjäksi, jos haluat käyttää mainnet-URL-osoitetta myös testnet:lle)",
     "addButton": "Lisää Explorer",
     "removeButton": "Poista",
     "setDefault": "Aseta oletukseksi",
@@ -73,7 +73,7 @@
       "testnetUrlInvalid": "Anna voimassa oleva testnet-URL."
     },
     "mainnetLabel": "Mainnet",
-    "testnetLabel": "Testiverkko",
+    "testnetLabel": "Testnet",
     "edit": "Muokkaa"
   },
   "export": {
@@ -123,7 +123,7 @@
       "discard": "Hylkää",
       "save": "Tallenna"
     },
-    "title": "Luotetut lompakkoni",
+    "title": "Luotettava Wallets",
     "validation": {
       "hint": "Ainakin yksi rivi on virheellinen (osoite puuttuu tai on toistunut)."
     }

@@ -1,7 +1,7 @@
 {
   "page": {
     "title": "Filtrer XLM par Memo",
-    "noPublicKey": "Aucune clé publique chargée. Veuillez d'abord saisir une clé publique."
+    "noPublicKey": "Aucun public key n'a été chargé. Veuillez d'abord saisir un public key."
   },
   "action": {
     "calculate": "Calculer",
@@ -13,7 +13,7 @@
   },
   "debug": {
     "incoming": "Entrant – à : {{toMe}}, créer→moi : {{createToMe}}, natif→moi : {{nativeInToMe}}",
-    "incomingOverview": "Entrées : {{total}} • Portefeuilles impliqués : {{unique}}",
+    "incomingOverview": "Entrées : {{total}} • Impliqués wallets : {{unique}}",
     "memo": "Memos dans la fenêtre : {{any}} • valeur exacte de memos : {{exact}}",
     "types": "Types – paiement : {{pay}}, chemin : {{path}}, créer : {{create}}, autre : {{other}}"
   },
@@ -30,7 +30,7 @@
     "label": "Memo texte à rechercher (sous-chaîne, distinction entre majuscules et minuscules)",
     "placeholder": "Memo (sous-chaîne, distinction entre majuscules et minuscules)"
   },
-  "overviewLine": "Reçus de paiement : {{total}} • portefeuilles impliqués : {{unique}}",
+  "overviewLine": "Reçus de paiement : {{total}} • wallets concernés : {{unique}}",
   "result": {
     "label": "Montant total :",
     "value": "{{amount}} XLM"
@@ -41,8 +41,8 @@
     "count": "Quantité : {{n}}",
     "label": "Comparison (all inputs)",
     "otherCount": "Entrées comportant une valeur incorrecte ou manquante pour memo : {{n}}",
-    "unique": "Nombre total de portefeuilles (tous) : {{n}}",
-    "uniqueWallets": "Portefeuilles uniques : {{n}}"
+    "unique": "Unique wallets (tout) : {{n}}",
+    "uniqueWallets": "Unique wallets : {{n}}"
   },
   "time": {
     "setToNow": "Définir l'heure actuelle",
@@ -80,7 +80,7 @@
     "failed": "Erreur lors du chargement des paiements : valeur memo incorrecte ou vide.",
     "hint": "Filtre les paiements entrants effectués au cours de la période et affiche les expéditeurs dont le champ memo est incorrect ou vide.",
     "scanning": "… lecture incorrecte/vide de memos",
-    "summary": "Compte : {{count}} • Total : {{sum}} XLM • Portefeuilles uniques : {{unique}}",
+    "summary": "Nombre : {{count}} • Total : {{sum}} XLM • Unique Wallets : {{unique}}",
     "title": "Faux/Vide memos pendant la période"
   }
 }

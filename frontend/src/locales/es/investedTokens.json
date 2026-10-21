@@ -1,23 +1,23 @@
 {
-  "hintEnterPublicKey": "Por favor, introduzca primero una clave pública.",
+  "hintEnterPublicKey": "Introduce primero un public key.",
   "columns": {
     "amount": "Cantidad",
     "compromised": "Comprometido",
     "deactivated": "Desactivado",
-    "destination": "Billetera objetivo",
+    "destination": "Objetivo wallet",
     "issuer": "Emisor",
     "label": "Etiqueta",
     "memo": "Memo",
     "payments": "Pagos",
     "date": "Fecha",
-    "token": "Ficha"
+    "token": "Token"
   },
   "decimals": {
     "auto": "Automáticamente",
     "label": "Lugares decimales:"
   },
   "filter": {
-    "memoPlaceholder": "Filtrar por memo, dirección de billetera o etiqueta.",
+    "memoPlaceholder": "Filtrar por memo, la dirección de wallet o una etiqueta",
     "tokenPlaceholder": "Filtrar por token (CODE:ISSUER)"
   },
   "item": {
@@ -25,10 +25,10 @@
     "token": "Token: {{token}} (Pagos: {{occurrences}})",
     "tokenShort": "Token: {{token}}"
   },
-  "missingPublicKey": "Clave pública ausente.",
+  "missingPublicKey": "Falta Public key.",
   "moreTruncated": "… y {{extra}} grupos más",
-  "toWallet": "a Cartera: {{address}}",
-  "total": "Número de fichas compradas: {{count}}",
+  "toWallet": "a Wallet: {{address}}",
+  "total": "Número de tokens adquiridos: {{count}}",
   "totalTokens": "Número de tokens invertidos (Assets): {{count}}",
   "value": {
     "units": "{{amount}} piezas",
@@ -37,14 +37,14 @@
   "view": {
     "label": "Filtrar por:",
     "memo": "Memorandos (Memos)",
-    "token": "Ficha"
+    "token": "Token"
   },
   "toggles": {
     "showTotals": "Monto total",
     "qsiOnly": "Suma QSI GF"
   },
   "hints": {
-    "qsiListSet": "Nota: Puedes encontrar la lista de GF en Ajustes → Billeteras de confianza (QSI).",
+    "qsiListSet": "Nota: Puedes encontrar la lista de GF en Ajustes → De confianza Wallets (QSI).",
     "pageTime": "Cargar una página tarda aproximadamente 0,2 segundos → 100 páginas ≈ 20 segundos → 1000 páginas ≈ 200 segundos (≈ 3 minutos y 20 segundos)."
   },
   "walletCapInfo": "Nota: Un wallet puede contener un máximo de 1000 trustlines.",

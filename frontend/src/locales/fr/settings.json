@@ -61,7 +61,7 @@
     "nameLabel": "Nom",
     "urlLabel": "URL",
     "testnetUrlLabel": "URL du Testnet (optional)",
-    "testnetUrlPlaceholder": "https://…{address} (laisser vide pour utiliser l'URL du réseau principal également pour le réseau de test)",
+    "testnetUrlPlaceholder": "https://…{adresse} (laisser vide pour utiliser l'URL mainnet également pour testnet)",
     "addButton": "Ajouter Explorateur",
     "removeButton": "Supprimer",
     "setDefault": "Définir par défaut",
@@ -73,7 +73,7 @@
       "testnetUrlInvalid": "Veuillez entrer une URL de testnet valide."
     },
     "mainnetLabel": "Mainnet",
-    "testnetLabel": "Réseau de test",
+    "testnetLabel": "Testnet",
     "edit": "Modifier"
   },
   "export": {
@@ -123,7 +123,7 @@
       "discard": "Jeter",
       "save": "Enregistrer"
     },
-    "title": "Mes portefeuilles de confiance",
+    "title": "Mon partenaire de confiance Wallets",
     "validation": {
       "hint": "Au moins une ligne n'est pas valide (adresse manquante ou en double)."
     }

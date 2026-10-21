@@ -28,16 +28,16 @@
     "desc": "Blockchain je poput digitalne knjige računa. Mnoga računala pohranjuju iste zapise, osiguravajući da nitko ne može tajno izvršiti promjene."
   },
   "wallet": {
-    "title": "Novčanik",
+    "title": "Wallet",
     "original": "Wallet",
-    "short": "Digitalni novčanik koji upravlja vašim ključevima.",
+    "short": "Digitalni wallet koji upravlja vašim ključevima.",
     "desc": "Wallet je vaš digitalni wallet. On upravlja ključevima koji su vam potrebni za pristup vašem računu i slanje transakcija. Wallet može biti program, aplikacija ili čak samo komad papira na kojem je napisan vaš Secret Key."
   },
   "account": {
     "title": "Račun",
     "original": "Account",
-    "short": "Blockchain račun može držati imovinu i slati transakcije.",
-    "desc": "Račun je mjesto na blockchainu gdje se vaša imovina čuva. Račun ima javnu adresu koja počinje sa G. Više novčanika može pristupiti istom računu ako imaju ispravan ključ."
+    "short": "Blockchain račun može pohraniti assets i slati transakcije.",
+    "desc": "Račun je mjesto na blockchainu gdje se čuvaju vaši assets. Račun ima javnu adresu koja počinje slovom G. Više wallets može pristupiti istom računu ako imaju ispravan ključ."
   },
   "addressG": {
     "title": "G adresa",
@@ -99,12 +99,12 @@
     "title": "Multisig - Primjer",
     "original": "Multi-Signature - Example",
     "short": "Primjer strukture multi-signature za korporativne račune s ulogama, težinama i thresholds.",
-    "desc": "Primjer: Tvrtka postavlja Stellar račun s tri Signera: CEO (težina 2), CFO (težina 2) i član uprave (težina 1). Thresholds su konfigurirani tako da operacije niske sigurnosti zahtijevaju težinu 1, operacije srednje sigurnosti (npr. plaćanja) težinu 3, a operacije visoke sigurnosti (npr. promjena Signera) težinu 4. Tako CEO može sam pregledavati račun, ali za plaćanja i promjene konfiguracije mora surađivati s CFO-om ili s oba druga Signera."
+    "desc": "Primjer: Tvrtka otvara Stellar račun s tri Signers: izvršnim direktorom (težina 2), financijskim direktorom (težina 2) i članom upravnog odbora (težina 1). Thresholds su konfigurirane tako da operacije niske sigurnosti zahtijevaju težinu od 1, operacije srednje sigurnosti (npr. plaćanja) zahtijevaju težinu 3, a operacije visoke sigurnosti (npr. promjena Signer) zahtijevaju težinu 4. Na taj način izvršni direktor može samostalno pregledavati račun, ali za plaćanja i promjene konfiguracije mora surađivati s financijskim direktorom ili oba druga člana Signers."
   },
   "trustline": {
     "title": "Trustline",
     "original": "Trustline",
-    "short": "Sporazum o držanju tokena od određenog izdavatelja.",
+    "short": "Suglasnost o održavanju token od određenog izdavatelja.",
     "desc": "trustline je poput \"Da, prihvaćam ovaj token.\" Postavljanjem istog dajete do znanja da je vaš račun spreman primiti određeni token od određenog izdavatelja. Bez trustline ne možete primiti ovaj token.\n\nPrimjer: trustline se navodi kao CODE:ISSUER. Za EURT od izdavatelja GDUKMGUGDZQK6Y…, to bi bilo EURT:GDUKMGUGDZQK6Y…"
   },
   "token": {
@@ -114,9 +114,9 @@
     "desc": "Token je digitalna jedinica na blockchainu. Token može predstavljati novac, bodove ili kredite za neku uslugu."
   },
   "asset": {
-    "title": "Imovina",
+    "title": "Asset",
     "original": "Asset",
-    "short": "Svaka digitalna vrijednost na blockchainu – od kriptovaluta preko tokena do stablecoinova.",
+    "short": "Bilo koja digitalna vrijednost pohranjena na blockchainu – od kriptovaluta do tokens do stabilnih kovanica.",
     "desc": "Asset je u najširem smislu sve što predstavlja vrijednost i može se prenijeti. Na Stellaru svatko može izdati asset – npr. aviokompanija svoje milje kao token, banka svoj dolar kao stablecoin. Svaki Stellar asset definiran je dvjema stvarima: kodom asseta (npr. 'USDC') i izdavačem (G-adresa kreatora). XLM je jedini asset bez izdavača, jer je nativni asset mreže."
   },
   "xlm": {
@@ -126,16 +126,16 @@
     "desc": "XLM je izvorna valuta Stellara. Trebate XLM za plaćanje naknada i za otvaranje novog računa."
   },
   "mainnet": {
-    "title": "Glavna mreža",
+    "title": "Mainnet",
     "original": "Mainnet",
     "short": "Prava Stellar mreža sa stvarnom vrijednošću.",
     "desc": "Prava Stellar mreža s stvarnom vrijednošću. Transakcije su konačne, a naknade se plaćaju u stvarnim XLM-ima."
   },
   "testnet": {
-    "title": "Testna mreža",
+    "title": "Testnet",
     "original": "Testnet",
     "short": "Javna mreža za obuku bez stvarne vrijednosti.",
-    "desc": "Mreža javne prakse. Tokeni nemaju stvarnu vrijednost. Idealno za učenje i eksperimentiranje bez rizika."
+    "desc": "Javna mreža za praksu. Tokens nemaju stvarnu vrijednost. Idealno za učenje i eksperimentiranje bez rizika."
   },
   "memo": {
     "title": "Memo",
@@ -164,14 +164,14 @@
   "pathPayment": {
     "title": "Plaćanje putem putanje",
     "original": "Path Payment",
-    "short": "Plaćanje pri kojem Stellar automatski radi jednu ili više konverzija valute kako bi isporučio ciljnu imovinu.",
+    "short": "Uplata u kojoj Stellar automatski obavlja jednu ili više konverzija valuta kako bi isporučio ciljani asset.",
     "desc": "S plaćanjima putem putanje možete, primjerice, poslati XLM, a primatelj automatski dobije USDC – Stellar pronalazi najbolju rutu razmjene preko decentraliziranog tržišta. Mreža pretražuje dostupne trgovačke parove i likvidnostne poolove kako bi pronašla najpovoljniju putanju. To je posebno korisno za prekogranična plaćanja: pošiljatelj plaća u svojoj valuti, primatelj prima svoju. Sve u jednoj transakciji."
   },
   "clawback": {
     "title": "Povrat",
     "original": "Clawback",
-    "short": "Opcionalna Stellar funkcija koja omogućuje izdavatelju imovine da povuče izdane tokene s računa.",
-    "desc": "Clawback je posebna funkcija na Stellar mreži koja ispunjava regulatorne zahtjeve. Ako izdavatelj uključi clawback prilikom stvaranja imovine, može povući tokene s bilo kojeg računa – npr. u slučaju prijevare, pranja novca ili zakonskih zahtjeva. Za regulirane financijske proizvode poput security tokena ova je funkcija često zakonski obvezna. Obični korisnici ne moraju brinuti sve dok koriste pouzdane izdavatelje."
+    "short": "Izborna značajka Stellar koja omogućuje asset izdavatelju da povuče izdane tokens s računa.",
+    "desc": "Clawback je posebna značajka na Stellaru koja podržava regulatorne zahtjeve. Ako izdavatelj omogući clawback pri stvaranju asset, može povratiti tokens s bilo kojeg računa – na primjer u slučajevima prijevare, pranja novca ili zakonskih zahtjeva. Za regulirane financijske proizvode poput vrijednosnih papira tokens, ova je značajka često zakonski obavezna. Obični korisnici ne moraju brinuti sve dok koriste pouzdane izdavatelje."
   },
   "sponsor": {
     "title": "Sponzoriranje",
@@ -223,20 +223,20 @@
   "sac": {
     "title": "Stellar Asset Contract",
     "original": "SAC – Stellar Asset Contract",
-    "short": "Soroban smart contract koji omogućuje korištenje Stellar asseta u smart contractima.",
-    "desc": "S pojavom Sorobana nastao je problem: postojeći Stellar asseti (npr. USDC ili XLM) morali su biti upotrebljivi u smart contractima. Stellar Asset Contract to rješava—standardizirano smart‑contract sučelje za svaki Stellar asset. Tako Soroban dAppovi mogu koristiti izvorne Stellar assete bez pretvaranja u nove tokene. SAC‑ovi postoje automatski za sve Stellar assete i ne trebaju se ručno stvarati."
+    "short": "Soroban pametni ugovor koji klasični Stellar asset čini upotrebljivim u pametnim ugovorima.",
+    "desc": "Sa Sorobanom (Stellar pametnim ugovorima) pojavio se problem: postojeći Stellar assets (poput USDC-a ili XLM-a) također su trebali raditi unutar pametnih ugovora. Stellar Asset ugovor rješava taj problem — to je standardizirani sučelje pametnog ugovora za svaki Stellar asset. To omogućuje Soroban dAppovima da izravno koriste izvorne Stellar assets bez pretvaranja u nove tokens. SAC-ovi automatski postoje za sve Stellar assets i ne moraju se ručno stvarati."
   },
   "anchor": {
-    "title": "Sidro",
+    "title": "Anchor",
     "original": "Anchor",
     "short": "Licencirani pružatelj financijskih usluga koji povezuje fiat novac sa Stellarom.",
-    "desc": "Anchor je licencirani pružatelj financijskih usluga koji povezuje pravi novac s mrežom Stellar. Prima fiat novac (npr. bankovnim prijenosom) i zauzvrat izdaje tokene na Stellaru – i obrnuto. To se naziva On-Ramp (novac unutra) i Off-Ramp (novac van).\n\nPoznati Anchori na Stellaru:\n- Kado – USD, EUR, CHF (globalno)\n- MoneyGram – gotovinsko uplaćivanje/podizanje putem USDC u 170+ zemalja\n- Tempo – EUR stablecoin, Europa\n- Bitso – MXN, USD, Latinska Amerika\n- Circle – USDC i EURC, diljem svijeta\n\nTrenutno postoji više od 60 Anchora na Stellaru koji pokrivaju više od 170 valuta."
+    "desc": "An Anchor is a licensed financial service provider that connects real money to the Stellar network. It accepts fiat money (e.g. via bank transfer) and issues tokens on Stellar in return – and vice versa. This is called On-Ramp (money in) and Off-Ramp (money out).\n\nWell-known Anchors on Stellar:\n- Kado – USD, EUR, CHF (Global)\n- MoneyGram – cash in/out via USDC in 170+ countries\n- Tempo – EUR stablecoin, Europe\n- Bitso – MXN, USD, Latin America\n- Circle – USDC and EURC, worldwide\n\nCurrently there are over 60 Anchors on Stellar covering more than 170 currencies."
   },
   "exchange": {
     "title": "Burza dionica",
     "original": "Exchange",
-    "short": "Mjesto za kupnju i prodaju tokena.",
-    "desc": "Mjenjačnica je mjesto gdje možete kupiti ili prodati tokene. Mnoge mjenjačnice zahtijevaju KYC proces, što znači verifikaciju identiteta, prije nego što možete povući novac u eurima ili francima."
+    "short": "Mjesto za kupovinu i prodaju tokens.",
+    "desc": "Mjenjačnica je mjesto gdje možete kupiti ili prodati tokens. Mnoge mjenjačnice zahtijevaju KYC postupak, što znači provjeru identiteta, prije nego što možete podići novac u eurima ili francima."
   },
   "dex": {
     "title": "DEX (Decentralized Exchange)",
@@ -247,26 +247,26 @@
   "liquidityPool": {
     "title": "Likvidnostni bazen",
     "original": "Liquidity Pool",
-    "short": "Zajednički bazen s dvije ponude za trenutnu razmjenu.",
-    "desc": "Likvidnostni fond je zajednički fond koji sadrži dva tokena. Ljudi u njega polažu oba tokena. Drugima je tada dopušteno da odmah zamijene te tokene. Položitelji zauzvrat zarađuju male naknade."
+    "short": "Zajednički bazen s dva tokens za neposrednu razmjenu.",
+    "desc": "Likvidni bazen je zajednički fond koji sadrži dva tokens. Sudionici u njega deponiraju oba tokens. Ostali korisnici potom mogu trenutačno razmjenjivati te tokens. Deponenti za to zarađuju male naknade."
   },
   "onramp": {
     "title": "Onramp",
     "original": "Onramp",
     "short": "Usluga koja omogućuje kupnju kriptovaluta za fiat novac (npr. euro, franak).",
-    "desc": "Onramp je ulaz u kripto—put od tradicionalnog novca do kripta. Tipične metode su kartica ili bankovni prijenos. Pružatelji kao Kado ili Onramper omogućuju kupnju izravno u aplikaciji bez posebne burze. Stellar Account Manager integrira onramp usluge kako bi mogao kupiti XLM i druge assete za fiat. Onramps obično traže KYC."
+    "desc": "Onramp je ulazna točka u kriptovalute—put od tradicionalnog novca do kriptovaluta. Uobičajene metode uključuju kreditnu karticu ili bankovni prijenos. Pružatelji usluga poput Kado ili Onramper omogućuju vam kupnju izravno u aplikaciji bez posjeta zasebnoj burzi. Stellar Account Manager integrira usluge onrampa kako biste mogli kupiti XLM i druge assets fiat novcem. Onrampi obično zahtijevaju KYC."
   },
   "offramp": {
     "title": "Offramp",
     "original": "Offramp",
     "short": "Usluga koja omogućuje prodaju kriptovaluta natrag u fiat novac.",
-    "desc": "Offramp je suprotan onrampu—put natrag u tradicionalni novac. Prodaješ kripto‑assete i dobivaš eure, franke ili drugu fiat valutu na bankovni račun. Na Stellar mreži anchor‑i često obavljaju offramp: primaju npr. USDC tokene i isplaćuju odgovarajući fiat iznos. Offramps obično zahtijevaju KYC."
+    "desc": "Offramp je suprotnost onrampu—put povratka do tradicionalnog novca. Prodajete svoju kriptovalutu assets i primate eure, franke ili neku drugu fiat valutu na svoj bankovni račun. Na Stellaru, anchors često upravljaju izlaznom točkom: primaju tokens poput USDC-a i šalju odgovarajući iznos fiat novca. Izlazne točke obično zahtijevaju KYC."
   },
   "kyc": {
     "title": "Know Your Customer",
     "original": "KYC / AML – Know Your Customer / Anti-Money Laundering",
     "short": "Zakonom obavezna provjera identiteta koju financijske usluge traže prije korištenja.",
-    "desc": "KYC (Know Your Customer) je regulatorni postupak u kojem korisnici dokazuju identitet dokumentima i ponekad selfijem. Cilj je spriječiti pranje novca (AML), financiranje terorizma i prijevare. Decentralizirani protokoli poput Stellar DEX‑a ne zahtijevaju KYC—trguješ izravno iz walleta. Onramp i offramp usluge moraju provoditi KYC jer povezuju fiat i kripto.",
+    "desc": "KYC (Know Your Customer) je regulatorni postupak u kojem korisnici dokazuju svoj identitet dokumentima, a ponekad i selfieom. Cilj je spriječiti pranje novca (AML), financiranje terorizma i prijevare. Decentralizirani protokoli poput Stellar DEX-a ne zahtijevaju KYC—trgujete izravno sa svog wallet. Usluge onrampa i offrampa moraju provoditi KYC jer povezuju fiat i kriptovalute.",
     "externalDomains": "",
     "domainsHeading": "Poznati KYC pružatelji (domene upišite sami):"
   },
@@ -292,13 +292,13 @@
     "title": "Yield Farming",
     "original": "Yield Farming",
     "short": "Aktivno premještanje kapitala između DeFi protokola radi maksimalnog prinosa.",
-    "desc": "Yield farmeri premještaju sredstva između različitih poolova i protokola kako bi ubrali najbolje prinose. Zvuči primamljivo, ali je složeno i rizično: impermanentni gubitak, greške smart contracta i nagli padovi prinosa mogu poništiti dobit. Yield farming je napredan koncept i nije preporučen početnicima."
+    "desc": "Poljoprivrednici prinosa premještaju assets između različitih bazena likvidnosti i protokola kako bi ostvarili najbolje prinose. To može biti privlačno, ali je složeno i rizično: nepostojana gubitka, bugovi pametnih ugovora i naglo padanje prinosa mogu poništiti ostvarene dobitke. Yield farming je napredan DeFi koncept i ne preporučuje se početnicima."
   },
   "dao": {
     "title": "Decentralizirana autonomna organizacija",
     "original": "DAO – Decentralized Autonomous Organization",
     "short": "Organizacija koju vode smart contracti i token‑glasanja bez središnjeg vodstva.",
-    "desc": "DAO je digitalna organizacija kojom upravlja kod i glasanje vlasnika tokena. Nema CEO‑a ni odbora—odluke se donose glasovanjem. Vlasnici tokena mogu predlagati i glasati. DAO‑i se koriste za razvoj protokola, upravljanje trezorom i promjene pravila. Koncept je inovativan, ali nosi rizike kao što su mala izlaznost ili koordinirani napadi."
+    "desc": "DAO je poput digitalne organizacije kojom upravljaju kod i glasovi token držitelja. Ne postoji izvršni direktor niti upravni odbor — odluke se donose kroz upravljačko token glasovanje. Svaki token nositelj može podnijeti prijedloge i glasati. DAO-ovi se koriste za razvoj protokola, upravljanje riznicom i izmjene pravila. Koncept je inovativan, ali nosi rizike poput niske izlaznosti birača ili koordiniranih napada."
   },
   "dapp": {
     "title": "Decentralizirana aplikacija",
@@ -310,19 +310,19 @@
     "title": "Oracle",
     "original": "Oracle",
     "short": "Usluga koja donosi vanjske podatke (npr. cijene, vrijeme) u smart contracte na blockchainu.",
-    "desc": "Blockchains su po prirodi odvojeni od vanjskog svijeta—smart contract ne može sam dohvatiti cijenu Bitcoina ili EUR/USD tečaj. Oracles to rješavaju tako što donose pouzdane vanjske podatke u blockchain. Poznate oracle usluge su Chainlink i Pyth Network. Bez oraclea mnoge DeFi aplikacije poput lending protokola ili sintetičkih asseta ne bi bile moguće. Konkretni primjeri: XLM/USD tečaj (za Stellar aplikacije), vremenski podaci (za osiguranje usjeva), status dostave (za trgovačke ugovore), potpis notara (za transakcije nekretninama), rezultati izbora (za decentralizirana glasanja)."
+    "desc": "Blockchaini su prema zadanim postavkama odvojeni od vanjskog svijeta – pametni ugovor ne može samostalno dohvatiti trenutnu cijenu Bitcoina ili tečaj EUR/USD. Orakuli to rješavaju tako što blockchainu pružaju pouzdane vanjske podatke. Poznate orakulske usluge uključuju Chainlink i Pyth Network. Bez orakula mnoge DeFi aplikacije, poput protokola za posuđivanje ili sintetičkih assets, ne bi bile moguće. Konkretni primjeri: cijena XLM/USD (za Stellar aplikacije), vremenski podaci (za osiguranje usjeva), status isporuke (za trgovačke ugovore), notarski potpis (za transakcije nekretninama), izborni rezultati (za decentralizirano glasanje)."
   },
   "cex": {
     "title": "Centralizirana burza",
     "original": "CEX – Centralized Exchange",
     "short": "Kripto burza kojom upravlja tvrtka i koja posreduje između kupaca i prodavača.",
-    "desc": "Kod CEX-a kao što su Coinbase, Binance ili Kraken nemaš izravno vlasništvo nad svojim coinima – burza ih čuva za tebe. To je praktično, ali rizično: ako burza bude hakirana ili postane insolventna, sredstva mogu biti izgubljena (primjer: kolaps FTX-a 2022.). CEX-ovi obično traže provjeru identiteta (KYC). Za razliku od toga, DEX omogućuje trgovanje iz vlastitog walleta bez posrednika."
+    "desc": "Kod CEX-a poput Coinbasea, Binanca ili Krakena, ne posjedujete svoje kovanice izravno – mjenjačnica ih čuva za vas. To je praktično, ali nosi rizike: ako mjenjačnica bude hakirana ili postane nesolventna, sredstva se mogu izgubiti (primjer: propast FTX-a 2022. godine). CEX-ovi obično zahtijevaju provjeru identiteta (KYC). Nasuprot tome, DEX vam omogućuje trgovanje izravno s vašeg vlastitog wallet bez posrednika."
   },
   "orderBook": {
     "title": "Knjiga naloga",
     "original": "Order Book",
     "short": "Popis svih otvorenih ponuda kupnje i prodaje za trgovački par na burzi.",
-    "desc": "Knjiga naloga u stvarnom vremenu pokazuje cijene po kojima kupci žele kupiti (bids) i prodavači žele prodati (asks). Razlika između najvišeg bid-a i najnižeg ask-a zove se spread. Stellar ima ugrađenu decentraliziranu knjigu naloga (SDEX – Stellar Decentralized Exchange) na kojoj svatko može trgovati assetima. Postoje i poolovi likvidnosti kao alternativa klasičnom modelu knjige naloga."
+    "desc": "Knjiga naloga u stvarnom vremenu prikazuje cijene koje su kupci spremni platiti (ponude) i koje su prodavači spremni prihvatiti (zahtjevi). Razlika između najviše ponude i najniže potražnje naziva se spread. Stellar ima ugrađenu decentraliziranu knjigu naloga (SDEX – Stellar Decentralized Exchange) u kojoj svatko može trgovati assets. Također postoje bazeni likvidnosti kao alternativa klasičnom modelu knjige naloga."
   },
   "limitOrder": {
     "title": "Limit nalog",
@@ -351,14 +351,14 @@
   "impermanentLoss": {
     "title": "Privremeni gubitak",
     "original": "Impermanent Loss",
-    "short": "Privremeni gubitak za pružatelje likvidnosti kada se cijene asseta u poolu razdvoje.",
-    "desc": "Kada pružaš likvidnost u pool, možeš doživjeti privremeni gubitak: ako se omjer cijena dva asseta promijeni, vrijednost pri povlačenju je lošija nego da si assete samo držao. Gubitak se zove “impermanent” jer nestaje ako se cijene vrate na početni omjer. Naknade za trgovanje mogu nadoknaditi taj gubitak. Ovo je važan koncept za sve koji pružaju likvidnost na Stellar DEX-u."
+    "short": "Privremeni gubitak za pružatelje likvidnosti koji nastaje kada se cijene objedinjenih assets raziđu.",
+    "desc": "Kada pružate likvidnost u bazen, možete pretrpjeti privremeni gubitak: ako se omjer cijena dvaju assets promijeni, vrijednost pri povlačenju bit će lošija nego da ste jednostavno držali assets. Taj se gubitak naziva \"impermanentnim\" jer nestaje ako se cijene vrate na izvorni omjer. Naknade za trgovanje mogu nadoknaditi ovaj gubitak. Ovo je važan koncept za svakoga tko pruža likvidnost na Stellar DEX-u."
   },
   "amm": {
     "title": "Automatizirani market maker",
     "original": "AMM – Automated Market Maker",
     "short": "Sustav temeljen na smart contractima koji omogućuje trgovanje bez klasične knjige naloga uz matematičke formule cijena.",
-    "desc": "AMM zamjenjuje klasičnu knjigu naloga algoritmom. Umjesto da čekaš kupca ili prodavača, trguješ izravno s poolom likvidnosti. Cijena se automatski računa formulom (najčešće x × y = k). Što se više kupuje jednog asseta, on postaje skuplji. Stellar je uveo AMM-based poolove likvidnosti koji postoje uz klasičnu SDEX knjigu naloga."
+    "desc": "AMM zamjenjuje klasičnu knjigu naloga algoritmom. Umjesto da čekate kupca ili prodavatelja, trgujete izravno s bazenom likvidnosti. Cijena se automatski izračunava formulom (obično x × y = k). Što se više asset kupi, to postaje skuplje. Stellar je uveo AMM-bazirane likvidnosne bazene koji postoje uz klasičnu SDEX knjigu naloga."
   },
   "bullBearMarket": {
     "title": "Bikovsko i medvjeđe tržište",
@@ -381,20 +381,20 @@
   "portfolio": {
     "title": "Portfelj",
     "original": "Portfolio",
-    "short": "Ukupna kolekcija svih kripto-asseta i ulaganja korisnika.",
-    "desc": "Portfelj je pregled svega što posjeduješ: koje coine i tokene imaš, u kojim količinama i kojoj trenutnoj vrijednosti. Dobra portfelj strategija uključuje diversifikaciju: ne ulagati sve u jedan asset. U Stellar Account Manageru možeš vidjeti svoj portfelj izravno—sve assete na svojim Stellar računima na jednom mjestu."
+    "short": "Ukupna zbirka kriptovaluta assets i ulaganja korisnika.",
+    "desc": "Portfelj je pregled svih assets koje posjedujete—koje kovanice i tokens posjedujete, u kojim količinama i njihovu trenutnu vrijednost. Dobra strategija portfelja uključuje diversifikaciju: ne ulažite sve u jedan asset. U Stellar Account Manageru možete izravno pregledati svoj portfelj—sve assets na svojim Stellar računima na prvi pogled."
   },
   "tvl": {
     "title": "Total Value Locked",
     "original": "TVL – Total Value Locked",
-    "short": "Ukupna vrijednost svih asseta zaključanih u DeFi protokolu ili poolu likvidnosti.",
-    "desc": "TVL je važna metrika u DeFi-ju. Pokazuje koliko je kapitala zaključano u protokolu, dAppu ili poolu likvidnosti. Visok TVL sugerira povjerenje i aktivnu upotrebu. Na Stellar mreži TVL mjeri vrijednost svih asseta u poolovima likvidnosti. Platforme poput DeFiLlama prate TVL za mnoge blockchaine i protokole."
+    "short": "Ukupna vrijednost svih assets zaključanih u DeFi protokolu ili likvidnom fondu.",
+    "desc": "TVL je važna metrika u DeFi-ju. Pokazuje koliko je kapitala zaključano u protokolu, dApp-u ili likvidnom fondu. Visok TVL ukazuje na snažno povjerenje i aktivnu upotrebu. Na Stellaru, TVL mjeri vrijednost svih assets u bazenima likvidnosti. Platforme poput DeFiLlamme prate TVL na mnogim blockchainima i protokolima."
   },
   "balanceClaimable": {
-    "title": "Potraživi saldo",
+    "title": "Claimable Balance",
     "original": "Claimable Balance",
     "short": "Rezervirani novac koji još trebate primiti.",
-    "desc": "Potraživo stanje je novac koji je već rezerviran za vas, ali ga još uvijek trebate zatražiti. Na vaš račun se pripisuje tek kada ga prihvatite."
+    "desc": "claimable balance je novac koji je već rezerviran za vas, ali ga još morate preuzeti. Na vaš račun se uplaćuje tek nakon što ga prihvatite."
   },
   "protocolUpdate": {
     "title": "Ažuriranje protokola",
@@ -507,8 +507,8 @@
   "seedPhrase": {
     "title": "Teorem o restauraciji",
     "original": "Seed Phrase / Recovery Phrase",
-    "short": "Popis riječi pomoću kojeg možete obnoviti svoj novčanik.",
-    "desc": "Ona je kao rezervni ključ za tvoj sef. Tko ga ima, može vratiti tvoj novčanik. Stoga, nikada ga ne bi trebalo čuvati online."
+    "short": "Popis riječi pomoću kojeg možete obnoviti svoj wallet.",
+    "desc": "Ona je poput rezervnog ključa za tvoj sef. Tko god ga ima, može vratiti tvoj wallet. Stoga ga nikada ne bi smjelo biti pohranjeno na internetu."
   },
   "selfCustody": {
     "title": "Samostalno skrbništvo",
@@ -523,21 +523,21 @@
     "desc": "Kao banka koja upravlja vašim računom. To može biti praktično, ali vam oduzima potpunu kontrolu. Morate joj vjerovati."
   },
   "hardwareWallet": {
-    "title": "Hardverski novčanik",
+    "title": "Hardver wallet",
     "original": "Hardware Wallet",
     "short": "Fizička naprava za vaše ključeve.",
     "desc": "Kao mali sef u vašem džepu. Ključevi ostaju na uređaju i ne idu online. To štiti od mnogih online napada."
   },
   "hotWallet": {
-    "title": "Vrući novčanik",
+    "title": "Vruće wallet",
     "original": "Hot Wallet",
-    "short": "Novčanik s pristupom internetu.",
-    "desc": "Kao novčanik u jakni: praktično, ali ranjivije. Dobro za male iznose i svakodnevnu upotrebu. Nije idealno za velike svote."
+    "short": "wallet s pristupom internetu.",
+    "desc": "Poput wallet u jakni: praktično, ali ranjivije. Dobro za male iznose i svakodnevnu upotrebu. Nije idealno za velike svote."
   },
   "coldWallet": {
-    "title": "Hladni novčanik",
+    "title": "Hladno wallet",
     "original": "Cold Wallet",
-    "short": "Novčanik bez internetske veze.",
+    "short": "wallet bez internetske veze.",
     "desc": "Kao sef u podrumu. Vrlo siguran, ali nepraktičan za svakodnevnu upotrebu. Pogodan za dugotrajno čuvanje."
   },
   "cryptocurrency": {
@@ -559,13 +559,13 @@
     "desc": "Poput digitalnog novca koji je vezan za standardnu valutu. To čini njegovu cijenu stabilnijom. Ipak, povjerenje u pružatelja usluga je i dalje važno."
   },
   "utilityToken": {
-    "title": "Korištenje tokena",
+    "title": "Upotreba token",
     "original": "Utility Token",
     "short": "Token koji se može koristiti za pristup usluzi.",
     "desc": "Kao vaučer na tržnom štandu. Omogućuje pristup ili popust. Njegova vrijednost ovisi o korisnosti usluge."
   },
   "securityToken": {
-    "title": "Sigurnosni tokeni",
+    "title": "Sigurnost tokens",
     "original": "Security Token",
     "short": "Token sa sigurnosnim karakteristikama.",
     "desc": "Kao dionica. Može obećavati prava ili dobitke. Za to često vrijede stroža pravila."
@@ -573,11 +573,11 @@
   "governanceToken": {
     "title": "Token upravljanja",
     "original": "Governance Token",
-    "short": "Žeton za sudjelovanje u donošenju pravila.",
-    "desc": "Kao glasački listić u klubu. Oni koji imaju žetone mogu glasati o pravilima. To znači odgovornost."
+    "short": "A token da ima pravo glasa o pravilima.",
+    "desc": "Poput članske iskaznice za glasanje u klubu. Oni koji imaju tokens mogu glasati o pravilima. To znači odgovornost."
   },
   "liquidityToken": {
-    "title": "Tokeni likvidnosti / LP tokeni",
+    "title": "Likvidnost tokens / LP tokens",
     "original": "Liquidity Token",
     "short": "Token za pruženu likvidnost.",
     "desc": "Kao račun koji pokazuje da ste dali novac u zajednički fond. Dobivate proporcionalne naknade. Vrijednost može varirati."
@@ -663,7 +663,7 @@
   "scam": {
     "title": "Scam",
     "original": "Scam",
-    "short": "Prijevara u kriptu koja cilja na to da korisnicima uzme njihove assete.",
+    "short": "Prevarantski plan u kriptu koji ima za cilj ukrasti korisničke assets.",
     "desc": "Prijevare su u kriptu nažalost česte jer su transakcije nepovratne i nema središnje institucije. Primjeri: lažni giveawayi (“Pošalji 1 XLM, dobij 2”), lažne wallet aplikacije, lažne investicijske platforme ili lažni support. Pravilo: nitko ne poklanja kripto. Ako zvuči predobro, vjerojatno je lažno. Nikad ne dijeli privatne ključeve ili seed phrase—ni s kim, nikad."
   },
   "rugPull": {
@@ -682,7 +682,7 @@
     "title": "Two-Factor Authentication",
     "original": "2FA – Two-Factor Authentication",
     "short": "Dodatni sloj sigurnosti koji traži drugi korak uz lozinku.",
-    "desc": "2FA štiti račun puno bolje nego sama lozinka. Nakon lozinke traži se drugi faktor—npr. kod iz authenticator aplikacije (Google Authenticator, Authy) ili SMS. Važno: SMS 2FA je manje siguran zbog SIM‑swappinga. Uključi 2FA na svim burzama. Napomena: self‑custody walleti nemaju 2FA—privatni ključ je jedina zaštita."
+    "desc": "2FA štiti račune mnogo bolje od same lozinke. Nakon unosa lozinke potreban je drugi faktor—npr. vremenski kod iz aplikacije za autentifikaciju (Google Authenticator, Authy) ili SMS. Važno: 2FA putem SMS-a je manje sigurna od one putem aplikacije zbog napada zamjene SIM kartice (SIM swapping). Omogućite 2FA za sve račune na kripto mjenjačnicama. Napomena: kod samostalnog čuvanja wallets nema 2FA – privatni ključ je jedina zaštita."
   },
   "socialEngineering": {
     "title": "Social Engineering",
@@ -771,13 +771,13 @@
   "bridge": {
     "title": "Bridge",
     "original": "Bridge",
-    "short": "Protokol koji omogućuje prijenos asseta između dvije različite blockchaine.",
-    "desc": "Budući da su blockchains obično izolirani, bridgeovi omogućuju prijenos asseta između njih. Primjer: bridge između Ethereuma i Stellara omogućuje prijenos USDC-a s Ethereuma na Stellar. Tehnički, asseti se zaključavaju na izvornoj chain i izdaju kao wrapped tokeni na ciljnoj chain. Bridgeovi su korisni, ali često meta napada. Na Stellar mreži anchor‑i često imaju sličnu ulogu."
+    "short": "Protokolo koji premješta assets između dva različita blockchaina.",
+    "desc": "Budući da su blockchaini obično izolirani, mostovi omogućuju prijenos assets između njih. Primjer: most između Ethereuma i Stellara omogućuje vam premještanje USDC-a s Ethereuma na Stellar. Tehnički, assets su obično zaključani na izvornoj mreži i izdani kao omotani tokens na ciljnoj mreži. Mostovi su korisni, ali često su napadani — neki od najvećih kripto hakova bili su iskorištavanja mostova. Na Stellaru, anchors često pružaju sličnu ulogu mosta."
   },
   "interoperability": {
     "title": "Interoperabilnost",
     "original": "Interoperability",
-    "short": "Sposobnost različitih blockchain mreža da komuniciraju i razmjenjuju assete.",
+    "short": "Sposobnost različitih blockchaina da komuniciraju i razmjenjuju assets.",
     "desc": "Interoperabilnost je veliki izazov u kriptu. Danas postoje stotine blockchaina koje ne mogu međusobno komunicirati—kao otoci bez mostova. Rješenja su bridgeovi, cross‑chain protokoli ili standardi poput IBC‑a. Stellar ima interoperabilnost kao cilj: anchor sustav povezuje tradicionalne financije, a bridgeovi povezuju Stellar s drugim blockchainima."
   },
   "whitepaper": {
@@ -789,20 +789,20 @@
   "ico": {
     "title": "ICO / Token Sale",
     "original": "ICO – Initial Coin Offering",
-    "short": "Metoda financiranja gdje se novi tokeni javno prodaju—slično IPO‑u.",
-    "desc": "ICO je poput IPO‑a za kripto projekte. Projekt prodaje nove tokene kako bi prikupio kapital. ICO‑i su bili vrlo popularni 2017–2018, ali često neregulirani ili prijevarni. Mnogi projekti nikad nisu isporučili proizvod. Danas su pravila stroža. Alternative: IEO (Initial Exchange Offering) ili IDO (Initial DEX Offering). Početnicima se savjetuje veliki oprez s ICO‑ima."
+    "short": "Metoda financiranja pri kojoj se nove tokens prodaju javno—slično IPO-u.",
+    "desc": "ICO (Initial Coin Offering) je poput IPO-a za kripto projekte. Projekt prodaje nove tokens ranim ulagačima kako bi prikupio kapital. ICO-i su bili vrlo popularni 2017.–2018., ali često neregulirani ili prijevarni. Mnogi ICO projekti nikada nisu isporučili funkcionalan proizvod. Propisi su danas stroži. Alternative uključuju IEO-ove (Initial Exchange Offerings) ili IDO-ove (Initial DEX Offerings). Početnici bi trebali biti vrlo oprezni s ICO-ovima."
   },
   "airdrop": {
     "title": "Airdrop",
     "original": "Airdrop",
-    "short": "Besplatna distribucija tokena na wallet adrese, obično za marketing ili zajednicu.",
-    "desc": "Kod airdropa korisnici dobivaju besplatne tokene—kao nagradu za ranu podršku, aktivnost zajednice ili samo zbog određene wallet adrese. Airdropovi su popularan marketinški alat. Važno: legitimni airdropovi nikad ne traže privatne ključeve niti predujmove. Mnogi airdropovi su prevare—nikad ne unosite privatni ključ za preuzimanje. Na Stellar mreži airdropovi se mogu elegantno provesti putem claimable balances."
+    "short": "Besplatna distribucija adresa tokens na wallet, obično iz marketinških ili zajedničkih razloga.",
+    "desc": "U airdropu korisnici dobivaju besplatne tokens—često kao nagradu za rano podržavanje, aktivnost u zajednici ili jednostavno držanje određene wallet. Airdropi su popularan način promocije novih projekata. Važno: legitimni airdropi nikada ne traže privatne ključeve niti predujamna plaćanja. Mnogi airdropi su prijevare—nikada ne unosite svoj privatni ključ da biste ih preuzeli. Na Stellaru se airdropi mogu čisto implementirati putem claimable balances."
   },
   "money": {
     "title": "Novac",
     "original": "Money",
     "short": "Novac je općeprihvaćeno sredstvo razmjene za robu i usluge.",
-    "desc": "Novac ima tri funkcije: sredstvo razmjene, pohrana vrijednosti i obračunska jedinica. Kroz povijest, novac je poprimio mnoge oblike – od školjki preko zlata do današnjih novčanica i digitalnog novca. Moderni novac uglavnom je pokriven povjerenjem u državu koja ga izdaje, a ne fizičkim vrijednostima."
+    "desc": "Novac služi trima funkcijama: sredstvo je razmjene, pohrana vrijednosti i računska jedinica. Povijesno je novac poprimio mnoge oblike – od školjki i zlata do današnjih bankovnica i digitalnog novca. Moderni novac uglavnom je potkrijepljen povjerenjem u vladu koja ga izdaje, a ne fizičkim assets."
   },
   "fiatCurrency": {
     "title": "Fiat valuta",
@@ -826,7 +826,7 @@
     "title": "Valuta",
     "original": "Currency",
     "short": "Priznati sustav razmjene vrijednosti unutar određenog gospodarskog prostora.",
-    "desc": "Valuta je službeno sredstvo plaćanja neke zemlje ili regije (npr. EUR, USD, CHF). U kripto svijetu, pojam se često koristi kao sinonim za 'coin' ili 'kriptovalutu'. Razlika u odnosu na 'asset': valuta primarno služi kao sredstvo razmjene, dok je asset širi pojam za svaku pohranu vrijednosti – uključujući dionice, nekretnine ili tokene."
+    "desc": "Valuta je službeno sredstvo plaćanja u nekoj zemlji ili regiji (npr. EUR, USD, CHF). U kripto prostoru, taj se pojam često koristi naizmjenično sa 'coin' ili 'kriptovaluta'. Razlika u odnosu na 'asset': valuta prvenstveno služi kao sredstvo razmjene, dok je asset širi pojam za bilo kakvo pohranjivanje vrijednosti – uključujući dionice, nekretnine ili tokens."
   },
   "cryptography": {
     "title": "Kriptografija",
@@ -844,25 +844,25 @@
     "title": "Šifriranje",
     "original": "Encryption",
     "short": "Pretvaranje čitljivih podataka u nečitljiv format koji se može dešifrirati samo s ispravnim ključem.",
-    "desc": "Šifriranje štiti podatke od neovlaštenog pristupa. Postoje dva glavna tipa: simetrično šifriranje (jedan ključ za šifriranje i dešifriranje) i asimetrično šifriranje (javni ključ za šifriranje, privatni ključ za dešifriranje). Novčanici i blockchain transakcije koriste asimetrično šifriranje."
+    "desc": "Šifriranje štiti podatke od neovlaštenog pristupa. Postoje dvije glavne vrste: simetrično šifriranje (jedan ključ za šifriranje i dešifriranje) i asimetrično šifriranje (public key za šifriranje, privatni ključ za dešifriranje). Wallets i transakcije na blockchainu koriste asimetrično šifriranje."
   },
   "digitalSignature": {
     "title": "Digitalni potpis",
     "original": "Digital Signature",
     "short": "Kriptografski dokaz da je poruku ili transakciju ovlastio njen zakoniti vlasnik.",
-    "desc": "Digitalni potpis funkcionira slično kao rukopisni potpis – samo što je otporan na krivotvorenje. Na Stellaru potpisuješ svaku transakciju svojim privatnim ključem. Mreža može tvojim javnim ključem provjeriti je li potpis valjan – bez da ikada vidi tvoj privatni ključ. Bez valjanog potpisa, mreža odbija transakciju."
+    "desc": "Digitalni potpis funkcionira slično kao rukopisni potpis – samo što je neizvodljivo krivotvoriti ga. Na Stellaru potpisujete svaku transakciju svojim privatnim ključem. Mreža može provjeriti pomoću vašeg public key je li potpis valjan – a da pritom nikada ne vidi vaš privatni ključ. Bez valjanog potpisa mreža odbacuje transakciju."
   },
   "publicKeyCryptography": {
-    "title": "Kriptografija javnog ključa",
+    "title": "Public-Key Kriptografija",
     "original": "Public-Key Cryptography",
     "short": "Metoda šifriranja s dva povezana ključa: jednim javnim i jednim privatnim.",
-    "desc": "Princip: ono što je šifrirano javnim ključem može se dešifrirati samo privatnim ključem – i obrnuto. Možeš slobodno dijeliti svoj javni ključ (= adresa tvog novčanika). Privatni ključ čuvaš u tajnosti. Tko poznaje tvoj privatni ključ ima potpuni pristup tvom računu. Stoga vrijedi: nikada ne dijeli svoj privatni ključ!"
+    "desc": "Načelo: ono što je šifrirano pomoću public key može se dešifrirati samo privatnim ključem – i obrnuto. Slobodno možete dijeliti svoj public key (= svoju wallet adresu). Vaš privatni ključ ostaje tajan. Svatko tko zna vaš privatni ključ ima potpuni pristup vašem računu. Stoga: nikada ne dijelite svoj privatni ključ!"
   },
   "keyPair": {
     "title": "Par ključeva",
     "original": "Key Pair",
     "short": "Kombinacija javnog i privatnog ključa koji zajedno čine kripto račun.",
-    "desc": "Par ključeva sastoji se od javnog ključa (tvoja adresa koju drugi smiju vidjeti) i privatnog ključa (tvoja lozinka koja ostaje tajna). Na Stellaru se javni ključ prikazuje kao G-adresa, a privatni ključ počinje sa S. Par ključeva se matematički generira i praktički ga je nemoguće krivotvoriti ili pogoditi."
+    "desc": "Par ključeva sastoji se od public key (vaša adresa koju drugi mogu vidjeti) i privatnog ključa (vaša lozinka koja ostaje tajna). Na Stellaru je public key predstavljen kao G-adresa, dok privatni ključ započinje slovom S. Par ključeva generira se matematički i praktički je nemoguće krivotvoriti ga ili pogoditi."
   },
   "signing": {
     "title": "Potpisivanje",
@@ -871,7 +871,7 @@
     "desc": "Prije nego što se transakcija izvrši na Stellar mreži, mora biti potpisana. Privatnim ključem stvara se digitalni potpis koji dokazuje da je zakoniti vlasnik računa odobrio transakciju. Bez valjanog potpisa mreža odbija transakciju. Kod multisig računa potrebno je više potpisa."
   },
   "sequenceNumber": {
-    "title": "Redni broj",
+    "title": "Sequence Number",
     "original": "Sequence Number",
     "short": "Uzastopni broj koji jedinstveno označava svaku transakciju računa i sprječava dvostruku potrošnju.",
     "desc": "Svaki Stellar račun ima Sequence Number, koji se pri svakoj transakciji povećava za 1. Transakcija se prihvaća samo ako njezin Sequence Number točno odgovara trenutnoj sekvenci računa +1. To sprječava da se ista transakcija izvrši dvaput. Ako istovremeno pošalješ više transakcija, moraju se obraditi ispravnim redoslijedom."
@@ -886,13 +886,13 @@
     "title": "Coin",
     "original": "Coin",
     "short": "Nativna kriptovaluta blockchaina koja postoji izravno na tom blockchainu.",
-    "desc": "Coin je 'vlastita' valuta blockchaina. Bitcoin (BTC) je coin Bitcoin blockchaina, Ether (ETH) coin Ethereuma, XLM coin Stellara. Coinovi se stvaraju izravno mrežnim protokolom i uglavnom služe za plaćanje transakcijskih naknada. Nasuprot tome, tokeni se izdaju od strane trećih na postojećem blockchainu."
+    "desc": "Kovanica je 'vlastita' valuta blockchaina. Bitcoin (BTC) je kovanica Bitcoin blockchaina, Ether (ETH) je kovanica Ethereuma, XLM je kovanica Stellara. Kovanice se stvaraju izravno protokolom mreže i uglavnom se koriste za plaćanje naknada za transakcije. Nasuprot tome, tokens izdaju treće strane na postojećem blockchainu."
   },
   "coinVsToken": {
     "title": "Coin vs. Token",
     "original": "Coin vs. Token",
-    "short": "Coinovi su nativne valute blockchaina, tokeni se izdaju od strane trećih na postojećem blockchainu.",
-    "desc": "Glavna razlika: coin postoji na vlastitom blockchainu (BTC na Bitcoinu, XLM na Stellaru). Token stvara netko na već postojećem blockchainu – npr. tvrtka koja na Stellaru izdaje vlastiti stablecoin. Tokeni ne trebaju vlastiti blockchain. Na Stellaru se vlastito kreirani tokeni nazivaju 'assetima'. U svakodnevici se pojmovi često miješaju, što dovodi do zabune."
+    "short": "Kovanice su izvorne valute blockchaina, tokens izdaju treće strane na postojećem blockchainu.",
+    "desc": "Glavna razlika: kovanica postoji na vlastitom blockchainu (BTC na Bitcoinu, XLM na Stellaru). token stvara netko na već postojećem blockchainu – npr. tvrtka koja izdaje vlastiti stablecoin na Stellaru. Tokens ne trebaju vlastiti blockchain. Na Stellaru se samostalno stvoreni tokens nazivaju 'assets'. U svakodnevnom govoru pojmovi se često miješaju, što dovodi do zabune."
   },
   "nativeCoin": {
     "title": "Nativni coin",
@@ -903,20 +903,20 @@
   "fungibility": {
     "title": "Zamjenjivost",
     "original": "Fungibility",
-    "short": "Svojstvo imovine kod kojeg je svaka jedinica identična i zamjenjiva s bilo kojom drugom.",
-    "desc": "Zamjenjiva imovina je poput novčanice: svaka novčanica od 10 eura vrijedi jednako kao i svaka druga. Kod kriptovaluta poput XLM, BTC ili USDC svaka je jedinica identična – jedan XLM uvijek je jednak drugom XLM-u. Suprotnost su NFT-ovi (nezamjenjivi tokeni): svaki NFT je jedinstven i nezamjenjiv. Zamjenjivost je važno svojstvo za korištenje kao valuta."
+    "short": "Svojstvo asset u kojem je svaka jedinica identična i zamjenjiva s bilo kojom drugom.",
+    "desc": "Zamjenjiva asset je poput novčanice: svaka novčanica od 10 dolara vrijedi jednako kao i svaka druga. Kod kriptovaluta poput XLM-a, BTC-a ili USDC-a svaka je jedinica identična – jedan XLM uvijek je jednak drugom XLM-u. Suprotno su NFT-ovi (nefungibilne Tokens): svaki je NFT jedinstven i nije zamjenjiv. Fungibilnost je važna svojstva za upotrebu kao valuta."
   },
   "wrappedToken": {
     "title": "Wrapped Token",
     "original": "Wrapped Token",
-    "short": "Token koji predstavlja vrijednost drugog asseta na drugom blockchainu.",
-    "desc": "Wrapped token omogućuje korištenje asseta jednog blockchaina na drugom. Primjer: Wrapped Bitcoin (WBTC) je token na Ethereumu pokriven 1:1 pravim Bitcoinom. Original se zaključava u pametnom ugovoru, a zauzvrat se izdaje wrapped token. Na Stellaru se Bitcoin ili Ether mogu izdati kao wrapped tokeni putem anchora, čime se njima može trgovati na Stellar mreži."
+    "short": "token koji predstavlja vrijednost drugog asset na drugom blockchainu.",
+    "desc": "Omotani token omogućuje korištenje assets s jednog blockchaina na drugom. Primjer: Wrapped Bitcoin (WBTC) je token na Ethereumu koji je podržan 1:1 pravim Bitcoinom. Originalna sredstva su zaključana u pametnom ugovoru, a zauzvrat se izdaje umotani token. Na Stellaru se Bitcoin ili Ether mogu izdati kao umotani tokens putem anchors, što im omogućuje trgovanje na Stellar mreži."
   },
   "syntheticAsset": {
     "title": "Sintetički asset",
     "original": "Synthetic Asset",
-    "short": "Token koji replicira cijenu stvarne imovine bez izravnog posjedovanja.",
-    "desc": "Sintetički asseti repliciraju vrijednost drugih aktiva – npr. dionica, zlata ili valuta – bez posjedovanja originala. Osigurani su pametnim ugovorima i kolateralom. Primjer: sintetički token dionice Applea prati cijenu prave dionice, ali je kripto token. Sintetički asseti su napredni DeFi koncept."
+    "short": "token koji replicira cijenu asset iz stvarnog svijeta, a da ga izravno ne posjeduje.",
+    "desc": "Sintetički assets repliciraju vrijednost drugih assets – npr. dionica, zlata ili valuta – bez posjedovanja izvornika. Osigurani su pametnim ugovorima i kolateralom. Primjer: sintetička token dionica Applea prati cijenu stvarne dionice, ali je kripto token. Sintetički assets su napredan DeFi koncept."
   },
   "memeCoin": {
     "title": "Meme Coin",
@@ -934,7 +934,7 @@
     "title": "Izdani asset",
     "original": "Issued Asset",
     "short": "Asset koji izdaje anchor ili tvrtka na Stellaru i koji predstavlja stvarnu protuvrijednost.",
-    "desc": "Izdani asset je Stellar asset koji izdaje anchor i koji predstavlja stvarnu vrijednost – npr. američke dolare, eure ili zlato. Anchor čuva stvarnu protuvrijednost i izdaje odgovarajuće tokene na Stellaru. Korisnici mogu držati i trgovati tim tokenima. Da biste dobili natrag stvarni asset, zamijenite tokene kod anchora (offramp). Poznati primjeri su USDC (Circle) ili EURC."
+    "desc": "Izdani asset je Stellar asset izdan od strane anchor koji predstavlja vrijednost iz stvarnog svijeta – npr. američke dolare, eure ili zlato. anchor drži stvarni ekvivalent i izdaje odgovarajuće tokens na Stellaru. Korisnici mogu držati i trgovati tim tokens. Da biste dobili stvarni asset, otkupljujete tokens kod anchor (offramp). Poznati primjeri su USDC (Circle) ili EURC."
   },
   "missingKey": "Nedostaje ključ pojmovnika: {{detail}}",
   "zkp": {
@@ -953,7 +953,7 @@
     "title": "Wallet Watcher / Drainer",
     "original": "Wallet Watcher / Drainer",
     "short": "Automatski skript koji nadzire kompromitiran račun i odmah povlači svaki novi depozit.",
-    "desc": "Kad prevaranti dobiju pristup tajnom ključu, često postavljaju automatski nadzornik. On nadzire račun 24 sata na dan i odmah prenosi svaki novi depozit na račun prevaranta – često u roku nekoliko sekundi. Račun je trajno kompromitiran. Jedino rješenje: odmah stvoriti novi novčanik s potpuno novim ključevima i nikad više ne koristiti stari račun."
+    "desc": "Kad prevaranti dobiju pristup secret key, često postave automatskog nadzornika. On neprestano nadzire račun i svaki novi polog odmah prebacuje na račun prevaranta – često u roku od nekoliko sekundi. Račun je trajno kompromitiran. Jedino rješenje: odmah otvorite novi wallet s potpuno novim ključevima i nikada više ne koristite stari račun."
   },
   "lumio": {
     "title": "Lumio",
@@ -982,7 +982,7 @@
   "keypair": {
     "title": "Par ključeva",
     "original": "Keypair",
-    "short": "Odgovarajuća kombinacija javnog i tajnog ključa.",
+    "short": "Odgovarajuća kombinacija Public Key i Secret Key.",
     "desc": "Keypair se sastoji od dva odgovarajuća ključa: javnog ključa (Public Key – tvoja adresa) i tajnog ključa (Secret Key – tvoja lozinka). Oba ključa idu zajedno i čine jednu cjelinu. Javni ključ dijeliš javno – tajni ključ uvijek čuvaš za sebe."
   },
   "fba": {
@@ -995,7 +995,7 @@
     "title": "Trustline Granica",
     "original": "Trustline Limit",
     "short": "Maksimalni saldo određenog asset na trustline.",
-    "desc": "Ograničenje trustline definira koliko jedinica određene imovine vaš račun može najviše držati. To nije nalog za kupnju i ne rezervira tokene. Nisko ograničenje može spriječiti slučajne preplate, ali premalo ograničenje može blokirati namjeravani prijem ili zamjenu."
+    "desc": "Ograničenje trustline definira koliko jedinica određenog asset vaš račun može najviše držati. To nije nalog za kupnju i ne rezervira tokens. Niski limit može spriječiti slučajne preplate, ali limit koji je prenizak može blokirati namjeravani prijem ili zamjenu."
   },
   "authorizationFlags": {
     "title": "Zastavice autorizacije",
@@ -1010,28 +1010,28 @@
     "desc": "Glavni ključ izdavatelja je glavni ključ računa koji izdaje asset. Ako je njegova težina postavljena na 0, sam glavni ključ više ne može potpisati nove radnje. To može biti dobar znak jer otežava izdavatelju da tiho mijenja pravila. Potpuna konfiguracija računa, uključujući ostale signers i zastavice, i dalje je važna."
   },
   "assetCode": {
-    "title": "Šifra imovine",
+    "title": "Asset kod",
     "original": "Asset Code",
-    "short": "Skraćeni naziv Stellar aktive, kao što su USDC ili EURC.",
-    "desc": "Kod imovine je vidljivo kratko ime Stellar imovine. Sam po sebi nije jedinstven, jer više izdavatelja može koristiti isti kod. Samo kod zajedno s adresom izdavatelja jedinstveno identificira Stellar imovinu."
+    "short": "Skraćeni naziv Stellar asset, kao što su USDC ili EURC.",
+    "desc": "Kod asset je vidljivo kratko ime Stellar asset. Sam po sebi nije jedinstven, jer više izdavatelja može koristiti isti kod. Samo kod zajedno s adresom izdavatelja jedinstveno identificira Stellar asset."
   },
   "issuer": {
     "title": "Izdavatelj",
     "original": "Issuer",
-    "short": "Stellar račun koji izdaje imovinu i kontrolira njezina pravila.",
-    "desc": "Izdavatelj je Stellar račun koji izdaje imovinu. Za izdane imovine izdavatelj je dio identiteta tokena. Ovisno o zastavicama računa, može utjecati na pravila kao što su autorizacija, povlačenje (Clawback) ili zamrznute dozvole. Stoga ne biste trebali provjeravati samo kod imovine, već uvijek i adresu izdavatelja te javne informacije o projektu."
+    "short": "Stellar račun koji izdaje asset i kontrolira njegova pravila.",
+    "desc": "Izdavatelj je Stellar račun koji izdaje asset. Za izdani assets, izdavatelj je dio identiteta token. Ovisno o zastavicama računa, može utjecati na pravila poput autorizacije, povrata (Clawback) ili zamrznutih dozvola. Stoga ne biste trebali provjeravati samo kod asset, već uvijek provjeriti adresu izdavatelja i javne informacije o projektu."
   },
   "homeDomain": {
     "title": "Početna domena",
     "original": "Home Domain",
     "short": "Domena pohranjena na računu izdavatelja Stellara.",
-    "desc": "Domašnja domena je domena pohranjena na računu izdavatelja. Pomaže povezati sredstvo s web-stranicom i datotekom stellar.toml. Domašnja domena nije dokaz pouzdanosti, ali bez nje nedostaju važne informacije za provjeru."
+    "desc": "Domašnja domena je domena pohranjena na računu izdavatelja. Pomaže povezati asset s web-stranicom i datotekom stellar.toml. Domašnja domena nije dokaz pouzdanosti, ali bez nje nedostaju važne informacije za provjeru."
   },
   "stellarToml": {
     "title": "izvrsno.toml",
     "original": "stellar.toml",
     "short": "Javna metapodatkovna datoteka za Stellar domenu.",
-    "desc": "Datoteka stellar.toml je javna datoteka smještena na glavnoj domeni Stellar projekta. Može sadržavati informacije o izdavatelju, imovini, kontaktnim podacima, dokumentaciji i unosima valuta. Ako imovina nije navedena tamo ili je datoteka nedostupna, preporučuje se dodatna opreznost."
+    "desc": "Datoteka stellar.toml je javna datoteka smještena na početnoj domeni Stellar projekta. Može sadržavati informacije o izdavatelju, assets, kontaktne podatke, dokumentaciju i unose za VALUTE. Ako asset nije naveden tamo ili je datoteka nedostupna, preporučljivo je biti posebno oprezan."
   },
   "quote": {
     "title": "Citat",
@@ -1043,7 +1043,7 @@
     "title": "Učinkovita stopa",
     "original": "Effective Rate",
     "short": "Stvarni omjer između iznosa poslanog i očekivanog primljenog iznosa.",
-    "desc": "Učinkovita stopa opisuje koliko tokena odredišta očekujete po poslanom tokenu na temelju trenutnog tečaja. Često je korisnija od jedne tržišne cijene jer uključuje likvidnost rute, knjige naloga i pool-a."
+    "desc": "Efektivna stopa opisuje koliko destinacijskih tokens očekujete po poslanoj token na temelju trenutačne ponude. Često je korisnija od jedne tržišne cijene jer uključuje likvidnost rute, knjige naloga i pool-a."
   },
   "minimumReceived": {
     "title": "Minimalni primljeni iznos",
@@ -1055,19 +1055,19 @@
     "title": "Put likvidnosti",
     "original": "Liquidity Route",
     "short": "Put kroz koji se zamjena usmjerava kroz knjige naloga ili bazene.",
-    "desc": "Ruta likvidnosti pokazuje kroz koja se sredstva i tržišta swap provodi. Ruta može biti izravna ili prolaziti kroz posredna sredstva. Na Stellaru se za pronalaženje puta mogu koristiti i ponude u knjizi naloga i AMM bazeni likvidnosti."
+    "desc": "Ruta likvidnosti pokazuje kroz koja assets i tržišta swap prolazi. Ruta može biti izravna ili može ići preko posredničkih assets. Na Stellaru se za pronalaženje puta mogu koristiti i ponude iz knjige naloga i AMM bazeni likvidnosti."
   },
   "bid": {
     "title": "Moli se",
     "original": "Bid",
     "short": "Kupnja ponude u knjizi naloga.",
-    "desc": "Ponuda je ponuda za kupnju. Pokazuje cijenu po kojoj je netko spreman kupiti imovinu. Najbolja ponuda je obično najviša trenutačna ponuda za kupnju u knjizi naloga."
+    "desc": "Ponuda je ponuda za kupnju. Pokazuje cijenu po kojoj je netko spreman kupiti asset. Najbolja ponuda je obično najviša trenutačna ponuda za kupnju u knjizi naloga."
   },
   "ask": {
     "title": "Pitaj",
     "original": "Ask",
     "short": "Ponuda prodaje u knjizi naloga.",
-    "desc": "Ask je ponuda za prodaju. Pokazuje cijenu po kojoj je netko spreman prodati imovinu. Najbolji ask obično je najniža trenutačna ponuda za prodaju u knjizi naloga."
+    "desc": "Ask je ponuda za prodaju. Pokazuje cijenu po kojoj je netko spreman prodati asset. Najbolji ask obično je najniža trenutačna ponuda za prodaju u knjizi naloga."
   },
   "marketDepth": {
     "title": "Dubina tržišta",
@@ -1088,9 +1088,9 @@
     "desc": "Cijena ponude može zastarjeti jer drugi korisnici trguju, narudžbe se uklanjaju ili se mijenjaju likvidnosni bazeni. Što je ponuda starija, to je važnije osvježiti je neposredno prije potpisivanja."
   },
   "tokenTrading": {
-    "title": "Pronađi i trguj tokenima",
+    "title": "Pronađi i trguj Tokens",
     "original": "Token Trading",
-    "short": "Pronađite tokene na mreži i kupujte, prodajte ili ih izravno razmjenjujte.",
+    "short": "Pronađite tokens na mreži i kupite, prodajte ili razmijenite ih izravno.",
     "desc": "Ovdje možete pretraživati tokene na Stellar mreži i odmah ih kupiti, prodati ili zamijeniti za drugi token. Iza kulisa se te transakcije odvijaju putem ugrađene decentralizirane burze (DEX) Stellar mreže. Više o tehnologiji koja stoji iza toga možete pronaći u DEX unosu u rječniku."
   },
   "toc": "Sadržaj"

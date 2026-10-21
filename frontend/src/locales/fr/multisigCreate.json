@@ -6,13 +6,13 @@
   "generateKeys": "Générer une clé",
   "enableMultisig": "Activer multisig",
   "instructions": {
-    "public": "Partagez cette clé publique avec d'autres pour les paiements.",
-    "secret": "Gardez cette clé secrète en sécurité ; ne la partagez jamais."
+    "public": "Partagez ce public key avec d'autres personnes pour effectuer des paiements.",
+    "secret": "Conservez ce secret key en lieu sûr ; ne le communiquez jamais à personne."
   },
   "generateFirst": "Veuillez d'abord générer une paire de clés.",
   "confirmLowBalance": "Le solde initial {bal} en XLM est inférieur à la réserve recommandée {req} en XLM (Signer : {count}). Voulez-vous continuer ?",
   "activated": "Le compte a été activé. Hash : {hash}",
-  "activatedTestnet": "Le compte a été activé sur le réseau de test via Friendbot.",
+  "activatedTestnet": "Le compte a été activé le testnet via Friendbot.",
   "alreadyActive": "Le compte est déjà activé.",
   "createdNoSigners": "Compte créé, multisig non configuré.",
   "createdAndConfigured": "Compte créé et multisig configuré. Hash : {hash}",
@@ -25,7 +25,7 @@
     "title": "Informations importantes",
     "secureKeys": {
       "title": "Enregistrer Secret Key",
-      "text": "La clé publique peut être partagée en toute sécurité : c'est comme un numéro de compte.\\n\\nLa clé privée est la clé d'accès à votre compte. Traitez-la comme un mot de passe :\\n• Ne la stockez JAMAIS dans des services cloud, des e-mails ou des notes non sécurisées\\n• Notez-la sur papier ou utilisez un portefeuille matériel\\n• Créez plusieurs sauvegardes et stockez-les dans des emplacements sécurisés et distincts\\n• Si vous perdez votre clé secrète, l'accès à votre compte est irrémédiablement perdu"
+      "text": "Le public key peut être partagé en toute sécurité : c'est comme un numéro de compte.\\n\\nLe secret key correspond à l'accès à votre compte. Traitez-le comme un mot de passe :\\n• Ne le stockez JAMAIS dans des services cloud, des e-mails ou des notes non sécurisées\\n• Notez-le sur papier ou utilisez un wallet matériel\\n• Créez plusieurs sauvegardes et stockez-les dans des emplacements sécurisés et distincts\\n• Si vous perdez votre secret key, l’accès à votre compte sera irrémédiablement perdu"
     },
     "multisigSection": {
       "title": "Multisig",
@@ -35,7 +35,7 @@
       "title": "Expiration de la signature"
     }
   },
-  "activateHint": "L'activation est nécessaire pour que le compte existe. Dans le Testnet, cela peut être fait via Friendbot, et dans le Mainnet, par \"Créer un compte\" à partir d'un portefeuille existant.",
+  "activateHint": "L'activation est nécessaire pour que le compte soit effectif. Dans le Testnet, cela peut se faire via Friendbot, et dans le Mainnet, via l'option « Créer un compte » à partir d'un wallet existant.",
   "activateNow": "Activez le compte immédiatement.",
   "activateOnly": "Activer seulement",
   "balanceWarning": "Le solde initial est probablement trop faible pour ajouter les {{count}} signers supplémentaires (réserve minimale : {{req}} XLM)",
@@ -52,9 +52,9 @@
     "title": "⚠️ Sécurisez votre clé dès maintenant !",
     "text1": "Vous avez généré une nouvelle paire de clés.",
     "text2": "Sécurisez IMMÉDIATEMENT les DEUX clés avant de continuer :",
-    "list1": "Clé publique : L'adresse de votre compte, peut être partagée.",
-    "list2": "Clé secrète : Votre mot de passe – NE le partagez JAMAIS et ne le stockez pas en ligne !",
-    "list3": "Si la clé secrète est perdue, l'accès est irrémédiablement perdu.",
+    "list1": "Public Key : L'adresse de votre compte, qui peut être communiquée",
+    "list2": "Secret Key : Votre mot de passe – ne le communiquez JAMAIS à personne et ne le conservez JAMAIS en ligne !",
+    "list3": "En cas de perte du secret key, l'accès est définitivement perdu.",
     "confirm": "J'ai sécurisé les deux clés."
   },
   "muxedId": "ID muxé",

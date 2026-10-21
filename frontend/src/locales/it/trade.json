@@ -1,6 +1,6 @@
 {
   "assetSearch": {
-    "title": "Ricerca di beni",
+    "title": "Asset ricerca",
     "description": "Cerca asset tramite l'endpoint di trading (Horizon).",
     "form": {
       "code": {
@@ -14,7 +14,7 @@
       "submit": "Cerca"
     },
     "result": {
-      "empty": "Nessuna risorsa trovata.",
+      "empty": "Non è stato trovato alcun assets.",
       "columns": {
         "code": "Codice",
         "issuer": "Emittente",
@@ -26,7 +26,7 @@
       "codeMissing": "Per favore inserisci un codice di asset."
     },
     "failed": {
-      "generic": "Ricerca delle risorse fallita. Si prega di riprovare più tardi."
+      "generic": "Asset Ricerca non riuscita. Riprovare più tardi."
     }
   }
 }

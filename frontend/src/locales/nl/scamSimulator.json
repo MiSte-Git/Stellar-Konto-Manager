@@ -78,11 +78,11 @@
       },
       "messages": {
         "01": "Hallo! Hier is het Stellar supportteam. We hebben ongebruikelijke activiteit op je account gedetecteerd.",
-        "02": "Je account is tijdelijk beperkt. Om de beperking op te heffen, hebben we je Geheime Sleutel nodig voor verificatie. Dit is een standaardprocedure.",
+        "02": "Je account is tijdelijk geblokkeerd. Om de blokkering op te heffen, hebben we je Secret Key nodig ter verificatie. Dit is een standaardprocedure.",
         "03": "⚠️ Reageer snel – je account wordt over 24 uur permanent geblokkeerd als we geen bevestiging ontvangen."
       },
       "options": {
-        "shareKey": "Geheime Sleutel delen",
+        "shareKey": "Delen Secret Key",
         "askOfficial": "Is er een officieel kanaal hiervoor?",
         "blockIgnore": "Blokkeren en negeren"
       },
@@ -96,12 +96,12 @@
         }
       },
       "redFlags": {
-        "asksForKey": "Echte ondersteuning vraagt nooit naar je Geheime Sleutel",
+        "asksForKey": "Echte ondersteuning vraagt nooit om je Secret Key",
         "urgency": "Kunstmatige tijdsdruk is een klassieke manipulatietactiek",
         "noVerification": "Geen verwijzing naar officiële kanalen of website",
         "accountSuspension": "Accountblokkering zonder officiële e-mail of app-melding"
       },
-      "explanation": "De Geheime Sleutel is als een privékluis-sleutel: wie hem kent, heeft volledige toegang tot je hele tegoed. Geen legitieme dienst – ook Stellar zelf niet – zal er ooit om vragen. Deel hem met niemand, hoe urgent het verzoek ook klinkt of hoe officieel de afzender er ook uitziet."
+      "explanation": "De Secret Key is als een persoonlijke kluissleutel: wie deze kent, heeft volledige toegang tot je volledige saldo. Geen enkele legitieme dienst – zelfs Stellar zelf niet – zal hier ooit om vragen. Deel deze code nooit met iemand, hoe dringend het verzoek ook klinkt of hoe officieel de afzender ook lijkt."
     },
     "fakeWebsite01": {
       "contact": {
@@ -111,11 +111,11 @@
       "messages": {
         "01": "Hey, ik zag dat je op zoek was naar een overzicht van je Stellar-betalingen?",
         "02": "Ik had hetzelfde probleem. Deze site heeft me geholpen: stellar-payment-tools.com ✅",
-        "03": "Je hoeft alleen je Geheime Sleutel in te voeren voor verificatie – duurt 10 seconden"
+        "03": "Je hoeft alleen maar je Secret Key in te voeren ter verificatie – dat duurt 10 seconden"
       },
       "options": {
-        "enterKey": "Geheime Sleutel invoeren",
-        "askWhy": "Waarom heeft een website mijn Geheime Sleutel nodig?",
+        "enterKey": "Voer Secret Key in",
+        "askWhy": "Waarom heeft een website mijn Secret Key nodig?",
         "ignoreSearch": "Link negeren en officiële bronnen zoeken"
       },
       "followUp": {
@@ -127,15 +127,15 @@
         "ask": {
           "01": "Het is gewoon voor de veiligheid, volkomen normaal voor Stellar-tools 😊",
           "02": "Al onze gebruikers doen dit, bekijk de recensies ⭐⭐⭐⭐⭐",
-          "03": "Waarschuwing: Neprecensies zijn gemakkelijk te maken. Geen enkele tool heeft je Geheime Sleutel nodig."
+          "03": "Waarschuwing: Neprecensies zijn gemakkelijk te verzinnen. Geen enkele tool heeft je Secret Key nodig."
         }
       },
       "redFlags": {
         "targeted": "Een onbekende contacteerde je specifiek over jouw probleem (ze hielden je in de gaten)",
-        "websiteKey": "Externe website vraagt om Geheime Sleutel",
+        "websiteKey": "Externe website die om Secret Key vraagt",
         "fakeReviews": "Sociaal bewijs via neprecensies"
       },
-      "explanation": "Geen enkel legitiem tool, website of dienst heeft ooit je Geheime Sleutel nodig. Door hem in te voeren geef je de beheerder volledige toegang tot je account. Gericht aangesproken worden en neprecensies zijn klassieke tactieken om vals vertrouwen op te bouwen."
+      "explanation": "Geen enkele legitieme tool, website of dienst heeft ooit je Secret Key nodig. Als je dit invoert, krijgt de beheerder volledige toegang tot je account. Gericht benaderen en neprecensies zijn klassieke tactieken om vals vertrouwen te wekken."
     },
     "fakeAirdrop01": {
       "contact": {
@@ -256,7 +256,7 @@
         },
         "issuer": {
           "01": "Officiële BERRY-uitgever (van Marco's website):\nGDMARCXXX7XXBXXXXX3XXXXXKXXXXX4XXXXXNXXXXX2XXXPXXXARCO77",
-          "02": "Uitgever in dit bericht:\nGDFAKEXX6XXXXRXXXXX5XXXXXMXXXXX3XXXXXYXXXXX7XXXQXXFAKE77\n\n❌ Niet identiek! Zelfde tokennaam, andere uitgever – deze BERRY is waardeloos."
+          "02": "Afzender van dit bericht:\nGDFAKEXX6XXXXRXXXXX5XXXXXMXXXXX3XXXXXYXXXXX7XXXQXXFAKE77\n\n❌ Niet identiek! Dezelfde naam token, andere afzender – deze BERRY is waardeloos."
         },
         "addAnyway": {
           "01": "Trustline is succesvol toegevoegd! Je 50 BERRY worden binnenkort naar je overgemaakt. 🍓",

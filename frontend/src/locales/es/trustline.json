@@ -6,7 +6,7 @@
   "nonZeroBalance": "Este trustline tiene un saldo distinto de cero y no se puede eliminar.",
   "destination": {
     "label": "Dirección objetivo",
-    "placeholder": "Clave pública de destino o dirección de federación.",
+    "placeholder": "Destino public key o dirección de la federación",
     "error": "Dirección de destino no válida"
   },
   "deleted": {
@@ -22,20 +22,20 @@
     "success": "Se ha eliminado correctamente {count} trustlines."
   },
   "noDuplicates": "No se ha encontrado ningún duplicado de trustlines.",
-  "showSecret": "Mostrar clave secreta",
+  "showSecret": "Mostrar Secret Key",
   "notFound": "No se encontró Trustline(s).",
   "add": {
     "button": "Añadir trustline",
     "title": "Establecer un nuevo trustline",
-    "assetCodeLabel": "Código de activo",
+    "assetCodeLabel": "Asset Código",
     "assetCodePlaceholder": "por ejemplo, USDC",
-    "assetCodeHelp": "Nombre corto del activo (1–12 caracteres, p. ej., TESTUSD).",
+    "assetCodeHelp": "Asset nombre corto (de 1 a 12 caracteres, p. ej., TESTUSD).",
     "issuerLabel": "Emisor (Public Key)",
     "issuerPlaceholder": "por ejemplo, G...Emisor",
     "issuerHelp": "Public Key (dirección G) de la cuenta emisora que emite el Asset.",
     "limitLabel": "Límite",
     "limitPlaceholder": "p. ej., 1 000 000 (un millón)",
-    "limitHelp": "El límite es la cantidad máxima de este activo que esta cuenta puede confiar. En la práctica, debe fijarse tan alto como su saldo máximo anticipado en este activo.",
+    "limitHelp": "El límite es la cantidad máxima de este asset en la que esta cuenta puede confiar. En la práctica, debería fijarse en un valor tan alto como el saldo máximo previsto en este asset.",
     "submit": "Crear un trustline",
     "cancel": "Cancelar",
     "success": "Se ha establecido correctamente Trustline para {{code}}."

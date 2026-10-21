@@ -42,13 +42,13 @@
     "a3fb": "Virheellinen: Allekirjoituksia on vain niin paljon, että ne täyttävät threshold:n vaatimukset."
   },
   "q5": {
-    "question": "Miten salaiset avaimet tulisi säilyttää todellisissa multisig-kokoonpanoissa?",
+    "question": "Miten secret keys tulisi tallentaa todellisissa multisig-asetuksissa?",
     "hint": "Erottaminen on turvallisuutta.",
     "a1": "Erotettu eri laitteille/sijainneille.",
     "a1fb": "Korjaus: Allekirjoitukset tulisi kerätä erikseen.",
     "a2": "Kaikki samalla kannettavalla tietokoneella mukavuuden vuoksi.",
     "a2fb": "Virheellinen: Laite sisältää yhden vikapisteen.",
     "a3": "Jaa pelkkänä tekstinä chatissa.",
-    "a3fb": "Virheellinen: Älä koskaan jaa salaisia avaimia."
+    "a3fb": "Väärin: Älä koskaan jaa secret keys:tä."
   }
 }

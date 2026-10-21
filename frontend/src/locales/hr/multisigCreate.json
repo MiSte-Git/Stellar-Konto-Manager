@@ -6,13 +6,13 @@
   "generateKeys": "Generiraj ključ",
   "enableMultisig": "Omogući multisig",
   "instructions": {
-    "public": "Podijelite ovaj javni ključ s drugima za plaćanja.",
-    "secret": "Čuvaj ovaj tajni ključ na sigurnom; nikad ga ne dijeli."
+    "public": "Podijelite ovaj public key s drugima za plaćanja.",
+    "secret": "Očuvaj ovu secret key sigurnom; nikada je ne dijeli."
   },
   "generateFirst": "Molimo vas da prvo generirate par ključeva.",
   "confirmLowBalance": "Početni saldo {bal} XLM je ispod preporučene rezerve {req} XLM (Signer: {count}). Nastaviti?",
   "activated": "Račun je aktiviran. Hash: {hash}",
-  "activatedTestnet": "Račun je aktiviran na testnetu putem Friendbota.",
+  "activatedTestnet": "Račun je aktiviran na testnet putem Friendbota.",
   "alreadyActive": "Korisnički račun je već aktiviran.",
   "createdNoSigners": "Račun je stvoren, multisig nije konfiguriran.",
   "createdAndConfigured": "Račun kreiran i multisig konfiguriran. Hash: {hash}",
@@ -25,7 +25,7 @@
     "title": "Važne informacije",
     "secureKeys": {
       "title": "Sačuvaj Secret Key",
-      "text": "Javni ključ se može sigurno dijeliti—to je poput broja računa.\\n\\nTajni ključ je pristup vašem računu. Postupajte s njim kao s lozinkom:\\n• NIKADA ga ne pohranjujte u uslugama u oblaku, e-pošti ili nezaštićenim bilješkama\\n• Zapišite ga na papir ili koristite hardverski novčanik\\n• Napravite više sigurnosnih kopija i pohranite ih na sigurne, odvojene lokacije\\n• Ako izgubite svoj tajni ključ, pristup vašem računu je nepovratno izgubljen"
+      "text": "public key se može sigurno dijeliti—to je poput broja računa.\\n\\nsecret key je pristup vašem računu. Postupajte s njim kao s lozinkom:\\n• NIKADA ga ne pohranjujte u uslugama u oblaku, e-pošti ili nezaštićenim bilješkama\\n• Zapišite ga na papir ili upotrijebite hardverski wallet\\n• Napravite više sigurnosnih kopija i pohranite ih na sigurne, odvojene lokacije\\n• Ako izgubite svoj secret key, pristup vašem računu je nepovratno izgubljen"
     },
     "multisigSection": {
       "title": "Višepotpis (Multisig)",
@@ -35,7 +35,7 @@
       "title": "Istek potpisa"
     }
   },
-  "activateHint": "Aktivacija je neophodna da bi račun postojao. Na Testnetu se to može obaviti putem Friendbota, a na Mainnetu preko opcije \"Create Account\" iz postojećeg novčanika.",
+  "activateHint": "Aktivacija je potrebna da bi račun postojao. U Testnet to se može učiniti putem Friendbota, a u Mainnet putem opcije \"Create Account\" iz postojećeg wallet.",
   "activateNow": "Odmah aktivirajte račun.",
   "activateOnly": "Aktiviraj samo",
   "balanceWarning": "Početni saldo je vjerojatno prenizak za dodavanje {{count}} dodatnih signers (Minimalna rezerva: {{req}} XLM)",
@@ -52,9 +52,9 @@
     "title": "⚠️ Osigurajte svoj ključ sada!",
     "text1": "Generirali ste novi par ključeva.",
     "text2": "Odmah osigurajte OBA ključa prije nego što nastavite:",
-    "list1": "Javni ključ: Vaša adresa računa, može se dijeliti",
-    "list2": "Tajni ključ: Vaša lozinka – NIKADA je nemojte dijeliti ili čuvati online!",
-    "list3": "Ako je tajni ključ izgubljen, pristup je nepovratno izgubljen.",
+    "list1": "Public Key: adresa vašeg računa, može se podijeliti",
+    "list2": "Secret Key: Vaša lozinka – NIKADA je ne dijelite niti pohranjujte na internetu!",
+    "list3": "Ako se secret key izgubi, pristup je nepovratno izgubljen.",
     "confirm": "Osigurao sam oba ključa."
   },
   "muxedId": "Muxed ID",

@@ -5,7 +5,7 @@
   "signersCountLimit": "Napomena: ograničenje mreže (Stellar): najviše 20 dodatnih Signer.",
   "bestPractices": {
     "title": "Najbolje prakse",
-    "text": "Držite tajne ključeve sigurnima i nemojte ih nepotrebno dijeliti."
+    "text": "Održavajte secret keys sigurnima i ne distribuirajte ih nepotrebno."
   },
   "signerTypeNote": "Napomena: SKM koristi samo ed25519-Signer. Za hashX/preAuthTx, upotrijebite",
   "signerTypeLink": "lab.stellar.org",

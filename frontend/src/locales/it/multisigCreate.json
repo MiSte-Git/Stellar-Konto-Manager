@@ -6,8 +6,8 @@
   "generateKeys": "Genera chiave",
   "enableMultisig": "Abilita multisig",
   "instructions": {
-    "public": "Condividi questa chiave pubblica con altri per i pagamenti.",
-    "secret": "Tieni questa chiave segreta al sicuro; non condividerla mai."
+    "public": "Condividi questo public key con altri per effettuare pagamenti.",
+    "secret": "Conserva questo secret key in un luogo sicuro; non rivelarlo mai a nessuno."
   },
   "generateFirst": "Si prega di generare prima una coppia di chiavi.",
   "confirmLowBalance": "Il saldo iniziale {bal} in XLM è inferiore alla riserva raccomandata {req} in XLM (Signer: {count}). Procedere?",
@@ -25,7 +25,7 @@
     "title": "Informazioni importanti",
     "secureKeys": {
       "title": "Salva Secret Key",
-      "text": "La chiave pubblica può essere condivisa in tutta sicurezza: è come un numero di conto.\\n\\nLa chiave privata è la chiave di accesso al tuo conto. Trattala come una password:\\n• NON conservarla MAI su servizi cloud, nelle e-mail o in appunti non protetti\\n• Annotala su carta o utilizza un portafoglio hardware\\n• Crea più copie di backup e conservale in luoghi sicuri e separati\\n• Se perdi la tua chiave segreta, l’accesso al tuo conto andrà irrimediabilmente perso"
+      "text": "Il public key può essere condiviso in tutta sicurezza: è come un numero di conto.\\n\\nIl secret key è la chiave di accesso al tuo account. Trattalo come una password:\\n• NON salvarlo MAI su servizi cloud, nelle e-mail o in appunti non protetti\\n• Annotalo su carta o utilizza un dispositivo hardware wallet\\n• Crea più copie di backup e conservale in luoghi sicuri e separati\\n• Se perdi il tuo secret key, l’accesso al tuo account andrà irrimediabilmente perso"
     },
     "multisigSection": {
       "title": "Multisig",
@@ -35,7 +35,7 @@
       "title": "Scadenza della firma"
     }
   },
-  "activateHint": "L'attivazione è necessaria affinché l'account esista. Nel Testnet, questo può essere fatto tramite Friendbot, mentre nel Mainnet, attraverso \"Crea Account\" da un portafoglio esistente.",
+  "activateHint": "L'attivazione è necessaria affinché l'account sia attivo. Nel Testnet, ciò può essere effettuato tramite Friendbot, mentre nel Mainnet, tramite l'opzione \"Crea account\" da un wallet esistente.",
   "activateNow": "Attiva l'account immediatamente.",
   "activateOnly": "Attiva solo",
   "balanceWarning": "Il saldo iniziale è probabilmente troppo basso per aggiungere i {{count}} ulteriori signers (Riserva minima: {{req}} XLM)",
@@ -52,9 +52,9 @@
     "title": "⚠️ Proteggi subito la tua chiave!",
     "text1": "Hai generato una nuova coppia di chiavi.",
     "text2": "Assicurati SUBITO entrambe le chiavi prima di procedere:",
-    "list1": "Chiave pubblica: l'indirizzo del tuo account, può essere condiviso",
-    "list2": "Chiave segreta: La tua password – NON condividerla o memorizzarla mai online!",
-    "list3": "Se la chiave segreta viene persa, l'accesso è perso irrevocabilmente.",
+    "list1": "Public Key: L'indirizzo del tuo account, che può essere condiviso",
+    "list2": "Secret Key: La tua password – NON condividerla né salvarla MAI online!",
+    "list3": "Se si perde il secret key, l'accesso va irrimediabilmente perso.",
     "confirm": "Ho ottenuto entrambe le chiavi."
   },
   "muxedId": "ID Muxed",

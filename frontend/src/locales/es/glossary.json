@@ -1,8 +1,8 @@
 {
   "account": {
-    "desc": "Una cuenta es la ubicación en la blockchain donde se mantienen tus activos. Una cuenta tiene una dirección pública que comienza con G. Múltiples monederos pueden acceder a la misma cuenta si tienen la clave correcta.",
+    "desc": "Una cuenta es el lugar de la cadena de bloques donde se almacenan tus assets. Una cuenta tiene una dirección pública que empieza por G. Varios wallets pueden acceder a la misma cuenta si disponen de la clave correcta.",
     "original": "Account",
-    "short": "Una cuenta de blockchain puede mantener activos y enviar transacciones.",
+    "short": "Una cuenta de blockchain puede contener assets y enviar transacciones.",
     "title": "Cuenta"
   },
   "accountConfig": {
@@ -30,7 +30,7 @@
     "title": "Subdirección"
   },
   "airdrop": {
-    "desc": "En un airdrop, los usuarios reciben tokens gratis—por apoyo temprano, actividad comunitaria o solo por tener una dirección específica. Los airdrops son un medio popular de marketing. Importante: los airdrops legítimos nunca piden claves privadas ni pagos por adelantado. Muchos airdrops son estafas—nunca ingreses tu clave privada para reclamar uno. En Stellar, los airdrops se pueden hacer mediante claimable balances.",
+    "desc": "En un airdrop, los usuarios reciben tokens gratis, a menudo como recompensa por su apoyo inicial, su participación en la comunidad o simplemente por poseer un wallet concreto. Los airdrops son una forma muy popular de promocionar nuevos proyectos. Importante: los airdrops legítimos nunca solicitan claves privadas ni pagos por adelantado. Muchos airdrops son estafas; nunca introduzcas tu clave privada para reclamar uno. En Stellar, los airdrops se pueden implementar de forma segura a través de claimable balances.",
     "original": "Airdrop",
     "short": "Distribución gratuita de tokens a direcciones de wallet, normalmente con fines de marketing o comunidad.",
     "title": "Airdrop"
@@ -54,16 +54,16 @@
     "desc": "Un Anchor es un proveedor de servicios financieros autorizado que conecta dinero real con la red Stellar. Acepta dinero fiat (p.ej. por transferencia bancaria) y emite tokens en Stellar a cambio – y viceversa. Esto se llama On-Ramp (dinero dentro) y Off-Ramp (dinero fuera).\n\nAnchors conocidos en Stellar:\n- Kado – USD, EUR, CHF (Global)\n- MoneyGram – retiros/depósitos en efectivo via USDC en 170+ países\n- Tempo – EUR stablecoin, Europa\n- Bitso – MXN, USD, Latinoamérica\n- Circle – USDC y EURC, en todo el mundo\n\nActualmente hay más de 60 Anchors en Stellar que cubren más de 170 monedas."
   },
   "asset": {
-    "desc": "En Stellar, un token se llama activo. Un activo siempre está vinculado a una cuenta emisora. Por ejemplo, una cuenta puede emitir un token en euros, y este token en euros se considera un activo.",
+    "desc": "Un asset es, en el sentido más amplio, cualquier cosa que represente valor y pueda transferirse. En Stellar, cualquiera puede emitir un asset; por ejemplo, una aerolínea puede emitir sus millas como un token, o un banco puede emitir su dólar como una stablecoin. Cada asset de Stellar se define por dos elementos: el código asset (por ejemplo, «USDC») y el emisor (la dirección G de la entidad que lo ha creado). El XLM es el único asset sin emisor, ya que es el asset nativo de la red.",
     "original": "Asset",
     "short": "Los tokens en Stellar siempre están vinculados a un emisor.",
-    "title": "Activo"
+    "title": "Asset"
   },
   "balanceClaimable": {
-    "desc": "Un saldo reclamable es dinero que ya está reservado para ti, pero que aún necesitas reclamar. Solo se acredita a tu cuenta una vez que lo aceptas.",
+    "desc": "Un claimable balance es dinero que ya está reservado para ti, pero que aún tienes que reclamar. Solo se abonará en tu cuenta una vez que lo aceptes.",
     "original": "Claimable Balance",
     "short": "Dinero reservado que aún necesitas recibir.",
-    "title": "Saldo reclamable"
+    "title": "Claimable Balance"
   },
   "baseReserve": {
     "desc": "En Stellar, todas las cuentas deben mantener un saldo mínimo en XLM. Este se calcula a partir de la reserva base (actualmente 0,5 XLM) multiplicada por el número de «entradas» de la cuenta (por ejemplo, trustlines, signers, ofertas de datos). Una cuenta vacía requiere al menos 1 XLM (2 × 0,5 XLM). Cada trustline aumenta el saldo mínimo en 0,5 XLM adicionales. Este saldo permanece bloqueado mientras las entradas estén activas.",
@@ -98,7 +98,7 @@
   "bridge": {
     "desc": "Como las blockchains están aisladas, los bridges permiten mover assets entre ellas. Ejemplo: un bridge entre Ethereum y Stellar permite transferir USDC de Ethereum a Stellar. Normalmente los assets se bloquean en la cadena origen y se emiten como tokens “wrapped” en la cadena destino. Los bridges son útiles pero también un objetivo frecuente de ataques. En Stellar, los anchors suelen cumplir una función similar.",
     "original": "Bridge",
-    "short": "Protocolo que permite transferir activos entre dos blockchains distintas.",
+    "short": "Un protocolo que transfiere assets entre dos cadenas de bloques diferentes.",
     "title": "Bridge"
   },
   "bullBearMarket": {
@@ -132,9 +132,9 @@
     "title": "Cantidad de circulación"
   },
   "clawback": {
-    "desc": "Clawback es una función especial de Stellar que cumple requisitos regulatorios. Si un emisor activa clawback al crear un activo, puede recuperar tokens de cualquier cuenta – por ejemplo en casos de fraude, lavado de dinero o exigencias legales. Para productos financieros regulados como los security tokens, esta función suele ser obligatoria por ley. Los usuarios normales no deben preocuparse mientras usen emisores confiables.",
+    "desc": "La «clawback» es una función especial de Stellar que cumple con los requisitos normativos. Si un emisor activa la «clawback» al crear un asset, podrá reclamar el tokens de cualquier cuenta, por ejemplo, en casos de fraude, blanqueo de capitales o por requisitos legales. En el caso de productos financieros regulados, como los valores tokens, esta función suele ser un requisito legal. Los usuarios habituales no tienen por qué preocuparse siempre que recurran a emisores de confianza.",
     "original": "Clawback",
-    "short": "Función opcional de Stellar que permite al emisor de un activo recuperar tokens emitidos de una cuenta.",
+    "short": "Una función opcional de Stellar que permite a un emisor de asset recuperar los tokens emitidos de una cuenta.",
     "title": "Recuperación"
   },
   "coin": {
@@ -152,8 +152,8 @@
   "coldWallet": {
     "desc": "Como una caja fuerte en el sótano. Muy segura, pero poco práctica para el uso diario. Adecuada para el almacenamiento a largo plazo.",
     "original": "Cold Wallet",
-    "short": "Una billetera sin conexión a internet.",
-    "title": "Cartera fría"
+    "short": "Un wallet sin conexión a Internet.",
+    "title": "Frío wallet"
   },
   "consensusMechanism": {
     "desc": "Es es como cuando un grupo decide qué recibo es válido. Esto evita que alguien haga cambios en secreto. Diferentes cadenas de bloques usan diferentes métodos, pero el objetivo siempre es el consenso.",
@@ -174,7 +174,7 @@
     "title": "Criptografía"
   },
   "currency": {
-    "desc": "Una moneda es el medio de pago oficial de un país o región (p. ej., EUR, USD, CHF). En el ámbito de las criptomonedas, el término se usa a menudo como sinónimo de 'coin' o 'criptomoneda'. La diferencia con un 'activo': una moneda sirve principalmente como medio de intercambio, mientras que un activo es un término más amplio para cualquier reserva de valor, incluidas acciones, bienes raíces o tokens.",
+    "desc": "Una moneda es el medio de pago oficial de un país o una región (por ejemplo, EUR, USD, CHF). En el ámbito de las criptomonedas, el término se utiliza a menudo de forma intercambiable con «moneda» o «criptomoneda». La diferencia con respecto a una «asset»: una moneda sirve principalmente como medio de intercambio, mientras que una «asset» es un término más amplio que engloba cualquier reserva de valor, incluidas las acciones, los bienes inmuebles o la «tokens».",
     "original": "Currency",
     "short": "Un sistema de intercambio de valor reconocido dentro de un espacio económico determinado.",
     "title": "Moneda"
@@ -222,7 +222,7 @@
     "title": "DEX (Decentralized Exchange)"
   },
   "digitalSignature": {
-    "desc": "Una firma digital funciona de manera similar a una firma manuscrita, solo que es a prueba de falsificaciones. En Stellar, firmas cada transacción con tu clave privada. La red puede verificar con tu clave pública si la firma es válida, sin ver nunca tu clave privada. Sin una firma válida, la red rechaza la transacción.",
+    "desc": "Una firma digital funciona de manera similar a una firma manuscrita, solo que es a prueba de falsificaciones. En Stellar, cada transacción se firma con la clave privada. La red puede verificar, mediante tu public key, si la firma es válida, sin llegar a ver nunca tu clave privada. Sin una firma válida, la red rechaza la transacción.",
     "original": "Digital Signature",
     "short": "Prueba criptográfica de que un mensaje o transacción fue autorizado por su legítimo propietario.",
     "title": "Firma digital"
@@ -234,7 +234,7 @@
     "title": "Red de distribución"
   },
   "encryption": {
-    "desc": "El cifrado protege los datos del acceso no autorizado. Hay dos tipos principales: cifrado simétrico (una clave para cifrar y descifrar) y cifrado asimétrico (clave pública para cifrar, clave privada para descifrar). Las billeteras y las transacciones blockchain utilizan cifrado asimétrico.",
+    "desc": "El cifrado protege los datos frente al acceso no autorizado. Existen dos tipos principales: el cifrado simétrico (una misma clave tanto para cifrar como para descifrar) y el cifrado asimétrico (public key para cifrar y una clave privada para descifrar). Wallets y las transacciones de la cadena de bloques utilizan el cifrado asimétrico.",
     "original": "Encryption",
     "short": "Conversión de datos legibles a un formato ilegible que solo puede descifrarse con la clave correcta.",
     "title": "Cifrado"
@@ -270,9 +270,9 @@
     "title": "Fork"
   },
   "fungibility": {
-    "desc": "Un activo fungible es como un billete de banco: cada billete de 10 dólares vale lo mismo que cualquier otro. Con criptomonedas como XLM, BTC o USDC, cada unidad es idéntica – un XLM siempre es igual a otro XLM. Lo opuesto son los NFTs (Tokens No Fungibles): cada NFT es único y no intercambiable. La fungibilidad es una propiedad importante para el uso como moneda.",
+    "desc": "Un asset fungible es como un billete: cada billete de 10 dólares vale exactamente lo mismo que cualquier otro. En el caso de las criptomonedas como XLM, BTC o USDC, todas las unidades son idénticas: un XLM es siempre igual a otro XLM. Lo contrario ocurre con los NFT (Tokens no fungibles): cada NFT es único y no es intercambiable. La fungibilidad es una propiedad importante para su uso como moneda.",
     "original": "Fungibility",
-    "short": "La propiedad de un activo donde cada unidad es idéntica e intercambiable con cualquier otra.",
+    "short": "La propiedad de un asset en el que todas las unidades son idénticas e intercambiables entre sí.",
     "title": "Fungibilidad"
   },
   "gasFee": {
@@ -282,7 +282,7 @@
     "title": "Tarifa de gas"
   },
   "governanceToken": {
-    "desc": "Como una tarjeta de votación en un club. Aquellos que tienen fichas pueden votar sobre las reglas. Eso significa responsabilidad.",
+    "desc": "Es como una tarjeta de voto en un club. Quienes tienen tokens pueden votar sobre las normas. Eso implica una responsabilidad.",
     "original": "Governance Token",
     "short": "Un token para tener voz en las reglas.",
     "title": "Token de gobernanza"
@@ -307,7 +307,7 @@
     "desc": "Como una pequeña caja fuerte en tu bolsillo. Las claves permanecen en el dispositivo y no se conectan a internet. Esto protege contra muchos ataques en línea.",
     "original": "Hardware Wallet",
     "short": "Un dispositivo físico para tus llaves.",
-    "title": "Cartera de hardware"
+    "title": "Hardware wallet"
   },
   "hash": {
     "desc": "Una función hash convierte cualquier dato (texto, archivos, transacciones) en una cadena de caracteres fija, por ejemplo 'a3f8c2...'. Los mismos datos de entrada siempre producen el mismo hash. Si se cambia un solo carácter, el hash cambia por completo. Esto hace que los hashes sean ideales para detectar manipulaciones. En las blockchains, cada bloque se identifica de forma única por su hash.",
@@ -339,10 +339,10 @@
     "title": "Historia del Horizonte"
   },
   "hotWallet": {
-    "desc": "Como una cartera en una chaqueta: conveniente pero más vulnerable. Bueno para pequeñas cantidades y uso diario. No es ideal para grandes sumas.",
+    "desc": "Es como llevar un wallet en la chaqueta: práctico, pero más vulnerable. Ideal para pequeñas cantidades y para el día a día. No es lo más adecuado para grandes sumas.",
     "original": "Hot Wallet",
-    "short": "Una billetera con acceso a Internet.",
-    "title": "Monedero caliente"
+    "short": "Un wallet con acceso a Internet.",
+    "title": "Caliente wallet"
   },
   "ico": {
     "desc": "Un ICO es como una IPO para proyectos cripto. El proyecto vende nuevos tokens para recaudar capital. Los ICOs fueron muy populares en 2017–2018, pero a menudo no regulados o fraudulentos. Muchos proyectos nunca entregaron un producto. Hoy hay regulaciones más estrictas. Alternativas: IEO (Initial Exchange Offering) o IDO (Initial DEX Offering). Para principiantes: mucha precaución con los ICO.",
@@ -371,17 +371,17 @@
   "interoperability": {
     "desc": "La interoperabilidad es uno de los grandes desafíos en cripto. Hoy existen cientos de blockchains que no pueden comunicarse—como islas sin puentes. Soluciones: bridges, protocolos cross‑chain o estándares como IBC (Inter‑Blockchain Communication). Stellar tiene la interoperabilidad como meta central: el sistema de anchors conecta con finanzas tradicionales y los bridges conectan Stellar con otras cadenas.",
     "original": "Interoperability",
-    "short": "La capacidad de distintas blockchains para comunicarse e intercambiar activos.",
+    "short": "La capacidad de las diferentes cadenas de bloques para comunicarse e intercambiar assets.",
     "title": "Interoperabilidad"
   },
   "issuedAsset": {
-    "desc": "Un activo emitido es un activo Stellar emitido por un ancla que representa un valor real – por ejemplo, dólares estadounidenses, euros u oro. El ancla custodia el equivalente real y emite los tokens correspondientes en Stellar. Los usuarios pueden mantener y negociar estos tokens. Para recuperar el activo real, se canjean los tokens con el ancla (offramp). Ejemplos conocidos son USDC (Circle) o EURC.",
+    "desc": "Un asset emitido es un asset de Stellar emitido por un anchor que representa un valor del mundo real —por ejemplo, dólares estadounidenses, euros u oro—. El anchor mantiene la contrapartida real y emite los tokens correspondientes en Stellar. Los usuarios pueden mantener y negociar estos tokens. Para recuperar el asset real, hay que canjear el tokens por el anchor (offramp). Ejemplos muy conocidos son el USDC (Circle) o el EURC.",
     "original": "Issued Asset",
-    "short": "Un activo emitido por un ancla o empresa en Stellar que representa un equivalente del mundo real.",
-    "title": "Activo emitido"
+    "short": "Un asset emitido por un anchor o una empresa en Stellar que representa un activo real.",
+    "title": "Emitido Asset"
   },
   "keyPair": {
-    "desc": "Un par de claves consiste en la clave pública (tu dirección que otros pueden ver) y la clave privada (tu contraseña que permanece secreta). En Stellar, la clave pública se muestra como una dirección G, mientras que la clave privada comienza con S. El par de claves se genera matemáticamente y es prácticamente imposible de falsificar o adivinar.",
+    "desc": "Un par de claves está formado por el public key (tu dirección, que pueden ver los demás) y la clave privada (tu contraseña, que debe permanecer en secreto). En Stellar, el public key se representa como una dirección G, mientras que la clave privada empieza por S. El par de claves se genera matemáticamente y es prácticamente imposible de falsificar o adivinar.",
     "original": "Key Pair",
     "short": "La combinación de clave pública y privada que juntas forman una cuenta cripto.",
     "title": "Par de claves"
@@ -421,7 +421,7 @@
   "liquidityPool": {
     "desc": "Un pool de liquidez es un fondo compartido que contiene dos tokens. Las personas depositan ambos tokens en él. Otros pueden intercambiar instantáneamente estos tokens. Los depositantes ganan pequeñas comisiones a cambio.",
     "original": "Liquidity Pool",
-    "short": "Fondo común con dos fichas para intercambio inmediato.",
+    "short": "Fondo común con dos tokens para su canje inmediato.",
     "title": "Piscina de liquidez"
   },
   "liquidityToken": {
@@ -474,7 +474,7 @@
   },
   "missingKey": "Falta la clave del glosario: {{detail}}",
   "money": {
-    "desc": "El dinero cumple tres funciones: es medio de intercambio, depósito de valor y unidad de cuenta. Históricamente, el dinero ha adoptado muchas formas, desde conchas hasta oro, pasando por los billetes actuales y el dinero digital. El dinero moderno está respaldado principalmente por la confianza en el gobierno emisor, no por valores físicos.",
+    "desc": "El dinero cumple tres funciones: es un medio de intercambio, una reserva de valor y una unidad de cuenta. A lo largo de la historia, el dinero ha adoptado muchas formas, desde las conchas hasta el oro, pasando por los billetes actuales y el dinero digital. El dinero moderno se sustenta principalmente en la confianza en el gobierno emisor, y no en un assets físico.",
     "original": "Money",
     "short": "El dinero es un medio de intercambio universalmente aceptado para bienes y servicios.",
     "title": "Dinero"
@@ -555,7 +555,7 @@
     "title": "Oferta"
   },
   "offramp": {
-    "desc": "El offramp es lo opuesto al onramp—el camino de vuelta al dinero tradicional. Vendes tus cripto‑activos y recibes euros, francos u otra moneda fiat en tu cuenta bancaria. En Stellar, los anchors suelen hacer de offramp: reciben tokens como USDC y envían el monto fiat correspondiente. Los offramps normalmente requieren KYC.",
+    "desc": "La «offramp» es lo contrario de la «onramp»: la vía de vuelta al dinero tradicional. Vendes tu criptomoneda assets y recibes euros, francos u otra moneda fiduciaria en tu cuenta bancaria. En Stellar, los anchors suelen encargarse de la salida: reciben tokens, como USDC, y envían el importe equivalente en moneda fiduciaria. Las salidas suelen requerir un proceso de KYC.",
     "original": "Offramp",
     "short": "Un servicio que permite vender criptomonedas y volver a dinero fiat.",
     "title": "Offramp"
@@ -567,7 +567,7 @@
     "title": "En cadena"
   },
   "onramp": {
-    "desc": "Un onramp es la puerta de entrada al mundo cripto—el paso del dinero tradicional a cripto. Métodos típicos: tarjeta o transferencia bancaria. Proveedores como Kado u Onramper permiten comprar directamente en una app sin ir a un exchange separado. Stellar Account Manager integra onramps para comprar XLM y otros activos con dinero fiat. Los onramps suelen exigir KYC.",
+    "desc": "Una «onramp» es el punto de entrada al mundo de las criptomonedas: el camino que lleva del dinero tradicional a las criptomonedas. Entre los métodos más habituales se encuentran la tarjeta de crédito o la transferencia bancaria. Proveedores como Kado u Onramper te permiten comprar directamente desde una aplicación sin tener que acudir a una plataforma de intercambio independiente. El Gestor de Cuentas de Stellar integra servicios de «onramp» para que puedas comprar XLM y otras assets con dinero fiduciario. Las «onramps» suelen requerir la verificación de identidad (KYC).",
     "original": "Onramp",
     "short": "Un servicio que permite comprar criptomonedas con dinero fiat (p. ej. euros o francos suizos).",
     "title": "Onramp"
@@ -579,7 +579,7 @@
     "title": "Operación"
   },
   "oracle": {
-    "desc": "Por defecto, las blockchains están aisladas del mundo exterior—un smart contract no puede obtener por sí mismo el precio de Bitcoin o el tipo EUR/USD. Los oráculos resuelven esto llevando datos externos fiables a la blockchain. Servicios conocidos: Chainlink o Pyth Network. Sin oráculos, muchas aplicaciones DeFi como protocolos de lending o activos sintéticos no serían posibles. Ejemplos concretos: precio XLM/USD (para aplicaciones Stellar), datos meteorológicos (para seguros agrícolas), estado de entrega (para contratos comerciales), firma notarial (para transacciones inmobiliarias), resultados electorales (para votaciones descentralizadas).",
+    "desc": "Las cadenas de bloques están aisladas del mundo exterior por defecto: un contrato inteligente no puede obtener por sí mismo el precio actual del bitcoin ni el tipo de cambio EUR/USD. Los oráculos resuelven este problema proporcionando datos externos fiables a la cadena de bloques. Entre los servicios de oráculo más conocidos se encuentran Chainlink y Pyth Network. Sin los oráculos, muchas aplicaciones de DeFi, como los protocolos de préstamo o los assets sintéticos, no serían posibles. Ejemplos concretos: el precio del XLM/USD (para aplicaciones de Stellar), datos meteorológicos (para seguros de cosechas), el estado de las entregas (para contratos comerciales), la firma notarial (para transacciones inmobiliarias) y los resultados electorales (para la votación descentralizada).",
     "original": "Oracle",
     "short": "Un servicio que lleva datos del mundo real (precios, clima, etc.) a smart contracts en blockchain.",
     "title": "Oracle"
@@ -595,7 +595,7 @@
   "pathPayment": {
     "desc": "Con los pagos por ruta puedes, por ejemplo, enviar XLM y el destinatario recibe automáticamente USDC – Stellar encuentra la mejor ruta de intercambio a través del mercado descentralizado. La red busca pares de trading y pools de liquidez disponibles para encontrar la ruta más barata. Es especialmente útil para pagos internacionales: el remitente paga en su moneda y el destinatario recibe la suya. Todo en una sola transacción.",
     "original": "Path Payment",
-    "short": "Un pago en el que Stellar realiza automáticamente una o varias conversiones de moneda para entregar el activo objetivo.",
+    "short": "Un pago en el que Stellar realiza automáticamente una o varias conversiones de divisas para alcanzar el objetivo asset.",
     "title": "Pago por ruta"
   },
   "paymentBlockchain": {
@@ -631,7 +631,7 @@
   "portfolio": {
     "desc": "Un portafolio es la vista de todos los activos que tienes: qué coins y tokens posees, en qué cantidades y con qué valor actual. Una buena estrategia de portafolio incluye diversificación: no poner todo en un solo asset. En Stellar Account Manager puedes ver tu portafolio directamente—todos los assets de tus cuentas Stellar de un vistazo.",
     "original": "Portfolio",
-    "short": "El conjunto total de activos cripto e inversiones de un usuario.",
+    "short": "El total de las criptomonedas que posee un usuario assets y sus inversiones.",
     "title": "Portafolio"
   },
   "priceDiscovery": {
@@ -689,10 +689,10 @@
     "title": "Public Key"
   },
   "publicKeyCryptography": {
-    "desc": "El principio: lo que se cifra con la clave pública solo puede descifrarse con la clave privada, y viceversa. Puedes compartir libremente tu clave pública (= la dirección de tu billetera). Tu clave privada la mantienes en secreto. Quien conozca tu clave privada tiene acceso total a tu cuenta. Por eso: ¡nunca compartas tu clave privada!",
+    "desc": "El principio: lo que se cifra con el public key solo se puede descifrar con la clave privada, y viceversa. Puedes compartir libremente tu public key (= tu dirección wallet). Tu clave privada debe permanecer en secreto. Cualquiera que conozca tu clave privada tendrá acceso total a tu cuenta. Por lo tanto: ¡nunca compartas tu clave privada!",
     "original": "Public-Key Cryptography",
     "short": "Método de cifrado con dos claves vinculadas: una pública y una privada.",
-    "title": "Criptografía de clave pública"
+    "title": "Public-Key Criptografía"
   },
   "quorumSet": {
     "desc": "En SCP, cada validador elige en qué otros validadores confía: ese es su quorum set. El consenso ocurre cuando estos quorum sets se solapan y se ponen de acuerdo. Este modelo se llama Federated Byzantine Agreement (FBA). Es más flexible que los consensos clásicos: no hay una lista fija de nodos confiables, sino una red de confianza que crece de forma orgánica. La calidad y descentralización del quorum set afectan directamente la seguridad de la red.",
@@ -734,9 +734,9 @@
     "title": "Tokens de seguridad"
   },
   "seedPhrase": {
-    "desc": "Ella es como la llave de respaldo de tu caja fuerte. Quien la tenga puede restaurar tu billetera. Por lo tanto, nunca debe almacenarse en línea.",
+    "desc": "Es como la llave de repuesto de tu caja fuerte. Quienquiera que la tenga puede recuperar tu wallet. Por lo tanto, nunca debe guardarse en Internet.",
     "original": "Seed Phrase / Recovery Phrase",
-    "short": "Una lista de palabras con la que puedes restaurar tu billetera.",
+    "short": "Una lista de palabras con la que podrás recuperar tu wallet.",
     "title": "Teorema de restauración"
   },
   "selfCustody": {
@@ -749,7 +749,7 @@
     "desc": "Cada cuenta de Stellar tiene un Sequence Number que aumenta en 1 con cada transacción. Una transacción solo se acepta si su Sequence Number es exactamente la secuencia actual de la cuenta +1. Esto evita que la misma transacción se ejecute dos veces. Si envías varias transacciones a la vez, deben procesarse en el orden correcto.",
     "original": "Sequence Number",
     "short": "Un número consecutivo que identifica de forma única cada transacción de una cuenta y previene el doble gasto.",
-    "title": "Número de secuencia"
+    "title": "Sequence Number"
   },
   "signer": {
     "desc": "Un Signer es un Public Key asociado a una cuenta y al que se le ha asignado un peso. Su firma cuenta para el Threshold requerido. Varios Signers pueden autorizar conjuntamente una transacción.\n\nTipos de Signer:\n- ed25519 (clave normal)\n- hashX (plantilla de hash)\n- preAuthTx (transacción preautorizada)\n\nSKM solo admite ed25519. Para conocer otras opciones, consulta https://lab.stellar.org.",
@@ -818,10 +818,10 @@
     "title": "Staking"
   },
   "stellarAsset": {
-    "desc": "En Stellar, cualquiera puede crear su propio activo – una empresa su token de fidelidad, un banco su stablecoin. Cada activo Stellar se identifica de forma única por dos componentes: el código del activo (por ejemplo, \"USD\", \"MOBI\", \"USDC\") y la dirección G del emisor. Dos activos con el mismo código pero diferentes emisores son activos distintos. Para recibir un activo Stellar, primero hay que establecer una trustline al emisor.",
+    "desc": "En Stellar, cualquiera puede crear su propio asset: una empresa, su programa de fidelización token; un banco, su moneda estable. Cada asset de Stellar se identifica de forma única mediante dos componentes: el código asset (por ejemplo, «USD», «MOBI», «USDC») y la dirección G del emisor. Dos assets con el mismo código pero emisores diferentes son assets distintos. Para recibir un asset de Stellar, primero debes configurar un trustline con el emisor.",
     "original": "Stellar Asset",
-    "short": "Cualquier activo emitido en la red Stellar, definido por su código de activo y la dirección del emisor.",
-    "title": "Activo Stellar"
+    "short": "Cualquier asset emitido en la red Stellar, definido por su código asset y la dirección del emisor.",
+    "title": "Stellar Asset"
   },
   "stellarVsBitcoinVsEthereum": {
     "desc": "Bitcoin es como el oro digital y a menudo se considera una reserva de valor. Ethereum es como una plataforma para programas y aplicaciones. Stellar se centra en pagos asequibles.",
@@ -830,16 +830,16 @@
     "title": "Stellar vs. Bitcoin vs. Ethereum"
   },
   "syntheticAsset": {
-    "desc": "Los activos sintéticos replican el valor de otros activos – por ejemplo, acciones, oro o divisas – sin poseer el original. Se aseguran mediante contratos inteligentes y colateral. Un ejemplo: un token sintético de acciones de Apple sigue el precio de la acción real, pero es un token cripto. Los activos sintéticos son un concepto avanzado de DeFi.",
+    "desc": "Los assets sintéticos replican el valor de otros assets —por ejemplo, acciones, oro o divisas— sin poseer el activo original. Están garantizados mediante contratos inteligentes y garantías. Un ejemplo: una acción sintética de Apple token sigue la cotización de la acción real, pero es una criptomoneda token. Los sintéticos assets son un concepto avanzado de DeFi.",
     "original": "Synthetic Asset",
-    "short": "Un token que replica el precio de un activo del mundo real sin poseerlo directamente.",
-    "title": "Activo sintético"
+    "short": "Un token que reproduce el precio de un asset del mundo real sin ser su propietario directo.",
+    "title": "Sintético Asset"
   },
   "testnet": {
     "desc": "Una red de práctica pública. Los tokens no tienen valor real. Ideal para aprender y experimentar sin riesgo.",
     "original": "Testnet",
     "short": "Red de entrenamiento público sin valor real.",
-    "title": "Red de prueba"
+    "title": "Testnet"
   },
   "thresholds": {
     "desc": "Thresholds define el número de firmas ponderadas necesarias para las acciones: «low» para operaciones sencillas, «med» para pagos y «high» para cambios críticos. La suma de las ponderaciones de Signer debe ser igual al valor correspondiente de Threshold.",
@@ -851,7 +851,7 @@
     "desc": "Un token es una unidad digital en la cadena de bloques. Un token puede representar dinero, puntos o créditos para un servicio.",
     "original": "Token",
     "short": "Unidad digital: por ejemplo, dinero, puntos o crédito.",
-    "title": "Ficha"
+    "title": "Token"
   },
   "transaction": {
     "desc": "Una transacción es una acción que se realiza en la cadena de bloques. Por ejemplo, enviar dinero o crear un Trustline. Una vez confirmada una transacción, queda almacenada de forma permanente.",
@@ -904,8 +904,8 @@
   "wallet": {
     "desc": "Un Wallet es tu wallet digital. Gestiona las claves que necesitas para acceder a tu cuenta y enviar transacciones. Un Wallet puede ser un programa, una aplicación o incluso simplemente un trozo de papel en el que hayas escrito tu Secret Key.",
     "original": "Wallet",
-    "short": "Monedero digital que gestiona tus llaves.",
-    "title": "Cartera"
+    "short": "Digital wallet, que gestiona tus claves.",
+    "title": "Wallet"
   },
   "whitepaper": {
     "desc": "El whitepaper es el documento fundacional de un proyecto cripto. Bitcoin nació con el whitepaper de Satoshi Nakamoto en 2008. Un buen whitepaper explica el problema, la solución, la tecnología y la tokenomics. Antes de invertir, conviene leerlo. Si falta o es vago, suele ser una señal de alerta. El whitepaper de Stellar describe SCP y es público.",
@@ -914,9 +914,9 @@
     "title": "Whitepaper"
   },
   "wrappedToken": {
-    "desc": "Un wrapped token permite utilizar activos de una blockchain en otra. Ejemplo: Wrapped Bitcoin (WBTC) es un token en Ethereum respaldado 1:1 por Bitcoin real. El original se bloquea en un contrato inteligente y a cambio se emite el wrapped token. En Stellar, Bitcoin o Ether pueden ser emitidos como wrapped tokens por anclas, permitiendo negociarlos en la red Stellar.",
+    "desc": "Un token «envuelt» permite utilizar assets de una cadena de bloques en otra. Ejemplo: el Bitcoin «envuelt» (WBTC) es un token en Ethereum respaldado 1:1 por Bitcoin real. El original queda bloqueado en un contrato inteligente y, a cambio, se emite el token envuelto. En Stellar, el Bitcoin o el Ether pueden emitirse como tokens envueltos mediante anchors, lo que permite que se negocien en la red Stellar.",
     "original": "Wrapped Token",
-    "short": "Un token que representa el valor de otro activo en una blockchain diferente.",
+    "short": "Un token que representa el valor de otro asset en una cadena de bloques diferente.",
     "title": "Token envuelto"
   },
   "xlm": {
@@ -932,7 +932,7 @@
     "title": "Rendimiento / Yield"
   },
   "yieldFarming": {
-    "desc": "Los yield farmers mueven sus activos entre diferentes pools y protocolos para capturar los mejores rendimientos. Suena bien, pero es complejo y riesgoso: pérdida impermanente, fallos de smart contracts y caídas repentinas de rendimiento pueden borrar las ganancias. El yield farming es avanzado y no se recomienda para principiantes.",
+    "desc": "Los «yield farmers» transfieren assets entre diferentes fondos de liquidez y protocolos para obtener la mayor rentabilidad posible. Puede resultar atractivo, pero es complejo y arriesgado: la pérdida de impermanencia, los errores en los contratos inteligentes y las caídas repentinas de la rentabilidad pueden hacer desaparecer las ganancias. El «yield farming» es un concepto avanzado de DeFi y no se recomienda para principiantes.",
     "original": "Yield Farming",
     "short": "Mover activamente capital entre protocolos DeFi para obtener la mayor rentabilidad.",
     "title": "Yield Farming"
@@ -953,7 +953,7 @@
     "title": "Wallet Watcher / Drainer",
     "original": "Wallet Watcher / Drainer",
     "short": "Un script automático que monitorea una cuenta comprometida y retira al instante cada nuevo depósito.",
-    "desc": "Una vez que los estafadores obtienen acceso a una clave secreta, suelen configurar un observador automático. Este vigila la cuenta las 24 horas y transfiere cada nuevo depósito a la cuenta del estafador al instante, a menudo en cuestión de segundos. La cuenta está comprometida de forma permanente. La única solución: crear inmediatamente una nueva billetera con claves completamente nuevas y no volver a usar la cuenta antigua."
+    "desc": "Una vez que los estafadores consiguen acceder a una cuenta secret key, suelen configurar un sistema de vigilancia automático. Este supervisa la cuenta las 24 horas del día y transfiere cada nuevo ingreso a la cuenta del estafador al instante, a menudo en cuestión de segundos. La cuenta queda comprometida de forma permanente. La única solución: crear inmediatamente una nueva wallet con claves completamente nuevas y no volver a utilizar nunca más la cuenta antigua."
   },
   "lumio": {
     "title": "Lumio",
@@ -982,8 +982,8 @@
   "keypair": {
     "title": "Par de claves",
     "original": "Keypair",
-    "short": "Combinación de Clave Pública y Clave Secreta que van juntas.",
-    "desc": "Un keypair consiste en dos claves que van juntas: la Clave Pública (tu dirección) y la Clave Secreta (tu contraseña). Ambas claves forman una unidad. Compartes la Clave Pública públicamente – la Clave Secreta la guardas siempre para ti."
+    "short": "Combinación coincidente de Public Key y Secret Key.",
+    "desc": "Un par de claves consta de dos claves que van juntas: la Public Key (tu dirección) y la Secret Key (tu contraseña). Ambas claves van juntas y forman una unidad. La clave Public Key se comparte públicamente, mientras que la clave Secret Key siempre se mantiene en secreto."
   },
   "fba": {
     "title": "Federated Byzantine Agreement",
@@ -1010,28 +1010,28 @@
     "desc": "La clave maestra del emisor es la clave principal de la cuenta que emite un asset. Si su peso se establece en 0, la clave maestra por sí sola ya no podrá firmar nuevas acciones. Esto puede ser una buena señal, ya que dificulta que el emisor modifique las reglas de forma silenciosa. La configuración completa de la cuenta, incluidos otros signers y indicadores, sigue siendo importante."
   },
   "assetCode": {
-    "title": "Código de activo",
+    "title": "Asset Código",
     "original": "Asset Code",
-    "short": "Nombre abreviado de un activo de Stellar, como USDC o EURC.",
-    "desc": "El código del activo es el nombre abreviado visible de un activo de Stellar. Por sí solo no es único, ya que varios emisores pueden utilizar el mismo código. Solo la combinación del código y la dirección del emisor identifica de forma única a un activo de Stellar."
+    "short": "Nombre abreviado de un token de Stellar asset, como USDC o EURC.",
+    "desc": "El código asset es el nombre abreviado visible de un asset de Stellar. Por sí solo no es único, ya que varios emisores pueden utilizar el mismo código. Solo la combinación del código y la dirección del emisor identifica de forma única un asset de Stellar."
   },
   "issuer": {
     "title": "Emisor",
     "original": "Issuer",
-    "short": "La cuenta de Stellar que emite un activo y controla sus normas.",
-    "desc": "El emisor es la cuenta de Stellar que emite un activo. En el caso de los activos emitidos, el emisor forma parte de la identidad del token. En función de los indicadores de la cuenta, puede influir en normas como la autorización, la recuperación (Clawback) o la congelación de permisos. Por lo tanto, no solo debes comprobar el código del activo, sino también verificar siempre la dirección del emisor y la información pública del proyecto."
+    "short": "La cuenta de Stellar que emite un asset y controla sus reglas.",
+    "desc": "El emisor es la cuenta de Stellar que emite un asset. En el caso de los assets emitidos, el emisor forma parte de la identidad del token. Dependiendo de los indicadores de la cuenta, esto puede influir en normas como la autorización, la recuperación (Clawback) o la congelación de permisos. Por lo tanto, no solo debes comprobar el código asset, sino también verificar siempre la dirección del emisor y la información pública del proyecto."
   },
   "homeDomain": {
     "title": "Página de inicio Dominio",
     "original": "Home Domain",
     "short": "Dominio almacenado por una cuenta de emisor de Stellar.",
-    "desc": "El dominio principal es un dominio almacenado en la cuenta del emisor. Sirve para vincular un activo a un sitio web y a un archivo stellar.toml. Un dominio principal no es una garantía de fiabilidad, pero sin él falta información importante para la verificación."
+    "desc": "El dominio principal es un dominio almacenado en la cuenta del emisor. Sirve para vincular un asset a un sitio web y a un archivo stellar.toml. Un dominio principal no constituye una prueba de fiabilidad, pero sin él falta información importante para la verificación."
   },
   "stellarToml": {
     "title": "stellar.toml",
     "original": "stellar.toml",
     "short": "Archivo de metadatos públicos de un dominio Stellar.",
-    "desc": "El archivo «stellar.toml» es un archivo público ubicado en el dominio principal de un proyecto de Stellar. Puede contener información sobre el emisor, los activos, los datos de contacto, la documentación y las entradas de «CURRENCIES». Si un activo no aparece en la lista o no se puede acceder al archivo, se recomienda actuar con especial precaución."
+    "desc": "El archivo stellar.toml es un archivo público ubicado en el dominio principal de un proyecto Stellar. Puede contener información sobre el emisor, assets, datos de contacto, documentación y entradas de CURRENCIES. Si no aparece ningún valor de asset en dicho archivo o si no se puede acceder a él, se recomienda actuar con especial precaución."
   },
   "quote": {
     "title": "Cita",
@@ -1055,19 +1055,19 @@
     "title": "Vía de liquidez",
     "original": "Liquidity Route",
     "short": "Ruta por la que se canaliza un intercambio a través de los libros de órdenes o los fondos comunes.",
-    "desc": "La ruta de liquidez muestra por qué activos y mercados pasa un swap. Una ruta puede ser directa o pasar por activos intermedios. En Stellar, tanto las ofertas del libro de órdenes como los fondos de liquidez AMM pueden utilizarse para encontrar una ruta."
+    "desc": "La ruta de liquidez muestra por qué assets y mercados pasa un swap. Una ruta puede ser directa o pasar por assets intermedios. En Stellar, tanto las ofertas del libro de órdenes como los fondos de liquidez AMM pueden utilizarse para encontrar una ruta."
   },
   "bid": {
     "title": "Reza",
     "original": "Bid",
     "short": "Oferta de compra en el libro de órdenes.",
-    "desc": "Una oferta de compra es una propuesta de compra. Indica el precio al que alguien está dispuesto a comprar un activo. La mejor oferta de compra suele ser la oferta de compra más alta que figura en ese momento en el libro de órdenes."
+    "desc": "Una oferta de compra es una propuesta de compra. Indica el precio al que alguien está dispuesto a comprar un asset. La mejor oferta de compra suele ser la oferta de compra más alta que figura actualmente en el libro de órdenes."
   },
   "ask": {
     "title": "Preguntar",
     "original": "Ask",
     "short": "Oferta de venta en el libro de órdenes.",
-    "desc": "Una cotización de venta es una oferta de venta. Indica el precio al que alguien está dispuesto a vender un activo. La mejor cotización de venta suele ser la oferta de venta más baja que figura en ese momento en el libro de órdenes."
+    "desc": "Una oferta de venta es una oferta de venta. Indica el precio al que alguien está dispuesto a vender un asset. La mejor oferta de venta suele ser la oferta de venta más baja que figura en ese momento en el libro de órdenes."
   },
   "marketDepth": {
     "title": "Profundidad del mercado",

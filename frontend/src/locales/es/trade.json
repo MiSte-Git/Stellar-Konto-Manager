@@ -1,10 +1,10 @@
 {
   "assetSearch": {
-    "title": "Búsqueda de activos",
-    "description": "Busca activos a través del punto final de negociación (Horizon).",
+    "title": "Asset búsqueda",
+    "description": "Busca assets a través del punto final de negociación (Horizon).",
     "form": {
       "code": {
-        "label": "Código de activo",
+        "label": "Código Asset",
         "placeholder": "por ejemplo, USDC"
       },
       "issuer": {
@@ -14,7 +14,7 @@
       "submit": "Buscar"
     },
     "result": {
-      "empty": "No se encontraron activos.",
+      "empty": "No se ha encontrado assets.",
       "columns": {
         "code": "Código",
         "issuer": "Emisor",
@@ -23,10 +23,10 @@
       }
     },
     "invalidInput": {
-      "codeMissing": "Por favor, introduzca un código de activo."
+      "codeMissing": "Introduce un código asset."
     },
     "failed": {
-      "generic": "La búsqueda de activos falló. Por favor, inténtelo de nuevo más tarde."
+      "generic": "Asset Error en la búsqueda. Inténtalo de nuevo más tarde."
     }
   }
 }

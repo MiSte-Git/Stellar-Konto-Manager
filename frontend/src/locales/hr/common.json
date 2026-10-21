@@ -6,7 +6,7 @@
   },
   "asset": {
     "balance": "Ravnoteža",
-    "code": "Šifra imovine",
+    "code": "Asset kod",
     "creationDate": "Izrađeno dana",
     "issuer": "Izdavatelj"
   },
@@ -27,12 +27,12 @@
       "noneConfigured": "Nema konfiguriranih istraživača.",
       "settingsHint": "Možete urediti Explorer u postavkama."
     },
-    "noPublicKey": "Molimo unesite javni ključ prvo.",
+    "noPublicKey": "Molimo unesite public key prvo.",
     "payments": {
       "all": "Sve",
       "columns": {
         "amount": "Iznos",
-        "asset": "Imovina",
+        "asset": "Asset",
         "counterparty": "Račun primatelja",
         "date": "Datum",
         "direction": "Smjer",
@@ -208,7 +208,7 @@
       "balance": "Prikaži informacije o računu",
       "xlmByMemo": "Filtriraj po memo",
       "sendPayment": "Pošalji uplatu",
-      "investedTokens": "Filtriraj tokene/imovinu.",
+      "investedTokens": "Filter tokens/assets",
       "createAccount": "Kreiraj račun",
       "multisigEdit": "Uredi multisig račun",
       "settings": "Postavke",
@@ -251,7 +251,7 @@
     "title": "Izvanredan voditelj računa"
   },
   "badges": {
-    "testnet": "Testna mreža"
+    "testnet": "Testnet"
   },
   "noIssuerTrustlinesFound": "Nije pronađen trustlines za izdavatelja {{issuer}}.",
   "option": {
@@ -379,7 +379,7 @@
         "discard": "Odbaci",
         "save": "Spremi"
       },
-      "title": "Moji Pouzdani Novčanici",
+      "title": "Moje pouzdano Wallets",
       "validation": {
         "hint": "Najmanje jedna linija je nevažeća (nedostaje adresa ili je adresa duplicirana)."
       }
@@ -391,14 +391,14 @@
       "success": "Uspješno: {{count}} Trustline(s) izbrisano."
     },
     "skippedDueToBalance": "{{count}} Trustline(s) preskočeno (preostali saldo).",
-    "deleteConfirm": "Izbrisati odabrane trustlineove?"
+    "deleteConfirm": "Izbriši odabrani trustlines?"
   },
   "payment": {
     "send": {
       "title": "Pošalji uplatu",
       "recipient": "Primatelj",
       "amount": "Količina",
-      "asset": "Aktiva",
+      "asset": "Asset",
       "memo": "Memo",
       "memoType": "Memo tip",
       "memoTypes": {
@@ -438,7 +438,7 @@
       "timeout": "Horizon Timeout (504). Molimo pokušajte ponovno uskoro.",
       "httpError": "Greška horizonta (status {{status}}).",
       "horizonError": "Stellar je odbio transakciju.",
-      "destUnfundedNonNative": "Odlazni račun nije aktivan. Molimo vas da prvo pošaljete XLM za aktivaciju ili promijenite sredstvo u XLM.",
+      "destUnfundedNonNative": "Odredišni račun nije aktivan. Molimo pošaljite XLM prvo da biste ga aktivirali ili prebacite asset na XLM.",
       "activateConfirm": {
         "title": "Potrebna je aktivacija računa.",
         "info": "Ciljani račun još nije aktivan. Za aktivaciju je potreban minimalni iznos.",
@@ -500,7 +500,7 @@
   "muxed": {
     "seo": {
       "title": "Stvaranje/Upravljanje podadresama",
-      "description": "Kreirajte i upravljajte aliasima multipleksiranih računa (M...) za Stellar račun. Generirajte ID-ove, dodajte oznake/bilješke, izvoz/uvoz CSV-a."
+      "description": "Kreirajte i upravljajte muxed account aliasima (M...) za Stellar račun. Generirajte ID-ove, dodajte oznake/bilješke, izvezite/uvozite CSV."
     },
     "title": "Stvaranje/Upravljanje podadresama",
     "explainer": "Izradite alias adrese (M...) s jedinstvenim muxed ID-om za postojeći račun. Alias adresa će uvijek pokazivati na isti račun.",
@@ -514,7 +514,7 @@
       "examplesTitle": "Primjeri – Za što se koriste podadrese?",
       "examples": {
         "ex1": "Isplate firmi: Svaka zaposlenica/svaki zaposlenik dobiva vlastiti Muxed‑ID kako bi se plaće mogle jednoznačno dodijeliti.",
-        "ex2": "Burze ili platforme: svaki korisnik dobiva vlastiti Muxed ID kako bi se uplate preko zajedničkog novčanika automatski ispravno knjižile.",
+        "ex2": "Mjenjačnice ili platforme: Svaki korisnik dobiva svoj Muxed ID, pa se depoziti putem zajedničkog wallet automatski ispravno evidentiraju.",
         "ex3": "Projekti ili podračuni: Organizacija može dodijeliti proračune ili prihode pojedinačnim projektima.",
         "ex4": "Dodjela kupca: jedna M-adresa po kupcu; ID se podudara s ID-om kupca – uplate se mogu jasno dodijeliti, čak i bez memo.",
         "ex5": "Usluge bez memos: Razlikovati depozite kada usluga ne podržava memos.",
@@ -709,7 +709,7 @@
       "amount": "Iznos",
       "compromised": "Kompromitiran",
       "deactivated": "Deaktivirano",
-      "destination": "Ciljani novčanik",
+      "destination": "Cilj wallet",
       "issuer": "Ispušni uređaj",
       "label": "Oznaka",
       "memo": "Memo",
@@ -723,19 +723,19 @@
     },
     "filter": {
       "memoPlaceholder": "Filtriraj po memo, wallet adresi ili oznaci",
-      "tokenPlaceholder": "Filtriraj po tokenu (CODE:ISSUER)"
+      "tokenPlaceholder": "Filtriraj po token (KOD:EMITENT)"
     },
-    "hintEnterPublicKey": "Unesite prvo javni ključ.",
+    "hintEnterPublicKey": "Molimo unesite public key prvo.",
     "item": {
       "memo": "Memo: \"{{memo}}\" (Isplate: {{occurrences}})",
       "token": "Token: {{token}} (Plaćanja: {{occurrences}})",
       "tokenShort": "Token: {{token}}"
     },
-    "missingPublicKey": "Nedostaje javni ključ.",
+    "missingPublicKey": "Public key nedostaje.",
     "moreTruncated": "… i {{extra}} druge grupe",
-    "toWallet": "za Novčanik: {{address}}",
-    "total": "Broj kupljenih tokena: {{count}}",
-    "totalTokens": "Broj uloženih tokena (Assets): {{count}}",
+    "toWallet": "za Wallet: {{address}}",
+    "total": "Broj kupljenih tokens: {{count}}",
+    "totalTokens": "Broj uloženo tokens (Assets): {{count}}",
     "value": {
       "units": "{{amount}} komada",
       "xlm": "{{amount}} XLM"
@@ -750,7 +750,7 @@
       "qsiOnly": "Zbroj QSI GF"
     },
     "hints": {
-      "qsiListSet": "Napomena: Popis GF možete pronaći pod Postavke → Pouzdani novčanici (QSI).",
+      "qsiListSet": "Napomena: GF popis možete pronaći pod Postavke → Pouzdano Wallets (QSI).",
       "pageTime": "Učitavanje jedne stranice traje oko 0,2 sekunde → 100 stranica ≈ 20 sekundi → 1000 stranica ≈ 200 sekundi (≈ 3:20 minuta)."
     },
     "walletCapInfo": "Napomena: wallet može držati najviše 1000 trustlines.",
@@ -822,19 +822,19 @@
     "deleteFromList": "Ukloni s popisa",
     "destination": {
       "error": "Nevažeći ključ cilja.",
-      "input": "Unesite ciljanu adresu novčanika"
+      "input": "Unesite ciljanu adresu wallet"
     },
     "label": "Molimo unesite adresu matične federacije ili Public Key:",
     "load": "Učitavanje…",
     "placeholder": "z. B.",
-    "source": "Izvorna adresa novčanika",
+    "source": "Izvor wallet adresa",
     "invalid": "Neispravno Public Key.",
     "submit": {
       "button": "Pošalji"
     },
     "test": "Test",
     "historyLabel": "Povijest",
-    "historyPlaceholder": "Odaberite posljednji korišteni novčanik"
+    "historyPlaceholder": "Odaberite posljednje korišteno wallet"
   },
   "secretKey": {
     "cleared": "Secret Key je izbrisan.",
@@ -844,14 +844,14 @@
     "label": "Unesite izvor Secret-Key (S-Key)",
     "mismatch": "Secret Key ne odgovara javnoj adresi.",
     "placeholder": "z. B.",
-    "valid": "✅ Tajni ključ je valjan.",
+    "valid": "✅ Secret key je valjano.",
     "remember": {
       "label": "Secret Key Zapamti ovo za ovu sesiju",
       "hint": "Kada je omogućeno, ključ će se spremiti dok se kartica ne zatvori i ponovno koristiti za daljnja plaćanja."
     }
   },
   "token": {
-    "purchases": "Filtiraj tokene/imovinu"
+    "purchases": "Filter tokens/assets"
   },
   "glossary": {
     "pageTitle": "Rječnik",
@@ -867,16 +867,16 @@
       "desc": "Blockchain je poput digitalne knjige poslovanja. Mnogi računari pohranjuju iste unose, tako da niko ne može tajno promijeniti bilo šta."
     },
     "wallet": {
-      "title": "Novčanik",
+      "title": "Wallet",
       "original": "Wallet",
-      "short": "Digitalni novčanik koji upravlja vašim ključevima.",
+      "short": "Digitalni wallet koji upravlja vašim ključevima.",
       "desc": "Wallet je vaš digitalni wallet. On upravlja ključevima koji su vam potrebni za pristup vašem računu i slanje transakcija. Wallet može biti program, aplikacija ili čak samo komad papira na kojem je napisan vaš Secret Key."
     },
     "account": {
       "title": "Račun",
       "original": "Account",
-      "short": "Blockchain račun može držati imovinu i slati transakcije.",
-      "desc": "Račun je mjesto na blockchainu gdje se vaša imovina pohranjuje. Račun ima javnu adresu koja počinje sa slovom G. Više novčanika može pristupiti istom računu ako imaju ispravan ključ."
+      "short": "Blockchain račun može pohraniti assets i slati transakcije.",
+      "desc": "Račun je mjesto na blockchainu gdje se pohranjuju vaši assets. Račun ima javnu adresu koja počinje slovom G. Više wallets može pristupiti istom računu ako imaju ispravan ključ."
     },
     "addressG": {
       "title": "G-adresa",
@@ -917,7 +917,7 @@
     "trustline": {
       "title": "Trustline",
       "original": "Trustline",
-      "short": "Suglasnost za posjedovanje tokena od specifičnog izdavatelja.",
+      "short": "Suglasnost za držanje token od određenog izdavatelja.",
       "desc": "Trustline je poput \"Da, prihvaćam ovaj token.\" Postavljanjem trustline-a, naznačujete da je vaš račun spreman držati određeni token od određenog izdavatelja. Bez trustline-a ne možete primiti taj token.\n\nPrimjer: Trustline se specificira kao CODE:ISSUER. Za EURT od izdavatelja GDUKMGUGDZQK6Y…, to je EURT:GDUKMGUGDZQK6Y…."
     },
     "token": {
@@ -927,9 +927,9 @@
       "desc": "Token je digitalna jedinica na blockchainu. Token može predstavljati novac, bodove ili kredite za neku uslugu."
     },
     "asset": {
-      "title": "Imovina",
+      "title": "Asset",
       "original": "Asset",
-      "short": "Tokeni na Stellar mreži uvijek su povezani s izdavateljem.",
+      "short": "Tokens na Stellaru uvijek su povezani s izdavateljem.",
       "desc": "Na Stellar mreži, token se naziva imovina (asset). Imovina je uvijek povezana s računom koji je izdaje. Na primjer, račun može izdati token u eurima. Taj euro token bi tada bio imovina."
     },
     "xlm": {
@@ -939,16 +939,16 @@
       "desc": "XLM je osnovna valuta Stellara. Potrebni su vam XLM za plaćanje naknada i za otvaranje novog računa."
     },
     "mainnet": {
-      "title": "Glavna mreža",
+      "title": "Mainnet",
       "original": "Mainnet",
       "short": "Prava Stellar mreža sa stvarnom vrijednošću.",
       "desc": "Prava Stellar mreža s stvarnom vrijednošću. Transakcije su konačne, a naknade se plaćaju u pravom XLM-u."
     },
     "testnet": {
-      "title": "Testna mreža",
+      "title": "Testnet",
       "original": "Testnet",
       "short": "Javna praksa mreža bez stvarne vrijednosti.",
-      "desc": "Mreža javne prakse. Tokeni nemaju stvarnu vrijednost. Idealno za učenje i eksperimentiranje bez rizika."
+      "desc": "Javna mreža za praksu. Tokens nemaju stvarnu vrijednost. Idealno za učenje i eksperimentiranje bez rizika."
     },
     "memo": {
       "title": "Memo",
@@ -981,7 +981,7 @@
       "desc": "Horizon je usluga koja omogućava programima da komuniciraju sa Stellar Blockchainom. Naš alat ispituje Horizon kako bi učitao stanja na računima i transakcije."
     },
     "anchor": {
-      "title": "Sidro",
+      "title": "Anchor",
       "original": "Anchor",
       "short": "Tvrtka koja povezuje fiat novac sa Stellarom.",
       "desc": "Anchor je tvrtka koja povezuje stvarni novac, poput eura ili dolara, sa Stellarom. Na primjer, dajete anchoru eure i zauzvrat dobivate euro token na Stellar mreži."
@@ -989,8 +989,8 @@
     "exchange": {
       "title": "Burza vrijednosnih papira",
       "original": "Exchange",
-      "short": "Mjesto za kupnju i prodaju tokena.",
-      "desc": "Mjenjačnica je mjesto gdje možete kupovati ili prodavati tokene. Mnoge mjenjačnice zahtijevaju KYC proces, što znači provjeru identiteta, prije nego što možete podići novac u eurima ili francima."
+      "short": "Mjesto za kupovinu i prodaju tokens.",
+      "desc": "Mjenjačnica je mjesto gdje možete kupiti ili prodati tokens. Mnoge mjenjačnice zahtijevaju KYC postupak, što znači provjeru identiteta, prije nego što možete podići novac u eurima ili francima."
     },
     "dex": {
       "title": "DEX",
@@ -1001,14 +1001,14 @@
     "liquidityPool": {
       "title": "Likvidnosni fond",
       "original": "Liquidity Pool",
-      "short": "Zajednički bazen s dva tokena za trenutnu razmjenu.",
-      "desc": "Likvidnostni fond je zajednički fond koji sadrži dva tokena. Ljudi u njega polažu oba tokena. Drugi ih potom mogu odmah razmijeniti. Deponenti zarađuju male naknade za ovu uslugu."
+      "short": "Zajednički bazen s dva tokens za neposrednu razmjenu.",
+      "desc": "Likvidni bazen je zajednički fond koji sadrži dva tokens. Korisnici u njega deponiraju oba tokens. Drugi potom mogu trenutačno razmijeniti te tokens. Deponenti za tu uslugu zarađuju male naknade."
     },
     "balanceClaimable": {
-      "title": "Potraživi saldo",
+      "title": "Claimable Balance",
       "original": "Claimable Balance",
       "short": "Rezervirani novac koji još uvijek trebate prihvatiti.",
-      "desc": "Potraživanje bilance je novac koji je već rezerviran za vas, ali ga još uvijek trebate preuzeti. Tek kada ga prihvatite, ući će u vaš račun."
+      "desc": "claimable balance je novac koji je već rezerviran za vas, ali ga još morate preuzeti. Tek kad ga prihvatite, ulazi na vaš račun."
     },
     "protocolUpdate": {
       "title": "Ažuriranje protokola",
@@ -1066,7 +1066,7 @@
     },
     "debug": {
       "incoming": "Dolazni – za: {{toMe}}, stvoreno→za mene: {{createToMe}}, izvorno→za mene: {{nativeInToMe}}",
-      "incomingOverview": "Unosi: {{total}} • Sudjelujući novčanici: {{unique}}",
+      "incomingOverview": "Unosi: {{total}} • Sudjelujući wallets: {{unique}}",
       "memo": "Memos u prozoru: {{any}} • točno memos: {{exact}}",
       "types": "Vrste – plaćanje: {{pay}}, putanja: {{path}}, kreirati: {{create}}, ostalo: {{other}}"
     },
@@ -1083,9 +1083,9 @@
       "label": "Pretraživanje memo teksta (substring, case sensitive)",
       "placeholder": "Zapisnik (Memo)"
     },
-    "overviewLine": "Potvrde o plaćanju: {{total}} • uključeni novčanici: {{unique}}",
+    "overviewLine": "Potvrde o uplati: {{total}} • wallets uključen: {{unique}}",
     "page": {
-      "noPublicKey": "Molimo prvo unesite javni ključ ili ponovno učitajte račun.",
+      "noPublicKey": "Molimo unesite public key prvo ili ponovno učitajte račun.",
       "title": "Saldo XLM-a prema memo"
     },
     "result": {
@@ -1098,8 +1098,8 @@
       "count": "Količina: {{n}}",
       "label": "Usporedba (all inputs)",
       "otherCount": "Unosi s netočnim/nedostajućim memo: {{n}}",
-      "unique": "Jedinstvene novčanike (sve): {{n}}",
-      "uniqueWallets": "Jedinstveni novčanici: {{n}}"
+      "unique": "Jedinstveni wallets (sve): {{n}}",
+      "uniqueWallets": "Jedinstveno Wallets: {{n}}"
     },
     "time": {
       "setToNow": "Postavi trenutno vrijeme.",
@@ -1137,7 +1137,7 @@
       "failed": "Greška pri učitavanju plaćanja s netočnim/praznim memo.",
       "hint": "Filtrira dolazne uplate unutar razdoblja i prikazuje pošiljatelje s pogrešnim/praznim memo bilješkama.",
       "scanning": "… skeniranje pogrešno/prazno memos",
-      "summary": "Brojanje: {{count}} • Ukupno: {{sum}} XLM • Jedinstveni novčanici: {{unique}}",
+      "summary": "Broj: {{count}} • Ukupno: {{sum}} XLM • Jedinstveno Wallets: {{unique}}",
       "title": "Lažni/prazni Memos u vremenskom razdoblju"
     }
   },
@@ -1177,9 +1177,9 @@
     },
     "lesson4": {
       "title": "Vaš račun",
-      "goal": "Razumijevanje strukture i značaja javnog/tajnog ključa",
+      "goal": "Razumijevanje strukture i značaja javnog/Secret Key",
       "task": "Igra podudaranja: Što je javno, što je tajno",
-      "learningOutcome": "Samo tajni ključ omogućava pristup; javni ključ može se dijeliti.",
+      "learningOutcome": "Samo secret key omogućuje pristup; public key se može dijeliti.",
       "reward": "⭐ 1 – Čuvar ključeva"
     },
     "lesson5": {
@@ -1199,15 +1199,15 @@
     "lesson7": {
       "title": "Sigurnost",
       "goal": "Učenje sigurnog ponašanja",
-      "task": "Razvrstavanje ispravnih/neispravnih radnji; otkrivanje lažnih tokena",
+      "task": "Razvrstavanje ispravnih/pogrešnih radnji; otkrivanje lažnih tokens",
       "learningOutcome": "Držite ključ povjerljivo, pohranite ga sigurno i koristite testnet.",
       "reward": "⭐ 2 – Zaštitar"
     },
     "lesson8": {
       "title": "Verification & Identity",
       "goal": "Razumijevanje povjerenja i pravila",
-      "task": "Usporedba stvarnih i lažnih tokena",
-      "learningOutcome": "KYC = Provjera identiteta, provjera pokazuje pouzdane tokene.",
+      "task": "Uspoređivanje pravog naspram lažnog tokens",
+      "learningOutcome": "KYC = provjera identiteta, provjera dokazuje pouzdanost tokens.",
       "reward": "⭐ 2 – Stručnjak za ispite"
     },
     "lesson9": {
@@ -1220,7 +1220,7 @@
     "lesson10": {
       "title": "Praksa sa SKM",
       "goal": "Primjena naučenih vještina u praksi",
-      "task": "Kreirajte račun na testnetu, aktivirajte ga, postavite trustline, pošaljite tokene.",
+      "task": "Kreira račun na testnet, aktivira ga, postavlja trustline, šalje tokens.",
       "learningOutcome": "Pratite tehničke procese transakcije.",
       "reward": "⭐ 3 – Blockchain pilot-projekt"
     },

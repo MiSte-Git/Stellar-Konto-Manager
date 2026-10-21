@@ -7,8 +7,8 @@
     "reverseLabel": "Nombre tal y como lo ha comunicado el servidor de la Federación {{domain}}"
   },
   "flag": {
-    "compromised": "Advertencia: Esta billetera está marcada como comprometida en tu TrustList.",
-    "deactivated": "Nota: Esta cartera está marcada como deshabilitada en tu Lista de Confianza."
+    "compromised": "Advertencia: Este wallet aparece marcado como comprometido en tu TrustList.",
+    "deactivated": "Nota: Este wallet aparece marcado como desactivado en tu lista de confianza."
   },
   "xlmBalance": "XLM",
   "unfunded": "No activado",
@@ -107,7 +107,7 @@
     "fakeNativeHint": "Se trata de un Token de una editorial, no del XLM nativo de la red."
   },
   "claimable": {
-    "title": "Saldos reclamables",
+    "title": "Claimable Balances",
     "intro": "Pagos que están disponibles en tu cuenta, pero que deben liquidarse antes de que aparezcan en tu saldo.",
     "claim": "Canjear",
     "hide": "Ocultar",
@@ -125,7 +125,7 @@
     "noTrustHide": "Ocultar",
     "noTrustNote": "Al canjear se crea un Trustline y se bloquean 0,5 XLM en reserva. Los Token no solicitados suelen utilizarse en intentos de fraude. SKM no evalúa los Token y no determina si un Token es auténtico. Si es necesario, comprueba los datos sobre los Token mediante la búsqueda de Token.",
     "truncated": "Solo se muestran las primeras {{count}} entradas.",
-    "loadError": "No se han podido cargar los saldos reclamables.",
+    "loadError": "No se ha podido cargar Claimable balances.",
     "insufficientReserve": "Trustline requiere {{reserve}} XLM en reserva; hay {{available}} XLM disponibles.",
     "insufficientWeight": "Los Signers que has introducido no alcanzan en conjunto el peso requerido de {{required}}.",
     "success": "Se ha canjeado {{amount}} {{code}}. Transacción {{hash}}.",
@@ -134,13 +134,13 @@
     "networkMismatch": "El servidor Horizon no forma parte de la red seleccionada. No se ha firmado ni enviado nada.",
     "prepareJob": "Preparar como un trabajo Multisig",
     "insufficientWeightJob": "Los Signers que has introducido no alcanzan en conjunto el peso requerido {{required}}. En su lugar, prepara un trabajo Multisig y, a continuación, los demás Signers podrán registrarse en la página web.",
-    "tooLittleTime": "El saldo reclamable caducará demasiado pronto como para poder canjearlo por un trabajo de Multisig.",
+    "tooLittleTime": "El claimable balance caducará demasiado pronto como para poder canjearlo por un trabajo de tipo Multisig.",
     "jobSource": "Cuenta",
     "jobClaim": "Canjear",
     "jobTrustline": "Crear Trustline",
     "jobNetwork": "Red",
     "jobNoteLabel": "Nota",
-    "jobHint": "El saldo reclamable puede caducar o canjearse de alguna otra forma antes de que todos hayan firmado. En ese caso, la solicitud se rechazará al enviarla, pero no se perderá nada. La validez de la solicitud finaliza, a más tardar, cuando caduque el saldo reclamable.",
+    "jobHint": "El Claimable Balance puede caducar o canjearse de alguna otra forma antes de que todos hayan firmado. En ese caso, el trabajo fallará al enviarlo, pero no se perderá nada. La validez del trabajo finaliza, a más tardar, cuando caduque el Claimable Balance.",
     "empty": "No se ha encontrado Claimable Balances."
   },
   "batchConvert": {

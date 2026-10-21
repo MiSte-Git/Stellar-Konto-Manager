@@ -1,10 +1,10 @@
 {
   "assetSearch": {
-    "title": "Omaisuuden etsintä",
-    "description": "Hae omaisuuksia kauppa-endpointin (Horizon) kautta.",
+    "title": "Token haku",
+    "description": "Hae asset-koodin, liikkeeseenlaskijan osoitteen tai tarkan CODE:ISSUER-yhdistelmän perusteella.",
     "form": {
       "code": {
-        "label": "Omaisuuskoodi",
+        "label": "Asset-koodi",
         "placeholder": "esim. USDC"
       },
       "issuer": {
@@ -18,7 +18,7 @@
       }
     },
     "result": {
-      "empty": "Ei varoja löytynyt.",
+      "empty": "assets:tä ei löytynyt.",
       "columns": {
         "code": "Koodi",
         "issuer": "Liikkeeseenlaskija",
@@ -28,11 +28,11 @@
         "toml": "TOML",
         "actions": "Toimenpiteet"
       },
-      "count": "Löydetyt rahakkeet: {{count}}",
+      "count": "Löytyi tokens: {{count}}",
       "qualityHint": "Huomautus: Trustlines-arvot yhdessä verkkotunnuksen ja TOML-tiedoston kanssa antavat kattavamman kuvan. Kokonaismäärä näkyy yksityiskohdissa, mutta se ei ole aitouden osoitus.",
       "columnHelp": {
         "numAccounts": "Horizonin mukaan trustlines/tilien lukumäärä.",
-        "amount": "Horizonin ilmoittama tämän omaisuuserän kokonaismäärä. Jos Horizon palauttaa valtuutuskiintiöitä, ne lasketaan yhteen."
+        "amount": "Horizonin ilmoittama tämän asset:n kokonaismäärä. Jos Horizon palauttaa valtuutusryhmiä, ne lasketaan yhteen."
       },
       "sort": {
         "numAccounts": "Lajittele trustlines:n mukaan"
@@ -42,17 +42,17 @@
         "toml": "Asset on lueteltu tämän liikkeeseenlaskijan stellar.toml-tiedostossa"
       },
       "duplicateCodeWarning": "Varoitus: Hakusanalla {{codes}} löytyy useita tuloksia eri liikkeeseenlaskijoilta. Pelkkä koodi ei kerro mitään aitoudesta – ainoastaan liikkeeseenlaskijan osoite antaa siitä tietoa. Vertaa tietoja huolellisesti ennen kuin lisäät trustline-merkinnän tai vaihdat kappaleen.",
-      "duplicateCodeBadge": "{{count}} eri liikkeeseenlaskijaa käyttää tätä omaisuuserän koodia."
+      "duplicateCodeBadge": "{{count}} eri liikkeeseenlaskijaa käyttää tätä asset-koodia."
     },
     "invalidInput": {
-      "codeMissing": "Anna oma varallisuuskoodi.",
-      "queryMissing": "Syötä arvopaperikoodi, liikkeeseenlaskijan osoite tai CODE:ISSUER.",
-      "queryInvalid": "Syötä kelvollinen arvopaperikoodi, liikkeeseenlaskijan osoite tai CODE:ISSUER.",
-      "codeInvalid": "Resurssikoodit saavat sisältää vain 1–12 kirjainta tai numeroa.",
+      "codeMissing": "Syötä asset-koodi.",
+      "queryMissing": "Syötä asset-koodi, liikkeeseenlaskijan osoite tai CODE:ISSUER.",
+      "queryInvalid": "Syötä kelvollinen asset-koodi, myöntäjän osoite tai CODE:ISSUER.",
+      "codeInvalid": "Asset-koodit saavat sisältää vain 1–12 kirjainta tai numeroa.",
       "issuerInvalid": "Syötä kelvollinen Stellar-liikkeeseenlaskijan osoite."
     },
     "failed": {
-      "generic": "Varojen haku epäonnistui. Yritä myöhemmin uudelleen."
+      "generic": "asset-haku epäonnistui. Yritä myöhemmin uudelleen."
     },
     "ambiguousResult": {
       "title": "Tila epäselvä – älä lähetä uudelleen",
@@ -63,11 +63,11 @@
       "label": "Esimerkkejä"
     },
     "help": {
-      "issuer": "Stellar-tili, joka on laskenut tämän tokenin liikkeeseen. Koodi ja liikkeeseenlaskija yhdessä yksilöivät kyseisen omaisuuserän.",
+      "issuer": "Stellar-tili, joka on laskenut liikkeeseen tämän token:n. Koodi ja liikkeeseenlaskija yhdessä yksilöivät yksikäsitteisesti asset:n.",
       "trustlines": "Horizonin mukaan niiden tilien lukumäärä, joiden voimassaoloaika on trustline – asset. Tämä on käyttöilmaisin, ei aitouden todiste.",
-      "totalAmount": "Horizonin ilmoittama tämän asset kokonaismäärä – trustlines, lunastettavissa olevat saldot, likviditeettipoolit ja sopimukset yhteensä. Pelkkä tarjonta ei kerro mitään laadusta tai luotettavuudesta.",
-      "trustlineStatus": "Ilmaisee, voiko nykyisellä tililläsi jo olla kyseistä omaisuutta.",
-      "trustlineBalance": "Tämän varan nykyinen saldo Trustline-tililläsi.",
+      "totalAmount": "Horizonin ilmoittama tämän asset:n kokonaismäärä – trustlines, claimable balances, likviditeettipoolit ja sopimukset yhteensä. Pelkkä tarjonta ei kerro mitään laadusta tai luotettavuudesta.",
+      "trustlineStatus": "Ilmaisee, voiko nykyisellä tililläsi jo säilyttää tätä asset:tä.",
+      "trustlineBalance": "Tämän asset:n nykyinen saldo tililläsi trustline.",
       "trustlineLimit": "Tämän asset aikana tililläsi voi olla enintään tämä saldo tämän trustline ajan.",
       "authorization": "Kun auth_required-asetukseksi on määritetty assets, myöntäjän on hyväksyttävä trustline, ennen kuin voit vastaanottaa tai vaihtaa token:a.",
       "homeDomain": "Välittäjän tilille tallennettu verkkotunnus. Sen avulla voidaan paikantaa stellar.toml-tiedosto.",
@@ -75,25 +75,25 @@
       "issuerLocked": "Ilmaisee, onko liikkeeseenlaskijan pääavain edelleen aktiivinen. ”Aktiivisesti hallinnoitu” on normaali tila käynnissä olevissa projekteissa, kuten vakaavaluutoissa, eikä se ole varoitus. ”Täysin lukittu” on positiivinen merkki tokens:lle, joka lupaa muuttumattomuutta. ”Näyttää lukitulta” tarkoittaa, että pääavain on poistettu käytöstä, mutta muut signers:t voivat silti hallita tiliä.",
       "tomlStatus": "stellar.toml-tiedoston tila liikkeeseenlaskijan kotiverkkotunnuksen alla.",
       "tomlUrl": "Löydetyn stellar.toml-tiedoston sijainti.",
-      "tomlAssetListed": "Ilmaisee, onko tämä omaisuuserä lueteltu tiedoston stellar.toml CURRENCIES-kohdassa.",
+      "tomlAssetListed": "Ilmaisee, onko tämä asset lueteltu stellar.toml-tiedoston CURRENCIES-merkinnöissä.",
       "tomlCurrencyCount": "CURRENCIES-merkintöjen lukumäärä tiedostossa stellar.toml.",
       "authRequired": "Liikkeeseenlaskijan on hyväksyttävä trustline-yhteydet erikseen.",
       "authRevocable": "Liikkeeseenlaskija voi myöhemmin peruuttaa jo myönnetyn valtuutuksen.",
       "authImmutable": "Liikkeeseenlaskijan valtuutusmerkintöjä ei voi enää muuttaa.",
-      "clawbackEnabled": "Liikkeeseenlaskija voi tiettyjen sääntöjen mukaisesti lunastaa tokeneita tileiltä.",
+      "clawbackEnabled": "Liikkeeseenlaskija voi tietyin ehdoin periä takaisin tokens tileiltä.",
       "liquidityRoute": "Ilmaisee, löytyikö reitti nykyiselle vaihtosuunnalle.",
       "reserveIncrease": "Lisää XLM-vähimmäisvarantoa on lukittu luomalla uusi trustline.",
       "reserveAfter": "Arvioitu vähimmäissaldo, jonka on oltava tilillä Trustline-luottorajan lisäämisen jälkeen.",
       "spendableAfter": "Arvioitu XLM-saldon määrä, joka on edelleen vapaasti käytettävissä lisävarauksen jälkeen.",
       "expected": "Arvioitu saatu summa nykyisen tarjouksen perusteella.",
       "minimum": "Vähimmäissumma liukumatoleranssin jälkeen. Swap keskeytetään, jos summa on tätä pienempi.",
-      "route": "Resurssipolku, jota Stellar käyttäisi vaihtoon.",
+      "route": "Asset polku, jota Stellar käyttäisi vaihtotallennustilaan.",
       "effectiveRate": "Odotettu todellinen kurssi lähetetyn ja vastaanotetun summan perusteella.",
       "minimumRate": "Huonoin hyväksytty kurssi liukumatoleranssin jälkeen.",
       "slippageBuffer": "Odotetun tarjouksen ja vähimmäissumman välinen ero.",
       "hops": "Reitin markkinasegmenttien lukumäärä.",
       "quoteAge": "Tällä hetkellä näkyvän tarjouksen ikä. Vanhemmat tarjoukset tulisi päivittää ennen allekirjoittamista.",
-      "routeDetailed": "Reitti, jossa on omaisuuskoodi ja lyhennetty liikkeeseenlaskijan nimi, jotta samaa koodia käyttävät tokenit voidaan edelleen erottaa toisistaan.",
+      "routeDetailed": "Reitti, jossa on koodi asset ja lyhennetty liikkeeseenlaskija, jotta samaa koodia käyttävä tokens voidaan edelleen erottaa toisistaan.",
       "spread": "Parhaan ostotarjouksen ja parhaan myyntitarjouksen välinen ero.",
       "priceImpact": "Arvio siitä, kuinka paljon kauppa heikentää saavutettua hintaa verrattuna markkinahintaan.",
       "topDepth": "Tilauskirjassa olevien viiden ensimmäisen myyntihintatason summa.",
@@ -102,17 +102,17 @@
       "bestAsk": "Tilauskirjassa oleva alhaisin nykyinen myyntitarjous.",
       "depthCoversAmount": "Ilmaisee, kattaako tilauskirjan näkyvä syvyys syötetyn määrän.",
       "poolCount": "Tälle kaupankäyntiparille löytyneiden AMM-likviditeettipoolien lukumäärä.",
-      "limitOfferDirection": "Määrittää, minkä omaisuuserän myyt ja minkä omaisuuserän haluat vastaanottaa.",
-      "limitOfferAmount": "Se summa, jonka haluat myydä rajoitetussa toimeksiannossa.",
-      "limitOfferPrice": "Hinta yhtä myytyä omaisuuserää kohti, ilmaistuna ostetun omaisuuserän valuutassa.",
+      "limitOfferDirection": "Määrittää, minkä asset-tuotteen myyt ja minkä asset-tuotteen haluat vastaanottaa.",
+      "limitOfferAmount": "Määrä, jonka haluat myydä asset:stä hintarajatoimeksiannolla.",
+      "limitOfferPrice": "Hinta yhtä myytyä asset:tä kohti, ilmaistuna ostetussa asset:ssa.",
       "expertDirectory": "Vertailu stellar.expert-sivuston julkisesti ylläpitämään hakemistoon (kolmas osapuoli). Merkintä on vain vihje, ei todiste aitoudesta tai turvallisuudesta. Puuttuva merkintä ei myöskään ole merkki huijauksesta. Tarkista liikkeeseenlaskijan osoite aina myös sen virallisilta verkkosivuilta.",
       "exchangeRateQuick": "Tämän valuuttaparin Stellar-pörssin omassa tarjous- ja kysyntäkirjassa ilmoitettujen parhaiden hintojen keskiarvo. Ilman kaupankäynnin syvyyttä hintaa ei voida näyttää.",
       "exchangeRateExecution": "Simuloitu toteutushinta 1 yksikön viitemäärälle, mukaan lukien mahdolliset välivaiheet ja likviditeettipoolit. Suuremmat määrät voivat johtaa epäedullisempaan hintaan (slippage)."
     },
     "mode": {
-      "code": "Omaisuuskoodin haku",
+      "code": "Asset koodihaku",
       "issuer": "Liikkeeseenlaskijoiden haku",
-      "exact": "Tarkka omaisuuserä"
+      "exact": "Tarkka asset"
     },
     "actions": {
       "details": "Tiedot",
@@ -121,7 +121,7 @@
       "trustlinePresent": "Trustline on olemassa",
       "trustlineNext": "Seuraava vaihe: luo trustline hakutuloksesta",
       "swap": "Vaihda",
-      "swapNext": "Valitse sijoituskohde ja avaa swap-ennakkonäkymä"
+      "swapNext": "Valitse asset ja avaa vaihdon esikatselu"
     },
     "account": {
       "active": "Aktiivinen tili",
@@ -150,13 +150,13 @@
       "direction": {
         "xlmToToken": "XLM -> Token",
         "tokenToXlm": "Token -> XLM",
-        "tokenToToken": "Tunnus -> Tunnus"
+        "tokenToToken": "Token -> Token"
       },
       "sendAmount": "Lähetät {{asset}}",
-      "targetAsset": "Kohdetunnus",
+      "targetAsset": "Kohde token",
       "targetPlaceholder": "USDC, G... tai EURC:G...",
       "targetSearch": "Hakukohde",
-      "targetSelected": "Valittu kohdetunnus",
+      "targetSelected": "Valittu kohde token",
       "slippage": "Liukuma (%)",
       "check": "Tarkista hinta",
       "execute": "Suorita vaihto",
@@ -176,9 +176,9 @@
       "notAvailable": "Ei saatavilla",
       "invalidAmount": "Syötä kelvollinen summa kenttään {{asset}}.",
       "invalidSlippage": "Syötä liukuma-arvo väliltä 0–50 prosenttia.",
-      "invalidTarget": "Etsi ja valitse kohdetunnus tai kirjoita se täsmälleen muodossa CODE:ISSUER.",
-      "sameAsset": "Lähde ja kohde eivät saa olla sama omaisuuserä.",
-      "destinationTrustlineMissing": "Tältä tililtä puuttuu edelleen kohdetunnus trustline.",
+      "invalidTarget": "Etsi ja valitse kohde token tai kirjoita se täsmälleen muodossa CODE:ISSUER.",
+      "sameAsset": "Lähde ja kohde eivät saa olla samat asset.",
+      "destinationTrustlineMissing": "Tältä tililtä puuttuu edelleen kohde token trustline.",
       "destinationTrustlineUnauthorized": "Lähettäjä ei ole vielä hyväksynyt kohdetta trustline.",
       "minimumMissing": "Vähimmäissummaa ei voitu laskea.",
       "previewRequired": "Tarkista ensin hinta.",
@@ -232,10 +232,10 @@
       "warning": "Tämä toimeksianto voidaan toteuttaa osittain tai kokonaan välittömästi, jos vastaava vastatarjous on olemassa. Tarkista hinta ja suunta ennen allekirjoittamista.",
       "cancelWarning": "Tämä poistaa avoimen tarjouksen korvaamalla sen arvolla 0.",
       "continue": "Jatka allekirjoitukseen",
-      "openOffers": "Tätä tokenia koskevat avoimet tarjoukset",
-      "noOffers": "Tälle tokenille ei löytynyt avoimia tarjouksia.",
+      "openOffers": "Tämän tuotteen voimassa olevat tarjoukset token",
+      "noOffers": "Tälle token:lle ei löytynyt avoimia tarjouksia.",
       "loadFailed": "Avoimia tarjouksia ei voitu ladata.",
-      "invalidPair": "Tästä rajahinnatilauksesta puuttuu kelvollinen arvopaperipari.",
+      "invalidPair": "Tästä rajahinnatilauksesta puuttuu kelvollinen asset-pari.",
       "invalidAmount": "Syötä kelvollinen myyntisumma kenttään {{asset}}.",
       "invalidPrice": "Syötä kelvollinen hinta, joka on suurempi kuin 0.",
       "createSuccess": "Rajoitettu toimeksianto on annettu. Kauppa:",
@@ -253,36 +253,36 @@
     "trustlineConfirm": {
       "title": "Vahvista Trustline",
       "limit": "Trustline-raja",
-      "warning": "Trustline-toiminnon avulla tämä omaisuuserä voidaan säilyttää tililläsi. Tarkista tiedot huolellisesti, erityisesti liikkeeseenlaskija, kotiverkkotunnus, stellar.toml, valtuutus ja takaisinperintäoikeus, ennen allekirjoittamista.",
+      "warning": "trustline mahdollistaa tämän asset:n säilyttämisen tililläsi. Tarkista tiedot, erityisesti liikkeeseenlaskija, kotiverkkotunnus, stellar.toml, valtuutus ja takaisinperintä, ennen allekirjoittamista.",
       "continue": "Jatka allekirjoitukseen"
     },
     "trustlineFlow": {
       "title": "Valmistele Trustline",
-      "limitHelp": "Raja on tämän trustline-tilin enimmäistoken-saldo. Se ei ole ostotilaus eikä se varaa tokeneita.",
+      "limitHelp": "Raja on tämän trustline:n enimmäissaldo token. Se ei ole ostotilaus eikä se varaa tokens:a.",
       "reserveIncrease": "Lisävara",
       "reserveAfter": "Vähimmäisvaranto sen jälkeen, kun",
       "spendableAfter": "XLM:t ovat käytettävissä varannon purkamisen jälkeen",
-      "authRequiredHint": "Tämä resurssi käyttää auth_required-ominaisuutta. Trustline voidaan luoda, mutta myöntäjän on ensin hyväksyttävä se, ennen kuin voit vastaanottaa tai ostaa tunnuksen vaihdon kautta.",
+      "authRequiredHint": "Tämä asset käyttää auth_required-toimintoa. trustline voidaan luoda, mutta myöntäjän on ensin hyväksyttävä se, ennen kuin voit vastaanottaa tai ostaa token:n vaihtokaupan kautta.",
       "combinedTitle": "Valinnainen: trustline + swap",
       "combinedAction": "Suorita trustline + swap",
       "combinedConfirmTitle": "Vahvista Trustline + vaihto",
       "combinedWarning": "Tämä tapahtuma luo ensin trustline:n ja suorittaa vaihdon vasta sen jälkeen. Reitti tarkistetaan uudelleen juuri ennen allekirjoittamista.",
       "combinedContinue": "Jatka allekirjoitukseen",
-      "combinedOnlyXlm": "Yhdistetty siirto on tässä käytettävissä vain XLM:stä tokeniin.",
-      "authRequiredCombinedBlocked": "Trustline+Swap-yhdistelmä on poistettu käytöstä auth_required-resursseissa, koska liikkeeseenlaskijan on ensin hyväksyttävä uusi Trustline.",
+      "combinedOnlyXlm": "Yhdistetty virtaus on tässä käytettävissä vain reitillä XLM → token.",
+      "authRequiredCombinedBlocked": "Yhdistetty Trustline+Swap on poistettu käytöstä auth_required assets:n osalta, koska myöntäjän on ensin hyväksyttävä uusi Trustline.",
       "invalidLimit": "Syötä kelvollinen Trustline-raja, joka on suurempi kuin 0.",
       "limitBelowExpected": "Trustline-raja on odotettua saamaa summaa pienempi.",
       "alreadyPresent": "Trustline on jo olemassa. Päivitä sivu ja käytä tavallista vaihtoa.",
       "combinedSuccess": "Trustline- ja swap-toiminnot suoritettiin. Tapahtuma:"
     },
     "facts": {
-      "title": "Tietoa rahakkeista",
-      "sourceTitle": "Tietoa lähdetunnuksista",
-      "destinationTitle": "Tietoja kohdetunnuksista",
+      "title": "Token tosiasiat",
+      "sourceTitle": "Lähde token -tiedot",
+      "destinationTitle": "Kohde token:n tiedot",
       "expand": "Näytä",
       "collapse": "Piilota",
       "disclaimer": "Tämä ei ole arvio tai suositus. Sovellus näyttää vain löydetyt tiedot; päätös on käyttäjän vastuulla.",
-      "loading": "Ladataan tunnisteiden tietoja...",
+      "loading": "Ladataan token-tietoja...",
       "issuerLoadFailed": "Liikkeeseenlaskijan tiliä ei voitu ladata.",
       "notAvailable": "Ei saatavilla",
       "notChecked": "Ei valittu",
@@ -301,7 +301,7 @@
         "loaded": "stellar.toml ladattu",
         "failed": "stellar.toml ei ole käytettävissä",
         "noHomeDomain": "Liikkeeseenlaskijan tilillä ei ole kotiverkkotunnusta",
-        "assetListed": "Stellar.toml-tiedostossa lueteltu omaisuuserä",
+        "assetListed": "Asset on lueteltu tiedostossa stellar.toml",
         "currencyCount": "VALUUTAT-merkinnät",
         "errors": {
           "notFound": "Tällä verkkotunnuksella ei ole stellar.toml-tiedostoa. Kyseessä on julkaisijan puolella oleva tietoon liittyvä ongelma, ei SKM:n ongelma.",
@@ -325,7 +325,7 @@
       },
       "amountBreakdown": {
         "trustlines": "Siitä {{amount}} on trustlines",
-        "claimable": "{{amount}} lunastettavissa saldoissa",
+        "claimable": "{{amount}} claimable balances:ssa",
         "pools": "{{amount}} likviditeettipooleissa",
         "contracts": "{{amount}} sopimuksissa"
       },
@@ -333,7 +333,7 @@
         "label": "StellarExpert-hakemisto",
         "listed": "Merkitty hakemistoon",
         "listedAs": "Merkitty hakemistoon nimellä \"{{name}}\"",
-        "notListed": "Ei hakemistossa – tämä ei kerro mitään aitoudesta; monet luotettavat omaisuuserät puuttuvat sieltä.",
+        "notListed": "Ei ole hakemistossa – tämä ei kerro mitään aitoudesta; monet hyvämaineiset assets eivät ole siellä luettelossa.",
         "unavailable": "StellarExpert ei ole tavoitettavissa – vihjettä ei voitu ladata.",
         "notChecked": "Ei tarkistettu (hakemisto kattaa vain julkisen verkon)."
       }
@@ -343,12 +343,12 @@
       "issuerLoadFailed": "Liikkeeseenlaskijan tietoja ei voitu ladata.",
       "noHomeDomain": "Liikkeeseenlaskijalla ei ole kotiverkkotunnusta.",
       "tomlNotLoaded": "stellar.toml-tiedostoa ei ole ladattu tai se ei ole käytettävissä.",
-      "tomlAssetMissing": "Tätä omaisuuserää ei ole mainittu liikkeeseenlaskijan stellar.toml-tiedostossa.",
+      "tomlAssetMissing": "Tätä asset:tä ei ole mainittu liikkeeseenlaskijan stellar.toml-tiedostossa.",
       "issuerUnlocked": "Lähettäjän pääavainta ei ole lukittu.",
-      "authRequired": "Tämä resurssi edellyttää julkaisijan valtuutusta.",
-      "clawbackEnabled": "Tälle omaisuuserälle on otettu käyttöön takaisinperintä.",
+      "authRequired": "Tämä asset edellyttää myöntäjän valtuutusta.",
+      "clawbackEnabled": "Tälle asset:lle on otettu käyttöön takaisinperintä.",
       "issuerAppearsLocked": "Varoitus: pääavain on poistettu käytöstä, mutta muut signers-avaimet voivat edelleen hallita liikkeeseenlaskijan tiliä. Se ei ole tosiasiassa lukittu.",
-      "authRevocable": "Liikkeeseenlaskija voi peruuttaa myönnetyn valtuutuksen ja jäädyttää tämän tokenin saldosi.",
+      "authRevocable": "Liikkeeseenlaskija voi peruuttaa myönnetyn valtuutuksen ja jäädyttää tämän token:n saldon.",
       "expertFlagged": "Varoitus: tämä liikkeeseenlaskija on merkitty haitalliseksi StellarExpert-hakemistossa ({{tags}}). trustline:n lisäämistä, ostamista tai vaihtamista ei suositella lainkaan."
     },
     "detail": {

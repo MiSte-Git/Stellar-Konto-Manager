@@ -51,15 +51,15 @@
       "unknown": "Tuntematon virhe tapahtumassa",
       "signingFailed": "Yhtä tai useampaa allekirjoitusta ei voitu luoda. Yritä uudelleen.",
       "multisig": {
-        "invalidSecret": "Yksi syötetyistä salausavaimista on virheellinen.",
+        "invalidSecret": "Yksi syötetyistä secret keys-arvoista on virheellinen.",
         "notASigner": "Yksi syötetyistä secret keys-arvoista ei kuulu rekisteröityyn signers-arvoon.",
-        "noKeysProvided": "Yhtään kelvollista salaista avainta ei syötetty.",
+        "noKeysProvided": "Käyttökelpoista secret keys-arvoa ei ole syötetty.",
         "insufficientWeight": "Kerätyt allekirjoitukset eivät riitä tämän muutoksen hyväksymiseen. Vaaditaan: {{required}}, saatavilla: {{current}}.",
         "txBadAuth": "Tapahtuma hylätty: Allekirjoitukset eivät riitä (tx_bad_auth).",
         "zeroWeightSigner": "Syötetty secret key kuuluu painoarvoltaan 0 olevaan signer:een, eikä sillä voi hyväksyä tapahtumaa.",
         "invalidConfig": "Suunniteltua signers- ja thresholds-kokoonpanoa ei voida allekirjoittaa. Tarkista painot ja thresholds.",
         "trustlines": {
-          "invalidInput": "Tarkista varainimike, liikkeeseenlaskija ja raja. Ainakin yksi kentistä on virheellinen."
+          "invalidInput": "Tarkista asset-koodi, myöntäjä ja raja-arvo. Ainakin yksi kentistä on virheellinen."
         }
       },
       "trustlines": {
