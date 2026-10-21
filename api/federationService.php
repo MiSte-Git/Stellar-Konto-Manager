@@ -29,7 +29,7 @@ const FEDERATION_HOP_HEADER = 'X-SKM-Federation-Hop';
 const FEDERATION_MEMO_TYPES = ['text', 'id', 'hash'];
 
 final class FederationException extends RuntimeException {
-    public string $federationCode; // invalidInput | notFound | unavailable
+    public string $federationCode; // invalidInput | notFound | contractAddress | unavailable
     public function __construct(string $code) {
         parent::__construct('federation.' . $code);
         $this->federationCode = $code;
@@ -52,7 +52,21 @@ function federation_crc16_xmodem(string $data): int {
 // G... strkey with version byte and CRC16 checksum, like
 // StrKey.isValidEd25519PublicKey() in the JS SDK.
 function federation_is_valid_account_id($id): bool {
-    if (!is_string($id) || !preg_match('/^G[A-Z2-7]{55}$/', $id)) return false;
+    return federation_is_valid_strkey32($id, 'G', 6 << 3);
+}
+
+// C-/W-Adressen (Contract, muxed Contract seit Protocol 30 / CAP-84) sind fuer
+// klassische Zahlungen kein gueltiges Ziel. C mit Checksumme wie
+// StrKey.isValidContract(), W nur ueber Praefix/Laenge/Alphabet (wird nur
+// abgelehnt). Gleiche Regel wie isContractAddressId() im JS-Zwilling.
+function federation_is_contract_address($id): bool {
+    if (!is_string($id)) return false;
+    return federation_is_valid_strkey32($id, 'C', 2 << 3) || preg_match('/^W[A-Z2-7]{68}$/', $id) === 1;
+}
+
+// 56-char strkey over a 32-byte payload: prefix, version byte, CRC16 checksum.
+function federation_is_valid_strkey32($id, string $prefix, int $versionByte): bool {
+    if (!is_string($id) || !preg_match('/^' . $prefix . '[A-Z2-7]{55}$/', $id)) return false;
     $alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
     $bits = '';
     for ($i = 0; $i < 56; $i++) {
@@ -60,7 +74,7 @@ function federation_is_valid_account_id($id): bool {
     }
     $bytes = '';
     foreach (str_split($bits, 8) as $byte) $bytes .= chr(bindec($byte));
-    if (strlen($bytes) !== 35 || ord($bytes[0]) !== (6 << 3)) return false;
+    if (strlen($bytes) !== 35 || ord($bytes[0]) !== $versionByte) return false;
     $checksum = ord($bytes[33]) | (ord($bytes[34]) << 8); // little-endian
     return federation_crc16_xmodem(substr($bytes, 0, 33)) === $checksum;
 }
@@ -199,7 +213,9 @@ function federation_resolve_name($rawAddress, ?callable $fetch = null): array {
     $parsed = federation_parse_address($rawAddress);
     if ($parsed === null) throw new FederationException('invalidInput');
     $server = federation_load_server($parsed['domain'], $fetch);
-    $record = federation_validate_name_record(federation_query($server, $parsed['address'], 'name', $fetch));
+    $data = federation_query($server, $parsed['address'], 'name', $fetch);
+    if (federation_is_contract_address($data['account_id'] ?? null)) throw new FederationException('contractAddress');
+    $record = federation_validate_name_record($data);
     if ($record === null) throw new FederationException('unavailable');
     return array_merge(['stellar_address' => $parsed['address']], $record);
 }
@@ -233,7 +249,7 @@ function federation_reverse_lookup($accountId, callable $loadHomeDomain, ?callab
 // Returns ['status' => int, 'body' => array]; same contract as
 // handleFederationRequest() in services/federationService.js.
 function federation_handle_request(array $query, callable $loadHomeDomain, ?callable $fetch = null, bool $incomingHop = false): array {
-    $statusByCode = ['invalidInput' => 400, 'notFound' => 404, 'loopDetected' => 508, 'unavailable' => 502];
+    $statusByCode = ['invalidInput' => 400, 'notFound' => 404, 'contractAddress' => 422, 'loopDetected' => 508, 'unavailable' => 502];
     if ($incomingHop) {
         return ['status' => 508, 'body' => ['ok' => false, 'error' => 'federation.loopDetected']];
     }

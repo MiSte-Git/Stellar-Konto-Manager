@@ -193,6 +193,15 @@ async function queryFederationServer(serverUrl, q, type, fetchText) {
   return data;
 }
 
+// C... per SDK (inkl. Checksumme). W... (SEP-23 muxed contract, 69 Zeichen) nur ueber Praefix,
+// Laenge und Alphabet: das SDK vor Protocol 30 kennt den Typ noch nicht, und die Adresse wird
+// ausschliesslich abgelehnt. Gleiche Regel in api/federationService.php.
+const MUXED_CONTRACT_RE = /^W[A-Z2-7]{68}$/;
+function isContractAddressId(id) {
+  if (typeof id !== 'string') return false;
+  return StellarSdk.StrKey.isValidContract(id) || MUXED_CONTRACT_RE.test(id);
+}
+
 function isValidMemo(type, memo) {
   if (typeof memo !== 'string' || !memo) return false;
   if (type === 'text') return Buffer.byteLength(memo, 'utf8') <= 28;
@@ -225,7 +234,11 @@ async function resolveFederationName(rawAddress, { fetchText = safeFetchText } =
   const parsed = parseStellarAddress(rawAddress);
   if (!parsed) throw new FederationError('invalidInput');
   const server = await loadFederationServer(parsed.domain, fetchText);
-  const record = validateNameRecord(await queryFederationServer(server, parsed.address, 'name', fetchText));
+  const data = await queryFederationServer(server, parsed.address, 'name', fetchText);
+  // C-/W-Adressen (Contract, muxed Contract seit Protocol 30 / CAP-84) sind fuer klassische
+  // Zahlungen kein gueltiges Ziel; eigener Code, damit die UI das klar sagen kann.
+  if (isContractAddressId(data?.account_id)) throw new FederationError('contractAddress');
+  const record = validateNameRecord(data);
   if (!record) throw new FederationError('unavailable');
   return { stellar_address: parsed.address, ...record };
 }
@@ -260,7 +273,7 @@ async function reverseFederationLookup(accountId, { loadHomeDomain, fetchText = 
   }
 }
 
-const STATUS_BY_CODE = { invalidInput: 400, notFound: 404, loopDetected: 508, unavailable: 502 };
+const STATUS_BY_CODE = { invalidInput: 400, notFound: 404, contractAddress: 422, loopDetected: 508, unavailable: 502 };
 
 /**
  * Framework-free request handler, shared by server.js and the tests.
@@ -295,6 +308,7 @@ module.exports = {
   MAX_TOML_BYTES,
   MAX_FEDERATION_RESPONSE_BYTES,
   normalizeDomain,
+  isContractAddressId,
   parseStellarAddress,
   extractFederationServer,
   validateFederationServerUrl,

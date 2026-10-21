@@ -32,6 +32,7 @@ import { accountRequiresMemo, isAccountRequiresMemoError } from '../utils/stella
 import { resolveFeePerOp } from '../utils/stellar/fees.js';
 import QrScanDialog from '../components/wallet/QrScanDialog.jsx';
 import { networkMismatch, parsePaymentInput } from '../utils/stellar/sep7.js';
+import { CONTRACT_ADDRESS_ERROR, isContractAddress } from '../utils/stellar/addressType.js';
 
 // Immediate local submits (single-sig send, or a multisig job collected and
 // submitted right away) expect a near-term Horizon confirmation, unlike a
@@ -450,8 +451,9 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
         const resolved = await resolveOrValidateAccount(v);
         resolvedAccountId = resolved.accountId;
         resolvedDest = resolved.muxedAddress || resolved.accountId;
-      } catch {
-        nextState = { ...nextState, loading: false, err: t('publicKey:destination.error') };
+      } catch (resolveError) {
+        const err = resolveError?.message === CONTRACT_ADDRESS_ERROR ? t(CONTRACT_ADDRESS_ERROR) : t('publicKey:destination.error');
+        nextState = { ...nextState, loading: false, err };
         setPreflight(nextState);
         return nextState;
       }
@@ -1980,6 +1982,11 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                 {recipientDeactivated && (
                   <div className="text-amber-600 dark:text-amber-400 font-medium">
                     {t('wallet:flag.deactivated', 'Note: This recipient is marked as deactivated in your trusted list.')}
+                  </div>
+                )}
+                {isContractAddress(trimmedRecipient) && (
+                  <div role="alert" className="text-red-600 dark:text-red-400 font-medium">
+                    {t(CONTRACT_ADDRESS_ERROR)}
                   </div>
                 )}
               </div>

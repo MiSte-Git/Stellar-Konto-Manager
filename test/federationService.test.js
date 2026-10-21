@@ -55,6 +55,15 @@ test('shared account id cases match the SDK strkey check', () => {
   for (const id of fixture.accounts.invalid) assert.equal(StellarSdk.StrKey.isValidEd25519PublicKey(id), false, id);
 });
 
+test('shared contract address cases (C, W) are recognized and never pass as account ids', () => {
+  const StellarSdk = require('@stellar/stellar-sdk');
+  for (const id of fixture.accounts.contract) {
+    assert.equal(fed.isContractAddressId(id), true, id);
+    assert.equal(StellarSdk.StrKey.isValidEd25519PublicKey(id), false, id);
+  }
+  for (const id of [...fixture.accounts.valid, ...fixture.accounts.invalid]) assert.equal(fed.isContractAddressId(id), false, id);
+});
+
 test('reverse lookup never asks for a stellar.toml other than the home_domain one', async () => {
   const c = fixture.cases.find((x) => x.description.startsWith('reverse: stellar_address on another domain'));
   const calls = [];

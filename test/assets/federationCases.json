@@ -12,6 +12,10 @@
       "galqzgoubwai4osvlf4ukewg3kgdruecf7ao737pgecehgqfzs3ffxco",
       "GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
       ""
+    ],
+    "contract": [
+      "CADQOBYHA4DQOBYHA4DQOBYHA4DQOBYHA4DQOBYHA4DQOBYHA4DQP5KR",
+      "WADQOBYHA4DQOBYHA4DQOBYHA4DQOBYHA4DQOBYHA4DQOBYHA4DQOAAAAAAAAAAAFIH4U"
     ]
   },
   "cases": [
@@ -38,6 +42,81 @@
           "ok": true,
           "stellar_address": "alice*example.com",
           "account_id": "GALQZGOUBWAI4OSVLF4UKEWG3KGDRUECF7AO737PGECEHGQFZS3FFXCO"
+        }
+      }
+    },
+    {
+      "description": "forward: a contract address (C) is refused with its own code",
+      "query": {
+        "type": "name",
+        "q": "alice*example.com"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "text": "# SEP-1\nVERSION = \"2.0.0\"\nFEDERATION_SERVER = \"https://fed.example.com/federation\"\n\n[DOCUMENTATION]\nORG_NAME = \"Example\"\n"
+        },
+        "https://fed.example.com/federation?q=alice*example.com&type=name": {
+          "json": {
+            "stellar_address": "alice*example.com",
+            "account_id": "CADQOBYHA4DQOBYHA4DQOBYHA4DQOBYHA4DQOBYHA4DQOBYHA4DQP5KR"
+          }
+        }
+      },
+      "expect": {
+        "status": 422,
+        "body": {
+          "ok": false,
+          "error": "federation.contractAddress"
+        }
+      }
+    },
+    {
+      "description": "forward: a muxed contract address (W, CAP-84) is refused with its own code",
+      "query": {
+        "type": "name",
+        "q": "alice*example.com"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "text": "# SEP-1\nVERSION = \"2.0.0\"\nFEDERATION_SERVER = \"https://fed.example.com/federation\"\n\n[DOCUMENTATION]\nORG_NAME = \"Example\"\n"
+        },
+        "https://fed.example.com/federation?q=alice*example.com&type=name": {
+          "json": {
+            "stellar_address": "alice*example.com",
+            "account_id": "WADQOBYHA4DQOBYHA4DQOBYHA4DQOBYHA4DQOBYHA4DQOBYHA4DQOAAAAAAAAAAAFIH4U"
+          }
+        }
+      },
+      "expect": {
+        "status": 422,
+        "body": {
+          "ok": false,
+          "error": "federation.contractAddress"
+        }
+      }
+    },
+    {
+      "description": "forward: a C-like string with a bad checksum stays unavailable",
+      "query": {
+        "type": "name",
+        "q": "alice*example.com"
+      },
+      "responses": {
+        "https://example.com/.well-known/stellar.toml": {
+          "text": "# SEP-1\nVERSION = \"2.0.0\"\nFEDERATION_SERVER = \"https://fed.example.com/federation\"\n\n[DOCUMENTATION]\nORG_NAME = \"Example\"\n"
+        },
+        "https://fed.example.com/federation?q=alice*example.com&type=name": {
+          "json": {
+            "stellar_address": "alice*example.com",
+            "account_id": "CADQOBYHA4DQOBYHA4DQOBYHA4DQOBYHA4DQOBYHA4DQOBYHA4DQP5KA"
+          }
+        }
+      },
+      "expect": {
+        "status": 502,
+        "body": {
+          "ok": false,
+          "error": "federation.unavailable"
         }
       }
     },

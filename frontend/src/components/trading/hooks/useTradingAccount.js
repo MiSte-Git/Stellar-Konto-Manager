@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { resolveOrValidateAccount } from '../../../utils/stellar/stellarUtils.js';
+import { CONTRACT_ADDRESS_ERROR } from '../../../utils/stellar/addressType.js';
 import { getStoredAccountInput, getStoredNetwork } from '../assetSearchUtils.js';
 
 /**
@@ -60,10 +61,11 @@ export default function useTradingAccount({ t }) {
         setAccountId(resolved.accountId || '');
         setAccountStatus({ loading: false, error: '' });
       })
-      .catch(() => {
+      .catch((err) => {
         if (cancelled) return;
         setAccountId('');
-        setAccountStatus({ loading: false, error: t('trading:assetSearch.account.invalid') });
+        const error = err?.message === CONTRACT_ADDRESS_ERROR ? t(CONTRACT_ADDRESS_ERROR) : t('trading:assetSearch.account.invalid');
+        setAccountStatus({ loading: false, error });
       });
     return () => { cancelled = true; };
   }, [accountInput, t]);

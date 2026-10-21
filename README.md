@@ -18,6 +18,7 @@ Local-first Stellar Wallet & Account Manager: Trustlines, Zahlungen, Muxed Accou
 ### C. Muxed Accounts
 - M-Adresse aus G-Adresse + ID erzeugen, anzeigen und konvertieren.
 - Zahlungen an/von M-Accounts; XDR-Unterstützung im Flow.
+- Contract-Adressen (`C…`) und muxed Contract-Adressen (`W…`, Protocol 30 / CAP-84) werden als Ziel erkannt und mit eigener Meldung abgelehnt, da klassische Zahlungen an sie nicht möglich sind (Frontend `utils/stellar/addressType.js`, Federation-Backend Node und PHP mit Fehlercode `federation.contractAddress`, HTTP 422).
 
 ### D. Multisig – Produktivmodus
 - Signer/Weights/Thresholds verwalten, inkl. MasterKey=0-Szenarien.

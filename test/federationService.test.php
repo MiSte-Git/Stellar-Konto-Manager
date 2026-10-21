@@ -87,6 +87,12 @@ foreach ($fixture['accounts']['valid'] as $id) {
 foreach ($fixture['accounts']['invalid'] as $id) {
     check("account id invalid: '{$id}'", !federation_is_valid_account_id($id));
 }
+foreach ($fixture['accounts']['contract'] as $id) {
+    check("contract address recognized: {$id}", federation_is_contract_address($id) && !federation_is_valid_account_id($id));
+}
+foreach (array_merge($fixture['accounts']['valid'], $fixture['accounts']['invalid']) as $id) {
+    check("not a contract address: '{$id}'", !federation_is_contract_address($id));
+}
 
 // Reverse: the other domain's stellar.toml is never requested.
 foreach ($fixture['cases'] as $case) {

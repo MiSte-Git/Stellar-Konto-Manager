@@ -1,5 +1,6 @@
 import { resolveFeePerOp } from './fees.js';
 import { apiUrl } from '../apiBase.js';
+import { CONTRACT_ADDRESS_ERROR, isContractAddress } from './addressType.js';
 import {
   Horizon,
   StrKey,
@@ -190,6 +191,11 @@ export async function resolveFederationAddress(federationAddress) {
     throw new Error('error.noFederationId');
   }
   const data = result.data;
+  // Ein Federation-Server, der eine C- oder W-Adresse liefert, bekommt eine eigene Meldung
+  // statt "nicht aufloesbar" (Backend: federation.contractAddress).
+  if (data?.error === 'federation.contractAddress' || isContractAddress(data?.account_id)) {
+    throw new Error(CONTRACT_ADDRESS_ERROR);
+  }
   if (!result.ok || !data?.ok || typeof data.account_id !== 'string' || !StrKey.isValidEd25519PublicKey(data.account_id)) {
     throw new Error('error.noFederationId');
   }
@@ -369,6 +375,7 @@ export async function resolveOrValidateAccount(input) {
     const base = extractBasePublicKeyFromMuxed(value);
     return { accountId: base, muxedAddress: value, address: value, memo: federationMemo, memoType: federationMemoType };
   }
+  if (isContractAddress(value)) throw new Error(CONTRACT_ADDRESS_ERROR);
   throw new Error('resolveOrValidatePublicKey.invalid');
 }
 

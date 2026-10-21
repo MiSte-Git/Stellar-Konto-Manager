@@ -8,6 +8,7 @@
 // aufgerufen. web+stellar:tx (fremde Transaktion signieren) wird bewusst nicht unterstuetzt.
 import { Buffer } from 'buffer';
 import { Networks, StrKey } from '@stellar/stellar-sdk';
+import { isContractAddress } from './addressType.js';
 
 const AMOUNT_RE = /^\d+(?:\.\d{1,7})?$/;
 const ASSET_CODE_RE = /^[A-Za-z0-9]{1,12}$/;
@@ -78,6 +79,7 @@ export function parseSep7Pay(uri) {
   if (!params) return { ok: false, error: 'invalid' };
 
   const destination = params.get('destination') || '';
+  if (isContractAddress(destination)) return { ok: false, error: 'contractAddress' };
   if (!isAccount(destination)) return { ok: false, error: 'invalidDestination' };
 
   const amount = params.get('amount') || '';
@@ -118,6 +120,7 @@ export function parsePaymentInput(raw) {
   const v = String(raw || '').trim();
   if (!v) return { ok: false, error: 'empty' };
   if (isAccount(v) || FEDERATION_RE.test(v)) return { ok: true, kind: 'address', destination: v };
+  if (isContractAddress(v)) return { ok: false, error: 'contractAddress' };
   if (/^web\+stellar:/i.test(v)) return parseSep7Pay(v);
   return { ok: false, error: 'unrecognized' };
 }
