@@ -5,6 +5,11 @@
 // that admin.php/bugreport.php/multisig.php already had).
 declare(strict_types=1);
 
+// Every endpoint requires this file, so the API security headers are set
+// here once for all of them (and for any future endpoint).
+require_once __DIR__ . '/securityHeaders.php';
+apply_api_security_headers();
+
 function cors_allowed_origins(): array {
     $origins = [
         'http://localhost:5173',

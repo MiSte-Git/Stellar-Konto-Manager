@@ -11,6 +11,7 @@ const fsSync = require('fs');
 const crypto = require('crypto');
 const { searchAssets, fetchAssetFacts, fetchExpertDirectoryEntry } = require('./services/tradeService.js');
 const { createCorsMiddleware } = require('./services/corsConfig.js');
+const { createApiSecurityHeadersMiddleware } = require('./services/securityHeaders.js');
 const { handleFederationRequest, HOP_HEADER: FEDERATION_HOP_HEADER } = require('./services/federationService.js');
 const { writeJsonFileLocked } = require('./services/jsonFileStore.js');
 const { createChallenge, consumeChallenge, verifyChallengeSignature } = require('./services/challengeStore.js');
@@ -59,6 +60,11 @@ function getTradeHorizon(network = 'PUBLIC') {
     ? new StellarSdk.Horizon.Server('https://horizon-testnet.stellar.org')
     : horizon;
 }
+
+// Security headers (Backlog P1.2) on every response, preflights and errors
+// included - same values as api/securityHeaders.php (parity checked by
+// test/securityHeaders.test.js). Registered first so no route can skip them.
+app.use(createApiSecurityHeadersMiddleware());
 
 // Explicit CORS headers for routes restricted to known dev/prod origins
 // (was previously a wildcard '*' — finding B3). Origin allowlist + middleware

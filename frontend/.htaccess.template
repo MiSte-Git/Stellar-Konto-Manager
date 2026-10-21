@@ -1,5 +1,12 @@
-# .htaccess.template — wird im Workflow auf dem Server zu .htaccess mit __BASE__ ersetzt
-# Beispiel-Ersetzung: __BASE__ => /STM_next  (ohne Slash am Ende)
+# .htaccess.template - einzige Quelle fuer die Frontend-.htaccess.
+# Das Vite-Plugin in vite.config.js erzeugt daraus beim Build dist/.htaccess
+# (renderHtaccess in services/securityHeaders.js) und ersetzt alle Platzhalter
+# der Form _ _NAME_ _ (ohne Leerzeichen):
+#   BASE => URL-Pfad ohne Slash am Ende (leer fuer Root, /SKM_Canary fuer Canary)
+#   BASE_REGEX => derselbe Pfad, fuer Regex escaped
+#   CSP_HEADER, CSP, REFERRER_POLICY, PERMISSIONS_POLICY, HSTS => Werte aus
+#   services/securityHeaders.js. Header-Werte bitte dort aendern, nicht hier.
+# Report-Only statt scharf: Build mit VITE_CSP_REPORT_ONLY=1.
 
 # --- Grundkonfig ---
 Options -Indexes
@@ -33,9 +40,19 @@ RewriteRule ^ __BASE__/index.html [L]
   AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css application/javascript application/json image/svg+xml
 </IfModule>
 
-# --- Security Header (knapp gehalten) ---
-<IfModule mod_headers.c>
+# --- Security Header (Backlog P1.2) ---
+# Nicht fuer api/ unterhalb des Document Root: die API setzt ihre eigenen
+# Header (api/securityHeaders.php). Ein unset in api/.htaccess ginge nicht,
+# da bei PHP-FPM auch die PHP-Header in der always-Tabelle liegen.
+# Permissions-Policy: camera=() bis Backlog P2.1 (QR-Scan), dann camera=(self).
+# Bewusst ohne IfModule: fehlt mod_headers, soll Apache einen Fehler melden
+# statt die Seite still ohne CSP auszuliefern.
+<If "%{REQUEST_URI} !~ m#^__BASE_REGEX__/api(/|$)#">
+  Header always set __CSP_HEADER__ "__CSP__"
   Header always set X-Content-Type-Options "nosniff"
-  Header set Referrer-Policy "strict-origin-when-cross-origin"
-  Header set X-Frame-Options "SAMEORIGIN"
-</IfModule>
+  Header always set X-Frame-Options "DENY"
+  Header always set Referrer-Policy "__REFERRER_POLICY__"
+  Header always set Permissions-Policy "__PERMISSIONS_POLICY__"
+</If>
+# HSTS nur ueber HTTPS, ohne includeSubDomains, ohne preload (auch fuer api/)
+Header always set Strict-Transport-Security "__HSTS__" "expr=%{HTTPS} == 'on'"

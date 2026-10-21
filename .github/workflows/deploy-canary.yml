@@ -7,6 +7,9 @@ env:
   # === Build-Variablen ===
   VITE_BASE: /SKM_Canary/
   VITE_HORIZON_URL: https://horizon.stellar.org
+  # CSP zuerst nur beobachten (Content-Security-Policy-Report-Only).
+  # Zum Scharfschalten auf dem Canary diese Zeile entfernen.
+  VITE_CSP_REPORT_ONLY: '1'
   # Optional: nur setzen, wenn vorhanden – sonst Zeile löschen
   # VITE_BACKEND_URL: https://<DEINE-DOMAIN>/api
 
@@ -36,6 +39,7 @@ jobs:
           VITE_BASE: ${{ env.VITE_BASE }}
           VITE_HORIZON_URL: ${{ env.VITE_HORIZON_URL }}
           VITE_BACKEND_URL: ${{ env.VITE_BACKEND_URL }}
+          VITE_CSP_REPORT_ONLY: ${{ env.VITE_CSP_REPORT_ONLY }}
         run: |
           npm run build
 
@@ -44,9 +48,9 @@ jobs:
           # Ordner bereits vorhanden). Liegt im Repo-Root, nicht unter frontend/.
           if [ -f ../scripts/gen-build-info.mjs ]; then (cd .. && node scripts/gen-build-info.mjs); fi
 
-          # .htaccess aus Template erzeugen (BASE ohne Slash am Ende!)
-          BASE_NO_TRAIL="${VITE_BASE%/}"
-          sed "s#__BASE__#${BASE_NO_TRAIL}#g" ./.htaccess.template > ./dist/.htaccess
+          # dist/.htaccess erzeugt der Build selbst (Vite-Plugin skm-htaccess,
+          # Base aus VITE_BASE, CSP aus services/securityHeaders.js)
+          test -f ./dist/.htaccess || (echo ".htaccess fehlt im Build" && exit 1)
 
           # Smoke-Check: Base in index.html
           grep -n "${VITE_BASE}" ./dist/index.html || (echo "Base nicht gefunden" && exit 1)

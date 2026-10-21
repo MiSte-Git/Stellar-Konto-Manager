@@ -10,6 +10,7 @@
     "open": "npx open http://localhost:5173",
     "lint": "eslint .",
     "preview": "vite preview",
+    "preview:csp": "VITE_BACKEND_URL= vite build && VITE_BACKEND_URL= vite preview",
     "i18n:ack": "node ../scripts/i18n_ack_update.mjs"
   },
   "dependencies": {

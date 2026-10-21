@@ -7,3 +7,12 @@ RewriteRule ^trade($|/.*$) /api/trade.php [L,QSA]
 RewriteRule ^admin($|/.*$) /api/admin.php [L,QSA]
 # Route /api/federation to federation.php (SEP-2 via backend, Backlog P1.2)
 RewriteRule ^federation$ /api/federation.php [L,QSA]
+
+# Security-Header der API setzt api/securityHeaders.php (Paritaet zu
+# services/securityHeaders.js). Die Frontend-.htaccess im Document Root nimmt
+# /api von ihren HTML-Headern aus. Hier bewusst kein Header unset: bei
+# PHP-FPM liegen die PHP-Header in der always-Tabelle und wuerden mitgeloescht.
+# Statische Nicht-PHP-Dateien unter api/ bekommen hier zumindest nosniff.
+<If "%{REQUEST_FILENAME} !~ /\.php$/">
+  Header always set X-Content-Type-Options "nosniff"
+</If>

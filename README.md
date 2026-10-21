@@ -7,6 +7,7 @@ Local-first Stellar Wallet & Account Manager: Trustlines, Zahlungen, Muxed Accou
 ### A. Wallet / Basisfunktionen
 - SecretKeyModal für S-Key-Eingabe, optionales Speichern in der Sitzung (nur lokal).
 - Zahlungen senden (XLM/Assets), Memos, Preflight inkl. Aktivierung nicht finanzierter Konten.
+- Federation-Adressen (SEP-2, `name*domain`) werden über das eigene Backend aufgelöst (`GET /api/federation?type=name&q=...`, Node und PHP), nicht direkt im Browser. Für ein eingegebenes Konto sucht `type=id` den Namen rückwärts: home_domain aus Horizon, stellar.toml und FEDERATION_SERVER nur per https von genau dieser Domain, der Name muss auf diese Domain lauten und vorwärts wieder dasselbe Konto ergeben. Angezeigt wird das neutral als „Name laut Federation-Server von <domain>“, nie als verifiziert.
 - Sichtbarer Processing-Indikator (`common:main.processing`), Explorer-Links zu StellarExpert/LumenScan.
 
 ### B. Trustlines
@@ -55,6 +56,7 @@ Local-first Stellar Wallet & Account Manager: Trustlines, Zahlungen, Muxed Accou
 - Daten (Node-Backend): `data/bugreports.json`, `data/multisig_jobs.json` (lokale Laufzeitdaten, bewusst nicht in Git getrackt, siehe `.gitignore`).
 - PHP-Alternative: `api/` (siehe Abschnitt „PHP-Backend“ unten).
 - Keine externen Server, keine zentrale Datenspeicherung.
+- Security-Header (Content-Security-Policy, HSTS, Referrer-Policy, Permissions-Policy, nosniff, X-Frame-Options) kommen aus einer Quelle: `services/securityHeaders.js`. Daraus erzeugt das Vite-Plugin in `frontend/vite.config.js` beim Build `dist/.htaccess` aus `frontend/.htaccess.template` (SPA-Rewrite plus Header, Base aus `VITE_BASE`), `vite preview` bekommt dieselben Header, `server.js` setzt die API-Header. `api/securityHeaders.php` ist der PHP-Zwilling für die API (Parität per Test). Der Vite-Dev-Server läuft bewusst ohne CSP (HMR). `VITE_CSP_REPORT_ONLY=1` beim Build setzt `Content-Security-Policy-Report-Only` statt der scharfen CSP.
 
 ## Installation & Start (lokal)
 - Voraussetzungen: Node.js 22+ (ab `@stellar/stellar-sdk` 16 erforderlich), npm, moderner Browser.
@@ -80,12 +82,21 @@ Local-first Stellar Wallet & Account Manager: Trustlines, Zahlungen, Muxed Accou
   npm run build
   ```
 
+- Produktions-CSP lokal testen, Arbeitsverzeichnis: `frontend/` (Backend parallel mit `npm start` im Root):
+  ```bash
+  npm run preview:csp                          # Build + vite preview mit Produktions-Headern
+  VITE_CSP_REPORT_ONLY=1 npm run preview:csp   # nur beobachten (Report-Only)
+  ```
+  `/api` und `/horizon` gehen dabei über den Vite-Proxy. Verstöße erscheinen in der Browser-Konsole.
+
 - Tests:
   ```bash
   npm test            # Node-Test-Runner, Arbeitsverzeichnis: Projekt-Root
   npm run test:trade  # nur tradeService-Tests, Arbeitsverzeichnis: Projekt-Root
   cd frontend && npx vitest   # Frontend-Unit-Tests (kein eigener npm-Skript-Eintrag)
+  for f in test/*.test.php; do php "$f" || break; done   # PHP-Tests, Arbeitsverzeichnis: Projekt-Root
   ```
+  Die Federation-Fälle liegen gemeinsam in `test/assets/federationCases.json` und laufen gegen Node und PHP.
 
 ## i18n-System
 - Namespaced JSON unter `frontend/src/locales/<lang>/*.json`, DE als Referenzsprache.
@@ -100,11 +111,12 @@ Local-first Stellar Wallet & Account Manager: Trustlines, Zahlungen, Muxed Accou
 
 ## Sicherheitshinweise
 - Geheimnisse bleiben lokal; keine Secret-Übertragung an Server.
+- Strikte Content-Security-Policy in Produktion: nur eigene Scripts und Styles, `connect-src` nur zu eigener API, Horizon (Mainnet/Testnet), Friendbot und CoinGecko. Neue direkte Verbindungen aus dem Frontend müssen in `services/securityHeaders.js` ergänzt werden (der Test `frontend/src/test/cspSourceGuards.test.js` meldet sie). Eine eigene Horizon-URL per `localStorage` (`SKM_HORIZON_URL`) gilt nur im Dev-Modus.
 - Multisig-XDR-Signaturen können vollständig lokal gehandhabt werden.
 - Empfehlung: echte Wallet-Keys nur auf vertrauenswürdigen Geräten, Backups offline halten.
 
 ## PHP-Backend (wenn Node nicht erlaubt ist)
-- Ordner: `api/` enthält `multisig.php` (nutzt `challengeStore.php` für die Challenge-Response-Tokenausgabe und `multisigJobsGuard.php` für Rate-Limit + Ablauf verwaister Jobs bei der Job-Erstellung), `trade.php`, `bugreport.php`, `health.php`, `admin.php` (Bugtracker-Admin-Login/Check/Logout per PHP-Session, siehe `admin_session.php`), `.htaccess`, `composer.json`/`composer.lock` sowie den Fallback-Routing-Unterordner `trade/assets/{search,facts,expert}/index.php`. Speicherung der Multisig-Jobs in `api/data/multisig_jobs.json`, der Challenge-Nonces in `api/data/challenges.json` (beide schreibbar machen).
+- Ordner: `api/` enthält `multisig.php` (nutzt `challengeStore.php` für die Challenge-Response-Tokenausgabe und `multisigJobsGuard.php` für Rate-Limit + Ablauf verwaister Jobs bei der Job-Erstellung), `trade.php`, `bugreport.php`, `health.php`, `admin.php` (Bugtracker-Admin-Login/Check/Logout per PHP-Session, siehe `admin_session.php`), `federation.php` (SEP-2 über das Backend, Regeln in `federationService.php`, SSRF-Schutz über `ssrfGuard.php`, Rate-Limit 30 pro Minute und IP in `api/data/federation_rate_limit.json`), `securityHeaders.php` (API-Security-Header, eingebunden über `cors.php`), `.htaccess`, `composer.json`/`composer.lock` sowie den Fallback-Routing-Unterordner `trade/assets/{search,facts,expert}/index.php`. Speicherung der Multisig-Jobs in `api/data/multisig_jobs.json`, der Challenge-Nonces in `api/data/challenges.json` (beide schreibbar machen).
 - `MULTISIG_ADMIN_TOKEN` (echte Prozess-Umgebungsvariable, per `getenv()` gelesen – **nicht** Teil von `api/_config.php`s Array, das über einen anderen Mechanismus eingelesen wird; je nach Hosting z. B. via `.htaccess`/`SetEnv` oder das Hosting-Panel setzen): schützt `DELETE /api/multisig/jobs` (Bulk-Löschung aller Jobs eines Netzwerks, per `x-admin-token`-Header + `hash_equals()`-Vergleich). Gilt für **beide** Netzwerke gleichermaßen – der öffentliche, im Frontend sichtbare Bestätigungstext („DELETE TESTNET JOBS“) ist nur noch ein zusätzlicher Schutz gegen Versehen, kein Ersatz für dieses Secret. Ohne gesetztes `MULTISIG_ADMIN_TOKEN` antwortet der Endpunkt für beide Netzwerke mit 401 – der „Testnet-Jobs löschen“-Button im Frontend funktioniert dann nicht, bis das Token konfiguriert ist.
 - **Vor dem ersten Start**: `api/_config.php` anlegen (Datei ist `.gitignore`t und liegt nicht im Repo!). Muss ein PHP-Array zurückgeben, mindestens:
   ```php
@@ -127,7 +139,8 @@ Local-first Stellar Wallet & Account Manager: Trustlines, Zahlungen, Muxed Accou
   ```
 - Upload/Deploy: `api/*.php`, `api/.htaccess`, `api/composer.json`, `api/composer.lock`, `api/_config.php` (manuell, nicht per Git!), kompletter `api/vendor/` und sicherstellen, dass `api/data/` beschreibbar ist. `api/data/.htaccess` (sperrt direkten HTTP-Zugriff auf `multisig_jobs.json`/`signers_cache.json` u. a. – enthält Access-Tokens/XDRs) liegt im Repo und wird mit hochgeladen.
 - Falls lokal kein PHP/Composer verfügbar (z. B. Windows ohne Extensions): Composer-Installer per `php composer-setup.php`, danach `php composer.phar install --ignore-platform-req=ext-pcntl --ignore-platform-req=ext-gmp` ausführen, anschließend den erzeugten `vendor/` hochladen.
-- Routing: Apache muss `/api/multisig/...`, `/api/trade/...` und `/api/admin/...` per `.htaccess` im `api/`-Ordner auf `multisig.php`, `trade.php` bzw. `admin.php` leiten.
+- Routing: Apache muss `/api/multisig/...`, `/api/trade/...`, `/api/admin/...` und `/api/federation` per `.htaccess` im `api/`-Ordner auf `multisig.php`, `trade.php`, `admin.php` bzw. `federation.php` leiten.
+- Frontend-Deploy: Der Build legt `frontend/dist/.htaccess` an (SPA-Rewrite und Security-Header). Beim manuellen Upload per FileZilla versteckte Dateien anzeigen lassen (Server > Anzeigen versteckter Dateien erzwingen), damit die `.htaccess` mitkommt. Die Header gelten nicht für `/api`; dort setzt PHP eigene. Der Workflow `.github/workflows/deploy.yml` startet nur noch manuell, `deploy-canary.yml` baut mit `VITE_CSP_REPORT_ONLY=1`.
 - Frontend-Builds: `npm run start-build` setzt `VITE_BACKEND_URL` automatisch auf `PROD_API_URL`, wenn nicht explizit gesetzt. Alternativ `VITE_BACKEND_URL=https://www.skm.steei.de` in `.env` definieren, um jeden Build auf die produktive API zu pinnen.
 
 ## Rechtliches
