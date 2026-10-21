@@ -13,10 +13,11 @@ import { formatErrorForUi } from '../../utils/formatErrorForUi.js';
 import { getSessionSecrets, rememberSessionSecrets, InsecureCryptoContextError } from '../../utils/sessionSecrets.js';
 import { assertHorizonNetwork, collectEffectiveSigners } from '../../utils/multisig/jobRevocation.js';
 import { createMultisigJobFromXdr } from '../../utils/multisigApi.js';
-import { claimJobTimeoutSeconds } from '../../utils/stellar/claimableBalances.js';
+import { claimJobTimeoutSeconds, classifyClaimableBalances, fetchClaimableBalances } from '../../utils/stellar/claimableBalances.js';
 import {
   DEFAULT_BATCH_SLIPPAGE,
   NATIVE_TARGET,
+  assetLabel,
   buildBatchTx,
   chunkQuotes,
   countOps,
@@ -30,6 +31,7 @@ const HORIZON_TEST = 'https://horizon-testnet.stellar.org';
 const BASE_RESERVE_XLM = 0.5;
 const STROOPS_PER_XLM = 10000000;
 const TRUSTLINE_LIST_LIMIT = 50;
+const PREVIEW_MAX_AGE_MS = 2 * 60 * 1000;
 
 const btnPrimary = 'rounded-lg border-0 bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50';
 const btnSecondary = 'rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-800 hover:bg-gray-50 disabled:opacity-50 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100';
@@ -69,6 +71,9 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
   const [showSecretModal, setShowSecretModal] = React.useState(false);
   const [prefill, setPrefill] = React.useState([]);
   const [preparedJob, setPreparedJob] = React.useState(null);
+  const [jobCreated, setJobCreated] = React.useState(false);
+  const [quotedAt, setQuotedAt] = React.useState(0);
+  const [quotedSlippage, setQuotedSlippage] = React.useState('');
   const inFlightRef = React.useRef(false);
 
   let target = NATIVE_TARGET;
@@ -84,7 +89,10 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
   }, [trustlineFilter, trustlineTargets]);
 
   React.useEffect(() => {
-    if (!showSecretModal) return undefined;
+    if (!showSecretModal) {
+      setPrefill([]); // entschluesselte Secrets nicht laenger als noetig im State halten
+      return undefined;
+    }
     let cancelled = false;
     getSessionSecrets(publicKey).then((map) => { if (!cancelled) setPrefill(Object.values(map)); }).catch(() => {});
     return () => { cancelled = true; };
@@ -140,6 +148,9 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
       setQuotes(q);
       setFee(feePerOp);
       setQuotedTarget(target);
+      setQuotedAt(Date.now());
+      setQuotedSlippage(String(slip));
+      setJobCreated(false);
       setSelected(new Set(q.filter((x) => x.status === 'ok').map((x) => x.item.id)));
       setPhase('preview');
     } catch (e) {
@@ -169,21 +180,45 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
 
   // Lokal signieren und alle Transaktionen nacheinander senden. Bricht beim ersten Fehler ab:
   // jede Transaktion ist fuer sich atomar, bereits gesendete bleiben gueltig.
+  const targetText = quotedTarget ? assetLabel(quotedTarget, shortenAddress) : '';
+  const targetLooksNative = !!quotedTarget && !quotedTarget.isNative && quotedTarget.code.toUpperCase() === 'XLM';
+
+  // Vor dem Signieren gegen den aktuellen Stand pruefen: Konto, Ziel-Trustline und die
+  // ausgewaehlten Claimable Balances muessen noch genau so sein wie in der Vorschau. Sonst
+  // stimmen Plan und Aufteilung nicht mehr (z. B. mehr als 100 Operationen oder eine
+  // inzwischen angelegte Trustline, die am Ende geloescht wuerde).
+  const verifyFresh = async (server, quotesToCheck) => {
+    if (Date.now() - quotedAt > PREVIEW_MAX_AGE_MS) return { problem: 'previewTooOld' };
+    const fresh = await server.loadAccount(publicKey);
+    if (targetTrustlineStatus(fresh, quotedTarget) !== targetStatus) return { problem: 'changedSincePreview' };
+    const { records } = await fetchClaimableBalances(server, publicKey);
+    const ids = new Set(quotesToCheck.map((q) => q.item.id));
+    const freshItems = new Map(classifyClaimableBalances(records.filter((r) => ids.has(r.id)), fresh).map((it) => [it.id, it]));
+    const unchanged = quotesToCheck.every((q) => {
+      const it = freshItems.get(q.item.id);
+      return it && it.claimableNow && !it.blockedReason && it.hasTrustline === q.item.hasTrustline && it.amount === q.item.amount;
+    });
+    return unchanged ? { fresh } : { problem: 'changedSincePreview' };
+  };
+
+  // Lokal signieren und alle Transaktionen nacheinander senden. Bricht beim ersten Fehler ab:
+  // jede Transaktion ist fuer sich atomar, bereits bestaetigte bleiben gueltig.
   const runLocal = async (collected, remember) => {
     if (inFlightRef.current || !chunks.length) return;
     inFlightRef.current = true;
     setError('');
+    const out = [];
+    let started = false;
     try {
-      if (remember) {
-        try {
-          await rememberSessionSecrets(publicKey, collected);
-        } catch (rememberErr) {
-          if (rememberErr instanceof InsecureCryptoContextError) setError(t('secretKey:remember.insecureContextError'));
-        }
-      }
       const server = getHorizonServer(horizonUrl);
       await assertHorizonNetwork(server, networkPassphrase);
-      const fresh = await server.loadAccount(publicKey);
+      const check = await verifyFresh(server, selectedQuotes);
+      if (check.problem) {
+        setShowSecretModal(false);
+        setError(t(`wallet:batchConvert.${check.problem}`));
+        return;
+      }
+      const { fresh } = check;
       const required = getRequiredThreshold('changeTrust', fresh?.thresholds);
       const { signers, weight } = collectEffectiveSigners(collected, fresh?.signers);
       if (!signers.length || weight < required) {
@@ -192,49 +227,61 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
       }
       setShowSecretModal(false);
       setPhase('running');
-      const out = [];
-      let includeTargetTrustline = targetTrustlineStatus(fresh, quotedTarget) === 'missing';
+      started = true;
+      let includeTargetTrustline = needTargetTrustline;
       let acct = fresh;
       for (let i = 0; i < chunks.length; i += 1) {
         setProgress({ current: i + 1, total: chunks.length });
-        if (i > 0) acct = await server.loadAccount(publicKey);
-        const tx = buildBatchTx({
-          account: acct,
-          accountId: publicKey,
-          chunk: chunks[i],
-          target: quotedTarget,
-          includeTargetTrustline,
-          fee,
-          networkPassphrase,
-        });
-        signers.forEach((s) => tx.sign(s.keypair));
+        const count = chunks[i].length;
         try {
+          if (i > 0) acct = await server.loadAccount(publicKey);
+          const tx = buildBatchTx({
+            account: acct,
+            accountId: publicKey,
+            chunk: chunks[i],
+            target: quotedTarget,
+            includeTargetTrustline,
+            fee,
+            networkPassphrase,
+          });
+          signers.forEach((s) => tx.sign(s.keypair));
           const res = await submitTransactionSafely(server, tx);
-          out.push({ ok: true, hash: res?.hash || res?.id || tx.hash().toString('hex'), count: chunks[i].length });
+          out.push({ status: 'ok', hash: res?.hash || res?.id || tx.hash().toString('hex'), count });
           includeTargetTrustline = false;
         } catch (e) {
           console.error('[SKM] batch convert transaction failed', e);
-          out.push({ ok: false, count: chunks[i].length, reason: describeError(e) });
+          if (e instanceof AmbiguousSubmitResultError) out.push({ status: 'ambiguous', hash: e.hash, count });
+          else out.push({ status: 'failed', count, reason: describeError(e) });
           break;
         }
       }
-      setResults(out);
-      setPhase('done');
-      onDone?.();
+      // Erst nach mindestens einer erfolgreichen Transaktion merken
+      if (remember && out.some((r) => r.status === 'ok')) {
+        try {
+          await rememberSessionSecrets(publicKey, collected);
+        } catch (rememberErr) {
+          if (rememberErr instanceof InsecureCryptoContextError) setError(t('secretKey:remember.insecureContextError'));
+        }
+      }
     } catch (e) {
       console.error('[SKM] batch convert failed', e);
       setError(describeError(e));
-      setPhase('preview');
     } finally {
       inFlightRef.current = false;
       setProgress(null);
+      // Teilerfolge nie verwerfen: sobald gesendet wurde, Ergebnis zeigen und neu laden
+      if (started) {
+        setResults(out);
+        setPhase('done');
+        onDone?.();
+      }
     }
   };
 
   // Multisig: nur die erste Transaktion als Job. Mehrere Jobs mit fortlaufenden Sequenzen
   // waeren riskant: Wird ein spaeterer Job zuerst fertig signiert, scheitert er dauerhaft.
   const prepareJob = async () => {
-    if (inFlightRef.current || !chunks.length) return;
+    if (inFlightRef.current || !chunks.length || jobCreated) return;
     inFlightRef.current = true;
     setError('');
     try {
@@ -247,18 +294,24 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
       const timeoutSeconds = Math.min(...windows);
       const server = getHorizonServer(horizonUrl);
       await assertHorizonNetwork(server, networkPassphrase);
-      const fresh = await server.loadAccount(publicKey);
+      const check = await verifyFresh(server, chunk);
+      if (check.problem) {
+        setError(t(`wallet:batchConvert.${check.problem}`));
+        return;
+      }
       const tx = buildBatchTx({
-        account: fresh,
+        account: check.fresh,
         accountId: publicKey,
         chunk,
         target: quotedTarget,
-        includeTargetTrustline: targetTrustlineStatus(fresh, quotedTarget) === 'missing',
+        includeTargetTrustline: needTargetTrustline,
         fee,
         networkPassphrase,
         timeoutSeconds,
       });
       const job = await createMultisigJobFromXdr({ network: isTestnet ? 'testnet' : 'public', accountId: publicKey, txXdr: tx.toXDR() });
+      setJobCreated(true);
+      const chunkMin = chunk.reduce((acc, q) => acc + Number(q.destMin || 0), 0);
       setPreparedJob({
         hash: job.hash || tx.hash().toString('hex'),
         xdr: job.xdr,
@@ -268,7 +321,9 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
           items: [
             { label: t('wallet:claimable.jobSource'), value: publicKey },
             { label: t('wallet:batchConvert.jobItems'), value: `${chunk.length}` },
-            { label: t('wallet:batchConvert.target'), value: quotedTarget.code },
+            { label: t('wallet:batchConvert.target'), value: targetText },
+            { label: t('wallet:batchConvert.jobMinimum'), value: `${f(chunkMin)} ${targetText}` },
+            { label: t('wallet:batchConvert.jobSlippage'), value: `${quotedSlippage} %` },
             { label: t('wallet:claimable.jobNetwork'), value: isTestnet ? 'Testnet' : 'Mainnet' },
             { label: t('multisig:detail.idLabel', 'Job-ID'), value: job.id },
             { label: t('wallet:claimable.jobNoteLabel'), value: t('wallet:batchConvert.jobHint') },
@@ -287,7 +342,7 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
     if (q.status === 'ok') {
       return q.plan.mode === 'claimOnly'
         ? t('wallet:batchConvert.status.claimOnly')
-        : `≈ ${f(q.destAmount)} ${quotedTarget?.code || ''}`;
+        : `≈ ${f(q.destAmount)} ${targetText}`;
     }
     return t(`wallet:batchConvert.status.${q.status}`);
   };
@@ -413,7 +468,10 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
                     aria-label={`${q.item.amount} ${q.item.asset.code}`}
                   />
                   <div className="min-w-0 flex-1">
-                    <div className="font-semibold text-gray-900 dark:text-white">{f(q.item.amount)} {q.item.asset.code}</div>
+                    <div className="font-semibold text-gray-900 dark:text-white">
+                      {f(q.item.amount)} {q.item.asset.code}
+                      {q.item.hidden && <span className="ml-2 rounded bg-gray-100 px-1.5 py-0.5 text-[10px] font-medium text-gray-600 dark:bg-gray-700 dark:text-gray-300">{t('wallet:batchConvert.hiddenTag')}</span>}
+                    </div>
                     {!q.item.asset.isNative && <div className="truncate font-mono text-xs text-gray-500" title={q.item.asset.issuer}>{shortenAddress(q.item.asset.issuer)}</div>}
                   </div>
                   <div className={`text-right text-xs ${q.status === 'ok' ? 'text-gray-800 dark:text-gray-200' : 'text-gray-500'}`}>{statusText(q)}</div>
@@ -422,23 +480,30 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
             </ul>
             <dl className="grid grid-cols-2 gap-x-4 gap-y-1 rounded bg-gray-50 p-3 text-xs dark:bg-gray-900/50">
               <dt className="text-gray-600 dark:text-gray-400">{t('wallet:batchConvert.expected')}</dt>
-              <dd className="text-right font-semibold tabular-nums">{f(expectedTotal)} {quotedTarget?.code}</dd>
+              <dd className="text-right font-semibold tabular-nums">{f(expectedTotal)} {targetText}</dd>
               <dt className="text-gray-600 dark:text-gray-400">{t('wallet:batchConvert.minimum')}</dt>
-              <dd className="text-right tabular-nums">{f(minTotal)} {quotedTarget?.code}</dd>
+              <dd className="text-right tabular-nums">{f(minTotal)} {targetText}</dd>
               <dt className="text-gray-600 dark:text-gray-400">{t('wallet:batchConvert.transactions')}</dt>
               <dd className="text-right tabular-nums">{chunks.length}</dd>
               <dt className="text-gray-600 dark:text-gray-400">{t('wallet:batchConvert.fees')}</dt>
               <dd className="text-right tabular-nums">{f(feeTotalXlm)} XLM</dd>
             </dl>
-            {needTargetTrustline && <p className="text-xs text-gray-600 dark:text-gray-300">{t('wallet:batchConvert.targetTrustlineNote', { code: quotedTarget.code })}</p>}
+            {targetLooksNative && (
+              <p role="alert" className="text-xs font-semibold text-amber-900 dark:text-amber-200">
+                {t('wallet:activity.fakeNative', 'Token, kein natives XLM')}: {t('wallet:activity.fakeNativeHint', 'Das ist ein Token eines Herausgebers, nicht das native XLM des Netzwerks.')}
+              </p>
+            )}
+            {needTargetTrustline && <p className="text-xs text-gray-600 dark:text-gray-300">{t('wallet:batchConvert.targetTrustlineNote', { code: targetText })}</p>}
             {anyTempTrustline && <p className="text-xs text-gray-600 dark:text-gray-300">{t('wallet:batchConvert.tempTrustlineNote')}</p>}
             {!reserveOk && <p role="alert" className="text-xs text-red-700 dark:text-red-300">{t('wallet:batchConvert.insufficientReserve', { needed: f(reserveNeeded), available: f(available) })}</p>}
+            {jobCreated && <p role="status" className="text-xs text-green-700 dark:text-green-400">{t('wallet:batchConvert.jobCreated')}</p>}
             {multisig && chunks.length > 1 && <p className="text-xs text-amber-800 dark:text-amber-200">{t('wallet:batchConvert.jobFirstChunkOnly', { count: chunks[0].length })}</p>}
             <p className="text-xs text-gray-500 dark:text-gray-400">{t('wallet:home.tokenNote')}</p>
             <div className="flex flex-wrap justify-end gap-2">
               <button type="button" className={btnSecondary} onClick={() => setPhase('setup')}>{t('wallet:batchConvert.back')}</button>
+              <button type="button" className={btnSecondary} onClick={() => { void loadPreview(); }}>{t('wallet:batchConvert.loadPreview')}</button>
               {multisig && (
-                <button type="button" className={btnSecondary} onClick={() => { void prepareJob(); }} disabled={!chunks.length || !reserveOk}>
+                <button type="button" className={btnSecondary} onClick={() => { void prepareJob(); }} disabled={!chunks.length || !reserveOk || jobCreated}>
                   {t('wallet:claimable.prepareJob')}
                 </button>
               )}
@@ -459,14 +524,14 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
           <div className="mt-4 space-y-2">
             <ul className="space-y-1 text-xs">
               {results.map((r, i) => (
-                <li key={i} className={r.ok ? 'text-green-700 dark:text-green-400 break-all' : 'text-red-700 dark:text-red-300 break-all'}>
-                  {r.ok
-                    ? t('wallet:batchConvert.txOk', { index: i + 1, count: r.count, hash: r.hash })
-                    : t('wallet:batchConvert.txFailed', { index: i + 1, count: r.count, reason: r.reason })}
+                <li key={i} className={`break-all ${r.status === 'ok' ? 'text-green-700 dark:text-green-400' : r.status === 'ambiguous' ? 'text-amber-800 dark:text-amber-200' : 'text-red-700 dark:text-red-300'}`}>
+                  {r.status === 'ok' && t('wallet:batchConvert.txOk', { index: i + 1, count: r.count, hash: r.hash })}
+                  {r.status === 'ambiguous' && t('wallet:batchConvert.txAmbiguous', { index: i + 1, count: r.count, hash: r.hash })}
+                  {r.status === 'failed' && t('wallet:batchConvert.txFailed', { index: i + 1, count: r.count, reason: r.reason })}
                 </li>
               ))}
             </ul>
-            {results.some((r) => !r.ok) && <p className="text-xs text-gray-600 dark:text-gray-300">{t('wallet:batchConvert.stoppedNote')}</p>}
+            {results.some((r) => r.status !== 'ok') && <p className="text-xs text-gray-600 dark:text-gray-300">{t('wallet:batchConvert.stoppedNote')}</p>}
             <div className="flex justify-end">
               <button type="button" className={btnPrimary} onClick={onClose}>{t('common:close', 'Schließen')}</button>
             </div>

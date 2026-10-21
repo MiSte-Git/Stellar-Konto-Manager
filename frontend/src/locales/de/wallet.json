@@ -124,7 +124,7 @@
     "noTrustTitle": "Für Assets ohne Trustline ({{count}})",
     "noTrustShow": "Anzeigen",
     "noTrustHide": "Verbergen",
-    "noTrustNote": "Einlösen legt eine Trustline an und bindet 0.5 XLM Reserve. Unaufgefordert zugesandte Token werden oft für Betrugsversuche genutzt. SKM bewertet keine Token und trifft keine Aussage darüber, ob ein Token echt ist. Prüfe die Fakten zum Token bei Bedarf in der Token-Suche.",
+    "noTrustNote": "Für diese Assets besteht keine Trustline. Einlösen legt eine an und bindet 0.5 XLM Reserve. Fakten zum Token findest du in der Token-Suche.",
     "truncated": "Es werden nur die ersten {{count}} Einträge angezeigt.",
     "loadError": "Claimable Balances konnten nicht geladen werden.",
     "insufficientReserve": "Für die Trustline werden {{reserve}} XLM Reserve benötigt, verfügbar sind {{available}} XLM.",
@@ -132,6 +132,10 @@
     "success": "{{amount}} {{code}} eingelöst. Transaktion {{hash}}.",
     "failed": "Einlösen fehlgeschlagen: {{reason}}",
     "ambiguous": "Das Ergebnis ist unklar (Netzwerkfehler). Bitte prüfe die Transaktion {{hash}} im Explorer, bevor du es erneut versuchst.",
+    "blocked": {
+      "trustlineNotAuthorized": "Deine Trustline für dieses Asset ist vom Herausgeber nicht freigegeben.",
+      "trustlineLimit": "Das Limit deiner Trustline reicht für diesen Betrag nicht."
+    },
     "networkMismatch": "Der Horizon-Server gehört nicht zum gewählten Netzwerk. Es wurde nichts signiert oder gesendet.",
     "prepareJob": "Als Multisig-Job vorbereiten",
     "insufficientWeightJob": "Die eingegebenen Signer erreichen zusammen nicht das nötige Gewicht {{required}}. Bereite stattdessen einen Multisig-Job vor, dann können die anderen Signer auf der Webseite signieren.",
@@ -141,7 +145,7 @@
     "jobTrustline": "Trustline anlegen",
     "jobNetwork": "Netzwerk",
     "jobNoteLabel": "Hinweis",
-    "jobHint": "Die Claimable Balance kann ablaufen oder anderweitig eingelöst werden, bevor alle signiert haben. Der Job scheitert dann beim Einreichen, es geht nichts verloren. Die Gültigkeit des Jobs endet spätestens, wenn die Claimable Balance abläuft."
+    "jobHint": "Die Claimable Balance kann ablaufen oder anderweitig eingelöst werden, bevor alle signiert haben. Der Job scheitert dann beim Einreichen. Scheitert er erst im Ledger, ist die Gebühr verbraucht, sonst ändert sich nichts. Die Gültigkeit des Jobs ist so begrenzt, dass sie nicht über das Ende der Einlösbarkeit hinausgeht."
   },
   "batchConvert": {
     "button": "Batch-Convert ({{count}})",
@@ -175,21 +179,30 @@
     "insufficientReserve": "Nicht genug verfügbares XLM: benötigt {{needed}} XLM (Reserve und Gebühren), verfügbar {{available}} XLM.",
     "jobFirstChunkOnly": "Als Multisig-Job wird nur die erste Transaktion mit {{count}} Einträgen vorbereitet. Starte den Batch-Convert danach erneut für den Rest.",
     "jobItems": "Einträge",
-    "jobHint": "Kurse und Claimable Balances können sich ändern, bis alle signiert haben. Liegt der Erlös dann unter dem Mindestbetrag oder ist eine Claimable Balance nicht mehr da, scheitert der Job beim Einreichen, es geht nichts verloren.",
+    "jobHint": "Kurse und Claimable Balances können sich ändern, bis alle signiert haben. Liegt der Erlös dann unter dem Mindestbetrag oder ist eine Claimable Balance nicht mehr da, scheitert der Job. Scheitert er erst im Ledger, ist die Gebühr verbraucht, sonst ändert sich nichts.",
     "jobTooLittleTime": "Mindestens eine Claimable Balance läuft zu bald ab für einen Multisig-Job. Wähle sie ab oder löse direkt ein.",
     "back": "Zurück",
     "start": "{{count}} einlösen & umwandeln",
     "running": "Transaktion {{current}} von {{total}} wird gesendet …",
     "txOk": "Transaktion {{index}}: {{count}} Einträge umgewandelt. Hash {{hash}}",
     "txFailed": "Transaktion {{index}} mit {{count}} Einträgen fehlgeschlagen: {{reason}}",
-    "stoppedNote": "Nach einem Fehler wurde abgebrochen. Bereits gesendete Transaktionen sind gültig, die fehlgeschlagene hat nichts verändert. Du kannst den Batch-Convert für die restlichen Einträge erneut starten.",
+    "stoppedNote": "Nach einem Fehler wurde abgebrochen. Bestätigte Transaktionen sind gültig. Eine fehlgeschlagene hat bis auf die Gebühr nichts verändert. Ist ein Ergebnis unklar, prüfe den Hash im Explorer, bevor du den Batch-Convert erneut startest.",
+    "txAmbiguous": "Transaktion {{index}} mit {{count}} Einträgen: Ergebnis unklar (Netzwerkfehler). Bitte Hash {{hash}} im Explorer prüfen.",
+    "changedSincePreview": "Seit der Vorschau hat sich etwas geändert (Konto, Trustlines oder Claimable Balances). Bitte die Vorschau neu laden.",
+    "previewTooOld": "Die Vorschau ist älter als 2 Minuten. Bitte neu laden, damit die Kurse aktuell sind.",
+    "hiddenTag": "ausgeblendet",
+    "jobMinimum": "Mindestens erwartet",
+    "jobSlippage": "Slippage",
+    "jobCreated": "Der Job wurde angelegt. Für weitere Einträge den Batch-Convert danach erneut starten.",
     "status": {
       "claimOnly": "nur einlösen",
       "notClaimable": "derzeit nicht einlösbar",
       "ownAsset": "eigenes Asset",
       "authRequired": "Herausgeber verlangt Freigabe",
       "noMarket": "kein Markt gefunden",
-      "quoteFailed": "Abfrage fehlgeschlagen"
+      "quoteFailed": "Abfrage fehlgeschlagen",
+      "trustlineNotAuthorized": "Trustline nicht freigegeben",
+      "trustlineLimit": "Trustline-Limit reicht nicht"
     }
   }
 }

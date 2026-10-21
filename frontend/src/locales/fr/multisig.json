@@ -215,7 +215,16 @@
       "changeTrust": "Définir Trustline pour {{asset}} (Limite : {{limit}})",
       "accountMerge": "Fusionner le compte avec {{destination}}",
       "unknown": "Opération inconnue : {{type}}",
-      "none": "Aucune opération détectée (impossible de décoder le XDR)."
+      "none": "Aucune opération détectée (impossible de décoder le XDR).",
+      "changeTrustRemove": "Supprimer Trustline pour {{asset}}",
+      "claimClaimableBalance": "Utiliser Claimable Balance : {{id}}",
+      "pathPaymentStrictSend": "Échange : {{sendAmount}} {{sendAsset}} contre au moins {{destMin}} {{destAsset}} vers {{destination}} (chemin : {{path}})",
+      "pathPaymentStrictReceive": "Échange : un maximum de {{sendMax}} {{sendAsset}} contre exactement {{destAmount}} {{destAsset}} vers {{destination}} (chemin : {{path}})",
+      "bumpSequence": "Augmenter la séquence du compte à {{bumpTo}}",
+      "ownAccount": "votre propre compte",
+      "warnPathPaymentToOther": "Avertissement : au moins une transaction entraînera le transfert des fonds vers un compte autre que le compte d'origine. Vérifiez l'adresse de destination avant de signer.",
+      "warnUnknown": "Cette transaction contient des opérations que SKM ne peut pas afficher en texte clair : {{types}}. Ne la signez que si vous savez exactement à quoi elles correspondent.",
+      "confirmUnknown": "J'ai examiné cette transaction séparément et je souhaite toujours la signer."
     },
     "validUntil": {
       "label": "Valable jusqu'au",
@@ -240,14 +249,15 @@
       "insufficientWeight": "Les valeurs Signers que vous avez saisies ne totalisent pas le poids requis {{required}}.",
       "noTxData": "La transaction liée à la tâche n'a pas pu être lue ; elle ne peut pas être annulée.",
       "failed": "Échec de la révocation : {{reason}}",
-      "sequenceTooFar": "Le numéro de séquence de cette tâche est nettement supérieur au numéro de séquence actuel du compte. Sa révocation endommagerait le compte et est donc bloquée. Cette tâche n'a probablement pas été créée à l'aide de SKM.",
+      "sequenceTooFar": "La séquence de cette tâche ne correspond pas à la séquence actuelle du compte. Une tâche SKM encore valide a toujours un numéro supérieur d'exactement un. Sa révocation pourrait corrompre d'autres transactions préparées et est donc bloquée.",
       "ambiguous": "Le résultat n'est pas clair (erreur de réseau). Veuillez vérifier la transaction {{hash}} dans l'explorateur avant de réessayer.",
       "sequenceInvalid": "La séquence de l'opération ou du compte est illisible ; la révocation n'est pas possible.",
       "networkUnknown": "Le réseau associé à cette tâche est inconnu ; la révocation est désactivée pour des raisons de sécurité.",
       "hashMismatch": "La transaction de tâche ne correspond pas au hachage enregistré. La révocation est désactivée pour des raisons de sécurité.",
       "accountMismatch": "Le compte d'origine de la transaction est différent du compte de la tâche. La révocation est désactivée pour des raisons de sécurité.",
       "networkMismatch": "Le serveur Horizon ne fait pas partie du réseau de cette tâche. Rien n'a été signé ni envoyé.",
-      "noThresholds": "Impossible de lire le paramètre Thresholds du compte ; la révocation n'est pas possible."
+      "noThresholds": "Impossible de lire le paramètre Thresholds du compte ; la révocation n'est pas possible.",
+      "missingJobData": "Il manque un hachage ou un compte pour cette tâche. La révocation est désactivée pour des raisons de sécurité."
     }
   },
   "secretModal": {

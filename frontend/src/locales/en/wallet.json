@@ -123,7 +123,7 @@
     "noTrustTitle": "For Assets without Trustline ({{count}})",
     "noTrustShow": "Advertisements",
     "noTrustHide": "Hide",
-    "noTrustNote": "Redeeming creates a Trustline and locks 0.5 XLM in reserve. Unsolicited Token are often used in fraud attempts. SKM does not evaluate Token and makes no determination as to whether a Token is genuine. If necessary, verify the facts about Token using the Token search.",
+    "noTrustNote": "There is no Trustline for this Assets. Redeeming it creates one and locks 0.5 XLM in reserve. You can find information about Token in the Token search.",
     "truncated": "Only the first {{count}} entries are displayed.",
     "loadError": "Claimable balances could not be loaded.",
     "insufficientReserve": "Trustline requires {{reserve}} XLM in reserve; {{available}} XLM is available.",
@@ -140,8 +140,12 @@
     "jobTrustline": "Create Trustline",
     "jobNetwork": "Network",
     "jobNoteLabel": "Note",
-    "jobHint": "The Claimable Balance may expire or be redeemed in some other way before everyone has signed. The job will then fail upon submission, but nothing will be lost. The job's validity ends no later than when the Claimable Balance expires.",
-    "empty": "No Claimable Balances found."
+    "jobHint": "The Claimable Balance may expire or be redeemed in some other way before everyone has signed. The job will then fail upon submission. If it fails only in the ledger, the fee is consumed; otherwise, nothing changes. The job’s validity is limited so that it does not extend beyond the end of its redeemability period.",
+    "empty": "No Claimable Balances found.",
+    "blocked": {
+      "trustlineNotAuthorized": "Your Trustline for this Asset has not been approved by the publisher.",
+      "trustlineLimit": "Your Trustline limit is not sufficient for this amount."
+    }
   },
   "batchConvert": {
     "button": "Batch-Convert ({{count}})",
@@ -170,26 +174,35 @@
     "insufficientReserve": "Insufficient XLM available: {{needed}} XLM required (reserve and fees), {{available}} XLM available.",
     "jobFirstChunkOnly": "Only the first transaction with {{count}} entries is prepared as a Multisig job. Then run Batch-Convert again for the rest.",
     "jobItems": "Entries",
-    "jobHint": "Rates and Claimable Balances may change until everyone has signed. If the proceeds are then below the minimum amount or if a Claimable Balance is no longer available, the job will fail upon submission, but nothing will be lost.",
+    "jobHint": "Rates and Claimable Balances may change until everyone has signed. If the proceeds are then below the minimum amount or if a Claimable Balance is no longer present, the job fails. If it fails in the ledger, the fee is forfeited; otherwise, nothing changes.",
     "jobTooLittleTime": "At least one Claimable Balance is set to expire too soon for a Multisig job. Either deselect it or terminate it immediately.",
     "back": "Back",
     "start": "Redeem & convert {{count}}",
     "running": "Transaction {{current}} of {{total}} is being sent …",
     "txOk": "Transaction {{index}}: {{count}} entries converted. Hash {{hash}}",
     "txFailed": "Transaction {{index}} with {{count}} entries failed: {{reason}}",
-    "stoppedNote": "The process was aborted due to an error. Transactions that have already been sent are valid; the failed transaction did not change anything. You can restart Batch-Convert for the remaining entries.",
+    "stoppedNote": "The process was aborted due to an error. Confirmed transactions are valid. A failed transaction has not changed anything except for the fee. If the outcome is unclear, check the hash in the explorer before restarting Batch-Convert.",
     "status": {
       "claimOnly": "redeem only",
       "notClaimable": "Currently cannot be redeemed",
       "ownAsset": "own Asset",
       "authRequired": "Publisher Requests Approval",
       "noMarket": "No market found",
-      "quoteFailed": "Query failed"
+      "quoteFailed": "Query failed",
+      "trustlineNotAuthorized": "Trustline not approved",
+      "trustlineLimit": "Trustline—The limit isn't enough"
     },
     "fromTrustlines": "From my Trustlines ({{count}})",
     "trustlineSearch": "Search by code or publisher",
     "trustlineNoMatch": "No matching Trustline.",
     "selectTrustline": "Please select a Trustline as the target Asset.",
-    "trustlineMore": "{{count}} more; please refine your search."
+    "trustlineMore": "{{count}} more; please refine your search.",
+    "txAmbiguous": "Transaction {{index}} with {{count}} entries: Result unclear (Netzwerkfehler). Please check hash {{hash}} in the explorer.",
+    "changedSincePreview": "Something has changed since the preview (account, Trustlines, or Claimable Balances). Please reload the preview.",
+    "previewTooOld": "The preview is more than 2 minutes old. Please reload the page so that the prices are up to date.",
+    "hiddenTag": "hidden",
+    "jobMinimum": "At least as expected",
+    "jobSlippage": "Slippage",
+    "jobCreated": "The job has been created. To add more entries, restart the Batch-Convert process afterward."
   }
 }

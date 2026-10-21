@@ -215,7 +215,16 @@
       "changeTrust": "Trustline instellen voor {{asset}} (limiet: {{limit}})",
       "accountMerge": "Account samenvoegen met {{destination}}",
       "unknown": "Onbekende bewerking: {{type}}",
-      "none": "Er zijn geen bewerkingen gedetecteerd (XDR kon niet worden gedecodeerd)."
+      "none": "Er zijn geen bewerkingen gedetecteerd (XDR kon niet worden gedecodeerd).",
+      "changeTrustRemove": "Verwijder Trustline voor {{asset}}",
+      "claimClaimableBalance": "Inwisselen Claimable Balance: {{id}}",
+      "pathPaymentStrictSend": "Wisselen: {{sendAmount}} {{sendAsset}} voor minimaal {{destMin}} {{destAsset}} naar {{destination}} (pad: {{path}})",
+      "pathPaymentStrictReceive": "Uitwisseling: maximaal {{sendMax}} {{sendAsset}} voor precies {{destAmount}} {{destAsset}} naar {{destination}} (pad: {{path}})",
+      "bumpSequence": "Verhoog de accountvolgorde naar {{bumpTo}}",
+      "ownAccount": "je eigen account",
+      "warnPathPaymentToOther": "Waarschuwing: Bij ten minste één transactie wordt de opbrengst overgemaakt naar een andere rekening dan de bronrekening. Controleer het bestemmingsadres voordat u ondertekent.",
+      "warnUnknown": "Deze transactie bevat bewerkingen die SKM niet in platte tekst kan weergeven: {{types}}. Onderteken alleen als je precies weet wat deze bewerkingen doen.",
+      "confirmUnknown": "Ik heb de transactie apart bekeken en wil deze nog steeds ondertekenen."
     },
     "validUntil": {
       "label": "Geldig tot",
@@ -240,14 +249,15 @@
       "insufficientWeight": "De Signers die je hebt ingevoerd, komen samen niet uit op het vereiste gewicht {{required}}.",
       "noTxData": "De transactie kon niet worden gelezen; deze kan niet worden ingetrokken.",
       "failed": "Intrekking mislukt: {{reden}}",
-      "sequenceTooFar": "Het volgnummer van deze taak ligt ongewoon ver boven het huidige volgnummer van het account. Het intrekken ervan zou het account beschadigen en is daarom geblokkeerd. De taak is waarschijnlijk niet aangemaakt met behulp van SKM.",
+      "sequenceTooFar": "De volgnummering van deze taak komt niet overeen met de huidige volgnummering van de rekening. Een nog geldige SKM-taak heeft altijd precies één hoger volgnummer. Het intrekken ervan zou andere voorbereide transacties kunnen beschadigen en wordt daarom geblokkeerd.",
       "ambiguous": "Het resultaat is onduidelijk (netwerkfout). Controleer de transactie {{hash}} in de explorer voordat je het opnieuw probeert.",
       "sequenceInvalid": "De opdracht- of rekeningreeks is onleesbaar; intrekking is niet mogelijk.",
       "networkUnknown": "Het netwerk dat aan deze taak is gekoppeld, is onbekend; intrekking is om veiligheidsredenen uitgeschakeld.",
       "hashMismatch": "De transactie komt niet overeen met de opgeslagen hash. Intrekking is om veiligheidsredenen uitgeschakeld.",
       "accountMismatch": "De bronrekening voor de transactie verschilt van de rekening van de opdracht. Intrekking is om veiligheidsredenen uitgeschakeld.",
       "networkMismatch": "De Horizon-server maakt geen deel uit van het netwerk van deze taak. Er is niets ondertekend of verzonden.",
-      "noThresholds": "De Thresholds van het account kon niet worden gelezen; intrekking is niet mogelijk."
+      "noThresholds": "De Thresholds van het account kon niet worden gelezen; intrekking is niet mogelijk.",
+      "missingJobData": "Bij deze taak ontbreekt een hash of account. Intrekking is om veiligheidsredenen uitgeschakeld."
     }
   },
   "secretModal": {

@@ -123,7 +123,7 @@
     "noTrustTitle": "Za Assets bez Trustline ({{count}})",
     "noTrustShow": "Oglasi",
     "noTrustHide": "Sakrij",
-    "noTrustNote": "Otkupljivanje stvara Trustline i zaključava 0,5 XLM u rezervi. Nezatraženi Token često se koriste u pokušajima prijevare. SKM ne procjenjuje Token i ne donosi nikakvu odluku o tome je li Token autentičan. Ako je potrebno, provjerite činjenice o Token koristeći pretragu Token.",
+    "noTrustNote": "Za ovaj Assets nema Trustline. Otkupljivanje stvara jedan i zaključava 0,5 XLM u rezervi. Informacije o Token možete pronaći u pretraživanju Token.",
     "truncated": "Prikazuju se samo prva {{count}} unosa.",
     "loadError": "Claimable balances nije mogao biti učitani.",
     "insufficientReserve": "Trustline zahtijeva {{reserve}} XLM u rezervi; {{available}} XLM je dostupan.",
@@ -140,8 +140,12 @@
     "jobTrustline": "Stvorite Trustline",
     "jobNetwork": "Mreža",
     "jobNoteLabel": "Napomena",
-    "jobHint": "Claimable Balance može isteći ili biti iskorišten na neki drugi način prije nego što svi potpišu. Tada će zadatak prilikom podnošenja propasti, ali ništa neće biti izgubljeno. Valjanost zadatka ne prestaje prije isteka Claimable Balance.",
-    "empty": "Nije pronađen Claimable Balances."
+    "jobHint": "Claimable Balance može isteći ili biti iskorišten na neki drugi način prije nego što svi potpišu. Tada će zadatak prilikom slanja neuspjeti. Ako ne uspije samo u ledgeru, naknada se potroši; inače se ništa ne mijenja. Valjanost zadatka ograničena je tako da ne traje duže od kraja razdoblja njegove otkupivosti.",
+    "empty": "Nije pronađen Claimable Balances.",
+    "blocked": {
+      "trustlineNotAuthorized": "Vaš Trustline za ovaj Asset nije odobrio izdavač.",
+      "trustlineLimit": "Vaš Trustline limit nije dovoljan za ovaj iznos."
+    }
   },
   "batchConvert": {
     "button": "Batch-Convert ({{count}})",
@@ -170,26 +174,35 @@
     "insufficientReserve": "Nedovoljno dostupnog XLM-a: {{needed}} XLM potrebno (rezerva i naknade), {{available}} XLM dostupno.",
     "jobFirstChunkOnly": "Samo se prva transakcija s {{count}} unosa priprema kao zadatak Multisig. Zatim ponovno pokrenite Batch-Convert za preostale.",
     "jobItems": "Prijave",
-    "jobHint": "Stope i Claimable Balances mogu se promijeniti dok svi ne potpišu. Ako su prihodi tada ispod minimalnog iznosa ili ako Claimable Balance više nije dostupan, posao će pri predaji propasti, ali ništa neće biti izgubljeno.",
+    "jobHint": "Stope i Claimable Balances mogu se promijeniti dok svi ne potpišu. Ako prihodi tada budu ispod minimalnog iznosa ili ako Claimable Balance više nije prisutan, posao propada. Ako propadne u evidenciji, naknada se gubi; inače se ništa ne mijenja.",
     "jobTooLittleTime": "Najmanje jedan Claimable Balance će isteći prerano za posao Multisig. Ili ga deselektirajte ili ga odmah prekinite.",
     "back": "Natrag",
     "start": "Iskoristi i pretvori {{count}}",
     "running": "Transakcija {{current}} od {{total}} se šalje …",
     "txOk": "Transakcija {{index}}: {{count}} stavki pretvoreno. Hash {{hash}}",
     "txFailed": "Transakcija {{index}} s {{count}} unosa nije uspjela: {{reason}}",
-    "stoppedNote": "Proces je prekinut zbog pogreške. Transakcije koje su već poslane su valjane; neuspjela transakcija nije ništa promijenila. Možete ponovno pokrenuti Batch-Convert za preostale stavke.",
+    "stoppedNote": "Proces je prekinut zbog pogreške. Potvrđene transakcije su valjane. Neuspjela transakcija nije ništa promijenila osim naknade. Ako je ishod nejasan, provjerite hash u istraživaču prije ponovnog pokretanja Batch-Convert.",
     "status": {
       "claimOnly": "isključivo za otkup",
       "notClaimable": "Trenutno se ne može iskoristiti",
       "ownAsset": "vlastiti Asset",
       "authRequired": "Izdavač traži odobrenje",
       "noMarket": "Nije pronađen nijedan tržište",
-      "quoteFailed": "Upit je propao"
+      "quoteFailed": "Upit je propao",
+      "trustlineNotAuthorized": "Trustline nije odobreno",
+      "trustlineLimit": "Trustline—Ograničenje nije dovoljno"
     },
     "fromTrustlines": "Od mog Trustlines ({{count}})",
     "trustlineSearch": "Pretraži po kodu ili izdavaču",
     "trustlineNoMatch": "Nema podudaranja za Trustline.",
     "selectTrustline": "Molimo odaberite Trustline kao ciljni Asset.",
-    "trustlineMore": "{{count}} više; molimo precizirajte svoju pretragu."
+    "trustlineMore": "{{count}} više; molimo precizirajte svoju pretragu.",
+    "txAmbiguous": "Transakcija {{index}} s {{count}} ulazima: Rezultat nejasan (Netzwerkfehler). Molimo provjerite hash {{hash}} u istraživaču.",
+    "changedSincePreview": "Nešto se promijenilo od pregleda (račun, Trustlines ili Claimable Balances). Molimo ponovno učitajte pregled.",
+    "previewTooOld": "Pregled je stariji od 2 minute. Molimo ponovno učitajte stranicu kako bi cijene bile ažurirane.",
+    "hiddenTag": "skriveno",
+    "jobMinimum": "Barem kako se i očekivalo",
+    "jobSlippage": "Klizanje",
+    "jobCreated": "Posao je stvoren. Da biste dodali više unosa, nakon toga ponovno pokrenite proces Batch-Convert."
   }
 }

@@ -123,7 +123,7 @@
     "noTrustTitle": "Pour Assets sans Trustline ({{count}})",
     "noTrustShow": "Publicités",
     "noTrustHide": "Masquer",
-    "noTrustNote": "L'opération d'échange génère un Trustline et bloque 0,5 XLM en réserve. Les Token non sollicités sont souvent utilisés dans le cadre de tentatives de fraude. SKM n'évalue pas les Token et ne se prononce pas sur l'authenticité d'un Token. Si nécessaire, vérifiez les informations relatives aux Token à l'aide de la recherche Token.",
+    "noTrustNote": "Il n'existe pas de Trustline pour ce Assets. Son rachat en crée un et bloque 0,5 XLM en réserve. Vous trouverez des informations sur Token dans la recherche Token.",
     "truncated": "Seules les {{count}} premières entrées sont affichées.",
     "loadError": "Impossible de charger Claimable balances.",
     "insufficientReserve": "Trustline nécessite {{reserve}} XLM en réserve ; {{available}} XLM est disponible.",
@@ -140,8 +140,12 @@
     "jobTrustline": "Créer Trustline",
     "jobNetwork": "Réseau",
     "jobNoteLabel": "Remarque",
-    "jobHint": "Le Claimable Balance peut expirer ou être utilisé d'une autre manière avant que tout le monde ait signé. La tâche échouera alors lors de sa soumission, mais aucune donnée ne sera perdue. La validité de la tâche prend fin au plus tard à l'expiration du Claimable Balance.",
-    "empty": "Aucun Claimable Balances n'a été trouvé."
+    "jobHint": "Le Claimable Balance peut expirer ou être utilisé d’une autre manière avant que tout le monde ait signé. La tâche échouera alors lors de sa soumission. Si l’échec se produit uniquement dans le registre, les frais sont prélevés ; dans le cas contraire, rien ne change. La validité de la tâche est limitée de manière à ne pas dépasser la fin de sa période d’utilisation.",
+    "empty": "Aucun Claimable Balances n'a été trouvé.",
+    "blocked": {
+      "trustlineNotAuthorized": "Votre Trustline pour ce Asset n'a pas été approuvé par l'éditeur.",
+      "trustlineLimit": "Votre limite Trustline n'est pas suffisante pour ce montant."
+    }
   },
   "batchConvert": {
     "button": "Batch-Convert ({{count}})",
@@ -170,26 +174,35 @@
     "insufficientReserve": "Quantité insuffisante de XLM disponible : {{needed}} XLM requis (réserve et frais), {{available}} XLM disponibles.",
     "jobFirstChunkOnly": "Seule la première transaction comportant {{count}} entrées est préparée en tant que tâche Multisig. Exécutez ensuite à nouveau Batch-Convert pour le reste.",
     "jobItems": "Entrées",
-    "jobHint": "Les taux et Claimable Balances peuvent évoluer jusqu’à ce que tout le monde ait signé. Si le produit de la vente est alors inférieur au montant minimum ou si un Claimable Balance n’est plus disponible, la tâche échouera lors de sa soumission, mais aucune donnée ne sera perdue.",
+    "jobHint": "Les taux et Claimable Balances peuvent évoluer jusqu’à ce que tout le monde ait signé. Si le produit de l’opération est alors inférieur au montant minimum ou si un Claimable Balance n’est plus présent, la transaction échoue. En cas d’échec dans le registre, les frais sont perdus ; dans le cas contraire, rien ne change.",
     "jobTooLittleTime": "Au moins un Claimable Balance est configuré pour expirer trop tôt pour une tâche Multisig. Veuillez soit le désélectionner, soit l'interrompre immédiatement.",
     "back": "Retour",
     "start": "Échanger et convertir {{count}}",
     "running": "La transaction {{current}} sur {{total}} est en cours d'envoi…",
     "txOk": "Transaction {{index}} : {{count}} entrées converties. Hachage {{hash}}",
     "txFailed": "La transaction {{index}} comportant {{count}} entrées a échoué : {{reason}}",
-    "stoppedNote": "Le processus a été interrompu en raison d'une erreur. Les transactions déjà envoyées sont valides ; la transaction qui a échoué n'a rien modifié. Vous pouvez relancer Batch-Convert pour les entrées restantes.",
+    "stoppedNote": "Le processus a été interrompu en raison d'une erreur. Les transactions confirmées sont valides. Une transaction ayant échoué n'a rien modifié, à l'exception des frais. Si le résultat n'est pas clair, vérifiez le hachage dans l'explorateur avant de relancer Batch-Convert.",
     "status": {
       "claimOnly": "à utiliser uniquement",
       "notClaimable": "Ce bon ne peut pas être utilisé pour le moment",
       "ownAsset": "propre Asset",
       "authRequired": "L'éditeur demande une autorisation",
       "noMarket": "Aucun marché trouvé",
-      "quoteFailed": "Échec de la requête"
+      "quoteFailed": "Échec de la requête",
+      "trustlineNotAuthorized": "Trustline non approuvé",
+      "trustlineLimit": "Trustline — La limite n'est pas suffisante"
     },
     "fromTrustlines": "Extrait de mon Trustlines ({{count}})",
     "trustlineSearch": "Recherche par code ou par éditeur",
     "trustlineNoMatch": "Aucune correspondance pour Trustline.",
     "selectTrustline": "Veuillez sélectionner un Trustline comme cible Asset.",
-    "trustlineMore": "{{count}} résultats supplémentaires ; veuillez affiner votre recherche."
+    "trustlineMore": "{{count}} résultats supplémentaires ; veuillez affiner votre recherche.",
+    "txAmbiguous": "Transaction {{index}} comportant {{count}} entrées : résultat incertain (erreur réseau). Veuillez vérifier le hachage {{hash}} dans l'explorateur.",
+    "changedSincePreview": "Un élément a changé depuis l'aperçu (compte, Trustlines ou Claimable Balances). Veuillez actualiser l'aperçu.",
+    "previewTooOld": "L'aperçu date de plus de 2 minutes. Veuillez actualiser la page pour que les prix soient à jour.",
+    "hiddenTag": "masqué",
+    "jobMinimum": "Au moins comme prévu",
+    "jobSlippage": "Glissement",
+    "jobCreated": "La tâche a été créée. Pour ajouter d'autres entrées, redémarrez ensuite le processus Batch-Convert."
   }
 }

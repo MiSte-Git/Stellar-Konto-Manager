@@ -123,7 +123,7 @@
     "noTrustTitle": "Para Assets sin Trustline ({{count}})",
     "noTrustShow": "Anuncios",
     "noTrustHide": "Ocultar",
-    "noTrustNote": "Al canjear se crea un Trustline y se bloquean 0,5 XLM en reserva. Los Token no solicitados suelen utilizarse en intentos de fraude. SKM no evalúa los Token y no determina si un Token es auténtico. Si es necesario, comprueba los datos sobre los Token mediante la búsqueda de Token.",
+    "noTrustNote": "No existe ningún Trustline para este Assets. Al canjearlo, se crea uno y se bloquean 0,5 XLM en reserva. Puedes encontrar información sobre Token en la búsqueda de Token.",
     "truncated": "Solo se muestran las primeras {{count}} entradas.",
     "loadError": "No se ha podido cargar Claimable balances.",
     "insufficientReserve": "Trustline requiere {{reserve}} XLM en reserva; hay {{available}} XLM disponibles.",
@@ -140,8 +140,12 @@
     "jobTrustline": "Crear Trustline",
     "jobNetwork": "Red",
     "jobNoteLabel": "Nota",
-    "jobHint": "El Claimable Balance puede caducar o canjearse de alguna otra forma antes de que todos hayan firmado. En ese caso, el trabajo fallará al enviarlo, pero no se perderá nada. La validez del trabajo finaliza, a más tardar, cuando caduque el Claimable Balance.",
-    "empty": "No se ha encontrado Claimable Balances."
+    "jobHint": "El Claimable Balance puede caducar o canjearse de alguna otra forma antes de que todos hayan firmado. En ese caso, la tarea fallará al enviarse. Si solo falla en el libro mayor, se consumirá la comisión; de lo contrario, no habrá ningún cambio. La validez de la tarea está limitada para que no se prolongue más allá del final de su periodo de canje.",
+    "empty": "No se ha encontrado Claimable Balances.",
+    "blocked": {
+      "trustlineNotAuthorized": "Tu Trustline para este Asset no ha sido aprobado por la editorial.",
+      "trustlineLimit": "Tu límite de Trustline no es suficiente para esta cantidad."
+    }
   },
   "batchConvert": {
     "button": "Batch-Convert ({{count}})",
@@ -170,26 +174,35 @@
     "insufficientReserve": "No hay suficientes XLM disponibles: se necesitan {{needed}} XLM (reserva y comisiones), hay {{available}} XLM disponibles.",
     "jobFirstChunkOnly": "Solo la primera transacción con {{count}} entradas se prepara como una tarea Multisig. A continuación, vuelve a ejecutar Batch-Convert para el resto.",
     "jobItems": "Entradas",
-    "jobHint": "Las tarifas y Claimable Balances pueden variar hasta que todos hayan firmado. Si, en ese momento, los ingresos son inferiores al importe mínimo o si ya no se dispone de un Claimable Balance, el trabajo fallará al enviarlo, pero no se perderá nada.",
+    "jobHint": "Los tipos de interés y Claimable Balances pueden variar hasta que todos hayan firmado. Si, en ese momento, los ingresos son inferiores al importe mínimo o si ya no existe un Claimable Balance, la operación falla. Si falla en el libro mayor, se pierde la comisión; en caso contrario, no cambia nada.",
     "jobTooLittleTime": "Al menos un Claimable Balance está configurado para caducar demasiado pronto para un trabajo Multisig. Desmárcalo o cancélalo inmediatamente.",
     "back": "Atrás",
     "start": "Canjear y convertir {{count}}",
     "running": "Se está enviando la transacción {{current}} de {{total}}…",
     "txOk": "Transacción {{index}}: {{count}} entradas convertidas. Hash {{hash}}",
     "txFailed": "La transacción {{index}}, con {{count}} entradas, ha fallado: {{reason}}",
-    "stoppedNote": "El proceso se ha interrumpido debido a un error. Las transacciones que ya se han enviado son válidas; la transacción fallida no ha modificado nada. Puedes reiniciar Batch-Convert para las entradas restantes.",
+    "stoppedNote": "El proceso se ha interrumpido debido a un error. Las transacciones confirmadas son válidas. Una transacción fallida no ha modificado nada, salvo la comisión. Si el resultado no está claro, comprueba el hash en el explorador antes de reiniciar Batch-Convert.",
     "status": {
       "claimOnly": "solo canjear",
       "notClaimable": "Por el momento no se puede canjear",
       "ownAsset": "propio Asset",
       "authRequired": "La editorial solicita la aprobación",
       "noMarket": "No se ha encontrado ningún mercado",
-      "quoteFailed": "La consulta ha fallado"
+      "quoteFailed": "La consulta ha fallado",
+      "trustlineNotAuthorized": "Trustline no aprobado",
+      "trustlineLimit": "Trustline—El límite no es suficiente"
     },
     "fromTrustlines": "De mi Trustlines ({{count}})",
     "trustlineSearch": "Buscar por código o editorial",
     "trustlineNoMatch": "No se ha encontrado ningún valor que coincida con Trustline.",
     "selectTrustline": "Selecciona un Trustline como destino Asset.",
-    "trustlineMore": "{{count}} más; por favor, afina tu búsqueda."
+    "trustlineMore": "{{count}} más; por favor, afina tu búsqueda.",
+    "txAmbiguous": "Transacción {{index}} con {{count}} entradas: resultado poco claro (error de red). Comprueba el hash {{hash}} en el explorador.",
+    "changedSincePreview": "Ha habido algún cambio desde la vista previa (cuenta, Trustlines o Claimable Balances). Vuelve a cargar la vista previa.",
+    "previewTooOld": "La vista previa tiene más de 2 minutos de antigüedad. Actualiza la página para que los precios estén actualizados.",
+    "hiddenTag": "oculto",
+    "jobMinimum": "Al menos, tal y como se esperaba",
+    "jobSlippage": "Deslizamiento",
+    "jobCreated": "Se ha creado el trabajo. Para añadir más entradas, reinicia el proceso Batch-Convert a continuación."
   }
 }

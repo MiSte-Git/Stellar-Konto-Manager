@@ -123,7 +123,7 @@
     "noTrustTitle": "Voor Assets zonder Trustline ({{count}})",
     "noTrustShow": "Advertenties",
     "noTrustHide": "Verbergen",
-    "noTrustNote": "Bij het inwisselen wordt een Trustline aangemaakt en wordt 0,5 XLM in reserve geblokkeerd. Ongevraagde Token worden vaak gebruikt bij pogingen tot fraude. SKM beoordeelt Token niet en doet geen uitspraak over de echtheid van een Token. Controleer indien nodig de feiten over Token met behulp van de Token-zoekfunctie.",
+    "noTrustNote": "Er is geen Trustline voor deze Assets. Als je deze inwisselt, wordt er een aangemaakt en wordt 0,5 XLM in reserve geblokkeerd. Informatie over Token vind je via de zoekopdracht Token.",
     "truncated": "Er worden slechts de eerste {{count}} vermeldingen weergegeven.",
     "loadError": "Claimable balances kon niet worden geladen.",
     "insufficientReserve": "Trustline vereist {{reserve}} XLM in reserve; {{available}} XLM is beschikbaar.",
@@ -140,8 +140,12 @@
     "jobTrustline": "Maak Trustline aan",
     "jobNetwork": "Netwerk",
     "jobNoteLabel": "Opmerking",
-    "jobHint": "De Claimable Balance kan verlopen of op een andere manier worden ingewisseld voordat iedereen heeft ondertekend. De taak zal dan bij het indienen mislukken, maar er gaat niets verloren. De geldigheidsduur van de taak eindigt uiterlijk wanneer de Claimable Balance verloopt.",
-    "empty": "Er is geen Claimable Balances gevonden."
+    "jobHint": "De Claimable Balance kan verlopen of op een andere manier worden ingewisseld voordat iedereen heeft ondertekend. De opdracht zal dan bij het indienen mislukken. Als dit alleen in het grootboek mislukt, gaat de vergoeding verloren; anders verandert er niets. De geldigheidsduur van de opdracht is beperkt, zodat deze niet langer duurt dan de periode waarin deze kan worden ingewisseld.",
+    "empty": "Er is geen Claimable Balances gevonden.",
+    "blocked": {
+      "trustlineNotAuthorized": "Uw Trustline voor deze Asset is niet goedgekeurd door de uitgever.",
+      "trustlineLimit": "Uw limiet van Trustline is niet voldoende voor dit bedrag."
+    }
   },
   "batchConvert": {
     "button": "Batch-Convert ({{count}})",
@@ -170,26 +174,35 @@
     "insufficientReserve": "Onvoldoende XLM beschikbaar: {{needed}} XLM vereist (reserve en kosten), {{available}} XLM beschikbaar.",
     "jobFirstChunkOnly": "Alleen de eerste transactie met {{count}} records wordt voorbereid als een Multisig-taak. Voer vervolgens Batch-Convert opnieuw uit voor de rest.",
     "jobItems": "Inzendingen",
-    "jobHint": "De tarieven en Claimable Balances kunnen veranderen totdat iedereen heeft getekend. Als de opbrengst dan onder het minimumbedrag ligt of als een Claimable Balance niet langer beschikbaar is, zal de opdracht bij het indienen mislukken, maar er gaat niets verloren.",
+    "jobHint": "De tarieven en Claimable Balances kunnen veranderen totdat iedereen heeft ondertekend. Als de opbrengst dan onder het minimumbedrag ligt of als er geen Claimable Balance meer is, mislukt de opdracht. Als de opdracht in het grootboek mislukt, wordt de vergoeding verbeurd; anders verandert er niets.",
     "jobTooLittleTime": "Ten minste één Claimable Balance is zo ingesteld dat deze te vroeg afloopt voor een Multisig-taak. Schakel deze optie uit of beëindig de taak onmiddellijk.",
     "back": "Terug",
     "start": "Inwisselen en omzetten {{count}}",
     "running": "Transactie {{current}} van {{total}} wordt verzonden …",
     "txOk": "Transactie {{index}}: {{count}} vermeldingen geconverteerd. Hash {{hash}}",
     "txFailed": "Transactie {{index}} met {{count}} vermeldingen is mislukt: {{reason}}",
-    "stoppedNote": "Het proces is vanwege een fout afgebroken. Transacties die al zijn verzonden, zijn geldig; de mislukte transactie heeft niets veranderd. Je kunt Batch-Convert voor de resterende vermeldingen opnieuw starten.",
+    "stoppedNote": "Het proces is vanwege een fout afgebroken. Bevestigde transacties zijn geldig. Een mislukte transactie heeft niets veranderd, behalve de vergoeding. Als de uitkomst onduidelijk is, controleer dan de hash in de explorer voordat je Batch-Convert opnieuw start.",
     "status": {
       "claimOnly": "alleen inwisselen",
       "notClaimable": "Kan momenteel niet worden ingewisseld",
       "ownAsset": "eigen Asset",
       "authRequired": "Uitgever vraagt om goedkeuring",
       "noMarket": "Er is geen markt gevonden",
-      "quoteFailed": "De zoekopdracht is mislukt"
+      "quoteFailed": "De zoekopdracht is mislukt",
+      "trustlineNotAuthorized": "Trustline niet goedgekeurd",
+      "trustlineLimit": "Trustline—De limiet is niet voldoende"
     },
     "fromTrustlines": "Van mijn Trustlines ({{count}})",
     "trustlineSearch": "Zoeken op code of uitgever",
     "trustlineNoMatch": "Er is geen overeenkomst met Trustline.",
     "selectTrustline": "Kies een Trustline als doel Asset.",
-    "trustlineMore": "{{count}} meer; verfijn je zoekopdracht."
+    "trustlineMore": "{{count}} meer; verfijn je zoekopdracht.",
+    "txAmbiguous": "Transactie {{index}} met {{count}} vermeldingen: Resultaat onduidelijk (netwerkfout). Controleer de hash {{hash}} in de explorer.",
+    "changedSincePreview": "Er is iets veranderd sinds de preview (account, Trustlines of Claimable Balances). Laad de preview opnieuw.",
+    "previewTooOld": "Het voorbeeld is meer dan 2 minuten oud. Verfris de pagina zodat de prijzen weer actueel zijn.",
+    "hiddenTag": "verborgen",
+    "jobMinimum": "Ten minste zoals verwacht",
+    "jobSlippage": "Slippage",
+    "jobCreated": "De taak is aangemaakt. Om meer vermeldingen toe te voegen, moet u het proces Batch-Convert daarna opnieuw starten."
   }
 }

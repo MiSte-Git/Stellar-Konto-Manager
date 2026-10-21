@@ -69,12 +69,36 @@ export function describePredicateWindow(predicate) {
   return null;
 }
 
+// Betrag in Stroops (BigInt), null bei ungueltiger Eingabe.
+export function toStroops(value) {
+  const m = /^(\d+)(?:\.(\d{1,7}))?$/.exec(String(value ?? '').trim());
+  if (!m) return null;
+  return BigInt(m[1]) * 10000000n + BigInt((m[2] || '').padEnd(7, '0'));
+}
+
+export function fromStroops(stroops) {
+  const neg = stroops < 0n;
+  const v = neg ? -stroops : stroops;
+  const int = v / 10000000n;
+  const frac = String(v % 10000000n).padStart(7, '0').replace(/0+$/, '');
+  return `${neg ? '-' : ''}${int}${frac ? `.${frac}` : ''}`;
+}
+
+function trustlineHasRoom(line, amount) {
+  const limit = toStroops(line.limit);
+  const balance = toStroops(line.balance || '0');
+  const buying = toStroops(line.buying_liabilities || '0') ?? 0n;
+  const need = toStroops(amount);
+  if (limit == null || balance == null || need == null) return true; // unbekannt: nicht sperren
+  return limit - balance - buying >= need;
+}
+
 // Ordnet die Records fuer ein Konto ein. account = Horizon-AccountResponse des Empfaengers.
 export function classifyClaimableBalances(records, account, nowSec = Math.floor(Date.now() / 1000)) {
   const accountId = account?.account_id || account?.id || '';
   const balances = Array.isArray(account?.balances) ? account.balances : [];
-  const trustlines = new Set(
-    balances.filter((b) => b.asset_type !== 'native' && b.asset_code).map((b) => `${b.asset_code}:${b.asset_issuer}`)
+  const trustlines = new Map(
+    balances.filter((b) => b.asset_type !== 'native' && b.asset_code).map((b) => [`${b.asset_code}:${b.asset_issuer}`, b])
   );
   return (Array.isArray(records) ? records : [])
     .map((r) => {
@@ -83,14 +107,23 @@ export function classifyClaimableBalances(records, account, nowSec = Math.floor(
       if (!asset || !claimant || !r?.id) return null;
       const createdSec = toEpochSeconds(r.last_modified_time);
       const claimableNow = evaluatePredicate(claimant.predicate, nowSec, createdSec);
+      const line = asset.isNative ? null : trustlines.get(asset.key);
+      // Eine vorhandene, aber nicht freigegebene oder volle Trustline laesst das Einloesen im Ledger
+      // scheitern (Gebuehr weg, im Batch die ganze Transaktion). Deshalb vorab sperren.
+      let blockedReason = null;
+      if (line && line.is_authorized === false) blockedReason = 'trustlineNotAuthorized';
+      else if (line && !trustlineHasRoom(line, r.amount)) blockedReason = 'trustlineLimit';
       return {
         id: r.id,
         amount: String(r.amount || '0'),
         asset,
         sponsor: r.sponsor || '',
         claimableNow,
+        blockedReason,
+        predicate: claimant.predicate,
+        createdSec,
         window: describePredicateWindow(claimant.predicate),
-        hasTrustline: asset.isNative || trustlines.has(asset.key),
+        hasTrustline: asset.isNative || !!line,
         isIssuer: !asset.isNative && asset.issuer === accountId,
       };
     })
@@ -113,7 +146,22 @@ export function buildClaimTx({ account, item, fee, networkPassphrase, timeoutSec
 export const MIN_JOB_WINDOW_SECONDS = 300;
 export function claimJobTimeoutSeconds(item, multisigTimeoutSeconds, nowSec = Math.floor(Date.now() / 1000)) {
   const configured = Math.max(60, Number(multisigTimeoutSeconds || 0) || 86400);
-  const until = item?.window?.until;
+  let until = item?.window?.until;
+  // Zusammengesetzte Bedingungen (and/or/rel_before): Ende der Einloesbarkeit per Halbierung suchen.
+  // Annahme: ein einziger Wechsel von einloesbar zu nicht mehr einloesbar im betrachteten Zeitraum.
+  if (until == null && item?.predicate && !item.predicate.unconditional) {
+    const ok = (sec) => evaluatePredicate(item.predicate, sec, item.createdSec);
+    if (!ok(nowSec)) return null;
+    if (!ok(nowSec + configured)) {
+      let lo = nowSec;
+      let hi = nowSec + configured;
+      while (hi - lo > 1) {
+        const mid = Math.floor((lo + hi) / 2);
+        if (ok(mid)) lo = mid; else hi = mid;
+      }
+      until = hi;
+    }
+  }
   if (until == null) return configured;
   const remaining = Math.floor(until - nowSec) - 30;
   if (remaining < MIN_JOB_WINDOW_SECONDS) return null;

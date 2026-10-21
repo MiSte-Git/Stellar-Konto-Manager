@@ -215,7 +215,16 @@
       "changeTrust": "Imposta Trustline per {{asset}} (Limite: {{limit}})",
       "accountMerge": "Unisci l'account con {{destination}}",
       "unknown": "Operazione sconosciuta: {{type}}",
-      "none": "Non sono state rilevate operazioni (impossibile decodificare XDR)."
+      "none": "Non sono state rilevate operazioni (impossibile decodificare XDR).",
+      "changeTrustRemove": "Rimuovi Trustline per {{asset}}",
+      "claimClaimableBalance": "Riscatta Claimable Balance: {{id}}",
+      "pathPaymentStrictSend": "Scambio: {{sendAmount}} {{sendAsset}} per almeno {{destMin}} {{destAsset}} verso {{destination}} (percorso: {{path}})",
+      "pathPaymentStrictReceive": "Scambio: un massimo di {{sendMax}} {{sendAsset}} per esattamente {{destAmount}} {{destAsset}} verso {{destination}} (percorso: {{path}})",
+      "bumpSequence": "Aumentare la sequenza dell'account a {{bumpTo}}",
+      "ownAccount": "il tuo account",
+      "warnPathPaymentToOther": "Avviso: almeno una transazione invierà i fondi a un conto diverso da quello di origine. Verifica l'indirizzo di destinazione prima di firmare.",
+      "warnUnknown": "Questa transazione contiene operazioni che SKM non può visualizzare in testo normale: {{types}}. Firma solo se sai esattamente a cosa servono.",
+      "confirmUnknown": "Ho esaminato la transazione separatamente e vorrei comunque firmarla."
     },
     "validUntil": {
       "label": "Valido fino al",
@@ -240,14 +249,15 @@
       "insufficientWeight": "I valori Signers inseriti non raggiungono il peso richiesto {{required}}.",
       "noTxData": "Non è stato possibile leggere la transazione di lavoro; non è possibile revocarla.",
       "failed": "Revoca non riuscita: {{motivo}}",
-      "sequenceTooFar": "Il numero di sequenza di questo processo è insolitamente superiore a quello attuale dell'account. La sua revoca causerebbe un danneggiamento dell'account ed è pertanto bloccata. Probabilmente il processo non è stato creato utilizzando SKM.",
+      "sequenceTooFar": "La sequenza di questo processo non corrisponde alla sequenza attuale dell'account. Un processo SKM ancora valido ha sempre una sequenza esattamente superiore di uno. La sua revoca potrebbe compromettere altre transazioni preparate e pertanto è bloccata.",
       "ambiguous": "Il risultato non è chiaro (errore di rete). Si prega di controllare la transazione {{hash}} nell'explorer prima di riprovare.",
       "sequenceInvalid": "La sequenza relativa all'incarico o al conto è illeggibile; non è possibile procedere alla revoca.",
       "networkUnknown": "La rete associata a questo processo è sconosciuta; la revoca è disabilitata per motivi di sicurezza.",
       "hashMismatch": "La transazione relativa al lavoro non corrisponde all'hash memorizzato. La revoca è disabilitata per motivi di sicurezza.",
       "accountMismatch": "Il conto di origine della transazione è diverso dal conto del lavoro. La revoca è disabilitata per motivi di sicurezza.",
       "networkMismatch": "Il server Horizon non fa parte della rete di questo processo. Non è stato firmato né inviato nulla.",
-      "noThresholds": "Impossibile leggere il valore Thresholds dell'account; la revoca non è possibile."
+      "noThresholds": "Impossibile leggere il valore Thresholds dell'account; la revoca non è possibile.",
+      "missingJobData": "In questo lavoro manca un hash o un account. La revoca è disabilitata per motivi di sicurezza."
     }
   },
   "secretModal": {

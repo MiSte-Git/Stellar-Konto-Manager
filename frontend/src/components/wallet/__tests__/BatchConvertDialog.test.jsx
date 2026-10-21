@@ -2,6 +2,7 @@ import React from 'react';
 import { render, screen, waitFor, fireEvent, within } from '@testing-library/react';
 import { I18nextProvider } from 'react-i18next';
 import { Account, Keypair, Networks, TransactionBuilder } from '@stellar/stellar-sdk';
+import { AmbiguousSubmitResultError } from '../../../utils/stellar/submitTransactionSafely.js';
 import i18n from '../../../i18n.js';
 import BatchConvertDialog from '../BatchConvertDialog.jsx';
 
@@ -13,7 +14,7 @@ const COSIGNER = Keypair.random().publicKey();
 const ISSUER = Keypair.random().publicKey();
 const id = (n) => `00000000${String(n).padStart(64, '0')}`;
 
-const hoisted = vi.hoisted(() => ({ loadAccountMock: vi.fn(), submitMock: vi.fn(), pathsMock: vi.fn() }));
+const hoisted = vi.hoisted(() => ({ loadAccountMock: vi.fn(), submitMock: vi.fn(), pathsMock: vi.fn(), recordsMock: vi.fn(), rememberMock: vi.fn(async () => {}) }));
 
 vi.mock('../../../utils/stellar/stellarUtils.js', async (importOriginal) => ({
   ...(await importOriginal()),
@@ -22,6 +23,7 @@ vi.mock('../../../utils/stellar/stellarUtils.js', async (importOriginal) => ({
     root: vi.fn(async () => ({ network_passphrase: 'Test SDF Network ; September 2015' })),
     feeStats: vi.fn(async () => ({ last_ledger_base_fee: '100', fee_charged: { mode: '100', p95: '100' } })),
     strictSendPaths: (src) => ({ call: () => hoisted.pathsMock(src) }),
+    claimableBalances: () => ({ claimant: () => ({ limit: () => ({ call: hoisted.recordsMock }) }) }),
   }),
 }));
 vi.mock('../../../utils/stellar/submitTransactionSafely.js', async (importOriginal) => ({
@@ -31,7 +33,7 @@ vi.mock('../../../utils/stellar/submitTransactionSafely.js', async (importOrigin
 vi.mock('../../../utils/sessionSecrets.js', async (importOriginal) => ({
   ...(await importOriginal()),
   getSessionSecrets: vi.fn(async () => ({})),
-  rememberSessionSecrets: vi.fn(async () => {}),
+  rememberSessionSecrets: hoisted.rememberMock,
 }));
 
 function makeAccount({ multisig = false } = {}) {
@@ -50,9 +52,21 @@ const tokenItem = (n, code) => ({
   asset: { isNative: false, code, issuer: ISSUER, key: `${code}:${ISSUER}` },
 });
 
+// Horizon-Records passend zu den Eintraegen, fuer die Frischepruefung vor dem Signieren
+function recordsFor(items) {
+  return items.map((it) => ({
+    id: it.id,
+    asset: it.asset.isNative ? 'native' : `${it.asset.code}:${it.asset.issuer}`,
+    amount: it.amount,
+    claimants: [{ destination: ME.publicKey, predicate: { unconditional: true } }],
+  }));
+}
+
 function renderDialog(props = {}) {
   const onDone = vi.fn();
   const onClose = vi.fn();
+  const items = props.items || [tokenItem(1, 'SPAMA'), tokenItem(2, 'SPAMB'), tokenItem(3, 'NOMKT')];
+  hoisted.recordsMock.mockResolvedValue({ records: recordsFor(items) });
   render(
     <I18nextProvider i18n={i18n}>
       <BatchConvertDialog
@@ -60,7 +74,7 @@ function renderDialog(props = {}) {
         account={makeAccount()}
         network="TESTNET"
         available={50}
-        items={[tokenItem(1, 'SPAMA'), tokenItem(2, 'SPAMB'), tokenItem(3, 'NOMKT')]}
+        items={items}
         multisig={false}
         multisigTimeoutSeconds={86400}
         fmt={(v) => String(v)}
@@ -205,4 +219,94 @@ describe('BatchConvertDialog', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Vorschau laden' }));
     await screen.findByText('Bitte eine Trustline als Ziel-Asset auswählen.');
   });
+
+  const many = () => Array.from({ length: 30 }, (_, i) => tokenItem(i + 1, `T${i}`));
+
+  it('behaelt den Teilerfolg, wenn danach das Laden des Kontos scheitert', async () => {
+    const { onDone } = renderDialog({ items: many() });
+    await loadPreview();
+    let calls = 0;
+    hoisted.loadAccountMock.mockImplementation(async (pk) => {
+      if (pk !== ME.publicKey) return { flags: {} };
+      calls += 1;
+      if (calls >= 2) throw new Error('horizon down');
+      return makeAccount();
+    });
+    const errSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    await startAndSign();
+    await screen.findByText(/Transaktion 1: 25 Einträge umgewandelt/);
+    expect(screen.getByText(/Transaktion 2 mit 5 Einträgen fehlgeschlagen/)).toBeInTheDocument();
+    expect(onDone).toHaveBeenCalled();
+    errSpy.mockRestore();
+  });
+
+  it('zeigt ein unklares Ergebnis als unklar, nicht als fehlgeschlagen', async () => {
+    hoisted.submitMock.mockRejectedValueOnce(new AmbiguousSubmitResultError('amb-hash', new Error('timeout')));
+    const errSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    renderDialog();
+    await loadPreview();
+    await startAndSign();
+    await screen.findByText(/Ergebnis unklar.*amb-hash/);
+    expect(screen.queryByText(/fehlgeschlagen:/)).not.toBeInTheDocument();
+    errSpy.mockRestore();
+  });
+
+  it('bricht ab, wenn eine ausgewaehlte Claimable Balance seit der Vorschau verschwunden ist', async () => {
+    renderDialog();
+    await loadPreview();
+    hoisted.recordsMock.mockResolvedValue({ records: recordsFor([tokenItem(2, 'SPAMB')]) });
+    await startAndSign();
+    await screen.findByText(/Seit der Vorschau hat sich etwas geändert/);
+    expect(hoisted.submitMock).not.toHaveBeenCalled();
+  });
+
+  it('verlangt eine neue Vorschau nach mehr als 2 Minuten', async () => {
+    renderDialog();
+    await loadPreview();
+    const realNow = Date.now();
+    const nowSpy = vi.spyOn(Date, 'now').mockReturnValue(realNow + 3 * 60 * 1000);
+    await startAndSign();
+    await screen.findByText(/älter als 2 Minuten/);
+    expect(hoisted.submitMock).not.toHaveBeenCalled();
+    nowSpy.mockRestore();
+  });
+
+  it('merkt Secrets erst nach erfolgreicher Transaktion', async () => {
+    renderDialog();
+    await loadPreview();
+    await startAndSign();
+    await waitFor(() => expect(hoisted.submitMock).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(hoisted.rememberMock).toHaveBeenCalledTimes(1));
+    expect(hoisted.rememberMock.mock.invocationCallOrder[0]).toBeGreaterThan(hoisted.submitMock.mock.invocationCallOrder[0]);
+  });
+
+  it('warnt bei einem fremden Token mit Code XLM als Ziel und zeigt den Herausgeber', async () => {
+    renderDialog();
+    fireEvent.click(screen.getByRole('radio', { name: 'Anderes Asset (CODE:Herausgeber)' }));
+    fireEvent.change(screen.getByRole('textbox', { name: 'Anderes Asset (CODE:Herausgeber)' }), { target: { value: `XLM:${ISSUER}` } });
+    await loadPreview();
+    expect(screen.getByText(/Token, kein natives XLM/)).toBeInTheDocument();
+    expect(screen.getAllByText(new RegExp(`XLM \\(${ISSUER.slice(0, 6)}`)).length).toBeGreaterThan(0);
+  });
+
+  it('legt bei Multisig keinen zweiten Job an', async () => {
+    hoisted.loadAccountMock.mockImplementation(async (pk) => (pk === ME.publicKey ? makeAccount({ multisig: true }) : { flags: {} }));
+    const fetchMock = vi.fn(async (_url, opts) => ({ ok: true, json: async () => ({ id: 'job-8', txHash: 'h', txXdrCurrent: JSON.parse(opts.body).txXdr }) }));
+    vi.stubGlobal('fetch', fetchMock);
+    renderDialog({ multisig: true, account: makeAccount({ multisig: true }) });
+    await loadPreview();
+    fireEvent.click(screen.getByRole('button', { name: 'Als Multisig-Job vorbereiten' }));
+    await screen.findByText('job-8');
+    fireEvent.click(screen.getByRole('button', { name: 'Abbrechen' }));
+    expect(screen.getByRole('button', { name: 'Als Multisig-Job vorbereiten' })).toBeDisabled();
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    vi.unstubAllGlobals();
+  });
+
+  it('kennzeichnet ausgeblendete Eintraege', async () => {
+    renderDialog({ items: [{ ...tokenItem(1, 'SPAMA'), hidden: true }, tokenItem(2, 'SPAMB')] });
+    await loadPreview();
+    expect(within(row(1)).getByText('ausgeblendet')).toBeInTheDocument();
+  });
 });
+

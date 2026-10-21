@@ -2,6 +2,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { Account, Keypair, Networks } from '@stellar/stellar-sdk';
 import {
+  assetLabel, computeDestMin,
   MAX_OPS_PER_TX, NATIVE_TARGET, buildBatchTx, chunkQuotes, parseTargetAsset, planItem, quoteItem, targetTrustlineStatus,
 } from '../batchConvert.js';
 
@@ -104,5 +105,35 @@ describe('targetTrustlineStatus', () => {
     expect(targetTrustlineStatus(acct, LDEX)).toBe('ok');
     expect(targetTrustlineStatus(acct, token('NEU'))).toBe('missing');
     expect(targetTrustlineStatus(acct, token('LOCK'))).toBe('notAuthorized');
+  });
+});
+
+describe('computeDestMin', () => {
+  it('rechnet exakt in Stroops und rundet ab', () => {
+    expect(computeDestMin('1.5', '2')).toBe('1.47');
+    expect(computeDestMin('0.0000003', '50')).toBe('0.0000001');
+    expect(computeDestMin('922337203685.4775807', '0')).toBe('922337203685.4775807');
+    expect(computeDestMin('1', '0.5')).toBe('0.995');
+  });
+  it('liefert leer bei unsinnigen Werten', () => {
+    expect(computeDestMin('0', '2')).toBe('');
+    expect(computeDestMin('1', '60')).toBe('');
+    expect(computeDestMin('abc', '2')).toBe('');
+  });
+});
+
+describe('assetLabel', () => {
+  it('zeigt Herausgeber, damit ein Token mit Code XLM erkennbar bleibt', () => {
+    expect(assetLabel(NATIVE_TARGET)).toBe('XLM');
+    expect(assetLabel(token('XLM'), (v) => v.slice(0, 4))).toBe(`XLM (${ISSUER.slice(0, 4)})`);
+  });
+});
+
+describe('quoteItem mit gesperrter Trustline', () => {
+  it('fragt keinen Markt ab und meldet den Grund', async () => {
+    const s = { loadAccount: vi.fn(), strictSendPaths: vi.fn() };
+    const q = await quoteItem(s, item(1, token('LOCK'), { hasTrustline: true, blockedReason: 'trustlineNotAuthorized' }), NATIVE_TARGET, '2');
+    expect(q.status).toBe('trustlineNotAuthorized');
+    expect(s.strictSendPaths).not.toHaveBeenCalled();
   });
 });

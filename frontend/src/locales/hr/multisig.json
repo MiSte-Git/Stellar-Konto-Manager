@@ -215,7 +215,16 @@
       "changeTrust": "Postavi Trustline za {{asset}} (Ograničenje: {{limit}})",
       "accountMerge": "Spajanje računa s {{destination}}",
       "unknown": "Nepoznata operacija: {{type}}",
-      "none": "Nije otkrivena nijedna operacija (XDR nije mogao biti dešifriran)."
+      "none": "Nije otkrivena nijedna operacija (XDR nije mogao biti dešifriran).",
+      "changeTrustRemove": "Uklonite Trustline za {{asset}}",
+      "claimClaimableBalance": "Iskoristiti Claimable Balance: {{id}}",
+      "pathPaymentStrictSend": "Zamijeni: {{sendAmount}} {{sendAsset}} za najmanje {{destMin}} {{destAsset}} na {{destination}} (put: {{path}})",
+      "pathPaymentStrictReceive": "Mjenjačnica: najviše {{sendMax}} {{sendAsset}} za točno {{destAmount}} {{destAsset}} na {{destination}} (put: {{path}})",
+      "bumpSequence": "Povećajte redoslijed računa na {{bumpTo}}",
+      "ownAccount": "vaš vlastiti račun",
+      "warnPathPaymentToOther": "Upozorenje: Najmanje jedna transakcija će poslati prihode na račun koji nije izvorni račun. Provjerite odredišnu adresu prije potpisivanja.",
+      "warnUnknown": "Ova transakcija sadrži operacije koje SKM ne može prikazati u običnom tekstu: {{types}}. Potpišite samo ako točno znate što rade.",
+      "confirmUnknown": "Pregledao sam transakciju zasebno i i dalje bih je želio potpisati."
     },
     "validUntil": {
       "label": "Važeće do",
@@ -240,14 +249,15 @@
       "insufficientWeight": "Signers koje ste unijeli ne dostižu potrebnu težinu {{required}}.",
       "noTxData": "Transakcija posla nije mogla biti očitana; ne može se opozvati.",
       "failed": "Opoziv nije uspio: {{reason}}",
-      "sequenceTooFar": "Redoslijed ovog zadatka je neuobičajeno visok u odnosu na trenutni redoslijed računa. Njegovo poništavanje bi oštetilo račun i stoga je blokirano. Zadatak vjerojatno nije stvoren pomoću SKM-a.",
+      "sequenceTooFar": "Redoslijed ovog posla ne odgovara trenutnom redoslijedu računa. Još uvijek važeći SKM posao uvijek je točno jedan viši. Njegovo opozivanje moglo bi oštetiti druge pripremljene transakcije i stoga je blokirano.",
       "ambiguous": "Rezultat je nejasan (Netzwerkfehler). Molimo provjerite transakciju {{hash}} u istraživaču prije ponovnog pokušaja.",
       "sequenceInvalid": "Redoslijed poslova ili računa je nečitljiv; opoziv nije moguć.",
       "networkUnknown": "Mreža povezana s ovim zadatkom je nepoznata; opoziv je onemogućen iz sigurnosnih razloga.",
       "hashMismatch": "Transakcija posla ne odgovara pohranjenom hash-u. Povlačenje je onemogućeno iz sigurnosnih razloga.",
       "accountMismatch": "Izvorni račun za transakciju razlikuje se od računa posla. Povlačenje je onemogućeno iz sigurnosnih razloga.",
       "networkMismatch": "Horizon poslužitelj nije dio mreže ovog posla. Ništa nije potpisano niti poslano.",
-      "noThresholds": "Thresholds računa nije moguće pročitati; opoziv nije moguć."
+      "noThresholds": "Thresholds računa nije moguće pročitati; opoziv nije moguć.",
+      "missingJobData": "Ovaj zadatak nedostaje hash ili račun. Oduzimanje je onemogućeno iz sigurnosnih razloga."
     }
   },
   "secretModal": {

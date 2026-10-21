@@ -2,6 +2,7 @@ import React from 'react';
 import { render, screen, waitFor, fireEvent, within } from '@testing-library/react';
 import { I18nextProvider } from 'react-i18next';
 import { Account, Keypair, Networks, TransactionBuilder } from '@stellar/stellar-sdk';
+import { AmbiguousSubmitResultError } from '../../../utils/stellar/submitTransactionSafely.js';
 import i18n from '../../../i18n.js';
 import ClaimableBalancesPanel from '../ClaimableBalancesPanel.jsx';
 
@@ -13,7 +14,7 @@ const ISSUER = Keypair.random().publicKey();
 const SENDER = Keypair.random().publicKey();
 const id = (n) => `00000000${String(n).padStart(64, '0')}`;
 
-const hoisted = vi.hoisted(() => ({ recordsMock: vi.fn(), loadAccountMock: vi.fn(), submitMock: vi.fn() }));
+const hoisted = vi.hoisted(() => ({ recordsMock: vi.fn(), loadAccountMock: vi.fn(), submitMock: vi.fn(), rememberMock: vi.fn(async () => {}) }));
 
 vi.mock('../../../utils/stellar/stellarUtils.js', async (importOriginal) => ({
   ...(await importOriginal()),
@@ -31,7 +32,7 @@ vi.mock('../../../utils/stellar/submitTransactionSafely.js', async (importOrigin
 vi.mock('../../../utils/sessionSecrets.js', async (importOriginal) => ({
   ...(await importOriginal()),
   getSessionSecrets: vi.fn(async () => ({})),
-  rememberSessionSecrets: vi.fn(async () => {}),
+  rememberSessionSecrets: hoisted.rememberMock,
 }));
 
 const COSIGNER = Keypair.random().publicKey();
@@ -101,7 +102,8 @@ describe('ClaimableBalancesPanel (P1.5)', () => {
     expect(screen.queryByText('BAR')).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Anzeigen' }));
     expect(await screen.findByText('BAR')).toBeInTheDocument();
-    expect(screen.getByText(/SKM bewertet keine Token/, { selector: 'p.px-5.pb-2' })).toBeInTheDocument();
+    expect(screen.getByText(/Für diese Assets besteht keine Trustline/)).toBeInTheDocument();
+    expect(screen.queryByText(/Betrugsversuche/)).not.toBeInTheDocument();
   });
 
   it('nicht einloesbare Eintraege haben einen gesperrten Knopf', async () => {
@@ -212,4 +214,40 @@ describe('ClaimableBalancesPanel (P1.5)', () => {
       expect(hoisted.submitMock).not.toHaveBeenCalled();
     });
   });
+
+  it('sperrt Eintraege mit nicht freigegebener Trustline und nennt den Grund', async () => {
+    const acct = makeAccount();
+    acct.balances[1] = { ...acct.balances[1], is_authorized: false };
+    hoisted.loadAccountMock.mockImplementation(async () => acct);
+    renderPanel({ account: acct });
+    await screen.findByText('Claimable Balances');
+    expect(within(itemById(2)).getByRole('button', { name: 'Einlösen' })).toBeDisabled();
+    expect(within(itemById(2)).getByText(/nicht freigegeben/)).toBeInTheDocument();
+  });
+
+  it('merkt Secrets erst nach erfolgreichem Einloesen', async () => {
+    hoisted.submitMock.mockRejectedValueOnce(Object.assign(new Error('http 400'), { response: { status: 400, data: { extras: { result_codes: { transaction: 'tx_failed' } } } } }));
+    const errSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    renderPanel();
+    await screen.findByText('Claimable Balances');
+    await claim(1);
+    await waitFor(() => expect(hoisted.submitMock).toHaveBeenCalledTimes(1));
+    await screen.findAllByText(/Einlösen fehlgeschlagen/);
+    expect(hoisted.rememberMock).not.toHaveBeenCalled();
+    errSpy.mockRestore();
+  });
+
+  it('schliesst nach unklarem Ergebnis den Dialog und laedt neu statt erneut zu senden', async () => {
+    hoisted.submitMock.mockRejectedValueOnce(new AmbiguousSubmitResultError('amb-hash', new Error('timeout')));
+    const errSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const onClaimed = vi.fn();
+    renderPanel({ onClaimed });
+    await screen.findByText('Claimable Balances');
+    await claim(1);
+    await screen.findByText(/Ergebnis ist unklar.*amb-hash/);
+    expect(document.querySelector('input[type="password"]')).toBeNull();
+    expect(onClaimed).toHaveBeenCalled();
+    errSpy.mockRestore();
+  });
 });
+

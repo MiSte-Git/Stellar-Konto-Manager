@@ -2,6 +2,7 @@
 import { describe, it, expect } from 'vitest';
 import { Account, Keypair, Networks } from '@stellar/stellar-sdk';
 import {
+  fromStroops, toStroops,
   buildClaimTx, claimJobTimeoutSeconds, classifyClaimableBalances, describePredicateWindow, evaluatePredicate, parseClaimableAsset,
 } from '../claimableBalances.js';
 
@@ -99,5 +100,45 @@ describe('claimJobTimeoutSeconds', () => {
 
   it('liefert null, wenn fuer einen Job zu wenig Zeit bleibt', () => {
     expect(claimJobTimeoutSeconds({ window: { until: NOW + 200 } }, 86400, NOW)).toBeNull();
+  });
+});
+
+describe('Stroops', () => {
+  it('rechnet exakt hin und zurueck', () => {
+    expect(toStroops('1.5')).toBe(15000000n);
+    expect(toStroops('0.0000001')).toBe(1n);
+    expect(toStroops('922337203685.4775807')).toBe(9223372036854775807n);
+    expect(toStroops('1.12345678')).toBeNull();
+    expect(fromStroops(15000000n)).toBe('1.5');
+    expect(fromStroops(1n)).toBe('0.0000001');
+  });
+});
+
+describe('gesperrte Trustlines', () => {
+  const rec = (n, code) => ({ id: id(n), asset: `${code}:${ISSUER}`, amount: '5', claimants: [{ destination: ME, predicate: { unconditional: true } }] });
+  it('markiert nicht freigegebene und volle Trustlines', () => {
+    const account = {
+      account_id: ME,
+      balances: [
+        { asset_type: 'credit_alphanum4', asset_code: 'LOCK', asset_issuer: ISSUER, balance: '0', limit: '100', is_authorized: false },
+        { asset_type: 'credit_alphanum4', asset_code: 'FULL', asset_issuer: ISSUER, balance: '98', limit: '100', is_authorized: true },
+        { asset_type: 'credit_alphanum4', asset_code: 'OKAY', asset_issuer: ISSUER, balance: '0', limit: '100', is_authorized: true },
+      ],
+    };
+    const byCode = Object.fromEntries(classifyClaimableBalances([rec(1, 'LOCK'), rec(2, 'FULL'), rec(3, 'OKAY')], account, NOW).map((i) => [i.asset.code, i]));
+    expect(byCode.LOCK.blockedReason).toBe('trustlineNotAuthorized');
+    expect(byCode.FULL.blockedReason).toBe('trustlineLimit');
+    expect(byCode.OKAY.blockedReason).toBeNull();
+  });
+});
+
+describe('claimJobTimeoutSeconds bei zusammengesetzten Bedingungen', () => {
+  it('findet das Ende der Einloesbarkeit auch bei and-Bedingungen', () => {
+    const item = { window: null, createdSec: NOW, predicate: { and: [{ unconditional: true }, { abs_before_epoch: String(NOW + 7200) }] } };
+    expect(claimJobTimeoutSeconds(item, 86400, NOW)).toBe(7170);
+  });
+  it('liefert null, wenn nicht mehr einloesbar', () => {
+    const item = { window: null, createdSec: NOW - 500, predicate: { rel_before: '100' } };
+    expect(claimJobTimeoutSeconds(item, 86400, NOW)).toBeNull();
   });
 });

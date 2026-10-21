@@ -62,3 +62,10 @@ describe('gespeicherte Stufe', () => {
     expect(getStoredFeeLevel()).toBe('fast');
   });
 });
+
+describe('Obergrenze auch fuer die Basisgebuehr', () => {
+  it('deckelt einen ausreissenden last_ledger_base_fee', () => {
+    expect(computeFeePerOp({ last_ledger_base_fee: '99999999', fee_charged: { mode: '100' } }, 'normal')).toBe(String(MAX_FEE_STROOPS));
+  });
+});
+

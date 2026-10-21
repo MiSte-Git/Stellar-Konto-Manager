@@ -6,7 +6,8 @@
 // Token-Trust-Prinzip: Das Ziel-Asset waehlt der Nutzer. SKM schlaegt kein Asset vor ausser
 // dem nativen XLM als Standard und bewertet keine Token.
 import { Asset, Operation, StrKey, TransactionBuilder } from '@stellar/stellar-sdk';
-import { assetFromPathRecord, calculateMinimumDestinationAmount, ASSET_CODE_RE } from '../../components/trading/assetSearchUtils.js';
+import { assetFromPathRecord, ASSET_CODE_RE } from '../../components/trading/assetSearchUtils.js';
+import { fromStroops, toStroops } from './claimableBalances.js';
 
 export const MAX_OPS_PER_TX = 100;
 export const QUOTE_CONCURRENCY = 4;
@@ -29,6 +30,22 @@ export function parseTargetAsset(input) {
   const issuer = v.slice(idx + 1).trim();
   if (!ASSET_CODE_RE.test(code) || !StrKey.isValidEd25519PublicKey(issuer)) return null;
   return { isNative: false, code, issuer, key: `${code}:${issuer}` };
+}
+
+// Mindestbetrag nach Slippage exakt in Stroops, abgerundet. '' wenn nicht sinnvoll.
+export function computeDestMin(destinationAmount, slippagePercent) {
+  const amount = toStroops(destinationAmount);
+  const slip = Number(String(slippagePercent ?? '').replace(',', '.'));
+  if (amount == null || amount <= 0n || !Number.isFinite(slip) || slip < 0 || slip > 50) return '';
+  const bps = BigInt(Math.round(slip * 100));
+  const min = (amount * (10000n - bps)) / 10000n;
+  return min > 0n ? fromStroops(min) : '';
+}
+
+// Ziel- oder Quell-Asset mit Herausgeber, damit ein Token mit Code XLM nicht wie natives XLM aussieht.
+export function assetLabel(asset, shorten = (v) => v) {
+  if (!asset || asset.isNative) return 'XLM';
+  return `${asset.code} (${shorten(asset.issuer)})`;
 }
 
 // Welche Operationen ein Eintrag braucht.
@@ -57,6 +74,7 @@ export async function quoteItem(server, item, target, slippage) {
   const plan = planItem(item, target);
   const base = { item, plan, destAmount: '', destMin: '', path: [] };
   if (!item.claimableNow) return { ...base, status: 'notClaimable' };
+  if (item.blockedReason) return { ...base, status: item.blockedReason };
   if (item.isIssuer) return { ...base, status: 'ownAsset' };
   if (plan.mode === 'claimOnly') return { ...base, status: 'ok', destAmount: item.amount, destMin: item.amount };
   try {
@@ -70,7 +88,7 @@ export async function quoteItem(server, item, target, slippage) {
     const records = Array.isArray(res?.records) ? res.records : [];
     const best = [...records].sort((a, b) => Number(b.destination_amount || 0) - Number(a.destination_amount || 0))[0];
     if (!best || !(Number(best.destination_amount) > 0)) return { ...base, status: 'noMarket' };
-    const destMin = calculateMinimumDestinationAmount(best.destination_amount, slippage);
+    const destMin = computeDestMin(best.destination_amount, slippage);
     if (!destMin) return { ...base, status: 'noMarket' };
     return {
       ...base,

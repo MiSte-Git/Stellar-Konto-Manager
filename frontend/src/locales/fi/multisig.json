@@ -215,7 +215,16 @@
       "changeTrust": "Määritä Trustline-arvo kohteelle {{asset}} (raja: {{limit}})",
       "accountMerge": "Yhdistä tili {{destination}}:iin",
       "unknown": "Tuntematon toiminto: {{type}}",
-      "none": "Toimintoja ei havaittu (XDR-tietoja ei voitu purkaa)."
+      "none": "Toimintoja ei havaittu (XDR-tietoja ei voitu purkaa).",
+      "changeTrustRemove": "Poista Trustline kohdasta {{asset}}",
+      "claimClaimableBalance": "Lunasta Claimable Balance: {{id}}",
+      "pathPaymentStrictSend": "Vaihto: {{sendAmount}} {{sendAsset}} vähintään {{destMin}} {{destAsset}}:ksi kohteeseen {{destination}} (polku: {{path}})",
+      "pathPaymentStrictReceive": "Vaihto: enintään {{sendMax}} {{sendAsset}} tarkalleen {{destAmount}} {{destAsset}}:ksi kohteeseen {{destination}} (polku: {{path}})",
+      "bumpSequence": "Korota tilin järjestysnumero arvoon {{bumpTo}}",
+      "ownAccount": "oma tilisi",
+      "warnPathPaymentToOther": "Varoitus: Ainakin yhdessä tapahtumassa varat siirretään muulle tilille kuin lähdetilille. Tarkista kohdeosoite ennen allekirjoittamista.",
+      "warnUnknown": "Tämä tapahtuma sisältää toimintoja, joita SKM ei voi näyttää selväkielisenä: {{types}}. Allekirjoita vain, jos tiedät tarkalleen, mitä ne tekevät.",
+      "confirmUnknown": "Olen tarkastellut kauppaa erikseen ja haluaisin silti allekirjoittaa sen."
     },
     "validUntil": {
       "label": "Voimassa asti",
@@ -240,14 +249,15 @@
       "insufficientWeight": "Syöttämäsi Signers-arvot eivät yhteensä vastaa vaadittua painoarvoa {{required}}.",
       "noTxData": "Työtehtävää koskevaa tapahtumaa ei voitu lukea; sitä ei voida peruuttaa.",
       "failed": "Peruutus epäonnistui: {{reason}}",
-      "sequenceTooFar": "Tämän tehtävän järjestysnumero on poikkeuksellisen paljon suurempi kuin tilin nykyinen järjestysnumero. Sen peruuttaminen vahingoittaisi tiliä, minkä vuoksi se on estetty. Tehtävää ei todennäköisesti ole luotu SKM:n avulla.",
+      "sequenceTooFar": "Tämän työn järjestysnumero ei vastaa tilin nykyistä järjestysnumeroa. Vielä voimassa oleva SKM-työ on aina täsmälleen yhden numeron suurempi. Sen peruuttaminen voisi vahingoittaa muita valmisteltuja tapahtumia, minkä vuoksi se on estetty.",
       "ambiguous": "Tulos on epäselvä (verkkovirhe). Tarkista transaktio {{hash}} explorerissa ennen kuin yrität uudelleen.",
       "sequenceInvalid": "Työ- tai tilitiedot ovat lukukelvottomia; peruuttaminen ei ole mahdollista.",
       "networkUnknown": "Tähän tehtävään liittyvää verkkoa ei tunneta; peruuttaminen on poistettu käytöstä turvallisuussyistä.",
       "hashMismatch": "Työskentelytapahtuma ei vastaa tallennettua hajautusarvoa. Peruuttaminen on poistettu käytöstä turvallisuussyistä.",
       "accountMismatch": "Tapahtuman lähdetili eroaa työn tilistä. Peruuttaminen on poistettu käytöstä turvallisuussyistä.",
       "networkMismatch": "Horizon-palvelin ei kuulu tämän työn verkkoon. Mitään ei allekirjoitettu eikä lähetetty.",
-      "noThresholds": "Tilin Thresholds -arvoa ei voitu lukea; peruuttaminen ei ole mahdollista."
+      "noThresholds": "Tilin Thresholds -arvoa ei voitu lukea; peruuttaminen ei ole mahdollista.",
+      "missingJobData": "Tästä tehtävästä puuttuu hash-arvo tai tili. Peruuttaminen on poistettu käytöstä turvallisuussyistä."
     }
   },
   "secretModal": {

@@ -47,7 +47,8 @@ export function setStoredFeeLevel(level) {
 
 // Gebuehr pro Operation in Stroops (String, wie TransactionBuilder sie erwartet).
 export function computeFeePerOp(feeStats, level = DEFAULT_FEE_LEVEL) {
-  const base = Math.max(MIN_FEE_STROOPS, positiveNumber(feeStats?.last_ledger_base_fee));
+  // Auch die Basisgebuehr wird gedeckelt, damit ein abweichender feeStats-Wert nicht ungebremst durchgeht.
+  const base = Math.min(MAX_FEE_STROOPS, Math.max(MIN_FEE_STROOPS, positiveNumber(feeStats?.last_ledger_base_fee)));
   let fee = Math.max(base, positiveNumber(feeStats?.fee_charged?.mode));
   if (normalizeFeeLevel(level) === 'fast') {
     fee = Math.max(fee, positiveNumber(feeStats?.fee_charged?.p95), base * FAST_BASE_MULTIPLIER);

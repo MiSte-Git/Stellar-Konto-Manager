@@ -6,6 +6,7 @@ import SecretKeyModal from '../SecretKeyModal.jsx';
 import MultisigPrepareDialog from '../MultisigPrepareDialog.jsx';
 import BatchConvertDialog from './BatchConvertDialog.jsx';
 import { createMultisigJobFromXdr } from '../../utils/multisigApi.js';
+import { assetLabel } from '../../utils/stellar/batchConvert.js';
 import { isMultisigAccount } from '../../utils/stellar/isMultisigAccount.js';
 import { useSettings } from '../../utils/useSettings.js';
 import { getHorizonServer } from '../../utils/stellar/stellarUtils.js';
@@ -107,7 +108,9 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
   const hiddenCount = items.filter((it) => hiddenIds.includes(it.id)).length;
   // Batch-Convert lohnt sich erst ab mehreren Eintraegen; ausgeblendete zaehlen mit,
   // gerade unerwuenschte Token sollen sich so in ein gewaehltes Asset umwandeln lassen.
-  const batchItems = items.filter((it) => it.claimableNow && !it.isIssuer);
+  const batchItems = items
+    .filter((it) => it.claimableNow && !it.isIssuer)
+    .map((it) => ({ ...it, hidden: hiddenIds.includes(it.id) }));
 
   const toggleHidden = (id) => {
     const next = hiddenIds.includes(id) ? hiddenIds.filter((v) => v !== id) : [...hiddenIds, id];
@@ -135,7 +138,7 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
   const startClaim = (item) => {
     setInfo('');
     setClaimError('');
-    if (!item.claimableNow || !reserveOk(item)) return;
+    if (!item.claimableNow || item.blockedReason || !reserveOk(item)) return;
     setClaimItem(item);
   };
 
@@ -144,7 +147,7 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
     if (inFlightRef.current) return;
     setInfo('');
     setClaimError('');
-    if (!item.claimableNow || !reserveOk(item)) return;
+    if (!item.claimableNow || item.blockedReason || !reserveOk(item)) return;
     const timeoutSeconds = claimJobTimeoutSeconds(item, multisigTimeoutSeconds);
     if (timeoutSeconds == null) {
       setClaimError(t('wallet:claimable.tooLittleTime'));
@@ -157,8 +160,8 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
       await assertHorizonNetwork(server, networkPassphrase);
       const fresh = await server.loadAccount(publicKey);
       const [current] = classifyClaimableBalances(records.filter((r) => r.id === item.id), fresh);
-      if (!current || !current.claimableNow) {
-        setClaimError(t('wallet:claimable.notClaimable'));
+      if (!current || !current.claimableNow || current.blockedReason) {
+        setClaimError(t(current?.blockedReason ? `wallet:claimable.blocked.${current.blockedReason}` : 'wallet:claimable.notClaimable'));
         return;
       }
       // Wird erst spaeter eingereicht: Gebuehrenstufe Schnell (siehe fees.js)
@@ -177,8 +180,8 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
           subtitle: t('multisig:prepare.subtitle'),
           items: [
             { label: t('wallet:claimable.jobSource'), value: publicKey },
-            { label: t('wallet:claimable.jobClaim'), value: `${current.amount} ${current.asset.code}` },
-            needsTrustline(current) ? { label: t('wallet:claimable.jobTrustline'), value: current.asset.code } : null,
+            { label: t('wallet:claimable.jobClaim'), value: `${current.amount} ${assetLabel(current.asset, shortenAddress)}` },
+            needsTrustline(current) ? { label: t('wallet:claimable.jobTrustline'), value: assetLabel(current.asset, shortenAddress) } : null,
             { label: t('wallet:claimable.jobNetwork'), value: isTestnet ? 'Testnet' : 'Mainnet' },
             { label: t('multisig:detail.idLabel', 'Job-ID'), value: job.id },
             { label: t('wallet:claimable.jobNoteLabel'), value: t('wallet:claimable.jobHint') },
@@ -208,13 +211,6 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
     try {
       setClaiming(true);
       setClaimError('');
-      if (remember) {
-        try {
-          await rememberSessionSecrets(publicKey, collected);
-        } catch (rememberErr) {
-          if (rememberErr instanceof InsecureCryptoContextError) setClaimError(t('secretKey:remember.insecureContextError'));
-        }
-      }
       const server = getHorizonServer(horizonUrl);
       await assertHorizonNetwork(server, networkPassphrase);
       // Frisch laden: Signer, Thresholds und Trustlines koennen sich geaendert haben.
@@ -223,8 +219,8 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
         records.filter((r) => r.id === claimItem.id),
         fresh
       );
-      if (!item || !item.claimableNow) {
-        setClaimError(t('wallet:claimable.notClaimable'));
+      if (!item || !item.claimableNow || item.blockedReason) {
+        setClaimError(t(item?.blockedReason ? `wallet:claimable.blocked.${item.blockedReason}` : 'wallet:claimable.notClaimable'));
         return;
       }
       const withTrustline = needsTrustline(item);
@@ -244,10 +240,24 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
       const hash = res?.hash || res?.id || tx.hash().toString('hex');
       setClaimItem(null);
       setInfo(t('wallet:claimable.success', { amount: item.amount, code: item.asset.code, hash }));
+      // Erst nach erfolgreicher Signatur und Einreichung merken
+      if (remember) {
+        try {
+          await rememberSessionSecrets(publicKey, collected);
+        } catch (rememberErr) {
+          if (rememberErr instanceof InsecureCryptoContextError) setClaimError(t('secretKey:remember.insecureContextError'));
+        }
+      }
       onClaimed?.();
     } catch (e) {
       console.error('[SKM] claim claimable balance failed', e);
       setClaimError(describeError(e));
+      // Ergebnis unklar: kein sofortiges zweites Senden. Dialog schliessen und neu laden,
+      // dann zeigt die Liste, ob die Claimable Balance noch da ist.
+      if (e instanceof AmbiguousSubmitResultError) {
+        setClaimItem(null);
+        onClaimed?.();
+      }
     } finally {
       inFlightRef.current = false;
       setClaiming(false);
@@ -281,6 +291,7 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
           </div>
           <div className="text-xs text-gray-500 dark:text-gray-400">
             {!item.claimableNow && <span className="font-medium text-gray-700 dark:text-gray-300">{t('wallet:claimable.notClaimable')} </span>}
+            {item.claimableNow && item.blockedReason && <span className="font-medium text-gray-700 dark:text-gray-300">{t(`wallet:claimable.blocked.${item.blockedReason}`)} </span>}
             {item.window?.until && t('wallet:claimable.until', { date: formatDate(item.window.until) })}
             {item.window?.from && t('wallet:claimable.fromDate', { date: formatDate(item.window.from) })}
             {needsTrustline(item) && <span> {t('wallet:claimable.withTrustline', { code: item.asset.code })}</span>}
@@ -294,7 +305,7 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
             <button
               type="button"
               onClick={() => { void prepareJob(item); }}
-              disabled={!item.claimableNow || claiming}
+              disabled={!item.claimableNow || !!item.blockedReason || claiming}
               className="rounded-lg border border-blue-300 bg-white px-3 py-1.5 text-xs font-semibold text-blue-700 hover:bg-blue-50 disabled:opacity-50 dark:border-blue-700 dark:bg-gray-900 dark:text-blue-200"
             >
               {t('wallet:claimable.prepareJob')}
@@ -303,7 +314,7 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
           <button
             type="button"
             onClick={() => startClaim(item)}
-            disabled={!item.claimableNow || claiming}
+            disabled={!item.claimableNow || !!item.blockedReason || claiming}
             className="rounded-lg border-0 bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
           >
             {t('wallet:claimable.claim')}

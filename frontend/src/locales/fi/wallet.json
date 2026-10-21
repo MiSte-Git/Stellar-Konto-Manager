@@ -123,7 +123,7 @@
     "noTrustTitle": "Kun Assets on olemassa mutta Trustline ei ({{count}})",
     "noTrustShow": "Mainokset",
     "noTrustHide": "Piilota",
-    "noTrustNote": "Lunastaminen luo Trustline-tunnuksen ja lukitsee 0,5 XLM:ää varantoon. Pyytämättömiä Token-tunnuksia käytetään usein petosyrityksissä. SKM ei arvioi Token:ta eikä tee päätöstä siitä, onko Token aito. Tarvittaessa tarkista Token:n tiedot käyttämällä Token-hakua.",
+    "noTrustNote": "Tälle Assets:lle ei ole olemassa Trustline:tä. Sen lunastaminen luo sellaisen ja lukitsee 0,5 XLM:ää varantoon. Löydät tietoa Token:sta hakusanalla Token.",
     "truncated": "Vain ensimmäiset {{count}} tulosta näytetään.",
     "loadError": "Claimable balances:tä ei voitu ladata.",
     "insufficientReserve": "Trustline edellyttää {{reserve}} XLM:n varantoa; käytettävissä on {{available}} XLM.",
@@ -140,8 +140,12 @@
     "jobTrustline": "Luo Trustline",
     "jobNetwork": "Verkko",
     "jobNoteLabel": "Huomautus",
-    "jobHint": "Claimable Balance voi vanhentua tai se voidaan lunastaa jollain muulla tavalla ennen kuin kaikki ovat allekirjoittaneet. Tällöin työ epäonnistuu lähetettäessä, mutta mitään ei menetetä. Työn voimassaolo päättyy viimeistään silloin, kun Claimable Balance vanhenee.",
-    "empty": "Claimable Balances:tä ei löytynyt."
+    "jobHint": "Claimable Balance voi vanhentua tai lunastua jollain muulla tavalla ennen kuin kaikki ovat allekirjoittaneet. Tällöin tehtävä epäonnistuu lähetettäessä. Jos se epäonnistuu vain tilikirjassa, maksu menetetään; muussa tapauksessa mikään ei muutu. Tehtävän voimassaoloaika on rajoitettu siten, ettei se ulotu lunastusajan päättymisen yli.",
+    "empty": "Claimable Balances:tä ei löytynyt.",
+    "blocked": {
+      "trustlineNotAuthorized": "Julkaisija ei ole hyväksynyt tämän Asset:n osalta esittämääsi Trustline:tä.",
+      "trustlineLimit": "Trustline-rajaasi ei riitä tämän summan kattamiseen."
+    }
   },
   "batchConvert": {
     "button": "Batch-Convert ({{count}})",
@@ -170,26 +174,35 @@
     "insufficientReserve": "XLM-varat eivät riitä: tarvitaan {{needed}} XLM (varaus ja maksut), käytettävissä on {{available}} XLM.",
     "jobFirstChunkOnly": "Vain ensimmäinen tapahtuma, jossa on {{count}} merkintää, valmistellaan Multisig-tehtäväksi. Suorita sitten Batch-Convert uudelleen lopuille.",
     "jobItems": "Merkinnät",
-    "jobHint": "Hinnat ja Claimable Balances voivat muuttua, kunnes kaikki ovat allekirjoittaneet. Jos tuotto jää tällöin alle vähimmäismäärän tai jos Claimable Balance ei ole enää käytettävissä, työ epäonnistuu lähetettäessä, mutta mitään ei menetetä.",
+    "jobHint": "Hinnat ja Claimable Balances voivat muuttua, kunnes kaikki ovat allekirjoittaneet. Jos tuotto on tällöin alle vähimmäismäärän tai jos Claimable Balance ei enää ole voimassa, tehtävä epäonnistuu. Jos se epäonnistuu tilikirjassa, palkkio menetetään; muussa tapauksessa mikään ei muutu.",
     "jobTooLittleTime": "Ainakin yksi Claimable Balance on asetettu päättymään liian aikaisin Multisig-tehtävän kannalta. Poista sen valinta tai lopeta se välittömästi.",
     "back": "Takaisin",
     "start": "Lunasta ja muunna {{count}}",
     "running": "Lähetetään tapahtumaa {{current}}, jonka määrä on {{total}} …",
     "txOk": "Tapahtuma {{index}}: {{count}} merkintää muunnettu. Hash {{hash}}",
     "txFailed": "Tapahtuma {{index}}, jossa oli {{count}} merkintää, epäonnistui: {{reason}}",
-    "stoppedNote": "Prosessi keskeytettiin virheen vuoksi. Jo lähetetyt tapahtumat ovat voimassa; epäonnistunut tapahtuma ei muuttanut mitään. Voit käynnistää Batch-Convert:n uudelleen jäljellä olevien merkintöjen osalta.",
+    "stoppedNote": "Prosessi keskeytettiin virheen vuoksi. Vahvistetut tapahtumat ovat päteviä. Epäonnistunut tapahtuma ei ole muuttanut mitään muuta kuin maksua. Jos tulos on epäselvä, tarkista hash-arvo explorerissa ennen kuin käynnistät Batch-Convert:n uudelleen.",
     "status": {
       "claimOnly": "vain lunastettavissa",
       "notClaimable": "Tällä hetkellä ei voi lunastaa",
       "ownAsset": "oma Asset",
       "authRequired": "Kustantaja pyytää hyväksyntää",
       "noMarket": "Markkinaa ei löytynyt",
-      "quoteFailed": "Kysely epäonnistui"
+      "quoteFailed": "Kysely epäonnistui",
+      "trustlineNotAuthorized": "Trustline ei hyväksytty",
+      "trustlineLimit": "Trustline—Raja ei riitä"
     },
     "fromTrustlines": "Omat Trustlines ({{count}})",
     "trustlineSearch": "Hae koodin tai julkaisijan mukaan",
     "trustlineNoMatch": "Ei vastaavaa Trustline:tä.",
     "selectTrustline": "Valitse Trustline kohteeksi Asset.",
-    "trustlineMore": "{{count}} lisää; tarkenna hakua."
+    "trustlineMore": "{{count}} lisää; tarkenna hakua.",
+    "txAmbiguous": "Tapahtuma {{index}}, jossa on {{count}} merkintää: Tulos epäselvä (verkkovirhe). Tarkista hash {{hash}} explorerissa.",
+    "changedSincePreview": "Esikatselun jälkeen on tapahtunut muutoksia (tili, Trustlines tai Claimable Balances). Lataa esikatselu uudelleen.",
+    "previewTooOld": "Esikatselu on yli 2 minuuttia vanha. Päivitä sivu, jotta hinnat ovat ajan tasalla.",
+    "hiddenTag": "piilotettu",
+    "jobMinimum": "Ainakin odotusten mukaisesti",
+    "jobSlippage": "Liukuma",
+    "jobCreated": "Työpaikka on luotu. Jos haluat lisätä lisää merkintöjä, käynnistä Batch-Convert-prosessi uudelleen tämän jälkeen."
   }
 }
