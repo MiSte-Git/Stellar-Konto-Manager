@@ -333,7 +333,7 @@
         "label": "StellarExpert imenik",
         "listed": "Upisan u imenik",
         "listedAs": "Upisan u imenik kao „{{name}}“",
-        "notListed": "Nije u imeniku – to ne govori ništa o autentičnosti; mnogi ugledni assets nisu tamo navedeni.",
+        "notListed": "Nije navedeno u imeniku—to ne znači ništa o njegovoj autentičnosti; mnogi Assets tamo nisu navedeni.",
         "unavailable": "StellarExpert nije dostupan – napomena se nije mogla učitati.",
         "notChecked": "Nije provjereno (imenik vrijedi samo za javnu mrežu)."
       }

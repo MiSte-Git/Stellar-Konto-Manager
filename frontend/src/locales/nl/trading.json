@@ -333,7 +333,7 @@
         "label": "StellarExpert-register",
         "listed": "Opgenomen in het register",
         "listedAs": "Opgenomen in het register als \"{{name}}\"",
-        "notListed": "Staat niet in de lijst – dit zegt niets over de authenticiteit; veel gerenommeerde assets staan daar niet in vermeld.",
+        "notListed": "Het feit dat het niet in de lijst staat, zegt niets over de authenticiteit ervan; veel Assets staan daar niet in vermeld.",
         "unavailable": "StellarExpert niet bereikbaar – de aanwijzing kon niet worden geladen.",
         "notChecked": "Niet gecontroleerd (het register geldt alleen voor het openbare netwerk)."
       }

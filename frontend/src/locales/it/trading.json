@@ -333,7 +333,7 @@
         "label": "Directory StellarExpert",
         "listed": "Presente nella directory",
         "listedAs": "Presente nella directory come \"{{name}}\"",
-        "notListed": "Non presente nella directory: questo non dice nulla sull'autenticità; molti asset seri non vi sono elencati.",
+        "notListed": "Il fatto che non figuri nell'elenco non dice nulla sulla sua autenticità; molti Assets non vi figurano.",
         "unavailable": "StellarExpert non raggiungibile: non è stato possibile caricare l'indicazione.",
         "notChecked": "Non verificato (la directory copre solo la rete pubblica)."
       }

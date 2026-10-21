@@ -291,7 +291,7 @@
         "label": "StellarExpert directory",
         "listed": "Listed in the directory",
         "listedAs": "Listed in the directory as \"{{name}}\"",
-        "notListed": "Not in the directory - this says nothing about authenticity; many reputable assets are not listed there.",
+        "notListed": "Not listed in the directory—that doesn't mean anything about its authenticity; many Assets are not listed there.",
         "unavailable": "StellarExpert not reachable - the hint could not be loaded.",
         "notChecked": "Not checked (the directory only covers the public network)."
       }

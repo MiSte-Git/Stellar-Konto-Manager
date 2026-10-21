@@ -102,7 +102,7 @@
     "memoLabel": "Memo",
     "onlyDust": "Saatavilla on vain hyvin pieniä maksuja.",
     "url": "Sisältää verkkosoitteen",
-    "urlHint": "Memo sisältää verkkosoitteen. Laillisissa maksuissa tätä ei vaadita. Älä avaa sitä.",
+    "urlHint": "Memo sisältää verkkosoitteen. Sitä ei tarvita maksun suorittamiseen. Älä avaa linkkiä.",
     "fakeNative": "Token, ei natiivi XML",
     "fakeNativeHint": "Tämä on julkaisijan Token, ei verkoston omaa XLM-muotoa."
   },
@@ -203,6 +203,9 @@
     "hiddenTag": "piilotettu",
     "jobMinimum": "Ainakin odotusten mukaisesti",
     "jobSlippage": "Liukuma",
-    "jobCreated": "Työpaikka on luotu. Jos haluat lisätä lisää merkintöjä, käynnistä Batch-Convert-prosessi uudelleen tämän jälkeen."
+    "jobCreated": "Työpaikka on luotu. Jos haluat lisätä lisää merkintöjä, käynnistä Batch-Convert-prosessi uudelleen tämän jälkeen.",
+    "slippageHigh": "Kun hinnanvaihtelu on {{value}} %, saatat saada huomattavasti vähemmän kuin esikatselussa näkyy.",
+    "targetOwnAsset": "Kohde Asset on annettu omalta tililtäsi. Tätä ei voi muuntaa.",
+    "targetLimit": "Odotetut tulot ylittävät {{code}}:n Trustline-rajan. Korota rajaa tai valitse vähemmän merkintöjä."
   }
 }

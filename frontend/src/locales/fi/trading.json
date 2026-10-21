@@ -333,7 +333,7 @@
         "label": "StellarExpert-hakemisto",
         "listed": "Merkitty hakemistoon",
         "listedAs": "Merkitty hakemistoon nimellä \"{{name}}\"",
-        "notListed": "Ei ole hakemistossa – tämä ei kerro mitään aitoudesta; monet hyvämaineiset assets eivät ole siellä luettelossa.",
+        "notListed": "Ei mainittu hakemistossa – se ei tarkoita mitään sen aitouden suhteen; monia Assets-kohteita ei ole mainittu siellä.",
         "unavailable": "StellarExpert ei ole tavoitettavissa – vihjettä ei voitu ladata.",
         "notChecked": "Ei tarkistettu (hakemisto kattaa vain julkisen verkon)."
       }

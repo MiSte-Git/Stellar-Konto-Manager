@@ -102,7 +102,7 @@
     "memoLabel": "Memo",
     "onlyDust": "Er zijn alleen zeer kleine bedragen beschikbaar.",
     "url": "Bevat een webadres",
-    "urlHint": "Het bestand Memo bevat een webadres. Bij legitieme betalingen is dit niet nodig. Open het niet.",
+    "urlHint": "Het bestand Memo bevat een webadres. Dit is niet nodig om een betaling te verrichten. Open de link niet.",
     "fakeNative": "Token, geen native XML",
     "fakeNativeHint": "Dit is een Token van een uitgever, niet de eigen XLM van het netwerk."
   },
@@ -203,6 +203,9 @@
     "hiddenTag": "verborgen",
     "jobMinimum": "Ten minste zoals verwacht",
     "jobSlippage": "Slippage",
-    "jobCreated": "De taak is aangemaakt. Om meer vermeldingen toe te voegen, moet u het proces Batch-Convert daarna opnieuw starten."
+    "jobCreated": "De taak is aangemaakt. Om meer vermeldingen toe te voegen, moet u het proces Batch-Convert daarna opnieuw starten.",
+    "slippageHigh": "Bij een slippage van {{value}}% kan het zijn dat u aanzienlijk minder ontvangt dan in het voorbeeld wordt weergegeven.",
+    "targetOwnAsset": "De opdracht Asset wordt vanuit uw eigen rekening gegeven. Hiervoor is geen omzetting mogelijk.",
+    "targetLimit": "De verwachte omzet overschrijdt je Trustline-limiet voor {{code}}. Verhoog de limiet of selecteer minder items."
   }
 }

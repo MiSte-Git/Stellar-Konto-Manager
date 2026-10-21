@@ -4895,7 +4895,7 @@
   "trading.assetSearch.facts.expert.label": "2fdd8e9b43dc5ee358cec709ccc1db7fd45c361ece44f575773fa543d6853a98",
   "trading.assetSearch.facts.expert.listed": "79687fa02083eedd631f1f20f611659c803f1dac5f77f9455447c231c2478235",
   "trading.assetSearch.facts.expert.listedAs": "b31c45b5741b0f7bb3d7039c823c78cc9c57caad5af2fe60baef0f0165f33663",
-  "trading.assetSearch.facts.expert.notListed": "36e1b0bd453743b981117e94840ffa9139737f4c0b03e72de31928a290cf5460",
+  "trading.assetSearch.facts.expert.notListed": "0842b3c0f64208164bce44ab7f7ed7883300194b4089ca25fce1a576249962b8",
   "trading.assetSearch.facts.expert.unavailable": "908fe4680951b9f1efee1e6d7d5bf23e16a543a9fad7d2ce65e8ccd2d2324ec8",
   "trading.assetSearch.facts.expert.notChecked": "a50193fad328fd5cd9ed9cb74ae3d1dd0ba2a50cb5eb766c0ff3064c33a2ecc6",
   "trading.assetSearch.risk.title": "e113b08b522c34cab85bfd3689b6ed1c0a435e754032286c339dd0d28b2e77a6",
@@ -5171,7 +5171,7 @@
   "wallet.activity.memoLabel": "64cecb8a6ef3f808e1ce69388bea6e394d9cbcecd7b678f2e7be32624ebe0d28",
   "wallet.activity.onlyDust": "1909b85e57954d03ba3cff3f5910488c3070477b87970f6594c7747dec5c74ed",
   "wallet.activity.url": "ccdf8dc9c60e98f8f15d9b115d4470a5a467a1e0e4f04a437e9aaf52ff0bdcf9",
-  "wallet.activity.urlHint": "2e5dccb2551b433ac6138519623b19a54b1138ebdd053ee05052c22a8da8b0ac",
+  "wallet.activity.urlHint": "1678db5f466717e9a7d370c8099b5a6d645ca080dc59898664e71fb07040bdcb",
   "wallet.activity.fakeNative": "08a7d91915746703bf5ab6e1d31850b5f112348a5039b36021e333a79e3d3860",
   "wallet.activity.fakeNativeHint": "6c1d670445abd28e3a0b4e705da6979d8b7104f35a2851111bedb1a2c217dc31",
   "common.balance.payments.filter.clear": "83b12c2216efb4fdc924e1deb5182e905e4926ed0c1c324d467107f46d5a26a9",
@@ -5335,5 +5335,8 @@
   "wallet.batchConvert.hiddenTag": "e564b4081d7a9ea4b00dada53bdae70c99b87b6fce869f0c3dd4d2bfa1e53e1c",
   "wallet.batchConvert.jobMinimum": "b37a5736fa0ae1009e349b31d05227643c82edc589f8f5b7b0252643b753daf4",
   "wallet.batchConvert.jobSlippage": "d601a6ac7498b8fbcfc5dfe31f06393e5f58077ad6cd05cb8e2f3b34dca432ab",
-  "wallet.batchConvert.jobCreated": "8229d26819b4947b483d478fa9fd5eb206d77decb2a25d897b6874cd22a1ed7b"
+  "wallet.batchConvert.jobCreated": "8229d26819b4947b483d478fa9fd5eb206d77decb2a25d897b6874cd22a1ed7b",
+  "wallet.batchConvert.slippageHigh": "ee854eb019edf13bdc83421bf3218020d772fd95628675a0fa64872905ee30fe",
+  "wallet.batchConvert.targetOwnAsset": "4b79402780dfdaf58f6308c0f2360a678e6f226c0a8495a06c5e77d35b63bbfb",
+  "wallet.batchConvert.targetLimit": "0b5ba092e79c5d4488b7843267e86581127220accbbdb906c7e17115db0bb6b1"
 }

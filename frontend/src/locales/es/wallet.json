@@ -102,7 +102,7 @@
     "memoLabel": "Memo",
     "onlyDust": "Solo se pueden realizar pagos de muy pequeña cuantía.",
     "url": "Contiene una dirección web",
-    "urlHint": "El archivo Memo contiene una dirección web. Los pagos legítimos no requieren esto. No lo abras.",
+    "urlHint": "El archivo Memo contiene una dirección web. No es necesario para realizar un pago. No abras el enlace.",
     "fakeNative": "Token, no es XML nativo",
     "fakeNativeHint": "Se trata de un Token de una editorial, no del XLM nativo de la red."
   },
@@ -203,6 +203,9 @@
     "hiddenTag": "oculto",
     "jobMinimum": "Al menos, tal y como se esperaba",
     "jobSlippage": "Deslizamiento",
-    "jobCreated": "Se ha creado el trabajo. Para añadir más entradas, reinicia el proceso Batch-Convert a continuación."
+    "jobCreated": "Se ha creado el trabajo. Para añadir más entradas, reinicia el proceso Batch-Convert a continuación.",
+    "slippageHigh": "Con un deslizamiento del {{value}} %, es posible que recibas una cantidad considerablemente inferior a la que se muestra en la vista previa.",
+    "targetOwnAsset": "La orden Asset se emite desde tu propia cuenta. No es posible realizar ninguna conversión en este caso.",
+    "targetLimit": "Los ingresos previstos superan tu límite de Trustline para {{code}}. Aumenta el límite o selecciona menos entradas."
   }
 }

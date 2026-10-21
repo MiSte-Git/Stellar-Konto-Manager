@@ -102,7 +102,7 @@
     "memoLabel": "Memo",
     "onlyDust": "Only very small payments are available.",
     "url": "Contains a web address",
-    "urlHint": "The Memo contains a web address. Legitimate payments do not require this. Do not open it.",
+    "urlHint": "The Memo contains a web address. This is not necessary for making a payment. Do not open the link.",
     "fakeNative": "Token, not native XML",
     "fakeNativeHint": "This is a Token from a publisher, not the network's native XLM."
   },
@@ -203,6 +203,9 @@
     "hiddenTag": "hidden",
     "jobMinimum": "At least as expected",
     "jobSlippage": "Slippage",
-    "jobCreated": "The job has been created. To add more entries, restart the Batch-Convert process afterward."
+    "jobCreated": "The job has been created. To add more entries, restart the Batch-Convert process afterward.",
+    "slippageHigh": "With {{value}}% slippage, you may receive significantly less than what is shown in the preview.",
+    "targetOwnAsset": "The target Asset is issued from your own account. No conversion is possible for this.",
+    "targetLimit": "The expected revenue exceeds your Trustline limit for {{code}}. Increase the limit or select fewer entries."
   }
 }

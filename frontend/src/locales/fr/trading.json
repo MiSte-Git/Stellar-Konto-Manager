@@ -333,7 +333,7 @@
         "label": "Annuaire StellarExpert",
         "listed": "Répertorié dans l'annuaire",
         "listedAs": "Répertorié dans l'annuaire sous « {{name}} »",
-        "notListed": "Absent du répertoire : cela ne préjuge en rien de son authenticité ; de nombreux assets réputés n'y figurent pas.",
+        "notListed": "Le fait qu'il ne figure pas dans l'annuaire ne remet pas en cause son authenticité ; de nombreux Assets n'y figurent pas.",
         "unavailable": "StellarExpert inaccessible – l'indication n'a pas pu être chargée.",
         "notChecked": "Non vérifié (l'annuaire ne couvre que le réseau public)."
       }

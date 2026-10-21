@@ -102,7 +102,7 @@
     "memoLabel": "Memo",
     "onlyDust": "Dostupna su samo vrlo mala plaćanja.",
     "url": "Sadrži internetsku adresu",
-    "urlHint": "Memo sadrži web-adresu. Za legitimne uplate ovo nije potrebno. Nemojte ga otvarati.",
+    "urlHint": "Memo sadrži web-adresu. To nije potrebno za izvršenje uplate. Nemojte otvarati poveznicu.",
     "fakeNative": "Token, ne nativni XML",
     "fakeNativeHint": "Ovo je Token od izdavača, a ne mrežni izvorni XLM."
   },
@@ -203,6 +203,9 @@
     "hiddenTag": "skriveno",
     "jobMinimum": "Barem kako se i očekivalo",
     "jobSlippage": "Klizanje",
-    "jobCreated": "Posao je stvoren. Da biste dodali više unosa, nakon toga ponovno pokrenite proces Batch-Convert."
+    "jobCreated": "Posao je stvoren. Da biste dodali više unosa, nakon toga ponovno pokrenite proces Batch-Convert.",
+    "slippageHigh": "Uz {{value}} % klizanja, možete dobiti znatno manje nego što je prikazano u pregledu.",
+    "targetOwnAsset": "Cilj Asset izdan je s vašeg vlastitog računa. Za ovo nije moguća konverzija.",
+    "targetLimit": "Očekivani prihod premašuje vaš Trustline limit za {{code}}. Povećajte limit ili odaberite manje stavki."
   }
 }

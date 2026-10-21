@@ -102,7 +102,7 @@
     "memoLabel": "Memo",
     "onlyDust": "Seuls des montants très modestes sont disponibles.",
     "url": "Contient une adresse Web",
-    "urlHint": "Le fichier Memo contient une adresse Web. Les paiements légitimes ne nécessitent pas cela. Ne l'ouvrez pas.",
+    "urlHint": "Le fichier Memo contient une adresse Web. Celle-ci n'est pas nécessaire pour effectuer un paiement. N'ouvrez pas ce lien.",
     "fakeNative": "Token, pas du XML natif",
     "fakeNativeHint": "Il s'agit d'un Token provenant d'un éditeur, et non du format XLM natif du réseau."
   },
@@ -203,6 +203,9 @@
     "hiddenTag": "masqué",
     "jobMinimum": "Au moins comme prévu",
     "jobSlippage": "Glissement",
-    "jobCreated": "La tâche a été créée. Pour ajouter d'autres entrées, redémarrez ensuite le processus Batch-Convert."
+    "jobCreated": "La tâche a été créée. Pour ajouter d'autres entrées, redémarrez ensuite le processus Batch-Convert.",
+    "slippageHigh": "Avec un écart de {{value}} %, le montant que vous recevrez pourrait être nettement inférieur à celui indiqué dans l'aperçu.",
+    "targetOwnAsset": "La cible Asset provient de votre propre compte. Aucune conversion n'est possible pour celle-ci.",
+    "targetLimit": "Le chiffre d'affaires prévu dépasse votre limite de Trustline pour {{code}}. Augmentez la limite ou sélectionnez moins d'entrées."
   }
 }
