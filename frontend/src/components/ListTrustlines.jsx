@@ -26,6 +26,7 @@ import MultisigPrepareDialog from './MultisigPrepareDialog.jsx';
 import { apiUrl } from '../utils/apiBase.js';
 import { resolveFeePerOp } from '../utils/stellar/fees.js';
 import { getMultisigTxTimeout } from '../utils/getMultisigTxTimeout.js';
+import { txHashHex } from '../utils/stellar/txHash.js';
 // import { refreshSinceCursor } from '../utils/stellar/syncUtils';
 
 function ListTrustlines({
@@ -255,7 +256,7 @@ function ListTrustlines({
         multisigTimeoutSeconds,
       });
       const tx = txb.setTimeout(txTimeout).build();
-      const hashHex = tx.hash().toString('hex');
+      const hashHex = txHashHex(tx);
       const xdr = tx.toXDR();
       let job = null;
       try {

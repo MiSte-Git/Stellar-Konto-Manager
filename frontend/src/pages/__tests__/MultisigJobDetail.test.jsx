@@ -4,6 +4,7 @@ import { I18nextProvider } from 'react-i18next';
 import { Account, Asset, Keypair, Networks, Operation, TransactionBuilder } from '@stellar/stellar-sdk';
 import i18n from '../../i18n.js';
 import MultisigJobDetail from '../MultisigJobDetail.jsx';
+import { txHashHex } from '../../utils/stellar/txHash.js';
 
 // P2.3: Multisig-Job per bumpSequence widerrufen.
 const SIGNER_A = {
@@ -53,7 +54,7 @@ function jobTx(sequenceBefore = '100') {
 function makeJob(overrides = {}) {
   const tx = jobTx('100');
   return {
-    txHash: tx.hash().toString('hex'),
+    txHash: txHashHex(tx),
     id: 'job-1',
     accountId: SOURCE,
     network: 'testnet',
@@ -159,7 +160,7 @@ describe('Multisig-Job widerrufen (P2.3)', () => {
 
   it('verweigert den Widerruf bei manipulierter Job-Sequence nahe dem Hoechstwert', async () => {
     const evil = jobTx('9223372036854775805');
-    hoisted.getJobMock.mockImplementation(async () => makeJob({ txXdr: evil.toXDR(), txHash: evil.hash().toString('hex') }));
+    hoisted.getJobMock.mockImplementation(async () => makeJob({ txXdr: evil.toXDR(), txHash: txHashHex(evil) }));
     renderPage();
     fireEvent.click(await screen.findByRole('button', { name: 'Job widerrufen' }));
     await screen.findByText(/passt nicht zur aktuellen Sequenz des Kontos/);
@@ -243,7 +244,7 @@ describe('Multisig-Job widerrufen (P2.3)', () => {
 
   it('verweigert den Widerruf schon bei Sequenzabstand 2', async () => {
     const tx = jobTx('101');
-    hoisted.getJobMock.mockImplementation(async () => makeJob({ txXdr: tx.toXDR(), txHash: tx.hash().toString('hex') }));
+    hoisted.getJobMock.mockImplementation(async () => makeJob({ txXdr: tx.toXDR(), txHash: txHashHex(tx) }));
     renderPage();
     fireEvent.click(await screen.findByRole('button', { name: 'Job widerrufen' }));
     await screen.findByText(/passt nicht zur aktuellen Sequenz des Kontos/);
@@ -266,7 +267,7 @@ describe('Multisig-Job widerrufen (P2.3)', () => {
       .addOperation(Operation.manageData({ name: 'x', value: 'y' }))
       .setTimeout(86400)
       .build();
-    hoisted.getJobMock.mockImplementation(async () => makeJob({ txXdr: tx.toXDR(), txHash: tx.hash().toString('hex') }));
+    hoisted.getJobMock.mockImplementation(async () => makeJob({ txXdr: tx.toXDR(), txHash: txHashHex(tx) }));
     renderPage();
     await screen.findByText(/nicht im Klartext anzeigen kann: manageData/);
     const signButton = screen.getAllByRole('button', { name: 'Jetzt signieren' })[0];
@@ -282,7 +283,7 @@ describe('Multisig-Job widerrufen (P2.3)', () => {
       .addOperation(Operation.pathPaymentStrictSend({ sendAsset: spam, sendAmount: '5', destination: SIGNER_A.publicKey, destAsset: Asset.native(), destMin: '1', path: [] }))
       .setTimeout(86400)
       .build();
-    hoisted.getJobMock.mockImplementation(async () => makeJob({ txXdr: tx.toXDR(), txHash: tx.hash().toString('hex') }));
+    hoisted.getJobMock.mockImplementation(async () => makeJob({ txXdr: tx.toXDR(), txHash: txHashHex(tx) }));
     renderPage();
     await screen.findByText(/^Claimable Balance einlösen/);
     expect(screen.getByText(/^Tausch: 5.0000000 SPAM/)).toBeInTheDocument();

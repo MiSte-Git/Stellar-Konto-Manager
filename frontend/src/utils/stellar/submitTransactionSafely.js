@@ -6,6 +6,7 @@
 // the caller resubmit blindly and risk a duplicate operation.
 
 import { xdr } from '@stellar/stellar-sdk';
+import { txHashHex } from './txHash.js';
 
 export function isAmbiguousSubmitError(err) {
   const extras = err?.response?.data?.extras;
@@ -68,7 +69,12 @@ export class SubmittedTransactionFailedError extends Error {
 // result_xdr -> Horizon-Schreibweise, z. B. txFailed -> tx_failed
 export function txResultCodeFromXdr(resultXdr) {
   try {
-    const name = xdr.TransactionResult.fromXDR(resultXdr, 'base64').result().switch().name;
+    // v16: Feld-Getter result() und Union-Diskriminante switch().name;
+    // ab v17 (js-xdr v5) Felder als Properties und Diskriminante als .type.
+    const decoded = xdr.TransactionResult.fromXDR(resultXdr, 'base64');
+    const inner = typeof decoded.result === 'function' ? decoded.result() : decoded.result;
+    const name = typeof inner?.switch === 'function' ? inner.switch().name : inner?.type;
+    if (typeof name !== 'string' || !name) return 'tx_failed';
     return name.replace(/([A-Z])/g, '_$1').toLowerCase();
   } catch {
     return 'tx_failed';
@@ -76,7 +82,7 @@ export function txResultCodeFromXdr(resultXdr) {
 }
 
 export async function submitTransactionSafely(server, tx) {
-  const hash = tx.hash().toString('hex');
+  const hash = txHashHex(tx);
   try {
     return await server.submitTransaction(tx);
   } catch (err) {

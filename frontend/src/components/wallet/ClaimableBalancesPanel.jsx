@@ -26,6 +26,7 @@ import {
   getHiddenClaimableIds,
   setHiddenClaimableIds,
 } from '../../utils/stellar/claimableBalances.js';
+import { txHashHex } from '../../utils/stellar/txHash.js';
 
 const HORIZON_MAIN = 'https://horizon.stellar.org';
 const HORIZON_TEST = 'https://horizon-testnet.stellar.org';
@@ -173,7 +174,7 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
         txXdr: tx.toXDR(),
       });
       setPreparedJob({
-        hash: job.hash || tx.hash().toString('hex'),
+        hash: job.hash || txHashHex(tx),
         xdr: job.xdr,
         summary: {
           title: t('multisig:prepare.title'),
@@ -237,7 +238,7 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
       const tx = buildClaimTx({ account: fresh, item, fee, networkPassphrase });
       signers.forEach((s) => tx.sign(s.keypair));
       const res = await submitTransactionSafely(server, tx);
-      const hash = res?.hash || res?.id || tx.hash().toString('hex');
+      const hash = res?.hash || res?.id || txHashHex(tx);
       setClaimItem(null);
       setInfo(t('wallet:claimable.success', { amount: item.amount, code: item.asset.code, hash }));
       // Erst nach erfolgreicher Signatur und Einreichung merken

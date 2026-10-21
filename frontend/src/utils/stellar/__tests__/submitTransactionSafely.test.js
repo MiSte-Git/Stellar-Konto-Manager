@@ -16,7 +16,9 @@ function httpError(status, resultCodes) {
 }
 
 function fakeTx(hashHex) {
-  return { hash: () => ({ toString: () => hashHex }) };
+  // Echte Bytes wie vom SDK (ab v17 ein reines Uint8Array), nicht nur ein toString-Stub.
+  const bytes = Uint8Array.from(hashHex.match(/../g), (h) => parseInt(h, 16));
+  return { hash: () => bytes };
 }
 
 function fakeServer({ transactionImpl, submitImpl } = {}) {

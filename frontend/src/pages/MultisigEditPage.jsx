@@ -16,6 +16,7 @@ import { getSessionSecret } from '../utils/sessionSecrets.js';
 import { useSettings } from '../utils/useSettings.js';
 import { formatValidUntil } from '../utils/multisig/formatValidUntil.js';
 import { resolveFeePerOp } from '../utils/stellar/fees.js';
+import { txHashHex } from '../utils/stellar/txHash.js';
 
 const HORIZON_MAIN = 'https://horizon.stellar.org';
 const HORIZON_TEST = 'https://horizon-testnet.stellar.org';
@@ -394,7 +395,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
     }
     try {
       const { tx, plannedThresholds, plannedMaster, plannedSigners } = await buildSetOptionsTx(null, { signTx: false, requireSigners: false });
-      const hashHex = tx.hash().toString('hex');
+      const hashHex = txHashHex(tx);
       let preparedTx = tx;
       const pk = (defaultPublicKey || '').trim();
       const initialCollected = [];

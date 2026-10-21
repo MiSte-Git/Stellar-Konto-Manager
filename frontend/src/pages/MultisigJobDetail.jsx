@@ -14,6 +14,7 @@ import { submitTransactionSafely, AmbiguousSubmitResultError } from '../utils/st
 import { getRequiredThreshold } from '../utils/getRequiredThreshold.js';
 import { formatErrorForUi } from '../utils/formatErrorForUi.js';
 import { accountSequenceOf, assertHorizonNetwork, buildJobRevocationTx, checkRevocationSequence, collectEffectiveSigners, getJobSequenceInfo, parseJobNetwork } from '../utils/multisig/jobRevocation.js';
+import { txHashHex } from '../utils/stellar/txHash.js';
 
 function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
   const { t, i18n } = useTranslation(['multisig', 'common']);
@@ -235,7 +236,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
       setRevokeError(t('multisig:detail.revoke.missingJobData'));
       return;
     }
-    if (decodedTx.hash().toString('hex') !== String(job.txHash).toLowerCase()) {
+    if (txHashHex(decodedTx) !== String(job.txHash).toLowerCase()) {
       setRevokeError(t('multisig:detail.revoke.hashMismatch'));
       return;
     }
@@ -315,7 +316,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
       });
       signers.forEach((s) => tx.sign(s.keypair));
       const res = await submitTransactionSafely(server, tx);
-      const hash = res?.hash || res?.id || tx.hash().toString('hex');
+      const hash = res?.hash || res?.id || txHashHex(tx);
       setRevokedHash(hash);
       setShowRevokeSecretModal(false);
       setRevokePrep(null);

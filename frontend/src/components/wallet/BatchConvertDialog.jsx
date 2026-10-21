@@ -27,6 +27,7 @@ import {
   quoteItems,
   targetTrustlineStatus,
 } from '../../utils/stellar/batchConvert.js';
+import { txHashHex } from '../../utils/stellar/txHash.js';
 
 const HORIZON_MAIN = 'https://horizon.stellar.org';
 const HORIZON_TEST = 'https://horizon-testnet.stellar.org';
@@ -259,7 +260,7 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
           });
           signers.forEach((s) => tx.sign(s.keypair));
           const res = await submitTransactionSafely(server, tx);
-          out.push({ status: 'ok', hash: res?.hash || res?.id || tx.hash().toString('hex'), count });
+          out.push({ status: 'ok', hash: res?.hash || res?.id || txHashHex(tx), count });
           includeTargetTrustline = false;
         } catch (e) {
           console.error('[SKM] batch convert transaction failed', e);
@@ -326,7 +327,7 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
       setJobCreated(true);
       const chunkMin = chunk.reduce((acc, q) => acc + Number(q.destMin || 0), 0);
       setPreparedJob({
-        hash: job.hash || tx.hash().toString('hex'),
+        hash: job.hash || txHashHex(tx),
         xdr: job.xdr,
         summary: {
           title: t('multisig:prepare.title'),

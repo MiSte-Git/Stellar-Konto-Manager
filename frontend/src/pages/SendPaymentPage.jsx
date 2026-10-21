@@ -33,6 +33,7 @@ import { resolveFeePerOp } from '../utils/stellar/fees.js';
 import QrScanDialog from '../components/wallet/QrScanDialog.jsx';
 import { networkMismatch, parsePaymentInput } from '../utils/stellar/sep7.js';
 import { CONTRACT_ADDRESS_ERROR, isContractAddress } from '../utils/stellar/addressType.js';
+import { txHashHex } from '../utils/stellar/txHash.js';
 
 // Immediate local submits (single-sig send, or a multisig job collected and
 // submitted right away) expect a near-term Horizon confirmation, unlike a
@@ -978,7 +979,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   const submitPayment = useCallback(async (signerKeypairs) => {
     const signerList = Array.isArray(signerKeypairs) ? signerKeypairs : [signerKeypairs];
     const { tx, meta } = await buildPaymentTx({ signers: signerList, signTx: true, requireSigners: true, immediateSubmit: true });
-    const txHash = tx.hash().toString('hex');
+    const txHash = txHashHex(tx);
     const res = await submitTransactionSafely(server, tx);
     return {
       hash: res.hash || res.id || txHash,
@@ -1010,7 +1011,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       const proceed = async () => {
         try {
           const { tx, meta } = await buildPaymentTx({ signTx: false, requireSigners: false });
-          const hashHex = tx.hash().toString('hex');
+          const hashHex = txHashHex(tx);
           const xdr = tx.toXDR();
           setResultDialog({
             type: 'xdr',
@@ -1149,7 +1150,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       const proceed = async () => {
         try {
           const { tx, meta } = await buildPaymentTx({ signers, signTx: signers.length > 0, requireSigners: false });
-          const hashHex = tx.hash().toString('hex');
+          const hashHex = txHashHex(tx);
           const xdr = tx.toXDR();
           const signerMeta = (accountInfo?.signers || []).map((s) => ({
             publicKey: s.key || s.publicKey || s.public_key || '',

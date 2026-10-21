@@ -481,7 +481,8 @@ function parseTxAndHash(txXdr, network) {
   try {
     const passphrase = network === 'public' ? StellarSdk.Networks.PUBLIC : StellarSdk.Networks.TESTNET;
     const tx = new StellarSdk.Transaction(txXdr, passphrase);
-    const hashHex = tx.hash().toString('hex');
+    // Buffer.from: ab stellar-sdk v17 liefert hash() ein Uint8Array, dessen toString('hex') kein Hex ist.
+    const hashHex = Buffer.from(tx.hash()).toString('hex');
     return { tx, hashHex };
   } catch (e) {
     const msg = e?.message || 'invalid_xdr';
