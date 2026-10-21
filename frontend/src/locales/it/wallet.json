@@ -252,7 +252,8 @@
       "invalidAmount": "La richiesta di pagamento contiene un importo non valido.",
       "invalidAsset": "La richiesta di pagamento contiene un valore non valido per Asset.",
       "invalidMemo": "La richiesta di pagamento contiene un valore non valido per Memo.",
-      "networkMismatch": "La richiesta di pagamento riguarda una rete diversa da quella selezionata. Si prega di cambiare prima la rete."
+      "networkMismatch": "La richiesta di pagamento riguarda una rete diversa da quella selezionata. Si prega di cambiare prima la rete.",
+      "contractAddress": "Il codice contiene un indirizzo di contratto (C… o W…). Non è possibile effettuare pagamenti standard a indirizzi di contratto."
     }
   }
 }

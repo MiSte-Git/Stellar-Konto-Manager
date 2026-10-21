@@ -689,7 +689,8 @@
     },
     "trustline": {
       "submitFailed": "Greška pri brisanju trustline.",
-      "unknown": "Nepoznata pogreška tijekom brisanja trustline."
+      "unknown": "Nepoznata pogreška tijekom brisanja trustline.",
+      "notFound": "Nije pronađen nijedan odgovarajući Trustlines unos za brisanje."
     },
     "xlmByMemo": {
       "aborted": "Operacija otkazana od strane korisnika.",
@@ -834,7 +835,8 @@
     },
     "test": "Test",
     "historyLabel": "Povijest",
-    "historyPlaceholder": "Odaberite posljednje korišteno wallet"
+    "historyPlaceholder": "Odaberite posljednje korišteno wallet",
+    "contractAddress": "Ovo je adresa ugovora (C… ili W…). Standardna plaćanja na adrese ugovora nisu moguća."
   },
   "secretKey": {
     "cleared": "Secret Key je izbrisan.",
@@ -1272,5 +1274,9 @@
     "noMatch": "Nijedan račun ne odgovara filtru.",
     "compromised": "kompromitiran",
     "deactivated": "osobe s invaliditetom"
+  },
+  "resolveOrValidatePublicKey": {
+    "invalid": "Neispravna adresa. Očekivani format je Public Key (G…), muxirana adresa (M…) ili federacijska adresa (ime*domena).",
+    "empty": "Molimo unesite adresu."
   }
 }

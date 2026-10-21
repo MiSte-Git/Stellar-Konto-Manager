@@ -699,7 +699,8 @@
     },
     "trustline": {
       "submitFailed": "Fehler beim Löschen der Trustline.",
-      "unknown": "Unbekannter Fehler beim Löschen der Trustline."
+      "unknown": "Unbekannter Fehler beim Löschen der Trustline.",
+      "notFound": "Keine passenden Trustlines zum Löschen gefunden."
     },
     "xlmByMemo": {
       "aborted": "Vorgang vom Benutzer abgebrochen",
@@ -844,7 +845,8 @@
     },
     "test": "Test",
     "historyLabel": "Historie",
-    "historyPlaceholder": "Zuletzt verwendetes Wallet auswählen"
+    "historyPlaceholder": "Zuletzt verwendetes Wallet auswählen",
+    "contractAddress": "Das ist eine Contract-Adresse (C… oder W…). Klassische Zahlungen an Contract-Adressen sind nicht möglich."
   },
   "secretKey": {
     "cleared": "Secret Key wurde gelöscht.",
@@ -1272,5 +1274,9 @@
   "createdBy": "Erstellt von",
   "externalDomain": {
     "warning": "Tippe diese Adresse selbst in deinen Browser ein – klicke nie auf Links aus einer App oder Nachricht."
+  },
+  "resolveOrValidatePublicKey": {
+    "invalid": "Ungültige Adresse. Erwartet wird ein Public Key (G…), eine Muxed-Adresse (M…) oder eine Federation-Adresse (name*domain).",
+    "empty": "Bitte eine Adresse eingeben."
   }
 }

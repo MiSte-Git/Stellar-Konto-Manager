@@ -252,7 +252,8 @@
       "invalidAmount": "The payment request contains an invalid amount.",
       "invalidAsset": "The payment request contains an invalid Asset.",
       "invalidMemo": "The payment request contains an invalid Memo.",
-      "networkMismatch": "The payment request is for a network other than the one selected. Please switch networks first."
+      "networkMismatch": "The payment request is for a network other than the one selected. Please switch networks first.",
+      "contractAddress": "The code contains a contract address (C… or W…). Standard payments to contract addresses are not possible."
     }
   }
 }

@@ -252,7 +252,8 @@
       "invalidAmount": "Zahtjev za plaćanje sadrži neispravan iznos.",
       "invalidAsset": "Zahtjev za plaćanje sadrži neispravan Asset.",
       "invalidMemo": "Zahtjev za plaćanje sadrži neispravan Memo.",
-      "networkMismatch": "Zahtjev za plaćanje je za mrežu koja nije odabrana. Molimo prvo promijenite mrežu."
+      "networkMismatch": "Zahtjev za plaćanje je za mrežu koja nije odabrana. Molimo prvo promijenite mrežu.",
+      "contractAddress": "Kod sadrži adresu ugovora (C… ili W…). Standardna plaćanja na adrese ugovora nisu moguća."
     }
   }
 }

@@ -252,7 +252,8 @@
       "invalidAmount": "Die Zahlungsanfrage enthält einen ungültigen Betrag.",
       "invalidAsset": "Die Zahlungsanfrage enthält ein ungültiges Asset.",
       "invalidMemo": "Die Zahlungsanfrage enthält ein ungültiges Memo.",
-      "networkMismatch": "Die Zahlungsanfrage ist für ein anderes Netzwerk als das gewählte. Wechsle zuerst das Netzwerk."
+      "networkMismatch": "Die Zahlungsanfrage ist für ein anderes Netzwerk als das gewählte. Wechsle zuerst das Netzwerk.",
+      "contractAddress": "Der Code enthält eine Contract-Adresse (C… oder W…). Klassische Zahlungen an Contract-Adressen sind nicht möglich."
     }
   }
 }

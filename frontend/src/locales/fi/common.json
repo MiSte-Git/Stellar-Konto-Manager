@@ -689,7 +689,8 @@
     },
     "trustline": {
       "submitFailed": "Virhe poistettaessa trustline.",
-      "unknown": "Tuntematon virhe poistettaessa trustline-muuttujaa."
+      "unknown": "Tuntematon virhe poistettaessa trustline-muuttujaa.",
+      "notFound": "Poistettavia Trustlines-merkintöjä ei löytynyt."
     },
     "xlmByMemo": {
       "aborted": "Toiminto peruutettu käyttäjän toimesta.",
@@ -834,7 +835,8 @@
     },
     "test": "Testi",
     "historyLabel": "Historia",
-    "historyPlaceholder": "Valitse viimeksi käytetty wallet"
+    "historyPlaceholder": "Valitse viimeksi käytetty wallet",
+    "contractAddress": "Tämä on sopimusosoite (C… tai W…). Tavanomaisia maksuja sopimusosoitteisiin ei voida suorittaa."
   },
   "secretKey": {
     "cleared": "Secret Key on poistettu.",
@@ -1272,5 +1274,9 @@
     "noMatch": "Suodattimen kriteereihin ei löydy yhtään tiliä.",
     "compromised": "vaarantunut",
     "deactivated": "vammainen"
+  },
+  "resolveOrValidatePublicKey": {
+    "invalid": "Virheellinen osoite. Osoitteen tulisi olla muodossa Public Key (G…), yhdistetty osoite (M…) tai federaatio-osoite (nimi*verkkotunnus).",
+    "empty": "Syötä osoite."
   }
 }

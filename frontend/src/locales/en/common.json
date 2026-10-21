@@ -689,7 +689,8 @@
     },
     "trustline": {
       "submitFailed": "Error deleting the trustline.",
-      "unknown": "Unknown error while deleting the trustline."
+      "unknown": "Unknown error while deleting the trustline.",
+      "notFound": "No matching Trustlines entries were found to delete."
     },
     "xlmByMemo": {
       "aborted": "Operation canceled by the user",
@@ -834,7 +835,8 @@
     },
     "test": "Test",
     "historyLabel": "History",
-    "historyPlaceholder": "Select the last used wallet"
+    "historyPlaceholder": "Select the last used wallet",
+    "contractAddress": "This is a contract address (C… or W…). Standard payments to contract addresses are not possible."
   },
   "secretKey": {
     "cleared": "Secret Key has been deleted.",
@@ -1272,5 +1274,9 @@
     "noMatch": "No account matches the filter.",
     "compromised": "compromised",
     "deactivated": "disabled"
+  },
+  "resolveOrValidatePublicKey": {
+    "invalid": "Invalid address. The expected format is a Public Key (G…), a muxed address (M…), or a federation address (name*domain).",
+    "empty": "Please enter an address."
   }
 }

@@ -689,7 +689,8 @@
     },
     "trustline": {
       "submitFailed": "Error al eliminar el archivo trustline.",
-      "unknown": "Se ha producido un error desconocido al eliminar el archivo trustline."
+      "unknown": "Se ha producido un error desconocido al eliminar el archivo trustline.",
+      "notFound": "No se han encontrado entradas coincidentes con Trustlines que se puedan eliminar."
     },
     "xlmByMemo": {
       "aborted": "Operación cancelada por el usuario",
@@ -834,7 +835,8 @@
     },
     "test": "Prueba",
     "historyLabel": "Historia",
-    "historyPlaceholder": "Selecciona el último utilizado wallet"
+    "historyPlaceholder": "Selecciona el último utilizado wallet",
+    "contractAddress": "Esta es una dirección de contrato (C… o W…). No es posible realizar pagos estándar a direcciones de contrato."
   },
   "secretKey": {
     "cleared": "Secret Key se ha eliminado.",
@@ -1272,5 +1274,9 @@
     "noMatch": "No hay ninguna cuenta que se ajuste al filtro.",
     "compromised": "comprometido",
     "deactivated": "discapacitado"
+  },
+  "resolveOrValidatePublicKey": {
+    "invalid": "Dirección no válida. El formato esperado es un Public Key (G…), una dirección multiplexada (M…) o una dirección de federación (nombre*dominio).",
+    "empty": "Introduce una dirección, por favor."
   }
 }

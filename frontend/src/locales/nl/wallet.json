@@ -252,7 +252,8 @@
       "invalidAmount": "Het betalingsverzoek bevat een ongeldig bedrag.",
       "invalidAsset": "Het betalingsverzoek bevat een ongeldige Asset.",
       "invalidMemo": "Het betalingsverzoek bevat een ongeldige Memo.",
-      "networkMismatch": "De betalingsaanvraag heeft betrekking op een ander netwerk dan het geselecteerde netwerk. Schakel eerst over naar een ander netwerk."
+      "networkMismatch": "De betalingsaanvraag heeft betrekking op een ander netwerk dan het geselecteerde netwerk. Schakel eerst over naar een ander netwerk.",
+      "contractAddress": "De code bevat een contractadres (C… of W…). Standaardbetalingen naar contractadressen zijn niet mogelijk."
     }
   }
 }

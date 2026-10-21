@@ -689,7 +689,8 @@
     },
     "trustline": {
       "submitFailed": "Fout bij het verwijderen van de trustline.",
-      "unknown": "Onbekende fout bij het verwijderen van de trustline."
+      "unknown": "Onbekende fout bij het verwijderen van de trustline.",
+      "notFound": "Er zijn geen overeenkomende Trustlines-vermeldingen gevonden om te verwijderen."
     },
     "xlmByMemo": {
       "aborted": "Operatie geannuleerd door de gebruiker.",
@@ -834,7 +835,8 @@
     },
     "test": "Test",
     "historyLabel": "Geschiedenis",
-    "historyPlaceholder": "Selecteer de laatst gebruikte wallet"
+    "historyPlaceholder": "Selecteer de laatst gebruikte wallet",
+    "contractAddress": "Dit is een contractadres (C… of W…). Standaardbetalingen naar contractadressen zijn niet mogelijk."
   },
   "secretKey": {
     "cleared": "Secret Key is verwijderd.",
@@ -1272,5 +1274,9 @@
     "noMatch": "Er is geen account dat aan de filtercriteria voldoet.",
     "compromised": "aangetast",
     "deactivated": "uitgeschakeld"
+  },
+  "resolveOrValidatePublicKey": {
+    "invalid": "Ongeldig adres. Het verwachte formaat is een Public Key (G…), een gemengd adres (M…) of een federatieadres (naam*domein).",
+    "empty": "Voer een adres in."
   }
 }

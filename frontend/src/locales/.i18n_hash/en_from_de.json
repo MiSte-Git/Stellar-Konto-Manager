@@ -5377,5 +5377,10 @@
   "wallet.qrScan.errors.invalidAmount": "eaba83babb3eb501b075d790fc87809245e588fb29737ef1d042abb7bfa94e6b",
   "wallet.qrScan.errors.invalidAsset": "5782ee77e869cb8b2f4c62300a5afa2b48cd0047e2ba3fa5260b5f98a35c4edd",
   "wallet.qrScan.errors.invalidMemo": "b056550596221eaa6208095cc261253104cfc2c9b9aa8e02c085d8ea91e48d3b",
-  "wallet.qrScan.errors.networkMismatch": "005acd7b973b93fe55bddde172470e5c2cb4eb2df0147ba8c9a47a58e0d130f8"
+  "wallet.qrScan.errors.networkMismatch": "005acd7b973b93fe55bddde172470e5c2cb4eb2df0147ba8c9a47a58e0d130f8",
+  "common.publicKey.contractAddress": "b332978c8dbd8ab11cc78fb19e02024f49db7dc6248d913df917a7c8dc19a79f",
+  "wallet.qrScan.errors.contractAddress": "429378dc1e20ce24a38e3acd16a2ef82aeca7010ef6972da2043d1bf4c9ed0ee",
+  "common.error.trustline.notFound": "8cc54608c1185bbec4003fb96dc926a2cb0f8c4e01fa4a40937c1c15a313d1e3",
+  "common.resolveOrValidatePublicKey.invalid": "3e5336af4e65c2acddda0f552985100bc5e0fc2d12a33242143868e3517d14a1",
+  "common.resolveOrValidatePublicKey.empty": "754d5fb9985f82e71c48d35353d35c3dfcbda28736bf17bae497d84ac0b6e295"
 }
