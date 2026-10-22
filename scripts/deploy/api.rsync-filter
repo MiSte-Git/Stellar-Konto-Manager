@@ -1,0 +1,17 @@
+# rsync-Filter fuer den api/-Upload nach public_html/SKM/api/ (scripts/deploy-cyon.js).
+# Der Upload laeuft ohne --delete.
+
+# Secrets, nur auf dem Server
+- /_config.php
+# Laufzeitdaten, nur auf dem Server; data/.htaccess kommt aus dem Repo
++ /data/.htaccess
+- /data/*
+# Composer-Abhaengigkeiten, werden manuell hochgeladen
+- /vendor/
+- /composer.phar
+- /composer-setup.php
+# Hosting-spezifisch
+- /.user.ini
+- /php.ini
+- /error_log
+- .DS_Store

@@ -8,6 +8,8 @@
     "start": "node server.js",
     "dev": "node scripts/start-dev.js",
     "start-build": "node scripts/start-build.js",
+    "deploy": "node scripts/start-build.js --deploy",
+    "deploy:dry-run": "node scripts/start-build.js --deploy --dry-run",
     "test": "node --test --test-isolation=none test/*.test.js",
     "test:trade": "node --test --test-isolation=none test/tradeService.test.js",
     "i18n:extract-glossary-keys": "node scripts/dev/extractGlossaryKeys.js",

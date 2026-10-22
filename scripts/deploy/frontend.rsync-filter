@@ -1,0 +1,18 @@
+# rsync-Filter fuer den Frontend-Upload nach public_html/SKM/ (scripts/deploy-cyon.js).
+# Der Upload laeuft mit --delete. Ausgeschlossene Pfade werden weder
+# uebertragen noch geloescht.
+
+# API liegt im selben Ordner wie das Frontend, eigener Upload mit eigenem Filter
+- /api/
+# Nur auf dem Server
+- /.ftpquota
+- /.well-known/
+- /cgi-bin/
+- /.user.ini
+- /php.ini
+- /error_log
+- .DS_Store
+
+# Loeschen nur unterhalb von assets/ (alte, gehashte Vite-Bundles):
+# alles direkt im Zielordner ist vor --delete geschuetzt, wird aber aktualisiert.
+P /*

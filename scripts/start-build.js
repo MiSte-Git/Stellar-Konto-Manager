@@ -3,6 +3,7 @@ const { spawn, spawnSync } = require("child_process");
 const fs = require("fs");
 const path = require("path");
 const dotenv = require("dotenv");
+const { createDeploy } = require("./deploy-cyon");
 
 const root = path.resolve(process.cwd());
 const isWindows = process.platform === "win32";
@@ -171,6 +172,22 @@ async function main() {
     process.exit(1);
   }
 
+  // --deploy: Produktions-Deployment zu cyon (scripts/deploy-cyon.js),
+  // --dry-run: nur bis einschliesslich rsync-Dry-Run
+  const args = process.argv.slice(2);
+  const deploy = args.includes("--deploy")
+    ? createDeploy({
+        root,
+        frontendDir,
+        run,
+        npmCmd,
+        dryRun: args.includes("--dry-run"),
+      })
+    : null;
+  if (deploy) {
+    await deploy.beforeBuild();
+  }
+
   const baseRef = process.env.BASE_REF;
   const deChanges = countGermanLocaleChanges(root);
   const deChangesFound = deChanges !== 0;
@@ -219,6 +236,10 @@ async function main() {
     env: process.env,
     shell: true,
   });
+
+  if (deploy) {
+    await deploy.afterBuild();
+  }
 }
 
 main().catch((error) => {

@@ -83,6 +83,22 @@ Local-first Stellar Wallet & Account Manager: Trustlines, Zahlungen, Muxed Accou
   npm run build
   ```
 
+- Deployment zu cyon (Produktion, `public_html/SKM/` auf skm.steei.de), Arbeitsverzeichnis: Projekt-Root:
+  ```bash
+  npm run deploy:dry-run   # Prüfungen, Build und rsync-Dry-Run, lädt nichts hoch
+  npm run deploy           # wie oben, danach Abfragen und Upload
+  ```
+  Ruft `scripts/start-build.js --deploy [--dry-run]` auf, die Deploy-Logik steht in `scripts/deploy-cyon.js`. Voraussetzung ist ein SSH-Eintrag `cyon-skm` in `~/.ssh/config` (Host `s014.cyon.net`, User `stegmann`, Key `~/.ssh/SSH_Cyon_new`) und lokal `rsync`. Ablauf:
+  1. Git sauber und `HEAD` gleich `origin/main` (im Dry-Run nur Warnung), `npm test` im Root und in `frontend/` grün.
+  2. Build mit `VITE_BASE=/` ohne `VITE_CSP_REPORT_ONLY`, Prüfung von `dist/.htaccess` und `index.html`, danach `gen-build-info.mjs` und `hash-dist.mjs`.
+  3. rsync-Dry-Run mit `--checksum`, Rohausgabe getrennt für Frontend und `api/`.
+  4. Abfrage „Lokalen Build mit vite preview geprüft?“ (`cd frontend && npm run preview`, nicht `preview:csp`, das baut neu). Danach muss `frontend/dist` exakt zu `SHA256SUMS` passen.
+  5. Frontend-Upload nach eigener j/N-Abfrage, mit `--delete` nur unterhalb von `assets/`, danach Smoke-Test (`index.html`, Commit in `build-info.json`).
+  6. `api/` nur, wenn der Dry-Run Unterschiede zeigt, nach eigener j/N-Abfrage, ohne `--delete`, danach Health-Check `api/health.php`.
+  7. Eine Zeile in `deploy.log` (Zeitpunkt, Ziel, Commit, Ergebnis; gitignored).
+
+  Ausschlüsse stehen in `scripts/deploy/frontend.rsync-filter` (u. a. `api/`, `.ftpquota`) und `scripts/deploy/api.rsync-filter` (`_config.php`, `data/*` außer `data/.htaccess`, `vendor/`). `api/vendor/` und `api/_config.php` bleiben manuell, `SKM_Canary` deckt das Skript nicht ab.
+
 - Produktions-CSP lokal testen, Arbeitsverzeichnis: `frontend/` (Backend parallel mit `npm start` im Root):
   ```bash
   npm run preview:csp                          # Build + vite preview mit Produktions-Headern
@@ -140,10 +156,10 @@ Local-first Stellar Wallet & Account Manager: Trustlines, Zahlungen, Muxed Accou
   cd /path/to/project/api
   composer install
   ```
-- Upload/Deploy: `api/*.php`, `api/.htaccess`, `api/composer.json`, `api/composer.lock`, `api/_config.php` (manuell, nicht per Git!), kompletter `api/vendor/` und sicherstellen, dass `api/data/` beschreibbar ist. `api/data/.htaccess` (sperrt direkten HTTP-Zugriff auf `multisig_jobs.json`/`signers_cache.json` u. a. – enthält Access-Tokens/XDRs) liegt im Repo und wird mit hochgeladen.
+- Upload/Deploy: `npm run deploy` lädt `api/*.php`, `api/.htaccess`, `api/composer.json`, `api/composer.lock`, `api/trade/` und `api/data/.htaccess` hoch (siehe Deployment zu cyon oben). Manuell bleiben `api/_config.php` (nicht per Git!) und der komplette `api/vendor/`; sicherstellen, dass `api/data/` beschreibbar ist. `api/data/.htaccess` (sperrt direkten HTTP-Zugriff auf `multisig_jobs.json`/`signers_cache.json` u. a. – enthält Access-Tokens/XDRs) liegt im Repo und wird mit hochgeladen.
 - Falls lokal kein PHP/Composer verfügbar (z. B. Windows ohne Extensions): Composer-Installer per `php composer-setup.php`, danach `php composer.phar install --ignore-platform-req=ext-pcntl --ignore-platform-req=ext-gmp` ausführen, anschließend den erzeugten `vendor/` hochladen.
 - Routing: Apache muss `/api/multisig/...`, `/api/trade/...`, `/api/admin/...` und `/api/federation` per `.htaccess` im `api/`-Ordner auf `multisig.php`, `trade.php`, `admin.php` bzw. `federation.php` leiten.
-- Frontend-Deploy: Der Build legt `frontend/dist/.htaccess` an (SPA-Rewrite und Security-Header). Beim manuellen Upload per FileZilla versteckte Dateien anzeigen lassen (Server > Anzeigen versteckter Dateien erzwingen), damit die `.htaccess` mitkommt. Die Header gelten nicht für `/api`; dort setzt PHP eigene. Der Workflow `.github/workflows/deploy.yml` startet nur noch manuell, `deploy-canary.yml` baut mit `VITE_CSP_REPORT_ONLY=1`.
+- Frontend-Deploy: Der Build legt `frontend/dist/.htaccess` an (SPA-Rewrite und Security-Header), `npm run deploy` lädt sie mit hoch. Die Header gelten nicht für `/api`; dort setzt PHP eigene. Der Workflow `.github/workflows/deploy.yml` startet nur noch manuell, `deploy-canary.yml` baut mit `VITE_CSP_REPORT_ONLY=1`.
 - Frontend-Builds: `npm run start-build` setzt `VITE_BACKEND_URL` automatisch auf `PROD_API_URL`, wenn nicht explizit gesetzt. Alternativ `VITE_BACKEND_URL=https://www.skm.steei.de` in `.env` definieren, um jeden Build auf die produktive API zu pinnen.
 
 ## Rechtliches
