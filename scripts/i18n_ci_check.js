@@ -4,12 +4,13 @@ CI i18n checks:
 - Validate JSON syntax
 - Check duplicates (basic by stringify/parse; also deep key traversal)
 - Check all locales match German key tree
+- Check {{...}} placeholders: per key, every locale must use exactly the same set as German
 - Report missing keys (content_backups/missing_keys_<lang>.txt)
 - Check file sizes per namespace (warn if > 200KB)
 
 Exit codes:
 - 0 OK
-- 1 Critical error (invalid JSON, sync failed)
+- 1 Critical error (invalid JSON, sync failed, placeholder mismatch)
 */
 
 const fs = require('fs');
@@ -42,6 +43,37 @@ function flatten(obj, prefix = '') {
   }
   return res;
 }
+
+// i18next interpolation: {{name}} or {{name, format}}. Whitespace is normalized so that
+// "{{ count }}" and "{{count}}" count as the same placeholder.
+const PLACEHOLDER_RE = /\{\{([^{}]*)\}\}/g;
+
+function placeholderSet(value) {
+  if (typeof value !== 'string') return [];
+  const found = new Set();
+  for (const m of value.matchAll(PLACEHOLDER_RE)) {
+    found.add(m[1].split(',').map((part) => part.trim()).join(', '));
+  }
+  return [...found].sort();
+}
+
+// Compares the placeholder sets of all keys present in both flattened trees.
+// Keys are "<namespace>.<path>"; the namespace is the file name.
+function findPlaceholderMismatches(refFlat, curFlat) {
+  const out = [];
+  for (const [key, refValue] of Object.entries(refFlat)) {
+    if (!(key in curFlat)) continue;
+    const expected = placeholderSet(refValue);
+    const found = placeholderSet(curFlat[key]);
+    if (expected.join('\u0000') !== found.join('\u0000')) {
+      const [ns, ...rest] = key.split('.');
+      out.push({ file: `${ns}.json`, key: rest.join('.'), expected, found });
+    }
+  }
+  return out;
+}
+
+const fmtSet = (set) => (set.length ? set.map((p) => `{{${p}}}`).join(' ') : '(keine)');
 
 // Locale directories are plain two-letter language codes (de, en, es, ...).
 // This also excludes non-locale housekeeping dirs under locales/ such as
@@ -97,6 +129,15 @@ function main() {
         ok = false;
       }
 
+      const phMismatches = findPlaceholderMismatches(refFlat, curFlat);
+      for (const m of phMismatches) {
+        console.error(`[CI:i18n] Platzhalter: ${lang}/${m.file} ${m.key} – erwartet ${fmtSet(m.expected)}, gefunden ${fmtSet(m.found)}`);
+      }
+      if (phMismatches.length) {
+        console.error(`[CI:i18n] ${lang}: ${phMismatches.length} Key(s) mit abweichenden Platzhaltern.`);
+        ok = false;
+      }
+
       for (const f of fs.readdirSync(dir)) {
         if (!f.endsWith('.json')) continue;
         const sizeKB = Math.round((fs.statSync(path.join(dir, f)).size / 1024) * 10) / 10;
@@ -108,7 +149,7 @@ function main() {
     }
 
     if (!ok) process.exit(1);
-    console.log('[CI:i18n] All locales match the German key tree.');
+    console.log('[CI:i18n] All locales match the German key tree and placeholders.');
   } catch (e) {
     console.error(`[CI:i18n] Error: ${e.message}`);
     process.exit(1);
@@ -116,3 +157,5 @@ function main() {
 }
 
 if (require.main === module) main();
+
+module.exports = { placeholderSet, findPlaceholderMismatches };

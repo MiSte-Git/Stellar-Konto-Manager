@@ -110,6 +110,7 @@ Local-first Stellar Wallet & Account Manager: Trustlines, Zahlungen, Muxed Accou
   - i18next-Variablen (`{{name}}`) werden genauso maskiert (`__KEEP_VAR_n__`), damit DeepL die Variablennamen nicht mitübersetzt (früher z. B. `{{time}}` → `{{tempo}}`, i18next fand die Variable dann nicht mehr). Fehlt ein Token in der Antwort, wird der Key nicht übernommen.
   - `--fix-terms [Begriffe]`: übersetzt zusätzlich Bestands-Keys neu, in deren Übersetzung ein Fachbegriff fehlt (z. B. Trustline als Kreditlinie). Ohne Wert alle Begriffe, sonst komma-separierte Auswahl, z. B. `--fix-terms "Trustline,Memo"` (Kosten auf mehrere Läufe verteilen, DeepL Free = 500k Zeichen/Monat).
   - Tests: `cd frontend/src/locales && python3 -m unittest test_UpdateSprachdateienBasierendAufDE -v`
+- CI-Prüfung `node scripts/i18n_ci_check.js` (Workflow `i18n-and-lint.yml`): alle Sprachen müssen den DE-Key-Baum haben, und je Key muss die Menge der `{{...}}`-Platzhalter exakt der deutschen entsprechen (Reihenfolge egal). Abweichungen brechen den Lauf mit Datei, Key, erwartet und gefunden ab.
 
 ## Sicherheitshinweise
 - Geheimnisse bleiben lokal; keine Secret-Übertragung an Server.
