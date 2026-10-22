@@ -93,10 +93,10 @@ Local-first Stellar Wallet & Account Manager: Trustlines, Zahlungen, Muxed Accou
   1. Git sauber und `HEAD` gleich `origin/main` (im Dry-Run nur Warnung), `npm test` im Root und in `frontend/` grün.
   2. Build mit `VITE_BASE=/` ohne `VITE_CSP_REPORT_ONLY`, Prüfung von `dist/.htaccess` und `index.html`, danach `gen-build-info.mjs` und `hash-dist.mjs`.
   3. rsync-Dry-Run mit `--checksum`, Rohausgabe getrennt für Frontend und `api/`.
-  4. Abfrage „Lokalen Build mit vite preview geprüft?“ (`cd frontend && npm run preview`, nicht `preview:csp`, das baut neu). Danach muss `frontend/dist` exakt zu `SHA256SUMS` passen.
-  5. Frontend-Upload nach eigener j/N-Abfrage, mit `--delete` nur unterhalb von `assets/`, danach Smoke-Test (`index.html`, Commit in `build-info.json`).
+  4. Abfrage „Frontend-Aenderungen lokal im Browser durchgeklickt (npm run dev oder preview)?“, nur wenn der Frontend-Dry-Run außer `SHA256SUMS` und `build-info.json` weitere Dateien zeigt. Nicht `preview:csp` verwenden, das baut neu. Danach muss `frontend/dist` exakt zu `SHA256SUMS` passen.
+  5. Frontend-Upload nach eigener j/N-Abfrage, mit `--delete` nur unterhalb von `assets/`. Danach Smoke-Test: `index.html` vom Server laden, Commit in `build-info.json` prüfen und alle in `index.html` referenzierten JS-/CSS-Assets per HEAD abfragen (jedes muss HTTP 200 liefern, sonst Fehler mit Liste der fehlenden Dateien).
   6. `api/` nur, wenn der Dry-Run Unterschiede zeigt, nach eigener j/N-Abfrage, ohne `--delete`, danach Health-Check `api/health.php`.
-  7. Eine Zeile in `deploy.log` (Zeitpunkt, Ziel, Commit, Ergebnis; gitignored).
+  7. Eine Zeile in `deploy.log` (Zeitpunkt in lokaler Zeit mit Offset, Ziel, Commit, Ergebnis; gitignored).
 
   Ausschlüsse stehen in `scripts/deploy/frontend.rsync-filter` (u. a. `api/`, `.ftpquota`) und `scripts/deploy/api.rsync-filter` (`_config.php`, `data/*` außer `data/.htaccess`, `vendor/`). `api/vendor/` und `api/_config.php` bleiben manuell, `SKM_Canary` deckt das Skript nicht ab.
 

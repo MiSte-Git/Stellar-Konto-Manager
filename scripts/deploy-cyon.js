@@ -21,6 +21,8 @@ const VITE_BASE = "/";
 const FRONTEND_FILTER = "scripts/deploy/frontend.rsync-filter";
 const API_FILTER = "scripts/deploy/api.rsync-filter";
 const LOG_FILE = "deploy.log";
+// Aendern sich bei jedem Build, ohne dass sich das Frontend aendert
+const BUILD_META_FILES = new Set(["SHA256SUMS", "build-info.json"]);
 
 function fail(message) {
   throw new Error(`[deploy] ${message}`);
@@ -142,6 +144,12 @@ function rsync(root, { source, target, filter, del, dryRun }) {
   return result.stdout.split("\n").filter((line) => line.trim() !== "");
 }
 
+// Pfad aus einer --itemize-changes-Zeile, z. B. "<fcsT...... assets/x.js"
+// oder "*deleting   assets/y.js"
+function itemizedPath(line) {
+  return line.replace(/^\S+\s+/, "");
+}
+
 function ask(question) {
   const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
   return new Promise((resolve) => {
@@ -160,13 +168,22 @@ function ask(question) {
   });
 }
 
-async function fetchOk(url) {
+async function fetchOk(url, method = "GET") {
   try {
-    const response = await fetch(url);
-    return { ok: response.ok, status: response.status, body: await response.text() };
+    const response = await fetch(url, { method });
+    return { ok: response.ok, status: response.status, body: method === "HEAD" ? "" : await response.text() };
   } catch (error) {
     return { ok: false, status: 0, body: error.message };
   }
+}
+
+// JS- und CSS-Assets, die index.html per src/href referenziert
+function referencedAssets(indexHtml) {
+  const urls = new Set();
+  for (const match of indexHtml.matchAll(/\b(?:src|href)="([^"]+\.(?:js|css))(?:\?[^"]*)?"/g)) {
+    urls.add(new URL(match[1], `${SITE_URL}/`).href);
+  }
+  return [...urls];
 }
 
 async function smokeTestFrontend(commit) {
@@ -178,12 +195,29 @@ async function smokeTestFrontend(commit) {
   } catch {
     // build-info.json nicht lesbar, unten als Fehler gemeldet
   }
-  const ok = index.ok && deployedCommit === commit;
+
+  const assets = index.ok ? referencedAssets(index.body) : [];
+  const missing = [];
+  for (const url of assets) {
+    const head = await fetchOk(url, "HEAD");
+    if (head.status !== 200) {
+      missing.push(`${url} (HTTP ${head.status})`);
+    }
+  }
+
+  const ok = index.ok && deployedCommit === commit && assets.length > 0 && missing.length === 0;
   console.log(
     `[deploy] Smoke-Test Frontend: index.html HTTP ${index.status}, ` +
-      `build-info.json commit=${deployedCommit ? deployedCommit.slice(0, 7) : "?"} ` +
+      `build-info.json commit=${deployedCommit ? deployedCommit.slice(0, 7) : "?"}, ` +
+      `Assets ${assets.length - missing.length}/${assets.length} HTTP 200 ` +
       (ok ? "ok" : "FEHLER")
   );
+  if (index.ok && assets.length === 0) {
+    console.error("[deploy] index.html referenziert keine JS-/CSS-Assets");
+  }
+  if (missing.length > 0) {
+    console.error(`[deploy] Fehlende Assets:\n  ${missing.join("\n  ")}`);
+  }
   return ok;
 }
 
@@ -199,9 +233,21 @@ async function healthCheckApi() {
   return ok;
 }
 
+// Lokale Zeit mit Offset, z. B. 2026-10-22T17:05:12+02:00
+function localTimestamp(date = new Date()) {
+  const pad = (n) => String(n).padStart(2, "0");
+  const offset = -date.getTimezoneOffset();
+  const sign = offset >= 0 ? "+" : "-";
+  return (
+    `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}` +
+    `T${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}` +
+    `${sign}${pad(Math.floor(Math.abs(offset) / 60))}:${pad(Math.abs(offset) % 60)}`
+  );
+}
+
 function writeLog(root, entry) {
   const line =
-    `${new Date().toISOString()}  target=prod  commit=${entry.commit.slice(0, 7)}  ` +
+    `${localTimestamp()}  target=prod  commit=${entry.commit.slice(0, 7)}  ` +
     `frontend=${entry.frontend}  api=${entry.api}\n`;
   fs.appendFileSync(path.join(root, LOG_FILE), line);
   console.log(`[deploy] Log: ${line.trim()}`);
@@ -257,8 +303,14 @@ function createDeploy({ root, frontendDir, run, npmCmd, dryRun }) {
     }
 
     console.log("");
-    if (!(await ask("Lokalen Build mit vite preview geprueft?"))) {
-      fail("Abbruch: Build nicht mit vite preview geprueft.");
+    const frontendCodeChanged = frontendChanges.some(
+      (line) => !BUILD_META_FILES.has(itemizedPath(line))
+    );
+    if (
+      frontendCodeChanged &&
+      !(await ask("Frontend-Aenderungen lokal im Browser durchgeklickt (npm run dev oder preview)?"))
+    ) {
+      fail("Abbruch: Frontend-Aenderungen nicht lokal geprueft.");
     }
     verifyDistHashes(distDir);
 
