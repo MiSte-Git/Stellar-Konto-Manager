@@ -127,7 +127,7 @@ export default function RecentActivity({ publicKey, muxedAddress, network, reloa
 
   return (
     <section
-      className="mt-4 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800/70"
+      className="mt-4 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xs dark:border-gray-700 dark:bg-gray-800/70"
       data-testid="recent-activity"
     >
       <div className="flex items-center justify-between gap-3 border-b border-gray-200 px-5 py-3 dark:border-gray-700">
@@ -136,7 +136,7 @@ export default function RecentActivity({ publicKey, muxedAddress, network, reloa
           <button
             type="button"
             onClick={onShowAll}
-            className="rounded-md border-0 bg-transparent px-2 py-1 text-xs font-medium text-blue-700 hover:bg-blue-50 hover:text-blue-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-blue-300 dark:hover:bg-gray-700 dark:hover:text-blue-200"
+            className="rounded-md border-0 bg-transparent px-2 py-1 text-xs font-medium text-blue-700 hover:bg-blue-50 hover:text-blue-800 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-blue-300 dark:hover:bg-gray-700 dark:hover:text-blue-200"
           >
             {t('wallet:activity.showAll', 'Alle anzeigen')}
           </button>
@@ -190,7 +190,7 @@ export default function RecentActivity({ publicKey, muxedAddress, network, reloa
                   <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
                     <span className="text-sm font-semibold text-gray-900 dark:text-white">{titleFor(item)}</span>
                     {!item.successful && (
-                      <span className="rounded bg-red-100 px-1.5 py-0.5 text-[10px] font-semibold text-red-700 dark:bg-red-500/15 dark:text-red-300">
+                      <span className="rounded-sm bg-red-100 px-1.5 py-0.5 text-[10px] font-semibold text-red-700 dark:bg-red-500/15 dark:text-red-300">
                         {t('wallet:activity.failed', 'Fehlgeschlagen')}
                       </span>
                     )}

@@ -46,7 +46,7 @@ export default function TrustlineSection({
 }) {
   const { t } = useTranslation(['trading', 'common']);
   return (
-    <section className="mt-4 rounded border border-gray-200 bg-white p-3 dark:border-blue-900 dark:bg-blue-900/40">
+    <section className="mt-4 rounded-sm border border-gray-200 bg-white p-3 dark:border-blue-900 dark:bg-blue-900/40">
       <h3 className="mb-3 text-sm font-semibold">
         {t('trading:assetSearch.trustlineFlow.title')}
       </h3>
@@ -59,7 +59,7 @@ export default function TrustlineSection({
         inputMode="decimal"
         value={trustlineLimit}
         onChange={(event) => onLimitChange(event.target.value)}
-        className="mt-1 w-full max-w-xs rounded border border-gray-300 px-3 py-2 font-mono text-sm dark:border-gray-700 dark:bg-gray-900"
+        className="mt-1 w-full max-w-xs rounded-sm border border-gray-300 px-3 py-2 font-mono text-sm dark:border-gray-700 dark:bg-gray-900"
       />
       <p className="mt-2 text-xs text-gray-700 dark:text-blue-100">
         {t('trading:assetSearch.trustlineFlow.limitHelp')}
@@ -85,7 +85,7 @@ export default function TrustlineSection({
         </dl>
       )}
       {selectedAssetNeedsAuthorization && (
-        <p className="mt-3 rounded border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100">
+        <p className="mt-3 rounded-sm border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100">
           {t('trading:assetSearch.trustlineFlow.authRequiredHint')}
         </p>
       )}
@@ -94,7 +94,7 @@ export default function TrustlineSection({
         type="button"
         onClick={onAddTrustline}
         disabled={isSubmittingTrustline || !!pendingAmbiguousSubmission}
-        className="rounded bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700 disabled:opacity-50"
+        className="rounded-sm bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700 disabled:opacity-50"
       >
         {isSubmittingTrustline
           ? t('common:main.processing')
@@ -111,7 +111,7 @@ export default function TrustlineSection({
               inputMode="decimal"
               value={swapAmount}
               onChange={(event) => onSwapAmountChange(event.target.value)}
-              className="w-full rounded border border-gray-300 px-3 py-2 font-mono text-sm dark:border-gray-700 dark:bg-gray-900"
+              className="w-full rounded-sm border border-gray-300 px-3 py-2 font-mono text-sm dark:border-gray-700 dark:bg-gray-900"
             />
           </label>
           <label className="block text-xs">
@@ -121,7 +121,7 @@ export default function TrustlineSection({
               inputMode="decimal"
               value={swapSlippage}
               onChange={(event) => onSwapSlippageChange(event.target.value)}
-              className="w-full rounded border border-gray-300 px-3 py-2 font-mono text-sm dark:border-gray-700 dark:bg-gray-900"
+              className="w-full rounded-sm border border-gray-300 px-3 py-2 font-mono text-sm dark:border-gray-700 dark:bg-gray-900"
             />
           </label>
           <div className="flex items-end gap-2">
@@ -129,26 +129,26 @@ export default function TrustlineSection({
               type="button"
               onClick={onPreviewCombined}
               disabled={swapPreview.loading || !canPreviewTrustlineSwap}
-              className="rounded border border-blue-300 px-3 py-2 text-xs font-semibold text-blue-800 hover:bg-blue-50 disabled:opacity-50 dark:border-blue-700 dark:text-blue-100 dark:hover:bg-blue-900"
+              className="rounded-sm border border-blue-300 px-3 py-2 text-xs font-semibold text-blue-800 hover:bg-blue-50 disabled:opacity-50 dark:border-blue-700 dark:text-blue-100 dark:hover:bg-blue-900"
             >
               {swapPreview.loading ? t('common:loading', 'Loading...') : t('trading:assetSearch.swapPreview.check')}
             </button>
           </div>
         </div>
         {!canPreviewTrustlineSwap && (
-          <p className="mt-3 rounded border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100">
+          <p className="mt-3 rounded-sm border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100">
             {selectedAssetAuthRequired
               ? t('trading:assetSearch.trustlineFlow.authRequiredCombinedBlocked')
               : t('trading:assetSearch.trustlineFlow.combinedOnlyXlm')}
           </p>
         )}
         {swapPreview.error && (
-          <div className="mt-3 rounded border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-200">
+          <div className="mt-3 rounded-sm border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-200">
             {swapPreview.error}
           </div>
         )}
         {swapPreview.path && (
-          <div className="mt-3 rounded border border-blue-100 bg-blue-50 p-3 text-xs text-blue-950 dark:border-blue-900 dark:bg-blue-950 dark:text-blue-100">
+          <div className="mt-3 rounded-sm border border-blue-100 bg-blue-50 p-3 text-xs text-blue-950 dark:border-blue-900 dark:bg-blue-950 dark:text-blue-100">
             <dl className="grid gap-2 sm:grid-cols-2">
               <div>
                 <dt className="font-semibold">{t('trading:assetSearch.swapPreview.expected')}</dt>
@@ -167,7 +167,7 @@ export default function TrustlineSection({
               type="button"
               onClick={onOpenTrustlineSwapModal}
               disabled={isSubmittingSwap || !canPreviewTrustlineSwap || !!pendingAmbiguousSubmission}
-              className="mt-3 rounded bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
+              className="mt-3 rounded-sm bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
             >
               {isSubmittingSwap
                 ? t('common:main.processing')

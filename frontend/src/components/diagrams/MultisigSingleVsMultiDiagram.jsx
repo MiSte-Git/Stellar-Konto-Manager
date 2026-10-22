@@ -5,7 +5,7 @@ export default function MultisigSingleVsMultiDiagram() {
   const { t } = useTranslation('learnMultisigDiagrams');
 
   const card = (title, items, note) => (
-    <div className="flex-1 min-w-[220px] border rounded-lg p-3 bg-white dark:bg-gray-900 shadow-sm">
+    <div className="flex-1 min-w-[220px] border rounded-lg p-3 bg-white dark:bg-gray-900 shadow-xs">
       <div className="text-sm font-semibold mb-2 text-gray-900 dark:text-gray-100">{title}</div>
       <div className="space-y-2 text-sm text-gray-700 dark:text-gray-200">
         {items.map((it, idx) => (

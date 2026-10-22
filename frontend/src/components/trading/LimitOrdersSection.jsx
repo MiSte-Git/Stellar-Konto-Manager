@@ -29,7 +29,7 @@ export default function LimitOrdersSection({
 }) {
   const { t } = useTranslation(['trading', 'common']);
   return (
-    <section className="mt-4 rounded border border-gray-200 bg-white p-3 dark:border-blue-900 dark:bg-blue-900/40">
+    <section className="mt-4 rounded-sm border border-gray-200 bg-white p-3 dark:border-blue-900 dark:bg-blue-900/40">
       <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <h3 className="text-sm font-semibold">
           {t('trading:assetSearch.limitOffer.title')}
@@ -38,7 +38,7 @@ export default function LimitOrdersSection({
           type="button"
           onClick={onRefresh}
           disabled={limitOfferStatus.loading}
-          className="rounded border border-gray-300 px-3 py-2 text-xs font-semibold hover:bg-gray-50 disabled:opacity-50 dark:border-gray-700 dark:hover:bg-gray-800"
+          className="rounded-sm border border-gray-300 px-3 py-2 text-xs font-semibold hover:bg-gray-50 disabled:opacity-50 dark:border-gray-700 dark:hover:bg-gray-800"
         >
           {limitOfferStatus.loading
             ? t('common:loading', 'Loading...')
@@ -54,7 +54,7 @@ export default function LimitOrdersSection({
           <select
             value={limitOfferDirection}
             onChange={(event) => onDirectionChange(event.target.value)}
-            className="w-full rounded border border-gray-300 px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-900"
+            className="w-full rounded-sm border border-gray-300 px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-900"
           >
             <option value="sell-token-for-xlm">{t('trading:assetSearch.limitOffer.direction.sellTokenForXlm', { asset: formatAssetLabel(selectedStellarAsset) })}</option>
             <option value="sell-xlm-for-token">{t('trading:assetSearch.limitOffer.direction.sellXlmForToken', { asset: formatAssetLabel(selectedStellarAsset) })}</option>
@@ -67,7 +67,7 @@ export default function LimitOrdersSection({
           <input
             value={limitOfferAmount}
             onChange={(event) => onAmountChange(event.target.value)}
-            className="w-full rounded border border-gray-300 px-3 py-2 font-mono text-sm dark:border-gray-700 dark:bg-gray-900"
+            className="w-full rounded-sm border border-gray-300 px-3 py-2 font-mono text-sm dark:border-gray-700 dark:bg-gray-900"
             inputMode="decimal"
           />
         </label>
@@ -78,7 +78,7 @@ export default function LimitOrdersSection({
           <input
             value={limitOfferPrice}
             onChange={(event) => onPriceChange(event.target.value)}
-            className="w-full rounded border border-gray-300 px-3 py-2 font-mono text-sm dark:border-gray-700 dark:bg-gray-900"
+            className="w-full rounded-sm border border-gray-300 px-3 py-2 font-mono text-sm dark:border-gray-700 dark:bg-gray-900"
             inputMode="decimal"
           />
         </label>
@@ -87,7 +87,7 @@ export default function LimitOrdersSection({
             type="button"
             onClick={onCreateOffer}
             disabled={isSubmittingOffer || !!pendingAmbiguousSubmission}
-            className="w-full rounded bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700 disabled:opacity-50"
+            className="w-full rounded-sm bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700 disabled:opacity-50"
           >
             {isSubmittingOffer
               ? t('common:main.processing')
@@ -98,7 +98,7 @@ export default function LimitOrdersSection({
       <div className="mt-4 border-t border-gray-200 pt-3 dark:border-blue-900">
         <h4 className="mb-2 text-sm font-semibold">{t('trading:assetSearch.limitOffer.openOffers')}</h4>
         {limitOfferStatus.error && (
-          <div className="rounded border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-200">
+          <div className="rounded-sm border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-200">
             {t('trading:assetSearch.limitOffer.loadFailed')}
           </div>
         )}
@@ -136,7 +136,7 @@ export default function LimitOrdersSection({
                           type="button"
                           onClick={() => onCancelOffer(offer)}
                           disabled={isSubmittingOffer || !!pendingAmbiguousSubmission}
-                          className="rounded border border-red-300 px-2 py-1 text-xs font-semibold text-red-700 hover:bg-red-50 disabled:opacity-50 dark:border-red-900 dark:text-red-200 dark:hover:bg-red-950"
+                          className="rounded-sm border border-red-300 px-2 py-1 text-xs font-semibold text-red-700 hover:bg-red-50 disabled:opacity-50 dark:border-red-900 dark:text-red-200 dark:hover:bg-red-950"
                         >
                           {t('trading:assetSearch.limitOffer.cancel')}
                         </button>

@@ -113,7 +113,7 @@ function CompareTrustlines({
         accountPicker
         onRemoveOption={(entry) => removeRecentWalletOption(entry.value)}
         onClearOptions={clearRecentWalletOptions}
-        inputClassName={`wallet-input w-full p-2 border rounded pr-8 font-mono text-sm ${destNotFound ? 'border-red-500 ring-1 ring-red-400' : 'border-gray-300'}`}
+        inputClassName={`wallet-input w-full p-2 border rounded-sm pr-8 font-mono text-sm ${destNotFound ? 'border-red-500 ring-1 ring-red-400' : 'border-gray-300'}`}
         inputProps={{
           spellCheck: false,
           autoCorrect: 'off',
@@ -135,13 +135,13 @@ function CompareTrustlines({
       />
       <button
         onClick={handleCompare}
-        className="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+        className="mt-2 bg-blue-500 text-white px-4 py-2 rounded-sm hover:bg-blue-600"
         disabled={isLoading}
       >
         {isLoading ? t('common:option.loading', 'Loading…') : t('trustline:compare')}
       </button>
       {destNotFound && (
-        <div className="text-center text-xs text-red-700 my-2 inline-block border border-red-500 rounded px-2 py-0.5">
+        <div className="text-center text-xs text-red-700 my-2 inline-block border border-red-500 rounded-sm px-2 py-0.5">
           {t('common:error.accountNotFoundInNetwork', { net: netLabel })}
         </div>
       )}

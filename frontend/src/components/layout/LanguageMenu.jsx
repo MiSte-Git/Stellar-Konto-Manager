@@ -53,9 +53,9 @@ export default function LanguageMenu() {
         aria-expanded={open}
         aria-label={`${label}: ${current.name}`}
         title={label}
-        className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-2.5 text-sm font-medium text-gray-700 hover:border-gray-300 hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:hover:border-gray-600 dark:hover:bg-gray-800"
+        className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-2.5 text-sm font-medium text-gray-700 hover:border-gray-300 hover:bg-gray-50 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:hover:border-gray-600 dark:hover:bg-gray-800"
       >
-        <span className={`fi fi-${current.flag} rounded-sm`} aria-hidden="true" />
+        <span className={`fi fi-${current.flag} rounded-xs`} aria-hidden="true" />
         <span className="uppercase text-xs">{current.code}</span>
         <NavIcon name="chevronDown" className="w-3.5 h-3.5 text-gray-400" />
       </button>
@@ -80,7 +80,7 @@ export default function LanguageMenu() {
                       : 'bg-transparent font-normal text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800'
                   }`}
                 >
-                  <span className={`fi fi-${lang.flag} rounded-sm`} aria-hidden="true" />
+                  <span className={`fi fi-${lang.flag} rounded-xs`} aria-hidden="true" />
                   <span>{lang.name}</span>
                 </button>
               </li>

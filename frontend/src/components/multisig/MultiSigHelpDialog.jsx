@@ -21,7 +21,7 @@ function MultiSigHelpDialog({ isOpen, onClose }) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
       onClick={handleOverlayClick}
       role="presentation"
     >
@@ -37,7 +37,7 @@ function MultiSigHelpDialog({ isOpen, onClose }) {
             type="button"
             onClick={handleOverlayClick}
             aria-label={t('multisig.help.closeLabel')}
-            className="rounded p-1 text-gray-600 transition hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white"
+            className="rounded-sm p-1 text-gray-600 transition hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white"
           >
             ×
           </button>
@@ -52,7 +52,7 @@ function MultiSigHelpDialog({ isOpen, onClose }) {
             {t('multisig.help.problem')}
           </p>
 
-          <div className="rounded-md border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900/80">
+          <div className="rounded-md border border-gray-200 bg-white p-4 shadow-xs dark:border-gray-800 dark:bg-gray-900/80">
             <p className="mb-2 font-semibold">{t('multisig.help.setupTitle')}</p>
             <p className="text-gray-700 dark:text-gray-300">{weights.intro}</p>
             <ul className="mt-2 list-disc space-y-1 pl-5">
@@ -87,7 +87,7 @@ function MultiSigHelpDialog({ isOpen, onClose }) {
             <button
               type="button"
               onClick={handleOverlayClick}
-              className="rounded bg-blue-600 px-4 py-2 text-white transition hover:bg-blue-700"
+              className="rounded-sm bg-blue-600 px-4 py-2 text-white transition hover:bg-blue-700"
             >
               {t('multisig.help.closeLabel')}
             </button>

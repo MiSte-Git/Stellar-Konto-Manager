@@ -38,7 +38,7 @@ export default function ExternalDomainNote({ domains, heading }: ExternalDomainN
       <ul className="flex flex-wrap gap-2">
         {domains.map((domain) => (
           <li key={domain}>
-            <code className="text-[0.78rem] font-mono bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-200 px-1.5 py-0.5 rounded select-all">
+            <code className="text-[0.78rem] font-mono bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-200 px-1.5 py-0.5 rounded-sm select-all">
               {domain}
             </code>
           </li>

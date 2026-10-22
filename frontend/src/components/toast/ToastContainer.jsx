@@ -6,11 +6,11 @@ export default function ToastContainer({ toasts, onClose }) {
   const { t } = useTranslation(['quiz']);
   if (typeof document === 'undefined') return null;
   return createPortal(
-    <div className="fixed inset-x-0 top-3 z-[100] flex flex-col items-center gap-2 pointer-events-none">
+    <div className="fixed inset-x-0 top-3 z-100 flex flex-col items-center gap-2 pointer-events-none">
       {toasts.map((toast) => (
         <div
           key={toast.id}
-          className={`pointer-events-auto max-w-md w-[90%] sm:w-auto px-3 py-2 rounded shadow text-sm font-medium border ${
+          className={`pointer-events-auto max-w-md w-[90%] sm:w-auto px-3 py-2 rounded-sm shadow-sm text-sm font-medium border ${
             toast.type === 'success'
               ? 'bg-green-600 text-white border-green-700'
               : toast.type === 'error'

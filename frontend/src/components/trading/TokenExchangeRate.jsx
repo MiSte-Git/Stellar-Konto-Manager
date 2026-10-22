@@ -23,7 +23,7 @@ export default function TokenExchangeRate({ tokenLabel, exchangeRate, ratioForma
   const formatRate = (value) => (value == null ? null : ratioFormatter.format(value));
 
   return (
-    <section className="mt-4 rounded border border-gray-200 bg-white p-3 dark:border-blue-900 dark:bg-blue-900/40">
+    <section className="mt-4 rounded-sm border border-gray-200 bg-white p-3 dark:border-blue-900 dark:bg-blue-900/40">
       <h4 className="text-sm font-semibold">{t('trading:assetSearch.exchangeRate.title')}</h4>
       {loading && (
         <div className="mt-2 text-xs text-gray-700 dark:text-blue-100">

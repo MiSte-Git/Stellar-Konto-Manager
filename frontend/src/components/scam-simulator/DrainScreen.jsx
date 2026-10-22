@@ -362,7 +362,7 @@ export default function DrainScreen({ demoTokens, onComplete }) {
     <div className="flex flex-col h-full min-h-[420px] bg-gray-950">
 
       {/* Status message pill */}
-      <div className="flex items-center justify-center min-h-[3rem] px-4 pt-4 pb-1 shrink-0">
+      <div className="flex items-center justify-center min-h-12 px-4 pt-4 pb-1 shrink-0">
         <AnimatePresence mode="wait">
           <motion.p
             key={statusMsg}

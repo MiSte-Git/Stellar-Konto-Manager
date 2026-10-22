@@ -33,10 +33,10 @@ const HORIZON_MAIN = 'https://horizon.stellar.org';
 const HORIZON_TEST = 'https://horizon-testnet.stellar.org';
 const TRUSTLINE_RESERVE_XLM = 0.5;
 
-const cardCls = 'rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800/70';
+const cardCls = 'rounded-2xl border border-gray-200 bg-white shadow-xs dark:border-gray-700 dark:bg-gray-800/70';
 const linkBtnCls =
   'rounded-md border-0 bg-transparent px-2 py-1 text-xs font-medium text-blue-700 hover:bg-blue-50 hover:text-blue-800 ' +
-  'focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-blue-300 dark:hover:bg-gray-700 dark:hover:text-blue-200';
+  'focus:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-blue-300 dark:hover:bg-gray-700 dark:hover:text-blue-200';
 
 function needsTrustline(item) {
   return !item.asset.isNative && !item.hasTrustline && !item.isIssuer;

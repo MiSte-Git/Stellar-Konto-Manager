@@ -125,7 +125,7 @@ export default function QrScanDialog({ onResult, onClose }) {
           value={pasteValue}
           onChange={(e) => { setPasteValue(e.target.value); lastRejectedRef.current = ''; }}
           rows={3}
-          className="mt-1 w-full rounded border px-2 py-1.5 font-mono text-xs dark:bg-gray-900"
+          className="mt-1 w-full rounded-sm border px-2 py-1.5 font-mono text-xs dark:bg-gray-900"
           placeholder="web+stellar:pay?destination=G…"
           spellCheck="false"
           autoComplete="off"

@@ -78,7 +78,7 @@ export default function ChatWindow({ contact, messages, isTyping, scrollRef, dis
             </span>
             {contact?.verified === false && (
               <span
-                className="text-xs px-1.5 py-0.5 rounded bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 font-medium shrink-0"
+                className="text-xs px-1.5 py-0.5 rounded-sm bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 font-medium shrink-0"
                 title="Nicht verifiziert"
               >
                 ?
@@ -116,7 +116,7 @@ export default function ChatWindow({ contact, messages, isTyping, scrollRef, dis
                   transition={{ duration: 0.35, ease: 'easeOut' }}
                   className="flex justify-center"
                 >
-                  <div className="w-full max-w-[82%] rounded-xl border border-green-300 dark:border-green-700 bg-green-50 dark:bg-green-950/30 shadow-sm overflow-hidden">
+                  <div className="w-full max-w-[82%] rounded-xl border border-green-300 dark:border-green-700 bg-green-50 dark:bg-green-950/30 shadow-xs overflow-hidden">
                     <div className="flex items-center justify-between gap-3 px-4 py-3">
                       <p className="font-semibold text-sm text-green-800 dark:text-green-300">
                         💳 {t('ui.accountCard.title')}
@@ -140,7 +140,7 @@ export default function ChatWindow({ contact, messages, isTyping, scrollRef, dis
                   transition={{ duration: 0.4, type: 'spring', stiffness: 260, damping: 20 }}
                   className="flex justify-center"
                 >
-                  <span className="inline-block px-5 py-2.5 rounded-2xl bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300 font-black text-base shadow-sm border border-red-200 dark:border-red-800">
+                  <span className="inline-block px-5 py-2.5 rounded-2xl bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300 font-black text-base shadow-xs border border-red-200 dark:border-red-800">
                     {msg.content ?? t(msg.i18nKey)}
                   </span>
                 </motion.div>
@@ -176,10 +176,10 @@ export default function ChatWindow({ contact, messages, isTyping, scrollRef, dis
               >
                 <div
                   className={[
-                    'max-w-[75%] px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap break-words',
+                    'max-w-[75%] px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap wrap-break-word',
                     isMe
                       ? 'rounded-2xl rounded-br-sm bg-indigo-600 text-white'
-                      : 'rounded-2xl rounded-bl-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm border border-gray-100 dark:border-gray-600',
+                      : 'rounded-2xl rounded-bl-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-xs border border-gray-100 dark:border-gray-600',
                   ].join(' ')}
                 >
                   {msg.content ?? t(msg.i18nKey)}

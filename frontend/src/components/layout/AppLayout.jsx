@@ -128,7 +128,7 @@ export default function AppLayout({ children }) {
                 type="button"
                 onClick={closeDrawer}
                 aria-label={t('menu:closeNavigation', 'Navigation schließen')}
-                className="inline-flex h-9 w-9 items-center justify-center rounded-lg border-0 bg-transparent p-0 text-gray-500 hover:bg-gray-200 hover:text-gray-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white"
+                className="inline-flex h-9 w-9 items-center justify-center rounded-lg border-0 bg-transparent p-0 text-gray-500 hover:bg-gray-200 hover:text-gray-900 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white"
               >
                 <NavIcon name="close" className="w-5 h-5" />
               </button>

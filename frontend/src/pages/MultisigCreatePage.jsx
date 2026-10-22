@@ -439,13 +439,13 @@ export default function MultisigCreatePage() {
       {/* Info-Button ganz oben */}
       <div className="mb-4 text-center">
         <div className="flex flex-wrap items-center justify-center gap-2">
-          <button type="button" onClick={()=>setShowInfo2(true)} className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700">
+          <button type="button" onClick={()=>setShowInfo2(true)} className="px-4 py-2 rounded-sm bg-blue-600 text-white hover:bg-blue-700">
             {t('multisigCreate:info.more')}
           </button>
           <button
             type="button"
             onClick={() => setIsHelpOpen(true)}
-            className="px-4 py-2 rounded border border-blue-200 bg-blue-50 text-blue-800 hover:bg-blue-100 dark:border-blue-900 dark:bg-blue-950 dark:text-blue-100"
+            className="px-4 py-2 rounded-sm border border-blue-200 bg-blue-50 text-blue-800 hover:bg-blue-100 dark:border-blue-900 dark:bg-blue-950 dark:text-blue-100"
           >
             {t('glossary:multisig.help.linkLabel', 'Was bedeutet Multi-Signature?')}
           </button>
@@ -472,9 +472,9 @@ export default function MultisigCreatePage() {
         }
       }} />
 
-      <div className="bg-white dark:bg-gray-800 rounded border p-4 mb-4">
+      <div className="bg-white dark:bg-gray-800 rounded-sm border p-4 mb-4">
         <div className="flex flex-wrap items-center gap-3 mb-2">
-          <button onClick={handleGenerate} className="bg-blue-600 text-white px-3 py-2 rounded hover:bg-blue-700" disabled={busy}>
+          <button onClick={handleGenerate} className="bg-blue-600 text-white px-3 py-2 rounded-sm hover:bg-blue-700" disabled={busy}>
             {t('multisigCreate:generateKeys')}
           </button>
           <label className="inline-flex items-center gap-2 text-sm">
@@ -499,7 +499,7 @@ export default function MultisigCreatePage() {
       </div>
 
       {enableMultisig && generated && (
-        <div className="bg-white dark:bg-gray-800 rounded border p-4 mb-4">
+        <div className="bg-white dark:bg-gray-800 rounded-sm border p-4 mb-4">
           <MultisigConfigForm
             signersTitle={t('multisigConfig:signersTitle')}
             titleAs="h3"
@@ -527,14 +527,14 @@ export default function MultisigCreatePage() {
             signerWeightTooltip={t('multisigConfig:tooltips.signerWeight')}
             signerWeightHint={t('multisigConfig:hints.byteRange')}
             showSignerWeightInfo
-            signerWeightInputClassName="border rounded px-2 py-1 text-sm w-20"
+            signerWeightInputClassName="border rounded-sm px-2 py-1 text-sm w-20"
             masterWeight={masterWeight}
             onMasterWeightChange={handleMasterWeightChange}
             masterWeightLabel={t('multisigConfig:masterWeight')}
             masterWeightHint={t('multisigConfig:hints.byteRange')}
             masterWeightTooltip={t('multisigConfig:tooltips.masterWeight')}
             showMasterWeightInfo
-            masterWeightInputClassName="border rounded px-2 py-1 text-sm w-24"
+            masterWeightInputClassName="border rounded-sm px-2 py-1 text-sm w-24"
             thresholdsLabel={t('multisigConfig:threshold')}
             thresholdLabels={{
               low: t('multisigConfig:thresholdLow'),
@@ -549,7 +549,7 @@ export default function MultisigCreatePage() {
             thresholdValues={{ low: lowT, med: medT, high: highT }}
             thresholdErrors={{ low: thLowErr, med: thMedErr, high: thHighErr }}
             onThresholdChange={handleThresholdChange}
-            thresholdInputClassName="border rounded px-2 py-1 w-16"
+            thresholdInputClassName="border rounded-sm px-2 py-1 w-16"
             thresholdUnitsLabel={t('multisigConfig:units.signatures')}
             thresholdLevelsHint={t('multisigConfig:thresholdLevelsHint')}
             thresholdSumText={t('multisigConfig:thresholdSum', { sum: sumWeights })}
@@ -562,7 +562,7 @@ export default function MultisigCreatePage() {
         </div>
       )}
 
-      <div className="bg-white dark:bg-gray-800 rounded border p-4 mb-4">
+      <div className="bg-white dark:bg-gray-800 rounded-sm border p-4 mb-4">
         <label className="flex items-start gap-2">
           <input type="checkbox" checked={activateNow} onChange={() => setActivateNow(!activateNow)} />
           <span>
@@ -582,7 +582,7 @@ export default function MultisigCreatePage() {
                   min="0"
                   value={startingBalance}
                   onChange={(e) => setStartingBalance(e.target.value)}
-                  className="w-full border rounded px-2 py-1"
+                  className="w-full border rounded-sm px-2 py-1"
                 />
                 {parseFloat(startingBalance || '0') < requiredReserve && (
                   <p className="text-xs text-red-600 mt-1">
@@ -604,10 +604,10 @@ export default function MultisigCreatePage() {
       </div>
 
       <div className="flex flex-wrap gap-2">
-        <button onClick={handleCreateAll} disabled={busy || (enableMultisig && (thLowErr || thMedErr || thHighErr || hasSafetyErrors))} className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 disabled:opacity-50">
+        <button onClick={handleCreateAll} disabled={busy || (enableMultisig && (thLowErr || thMedErr || thHighErr || hasSafetyErrors))} className="bg-green-600 text-white px-4 py-2 rounded-sm hover:bg-green-700 disabled:opacity-50">
           {t('multisigCreate:createButton')}
         </button>
-        <button onClick={handleActivateOnly} disabled={busy} className="px-4 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-50">
+        <button onClick={handleActivateOnly} disabled={busy} className="px-4 py-2 rounded-sm border hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-50">
           {t('multisigCreate:activateOnly')}
         </button>
       </div>
@@ -629,7 +629,7 @@ export default function MultisigCreatePage() {
 
       {showInfo2 && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 overflow-y-auto p-4">
-          <div className="bg-white dark:bg-gray-800 rounded p-6 max-w-3xl w-full mx-auto my-8">
+          <div className="bg-white dark:bg-gray-800 rounded-sm p-6 max-w-3xl w-full mx-auto my-8">
             <h3 className="text-xl font-bold mb-4">{t('multisigCreate:info.title')}</h3>
             
             <div className="space-y-4 text-sm">
@@ -653,7 +653,7 @@ export default function MultisigCreatePage() {
             </div>
 
             <div className="text-right mt-6">
-              <button onClick={()=>{ setShowInfo2(false); }} className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700">
+              <button onClick={()=>{ setShowInfo2(false); }} className="px-4 py-2 rounded-sm bg-blue-600 text-white hover:bg-blue-700">
                 {t('common:close')}
               </button>
             </div>
@@ -663,7 +663,7 @@ export default function MultisigCreatePage() {
 
       {showKeyWarning && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 overflow-y-auto p-4">
-          <div className="bg-white dark:bg-gray-800 rounded p-6 max-w-md w-full my-auto max-h-[calc(100svh-2rem)] overflow-y-auto">
+          <div className="bg-white dark:bg-gray-800 rounded-sm p-6 max-w-md w-full my-auto max-h-[calc(100svh-2rem)] overflow-y-auto">
             <h3 className="text-lg font-bold mb-3 text-red-600">{t('multisigCreate:keyWarning.title')}</h3>
             <div className="text-sm space-y-3 text-gray-700 dark:text-gray-300">
               <p>{t('multisigCreate:keyWarning.text1')}</p>
@@ -675,7 +675,7 @@ export default function MultisigCreatePage() {
               </ul>
             </div>
             <div className="text-right mt-6">
-              <button onClick={handleCreateAllAfterWarning} className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700">
+              <button onClick={handleCreateAllAfterWarning} className="px-4 py-2 rounded-sm bg-red-600 text-white hover:bg-red-700">
                 {t('multisigCreate:keyWarning.confirm')}
               </button>
             </div>

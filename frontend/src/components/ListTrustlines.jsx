@@ -532,21 +532,21 @@ function ListTrustlines({
       )}
  
       {/* Infoleiste: Wallet, Anzahl, Modusauswahl */}
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center bg-gray-500 rounded p-3 text-sm mb-4">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center bg-gray-500 rounded-sm p-3 text-sm mb-4">
         <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300 mb-2 sm:mb-0 flex-wrap">
           <span>{t('trustline:all')}: {trustlines.length}</span>
           <div className="flex gap-2">
             <button
               type="button"
               onClick={() => onFilterChange('zeroOnly', false)}
-              className={`px-3 py-1 rounded border ${!filters.zeroOnly ? 'bg-blue-600 text-white' : 'hover:bg-gray-100 dark:hover:bg-gray-800'}`}
+              className={`px-3 py-1 rounded-sm border ${!filters.zeroOnly ? 'bg-blue-600 text-white' : 'hover:bg-gray-100 dark:hover:bg-gray-800'}`}
             >
               Alle anzeigen
             </button>
             <button
               type="button"
               onClick={() => { onFilterChange('zeroOnly', true); onSort('assetBalance'); }}
-              className={`px-3 py-1 rounded border ${filters.zeroOnly ? 'bg-blue-600 text-white' : 'hover:bg-gray-100 dark:hover:bg-gray-800'}`}
+              className={`px-3 py-1 rounded-sm border ${filters.zeroOnly ? 'bg-blue-600 text-white' : 'hover:bg-gray-100 dark:hover:bg-gray-800'}`}
             >
               Nur löschbare
             </button>
@@ -559,7 +559,7 @@ function ListTrustlines({
             <div className="ml-2">
               <button
                 onClick={() => { setPendingAction('delete'); setShowOverviewModal(true); }}
-                className="ml-4 px-4 py-1 bg-red-600 text-white rounded hover:bg-red-700"
+                className="ml-4 px-4 py-1 bg-red-600 text-white rounded-sm hover:bg-red-700"
               >
                 {t('trustline:delete')}
               </button>
@@ -569,7 +569,7 @@ function ListTrustlines({
             <button
               type="button"
               onClick={() => { setShowAddModal(true); setPendingAdd(null); setPendingAction('add'); }}
-              className="px-4 py-1 bg-green-600 text-white rounded hover:bg-green-700"
+              className="px-4 py-1 bg-green-600 text-white rounded-sm hover:bg-green-700"
             >
               {t('trustline:add.button')}
             </button>
@@ -655,7 +655,7 @@ function ListTrustlines({
         <div className="mt-4 flex justify-center">
           <button
             onClick={() => { setPendingAction('delete'); setShowOverviewModal(true); }}
-            className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+            className="px-4 py-2 bg-red-600 text-white rounded-sm hover:bg-red-700"
           >
             {t('trustline:delete')}
           </button>
@@ -671,7 +671,7 @@ function ListTrustlines({
       )}
 
       {showOverviewModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+        <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg w-full max-w-3xl max-h-[80vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-semibold text-black dark:text-white">
@@ -722,13 +722,13 @@ function ListTrustlines({
               <div className="flex justify-end mb-3">
                 <button
                   onClick={() => { setShowOverviewModal(false); setPendingAction(null); }}
-                  className="px-4 py-2 bg-gray-400 text-black rounded hover:bg-gray-500"
+                  className="px-4 py-2 bg-gray-400 text-black rounded-sm hover:bg-gray-500"
                 >
                   {t('common:option.cancel', 'Abbrechen')}
                 </button>
               </div>
               <div className="grid gap-3">
-                <div className="border rounded p-3">
+                <div className="border rounded-sm p-3">
                   <div className="font-semibold mb-1">{t('multisig:confirm.testModeTitle')}</div>
                   <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">{t('multisig:confirm.testModeDescription')}</p>
                   <button
@@ -737,17 +737,17 @@ function ListTrustlines({
                       setPendingAction('delete');
                       setShowSecretModal(true);
                     }}
-                    className="w-full px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+                    className="w-full px-4 py-2 bg-red-600 text-white rounded-sm hover:bg-red-700"
                   >
                     {t('multisig:confirm.testModeButton')}
                   </button>
                 </div>
-                <div className="border rounded p-3">
+                <div className="border rounded-sm p-3">
                   <div className="font-semibold mb-1">{t('multisig:confirm.prepareTitle')}</div>
                   <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">{t('multisig:confirm.prepareDescription')}</p>
                   <button
                     onClick={handlePrepareMultisig}
-                    className="w-full px-4 py-2 rounded border border-blue-200 text-blue-700 dark:text-blue-200 dark:border-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900"
+                    className="w-full px-4 py-2 rounded-sm border border-blue-200 text-blue-700 dark:text-blue-200 dark:border-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900"
                   >
                     {t('multisig:confirm.prepareButton')}
                   </button>

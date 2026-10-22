@@ -40,7 +40,7 @@ export default function Legal() {
         <button
           type="button"
           onClick={() => navigate(-1)}
-          className="inline-flex items-center gap-2 rounded bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100 px-3 py-1 text-sm font-semibold"
+          className="inline-flex items-center gap-2 rounded-sm bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100 px-3 py-1 text-sm font-semibold"
         >
           ← {t('backToApp')}
         </button>

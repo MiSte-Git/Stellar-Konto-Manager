@@ -7,7 +7,7 @@ function ErrorModal({ message, onClose }) {
   if (!message) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+    <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
       <div className="bg-white dark:bg-gray-800 p-6 rounded-lg w-full max-w-md shadow-xl">
         <h2 className="text-lg font-semibold text-red-600 dark:text-red-400 mb-4">
           ❌ {t('errors:transaction.title', 'Transaction error')}
@@ -18,7 +18,7 @@ function ErrorModal({ message, onClose }) {
         <div className="flex justify-end">
           <button
             onClick={onClose}
-            className="px-4 py-2 bg-gray-400 text-black rounded hover:bg-gray-500"
+            className="px-4 py-2 bg-gray-400 text-black rounded-sm hover:bg-gray-500"
           >
             {t('common:option.close')}
           </button>

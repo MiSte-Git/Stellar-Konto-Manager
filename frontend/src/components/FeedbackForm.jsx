@@ -76,13 +76,13 @@ export default function FeedbackForm(props) {
         value={desc}
         onChange={(e) => setDesc(e.target.value)}
         placeholder={t('common:bugReport.descPlaceholder')}
-        className="w-full rounded border p-2"
+        className="w-full rounded-sm border p-2"
         rows={4}
       />
       <div className="flex gap-2">
         <button
           type="submit"
-        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        className="bg-blue-600 text-white px-4 py-2 rounded-sm hover:bg-blue-700"
         disabled={isSubmitting}
         title={t('common:bugReport.send')}
       >
@@ -91,7 +91,7 @@ export default function FeedbackForm(props) {
         <button
           type="button"
           onClick={() => props.onCancel?.()}
-          className="px-3 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-800"
+          className="px-3 py-2 rounded-sm border hover:bg-gray-100 dark:hover:bg-gray-800"
           title={t('common:bugReport.cancel')}
         >
           {t('common:bugReport.cancel')}

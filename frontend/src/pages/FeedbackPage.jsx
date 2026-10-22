@@ -188,15 +188,15 @@ export default function FeedbackPage({ onBack }) {
       {notices.length > 0 && (
         <div className="mb-3 space-y-1">
           {notices.map((msg, idx) => (
-            <div key={idx} className="text-sm bg-green-100 dark:bg-green-900/30 border border-green-300/60 text-green-800 dark:text-green-200 rounded p-2">{msg}</div>
+            <div key={idx} className="text-sm bg-green-100 dark:bg-green-900/30 border border-green-300/60 text-green-800 dark:text-green-200 rounded-sm p-2">{msg}</div>
           ))}
         </div>
       )}
-      <div className="bg-white dark:bg-gray-800 border rounded p-4 space-y-3">
+      <div className="bg-white dark:bg-gray-800 border rounded-sm p-4 space-y-3">
         <div>
           <label className="block text-sm mb-1">{t('common:feedback.category')}</label>
           {feedbackCategories.length ? (
-            <select className="border rounded w-full px-2 py-1 text-base md:text-sm" value={category} onChange={(e)=>setCategory(e.target.value)}>
+            <select className="border rounded-sm w-full px-2 py-1 text-base md:text-sm" value={category} onChange={(e)=>setCategory(e.target.value)}>
               <option value="">{t('common:feedback.categoryPlaceholder')}</option>
               {feedbackCategories.map((c) => (
                 <option key={c.id} value={c.id}>{getCategoryLabel(c.id)}</option>
@@ -209,7 +209,7 @@ export default function FeedbackPage({ onBack }) {
         <div>
           <label className="block text-sm mb-1">{t('common:feedback.area')}</label>
           {feedbackAreas.length ? (
-            <select className="border rounded w-full px-2 py-1 text-base md:text-sm" value={areaId} onChange={(e)=>setAreaId(e.target.value)}>
+            <select className="border rounded-sm w-full px-2 py-1 text-base md:text-sm" value={areaId} onChange={(e)=>setAreaId(e.target.value)}>
               <option value="">{t('common:feedback.areaPlaceholder')}</option>
               {feedbackAreas.map((c) => (
                 <option key={c.id} value={c.id}>{getAreaLabel(c.id) || c.id}</option>
@@ -221,17 +221,17 @@ export default function FeedbackPage({ onBack }) {
         </div>
         <div>
           <label className="block text-sm mb-1">{t('common:feedback.subject')}</label>
-          <input ref={subjectInputRef} className="border rounded w-full px-2 py-1 text-base md:text-sm" value={subject} onChange={(e)=>setSubject(e.target.value)} />
+          <input ref={subjectInputRef} className="border rounded-sm w-full px-2 py-1 text-base md:text-sm" value={subject} onChange={(e)=>setSubject(e.target.value)} />
         </div>
         <div>
           <label className="block text-sm mb-1">{t('common:feedback.message')}</label>
-          <textarea className="border rounded w-full px-2 py-1 text-base md:text-sm min-h-[160px]" value={message} onChange={(e)=>setMessage(e.target.value)} />
+          <textarea className="border rounded-sm w-full px-2 py-1 text-base md:text-sm min-h-[160px]" value={message} onChange={(e)=>setMessage(e.target.value)} />
         </div>
         <div>
           <label className="block text-sm mb-1">{t('common:feedback.contactEmailOptional', 'Email (optional)')}</label>
           <input
             type="email"
-            className="border rounded w-full px-2 py-1 text-base md:text-sm"
+            className="border rounded-sm w-full px-2 py-1 text-base md:text-sm"
             value={contactEmail}
             onChange={(e)=>setContactEmail(e.target.value)}
             placeholder={t('common:feedback.emailPlaceholder', 'e.g. name@example.com')}
@@ -242,15 +242,15 @@ export default function FeedbackPage({ onBack }) {
         </div>
         <div className="flex items-center justify-end gap-2">
           <button
-            className="px-3 py-1 rounded border text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
+            className="px-3 py-1 rounded-sm border text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
             type="button"
             onClick={handleClearForm}
           >
             {t('common:feedback.form.clearButton')}
           </button>
-          <button className="px-3 py-1 rounded border hover:bg-gray-100 dark:hover:bg-gray-700" onClick={onBack}>{t('common:option.cancel')}</button>
+          <button className="px-3 py-1 rounded-sm border hover:bg-gray-100 dark:hover:bg-gray-700" onClick={onBack}>{t('common:option.cancel')}</button>
           <button
-            className="px-3 py-1 rounded bg-blue-600 text-white disabled:opacity-50"
+            className="px-3 py-1 rounded-sm bg-blue-600 text-white disabled:opacity-50"
             disabled={!canSend || isSubmitting}
             onClick={handleSend}
           >

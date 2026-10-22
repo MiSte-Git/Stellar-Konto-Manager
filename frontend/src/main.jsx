@@ -789,7 +789,7 @@ function Main() {
         <div className="relative mb-2">
           {sourcePublicKey && (
             <div className="mt-1 text-xs text-center">
-              <span className={`inline-block px-2 py-0.5 rounded font-semibold ${accountMode === 'identity' ? 'bg-amber-200 text-amber-900' : 'bg-blue-100 text-blue-800'}`}>
+              <span className={`inline-block px-2 py-0.5 rounded-sm font-semibold ${accountMode === 'identity' ? 'bg-amber-200 text-amber-900' : 'bg-blue-100 text-blue-800'}`}>
                 {accountMode === 'identity'
                   ? t('common:accountMode.identity', 'Muxed Identity')
                   : t('common:accountMode.account', 'G account')}
@@ -797,19 +797,19 @@ function Main() {
             </div>
           )}
           {infoMessage && (
-            <div className="mt-2 text-sm bg-green-100 dark:bg-green-900/30 border border-green-300/60 text-green-800 dark:text-green-200 rounded p-2 inline-block">
+            <div className="mt-2 text-sm bg-green-100 dark:bg-green-900/30 border border-green-300/60 text-green-800 dark:text-green-200 rounded-sm p-2 inline-block">
               {infoMessage}
             </div>
           )}
         </div>
-        <p className="mb-2 text-sm text-gray-700 dark:text-blue-200 rounded border border-gray-200 dark:border-gray-500">
+        <p className="mb-2 text-sm text-gray-700 dark:text-blue-200 rounded-sm border border-gray-200 dark:border-gray-500">
           {t('secretKey:info')}
           <button type="button" onClick={()=>setShowSecretInfo(true)} className="ml-2 px-2 py-0.5 text-blue-700 underline">
             {t('createAccount:info.more')}
           </button>
         </p>
         {/* Fixierter Wallet-Header – immer sichtbar */}
-        <div className="sticky top-14 z-30 bg-white/90 dark:bg-gray-900/90 backdrop-blur border-b rounded-b px-3 py-2 mb-2">
+        <div className="sticky top-14 z-30 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm border-b rounded-b px-3 py-2 mb-2">
           <form onSubmit={(e) => { e.preventDefault(); handleHeaderApply(); }} className="max-w-4xl mx-auto mb-0">
             <div className="flex items-center justify-between mb-1">
               <label className="block font-bold text-sm">{t('publicKey:label')}</label>
@@ -831,7 +831,7 @@ function Main() {
               accountPicker
               onRemoveOption={(entry) => handleRecentRemove(entry.value)}
               onClearOptions={handleRecentClear}
-              inputClassName={`wallet-input w-full border ${notFound ? 'border-red-500 ring-1 ring-red-400' : (devTestnet ? 'border-yellow-500 ring-1 ring-yellow-400' : 'border-gray-300')} rounded p-2 pr-8 font-mono text-base md:text-sm`}
+              inputClassName={`wallet-input w-full border ${notFound ? 'border-red-500 ring-1 ring-red-400' : (devTestnet ? 'border-yellow-500 ring-1 ring-yellow-400' : 'border-gray-300')} rounded-sm p-2 pr-8 font-mono text-base md:text-sm`}
               inputProps={{
                 spellCheck: false,
                 autoCorrect: 'off',
@@ -916,7 +916,7 @@ function Main() {
                 <button
                   type="submit"
                   disabled={isLoading || !walletHeaderInput.trim()}
-                  className="bg-blue-600 text-white px-3 py-1 text-sm rounded hover:bg-blue-700 disabled:opacity-50"
+                  className="bg-blue-600 text-white px-3 py-1 text-sm rounded-sm hover:bg-blue-700 disabled:opacity-50"
                   title={t('publicKey:loadHint', 'Normalerweise nicht nötig: Auswahl aus der Liste oder Enter lädt das Konto automatisch. Nutze diesen Button als Fallback oder um den Kontostand neu zu laden.')}
                 >
                   {t('publicKey:load')}
@@ -925,7 +925,7 @@ function Main() {
                   <button
                     type="button"
                     onClick={switchToBaseAccount}
-                    className="px-3 py-2 rounded border border-amber-300 text-amber-900 hover:bg-amber-50 dark:hover:bg-gray-800"
+                    className="px-3 py-2 rounded-sm border border-amber-300 text-amber-900 hover:bg-amber-50 dark:hover:bg-gray-800"
                   >
                     {t('common:accountMode.switchToBase', 'Switch to base account')}
                   </button>
@@ -941,7 +941,7 @@ function Main() {
               {t('publicKey:source')}: {sourcePublicKey}
             </p>
             {notFound && (
-              <div className="text-center text-xs text-red-700 mb-3 inline-block border border-red-500 rounded px-2 py-0.5">
+              <div className="text-center text-xs text-red-700 mb-3 inline-block border border-red-500 rounded-sm px-2 py-0.5">
                 {t('errors:accountNotFoundInNetwork', { net: devTestnet ? 'Testnet' : 'Mainnet' })}
               </div>
             )}
@@ -1173,7 +1173,7 @@ function Main() {
       {showBackToTop && !showConfirm && !showSecretInfo && (
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="fixed right-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 z-20 shadow-lg"
+          className="fixed right-4 bg-blue-500 text-white px-4 py-2 rounded-sm hover:bg-blue-600 z-20 shadow-lg"
           style={{ bottom: 'max(4rem, calc(4rem + env(safe-area-inset-bottom)))' }}
           aria-label={t('navigation:backToTop')}
         >
@@ -1195,7 +1195,7 @@ function Main() {
 
       {identityGuard.open && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-gray-800 rounded p-6 max-w-md w-full mx-auto">
+          <div className="bg-white dark:bg-gray-800 rounded-sm p-6 max-w-md w-full mx-auto">
             <h4 className="text-lg font-bold mb-3">
               {t('common:accountMode.guardTitle', 'Muxed identity is read-only')}
             </h4>
@@ -1206,14 +1206,14 @@ function Main() {
               <button
                 type="button"
                 onClick={closeIdentityGuard}
-                className="px-4 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-800"
+                className="px-4 py-2 rounded-sm border hover:bg-gray-100 dark:hover:bg-gray-800"
               >
                 {t('common:option.cancel', 'Abbrechen')}
               </button>
               <button
                 type="button"
                 onClick={confirmIdentityGuard}
-                className="px-4 py-2 rounded bg-amber-500 text-white hover:bg-amber-600"
+                className="px-4 py-2 rounded-sm bg-amber-500 text-white hover:bg-amber-600"
               >
                 {t('common:accountMode.switchToBase', 'Switch to base account')}
               </button>
@@ -1225,23 +1225,23 @@ function Main() {
 
       {showSecretInfo && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-gray-800 rounded p-6 max-w-md w-full mx-auto">
+          <div className="bg-white dark:bg-gray-800 rounded-sm p-6 max-w-md w-full mx-auto">
             <h4 className="text-lg font-bold mb-3">{t('createAccount:info.keysOnPage.title')}</h4>
             <p className="text-sm whitespace-pre-line text-gray-700 dark:text-gray-300">{t('createAccount:info.keysOnPage.text')}</p>
             <div className="text-right mt-6">
-              <button onClick={()=>setShowSecretInfo(false)} className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700">{t('common:close')}</button>
+              <button onClick={()=>setShowSecretInfo(false)} className="px-4 py-2 rounded-sm bg-blue-600 text-white hover:bg-blue-700">{t('common:close')}</button>
             </div>
           </div>
         </div>
       )}
       {activeJobId && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-40 p-4">
-          <div className="bg-white dark:bg-gray-900 rounded shadow-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+          <div className="bg-white dark:bg-gray-900 rounded-sm shadow-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between border-b px-4 py-3">
               <div className="text-sm font-semibold">{t('multisig:detail.title')}</div>
               <button
                 type="button"
-                className="text-sm px-3 py-1 rounded border hover:bg-gray-100 dark:hover:bg-gray-800"
+                className="text-sm px-3 py-1 rounded-sm border hover:bg-gray-100 dark:hover:bg-gray-800"
                 onClick={() => { setActiveJobId(null); setActiveJobToken(null); }}
               >
                 {t('common:option.back', 'Zurück')}

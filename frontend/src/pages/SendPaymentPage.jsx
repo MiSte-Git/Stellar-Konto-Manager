@@ -122,7 +122,7 @@ function HistoryInput({
       />
       {rightAdornment}
       {showDropdown && (
-        <div className="absolute z-20 mt-1 w-full max-h-48 overflow-y-auto rounded border bg-white dark:bg-gray-900 shadow-lg">
+        <div className="absolute z-20 mt-1 w-full max-h-48 overflow-y-auto rounded-sm border bg-white dark:bg-gray-900 shadow-lg">
           {filteredSuggestions.map((suggestion, index) => (
             <div
               key={`${suggestion}-${index}`}
@@ -1821,7 +1821,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
 
       {error && <div className="text-red-600 text-sm text-center">{error}</div>}
       {ambiguousSubmission && (
-        <div className="text-sm bg-amber-100 dark:bg-amber-900/30 border border-amber-300/60 text-amber-800 dark:text-amber-200 rounded p-3 max-w-4xl mx-auto">
+        <div className="text-sm bg-amber-100 dark:bg-amber-900/30 border border-amber-300/60 text-amber-800 dark:text-amber-200 rounded-sm p-3 max-w-4xl mx-auto">
           <div className="font-semibold mb-1">{t('common:payment.send.ambiguousResult.title', 'Status unklar – nicht erneut senden')}</div>
           <div>{t('common:payment.send.ambiguousResult.body', 'Die Transaktion konnte serverseitig nicht eindeutig bestätigt werden (Zeitüberschreitung oder Serverfehler). Bitte prüfen Sie den Transaktions-Hash im Explorer, bevor Sie es erneut versuchen.')}</div>
           {ambiguousSubmission.hash && (
@@ -1829,7 +1829,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
           )}
           <button
             type="button"
-            className="mt-2 px-3 py-1 rounded border border-amber-400 text-xs font-semibold hover:bg-amber-200/60 dark:hover:bg-amber-900/60"
+            className="mt-2 px-3 py-1 rounded-sm border border-amber-400 text-xs font-semibold hover:bg-amber-200/60 dark:hover:bg-amber-900/60"
             onClick={() => setAmbiguousSubmission(null)}
           >
             {t('common:payment.send.ambiguousResult.acknowledge', 'Status geprüft – Senden wieder freigeben')}
@@ -1837,7 +1837,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
         </div>
       )}
       {sentInfo && sentInfo.account === publicKey && (
-        <div className="text-sm bg-green-100 dark:bg-green-900/30 border border-green-300/60 text-green-800 dark:text-green-200 rounded p-3 max-w-4xl mx-auto">
+        <div className="text-sm bg-green-100 dark:bg-green-900/30 border border-green-300/60 text-green-800 dark:text-green-200 rounded-sm p-3 max-w-4xl mx-auto">
           <div className="font-semibold mb-1">{t('common:payment.send.successShort', 'Erfolgreich gesendet')}</div>
           <div className="space-y-0.5">
             <div><span className="text-gray-600 dark:text-gray-400">{t('publicKey:source', 'Quelle')}:</span> <span className="font-mono break-all">{sentInfo.account}</span></div>
@@ -1867,7 +1867,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
         </div>
       )}
 
-      <div className="bg-white dark:bg-gray-800 rounded border p-4 max-w-4xl mx-auto">
+      <div className="bg-white dark:bg-gray-800 rounded-sm border p-4 max-w-4xl mx-auto">
         <div className="grid grid-cols-1 gap-4">
         <div className="space-y-2">
           <div className="flex items-center justify-between">
@@ -1899,12 +1899,12 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
             </span>
           </div>
           {qrInfo && (
-            <div className="rounded border border-blue-200 bg-blue-50 p-2 text-xs text-blue-900 dark:border-blue-800 dark:bg-blue-900/30 dark:text-blue-100" role="status" data-testid="qr-info">
+            <div className="rounded-sm border border-blue-200 bg-blue-50 p-2 text-xs text-blue-900 dark:border-blue-800 dark:bg-blue-900/30 dark:text-blue-100" role="status" data-testid="qr-info">
               <div className="flex items-start justify-between gap-2">
                 <span className="font-medium">{t('wallet:qrScan.applied')}</span>
                 <button type="button" onClick={() => setQrInfo(null)} aria-label={t('common:close', 'Schließen')} className="border-0 bg-transparent px-1 text-blue-900 dark:text-blue-100">×</button>
               </div>
-              {qrInfo.msg && <div className="mt-1 break-words">{t('wallet:qrScan.message', { msg: qrInfo.msg })}</div>}
+              {qrInfo.msg && <div className="mt-1 wrap-break-word">{t('wallet:qrScan.message', { msg: qrInfo.msg })}</div>}
               {qrInfo.originDomain && <div className="mt-1">{t('wallet:qrScan.originDomain', { domain: qrInfo.originDomain })}</div>}
               {qrInfo.hasCallback && <div className="mt-1">{t('wallet:qrScan.callbackIgnored')}</div>}
               {qrInfo.assetMissing && <div className="mt-1 font-medium text-amber-900 dark:text-amber-200">{t('wallet:qrScan.assetMissing', { code: qrInfo.assetMissing })}</div>}
@@ -1925,7 +1925,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
             placeholder="G... oder user*domain"
             options={recipientSuggestions}
             accountPicker
-            inputClassName="border rounded w-full pr-8 px-2 py-1 text-base md:text-sm font-mono"
+            inputClassName="border rounded-sm w-full pr-8 px-2 py-1 text-base md:text-sm font-mono"
             rightAdornment={dest ? (
               <button
                 type="button"
@@ -2012,7 +2012,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
           <HistoryInput
             value={amountFocused ? amount : (amount ? amountFmt.format(Number(amount) || 0) : '')}
             suggestions={historyAmounts}
-            className="border rounded pr-8 px-2 py-1 text-base md:text-sm w-full appearance-none [-moz-appearance:textfield]"
+            className="border rounded-sm pr-8 px-2 py-1 text-base md:text-sm w-full appearance-none [-moz-appearance:textfield]"
             inputProps={{ type: 'text', inputMode: 'decimal' }}
             onFocus={() => setAmountFocused(true)}
             onBlur={() => { setAmountFocused(false); pushHistory(PAYMENT_AMOUNT_HISTORY_KEY, amount, setHistoryAmounts); }}
@@ -2043,7 +2043,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
           </div>
           <div className="flex flex-col min-w-0">
           <label className="text-sm">{t('common:payment.send.asset')}</label>
-          <select className="border rounded w-full px-2 py-1 text-base md:text-sm" value={assetKey} onChange={(e)=>{ clearSuccess(); setAssetKey(e.target.value); }}>
+          <select className="border rounded-sm w-full px-2 py-1 text-base md:text-sm" value={assetKey} onChange={(e)=>{ clearSuccess(); setAssetKey(e.target.value); }}>
           {assetOptions.map(o => <option key={o.key} value={o.key} title={o.title || o.key}>{o.label}</option>)}
           </select>
           </div>
@@ -2061,10 +2061,10 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
           </button>
           <span className="ml-2 text-xs text-gray-700 dark:text-gray-300 align-middle">{t('common:payment.send.reservedInline', { amount: amountFmt.format(reservedTotal) })}</span>
           {showReserveInfo && (
-          <div ref={popupRef} className="absolute left-0 mt-2 w-80 z-40 bg-white dark:bg-gray-800 border rounded shadow-lg p-3 text-left">
+          <div ref={popupRef} className="absolute left-0 mt-2 w-80 z-40 bg-white dark:bg-gray-800 border rounded-sm shadow-lg p-3 text-left">
           <div className="flex items-start justify-between">
           <div className="font-semibold mr-4">{t('common:payment.send.reserved')}</div>
-          <button className="text-xs px-2 py-0.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700" onClick={()=>setShowReserveInfo(false)}>×</button>
+          <button className="text-xs px-2 py-0.5 rounded-sm hover:bg-gray-100 dark:hover:bg-gray-700" onClick={()=>setShowReserveInfo(false)}>×</button>
           </div>
           <div className="text-lg font-bold mt-1">{amountFmt.format(reservedTotal)} XLM</div>
           <div className="grid grid-cols-2 gap-x-3 gap-y-1 text-xs mt-2">
@@ -2088,7 +2088,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
             <div>
               <label className="block text-sm">{t('common:payment.send.memoType')}</label>
-              <select className="border rounded w-full px-2 py-1 text-base md:text-sm" value={memoType} onChange={(e)=>{ clearSuccess(); setMemoType(e.target.value); }}>
+              <select className="border rounded-sm w-full px-2 py-1 text-base md:text-sm" value={memoType} onChange={(e)=>{ clearSuccess(); setMemoType(e.target.value); }}>
                 <option value="none">{t('common:payment.send.memoTypes.none')}</option>
                 <option value="text">{t('common:payment.send.memoTypes.text')}</option>
                 <option value="id">{t('common:payment.send.memoTypes.id')}</option>
@@ -2102,7 +2102,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
               <HistoryInput
                 value={memoVal}
                 suggestions={historyMemos}
-                className="border rounded w-full pr-8 px-2 py-1 text-base md:text-sm"
+                className="border rounded-sm w-full pr-8 px-2 py-1 text-base md:text-sm"
                 onChange={(e)=>{ clearSuccess(); markMemoManuallyEdited(); setMemoVal(e.target.value); }}
                 onBlur={()=>pushHistory(PAYMENT_MEMO_HISTORY_KEY, memoVal, setHistoryMemos)}
                 onSelect={(next) => {
@@ -2127,7 +2127,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
           </div>
 
           <button
-            className="mt-3 px-4 py-2 rounded bg-blue-600 text-white disabled:opacity-50"
+            className="mt-3 px-4 py-2 rounded-sm bg-blue-600 text-white disabled:opacity-50"
             disabled={!dest || !amount || (Number(amount) || 0) <= 0 || !!ambiguousSubmission}
             onClick={handleSendClick}
           >
@@ -2143,12 +2143,12 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       
       {showConfirmModal && isMultisig && (
        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 overflow-y-auto p-4">
-          <div className="bg-white dark:bg-gray-800 rounded p-4 w-full max-w-md my-auto max-h-[calc(100svh-2rem)] overflow-y-auto">
+          <div className="bg-white dark:bg-gray-800 rounded-sm p-4 w-full max-w-md my-auto max-h-[calc(100svh-2rem)] overflow-y-auto">
             <div className="flex items-start justify-between gap-3 mb-3">
               <h3 className="text-lg font-semibold">{t('multisig:confirm.options.selectTitle', 'Option wählen')}</h3>
               <button
                 type="button"
-                className="px-2 py-1 rounded border hover:bg-gray-100 dark:hover:bg-gray-700"
+                className="px-2 py-1 rounded-sm border hover:bg-gray-100 dark:hover:bg-gray-700"
                 onClick={closeConfirmDialogs}
                 aria-label={t('common:option.cancel', 'Abbrechen')}
               >
@@ -2199,7 +2199,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
               <div className="text-xs text-red-600 mb-2">{preflight.err}</div>
             )}
             {preflight.activationRequired && assetKey==='XLM' && !preflight.loading && !preflight.err && (
-              <div className="border rounded p-2 mb-2 text-xs">
+              <div className="border rounded-sm p-2 mb-2 text-xs">
                 <div className="font-semibold mb-1">{t('common:payment.send.activateConfirm.title', 'Account activation required')}</div>
                 <div className="mb-1">{t('common:payment.send.activateConfirm.info', 'The destination account is not active yet. A minimum amount is required to activate it.')}</div>
                 <div className="grid grid-cols-2 gap-x-3 gap-y-1">
@@ -2228,7 +2228,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
               ].map((option) => (
                 <label
                   key={option.key}
-                  className={`flex items-center gap-3 border rounded p-3 cursor-pointer transition hover:border-blue-400 ${confirmChoice === option.key ? 'border-blue-500 ring-1 ring-blue-200 dark:ring-blue-800' : 'border-gray-200 dark:border-gray-700'}`}
+                  className={`flex items-center gap-3 border rounded-sm p-3 cursor-pointer transition hover:border-blue-400 ${confirmChoice === option.key ? 'border-blue-500 ring-1 ring-blue-200 dark:ring-blue-800' : 'border-gray-200 dark:border-gray-700'}`}
                 >
                   <input
                     type="radio"
@@ -2262,13 +2262,13 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
 
             <div className="mt-4 flex justify-end gap-2">
               <button
-                className="px-3 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-700"
+                className="px-3 py-2 rounded-sm border hover:bg-gray-100 dark:hover:bg-gray-700"
                 onClick={closeConfirmDialogs}
               >
                 {t('common:option.cancel', 'Abbrechen')}
               </button>
               <button
-                className="px-4 py-2 rounded bg-blue-600 text-white disabled:opacity-50"
+                className="px-4 py-2 rounded-sm bg-blue-600 text-white disabled:opacity-50"
                 disabled={preflight.loading || !!preflight.err}
                 onClick={handleConfirmProceed}
               >
@@ -2280,13 +2280,13 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       )}
 
       {reviewDialog.open && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[54] overflow-y-auto p-4">
-          <div className="bg-white dark:bg-gray-800 rounded p-4 w-full max-w-2xl my-auto max-h-[calc(100svh-2rem)] overflow-y-auto">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-54 overflow-y-auto p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-sm p-4 w-full max-w-2xl my-auto max-h-[calc(100svh-2rem)] overflow-y-auto">
             <div className="flex items-start justify-between gap-3 mb-3">
               <h3 className="text-lg font-semibold">{t('common:payment.send.reviewTitle', 'Transaktion bestätigen')}</h3>
               <button
                 type="button"
-                className="p-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 disabled:opacity-50"
+                className="p-2 rounded-sm border hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 disabled:opacity-50"
                 onClick={closeReviewDialog}
                 disabled={reviewProcessing}
                 aria-label={t('common:close')}
@@ -2360,7 +2360,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
             </div>
 
             {reviewDialog.preflight?.activationRequired && reviewDialog.snapshot?.assetLabel === 'XLM' && reviewDialog.preflight?.desired != null && (
-              <div className="border rounded p-2 mb-3 text-xs">
+              <div className="border rounded-sm p-2 mb-3 text-xs">
                 <div className="font-semibold mb-1">{t('common:payment.send.activateConfirm.title', 'Account activation required')}</div>
                 <div className="grid grid-cols-2 gap-x-3 gap-y-1">
                   <div className="text-gray-600 dark:text-gray-400">{t('common:payment.send.activateConfirm.minReserve', 'Minimum (2 × base reserve)')}</div>
@@ -2387,7 +2387,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
             <div className="mt-4 flex justify-end gap-2">
               <button
                 type="button"
-                className="px-3 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50"
+                className="px-3 py-2 rounded-sm border hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50"
                 onClick={closeReviewDialog}
                 disabled={reviewProcessing}
               >
@@ -2395,7 +2395,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
               </button>
               <button
                 type="button"
-                className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50"
+                className="px-4 py-2 rounded-sm bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50"
                 onClick={handleReviewConfirm}
                 disabled={reviewProcessing || !!ambiguousSubmission}
               >
@@ -2407,13 +2407,13 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       )}
 
       {memoMismatchDialog && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[57] overflow-y-auto p-4">
-          <div className="bg-white dark:bg-gray-800 rounded p-4 w-full max-w-lg my-auto max-h-[calc(100svh-2rem)] overflow-y-auto">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-57 overflow-y-auto p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-sm p-4 w-full max-w-lg my-auto max-h-[calc(100svh-2rem)] overflow-y-auto">
             <div className="flex items-start justify-between gap-3 mb-3">
               <h3 className="text-lg font-semibold">{t('common:payment.send.memoMismatch.title', 'Check federation memo')}</h3>
               <button
                 type="button"
-                className="p-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300"
+                className="p-2 rounded-sm border hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300"
                 onClick={closeMemoMismatchDialog}
                 aria-label={t('common:close')}
               >
@@ -2435,14 +2435,14 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
             <div className="flex flex-wrap justify-end gap-2">
               <button
                 type="button"
-                className="px-3 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-700"
+                className="px-3 py-2 rounded-sm border hover:bg-gray-100 dark:hover:bg-gray-700"
                 onClick={closeMemoMismatchDialog}
               >
                 {t('common:option.cancel', 'Abbrechen')}
               </button>
               <button
                 type="button"
-                className="px-3 py-2 rounded border border-amber-500 text-amber-700 dark:text-amber-300 hover:bg-amber-50 dark:hover:bg-amber-900/30"
+                className="px-3 py-2 rounded-sm border border-amber-500 text-amber-700 dark:text-amber-300 hover:bg-amber-50 dark:hover:bg-amber-900/30"
                 onClick={sendAnywayDespiteMemoMismatch}
               >
                 {t('common:payment.send.memoMismatch.sendAnyway', 'Send anyway')}
@@ -2450,7 +2450,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
               {memoMismatchDialog.mappable && (
                 <button
                   type="button"
-                  className="px-3 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
+                  className="px-3 py-2 rounded-sm bg-blue-600 text-white hover:bg-blue-700"
                   onClick={acceptExpectedFederationMemo}
                 >
                   {t('common:payment.send.memoMismatch.applyExpected', 'Apply federation memo')}
@@ -2462,8 +2462,8 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       )}
 
       {resultDialog && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[55] overflow-y-auto p-4">
-          <div className="bg-white dark:bg-gray-800 rounded p-4 w-full max-w-2xl my-auto max-h-[calc(100svh-2rem)] overflow-y-auto">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-55 overflow-y-auto p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-sm p-4 w-full max-w-2xl my-auto max-h-[calc(100svh-2rem)] overflow-y-auto">
             <div className="flex items-start justify-between gap-3 mb-3">
               <h3 className="text-lg font-semibold">
                 {resultDialog.type === 'job' && t('multisig:confirm.result.job.title')}
@@ -2472,7 +2472,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
               </h3>
               <button
                 type="button"
-                className="p-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300"
+                className="p-2 rounded-sm border hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300"
                 onClick={closeResultDialog}
                 aria-label={t('common:close')}
               >
@@ -2485,7 +2485,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                 <span>{t('multisig:confirm.result.sent.status')}</span>
                 <button
                   type="button"
-                  className="px-2 py-1 rounded border border-blue-200 text-blue-700 dark:border-blue-800 dark:text-blue-100 hover:bg-blue-50 dark:hover:bg-blue-900"
+                  className="px-2 py-1 rounded-sm border border-blue-200 text-blue-700 dark:border-blue-800 dark:text-blue-100 hover:bg-blue-50 dark:hover:bg-blue-900"
                   onClick={() => handleCopySentDetails(resultDialog)}
                 >
                   {copiedDetails
@@ -2513,7 +2513,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
               <div className="flex justify-end mb-3">
                 <button
                   type="button"
-                  className="px-3 py-1 text-sm rounded border border-blue-200 text-blue-700 dark:border-blue-800 dark:text-blue-100 hover:bg-blue-50 dark:hover:bg-blue-900"
+                  className="px-3 py-1 text-sm rounded-sm border border-blue-200 text-blue-700 dark:border-blue-800 dark:text-blue-100 hover:bg-blue-50 dark:hover:bg-blue-900"
                   onClick={() => setShowJobInfo((v) => !v)}
                   aria-expanded={showJobInfo}
                 >
@@ -2522,7 +2522,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
               </div>
             )}
             {resultDialog.type === 'job' && showJobInfo && (
-              <div className="border rounded p-3 mb-3 bg-blue-50 dark:bg-blue-900/30 text-sm text-gray-800 dark:text-gray-100">
+              <div className="border rounded-sm p-3 mb-3 bg-blue-50 dark:bg-blue-900/30 text-sm text-gray-800 dark:text-gray-100">
                 <div className="font-semibold mb-1">{t('multisig:confirm.result.job.infoTitle')}</div>
                 <p className="mb-2 text-gray-700 dark:text-gray-200">{t('multisig:confirm.options.job.desc')}</p>
                 <ul className="list-disc ml-5 space-y-1">
@@ -2551,7 +2551,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
             )}
 
             {buildSummaryItems(resultDialog.summary).length > 0 && (
-              <div className="border rounded p-3 mb-3 space-y-1">
+              <div className="border rounded-sm p-3 mb-3 space-y-1">
                 {buildSummaryItems(resultDialog.summary).map((item, idx) => (
                   <div key={idx} className="text-sm flex flex-wrap gap-2">
                     <span className="text-gray-600 dark:text-gray-400">{item.label}:</span>
@@ -2569,7 +2569,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                     <span className="font-mono break-all">{resultDialog.jobId}</span>
                     <button
                       type="button"
-                      className="px-2 py-1 rounded border border-blue-200 text-blue-700 dark:border-blue-800 dark:text-blue-100 hover:bg-blue-50 dark:hover:bg-blue-900"
+                      className="px-2 py-1 rounded-sm border border-blue-200 text-blue-700 dark:border-blue-800 dark:text-blue-100 hover:bg-blue-50 dark:hover:bg-blue-900"
                       onClick={() => handleCopyJobId(resultDialog.jobId)}
                     >
                       {copiedJobId ? t('multisig:confirm.result.job.copiedJobId') : t('multisig:confirm.result.job.copyJobId')}
@@ -2590,7 +2590,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                       <div className="flex flex-wrap gap-2">
                         {buildExplorerUrl(txExplorers.stellarchain, resultDialog.hash, netLabel, { type: 'tx' }) && (
                           <a
-                            className="px-2 py-1 rounded border border-blue-200 text-blue-700 dark:border-blue-800 dark:text-blue-100 hover:bg-blue-50 dark:hover:bg-blue-900"
+                            className="px-2 py-1 rounded-sm border border-blue-200 text-blue-700 dark:border-blue-800 dark:text-blue-100 hover:bg-blue-50 dark:hover:bg-blue-900"
                             href={buildExplorerUrl(txExplorers.stellarchain, resultDialog.hash, netLabel, { type: 'tx' })}
                             target="_blank"
                             rel="noreferrer"
@@ -2600,7 +2600,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                         )}
                         {buildExplorerUrl(txExplorers.stellarExpert, resultDialog.hash, netLabel, { type: 'tx' }) && (
                           <a
-                            className="px-2 py-1 rounded border border-blue-200 text-blue-700 dark:border-blue-800 dark:text-blue-100 hover:bg-blue-50 dark:hover:bg-blue-900"
+                            className="px-2 py-1 rounded-sm border border-blue-200 text-blue-700 dark:border-blue-800 dark:text-blue-100 hover:bg-blue-50 dark:hover:bg-blue-900"
                             href={buildExplorerUrl(txExplorers.stellarExpert, resultDialog.hash, netLabel, { type: 'tx' })}
                             target="_blank"
                             rel="noreferrer"
@@ -2619,7 +2619,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
               <div className="flex flex-wrap gap-2 mb-3">
                 <button
                   type="button"
-                  className="px-3 py-1 rounded border border-blue-200 text-blue-700 dark:border-blue-700 dark:text-blue-100 hover:bg-blue-50 dark:hover:bg-blue-900"
+                  className="px-3 py-1 rounded-sm border border-blue-200 text-blue-700 dark:border-blue-700 dark:text-blue-100 hover:bg-blue-50 dark:hover:bg-blue-900"
                   onClick={() => {
                     setLastResultDialog(resultDialog);
                     setResultDialog(null);
@@ -2635,19 +2635,19 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
             )}
 
             {resultDialog.type === 'xdr' && resultDialog.xdr && (
-              <div className="border rounded p-3">
+              <div className="border rounded-sm p-3">
                 <div className="flex items-center justify-between gap-2 mb-1">
                   <div className="text-sm text-gray-700 dark:text-gray-300">{t('multisig:prepare.xdrLabel')}</div>
                   <button
                     type="button"
-                    className="px-3 py-1 rounded border border-blue-200 text-blue-700 dark:text-blue-200 dark:border-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900"
+                    className="px-3 py-1 rounded-sm border border-blue-200 text-blue-700 dark:text-blue-200 dark:border-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900"
                     onClick={() => handleCopyXdr(resultDialog.xdr)}
                   >
                     {copiedXdr ? t('multisig:prepare.copied', 'Kopiert') : t('multisig:confirm.result.copyXdr')}
                   </button>
                 </div>
                 <textarea
-                  className="w-full h-32 text-xs font-mono bg-gray-50 dark:bg-gray-900 border rounded px-2 py-1"
+                  className="w-full h-32 text-xs font-mono bg-gray-50 dark:bg-gray-900 border rounded-sm px-2 py-1"
                   readOnly
                   value={resultDialog.xdr || ''}
                 />
@@ -2664,7 +2664,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
 	            <div className="mt-4 flex justify-end gap-2">
 	              <button
 	                type="button"
-	                className="px-3 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-700"
+	                className="px-3 py-2 rounded-sm border hover:bg-gray-100 dark:hover:bg-gray-700"
 	                onClick={closeResultDialog}
 	              >
 	                {t('common:close')}
@@ -2672,7 +2672,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
 	              {isMultisig === true && (
 	                <button
 	                  type="button"
-	                  className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
+	                  className="px-4 py-2 rounded-sm bg-blue-600 text-white hover:bg-blue-700"
 	                  onClick={() => reopenSelection(resultDialog.type === 'sent' ? 'local' : resultDialog.type)}
 	                >
 	                  {t('common:option.back', 'Zurück')}
@@ -2684,13 +2684,13 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
 	      )}
 
       {showOptionInfo && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[60] overflow-y-auto p-4">
-          <div className="bg-white dark:bg-gray-800 rounded p-4 w-full max-w-2xl my-auto max-h-[calc(100svh-2rem)] overflow-y-auto">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-60 overflow-y-auto p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-sm p-4 w-full max-w-2xl my-auto max-h-[calc(100svh-2rem)] overflow-y-auto">
             <div className="flex items-start justify-between gap-3 mb-3">
               <h3 className="text-lg font-semibold">{t('multisig:confirm.options.infoDialog.title')}</h3>
               <button
                 type="button"
-                className="p-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300"
+                className="p-2 rounded-sm border hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300"
                 onClick={()=>setShowOptionInfo(false)}
                 aria-label={t('common:close')}
               >
@@ -2732,7 +2732,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                   ],
                 },
               ].map((section) => (
-                <div key={section.key} className="border rounded p-3">
+                <div key={section.key} className="border rounded-sm p-3">
                   <div className="font-semibold">{section.title}</div>
                   <p className="text-gray-700 dark:text-gray-300 mt-1">{section.desc}</p>
                   <ul className="list-disc ml-5 mt-2 space-y-1 text-gray-700 dark:text-gray-300">
@@ -2747,7 +2747,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
             <div className="mt-4 flex justify-end">
               <button
                 type="button"
-                className="px-4 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-700"
+                className="px-4 py-2 rounded-sm border hover:bg-gray-100 dark:hover:bg-gray-700"
                 onClick={()=>setShowOptionInfo(false)}
               >
                 {t('common:close')}

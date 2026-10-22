@@ -7,7 +7,7 @@ import MultisigFlowDiagram from '../../components/diagrams/MultisigFlowDiagram.j
 
 function Section({ title, children }) {
   return (
-    <section className="border rounded-lg p-4 bg-white dark:bg-gray-900 shadow-sm">
+    <section className="border rounded-lg p-4 bg-white dark:bg-gray-900 shadow-xs">
       <h2 className="text-lg font-semibold mb-2">{title}</h2>
       <div className="space-y-2 text-sm text-gray-700 dark:text-gray-200">{children}</div>
     </section>

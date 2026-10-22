@@ -184,7 +184,7 @@ export default function ScamSimulatorPage({ scenarios = [], onBack, onGoHome }) 
                   transition={{ delay: i * 0.05 }}
                   whileHover={{ scale: 1.01 }}
                   whileTap={{ scale: 0.99 }}
-                  className="w-full text-left flex items-center gap-4 p-4 rounded-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:border-indigo-400 dark:hover:border-indigo-500 hover:shadow-md transition-all"
+                  className="w-full text-left flex items-center gap-4 p-4 rounded-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-xs hover:border-indigo-400 dark:hover:border-indigo-500 hover:shadow-md transition-all"
                 >
                   <span className="text-3xl select-none shrink-0" aria-hidden="true">{icon}</span>
                   <div className="flex-1 min-w-0">
@@ -236,7 +236,7 @@ export default function ScamSimulatorPage({ scenarios = [], onBack, onGoHome }) 
           className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200 dark:border-gray-700 overflow-hidden"
         >
           {/* Header with Lumio */}
-          <div className="flex flex-col items-center gap-3 px-6 pt-8 pb-4 bg-gradient-to-b from-indigo-50 dark:from-indigo-950/30 to-transparent">
+          <div className="flex flex-col items-center gap-3 px-6 pt-8 pb-4 bg-linear-to-b from-indigo-50 dark:from-indigo-950/30 to-transparent">
             <Lumio state="idle" size={80} />
             <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
               {t('ui.title')}
@@ -263,7 +263,7 @@ export default function ScamSimulatorPage({ scenarios = [], onBack, onGoHome }) 
                     {t(selectedScenario.contact?.nameKey ?? '')}
                   </span>
                   {selectedScenario.contact?.verified === false && (
-                    <span className="text-xs px-1.5 py-0.5 rounded bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 font-medium">
+                    <span className="text-xs px-1.5 py-0.5 rounded-sm bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 font-medium">
                       ?
                     </span>
                   )}

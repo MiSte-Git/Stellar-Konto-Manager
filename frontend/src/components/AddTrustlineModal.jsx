@@ -43,7 +43,7 @@ function AddTrustlineModal({ onSubmit, onCancel }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 overflow-y-auto p-4">
+    <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50 overflow-y-auto p-4">
       <div className="bg-white dark:bg-gray-800 p-6 rounded-lg w-full max-w-md my-auto max-h-[calc(100svh-2rem)] overflow-y-auto">
         <h3 className="text-lg font-semibold mb-4 text-black dark:text-white">{t('trustline:add.title')}</h3>
         {error && <div className="mb-2 text-xs text-red-700">{error}</div>}
@@ -56,7 +56,7 @@ function AddTrustlineModal({ onSubmit, onCancel }) {
               value={code}
               onChange={(e) => setCode(e.target.value)}
               placeholder={t('trustline:add.assetCodePlaceholder')}
-              className="w-full border rounded px-2 py-1"
+              className="w-full border rounded-sm px-2 py-1"
             />
             <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">{t('trustline:add.assetCodeHelp')}</p>
           </div>
@@ -67,7 +67,7 @@ function AddTrustlineModal({ onSubmit, onCancel }) {
               value={issuer}
               onChange={(e) => setIssuer(e.target.value)}
               placeholder={t('trustline:add.issuerPlaceholder')}
-              className="w-full border rounded px-2 py-1"
+              className="w-full border rounded-sm px-2 py-1"
             />
             <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">{t('trustline:add.issuerHelp')}</p>
           </div>
@@ -80,17 +80,17 @@ function AddTrustlineModal({ onSubmit, onCancel }) {
               value={limit}
               onChange={(e) => setLimit(e.target.value)}
               placeholder={t('trustline:add.limitPlaceholder')}
-              className="w-full border rounded px-2 py-1"
+              className="w-full border rounded-sm px-2 py-1"
             />
             <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">{t('trustline:add.limitHelp')}</p>
           </div>
         </div>
 
         <div className="flex justify-end gap-2 mt-4">
-          <button onClick={onCancel} className="px-4 py-2 bg-gray-400 text-black rounded hover:bg-gray-500">
+          <button onClick={onCancel} className="px-4 py-2 bg-gray-400 text-black rounded-sm hover:bg-gray-500">
             {t('trustline:add.cancel')}
           </button>
-          <button onClick={handleSubmit} className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+          <button onClick={handleSubmit} className="px-4 py-2 bg-blue-600 text-white rounded-sm hover:bg-blue-700">
             {t('trustline:add.submit')}
           </button>
         </div>

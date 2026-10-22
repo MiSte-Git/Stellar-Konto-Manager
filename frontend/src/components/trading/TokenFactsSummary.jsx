@@ -10,7 +10,7 @@ function RiskWarnings({ facts, asset, t }) {
   const warnings = getAssetRiskWarnings(facts, asset, t);
   if (!warnings.length) return null;
   return (
-    <div className="mt-3 rounded border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100">
+    <div className="mt-3 rounded-sm border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100">
       <div className="mb-1 font-semibold">{t('trading:assetSearch.risk.title')}</div>
       <ul className="list-disc pl-4">
         {warnings.map((warning) => (
@@ -56,7 +56,7 @@ export default function TokenFactsSummary({
         </div>
       )}
       {facts.error && (
-        <div className="rounded border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100">
+        <div className="rounded-sm border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100">
           {t('trading:assetSearch.facts.issuerLoadFailed')}
         </div>
       )}
@@ -138,7 +138,7 @@ export default function TokenFactsSummary({
       )}
       {!facts.loading && !facts.error && isExpertFlagged(facts) && (
         <div
-          className="mt-3 rounded border border-red-300 bg-red-50 px-3 py-2 text-xs font-semibold text-red-800 dark:border-red-800 dark:bg-red-950 dark:text-red-200"
+          className="mt-3 rounded-sm border border-red-300 bg-red-50 px-3 py-2 text-xs font-semibold text-red-800 dark:border-red-800 dark:bg-red-950 dark:text-red-200"
           role="alert"
         >
           {t('trading:assetSearch.risk.expertFlagged', { tags: getExpertWarningTags(facts).join(', ') })}

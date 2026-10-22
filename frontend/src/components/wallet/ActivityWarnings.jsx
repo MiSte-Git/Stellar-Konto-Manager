@@ -5,9 +5,9 @@ import { useTranslation } from 'react-i18next';
 // Nur Fakten mit Kontext, kein Urteil ueber Absender oder Token (Token-Trust-Prinzip).
 
 const warnCls =
-  'rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-900 dark:bg-amber-400/15 dark:text-amber-200';
+  'rounded-sm bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-900 dark:bg-amber-400/15 dark:text-amber-200';
 const neutralCls =
-  'rounded bg-gray-100 px-1.5 py-0.5 text-[10px] font-semibold text-gray-600 dark:bg-gray-700 dark:text-gray-300';
+  'rounded-sm bg-gray-100 px-1.5 py-0.5 text-[10px] font-semibold text-gray-600 dark:bg-gray-700 dark:text-gray-300';
 
 export function LookalikeBadge() {
   const { t } = useTranslation(['wallet']);
@@ -84,7 +84,7 @@ export function ActivityNotices({ dustCount, hideDust, onToggleDust, hasLookalik
           <button
             type="button"
             onClick={onToggleDust}
-            className="rounded border-0 bg-transparent p-0 text-xs font-medium text-blue-700 underline-offset-2 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-blue-300"
+            className="rounded-sm border-0 bg-transparent p-0 text-xs font-medium text-blue-700 underline-offset-2 hover:underline focus:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-blue-300"
           >
             {hideDust ? t('wallet:activity.showDust', 'Anzeigen') : t('wallet:activity.hideDust', 'Ausblenden')}
           </button>

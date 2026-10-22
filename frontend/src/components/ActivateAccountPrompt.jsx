@@ -51,7 +51,7 @@ export default function ActivateAccountPrompt() {
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center" role="dialog" aria-modal="true">
+    <div className="fixed inset-0 z-9999 flex items-center justify-center" role="dialog" aria-modal="true">
       <div className="absolute inset-0 bg-black/50" onClick={handleClose} />
       <div className="relative w-[min(92vw,520px)] max-h-[90vh] overflow-auto bg-white dark:bg-gray-900 rounded-2xl shadow-2xl p-5">
         <h2 className="text-lg font-semibold mb-3">{t('common:activation.notFound.title')}</h2>
@@ -61,7 +61,7 @@ export default function ActivateAccountPrompt() {
         <div className="flex justify-end gap-2">
           <button
             type="button"
-            className="px-3 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-800"
+            className="px-3 py-2 rounded-sm border hover:bg-gray-100 dark:hover:bg-gray-800"
             onClick={handleClose}
             disabled={busy}
             title={t('common:activation.actions.no')}
@@ -70,7 +70,7 @@ export default function ActivateAccountPrompt() {
           </button>
           <button
             type="button"
-            className="px-3 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-60"
+            className="px-3 py-2 rounded-sm bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-60"
             onClick={handleConfirm}
             disabled={busy}
             title={t('common:activation.actions.yes')}

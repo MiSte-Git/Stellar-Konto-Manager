@@ -32,7 +32,7 @@ export default function BuildInfoBadge() {
 
   const short = info.commit?.slice(0, 7);
   return (
-    <div className="text-xs px-2 py-1 rounded bg-gray-100 dark:bg-gray-800">
+    <div className="text-xs px-2 py-1 rounded-sm bg-gray-100 dark:bg-gray-800">
       {t('common:buildInfo.env')}: {info.environment} · {t('common:buildInfo.commit')}: {short} · {t('common:buildInfo.branch')}: {info.branch}
     </div>
   );

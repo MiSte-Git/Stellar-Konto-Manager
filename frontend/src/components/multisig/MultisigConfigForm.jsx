@@ -31,10 +31,10 @@ export default function MultisigConfigForm({
   signerWeightTooltip = '',
   signerWeightHint = '',
   showSignerWeightInfo = false,
-  signerWeightInputClassName = 'border rounded px-2 py-1 text-sm w-20',
+  signerWeightInputClassName = 'border rounded-sm px-2 py-1 text-sm w-20',
   onAddSigner = null,
   addSignerLabel = '',
-  addSignerClassName = 'mt-2 px-2 py-1 border rounded text-sm hover:bg-gray-100 dark:hover:bg-gray-800',
+  addSignerClassName = 'mt-2 px-2 py-1 border rounded-sm text-sm hover:bg-gray-100 dark:hover:bg-gray-800',
   onRemoveSigner = null,
   removeSignerLabel = '',
   showSignerTypeNote = false,
@@ -48,14 +48,14 @@ export default function MultisigConfigForm({
   masterWeightHint = '',
   masterWeightTooltip = '',
   showMasterWeightInfo = false,
-  masterWeightInputClassName = 'border rounded px-2 py-1 text-sm w-24',
+  masterWeightInputClassName = 'border rounded-sm px-2 py-1 text-sm w-24',
   thresholdsLabel = '',
   thresholdLabels = {},
   thresholdTooltips = {},
   thresholdValues = {},
   thresholdErrors = {},
   onThresholdChange = null,
-  thresholdInputClassName = 'border rounded px-2 py-1 w-16',
+  thresholdInputClassName = 'border rounded-sm px-2 py-1 w-16',
   thresholdUnitsLabel = '',
   thresholdLevelsHint = '',
   thresholdSumText = '',
@@ -86,7 +86,7 @@ export default function MultisigConfigForm({
       )}
 
       {showBestPracticesBlock && (
-        <div className="p-2 bg-blue-50 dark:bg-blue-900/20 border rounded text-xs text-blue-900 dark:text-blue-200">
+        <div className="p-2 bg-blue-50 dark:bg-blue-900/20 border rounded-sm text-xs text-blue-900 dark:text-blue-200">
           <strong>{bestPracticesTitle}:</strong> {bestPracticesText}
         </div>
       )}
@@ -105,7 +105,7 @@ export default function MultisigConfigForm({
             value={signerCount}
             onChange={(e) => onSignerCountChange(e.target.value)}
             onBlur={(e) => onSignerCountChange(e.target.value)}
-            className="border rounded px-2 py-1 text-sm w-24"
+            className="border rounded-sm px-2 py-1 text-sm w-24"
             title={signerCountLimitTitle}
           />
           <span className="text-xs text-gray-600 dark:text-gray-400">{signerCountLimitLabel}</span>
@@ -131,7 +131,7 @@ export default function MultisigConfigForm({
               accountPicker
               onRemoveOption={onRemoveSignerOption ? (entry) => onRemoveSignerOption(entry.value) : undefined}
               onClearOptions={onClearSignerOptions || undefined}
-              inputClassName="w-full border rounded px-2 py-1 font-mono text-sm"
+              inputClassName="w-full border rounded-sm px-2 py-1 font-mono text-sm"
               inputProps={{
                 spellCheck: false,
                 autoCorrect: 'off',
@@ -161,7 +161,7 @@ export default function MultisigConfigForm({
                 <button
                   type="button"
                   onClick={() => onRemoveSigner(i)}
-                  className="shrink-0 px-1.5 py-1 border rounded text-xs whitespace-nowrap hover:bg-gray-100 dark:hover:bg-gray-800"
+                  className="shrink-0 px-1.5 py-1 border rounded-sm text-xs whitespace-nowrap hover:bg-gray-100 dark:hover:bg-gray-800"
                 >
                   {removeSignerLabel}
                 </button>
@@ -198,7 +198,7 @@ export default function MultisigConfigForm({
           </button>
         )}
         {showSignerTypeHint && (
-          <div className="p-2 bg-blue-50 dark:bg-blue-900/20 border rounded text-xs text-blue-900 dark:text-blue-200">
+          <div className="p-2 bg-blue-50 dark:bg-blue-900/20 border rounded-sm text-xs text-blue-900 dark:text-blue-200">
             {signerTypeNote}{' '}
             {signerTypeLinkUrl && signerTypeLinkLabel && (
               <a
@@ -290,7 +290,7 @@ export default function MultisigConfigForm({
           <p className="text-xs text-red-600 mt-1">{thresholdTooHighText}</p>
         )}
         {showSafetyErrors && (
-          <div className="mt-2 border border-red-400 bg-red-50 dark:border-red-700 dark:bg-red-900/30 rounded p-2">
+          <div className="mt-2 border border-red-400 bg-red-50 dark:border-red-700 dark:bg-red-900/30 rounded-sm p-2">
             <div className="text-xs font-semibold text-red-900 dark:text-red-100">
               {safetyErrorTitle}
             </div>
@@ -302,7 +302,7 @@ export default function MultisigConfigForm({
           </div>
         )}
         {showSafetyWarnings && (
-          <div className="mt-2 border border-amber-400 bg-amber-50 dark:border-amber-700 dark:bg-amber-900/30 rounded p-2">
+          <div className="mt-2 border border-amber-400 bg-amber-50 dark:border-amber-700 dark:bg-amber-900/30 rounded-sm p-2">
             <div className="text-xs font-semibold text-amber-900 dark:text-amber-100">
               {safetyWarningTitle}
             </div>

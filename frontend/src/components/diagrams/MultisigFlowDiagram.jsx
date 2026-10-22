@@ -11,7 +11,7 @@ export default function MultisigFlowDiagram() {
   ];
 
   return (
-    <div className="w-full border rounded-lg p-4 bg-white dark:bg-gray-900 shadow-sm" aria-label={t('learnMultisigDiagrams:flow.ariaLabel')}>
+    <div className="w-full border rounded-lg p-4 bg-white dark:bg-gray-900 shadow-xs" aria-label={t('learnMultisigDiagrams:flow.ariaLabel')}>
       <div className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-3">{t('learnMultisigDiagrams:flow.title')}</div>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
         {steps.map((s, idx) => (

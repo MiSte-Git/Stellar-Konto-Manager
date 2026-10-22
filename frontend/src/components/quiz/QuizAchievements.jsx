@@ -34,7 +34,7 @@ export default function QuizAchievements() {
       ) : (
         <ul className="space-y-2">
           {items.map((a, idx) => (
-            <li key={idx} className="border border-gray-200 dark:border-gray-700 rounded p-3">
+            <li key={idx} className="border border-gray-200 dark:border-gray-700 rounded-sm p-3">
               <div className="font-medium text-gray-900 dark:text-gray-100">
                 {t('quiz:achievements.badge', { name: t(`quiz:achievements.${a.id}`, a.name || a.id || String(idx + 1)) })}
               </div>

@@ -156,7 +156,7 @@ export default function QuestionCard({
                   onClick={() => handleSelect(opt.id)}
                   variants={bounceVariant}
                   animate={fb || 'initial'}
-                  className={`flex items-center justify-center gap-2 border-2 rounded-2xl px-6 py-4 text-center cursor-pointer select-none font-semibold text-base transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 disabled:opacity-60 disabled:cursor-not-allowed ${getTrueFalseClasses(opt)}`}
+                  className={`flex items-center justify-center gap-2 border-2 rounded-2xl px-6 py-4 text-center cursor-pointer select-none font-semibold text-base transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-indigo-400 disabled:opacity-60 disabled:cursor-not-allowed ${getTrueFalseClasses(opt)}`}
                 >
                   <span>{t(opt.textKey)}</span>
                   {feedbackIcon(opt)}
@@ -185,7 +185,7 @@ export default function QuestionCard({
                   onClick={() => handleSelect(opt.id)}
                   variants={bounceVariant}
                   animate={fb || 'initial'}
-                  className={`flex items-center justify-between w-full border-2 rounded-2xl px-5 py-4 text-left cursor-pointer select-none text-base transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 disabled:opacity-60 disabled:cursor-not-allowed ${getOptionClasses(opt)}`}
+                  className={`flex items-center justify-between w-full border-2 rounded-2xl px-5 py-4 text-left cursor-pointer select-none text-base transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-indigo-400 disabled:opacity-60 disabled:cursor-not-allowed ${getOptionClasses(opt)}`}
                 >
                   <span>{t(opt.textKey)}</span>
                   {feedbackIcon(opt)}

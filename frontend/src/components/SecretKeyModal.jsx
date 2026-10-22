@@ -217,7 +217,7 @@ function SecretKeyModal({
   }, [secretInputs, effectiveSigners]);
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 overflow-y-auto p-4">
+    <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50 overflow-y-auto p-4">
       <div className="bg-white dark:bg-gray-800 p-6 rounded-lg w-full max-w-lg my-auto max-h-[calc(100svh-2rem)] overflow-y-auto">
         <h2 className={`text-xl font-semibold mb-4 ${error ? 'text-red-700' : 'text-black dark:text-white'}`}>
           {t('secretKey:label', 'Secret key')}
@@ -245,7 +245,7 @@ function SecretKeyModal({
 
         {isMultisigAccount && showInfo && (
           <>
-            <div className="mb-3 rounded border border-blue-100 bg-blue-50 p-3 text-sm text-blue-900 dark:border-blue-900 dark:bg-blue-950 dark:text-blue-100 space-y-2">
+            <div className="mb-3 rounded-sm border border-blue-100 bg-blue-50 p-3 text-sm text-blue-900 dark:border-blue-900 dark:bg-blue-950 dark:text-blue-100 space-y-2">
               <div className="font-semibold">{t('secretKey:localFlow.title')}</div>
               <p className="text-xs mt-0.5">{t('secretKey:localFlow.body')}</p>
               <ul className="list-disc ml-4 space-y-1 text-xs mt-1">
@@ -255,7 +255,7 @@ function SecretKeyModal({
               <p className="text-[11px] mt-1 text-amber-700 dark:text-amber-300">{t('secretKey:multisigOptions.localAll.warning')}</p>
               <p className="text-[11px] text-gray-700 dark:text-gray-300">{t('secretKey:multisigInfo.masterExplanation')}</p>
             </div>
-            <div className="mb-3 rounded border border-gray-200 bg-gray-50 p-3 text-xs dark:border-gray-700 dark:bg-gray-900">
+            <div className="mb-3 rounded-sm border border-gray-200 bg-gray-50 p-3 text-xs dark:border-gray-700 dark:bg-gray-900">
               <div className="flex flex-col gap-1 mb-2 text-gray-800 dark:text-gray-200">
                 <div>{t('secretKey:multisigInfo.summary.multi')}</div>
                 <div>{t('secretKey:multisigInfo.requiredThreshold', { level: thresholdLevel, value: requiredThreshold || 0 })}</div>
@@ -275,7 +275,7 @@ function SecretKeyModal({
                   <span>{effectiveSigners.length ? currentWeight : 'n/a'}</span>
                 </span>
                 {operationType && (
-                  <span className="rounded bg-blue-100 px-2 py-0.5 text-blue-800 dark:bg-blue-900 dark:text-blue-100 text-[11px] uppercase tracking-wide">
+                  <span className="rounded-sm bg-blue-100 px-2 py-0.5 text-blue-800 dark:bg-blue-900 dark:text-blue-100 text-[11px] uppercase tracking-wide">
                     {t(`secretKey:operations.${operationType || 'unknown'}`, operationType || '')}
                   </span>
                 )}
@@ -285,7 +285,7 @@ function SecretKeyModal({
         )}
 
         {isMultisigAccount && displaySigners.length > 0 && (
-          <div className="mb-3 rounded border border-gray-200 bg-gray-50 p-3 text-xs dark:border-gray-700 dark:bg-gray-900">
+          <div className="mb-3 rounded-sm border border-gray-200 bg-gray-50 p-3 text-xs dark:border-gray-700 dark:bg-gray-900">
             <div className="flex items-center justify-between mb-1 text-gray-700 dark:text-gray-300">
               <span className="font-semibold">{t('secretKey:multisigInfo.signers')}:</span>
               <span className="text-[11px] text-gray-500 dark:text-gray-400">
@@ -325,7 +325,7 @@ function SecretKeyModal({
                 setSecretInputs(next);
               }}
               placeholder={t('secretKey:placeholder', 'Enter your secret key')}
-              className={`w-full px-4 py-2 border rounded dark:bg-gray-700 dark:text-white ${error ? 'border-red-500 ring-1 ring-red-400' : ''}`}
+              className={`w-full px-4 py-2 border rounded-sm dark:bg-gray-700 dark:text-white ${error ? 'border-red-500 ring-1 ring-red-400' : ''}`}
             />
           ))}
         </div>
@@ -373,21 +373,21 @@ function SecretKeyModal({
           {showBackToSelection && (
             <button
               onClick={onBackToSelection}
-              className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
+              className="px-4 py-2 bg-gray-200 text-gray-800 rounded-sm hover:bg-gray-300"
             >
               {t('common:option.back', 'Zurück')}
             </button>
           )}
           <button
             onClick={onCancel}
-            className="px-4 py-2 bg-gray-400 text-black rounded hover:bg-gray-500"
+            className="px-4 py-2 bg-gray-400 text-black rounded-sm hover:bg-gray-500"
           >
             {t('common:option.cancel', 'Abbrechen')}
           </button>
           <button
             onClick={handleConfirm}
             disabled={isProcessing}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+            className="px-4 py-2 bg-blue-600 text-white rounded-sm hover:bg-blue-700 disabled:opacity-50"
           >
             {t('publicKey:submit.button', 'Submit')}
           </button>

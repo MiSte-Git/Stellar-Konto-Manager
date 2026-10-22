@@ -183,7 +183,7 @@ export default function BackupSettings() {
     <div className="max-w-3xl mx-auto p-4">
       <ToastHost />
       <div className="flex items-center justify-between mb-4">
-        <button type="button" onClick={goBack} className="px-3 py-1.5 rounded text-xs font-semibold bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100">
+        <button type="button" onClick={goBack} className="px-3 py-1.5 rounded-sm text-xs font-semibold bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100">
           ← {t('settings:backup.nav.back', 'Zurück')}
         </button>
         <h1 className="text-2xl font-bold flex-1 text-center">{t('settings:backup.title', 'Backup & Wiederherstellung')}</h1>
@@ -193,7 +193,7 @@ export default function BackupSettings() {
       <p className="text-sm text-gray-700 dark:text-gray-300 mb-3">{t('settings:backup.desc', 'Exportiere oder importiere deine Quiz-Daten (Einstellungen, Fortschritt, Abzeichen).')}</p>
 
       {/* Quiz Globale Einstellungen */}
-      <div className="border border-gray-200 dark:border-gray-700 rounded p-3 mb-4">
+      <div className="border border-gray-200 dark:border-gray-700 rounded-sm p-3 mb-4">
         <div className="flex items-start justify-between gap-3">
           <div>
             <div className="font-medium">{t('quiz:settings.warnOnActiveQuiz', 'Warnung bei laufendem Quiz anzeigen')}</div>
@@ -213,16 +213,16 @@ export default function BackupSettings() {
         </div>
       </div>
 
-      <div className="border border-gray-200 dark:border-gray-700 rounded p-3 mb-4">
+      <div className="border border-gray-200 dark:border-gray-700 rounded-sm p-3 mb-4">
         <div className="flex items-center justify-between">
           <div className="font-medium">{t('settings:backup.export.button', 'Export starten')}</div>
-          <button type="button" onClick={handleExport} className="px-3 py-1.5 rounded text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white">
+          <button type="button" onClick={handleExport} className="px-3 py-1.5 rounded-sm text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white">
             {t('settings:backup.export.button', 'Export starten')}
           </button>
         </div>
       </div>
 
-      <div className="border border-gray-200 dark:border-gray-700 rounded p-3">
+      <div className="border border-gray-200 dark:border-gray-700 rounded-sm p-3">
         <div className="font-medium mb-2">{t('settings:backup.import.title', 'Import')}</div>
         <div className="flex items-center gap-2 mb-3">
           <label className="text-sm text-gray-700 dark:text-gray-300" htmlFor="backupFile">{t('settings:backup.import.selectFile', 'Datei auswählen')}</label>
@@ -243,13 +243,13 @@ export default function BackupSettings() {
 
         <div className="flex items-center gap-3 mb-3">
           <label className="text-sm font-medium" htmlFor="strategySel">{t('settings:backup.import.strategy.label', 'Strategie')}</label>
-          <select id="strategySel" className="px-2 py-1.5 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm" value={strategy} onChange={(e) => setStrategy(e.target.value)}>
+          <select id="strategySel" className="px-2 py-1.5 rounded-sm border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm" value={strategy} onChange={(e) => setStrategy(e.target.value)}>
             <option value="merge">{t('settings:backup.import.strategy.merge', 'Zusammenführen')}</option>
             <option value="replace">{t('settings:backup.import.strategy.replace', 'Ersetzen')}</option>
           </select>
         </div>
 
-        <button type="button" onClick={handleImport} disabled={!fileData} className="px-3 py-1.5 rounded text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white">
+        <button type="button" onClick={handleImport} disabled={!fileData} className="px-3 py-1.5 rounded-sm text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white">
           {t('settings:backup.import.perform', 'Import durchführen')}
         </button>
       </div>

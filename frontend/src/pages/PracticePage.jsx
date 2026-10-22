@@ -71,7 +71,7 @@ export default function PracticePage() {
         <button
           type="button"
           onClick={goBack}
-          className="inline-flex items-center gap-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100 text-sm font-medium px-3 py-1.5 rounded"
+          className="inline-flex items-center gap-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100 text-sm font-medium px-3 py-1.5 rounded-sm"
         >
           ← {t('learn:back', 'Back')}
         </button>
@@ -85,14 +85,14 @@ export default function PracticePage() {
         </div>
       ) : (
         <div>
-          <div className="text-sm text-yellow-800 bg-yellow-50 border border-yellow-300/60 rounded p-2 mb-3">
+          <div className="text-sm text-yellow-800 bg-yellow-50 border border-yellow-300/60 rounded-sm p-2 mb-3">
             {t('learn:status.testnetOnly', 'Use TESTNET only. Never paste real secret keys. We do not store secrets.')}
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <label className="block text-sm">
               <span className="block mb-1">Public Key (Testnet)</span>
               <input
-                className="w-full border rounded px-2 py-1 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
+                className="w-full border rounded-sm px-2 py-1 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
                 placeholder="G..."
                 value={accountId}
                 onChange={(e) => setAccountId(e.target.value)}
@@ -101,7 +101,7 @@ export default function PracticePage() {
             <label className="block text-sm">
               <span className="block mb-1">Asset Code</span>
               <input
-                className="w-full border rounded px-2 py-1 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
+                className="w-full border rounded-sm px-2 py-1 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
                 placeholder="SKM"
                 value={assetCode}
                 onChange={(e) => setAssetCode(e.target.value)}
@@ -110,7 +110,7 @@ export default function PracticePage() {
             <label className="block text-sm">
               <span className="block mb-1">Asset Issuer</span>
               <input
-                className="w-full border rounded px-2 py-1 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
+                className="w-full border rounded-sm px-2 py-1 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
                 placeholder="G... (Issuer)"
                 value={assetIssuer}
                 onChange={(e) => setAssetIssuer(e.target.value)}
@@ -119,7 +119,7 @@ export default function PracticePage() {
             <label className="block text-sm">
               <span className="block mb-1">Memo includes</span>
               <input
-                className="w-full border rounded px-2 py-1 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
+                className="w-full border rounded-sm px-2 py-1 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
                 placeholder="SKM-LEARN"
                 value={memoIncludes}
                 onChange={(e) => setMemoIncludes(e.target.value)}
@@ -131,21 +131,21 @@ export default function PracticePage() {
             <button
               type="button"
               onClick={() => runCheck('accountActivated')}
-              className="px-3 py-1.5 rounded text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white"
+              className="px-3 py-1.5 rounded-sm text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white"
             >
               {t('learn:practice.accountActivated', 'Prüfen: Konto aktiviert')}
             </button>
             <button
               type="button"
               onClick={() => runCheck('trustline')}
-              className="px-3 py-1.5 rounded text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white"
+              className="px-3 py-1.5 rounded-sm text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white"
             >
               {t('learn:practice.trustline', 'Prüfen: Trustline vorhanden')}
             </button>
             <button
               type="button"
               onClick={() => runCheck('payment')}
-              className="px-3 py-1.5 rounded text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white"
+              className="px-3 py-1.5 rounded-sm text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white"
             >
               {t('learn:practice.payment', 'Prüfen: Zahlung erhalten')}
             </button>

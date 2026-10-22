@@ -38,7 +38,7 @@ function NetworkSelector({ value, onChange }) {
   const { t } = useTranslation(['network', 'common', 'publicKey', 'createAccount']);
   const isTestnet = value === 'TESTNET';
   return (
-    <div className={`flex items-center justify-between gap-4 mb-4 p-2 border rounded relative ${isTestnet ? 'border-yellow-500 ring-1 ring-yellow-400' : ''}`}>
+    <div className={`flex items-center justify-between gap-4 mb-4 p-2 border rounded-sm relative ${isTestnet ? 'border-yellow-500 ring-1 ring-yellow-400' : ''}`}>
       <div className="flex items-center gap-4">
         <label className="flex items-center gap-2">
         <input type="radio" name="network" value="PUBLIC" checked={value === 'PUBLIC'} onChange={() => { try { window.localStorage.setItem('SKM_NETWORK','PUBLIC'); window.localStorage.removeItem('SKM_HORIZON_URL'); } catch (e) { void e; } window.dispatchEvent(new CustomEvent('stm-network-changed', { detail: 'PUBLIC' })); window.dispatchEvent(new Event('stm-trigger-recheck')); onChange('PUBLIC'); }} />
@@ -50,7 +50,7 @@ function NetworkSelector({ value, onChange }) {
         </label>
       </div>
       {isTestnet && (
-        <span className="inline-block bg-yellow-500 text-white text-xs font-semibold px-2 py-0.5 rounded">
+        <span className="inline-block bg-yellow-500 text-white text-xs font-semibold px-2 py-0.5 rounded-sm">
           {t('common:badges.testnet')}
         </span>
       )}
@@ -502,7 +502,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
         <button
           type="button"
           onClick={() => setIsHelpOpen(true)}
-          className="inline-flex items-center gap-2 rounded border border-blue-200 bg-blue-50 px-3 py-1.5 text-sm text-blue-800 transition hover:bg-blue-100 dark:border-blue-900 dark:bg-blue-950 dark:text-blue-100"
+          className="inline-flex items-center gap-2 rounded-sm border border-blue-200 bg-blue-50 px-3 py-1.5 text-sm text-blue-800 transition hover:bg-blue-100 dark:border-blue-900 dark:bg-blue-950 dark:text-blue-100"
         >
           <span aria-hidden="true">ℹ️</span>
           <span>{t('glossary:multisig.help.linkLabel')}</span>
@@ -510,7 +510,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
       </div>
 
       <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">{t('common:multisigEdit.hint')}</p>
-      <details className="mb-4 border border-blue-200 bg-blue-50 dark:border-blue-900 dark:bg-blue-950 rounded p-3">
+      <details className="mb-4 border border-blue-200 bg-blue-50 dark:border-blue-900 dark:bg-blue-950 rounded-sm p-3">
         <summary className="text-sm font-semibold text-blue-900 dark:text-blue-100 cursor-pointer">
           {t('common:multisigEdit.securityGuarantee.title')}
         </summary>
@@ -534,7 +534,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
 
       <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">{t('common:multisigEdit.noteMaxSigners')}</p>
 
-      <div className="bg-white dark:bg-gray-800 rounded border p-4 mb-4">
+      <div className="bg-white dark:bg-gray-800 rounded-sm border p-4 mb-4">
         <h3 className="font-semibold mb-2">{t('common:multisigEdit.currentConfig')}</h3>
         <div className="flex flex-wrap gap-3 mb-4">
           <label className="inline-flex items-center gap-2 text-sm">
@@ -547,7 +547,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
           </label>
         </div>
         {mode === 'prod' && (
-          <div className="mb-4 border border-amber-300 bg-amber-50 dark:border-amber-700 dark:bg-amber-900/30 rounded p-3">
+          <div className="mb-4 border border-amber-300 bg-amber-50 dark:border-amber-700 dark:bg-amber-900/30 rounded-sm p-3">
             <div className="text-sm font-semibold text-amber-900 dark:text-amber-100">{t('multisig:mode.prod.banner.title')}</div>
             <p className="text-xs text-amber-800 dark:text-amber-200 mt-1">{t('multisig:mode.prod.banner.body')}</p>
           </div>
@@ -575,7 +575,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
           onSignerKeyChange={updateSignerKey}
           onSignerWeightChange={updateSignerWeight}
           signerWeightTooltip={t('multisigConfig:tooltips.signerWeight')}
-          signerWeightInputClassName="border rounded px-2 py-1 text-sm w-20"
+          signerWeightInputClassName="border rounded-sm px-2 py-1 text-sm w-20"
           onRemoveSigner={removeSignerRow}
           removeSignerLabel={t('common:option.delete')}
           showSignerTypeNote
@@ -585,7 +585,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
           masterWeight={masterWeight}
           onMasterWeightChange={(value) => setMasterWeight(clampByte(value))}
           masterWeightLabel={t('multisigConfig:masterWeight')}
-          masterWeightInputClassName="border rounded px-2 py-1 text-sm w-24"
+          masterWeightInputClassName="border rounded-sm px-2 py-1 text-sm w-24"
           thresholdsLabel={t('multisigConfig:threshold')}
           thresholdLabels={{
             low: t('multisigConfig:thresholdLow'),
@@ -604,7 +604,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
             if (kind === 'med') setMedT(clampByte(value));
             if (kind === 'high') setHighT(clampByte(value));
           }}
-          thresholdInputClassName="border rounded px-2 py-1 w-16"
+          thresholdInputClassName="border rounded-sm px-2 py-1 w-16"
           thresholdUnitsLabel={t('multisigConfig:units.signatures')}
           thresholdLevelsHint={t('multisigConfig:thresholdLevelsHint')}
           thresholdSumText={t('multisigConfig:thresholdSum', { sum: sumWeights })}
@@ -617,8 +617,8 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
       </div>
 
       <div className="flex gap-2">
-        <button onClick={handleSave} disabled={loading || thLowErr || thMedErr || thHighErr || hasSafetyErrors} className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 disabled:opacity-50">{t('common:multisigEdit.save')}</button>
-        <button onClick={loadAccount} disabled={loading || !(defaultPublicKey||'').trim()} className="px-4 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-50">{t('common:multisigEdit.reload')}</button>
+        <button onClick={handleSave} disabled={loading || thLowErr || thMedErr || thHighErr || hasSafetyErrors} className="bg-green-600 text-white px-4 py-2 rounded-sm hover:bg-green-700 disabled:opacity-50">{t('common:multisigEdit.save')}</button>
+        <button onClick={loadAccount} disabled={loading || !(defaultPublicKey||'').trim()} className="px-4 py-2 rounded-sm border hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-50">{t('common:multisigEdit.reload')}</button>
       </div>
 
       {info && <p className="mt-3 text-sm text-green-700 dark:text-green-400">{info}</p>}
@@ -626,12 +626,12 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
 
       {showConfirmModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 overflow-y-auto p-4">
-          <div className="bg-white dark:bg-gray-800 rounded p-4 w-full max-w-xl my-auto max-h-[calc(100svh-2rem)] overflow-y-auto">
+          <div className="bg-white dark:bg-gray-800 rounded-sm p-4 w-full max-w-xl my-auto max-h-[calc(100svh-2rem)] overflow-y-auto">
             <div className="flex items-start justify-between gap-3 mb-3">
               <h3 className="text-lg font-semibold">{t('common:option.confirm.action.title', 'Confirm action')}</h3>
               <button
                 type="button"
-                className="px-3 py-1 rounded border hover:bg-gray-100 dark:hover:bg-gray-700"
+                className="px-3 py-1 rounded-sm border hover:bg-gray-100 dark:hover:bg-gray-700"
                 onClick={() => { setShowConfirmModal(false); setPendingAction(null); }}
               >
                 {t('common:option.cancel', 'Abbrechen')}
@@ -652,7 +652,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
               </div>
             </div>
             {safetyCheck.errors.length > 0 && (
-              <div className="mb-4 border border-red-400 bg-red-50 dark:border-red-700 dark:bg-red-900/30 rounded p-2">
+              <div className="mb-4 border border-red-400 bg-red-50 dark:border-red-700 dark:bg-red-900/30 rounded-sm p-2">
                 <div className="text-xs font-semibold text-red-900 dark:text-red-100">
                   {t('multisigConfig:safety.errorTitle')}
                 </div>
@@ -664,7 +664,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
               </div>
             )}
             {safetyCheck.warnings.length > 0 && (
-              <div className="mb-4 border border-amber-400 bg-amber-50 dark:border-amber-700 dark:bg-amber-900/30 rounded p-2">
+              <div className="mb-4 border border-amber-400 bg-amber-50 dark:border-amber-700 dark:bg-amber-900/30 rounded-sm p-2">
                 <div className="text-xs font-semibold text-amber-900 dark:text-amber-100">
                   {t('multisigConfig:safety.warningTitle')}
                 </div>
@@ -676,13 +676,13 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
               </div>
             )}
               <div className="grid gap-3">
-              <div className="border rounded p-3">
+              <div className="border rounded-sm p-3">
                 <div className="font-semibold mb-1">{t('multisig:confirm.testModeTitle')}</div>
                 <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">{t('multisig:confirm.testModeDescription')}</p>
                 <button
                   type="button"
                   onClick={handleConfirmTestMode}
-                  className="w-full px-3 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50"
+                  className="w-full px-3 py-2 rounded-sm bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50"
                   disabled={mode === 'prod' || hasSafetyErrors}
                 >
                   {t('multisig:confirm.testModeButton')}
@@ -691,7 +691,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
                   <p className="mt-2 text-xs text-amber-700 dark:text-amber-300">{t('multisig:mode.prod.banner.body')}</p>
                 )}
               </div>
-              <div className="border rounded p-3">
+              <div className="border rounded-sm p-3">
                 <div className="font-semibold mb-1">
                   {mode === 'prod' ? t('multisig:actions.createMultisigJob') : t('multisig:confirm.prepareTitle')}
                 </div>
@@ -701,7 +701,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
                 <button
                   type="button"
                   onClick={handlePrepareMultisig}
-                  className="w-full px-3 py-2 rounded border border-blue-200 text-blue-700 dark:text-blue-200 dark:border-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900"
+                  className="w-full px-3 py-2 rounded-sm border border-blue-200 text-blue-700 dark:text-blue-200 dark:border-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900"
                   disabled={hasSafetyErrors}
                 >
                   {mode === 'prod' ? t('multisig:actions.createMultisigJob') : t('multisig:confirm.prepareButton')}

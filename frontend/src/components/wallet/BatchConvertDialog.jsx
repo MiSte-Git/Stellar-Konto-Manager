@@ -399,11 +399,11 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
                     onChange={(e) => setTrustlineFilter(e.target.value)}
                     placeholder={t('wallet:batchConvert.trustlineSearch')}
                     aria-label={t('wallet:batchConvert.trustlineSearch')}
-                    className="w-full rounded border px-2 py-1.5 text-sm dark:bg-gray-900"
+                    className="w-full rounded-sm border px-2 py-1.5 text-sm dark:bg-gray-900"
                     spellCheck="false"
                     autoComplete="off"
                   />
-                  <ul className="max-h-48 overflow-y-auto rounded border dark:border-gray-700" role="listbox" aria-label={t('wallet:batchConvert.target')}>
+                  <ul className="max-h-48 overflow-y-auto rounded-sm border dark:border-gray-700" role="listbox" aria-label={t('wallet:batchConvert.target')}>
                     {filteredTrustlines.slice(0, TRUSTLINE_LIST_LIMIT).map((a) => (
                       <li key={a.key}>
                         <button
@@ -434,7 +434,7 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
                   onChange={(e) => setCustomTarget(e.target.value)}
                   placeholder="CODE:G..."
                   aria-label={t('wallet:batchConvert.customTarget')}
-                  className="mt-2 w-full rounded border px-2 py-1.5 font-mono text-sm dark:bg-gray-900"
+                  className="mt-2 w-full rounded-sm border px-2 py-1.5 font-mono text-sm dark:bg-gray-900"
                   spellCheck="false"
                   autoComplete="off"
                 />
@@ -449,7 +449,7 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
                 inputMode="decimal"
                 value={slippage}
                 onChange={(e) => setSlippage(e.target.value)}
-                className="mt-1 w-24 rounded border px-2 py-1.5 text-sm dark:bg-gray-900"
+                className="mt-1 w-24 rounded-sm border px-2 py-1.5 text-sm dark:bg-gray-900"
               />
               <span className="ml-1 text-sm text-gray-600 dark:text-gray-300">%</span>
               {slippageHigh && (
@@ -470,11 +470,11 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
             <div className="flex items-center justify-between text-xs">
               <span className="text-gray-700 dark:text-gray-300">{t('wallet:batchConvert.selectedCount', { count: selectedQuotes.length, total: quotes.length })}</span>
               <span className="flex gap-1">
-                <button type="button" className="rounded px-2 py-1 text-blue-700 hover:bg-blue-50 dark:text-blue-300" onClick={() => setAll(true)}>{t('wallet:batchConvert.selectAll')}</button>
-                <button type="button" className="rounded px-2 py-1 text-blue-700 hover:bg-blue-50 dark:text-blue-300" onClick={() => setAll(false)}>{t('wallet:batchConvert.selectNone')}</button>
+                <button type="button" className="rounded-sm px-2 py-1 text-blue-700 hover:bg-blue-50 dark:text-blue-300" onClick={() => setAll(true)}>{t('wallet:batchConvert.selectAll')}</button>
+                <button type="button" className="rounded-sm px-2 py-1 text-blue-700 hover:bg-blue-50 dark:text-blue-300" onClick={() => setAll(false)}>{t('wallet:batchConvert.selectNone')}</button>
               </span>
             </div>
-            <ul className="max-h-72 divide-y divide-gray-100 overflow-y-auto rounded border dark:divide-gray-700 dark:border-gray-700">
+            <ul className="max-h-72 divide-y divide-gray-100 overflow-y-auto rounded-sm border dark:divide-gray-700 dark:border-gray-700">
               {quotes.map((q) => (
                 <li key={q.item.id} className="flex items-center gap-3 px-3 py-2 text-sm" data-testid="batch-row" data-claimable-id={q.item.id}>
                   <input
@@ -487,7 +487,7 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
                   <div className="min-w-0 flex-1">
                     <div className="font-semibold text-gray-900 dark:text-white">
                       {f(q.item.amount)} {q.item.asset.code}
-                      {q.item.hidden && <span className="ml-2 rounded bg-gray-100 px-1.5 py-0.5 text-[10px] font-medium text-gray-600 dark:bg-gray-700 dark:text-gray-300">{t('wallet:batchConvert.hiddenTag')}</span>}
+                      {q.item.hidden && <span className="ml-2 rounded-sm bg-gray-100 px-1.5 py-0.5 text-[10px] font-medium text-gray-600 dark:bg-gray-700 dark:text-gray-300">{t('wallet:batchConvert.hiddenTag')}</span>}
                     </div>
                     {!q.item.asset.isNative && <div className="truncate font-mono text-xs text-gray-500" title={q.item.asset.issuer}>{shortenAddress(q.item.asset.issuer)}</div>}
                   </div>
@@ -495,7 +495,7 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
                 </li>
               ))}
             </ul>
-            <dl className="grid grid-cols-2 gap-x-4 gap-y-1 rounded bg-gray-50 p-3 text-xs dark:bg-gray-900/50">
+            <dl className="grid grid-cols-2 gap-x-4 gap-y-1 rounded-sm bg-gray-50 p-3 text-xs dark:bg-gray-900/50">
               <dt className="text-gray-600 dark:text-gray-400">{t('wallet:batchConvert.expected')}</dt>
               <dd className="text-right font-semibold tabular-nums">{f(expectedTotal)} {targetText}</dd>
               <dt className="text-gray-600 dark:text-gray-400">{t('wallet:batchConvert.minimum')}</dt>

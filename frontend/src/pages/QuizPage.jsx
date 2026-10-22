@@ -107,7 +107,7 @@ export default function QuizPage() {
           <button
             type="button"
             onClick={goBack}
-            className="inline-flex items-center gap-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100 text-sm font-medium px-3 py-1.5 rounded"
+            className="inline-flex items-center gap-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100 text-sm font-medium px-3 py-1.5 rounded-sm"
           >
             ← {t('learn:back', 'Back')}
           </button>
@@ -120,7 +120,7 @@ export default function QuizPage() {
                 window.dispatchEvent(new PopStateEvent('popstate'));
               } catch { /* noop */ }
             }}
-            className="inline-flex items-center gap-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100 text-sm font-medium px-3 py-1.5 rounded"
+            className="inline-flex items-center gap-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100 text-sm font-medium px-3 py-1.5 rounded-sm"
           >
             {t('navigation:home', 'Startseite')}
           </button>
@@ -145,7 +145,7 @@ export default function QuizPage() {
               <button
                 type="button"
                 onClick={goBack}
-                className="mt-3 inline-flex items-center gap-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100 text-xs font-medium px-3 py-1.5 rounded"
+                className="mt-3 inline-flex items-center gap-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100 text-xs font-medium px-3 py-1.5 rounded-sm"
               >
                 ← {t('quiz.ui:backToLearn')}
               </button>

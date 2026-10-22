@@ -22,8 +22,8 @@ function MainMenu({ onSelect }) {
 
   const baseBtn =
     'text-white bg-black hover:bg-zinc-900 ' +
-    'px-4 py-2 rounded font-medium shadow-sm transition-colors ' +
-    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ' +
+    'px-4 py-2 rounded-sm font-medium shadow-xs transition-colors ' +
+    'focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-offset-2 ' +
     'focus-visible:ring-zinc-400 focus-visible:ring-offset-white ' +
     'dark:focus-visible:ring-offset-gray-900 ' +
     'border';

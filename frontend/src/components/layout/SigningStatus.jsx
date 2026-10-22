@@ -124,7 +124,7 @@ export default function SigningStatus() {
           title={t('secretKey:status.lockHint', 'Alle gespeicherten Secret Keys dieser Session sofort löschen')}
           aria-label={t('secretKey:status.lock', 'Sperren')}
           data-testid="signing-status-lock"
-          className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-2.5 text-xs font-semibold text-gray-700 hover:border-red-300 hover:bg-red-50 hover:text-red-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:hover:border-red-400/60 dark:hover:bg-red-500/10 dark:hover:text-red-300"
+          className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-2.5 text-xs font-semibold text-gray-700 hover:border-red-300 hover:bg-red-50 hover:text-red-700 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-red-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:hover:border-red-400/60 dark:hover:bg-red-500/10 dark:hover:text-red-300"
         >
           <NavIcon name="lock" className="h-4 w-4" />
           <span className="hidden md:inline">{t('secretKey:status.lock', 'Sperren')}</span>

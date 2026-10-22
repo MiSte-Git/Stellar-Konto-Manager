@@ -83,7 +83,7 @@ export default function AddressDropdown({
         )}
       </div>
       {showDropdown && (
-        <div className="absolute z-20 mt-1 w-full max-h-64 overflow-y-auto rounded border bg-white dark:bg-gray-900 shadow-lg">
+        <div className="absolute z-20 mt-1 w-full max-h-64 overflow-y-auto rounded-sm border bg-white dark:bg-gray-900 shadow-lg">
           {filtered.map((entry, i) => (
             <div
               key={`${entry.value}-${i}`}
@@ -102,7 +102,7 @@ export default function AddressDropdown({
                 {(entry.isTestnet || entry.label) && (
                   <div className="text-xs text-gray-600 dark:text-gray-400 flex flex-wrap gap-2">
                     {entry.isTestnet && (
-                      <span className="px-1.5 py-0.5 rounded bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-200">
+                      <span className="px-1.5 py-0.5 rounded-sm bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-200">
                         {t('common:account.testnetLabel', '(Testnet)')}
                       </span>
                     )}

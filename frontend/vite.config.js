@@ -5,6 +5,7 @@ import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
 import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
 
 // Gemeinsames Header-Modul (CommonJS, auch von server.js genutzt)
 const require = createRequire(import.meta.url)
@@ -45,7 +46,7 @@ export default defineConfig(({ mode }) => {
   const devProxyIsHttps = /^https:/i.test(devProxyTarget)
   return {
     base,
-    plugins: [react(), skmHtaccessPlugin({ base, env })],
+    plugins: [react(), tailwindcss(), skmHtaccessPlugin({ base, env })],
     // vite preview mit denselben Headern wie Produktion (ohne HSTS, da http).
     // Kein CSP im Dev-Server: HMR braucht Inline-Script und WebSocket.
     preview: {

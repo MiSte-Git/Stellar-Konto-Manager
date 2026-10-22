@@ -55,11 +55,11 @@ export default function TopBar({ onOpenMenu, menuOpen, menuButtonRef, price }) {
   const logoSrc = `${import.meta.env.BASE_URL || '/'}Trustline-Logo-Favicon.ico`;
   const iconBtn =
     'inline-flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-white p-0 text-gray-600 ' +
-    'hover:border-gray-300 hover:bg-gray-50 hover:text-gray-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ' +
+    'hover:border-gray-300 hover:bg-gray-50 hover:text-gray-900 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 ' +
     'dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:border-gray-600 dark:hover:bg-gray-800 dark:hover:text-white';
 
   return (
-    <header className="sticky top-0 z-40 h-14 border-b border-gray-200 bg-white/95 backdrop-blur dark:border-gray-800 dark:bg-gray-950/95">
+    <header className="sticky top-0 z-40 h-14 border-b border-gray-200 bg-white/95 backdrop-blur-sm dark:border-gray-800 dark:bg-gray-950/95">
       <div className="flex h-full items-center gap-2 px-3 sm:gap-3 sm:px-4">
         <button
           ref={menuButtonRef}
@@ -76,7 +76,7 @@ export default function TopBar({ onOpenMenu, menuOpen, menuButtonRef, price }) {
         <button
           type="button"
           onClick={() => openMainView('home')}
-          className="flex min-w-0 items-center gap-2 rounded-lg border-0 bg-transparent p-1 text-gray-900 hover:bg-transparent focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-white"
+          className="flex min-w-0 items-center gap-2 rounded-lg border-0 bg-transparent p-1 text-gray-900 hover:bg-transparent focus:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-white"
           title={t('common:main.title')}
         >
           <img src={logoSrc} alt="" className="h-7 w-7 shrink-0 rounded-md" />

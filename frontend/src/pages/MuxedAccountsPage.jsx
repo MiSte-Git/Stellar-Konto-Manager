@@ -413,7 +413,7 @@ export default function MuxedAccountsPage({ publicKey }) {
           <h2 className="text-xl font-semibold">{t('common:muxed.title', 'Subaddress create/manage')}</h2>
           <button
             type="button"
-            className="inline-flex items-center gap-1 px-3 py-1.5 text-sm md:text-base rounded-md border border-blue-600 text-blue-700 bg-blue-50 hover:bg-blue-100 dark:border-blue-400 dark:text-blue-200 dark:bg-blue-900/30 dark:hover:bg-blue-900/50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="inline-flex items-center gap-1 px-3 py-1.5 text-sm md:text-base rounded-md border border-blue-600 text-blue-700 bg-blue-50 hover:bg-blue-100 dark:border-blue-400 dark:text-blue-200 dark:bg-blue-900/30 dark:hover:bg-blue-900/50 focus:outline-hidden focus:ring-2 focus:ring-blue-500"
             aria-label={t('common:muxed.infoButtonLabel', 'Info')}
             aria-expanded={showInfo ? 'true' : 'false'}
             aria-controls="muxed-info-panel"
@@ -425,7 +425,7 @@ export default function MuxedAccountsPage({ publicKey }) {
       </div>
 
       {showInfo && (
-        <div id="muxed-info-panel" className="mb-3 rounded border p-3 bg-blue-50 dark:bg-blue-900/30 text-sm text-gray-800 dark:text-gray-100">
+        <div id="muxed-info-panel" className="mb-3 rounded-sm border p-3 bg-blue-50 dark:bg-blue-900/30 text-sm text-gray-800 dark:text-gray-100">
           <div className="font-semibold mb-1">{t('common:muxed.info.title', 'What is a subaddress?')}</div>
           <p className="mb-2">{t('common:muxed.info.intro1', 'A subaddress combines a normal account address (G...) with an extra 64-bit muxed ID.')}</p>
           <p className="mb-3">{t('common:muxed.info.intro2', 'Technically it is an alias that always points to the same base account, but remains distinguishable by the ID.')}</p>
@@ -456,28 +456,28 @@ export default function MuxedAccountsPage({ publicKey }) {
           <p className="mb-2">{t('common:muxed.info.pageDesc', 'Manage subaddresses for your currently selected Stellar account:')}</p>
 
           <div className="grid sm:grid-cols-2 gap-3 mb-3">
-            <div className="border rounded p-3 bg-white/60 dark:bg-white/5">
+            <div className="border rounded-sm p-3 bg-white/60 dark:bg-white/5">
               <div className="font-semibold mb-1">{t('common:muxed.info.createTitle', 'Create subaddresses')}</div>
               <ul className="list-disc ps-5 space-y-1">
                 <li>{t('common:muxed.info.createItems.i1', 'Generate new muxed addresses (M...) from your base address (G...).')}</li>
                 <li>{t('common:muxed.info.createItems.i2', 'Optionally add a label (name) and note (project or purpose).')}</li>
               </ul>
             </div>
-            <div className="border rounded p-3 bg-white/60 dark:bg-white/5">
+            <div className="border rounded-sm p-3 bg-white/60 dark:bg-white/5">
               <div className="font-semibold mb-1">{t('common:muxed.info.importTitle', 'Import from CSV')}</div>
               <ul className="list-disc ps-5 space-y-1">
                 <li>{t('common:muxed.info.importItems.i1', 'Bulk-create subaddresses, e.g., from a staff list.')}</li>
                 <li>{t('common:muxed.info.importItems.i2', 'Reads columns muxedId, label, note.')}</li>
               </ul>
             </div>
-            <div className="border rounded p-3 bg-white/60 dark:bg-white/5">
+            <div className="border rounded-sm p-3 bg-white/60 dark:bg-white/5">
               <div className="font-semibold mb-1">{t('common:muxed.info.exportTitle', 'Export existing subaddresses')}</div>
               <ul className="list-disc ps-5 space-y-1">
                 <li>{t('common:muxed.info.exportItems.i1', 'Export all saved entries as CSV.')}</li>
                 <li>{t('common:muxed.info.exportItems.i2', 'Fields: basePublicKey, muxedId, muxedAddress, label, note, createdAt.')}</li>
               </ul>
             </div>
-            <div className="border rounded p-3 bg-white/60 dark:bg-white/5">
+            <div className="border rounded-sm p-3 bg-white/60 dark:bg-white/5">
               <div className="font-semibold mb-1">{t('common:muxed.info.templateTitle', 'Template export')}</div>
               <ul className="list-disc ps-5 space-y-1">
                 <li>{t('common:muxed.info.templateItems.i1', 'Create an empty CSV with headers muxedId,label,note.')}</li>
@@ -486,7 +486,7 @@ export default function MuxedAccountsPage({ publicKey }) {
             </div>
           </div>
 
-          <div className="border rounded p-3 bg-white/60 dark:bg-white/5 mb-3">
+          <div className="border rounded-sm p-3 bg-white/60 dark:bg-white/5 mb-3">
             <div className="font-semibold mb-1">{t('common:muxed.info.manageTitle', 'Management and overview')}</div>
             <ul className="list-disc ps-5 space-y-1">
               <li>{t('common:muxed.info.manageItems.i1', 'See all saved muxed addresses in a table.')}</li>
@@ -505,11 +505,11 @@ export default function MuxedAccountsPage({ publicKey }) {
         <div>
           <label className="block text-sm font-medium mb-1">{t('common:muxed.selectBaseAccount', 'Base account (G-address)')}</label>
           {publicKey ? (
-            <div className="w-full border rounded p-2 font-mono bg-gray-50 text-gray-900" aria-readonly="true">
+            <div className="w-full border rounded-sm p-2 font-mono bg-gray-50 text-gray-900" aria-readonly="true">
               {publicKey}
             </div>
           ) : (
-            <div className="w-full border rounded p-2 font-mono bg-gray-50 text-gray-400 italic" aria-readonly="true">
+            <div className="w-full border rounded-sm p-2 font-mono bg-gray-50 text-gray-400 italic" aria-readonly="true">
               {t('common:muxed.selectPlaceholder', 'Please select account')}
             </div>
           )}
@@ -519,7 +519,7 @@ export default function MuxedAccountsPage({ publicKey }) {
         </div>
 
         {/* Erstellen + Import/Export jetzt in einem festen Block. Kein Aufklappen mehr. */}
-        <div className="border rounded p-3 space-y-3">
+        <div className="border rounded-sm p-3 space-y-3">
           <div className="flex flex-col md:flex-row md:items-start md:gap-3">
             <div className="mb-3 md:mb-0">
               <label className="block text-sm font-medium mb-1">{t('common:muxed.countLabel', 'Anzahl')}</label>
@@ -527,7 +527,7 @@ export default function MuxedAccountsPage({ publicKey }) {
                 type="number"
                 min="1"
                 max="100"
-                className="border rounded p-2 w-36 sm:w-44"
+                className="border rounded-sm p-2 w-36 sm:w-44"
                 placeholder="1"
                 value={countInput}
                 onChange={(e) => setCountInput(e.target.value)}
@@ -542,7 +542,7 @@ export default function MuxedAccountsPage({ publicKey }) {
             <button
               type="button"
               onClick={onGenerate}
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+              className="bg-blue-600 text-white px-4 py-2 rounded-sm hover:bg-blue-700"
             >
               {t('common:muxed.generateButton', 'Create subaddress')}
             </button>
@@ -550,7 +550,7 @@ export default function MuxedAccountsPage({ publicKey }) {
             <button
               type="button"
               onClick={onExport}
-              className="px-4 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-50"
+              className="px-4 py-2 rounded-sm border hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-50"
               disabled={!rows.length}
             >
               {t('common:muxed.exportButton', 'Exportieren')}
@@ -559,7 +559,7 @@ export default function MuxedAccountsPage({ publicKey }) {
             <button
               type="button"
               onClick={onExportTemplate}
-              className="px-4 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-800"
+              className="px-4 py-2 rounded-sm border hover:bg-gray-100 dark:hover:bg-gray-800"
             >
               {t('common:muxed.exportTemplateButton', 'Template exportieren')}
             </button>
@@ -568,7 +568,7 @@ export default function MuxedAccountsPage({ publicKey }) {
             <button
               type="button"
               onClick={onImportClick}
-              className="px-4 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-800"
+              className="px-4 py-2 rounded-sm border hover:bg-gray-100 dark:hover:bg-gray-800"
             >
               {t('common:muxed.importButton', 'Importieren')}
             </button>
@@ -591,7 +591,7 @@ export default function MuxedAccountsPage({ publicKey }) {
           {rows.length === 0 ? (
             <div className="text-sm text-gray-600 dark:text-gray-300">{t('common:muxed.none', 'No subaddresses stored.')}</div>
           ) : (
-            <div className="overflow-x-auto border rounded">
+            <div className="overflow-x-auto border rounded-sm">
               <table className="min-w-full text-sm">
                 <thead className="bg-gray-50 dark:bg-gray-800">
                   <tr>
@@ -646,7 +646,7 @@ export default function MuxedAccountsPage({ publicKey }) {
                         {editingId === String(r.id) ? (
                           <input
                             type="text"
-                            className="w-full border rounded p-1"
+                            className="w-full border rounded-sm p-1"
                             title={t('common:muxed.labelInfo', 'z. B. Mitarbeitername oder Zweck')}
                             value={editLabel}
                             onChange={(e) => setEditLabel(e.target.value)}
@@ -671,7 +671,7 @@ export default function MuxedAccountsPage({ publicKey }) {
                         {editingId === String(r.id) ? (
                           <input
                             type="text"
-                            className="w-full border rounded p-1"
+                            className="w-full border rounded-sm p-1"
                             title={t('common:muxed.noteInfo', 'z. B. Abteilung / Projekt')}
                             value={editNote}
                             onChange={(e) => setEditNote(e.target.value)}
@@ -701,7 +701,7 @@ export default function MuxedAccountsPage({ publicKey }) {
           )}
           {rows.length > 0 && (
             <div className="mt-2 flex items-center gap-2">
-              <button type="button" onClick={onDeleteSelected} className="px-3 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-50" disabled={selected.size===0}>
+              <button type="button" onClick={onDeleteSelected} className="px-3 py-2 rounded-sm border hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-50" disabled={selected.size===0}>
                 {t('common:muxed.deleteSelected', 'Delete selected')}
               </button>
             </div>
@@ -709,18 +709,18 @@ export default function MuxedAccountsPage({ publicKey }) {
         </div>
 
         {error && (
-          <div className="text-sm text-red-700 border border-red-400 rounded p-2">{error}</div>
+          <div className="text-sm text-red-700 border border-red-400 rounded-sm p-2">{error}</div>
         )}
         {success && !error && (
-          <div className="text-sm text-green-700 border border-green-400 rounded p-2">{success}</div>
+          <div className="text-sm text-green-700 border border-green-400 rounded-sm p-2">{success}</div>
         )}
 
         {result && (
           <div>
             <label className="block text-sm font-medium mb-1">{t('common:createAccount.muxedAddress', 'Muxed address')}</label>
             <div className="flex items-center gap-2">
-              <input type="text" className="w-full border rounded p-2 font-mono" value={result} readOnly />
-              <button type="button" className="px-3 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-800" onClick={() => onCopy(result)}>{t('common:option.copy', 'Copy')}</button>
+              <input type="text" className="w-full border rounded-sm p-2 font-mono" value={result} readOnly />
+              <button type="button" className="px-3 py-2 rounded-sm border hover:bg-gray-100 dark:hover:bg-gray-800" onClick={() => onCopy(result)}>{t('common:option.copy', 'Copy')}</button>
             </div>
             <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">{t('common:createAccount.muxedActivationInfo', 'Muxed addresses are aliases. They do not need activation.')}</p>
           </div>

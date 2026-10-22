@@ -89,7 +89,7 @@ export default function SettingsPanel({
             </label>
             <select
               id="decimals-mode"
-              className="border rounded px-2 py-1"
+              className="border rounded-sm px-2 py-1"
               value={decimalsMode}
               onChange={(e) => setDecimalsMode(e.target.value)}
             >
@@ -115,7 +115,7 @@ export default function SettingsPanel({
           <div className="flex flex-col sm:flex-row gap-3 items-start">
             <label className="text-sm sm:w-56">{t('settings:network.fullUrl', 'Full-History Horizon URL')}</label>
             <input
-              className="border rounded px-2 py-1 w-full"
+              className="border rounded-sm px-2 py-1 w-full"
               placeholder="https://example-full-history-horizon"
               value={fullHorizonUrl}
               onChange={(e)=>setFullHorizonUrl(e.target.value)}
@@ -219,7 +219,7 @@ export default function SettingsPanel({
             </div>
           ) : null}
 
-          <div className="w-full overflow-x-auto border rounded">
+          <div className="w-full overflow-x-auto border rounded-sm">
             <table className="w-full text-sm min-w-[800px]">
               <thead className="bg-gray-100 dark:bg-gray-700">
                 <tr className="text-left border-b">
@@ -235,7 +235,7 @@ export default function SettingsPanel({
                   <tr key={idx} className={idx % 2 ? 'bg-gray-50 dark:bg-gray-800/40' : ''}>
                     <td className="px-2 py-1">
                       <input
-                        className="w-full min-w-[280px] font-mono text-xs border rounded px-2 py-1"
+                        className="w-full min-w-[280px] font-mono text-xs border rounded-sm px-2 py-1"
                         value={r.address}
                         onChange={(e) => updateCell(idx, 'address', e.target.value)}
                         placeholder="G..."
@@ -243,7 +243,7 @@ export default function SettingsPanel({
                     </td>
                     <td className="px-2 py-1">
                       <input
-                        className="w-full min-w-[150px] text-xs border rounded px-2 py-1"
+                        className="w-full min-w-[150px] text-xs border rounded-sm px-2 py-1"
                         value={r.label || ''}
                         onChange={(e) => updateCell(idx, 'label', e.target.value)}
                         placeholder={t('settings:trustedWallets.table.columns.label', 'Label')}
@@ -267,7 +267,7 @@ export default function SettingsPanel({
                       <button
                         type="button"
                         onClick={() => removeRow(idx)}
-                        className="px-2 py-1 rounded border text-xs hover:bg-gray-100 dark:hover:bg-gray-800"
+                        className="px-2 py-1 rounded-sm border text-xs hover:bg-gray-100 dark:hover:bg-gray-800"
                       >
                         {t('settings:trustedWallets.table.deleteRow', 'Delete')}
                       </button>

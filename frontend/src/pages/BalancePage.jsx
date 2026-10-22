@@ -294,10 +294,10 @@ const muxedId = useMemo(() => {
         </div>
       )}
 
-      <div className="bg-white dark:bg-gray-800 rounded border p-3 flex flex-wrap items-center gap-4 mb-4">
+      <div className="bg-white dark:bg-gray-800 rounded-sm border p-3 flex flex-wrap items-center gap-4 mb-4">
 
         <div className="ml-auto flex items-center gap-2">
-          <button type="button" onClick={()=>document.getElementById('payments')?.scrollIntoView({ behavior:'smooth' })} className="px-3 py-1 rounded border hover:bg-gray-100 dark:hover:bg-gray-800">
+          <button type="button" onClick={()=>document.getElementById('payments')?.scrollIntoView({ behavior:'smooth' })} className="px-3 py-1 rounded-sm border hover:bg-gray-100 dark:hover:bg-gray-800">
             {t('common:balance.buttons.payments')}
           </button>
         </div>
@@ -308,7 +308,7 @@ const muxedId = useMemo(() => {
 
       {publicKey && (
         <>
-          <div className="bg-white dark:bg-gray-800 rounded border p-4 mb-4">
+          <div className="bg-white dark:bg-gray-800 rounded-sm border p-4 mb-4">
             <div className="grid grid-cols-[1fr_auto_1fr] items-center mb-2">
               <h3 className="font-semibold">{t('common:balance.current')}</h3>
               <div className="text-sm text-gray-700 dark:text-gray-300 text-center">
@@ -317,7 +317,7 @@ const muxedId = useMemo(() => {
               <div aria-hidden="true" />
             </div>
             {muxedAddress && (
-              <div className="mb-3 flex items-start gap-2 text-xs text-blue-800 dark:text-blue-200 bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded p-2">
+              <div className="mb-3 flex items-start gap-2 text-xs text-blue-800 dark:text-blue-200 bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-sm p-2">
                 <span aria-hidden="true">ℹ️</span>
                 <span>{t('common:balance.identityMode.totalBalanceHint')}</span>
               </div>
@@ -383,7 +383,7 @@ const muxedId = useMemo(() => {
                   return 0;
                 })
                 .map((b, i) => (
-                  <div key={i} className="border rounded p-3 bg-white dark:bg-gray-800">
+                  <div key={i} className="border rounded-sm p-3 bg-white dark:bg-gray-800">
                     <div className="flex justify-between items-start mb-1">
                       <span className="font-semibold">{b.code}</span>
                       <span className="text-lg">{fmt(b.balance)}</span>
@@ -402,19 +402,19 @@ const muxedId = useMemo(() => {
             </div>
           </div>
 
-          <div id="payments" className="bg-white dark:bg-gray-800 rounded border p-4 mb-4">
+          <div id="payments" className="bg-white dark:bg-gray-800 rounded-sm border p-4 mb-4">
             <div className="flex flex-wrap items-center justify-between gap-3 mb-2">
               <h3 className="font-semibold">{t('common:balance.payments.title')}</h3>
               <div className="flex items-center gap-2">
                 <button
                   type="button"
-                  className="px-3 py-1 text-xs border rounded hover:bg-gray-100 dark:hover:bg-gray-800"
+                  className="px-3 py-1 text-xs border rounded-sm hover:bg-gray-100 dark:hover:bg-gray-800"
                   onClick={clearAllPaymentFilters}
                 >
                   {t('common:balance.payments.filter.resetAll', 'Alle Filter löschen')}
                 </button>
                 <label className="text-sm">{t('common:balance.payments.limit')}</label>
-                <select className="border rounded px-2 py-1" value={paymentsLimit} onChange={(e) => setPaymentsLimit(e.target.value)}>
+                <select className="border rounded-sm px-2 py-1" value={paymentsLimit} onChange={(e) => setPaymentsLimit(e.target.value)}>
                   <option value="10">10</option>
                   <option value="20">20</option>
                   <option value="50">50</option>
@@ -425,16 +425,16 @@ const muxedId = useMemo(() => {
               </div>
             </div>
             <div className="flex flex-col gap-3">
-              <div className="border rounded p-3">
+              <div className="border rounded-sm p-3">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
                   <div className="flex flex-col gap-3">
                     <div className="flex items-center gap-2">
                       <label className="text-sm w-12 text-right">{t('common:balance.payments.from')}</label>
-                      <input type="datetime-local" className="border rounded px-2 py-1 w-44" value={fromTs} onChange={(e)=>setFromTs(e.target.value)} />
+                      <input type="datetime-local" className="border rounded-sm px-2 py-1 w-44" value={fromTs} onChange={(e)=>setFromTs(e.target.value)} />
                     </div>
                     <div className="flex items-center gap-2">
                       <label className="text-sm w-12 text-right">{t('common:balance.payments.to')}</label>
-                      <input type="datetime-local" className="border rounded px-2 py-1 w-44" value={toTs} onChange={(e)=>setToTs(e.target.value)} />
+                      <input type="datetime-local" className="border rounded-sm px-2 py-1 w-44" value={toTs} onChange={(e)=>setToTs(e.target.value)} />
                     </div>
                   </div>
                   <div className="flex flex-col gap-3 sm:flex-1">
@@ -443,7 +443,7 @@ const muxedId = useMemo(() => {
                       <div className="relative flex-1">
                         <input
                           type="text"
-                          className="border rounded px-2 py-1 pr-7 w-full"
+                          className="border rounded-sm px-2 py-1 pr-7 w-full"
                           value={paymentsMemoQuery}
                           placeholder={t('common:balance.payments.filter.memoPlaceholder')}
                           onChange={(e)=>setPaymentsMemoQuery(e.target.value)}
@@ -465,7 +465,7 @@ const muxedId = useMemo(() => {
                       <div className="relative flex-1">
                         <input
                           type="text"
-                          className="border rounded px-2 py-1 pr-7 w-full"
+                          className="border rounded-sm px-2 py-1 pr-7 w-full"
                           value={paymentsCounterpartyQuery}
                           placeholder={t('common:balance.payments.filter.counterpartyPlaceholder')}
                           onChange={(e) => setPaymentsCounterpartyQuery(e.target.value)}
@@ -487,7 +487,7 @@ const muxedId = useMemo(() => {
               </div>
             </div>
             <ActivityNotices
-              className="mt-3 rounded border"
+              className="mt-3 rounded-sm border"
               dustCount={dustCount}
               hideDust={hideDust}
               onToggleDust={toggleDust}
@@ -521,7 +521,7 @@ const muxedId = useMemo(() => {
                     <span className="inline-flex items-center gap-2">
                       {t('common:balance.payments.columns.txLabel', 'Tx')}
                       <select
-                        className="border rounded px-1 py-0.5 text-xs"
+                        className="border rounded-sm px-1 py-0.5 text-xs"
                         value={selectedExplorerKey}
                         onChange={(e)=>setSelectedExplorerKey(e.target.value)}
                       >

@@ -102,7 +102,7 @@ export default function SmallAdminLink() {
 
       {isOpen && portalRoot && createPortal(
         <div
-          className="fixed inset-0 z-[9999] flex items-center justify-center"
+          className="fixed inset-0 z-9999 flex items-center justify-center"
           role="dialog"
           aria-modal="true"
           onKeyDown={(e) => { if (e.key === 'Escape') setIsOpen(false); }}
@@ -119,14 +119,14 @@ export default function SmallAdminLink() {
               <input
                 ref={secretInputRef}
                 type={showSecret ? 'text' : 'password'}
-                className="w-full border rounded px-2 py-2 pr-10"
+                className="w-full border rounded-sm px-2 py-2 pr-10"
                 placeholder={t('common:bugReport.admin.secretPlaceholder')}
                 value={secret}
                 onChange={(e) => setSecret(e.target.value)}
               />
               <button
                 type="button"
-                className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800"
+                className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded-sm hover:bg-gray-100 dark:hover:bg-gray-800"
                 onClick={() => setShowSecret((v) => !v)}
                 aria-label={t('common:bugReport.admin.secretVisibilityToggle', 'Secret anzeigen/ausblenden')}
                 title={t('common:bugReport.admin.secretVisibilityToggle', 'Secret anzeigen/ausblenden')}
@@ -152,7 +152,7 @@ export default function SmallAdminLink() {
             <div className="flex gap-2 justify-end">
               <button
                 type="button"
-                className="px-3 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-800"
+                className="px-3 py-2 rounded-sm border hover:bg-gray-100 dark:hover:bg-gray-800"
                 onClick={() => setIsOpen(false)}
                 title={t('common:bugReport.admin.cancel')}
               >
@@ -160,7 +160,7 @@ export default function SmallAdminLink() {
               </button>
               <button
                 type="button"
-                className="px-3 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-40"
+                className="px-3 py-2 rounded-sm bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-40"
                 onClick={handleConfirm}
                 disabled={isLoggingIn || !secret.trim()}
                 title={t('common:bugReport.admin.confirm')}

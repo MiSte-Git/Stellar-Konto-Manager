@@ -17,7 +17,7 @@ function readNetwork() {
 }
 
 const cardCls =
-  'rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800/70';
+  'rounded-2xl border border-gray-200 bg-white shadow-xs dark:border-gray-700 dark:bg-gray-800/70';
 
 /**
  * Empfangen: zeigt die Adresse des geladenen Kontos als QR-Code und Text.
@@ -103,9 +103,9 @@ export default function ReceivePage({ publicKey, muxedAddress }) {
 
   const groups = splitAddressForCompare(address);
   const segBtn = (active) =>
-    `flex-1 rounded-lg border-0 px-3 py-1.5 text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
+    `flex-1 rounded-lg border-0 px-3 py-1.5 text-sm font-medium transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 ${
       active
-        ? 'bg-white text-gray-900 shadow-sm dark:bg-gray-700 dark:text-white'
+        ? 'bg-white text-gray-900 shadow-xs dark:bg-gray-700 dark:text-white'
         : 'bg-transparent text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white'
     }`;
 
@@ -171,7 +171,7 @@ export default function ReceivePage({ publicKey, muxedAddress }) {
           <button
             type="button"
             onClick={handleCopy}
-            className="inline-flex items-center gap-2 rounded-xl border-0 bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:hover:bg-blue-500 dark:focus-visible:ring-offset-gray-900"
+            className="inline-flex items-center gap-2 rounded-xl border-0 bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-blue-700 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:hover:bg-blue-500 dark:focus-visible:ring-offset-gray-900"
           >
             <NavIcon name="copy" className="h-4 w-4" />
             {t('wallet:receive.copy', 'Adresse kopieren')}
@@ -196,7 +196,7 @@ export default function ReceivePage({ publicKey, muxedAddress }) {
               <p className="text-xs text-gray-600 dark:text-gray-300">{t('wallet:receive.request.intro')}</p>
               <div>
                 <label htmlFor="req-amount" className="block font-medium text-gray-800 dark:text-gray-200">{t('wallet:receive.request.amount')}</label>
-                <input id="req-amount" type="text" inputMode="decimal" value={reqAmount} onChange={(e) => setReqAmount(e.target.value)} className="mt-1 w-40 rounded border px-2 py-1.5 dark:bg-gray-900" />
+                <input id="req-amount" type="text" inputMode="decimal" value={reqAmount} onChange={(e) => setReqAmount(e.target.value)} className="mt-1 w-40 rounded-sm border px-2 py-1.5 dark:bg-gray-900" />
               </div>
               <fieldset>
                 <legend className="font-medium text-gray-800 dark:text-gray-200">{t('wallet:receive.request.asset')}</legend>
@@ -213,7 +213,7 @@ export default function ReceivePage({ publicKey, muxedAddress }) {
                     onChange={(e) => setReqAsset(e.target.value)}
                     placeholder="CODE:G..."
                     aria-label={t('wallet:receive.request.customAsset')}
-                    className="mt-2 w-full rounded border px-2 py-1.5 font-mono text-xs dark:bg-gray-900"
+                    className="mt-2 w-full rounded-sm border px-2 py-1.5 font-mono text-xs dark:bg-gray-900"
                     spellCheck="false"
                     autoComplete="off"
                   />
@@ -222,21 +222,21 @@ export default function ReceivePage({ publicKey, muxedAddress }) {
               <div className="flex flex-wrap items-end gap-2">
                 <div>
                   <label htmlFor="req-memo-type" className="block font-medium text-gray-800 dark:text-gray-200">{t('wallet:receive.request.memoType')}</label>
-                  <select id="req-memo-type" value={reqMemoType} onChange={(e) => setReqMemoType(e.target.value)} className="mt-1 rounded border px-2 py-1.5 dark:bg-gray-900">
+                  <select id="req-memo-type" value={reqMemoType} onChange={(e) => setReqMemoType(e.target.value)} className="mt-1 rounded-sm border px-2 py-1.5 dark:bg-gray-900">
                     <option value="text">{t('wallet:receive.request.memoText')}</option>
                     <option value="id">{t('wallet:receive.request.memoId')}</option>
                   </select>
                 </div>
                 <div className="min-w-0 flex-1">
                   <label htmlFor="req-memo" className="block font-medium text-gray-800 dark:text-gray-200">{t('wallet:receive.request.memo')}</label>
-                  <input id="req-memo" type="text" value={reqMemo} onChange={(e) => setReqMemo(e.target.value)} className="mt-1 w-full rounded border px-2 py-1.5 dark:bg-gray-900" />
+                  <input id="req-memo" type="text" value={reqMemo} onChange={(e) => setReqMemo(e.target.value)} className="mt-1 w-full rounded-sm border px-2 py-1.5 dark:bg-gray-900" />
                 </div>
               </div>
               {reqErrorKey && <p role="alert" className="text-xs text-red-700 dark:text-red-300">{t(`wallet:receive.request.errors.${reqErrorKey}`)}</p>}
               {requestUri && (
                 <div className="space-y-2">
                   <p className="text-xs text-gray-600 dark:text-gray-300">{t('wallet:receive.request.active')}</p>
-                  <p className="break-all rounded bg-gray-50 p-2 font-mono text-xs text-gray-800 dark:bg-gray-900/60 dark:text-gray-200" data-testid="receive-request-uri">{requestUri}</p>
+                  <p className="break-all rounded-sm bg-gray-50 p-2 font-mono text-xs text-gray-800 dark:bg-gray-900/60 dark:text-gray-200" data-testid="receive-request-uri">{requestUri}</p>
                   <button type="button" onClick={handleCopyLink} className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs font-semibold text-gray-800 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100">
                     {linkCopied ? t('wallet:receive.copied', 'Kopiert') : t('wallet:receive.request.copyLink')}
                   </button>

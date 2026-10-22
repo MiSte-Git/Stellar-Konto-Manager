@@ -63,7 +63,7 @@ export default function QuizSettings({ showTitle = true }) {
             type="button"
             onClick={() => setStickyNav(v => !v)}
             aria-pressed={stickyNav}
-            className={`px-3 py-1.5 rounded text-xs font-semibold border ${stickyNav ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600'}`}
+            className={`px-3 py-1.5 rounded-sm text-xs font-semibold border ${stickyNav ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600'}`}
           >
             {stickyNav ? t('quiz:settings.on') : t('quiz:settings.off')}
           </button>
@@ -78,7 +78,7 @@ export default function QuizSettings({ showTitle = true }) {
             type="button"
             onClick={() => setHints(v => !v)}
             aria-pressed={hints}
-            className={`px-3 py-1.5 rounded text-xs font-semibold border ${hints ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600'}`}
+            className={`px-3 py-1.5 rounded-sm text-xs font-semibold border ${hints ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600'}`}
           >
             {hints ? t('quiz:settings.on') : t('quiz:settings.off')}
           </button>
@@ -93,7 +93,7 @@ export default function QuizSettings({ showTitle = true }) {
             type="button"
             onClick={() => setHaptics(v => !v)}
             aria-pressed={haptics}
-            className={`px-3 py-1.5 rounded text-xs font-semibold border ${haptics ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600'}`}
+            className={`px-3 py-1.5 rounded-sm text-xs font-semibold border ${haptics ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600'}`}
           >
             {haptics ? t('quiz:settings.on') : t('quiz:settings.off')}
           </button>
@@ -108,7 +108,7 @@ export default function QuizSettings({ showTitle = true }) {
             type="button"
             onClick={() => setShuffle(v => !v)}
             aria-pressed={shuffle}
-            className={`px-3 py-1.5 rounded text-xs font-semibold border ${shuffle ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600'}`}
+            className={`px-3 py-1.5 rounded-sm text-xs font-semibold border ${shuffle ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600'}`}
           >
             {shuffle ? t('quiz:settings.on') : t('quiz:settings.off')}
           </button>
@@ -126,7 +126,7 @@ export default function QuizSettings({ showTitle = true }) {
               max={120}
               value={timeLimit}
               onChange={(e) => setTimeLimit(Math.max(0, Math.min(120, Number(e.target.value || 0))))}
-              className="w-20 px-2 py-1.5 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm"
+              className="w-20 px-2 py-1.5 rounded-sm border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm"
               aria-label={t('quiz:settings.timeLimit.input')}
             />
             <span className="text-sm text-gray-700 dark:text-gray-300">{t('quiz:settings.minutes')}</span>

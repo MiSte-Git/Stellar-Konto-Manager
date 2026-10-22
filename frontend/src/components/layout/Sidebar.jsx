@@ -39,7 +39,7 @@ function NavItem({ item, active, childActive = false, compact, nested = false, l
   const small = compact || nested;
   const base =
     'group w-full flex items-center gap-3 rounded-lg border-0 text-left font-medium leading-snug ' +
-    'transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ' +
+    'transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 ' +
     (small ? 'px-3 py-1 text-[13px]' : 'px-3 py-1.5 text-sm');
   const state = active
     ? 'bg-blue-50 text-blue-800 shadow-[inset_3px_0_0_0_#2563eb] hover:bg-blue-50 ' +

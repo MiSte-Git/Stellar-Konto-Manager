@@ -59,7 +59,7 @@ export default function SwapSection({
 }) {
   const { t } = useTranslation(['trading', 'common']);
   return (
-    <section className="mt-4 rounded border border-gray-200 bg-white p-3 dark:border-blue-900 dark:bg-blue-900/40">
+    <section className="mt-4 rounded-sm border border-gray-200 bg-white p-3 dark:border-blue-900 dark:bg-blue-900/40">
       <h3 className="mb-3 text-sm font-semibold">
         {t('trading:assetSearch.swapPreview.title')}
       </h3>
@@ -73,7 +73,7 @@ export default function SwapSection({
             key={value}
             type="button"
             onClick={() => onDirectionChange(value)}
-            className={`rounded border px-3 py-2 text-xs font-semibold ${
+            className={`rounded-sm border px-3 py-2 text-xs font-semibold ${
               swapDirection === value
                 ? 'border-blue-600 bg-blue-600 text-white'
                 : 'border-gray-300 bg-white text-gray-800 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800'
@@ -84,7 +84,7 @@ export default function SwapSection({
         ))}
       </div>
       {swapDirection === 'token-to-token' && (
-        <div className="mb-3 rounded border border-gray-200 p-3 dark:border-gray-700">
+        <div className="mb-3 rounded-sm border border-gray-200 p-3 dark:border-gray-700">
           <label className="block text-xs">
             <span className="mb-1 block font-semibold">{t('trading:assetSearch.swapPreview.targetAsset')}</span>
             <div className="flex flex-col gap-2 sm:flex-row">
@@ -97,14 +97,14 @@ export default function SwapSection({
                     onSearchTarget();
                   }
                 }}
-                className="w-full rounded border border-gray-300 px-3 py-2 font-mono text-sm dark:border-gray-700 dark:bg-gray-900"
+                className="w-full rounded-sm border border-gray-300 px-3 py-2 font-mono text-sm dark:border-gray-700 dark:bg-gray-900"
                 placeholder={t('trading:assetSearch.swapPreview.targetPlaceholder')}
               />
               <button
                 type="button"
                 onClick={onSearchTarget}
                 disabled={swapTargetLoading}
-                className="rounded bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
+                className="rounded-sm bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
               >
                 {swapTargetLoading
                   ? t('common:loading', 'Loading...')
@@ -113,19 +113,19 @@ export default function SwapSection({
             </div>
           </label>
           {swapTargetError && (
-            <div className="mt-2 rounded border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-200">
+            <div className="mt-2 rounded-sm border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-200">
               {swapTargetError}
             </div>
           )}
           {selectedSwapTargetAsset && (
-            <div className="mt-2 rounded border border-green-200 bg-green-50 px-3 py-2 text-xs text-green-900 dark:border-green-900 dark:bg-green-950 dark:text-green-100">
+            <div className="mt-2 rounded-sm border border-green-200 bg-green-50 px-3 py-2 text-xs text-green-900 dark:border-green-900 dark:bg-green-950 dark:text-green-100">
               <div className="font-semibold">{t('trading:assetSearch.swapPreview.targetSelected')}</div>
               <div className="font-mono">{selectedSwapTargetAsset.assetCode}</div>
               <div className="break-all font-mono">{selectedSwapTargetAsset.assetIssuer}</div>
             </div>
           )}
           {targetStellarAsset && (
-            <div className="mt-3 rounded border border-gray-200 bg-white p-3 dark:border-gray-700 dark:bg-gray-900">
+            <div className="mt-3 rounded-sm border border-gray-200 bg-white p-3 dark:border-gray-700 dark:bg-gray-900">
               <h4 className="mb-2 text-xs font-semibold">
                 {t('trading:assetSearch.facts.destinationTitle')}
               </h4>
@@ -133,7 +133,7 @@ export default function SwapSection({
             </div>
           )}
           {swapTargetResults.length > 0 && (
-            <div className="mt-3 max-h-56 overflow-y-auto rounded border border-gray-200 dark:border-gray-700">
+            <div className="mt-3 max-h-56 overflow-y-auto rounded-sm border border-gray-200 dark:border-gray-700">
               {swapTargetResults.map((item, index) => (
                 <button
                   key={`${item.assetCode}-${item.assetIssuer}-${index}`}
@@ -164,7 +164,7 @@ export default function SwapSection({
           <input
             value={swapAmount}
             onChange={(event) => onAmountChange(event.target.value)}
-            className="w-full rounded border border-gray-300 px-3 py-2 font-mono text-sm dark:border-gray-700 dark:bg-gray-900"
+            className="w-full rounded-sm border border-gray-300 px-3 py-2 font-mono text-sm dark:border-gray-700 dark:bg-gray-900"
             inputMode="decimal"
           />
         </label>
@@ -173,7 +173,7 @@ export default function SwapSection({
           <input
             value={swapSlippage}
             onChange={(event) => onSlippageChange(event.target.value)}
-            className="w-full rounded border border-gray-300 px-3 py-2 font-mono text-sm dark:border-gray-700 dark:bg-gray-900"
+            className="w-full rounded-sm border border-gray-300 px-3 py-2 font-mono text-sm dark:border-gray-700 dark:bg-gray-900"
             inputMode="decimal"
           />
         </label>
@@ -182,7 +182,7 @@ export default function SwapSection({
             type="button"
             onClick={onPreview}
             disabled={swapPreview.loading || selectedTrustlineUnauthorized}
-            className="w-full rounded bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
+            className="w-full rounded-sm bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
           >
             {swapPreview.loading
               ? t('common:loading', 'Loading...')
@@ -192,7 +192,7 @@ export default function SwapSection({
       </div>
       <div className="mt-3 text-xs text-gray-700 dark:text-blue-100">
         {swapPreview.error && (
-          <div className="rounded border border-red-200 bg-red-50 px-3 py-2 text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-200">
+          <div className="rounded-sm border border-red-200 bg-red-50 px-3 py-2 text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-200">
             {swapPreview.error}
           </div>
         )}
@@ -243,7 +243,7 @@ export default function SwapSection({
                   <dd className="break-all font-mono">{quoteDetails.detailedRoute}</dd>
                 </div>
                 {swapPreview.refreshComparison && (
-                  <div className="sm:col-span-2 rounded border border-blue-200 bg-blue-50 px-3 py-2 dark:border-blue-900 dark:bg-blue-950">
+                  <div className="sm:col-span-2 rounded-sm border border-blue-200 bg-blue-50 px-3 py-2 dark:border-blue-900 dark:bg-blue-950">
                     <dt className="font-semibold">{t('trading:assetSearch.swapPreview.refreshComparison')}</dt>
                     <dd className="font-mono">
                       {swapPreview.refreshComparison.previousDestinationAmount} {'->'} {swapPreview.refreshComparison.latestDestinationAmount} {swapDestinationLabel}
@@ -258,7 +258,7 @@ export default function SwapSection({
                 type="button"
                 onClick={onOpenSwapModal}
                 disabled={isSubmittingSwap || !minimumDestinationAmount || selectedTrustlineUnauthorized || !!pendingAmbiguousSubmission}
-                className="rounded bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700 disabled:opacity-50"
+                className="rounded-sm bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700 disabled:opacity-50"
               >
                 {isSubmittingSwap
                   ? t('trading:assetSearch.swapPreview.executing')
@@ -275,7 +275,7 @@ export default function SwapSection({
             type="button"
             onClick={onLoadMarketData}
             disabled={marketData.loading}
-            className="rounded border border-gray-300 px-3 py-2 text-xs font-semibold hover:bg-gray-50 disabled:opacity-50 dark:border-gray-700 dark:hover:bg-gray-800"
+            className="rounded-sm border border-gray-300 px-3 py-2 text-xs font-semibold hover:bg-gray-50 disabled:opacity-50 dark:border-gray-700 dark:hover:bg-gray-800"
           >
             {marketData.loading
               ? t('common:loading', 'Loading...')
@@ -283,13 +283,13 @@ export default function SwapSection({
           </button>
         </div>
         {marketData.error && (
-          <div className="mt-3 rounded border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-200">
+          <div className="mt-3 rounded-sm border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-200">
             {marketData.error}
           </div>
         )}
         {(marketData.orderbook || marketData.liquidityPools.length > 0) && (
           <div className="mt-3 space-y-3">
-          <dl className="grid gap-2 rounded border border-gray-200 p-3 text-xs dark:border-gray-700 sm:grid-cols-2 lg:grid-cols-4">
+          <dl className="grid gap-2 rounded-sm border border-gray-200 p-3 text-xs dark:border-gray-700 sm:grid-cols-2 lg:grid-cols-4">
             <div>
               <dt className="font-semibold"><HelpLabel label={t('trading:assetSearch.market.spread')} helpKey="trading:assetSearch.help.spread" /></dt>
               <dd className="font-mono">{marketQuality.spreadPercent == null ? '—' : formatPercent(marketQuality.spreadPercent)}</dd>
@@ -324,7 +324,7 @@ export default function SwapSection({
             </div>
           </dl>
           <div className="grid gap-3 lg:grid-cols-2">
-            <div className="rounded border border-gray-200 p-3 dark:border-gray-700">
+            <div className="rounded-sm border border-gray-200 p-3 dark:border-gray-700">
               <h5 className="mb-2 text-xs font-semibold">{t('trading:assetSearch.market.orderbook')}</h5>
               <div className="grid gap-3 sm:grid-cols-2">
                 {[
@@ -348,7 +348,7 @@ export default function SwapSection({
                 ))}
               </div>
             </div>
-            <div className="rounded border border-gray-200 p-3 dark:border-gray-700">
+            <div className="rounded-sm border border-gray-200 p-3 dark:border-gray-700">
               <h5 className="mb-2 text-xs font-semibold">{t('trading:assetSearch.market.amm')}</h5>
               {marketData.liquidityPools.length === 0 && (
                 <div className="text-xs text-gray-500 dark:text-gray-300">

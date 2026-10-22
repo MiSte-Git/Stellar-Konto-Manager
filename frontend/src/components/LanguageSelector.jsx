@@ -29,7 +29,7 @@ function LanguageSelector() {
               aria-label={lang.name}
               aria-pressed={isActive}
               className={
-                `relative shrink-0 inline-flex items-center justify-center rounded-md border px-2 py-1 focus:outline-none focus:ring-2 focus:ring-indigo-400 ` +
+                `relative shrink-0 inline-flex items-center justify-center rounded-md border px-2 py-1 focus:outline-hidden focus:ring-2 focus:ring-indigo-400 ` +
                 (isActive
                   ? 'ring-2 ring-indigo-500 border-indigo-500 bg-white dark:bg-gray-800'
                   : 'border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700')

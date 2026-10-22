@@ -51,7 +51,7 @@ export default function ConfirmActionModal({
   let title;
   let body;
   let confirmLabel;
-  let confirmClassName = 'rounded bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700';
+  let confirmClassName = 'rounded-sm bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700';
 
   if (kind === 'trustline') {
     title = t('trading:assetSearch.trustlineConfirm.title');
@@ -73,7 +73,7 @@ export default function ConfirmActionModal({
           </div>
         </dl>
         {trustlineReserveSummary && (
-          <dl className="mt-4 grid gap-3 rounded border border-gray-200 bg-gray-50 p-3 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 sm:grid-cols-2">
+          <dl className="mt-4 grid gap-3 rounded-sm border border-gray-200 bg-gray-50 p-3 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 sm:grid-cols-2">
             <div>
               <dt className="font-semibold">{t('trading:assetSearch.trustlineFlow.reserveIncrease')}</dt>
               <dd>{amountFormatter.format(trustlineReserveSummary.extraReserve)} XLM</dd>
@@ -84,13 +84,13 @@ export default function ConfirmActionModal({
             </div>
           </dl>
         )}
-        <section className="mt-4 rounded border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-900">
+        <section className="mt-4 rounded-sm border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-900">
           <h3 className="mb-3 text-sm font-semibold text-gray-900 dark:text-white">
             {t('trading:assetSearch.facts.title')}
           </h3>
           <TokenFactsSummary facts={assetFacts} asset={selectedAsset} includeDisclaimer routeStatus={swapRouteStatus} />
         </section>
-        <p className="mt-4 rounded border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100">
+        <p className="mt-4 rounded-sm border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100">
           {t('trading:assetSearch.trustlineConfirm.warning')}
         </p>
       </>
@@ -98,7 +98,7 @@ export default function ConfirmActionModal({
   } else if (kind === 'trustlineSwap') {
     title = t('trading:assetSearch.trustlineFlow.combinedConfirmTitle');
     confirmLabel = t('trading:assetSearch.trustlineFlow.combinedContinue');
-    confirmClassName = 'rounded bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700';
+    confirmClassName = 'rounded-sm bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700';
     body = (
       <>
         <dl className="grid gap-3 text-sm text-gray-800 dark:text-gray-100">
@@ -123,7 +123,7 @@ export default function ConfirmActionModal({
             <dd className="break-all font-mono">{quoteDetails?.detailedRoute || formatDetailedAssetPath(swapPreview.path.path, swapSourceAsset, swapDestinationAsset)}</dd>
           </div>
         </dl>
-        <p className="mt-4 rounded border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100">
+        <p className="mt-4 rounded-sm border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100">
           {t('trading:assetSearch.trustlineFlow.combinedWarning')}
         </p>
       </>
@@ -190,21 +190,21 @@ export default function ConfirmActionModal({
             </>
           )}
         </dl>
-        <section className="mt-4 rounded border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-900">
+        <section className="mt-4 rounded-sm border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-900">
           <h3 className="mb-3 text-sm font-semibold text-gray-900 dark:text-white">
             {t(selectedAssetFactsTitleKey)}
           </h3>
           <TokenFactsSummary facts={assetFacts} asset={selectedAsset} includeDisclaimer routeStatus={swapRouteStatus} />
         </section>
         {swapDirection === 'token-to-token' && targetStellarAsset && (
-          <section className="mt-4 rounded border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-900">
+          <section className="mt-4 rounded-sm border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-900">
             <h3 className="mb-3 text-sm font-semibold text-gray-900 dark:text-white">
               {t('trading:assetSearch.facts.destinationTitle')}
             </h3>
             <TokenFactsSummary facts={targetAssetFacts} asset={targetStellarAsset} includeRoute={false} />
           </section>
         )}
-        <p className="mt-4 rounded border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100">
+        <p className="mt-4 rounded-sm border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100">
           {t('trading:assetSearch.swapConfirm.routeRefresh')}
         </p>
       </>
@@ -238,7 +238,7 @@ export default function ConfirmActionModal({
             <dd className="font-mono">{pendingOfferAction.price}</dd>
           </div>
         </dl>
-        <p className="mt-4 rounded border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100">
+        <p className="mt-4 rounded-sm border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100">
           {pendingOfferAction.type === 'cancel'
             ? t('trading:assetSearch.limitOffer.cancelWarning')
             : t('trading:assetSearch.limitOffer.warning')}
@@ -248,7 +248,7 @@ export default function ConfirmActionModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black bg-opacity-50 p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/50 p-4">
       <div className="my-auto w-full max-w-2xl rounded-lg bg-white p-5 shadow-lg dark:bg-gray-800">
         <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
           {title}
@@ -258,7 +258,7 @@ export default function ConfirmActionModal({
           <button
             type="button"
             onClick={onCancel}
-            className="rounded border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-800 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-100 dark:hover:bg-gray-700"
+            className="rounded-sm border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-800 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-100 dark:hover:bg-gray-700"
           >
             {t('common:option.cancel', 'Abbrechen')}
           </button>

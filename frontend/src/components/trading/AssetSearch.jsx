@@ -1157,21 +1157,21 @@ export default function AssetSearch() {
       />
 
       {selectedAsset && (
-        <div className="fixed inset-0 z-40 flex items-start justify-center overflow-y-auto bg-black bg-opacity-50 p-4">
+        <div className="fixed inset-0 z-40 flex items-start justify-center overflow-y-auto bg-black/50 p-4">
           <div className="my-6 w-full max-w-5xl rounded-lg border border-blue-200 bg-blue-50 p-4 text-sm shadow-lg dark:border-blue-900 dark:bg-blue-950">
             <div className="mb-2 flex items-center justify-between gap-3">
               <div className="flex flex-wrap items-center gap-2">
                 <h2 className="text-base font-semibold">
                   {selectedAsset.assetCode}
                 </h2>
-                <span className="rounded bg-white px-2 py-1 text-xs text-blue-800 dark:bg-blue-900 dark:text-blue-100">
+                <span className="rounded-sm bg-white px-2 py-1 text-xs text-blue-800 dark:bg-blue-900 dark:text-blue-100">
                   {t('trading:assetSearch.detail.status.ledgerKnown', 'Known in Horizon')}
                 </span>
               </div>
               <button
                 type="button"
                 onClick={() => setSelectedAsset(null)}
-                className="rounded border border-blue-300 px-3 py-1 text-xs font-semibold text-blue-900 hover:bg-white dark:border-blue-800 dark:text-blue-100 dark:hover:bg-blue-900"
+                className="rounded-sm border border-blue-300 px-3 py-1 text-xs font-semibold text-blue-900 hover:bg-white dark:border-blue-800 dark:text-blue-100 dark:hover:bg-blue-900"
               >
                 {t('common:close', 'Close')}
               </button>
@@ -1206,7 +1206,7 @@ export default function AssetSearch() {
             <div>
               <dt className="font-semibold"><HelpLabel label={t('trading:assetSearch.trustlineStatus.label')} helpKey='trading:assetSearch.help.trustlineStatus' /></dt>
               <dd>
-                <span className={`inline-flex rounded px-2 py-1 text-xs font-semibold ${
+                <span className={`inline-flex rounded-sm px-2 py-1 text-xs font-semibold ${
                   trustlineStatus.state === 'present'
                     ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100'
                     : trustlineStatus.state === 'missing'
@@ -1244,11 +1244,11 @@ export default function AssetSearch() {
             {t('trading:assetSearch.detail.nextStepHint', 'Known in Horizon only. Check issuer and trust before signing a trustline or swap.')}
           </p>
           {selectedTrustlineUnauthorized && (
-            <p className="mt-3 rounded border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100">
+            <p className="mt-3 rounded-sm border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100">
               {t('trading:assetSearch.swapPreview.destinationTrustlineUnauthorized')}
             </p>
           )}
-          <section className="mt-4 rounded border border-gray-200 bg-white p-3 dark:border-blue-900 dark:bg-blue-900/40">
+          <section className="mt-4 rounded-sm border border-gray-200 bg-white p-3 dark:border-blue-900 dark:bg-blue-900/40">
             <button
               type="button"
               onClick={() => setTokenFactsExpanded((value) => !value)}
@@ -1256,7 +1256,7 @@ export default function AssetSearch() {
               className="flex w-full items-center justify-between gap-3 text-left text-sm font-semibold"
             >
               <span>{t('trading:assetSearch.facts.title')}</span>
-              <span className="rounded border border-gray-300 px-2 py-1 text-xs font-semibold text-gray-700 dark:border-blue-800 dark:text-blue-100">
+              <span className="rounded-sm border border-gray-300 px-2 py-1 text-xs font-semibold text-gray-700 dark:border-blue-800 dark:text-blue-100">
                 {tokenFactsExpanded
                   ? t('trading:assetSearch.facts.collapse')
                   : t('trading:assetSearch.facts.expand')}

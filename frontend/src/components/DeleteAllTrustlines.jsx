@@ -68,7 +68,7 @@ function DeleteAllTrustlines({
     <div>
       <button
         onClick={handleDelete}
-        className="mt-2 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+        className="mt-2 bg-red-500 text-white px-4 py-2 rounded-sm hover:bg-red-600"
       >
         {t('trustline:delete')}
       </button>

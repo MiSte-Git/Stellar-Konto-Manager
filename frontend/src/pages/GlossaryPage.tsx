@@ -290,7 +290,7 @@ function GlossaryPage() {
             <button
               type="button"
               onClick={goBack}
-              className="inline-flex items-center gap-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100 text-sm font-medium px-3 py-1.5 rounded"
+              className="inline-flex items-center gap-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100 text-sm font-medium px-3 py-1.5 rounded-sm"
             >
               ← {tNav('back', 'Zurück')}
             </button>
@@ -317,7 +317,7 @@ function GlossaryPage() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder={tGlossary('searchPlaceholder', 'e.g., Wallet, Trustline, Memo …')}
-          className="w-full border border-gray-300 dark:border-gray-700 rounded p-2"
+          className="w-full border border-gray-300 dark:border-gray-700 rounded-sm p-2"
         />
         <p className="mt-1 text-xs text-gray-600 dark:text-gray-400">
           {tGlossary('searchHint', 'Search matches words and explanations.')}
@@ -345,7 +345,7 @@ function GlossaryPage() {
                   return (
                     <section key={it.key} id={`g-${it.key}`}>
                       <GlossaryTermCard
-                        titleNode={<span className="break-words">{it.display}</span>}
+                        titleNode={<span className="wrap-break-word">{it.display}</span>}
                         titleAttr={it.display}
                         desc={it.desc}
                         externalDomains={it.externalDomains}
@@ -372,7 +372,7 @@ function GlossaryPage() {
               }
             } catch { /* noop */ }
           }}
-          className="fixed right-4 bottom-4 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow focus:outline-none focus:ring-2 focus:ring-blue-400"
+          className="fixed right-4 bottom-4 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-sm focus:outline-hidden focus:ring-2 focus:ring-blue-400"
                 aria-label={tNav('backToTop', 'Back to top')}
       title={tNav('backToTop', 'Back to top')}
     >

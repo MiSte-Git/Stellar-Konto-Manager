@@ -274,7 +274,7 @@ export default function GlossaryExportImport() {
           id="glossary-export-lang"
           value={lang}
           onChange={(e) => setLang(e.target.value)}
-          className="px-3 py-1.5 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm text-gray-900 dark:text-gray-100"
+          className="px-3 py-1.5 rounded-sm border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm text-gray-900 dark:text-gray-100"
         >
           {LANGS.map(l => <option key={l} value={l}>{l.toUpperCase()}</option>)}
         </select>
@@ -284,7 +284,7 @@ export default function GlossaryExportImport() {
       <button
         type="button"
         onClick={handleExport}
-        className="px-4 py-2 rounded text-sm font-medium bg-blue-600 hover:bg-blue-700 text-white transition-colors"
+        className="px-4 py-2 rounded-sm text-sm font-medium bg-blue-600 hover:bg-blue-700 text-white transition-colors"
       >
         {t('settings:maintenance.exportExcel')}
       </button>
@@ -299,20 +299,20 @@ export default function GlossaryExportImport() {
           type="file"
           accept=".xlsx,.csv"
           onChange={handleFile}
-          className="block text-sm text-gray-600 dark:text-gray-400 file:mr-3 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-sm file:font-medium file:bg-gray-200 file:text-gray-800 dark:file:bg-gray-700 dark:file:text-gray-200 hover:file:bg-gray-300 dark:hover:file:bg-gray-600"
+          className="block text-sm text-gray-600 dark:text-gray-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-sm file:border-0 file:text-sm file:font-medium file:bg-gray-200 file:text-gray-800 dark:file:bg-gray-700 dark:file:text-gray-200 hover:file:bg-gray-300 dark:hover:file:bg-gray-600"
         />
       </div>
 
       {/* Error display */}
       {importError && (
-        <div className="p-3 rounded bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-sm text-red-700 dark:text-red-300 whitespace-pre-wrap">
+        <div className="p-3 rounded-sm bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-sm text-red-700 dark:text-red-300 whitespace-pre-wrap">
           {importError}
         </div>
       )}
 
       {/* Preview */}
       {importPreview && !importError && (
-        <div className="p-3 rounded bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-sm text-green-700 dark:text-green-300">
+        <div className="p-3 rounded-sm bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-sm text-green-700 dark:text-green-300">
           <div className="font-semibold">{t('settings:maintenance.preview')}</div>
           <div>{t('settings:maintenance.termsFound', { count: importPreview.terms })}</div>
           <ul className="mt-1 text-xs list-disc list-inside space-y-0.5">
@@ -329,7 +329,7 @@ export default function GlossaryExportImport() {
           <button
             type="button"
             onClick={handleDownloadJson}
-            className="mt-2 px-4 py-2 rounded text-sm font-medium bg-green-600 hover:bg-green-700 text-white transition-colors"
+            className="mt-2 px-4 py-2 rounded-sm text-sm font-medium bg-green-600 hover:bg-green-700 text-white transition-colors"
           >
             {t('settings:maintenance.downloadJson')}
           </button>

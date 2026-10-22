@@ -34,7 +34,7 @@ export default function AssetSearchForm({
       <p className="text-sm text-gray-600 dark:text-gray-300">
         {t('trading:assetSearch.description', 'Suche nach Asset-Code, Issuer-Adresse oder CODE:ISSUER.')}
       </p>
-      <div className="rounded border border-gray-200 bg-gray-50 px-3 py-2 text-xs text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300">
+      <div className="rounded-sm border border-gray-200 bg-gray-50 px-3 py-2 text-xs text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300">
         <div>
           <span className="font-semibold">{t('trading:assetSearch.account.active', 'Active account')}:</span>{' '}
           {accountInput ? <span className="font-mono break-all">{accountInput}</span> : <span>{t('trading:assetSearch.account.none', 'No account loaded')}</span>}
@@ -51,7 +51,7 @@ export default function AssetSearchForm({
         <div className="flex flex-col gap-3 sm:flex-row">
           <input
             id="asset-query-input"
-            className="w-full rounded border border-gray-300 px-3 py-2 font-mono text-sm dark:border-gray-700 dark:bg-gray-900"
+            className="w-full rounded-sm border border-gray-300 px-3 py-2 font-mono text-sm dark:border-gray-700 dark:bg-gray-900"
             value={assetQuery}
             onChange={(e) => onQueryChange(e.target.value)}
             placeholder={t('trading:assetSearch.form.query.placeholder', 'USDC, G... oder USDC:G...')}
@@ -59,7 +59,7 @@ export default function AssetSearchForm({
           <button
             type="submit"
             disabled={assetLoading}
-            className="rounded bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
+            className="rounded-sm bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
           >
             {assetLoading ? t('common:loading', 'Loading…') : t('trading:assetSearch.form.submit')}
           </button>
@@ -70,20 +70,20 @@ export default function AssetSearchForm({
           <code>G...</code>
           <code>USDC:G...</code>
           {!parsedQuery.error && parsedQuery.mode && (
-            <span className="rounded bg-gray-100 px-2 py-0.5 dark:bg-gray-800">
+            <span className="rounded-sm bg-gray-100 px-2 py-0.5 dark:bg-gray-800">
               {describeSearchMode(parsedQuery.mode)}
             </span>
           )}
         </div>
         {assetError && (
-          <div className="rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-200">
+          <div className="rounded-sm border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-200">
             {assetError}
           </div>
         )}
       </form>
 
       {pendingAmbiguousSubmission && (
-        <div className="rounded border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-100">
+        <div className="rounded-sm border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-100">
           <div className="font-semibold">{t('trading:assetSearch.ambiguousResult.title', 'Status unklar – nicht erneut senden')}</div>
           <div className="mt-1 text-xs">
             {t('trading:assetSearch.ambiguousResult.body', 'Die letzte Transaktion konnte serverseitig nicht eindeutig bestätigt werden (Zeitüberschreitung oder Serverfehler). Bitte prüfen Sie den Transaktions-Hash im Explorer, bevor Sie es erneut versuchen.')}
@@ -93,7 +93,7 @@ export default function AssetSearchForm({
           )}
           <button
             type="button"
-            className="mt-2 rounded border border-amber-400 px-2 py-1 text-xs font-semibold hover:bg-amber-100 dark:hover:bg-amber-900"
+            className="mt-2 rounded-sm border border-amber-400 px-2 py-1 text-xs font-semibold hover:bg-amber-100 dark:hover:bg-amber-900"
             onClick={onAcknowledgeAmbiguous}
           >
             {t('trading:assetSearch.ambiguousResult.acknowledge', 'Status geprüft – Aktionen wieder freigeben')}
@@ -102,7 +102,7 @@ export default function AssetSearchForm({
       )}
 
       {actionMessage && (
-        <div className={`rounded border px-3 py-2 text-sm ${
+        <div className={`rounded-sm border px-3 py-2 text-sm ${
           modalError
             ? 'border-red-200 bg-red-50 text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-200'
             : 'border-green-200 bg-green-50 text-green-800 dark:border-green-900 dark:bg-green-950 dark:text-green-100'

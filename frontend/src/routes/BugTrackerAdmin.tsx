@@ -443,12 +443,12 @@ const BugTrackerAdmin: React.FC = () => {
               onChange={(e) => setSecretInput(e.target.value)}
               onKeyDown={(e) => { if (e.key === 'Enter' && !isLoggingIn) handleLogin(); }}
               placeholder={t('common:bugReport.admin.secretPlaceholder', '••••••••')}
-              className="w-full border rounded px-2 py-2 pr-10"
+              className="w-full border rounded-sm px-2 py-2 pr-10"
               autoFocus
             />
             <button
               type="button"
-              className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800"
+              className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded-sm hover:bg-gray-100 dark:hover:bg-gray-800"
               onClick={() => setShowAdminSecret((v) => !v)}
               aria-label={t('common:bugReport.admin.secretVisibilityToggle', 'Admin-Secret anzeigen/ausblenden')}
               title={t('common:bugReport.admin.secretVisibilityToggle', 'Admin-Secret anzeigen/ausblenden')}
@@ -474,7 +474,7 @@ const BugTrackerAdmin: React.FC = () => {
           <div className="flex gap-2">
             <button
               type="button"
-              className="px-3 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-40"
+              className="px-3 py-2 rounded-sm bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-40"
               onClick={handleLogin}
               disabled={isLoggingIn || !secretInput.trim()}
               title={t('common:bugReport.admin.confirm', 'Öffnen')}
@@ -483,7 +483,7 @@ const BugTrackerAdmin: React.FC = () => {
             </button>
             <button
               type="button"
-              className="px-3 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-800"
+              className="px-3 py-2 rounded-sm border hover:bg-gray-100 dark:hover:bg-gray-800"
               onClick={() => { try { window.history.back(); } catch {} }}
               title={t('common:bugReport.admin.cancel', 'Abbrechen')}
             >
@@ -718,7 +718,7 @@ const BugTrackerAdmin: React.FC = () => {
         <div className="flex items-center gap-2">
           <button
             type="button"
-            className="px-3 py-2 border rounded hover:bg-gray-100 dark:hover:bg-gray-800"
+            className="px-3 py-2 border rounded-sm hover:bg-gray-100 dark:hover:bg-gray-800"
             onClick={() => { try { window.history.back(); } catch {} }}
             title={t('navigation:back', 'Zurück')}
           >
@@ -727,7 +727,7 @@ const BugTrackerAdmin: React.FC = () => {
           <h1 className="text-2xl font-semibold">{t('common:bugReport.admin.title')}</h1>
           <button
             type="button"
-            className="px-3 py-2 border rounded hover:bg-gray-100 dark:hover:bg-gray-800"
+            className="px-3 py-2 border rounded-sm hover:bg-gray-100 dark:hover:bg-gray-800"
             onClick={handleLogout}
             title={t('common:bugReport.admin.logout', 'Abmelden')}
           >
@@ -740,11 +740,11 @@ const BugTrackerAdmin: React.FC = () => {
             value={search}
             placeholder={t('common:bugReport.admin.search', 'Suche')}
             onChange={(e) => { setSearch(e.target.value); setPage(0); }}
-            className="border rounded px-2 py-1"
+            className="border rounded-sm px-2 py-1"
           />
           <button
             type="button"
-            className="px-3 py-2 border rounded hover:bg-gray-100 dark:hover:bg-gray-800"
+            className="px-3 py-2 border rounded-sm hover:bg-gray-100 dark:hover:bg-gray-800"
             onClick={() => setShowColumnManager(true)}
             title={t('common:bugReport.admin.columns.title', 'Spalten')}
           >
@@ -755,7 +755,7 @@ const BugTrackerAdmin: React.FC = () => {
             <select
               value={csvDelimiter}
               onChange={(e) => setCsvDelimiter(e.target.value)}
-              className="border rounded px-2 py-1 text-sm"
+              className="border rounded-sm px-2 py-1 text-sm"
               title={t('common:bugReport.admin.csv.delimiter', 'Trennzeichen')}
             >
               <option value=",">{t('common:bugReport.admin.csv.comma', 'Komma (,)')}</option>
@@ -765,7 +765,7 @@ const BugTrackerAdmin: React.FC = () => {
           </label>
           <button
             type="button"
-            className="px-3 py-2 border rounded hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-40"
+            className="px-3 py-2 border rounded-sm hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-40"
             onClick={exportCurrentPageCsv}
             disabled={isExporting || isLoading || processedReports.length === 0}
             title={t('common:bugReport.admin.exportPage', 'CSV (Seite)')}
@@ -774,7 +774,7 @@ const BugTrackerAdmin: React.FC = () => {
           </button>
           <button
             type="button"
-            className="px-3 py-2 border rounded hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-40"
+            className="px-3 py-2 border rounded-sm hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-40"
             onClick={exportAllCsv}
             disabled={isExporting}
             title={t('common:bugReport.admin.exportAll', 'CSV (Alle)')}
@@ -784,7 +784,7 @@ const BugTrackerAdmin: React.FC = () => {
         </div>
       </div>
       {notice && (
-        <div className="mb-4 text-sm bg-blue-100 dark:bg-blue-900/40 border border-blue-300 text-blue-800 dark:text-blue-100 rounded p-3">
+        <div className="mb-4 text-sm bg-blue-100 dark:bg-blue-900/40 border border-blue-300 text-blue-800 dark:text-blue-100 rounded-sm p-3">
           {notice}
         </div>
       )}
@@ -794,7 +794,7 @@ const BugTrackerAdmin: React.FC = () => {
           <select
             value={statusFilter}
             onChange={(event) => { setPage(0); setStatusFilter(event.target.value as BugStatus | 'all'); }}
-            className="border rounded px-3 py-2"
+            className="border rounded-sm px-3 py-2"
           >
             <option value="all">{t('common:bugReport.admin.filter')}</option>
             {statusOptions.map((value) => (
@@ -807,7 +807,7 @@ const BugTrackerAdmin: React.FC = () => {
           <select
             value={priorityFilter}
             onChange={(event) => { setPage(0); setPriorityFilter(event.target.value as BugPriority | 'all'); }}
-            className="border rounded px-3 py-2"
+            className="border rounded-sm px-3 py-2"
           >
             <option value="all">{t('common:bugReport.admin.filter')}</option>
             {priorityOptions.map((value) => (
@@ -820,7 +820,7 @@ const BugTrackerAdmin: React.FC = () => {
           <select
             value={categoryFilter}
             onChange={(event) => { setPage(0); setCategoryFilter(event.target.value as BugCategory | 'all'); }}
-            className="border rounded px-3 py-2"
+            className="border rounded-sm px-3 py-2"
           >
             <option value="all">{t('common:bugReport.admin.filter')}</option>
             {categoryOptions.map((value) => (
@@ -833,7 +833,7 @@ const BugTrackerAdmin: React.FC = () => {
           <select
             value={pageFilter}
             onChange={(event) => { setPage(0); setPageFilter(event.target.value as BugPage | 'all'); }}
-            className="border rounded px-3 py-2"
+            className="border rounded-sm px-3 py-2"
           >
             <option value="all">{t('common:bugReport.admin.filter')}</option>
             {pageOptions.map((value) => (
@@ -842,7 +842,7 @@ const BugTrackerAdmin: React.FC = () => {
           </select>
         </div>
       </div>
-      <div className="overflow-auto max-h-[70vh] border rounded relative">
+      <div className="overflow-auto max-h-[70vh] border rounded-sm relative">
         <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-sm">
           <thead className="bg-gray-50 dark:bg-gray-800">
             <tr>
@@ -925,7 +925,7 @@ const BugTrackerAdmin: React.FC = () => {
                         <select
                           value={report.page}
                           onChange={(event) => updatePage(report.id, event.target.value as BugPage)}
-                          className="border rounded px-2 py-1"
+                          className="border rounded-sm px-2 py-1"
                         >
                           {pageOptions.map((value) => (
                             <option key={value} value={value}>{t(`feedback.pages.${value}`, value)}</option>
@@ -940,19 +940,19 @@ const BugTrackerAdmin: React.FC = () => {
                       } break;
                       case 'title': {
                         const title = String(report.title || '').trim();
-                        content = <span className="whitespace-pre-wrap break-words">{title || '—'}</span>;
+                        content = <span className="whitespace-pre-wrap wrap-break-word">{title || '—'}</span>;
                       } break;
                       case 'description': {
                         const raw = report.description || '';
                         const parts = raw.split(/\r?\n/);
                         const stripped = parts[0]?.trim().toLowerCase().startsWith('kategorie:') ? parts.slice(1).join('\n').trim() : raw.trim();
-                        content = <span className="whitespace-pre-wrap break-words">{stripped || '—'}</span>;
+                        content = <span className="whitespace-pre-wrap wrap-break-word">{stripped || '—'}</span>;
                       } break;
                       case 'category': content = (
                         <select
                           value={report.category}
                           onChange={(event) => updateCategory(report.id, event.target.value as BugCategory)}
-                          className="border rounded px-2 py-1"
+                          className="border rounded-sm px-2 py-1"
                         >
                           {categoryOptions.map((value) => (
                             <option key={value} value={value}>{t(`feedback.categories.${value}`)}</option>
@@ -964,7 +964,7 @@ const BugTrackerAdmin: React.FC = () => {
                           <select
                             value={report.status}
                             onChange={(event) => updateStatus(report.id, event.target.value as BugStatus)}
-                            className="border rounded px-2 py-1"
+                            className="border rounded-sm px-2 py-1"
                           >
                             {statusOptions.map((value) => (
                               <option key={value} value={value}>{t(`common:bugReport.admin.${value}`, value)}</option>
@@ -1001,7 +1001,7 @@ const BugTrackerAdmin: React.FC = () => {
                                 const next = trimmed ? trimmed : null;
                                 saveReport(report.id, { ...(drafts[report.id] || {}), rejectionReason: next });
                               }}
-                              className={(missing ? 'border-red-400 ' : '') + 'border rounded px-2 py-1 w-full disabled:bg-gray-100 dark:disabled:bg-gray-800'}
+                              className={(missing ? 'border-red-400 ' : '') + 'border rounded-sm px-2 py-1 w-full disabled:bg-gray-100 dark:disabled:bg-gray-800'}
                               placeholder={t('common:bugReport.admin.rejectedReasonTitle', 'Ablehnungsgrund')}
                               title={t('common:bugReport.admin.rejectedReasonTitle', 'Ablehnungsgrund')}
                             />
@@ -1032,7 +1032,7 @@ const BugTrackerAdmin: React.FC = () => {
                               const next = trimmed ? trimmed : null;
                               saveReport(report.id, { ...(drafts[report.id] || {}), comment: next });
                             }}
-                            className="border rounded px-2 py-1 w-full min-h-[70px]"
+                            className="border rounded-sm px-2 py-1 w-full min-h-[70px]"
                             placeholder={t('common:bugReport.admin.comment', 'Kommentar')}
                           />
                         );
@@ -1041,7 +1041,7 @@ const BugTrackerAdmin: React.FC = () => {
                         <select
                           value={report.priority}
                           onChange={(event) => updatePriority(report.id, event.target.value as BugPriority)}
-                          className="border rounded px-2 py-1"
+                          className="border rounded-sm px-2 py-1"
                         >
                           {priorityOptions.map((value) => (
                             <option key={value} value={value}>{t(`common:bugReport.admin.${value}`, value)}</option>
@@ -1063,17 +1063,17 @@ const BugTrackerAdmin: React.FC = () => {
       </div>
 
       {showColumnManager && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center">
+        <div className="fixed inset-0 z-9999 flex items-center justify-center">
           <div className="absolute inset-0 bg-black/40" onClick={() => setShowColumnManager(false)} aria-hidden />
           <div className="relative max-h-[90vh] w-[min(92vw,560px)] overflow-auto bg-white dark:bg-gray-900 rounded-2xl shadow-2xl p-4">
             <div className="flex items-center justify-between mb-3">
               <h2 className="text-base font-semibold">{t('common:bugReport.admin.columns.manage', 'Spalten anpassen')}</h2>
-              <button className="px-2 py-1 border rounded" onClick={() => setShowColumnManager(false)}>{t('common:common.close', 'Schließen')}</button>
+              <button className="px-2 py-1 border rounded-sm" onClick={() => setShowColumnManager(false)}>{t('common:common.close', 'Schließen')}</button>
             </div>
             <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">{t('common:bugReport.admin.columns.hint', 'Sichtbarkeit per Haken, Reihenfolge mit ↑/↓, Größen durch Ziehen im Tabellenkopf.')}</p>
             <div className="space-y-2">
               {prefs.order.map((key) => (
-                <div key={key} className="flex items-center gap-2 border rounded p-2">
+                <div key={key} className="flex items-center gap-2 border rounded-sm p-2">
                   <input
                     type="checkbox"
                     checked={!!prefs.visible[key]}
@@ -1098,15 +1098,15 @@ const BugTrackerAdmin: React.FC = () => {
                      key === 'appVersion' ? 'Version' : key}
                   </div>
                   <div className="flex items-center gap-1">
-                    <button className="px-2 py-1 border rounded" onClick={() => moveColumn(key, -1)} title={t('common:bugReport.admin.columns.up', 'Nach oben')}>↑</button>
-                    <button className="px-2 py-1 border rounded" onClick={() => moveColumn(key, 1)} title={t('common:bugReport.admin.columns.down', 'Nach unten')}>↓</button>
+                    <button className="px-2 py-1 border rounded-sm" onClick={() => moveColumn(key, -1)} title={t('common:bugReport.admin.columns.up', 'Nach oben')}>↑</button>
+                    <button className="px-2 py-1 border rounded-sm" onClick={() => moveColumn(key, 1)} title={t('common:bugReport.admin.columns.down', 'Nach unten')}>↓</button>
                   </div>
                 </div>
               ))}
             </div>
             <div className="flex items-center justify-between mt-4">
-              <button className="px-3 py-2 border rounded" onClick={resetColumns}>{t('common:bugReport.admin.columns.reset', 'Zurücksetzen')}</button>
-              <button className="px-3 py-2 border rounded" onClick={() => setShowColumnManager(false)}>{t('common:common.close', 'Schließen')}</button>
+              <button className="px-3 py-2 border rounded-sm" onClick={resetColumns}>{t('common:bugReport.admin.columns.reset', 'Zurücksetzen')}</button>
+              <button className="px-3 py-2 border rounded-sm" onClick={() => setShowColumnManager(false)}>{t('common:common.close', 'Schließen')}</button>
             </div>
           </div>
         </div>
@@ -1115,7 +1115,7 @@ const BugTrackerAdmin: React.FC = () => {
         <button
           type="button"
           onClick={() => setPage((prev) => Math.max(0, prev - 1))}
-          className="px-3 py-1 border rounded disabled:opacity-40"
+          className="px-3 py-1 border rounded-sm disabled:opacity-40"
           disabled={page === 0}
         >
           ‹
@@ -1126,7 +1126,7 @@ const BugTrackerAdmin: React.FC = () => {
         <button
           type="button"
           onClick={() => setPage((prev) => Math.min(totalPages - 1, prev + 1))}
-          className="px-3 py-1 border rounded disabled:opacity-40"
+          className="px-3 py-1 border rounded-sm disabled:opacity-40"
           disabled={page >= totalPages - 1}
         >
           ›

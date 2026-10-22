@@ -72,7 +72,7 @@ function AssetAvatar({ label, native = false }) {
       aria-hidden="true"
       className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-[11px] font-bold ${
         native
-          ? 'bg-gradient-to-br from-sky-400 to-indigo-600 text-white'
+          ? 'bg-linear-to-br from-sky-400 to-indigo-600 text-white'
           : 'bg-gray-100 text-gray-600 ring-1 ring-inset ring-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:ring-gray-600'
       }`}
     >
@@ -90,7 +90,7 @@ function ActionButton({ icon, label, onClick, primary = false }) {
     <button
       type="button"
       onClick={onClick}
-      className={`inline-flex flex-col items-center justify-center gap-1 rounded-xl px-2 py-2.5 text-xs font-semibold shadow-sm sm:flex-row sm:gap-2 sm:px-4 sm:text-sm transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900 ${cls}`}
+      className={`inline-flex flex-col items-center justify-center gap-1 rounded-xl px-2 py-2.5 text-xs font-semibold shadow-xs sm:flex-row sm:gap-2 sm:px-4 sm:text-sm transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900 ${cls}`}
     >
       <NavIcon name={icon} className="h-4 w-4" />
       {label}
@@ -99,7 +99,7 @@ function ActionButton({ icon, label, onClick, primary = false }) {
 }
 
 const cardCls =
-  'rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800/70';
+  'rounded-2xl border border-gray-200 bg-white shadow-xs dark:border-gray-700 dark:bg-gray-800/70';
 
 const DISCOVER_TILES = [
   { id: 'quiz', to: 'quiz', emoji: '🧠', titleKey: 'home:learn.quiz_title', fallback: 'Wissen testen' },
@@ -116,11 +116,11 @@ function DiscoverTeaser({ onOpenRoute }) {
   return (
     <section
       data-testid="wallet-home-discover"
-      className="relative mt-4 overflow-hidden rounded-2xl border border-violet-200 bg-gradient-to-br from-violet-50 via-sky-50 to-amber-50 p-6 shadow-sm sm:p-8 dark:border-violet-500/30 dark:from-violet-950/60 dark:via-gray-900 dark:to-sky-950/50"
+      className="relative mt-4 overflow-hidden rounded-2xl border border-violet-200 bg-linear-to-br from-violet-50 via-sky-50 to-amber-50 p-6 shadow-xs sm:p-8 dark:border-violet-500/30 dark:from-violet-950/60 dark:via-gray-900 dark:to-sky-950/50"
     >
       <span aria-hidden="true" className="pointer-events-none absolute -right-4 -top-6 select-none text-8xl opacity-20 sm:text-9xl">✨</span>
       <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center">
-        <div aria-hidden="true" className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-white text-4xl shadow-sm motion-safe:animate-bounce dark:bg-gray-800" style={{ animationDuration: '2.5s' }}>
+        <div aria-hidden="true" className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-white text-4xl shadow-xs motion-safe:animate-bounce dark:bg-gray-800" style={{ animationDuration: '2.5s' }}>
           🚀
         </div>
         <div className="min-w-0 flex-1">
@@ -141,7 +141,7 @@ function DiscoverTeaser({ onOpenRoute }) {
             key={tile.id}
             type="button"
             onClick={() => onOpenRoute(tile.to)}
-            className="group flex items-center gap-3 rounded-xl border border-white/70 bg-white/80 px-3 py-2.5 text-left text-sm font-semibold text-gray-800 shadow-sm transition hover:-translate-y-0.5 hover:bg-white hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 dark:border-gray-700 dark:bg-gray-800/80 dark:text-gray-100 dark:hover:bg-gray-800"
+            className="group flex items-center gap-3 rounded-xl border border-white/70 bg-white/80 px-3 py-2.5 text-left text-sm font-semibold text-gray-800 shadow-xs transition hover:-translate-y-0.5 hover:bg-white hover:shadow-md focus:outline-hidden focus-visible:ring-2 focus-visible:ring-violet-500 dark:border-gray-700 dark:bg-gray-800/80 dark:text-gray-100 dark:hover:bg-gray-800"
           >
             <span aria-hidden="true" className="text-2xl leading-none transition-transform group-hover:scale-125">{tile.emoji}</span>
             <span className="min-w-0">{t(tile.titleKey, tile.fallback)}</span>
@@ -152,7 +152,7 @@ function DiscoverTeaser({ onOpenRoute }) {
         <button
           type="button"
           onClick={() => onOpenRoute('discover')}
-          className="inline-flex items-center gap-2 rounded-xl border-0 bg-violet-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-violet-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2 dark:hover:bg-violet-500 dark:focus-visible:ring-offset-gray-900"
+          className="inline-flex items-center gap-2 rounded-xl border-0 bg-violet-600 px-5 py-2.5 text-sm font-semibold text-white shadow-xs transition-colors hover:bg-violet-700 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2 dark:hover:bg-violet-500 dark:focus-visible:ring-offset-gray-900"
         >
           <span aria-hidden="true">🎮</span>
           {t('wallet:home.empty.discover.cta', 'Los geht’s')}
@@ -246,7 +246,7 @@ export default function WalletHome({ publicKey, muxedAddress, onAction, onOpenRo
           <button
             type="button"
             onClick={() => onAction?.('balance')}
-            className="rounded-md border-0 bg-transparent px-2 py-1 text-xs font-medium text-blue-700 hover:bg-blue-50 hover:text-blue-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-blue-300 dark:hover:bg-gray-700 dark:hover:text-blue-200"
+            className="rounded-md border-0 bg-transparent px-2 py-1 text-xs font-medium text-blue-700 hover:bg-blue-50 hover:text-blue-800 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-blue-300 dark:hover:bg-gray-700 dark:hover:text-blue-200"
           >
             {t('wallet:home.actions.details', 'Kontodetails')}
           </button>
@@ -256,7 +256,7 @@ export default function WalletHome({ publicKey, muxedAddress, onAction, onOpenRo
             disabled={loading}
             aria-label={t('wallet:home.refresh', 'Aktualisieren')}
             title={t('wallet:home.refresh', 'Aktualisieren')}
-            className="inline-flex h-8 w-8 items-center justify-center rounded-lg border-0 bg-transparent p-0 text-gray-400 hover:bg-gray-100 hover:text-gray-700 disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:hover:bg-gray-700 dark:hover:text-gray-200"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-lg border-0 bg-transparent p-0 text-gray-400 hover:bg-gray-100 hover:text-gray-700 disabled:opacity-50 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 dark:hover:bg-gray-700 dark:hover:text-gray-200"
           >
             <NavIcon name="refresh" className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
           </button>
@@ -282,7 +282,7 @@ export default function WalletHome({ publicKey, muxedAddress, onAction, onOpenRo
         ) : !summary ? (
           <div className="mt-3 space-y-2" aria-busy="true">
             <div className="h-9 w-56 animate-pulse rounded-lg bg-gray-200 dark:bg-gray-700" />
-            <div className="h-4 w-32 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+            <div className="h-4 w-32 animate-pulse rounded-sm bg-gray-200 dark:bg-gray-700" />
           </div>
         ) : (
           <>
@@ -292,7 +292,7 @@ export default function WalletHome({ publicKey, muxedAddress, onAction, onOpenRo
               </span>
               <span className="text-lg font-medium text-gray-500 dark:text-gray-400">XLM</span>
             </div>
-            <div className="mt-1 min-h-[1.25rem] text-sm tabular-nums text-gray-500 dark:text-gray-400">
+            <div className="mt-1 min-h-5 text-sm tabular-nums text-gray-500 dark:text-gray-400">
               {fiat(summary.xlm) ? `≈ ${fiat(summary.xlm)}` : ''}
             </div>
             <dl className="mt-4 grid max-w-md grid-cols-2 gap-4 text-sm">
@@ -338,7 +338,7 @@ export default function WalletHome({ publicKey, muxedAddress, onAction, onOpenRo
                 onClick={toggleAssets}
                 aria-expanded={assetsOpen}
                 aria-controls="wallet-home-asset-list"
-                className="inline-flex items-center gap-2 rounded-md border-0 bg-transparent p-0 text-sm font-semibold text-gray-900 hover:text-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-white dark:hover:text-blue-300"
+                className="inline-flex items-center gap-2 rounded-md border-0 bg-transparent p-0 text-sm font-semibold text-gray-900 hover:text-blue-700 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-white dark:hover:text-blue-300"
               >
                 <span aria-hidden="true" className={`inline-block transition-transform ${assetsOpen ? 'rotate-90' : ''}`}>▸</span>
                 {t('wallet:home.assets', 'Assets')}
@@ -350,7 +350,7 @@ export default function WalletHome({ publicKey, muxedAddress, onAction, onOpenRo
             <button
               type="button"
               onClick={() => onAction?.('listAll')}
-              className="rounded-md border-0 bg-transparent px-2 py-1 text-xs font-medium text-blue-700 hover:bg-blue-50 hover:text-blue-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-blue-300 dark:hover:bg-gray-700 dark:hover:text-blue-200"
+              className="rounded-md border-0 bg-transparent px-2 py-1 text-xs font-medium text-blue-700 hover:bg-blue-50 hover:text-blue-800 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-blue-300 dark:hover:bg-gray-700 dark:hover:text-blue-200"
             >
               {t('wallet:home.manageTrustlines', 'Token-Freigaben verwalten')}
             </button>
@@ -384,7 +384,7 @@ export default function WalletHome({ publicKey, muxedAddress, onAction, onOpenRo
                     <span className="truncate">{asset.isPool ? t('wallet:home.poolShares', 'Liquiditätspool-Anteile') : asset.code}</span>
                     {looksLikeNativeCode({ code: asset.code, isNative: false }) && !asset.isPool && (
                       <span
-                        className="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-900 dark:bg-amber-400/15 dark:text-amber-200"
+                        className="rounded-sm bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-900 dark:bg-amber-400/15 dark:text-amber-200"
                         title={t('wallet:activity.fakeNativeHint', 'Das ist ein Token eines Herausgebers, nicht das native XLM des Netzwerks.')}
                       >
                         {t('wallet:activity.fakeNative', 'Token, kein natives XLM')}

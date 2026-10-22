@@ -103,14 +103,14 @@ export default function QuizIndex() {
         <button
           type="button"
           onClick={() => navigate(buildPath(''))}
-          className="inline-flex items-center gap-1 px-3 py-1.5 rounded text-sm font-medium bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100 transition-colors"
+          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-sm text-sm font-medium bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100 transition-colors"
         >
           🏠
         </button>
         <button
           type="button"
           onClick={() => navigate(buildPath('discover'))}
-          className="inline-flex items-center gap-1 px-3 py-1.5 rounded text-sm font-medium bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100 transition-colors"
+          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-sm text-sm font-medium bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100 transition-colors"
         >
           ←
         </button>
@@ -172,7 +172,7 @@ export default function QuizIndex() {
 
       {/* Status message */}
       {infoMsg && (
-        <div className="mb-3 text-xs bg-green-100 dark:bg-green-900/30 border border-green-300/60 text-green-800 dark:text-green-200 rounded p-2 inline-block">
+        <div className="mb-3 text-xs bg-green-100 dark:bg-green-900/30 border border-green-300/60 text-green-800 dark:text-green-200 rounded-sm p-2 inline-block">
           {infoMsg}
         </div>
       )}
@@ -199,7 +199,7 @@ export default function QuizIndex() {
               {/* Main row */}
               <div className="flex items-center gap-3 px-4 py-3">
                 {/* Number + completion badge */}
-                <div className="relative flex-shrink-0 w-8 h-8">
+                <div className="relative shrink-0 w-8 h-8">
                   <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400">
                     {idx + 1}
                   </div>
@@ -239,7 +239,7 @@ export default function QuizIndex() {
                 <button
                   type="button"
                   onClick={() => setExpandedLesson(isExpanded ? null : quizId)}
-                  className="flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-lg leading-none bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/50 hover:text-blue-800 dark:hover:text-blue-200 transition-colors"
+                  className="shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-lg leading-none bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/50 hover:text-blue-800 dark:hover:text-blue-200 transition-colors"
                   title={isExpanded ? t('quiz.ui:hideDetails', 'Details ausblenden') : t('quiz.ui:showDetails', 'Details anzeigen')}
                   aria-label={isExpanded ? t('quiz.ui:hideDetails', 'Details ausblenden') : t('quiz.ui:showDetails', 'Details anzeigen')}
                   aria-expanded={isExpanded}
@@ -251,7 +251,7 @@ export default function QuizIndex() {
                 <button
                   type="button"
                   onClick={() => navigate(buildPath(`quiz/${quizId}`))}
-                  className="flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-lg leading-none bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/50 hover:text-green-800 dark:hover:text-green-200 transition-colors"
+                  className="shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-lg leading-none bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/50 hover:text-green-800 dark:hover:text-green-200 transition-colors"
                   title={t('learn:actions.startQuiz', 'Quiz starten')}
                   aria-label={t('learn:actions.startQuiz', 'Quiz starten')}
                 >
@@ -313,7 +313,7 @@ export default function QuizIndex() {
                           key={cnt}
                           type="button"
                           onClick={() => handleSetStars(lessonKey, cnt)}
-                          className={`px-1.5 py-1 rounded text-xs font-semibold border leading-tight ${cnt === stars ? 'bg-yellow-400 text-black border-yellow-500' : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-100 border-gray-300 dark:border-gray-600'}`}
+                          className={`px-1.5 py-1 rounded-sm text-xs font-semibold border leading-tight ${cnt === stars ? 'bg-yellow-400 text-black border-yellow-500' : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-100 border-gray-300 dark:border-gray-600'}`}
                           aria-pressed={cnt === stars}
                         >
                           <span className="flex flex-col items-center leading-tight text-center">
@@ -326,7 +326,7 @@ export default function QuizIndex() {
                     <button
                       type="button"
                       onClick={() => handleToggleCompleted(lessonKey)}
-                      className={`px-2 py-1 rounded text-xs font-semibold ${completed ? 'bg-green-600 hover:bg-green-700 text-white' : 'bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100'}`}
+                      className={`px-2 py-1 rounded-sm text-xs font-semibold ${completed ? 'bg-green-600 hover:bg-green-700 text-white' : 'bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100'}`}
                       aria-pressed={completed}
                     >
                       {completed ? t('learn:progress.completed', 'Abgeschlossen') : t('learn:progress.markComplete', 'Als erledigt markieren')}

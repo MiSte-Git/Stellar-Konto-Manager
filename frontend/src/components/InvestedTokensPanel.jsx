@@ -204,7 +204,7 @@ export default function InvestedTokensPanel({ publicKey }) {
       {/* Auswahl der Ansicht + Aktionen */}
       {/* Immer sichtbare Info Box über den Filtern */}
       {historyAvailableFrom && constrainDates && (
-        <div className="text-xs text-amber-700 dark:text-amber-400 mb-1 text-left border border-amber-300/80 dark:border-amber-500/60 rounded px-2 py-1">
+        <div className="text-xs text-amber-700 dark:text-amber-400 mb-1 text-left border border-amber-300/80 dark:border-amber-500/60 rounded-sm px-2 py-1">
           {(() => {
             const fmt = new Intl.DateTimeFormat(i18n.language || undefined, { dateStyle: 'medium' });
             const availStr = fmt.format(new Date(historyAvailableFrom));
@@ -213,14 +213,14 @@ export default function InvestedTokensPanel({ publicKey }) {
           })()}
         </div>
       )}
-      <div className="border-2 border-gray-200 dark:border-gray-700 rounded p-3">
+      <div className="border-2 border-gray-200 dark:border-gray-700 rounded-sm p-3">
         <div className="flex flex-wrap items-center justify-between gap-4">
           {/* Linker Block: Filterlabel + Ansichtsauswahl + Datum+Radio direkt daneben */}
           <div className="flex flex-wrap items-center gap-4">
             <div className="flex items-center gap-2">
               <label className="text-sm">{t('investedTokens:view.label')}</label>
               <select
-                className="border rounded px-2 py-1"
+                className="border rounded-sm px-2 py-1"
                 value={view}
                 onChange={(e) => setView(e.target.value)}
               >
@@ -236,11 +236,11 @@ export default function InvestedTokensPanel({ publicKey }) {
                     <input type="date" min={constrainDates ? (minFrom || undefined) : undefined} value={fromDate} onChange={(e)=>{
                       const v = e.target.value;
                       if (constrainDates && minFrom && v && new Date(v) < new Date(minFrom)) setFromDate(minFrom); else setFromDate(v);
-                    }} className="border rounded px-1 py-0.5" />
+                    }} className="border rounded-sm px-1 py-0.5" />
                   </label>
                   <label className="inline-flex items-center gap-1">
                     <span className="inline-block w-28 text-right">{t('xlmByMemo:date.to')}</span>
-                    <input type="date" value={toDate} onChange={(e)=>setToDate(e.target.value)} className="border rounded px-1 py-0.5" />
+                    <input type="date" value={toDate} onChange={(e)=>setToDate(e.target.value)} className="border rounded-sm px-1 py-0.5" />
                   </label>
                 </div>
                 <div className="flex flex-col text-xs gap-1 items-start">
@@ -252,15 +252,15 @@ export default function InvestedTokensPanel({ publicKey }) {
           </div>
           {/* Rechter Block: Buttons rechtsbündig */}
           <div className="flex items-center gap-2 ml-auto">
-            <button className="border rounded px-3 py-1" onClick={load} disabled={loading}>
+            <button className="border rounded-sm px-3 py-1" onClick={load} disabled={loading}>
               {loading ? t('common:common.loading') : t('investedTokens:action.load', 'Laden')}
             </button>
             {loading && (
-              <button className="border rounded px-3 py-1" onClick={onCancel}>
+              <button className="border rounded-sm px-3 py-1" onClick={onCancel}>
                 {t('common:progress.cancel')}
               </button>
             )}
-            <button className="border rounded px-3 py-1" onClick={() => { try { if (!data?.items) return; if (view === 'memo') exportCsvMemo(); else exportCsvToken(); } catch { /* noop */ } }}>
+            <button className="border rounded-sm px-3 py-1" onClick={() => { try { if (!data?.items) return; if (view === 'memo') exportCsvMemo(); else exportCsvToken(); } catch { /* noop */ } }}>
               {t('common:option.export.csv')}
             </button>
           </div>
@@ -328,7 +328,7 @@ export default function InvestedTokensPanel({ publicKey }) {
           else { setSortKey(key); setSortDir('asc'); }
         };
         return (
-          <div className="space-y-2 border-2 border-gray-200 dark:border-gray-700 rounded p-3">
+          <div className="space-y-2 border-2 border-gray-200 dark:border-gray-700 rounded-sm p-3">
             {/* Summary container centered */}
             <div className="text-center space-y-1">
               <div className="text-lg font-semibold">{t('investedTokens:total', { count: sorted.length })}</div>
@@ -417,7 +417,7 @@ export default function InvestedTokensPanel({ publicKey }) {
           else { setSortKey(key); setSortDir('asc'); }
         };
         return (
-          <div className="space-y-2 border-2 border-gray-200 dark:border-gray-700 rounded p-3">
+          <div className="space-y-2 border-2 border-gray-200 dark:border-gray-700 rounded-sm p-3">
             <div className="text-lg font-semibold">
               {t('investedTokens:totalTokens', { count: sorted.length })}
             </div>

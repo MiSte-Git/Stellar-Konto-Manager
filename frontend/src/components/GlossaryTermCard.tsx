@@ -22,9 +22,9 @@ export default function GlossaryTermCard({
   domainsHeading?: string;
 }) {
   return (
-    <article className="rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 shadow-sm">
+    <article className="rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 shadow-xs">
       <h2
-        className="text-lg font-semibold text-gray-900 dark:text-gray-100 break-words"
+        className="text-lg font-semibold text-gray-900 dark:text-gray-100 wrap-break-word"
         title={titleAttr}
         aria-label={titleAttr}
       >

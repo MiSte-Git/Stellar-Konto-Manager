@@ -64,7 +64,7 @@ export default function AssetResultsTable({
     [codeCounts]
   );
   return (
-    <div className="rounded border border-gray-200 dark:border-gray-700">
+    <div className="rounded-sm border border-gray-200 dark:border-gray-700">
       {assetResults.length === 0 && !assetError && !assetLoading && (
         <div className="px-3 py-2 text-sm text-gray-600 dark:text-gray-300">
           {t('trading:assetSearch.result.empty')}
@@ -112,7 +112,7 @@ export default function AssetResultsTable({
                         <span className="font-mono font-semibold">{r.assetCode}</span>
                         {isDuplicateCode && (
                           <span
-                            className="ml-1 inline-flex items-center rounded bg-amber-100 px-1 text-[10px] font-semibold text-amber-800 dark:bg-amber-900 dark:text-amber-100"
+                            className="ml-1 inline-flex items-center rounded-sm bg-amber-100 px-1 text-[10px] font-semibold text-amber-800 dark:bg-amber-900 dark:text-amber-100"
                             title={t('trading:assetSearch.result.duplicateCodeBadge', { count: codeCounts.get(r.assetCode || '') })}
                           >
                             {codeCounts.get(r.assetCode || '')}×
@@ -146,7 +146,7 @@ export default function AssetResultsTable({
                           <button
                             type="button"
                             onClick={() => onSelectAsset(r)}
-                            className="rounded border border-gray-300 px-2 py-1 text-xs hover:bg-gray-100 dark:border-gray-700 dark:hover:bg-gray-800"
+                            className="rounded-sm border border-gray-300 px-2 py-1 text-xs hover:bg-gray-100 dark:border-gray-700 dark:hover:bg-gray-800"
                           >
                             {t('trading:assetSearch.actions.details', 'Details')}
                           </button>
@@ -154,7 +154,7 @@ export default function AssetResultsTable({
                             type="button"
                             disabled={!canAddTrustlineFor(r)}
                             onClick={() => onOpenTrustlineModal(r)}
-                            className={`rounded border px-2 py-1 text-xs ${
+                            className={`rounded-sm border px-2 py-1 text-xs ${
                               canAddTrustlineFor(r)
                                 ? 'border-green-300 text-green-800 hover:bg-green-50 dark:border-green-700 dark:text-green-200 dark:hover:bg-green-900'
                                 : 'border-gray-200 text-gray-400 dark:border-gray-800'
@@ -166,7 +166,7 @@ export default function AssetResultsTable({
                           <button
                             type="button"
                             onClick={() => onSelectAsset(r)}
-                            className="rounded border border-blue-300 px-2 py-1 text-xs text-blue-800 hover:bg-blue-50 dark:border-blue-700 dark:text-blue-200 dark:hover:bg-blue-900"
+                            className="rounded-sm border border-blue-300 px-2 py-1 text-xs text-blue-800 hover:bg-blue-50 dark:border-blue-700 dark:text-blue-200 dark:hover:bg-blue-900"
                             title={t('trading:assetSearch.actions.swapNext', 'Select asset and open swap preview')}
                           >
                             {t('trading:assetSearch.actions.swap', 'Swap')}

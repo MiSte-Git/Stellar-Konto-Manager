@@ -415,7 +415,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
           {onBack && (
             <button
               type="button"
-              className="text-sm px-3 py-1 rounded border hover:bg-gray-100 dark:hover:bg-gray-800"
+              className="text-sm px-3 py-1 rounded-sm border hover:bg-gray-100 dark:hover:bg-gray-800"
               onClick={() => {
                 try { onBack(); } catch { /* noop */ }
               }}
@@ -425,7 +425,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
           )}
           <button
             type="button"
-            className="text-sm px-3 py-1 rounded border hover:bg-gray-100 dark:hover:bg-gray-800"
+            className="text-sm px-3 py-1 rounded-sm border hover:bg-gray-100 dark:hover:bg-gray-800"
             onClick={fetchJob}
             disabled={loading}
           >
@@ -440,7 +440,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
 
       {job && (
         <div className="space-y-3">
-          <div className="border rounded p-3 text-sm">
+          <div className="border rounded-sm p-3 text-sm">
             <div className="font-mono break-all text-xs text-gray-600 dark:text-gray-300">ID: {job.id}</div>
             <div className="flex flex-wrap gap-3 mt-2">
               <span className="text-gray-700 dark:text-gray-200">{t('multisig:detail.network', 'Netzwerk')}: {job.network}</span>
@@ -466,7 +466,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
                   return (
                     <span
                       key={pk || Math.random()}
-                      className={`px-2 py-0.5 rounded text-xs ${signed ? 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-200' : 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-100'}`}
+                      className={`px-2 py-0.5 rounded-sm text-xs ${signed ? 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-200' : 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-100'}`}
                       title={pk}
                     >
                       {shortPk(pk)}
@@ -484,7 +484,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
             )}
           </div>
 
-          <div className="border rounded p-3 space-y-2 text-sm">
+          <div className="border rounded-sm p-3 space-y-2 text-sm">
             <div className="font-semibold">{t('multisig:detail.transparency.title', 'Transaktionsdetails')}</div>
             <div>
               <div className="text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">
@@ -500,12 +500,12 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
                 </div>
               )}
               {operationWarnings.pathPaymentToOther && (
-                <p role="alert" className="mt-2 rounded bg-amber-50 p-2 text-xs font-medium text-amber-900 dark:bg-amber-900/30 dark:text-amber-100">
+                <p role="alert" className="mt-2 rounded-sm bg-amber-50 p-2 text-xs font-medium text-amber-900 dark:bg-amber-900/30 dark:text-amber-100">
                   {t('multisig:detail.operations.warnPathPaymentToOther')}
                 </p>
               )}
               {operationWarnings.unknownTypes.length > 0 && (
-                <div role="alert" className="mt-2 space-y-1 rounded border border-red-300 bg-red-50 p-2 text-xs text-red-900 dark:border-red-700 dark:bg-red-900/30 dark:text-red-100">
+                <div role="alert" className="mt-2 space-y-1 rounded-sm border border-red-300 bg-red-50 p-2 text-xs text-red-900 dark:border-red-700 dark:bg-red-900/30 dark:text-red-100">
                   <p className="font-medium">{t('multisig:detail.operations.warnUnknown', { types: operationWarnings.unknownTypes.join(', ') })}</p>
                   {canCurrentSign && !isFinalState && (
                     <label className="flex items-center gap-2">
@@ -533,7 +533,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
           </div>
 
           {Array.isArray(job.changes) && job.changes.length > 0 && (
-            <div className="border rounded p-3">
+            <div className="border rounded-sm p-3">
               <div className="font-semibold mb-2">{t('multisig:detail.changes.title')}</div>
               <ul className="list-disc list-inside space-y-1 text-sm text-gray-800 dark:text-gray-200">
                 {job.changes.map((c, idx) => {
@@ -547,11 +547,11 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
           )}
 
           {canCurrentSign && !isFinalState && (
-            <div className="flex items-center justify-between gap-3 border rounded p-3">
+            <div className="flex items-center justify-between gap-3 border rounded-sm p-3">
               <div className="text-sm font-semibold">{t('multisig:detail.secretPrompt.signNow', 'Jetzt signieren')}</div>
               <button
                 type="button"
-                className="text-xs px-3 py-1 rounded border border-green-200 text-green-700 dark:text-green-200 dark:border-green-700 hover:bg-green-50 dark:hover:bg-green-900"
+                className="text-xs px-3 py-1 rounded-sm border border-green-200 text-green-700 dark:text-green-200 dark:border-green-700 hover:bg-green-50 dark:hover:bg-green-900"
                 onClick={handleSignWithSession}
                 disabled={loading || signingComplete || signingBlockedByUnknownOps}
               >
@@ -561,7 +561,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
           )}
 
           {showSecretPrompt && canCurrentSign && !isFinalState && (
-            <div className="border border-amber-500 rounded p-3 space-y-3 bg-amber-50 dark:bg-amber-900/40 shadow-sm">
+            <div className="border border-amber-500 rounded-sm p-3 space-y-3 bg-amber-50 dark:bg-amber-900/40 shadow-xs">
               <div className="text-sm font-semibold text-amber-900 dark:text-amber-100">
                 {t('multisig:detail.secretPrompt.title', 'Secret eingeben, um zu signieren')}
               </div>
@@ -572,7 +572,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
                 type="password"
                 value={secretInput}
                 onChange={(e) => setSecretInput(e.target.value)}
-                className="w-full border-2 border-amber-500 rounded px-3 py-2 text-sm bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-amber-400"
+                className="w-full border-2 border-amber-500 rounded-sm px-3 py-2 text-sm bg-white dark:bg-gray-800 focus:outline-hidden focus:ring-2 focus:ring-amber-400"
                 placeholder={t('secretKey:placeholder', 'Secret Key eingeben')}
                 autoComplete="off"
                 spellCheck="false"
@@ -580,7 +580,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
               <div className="flex justify-end gap-2">
                 <button
                   type="button"
-                  className="px-3 py-1 rounded border hover:bg-gray-100 dark:hover:bg-gray-800 text-sm"
+                  className="px-3 py-1 rounded-sm border hover:bg-gray-100 dark:hover:bg-gray-800 text-sm"
                   onClick={() => { setShowSecretPrompt(false); setSecretInput(''); }}
                   disabled={loading}
                 >
@@ -588,7 +588,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
                 </button>
                 <button
                   type="button"
-                  className="px-3 py-1 rounded bg-green-600 text-white hover:bg-green-700 text-sm disabled:opacity-50"
+                  className="px-3 py-1 rounded-sm bg-green-600 text-white hover:bg-green-700 text-sm disabled:opacity-50"
                   onClick={() => signWithSecret(secretInput.trim())}
                   disabled={loading || !secretInput.trim() || signingBlockedByUnknownOps}
                 >
@@ -598,20 +598,20 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
             </div>
           )}
           {canCurrentSign && !isFinalState && sequenceLooksAlive && !revokedHash && decodedTx && (
-            <div className="border border-red-300 dark:border-red-700 rounded p-3 space-y-2">
+            <div className="border border-red-300 dark:border-red-700 rounded-sm p-3 space-y-2">
               <div className="text-sm font-semibold">{t('multisig:detail.revoke.title')}</div>
               <p className="text-xs text-gray-700 dark:text-gray-300">{t('multisig:detail.revoke.description')}</p>
               {!revokePrep ? (
                 <button
                   type="button"
-                  className="text-xs px-3 py-1 rounded border border-red-300 text-red-700 dark:text-red-200 dark:border-red-700 hover:bg-red-50 dark:hover:bg-red-900 disabled:opacity-50"
+                  className="text-xs px-3 py-1 rounded-sm border border-red-300 text-red-700 dark:text-red-200 dark:border-red-700 hover:bg-red-50 dark:hover:bg-red-900 disabled:opacity-50"
                   onClick={startRevoke}
                   disabled={revoking || loading}
                 >
                   {revoking ? t('common:common.loading') : t('multisig:detail.revoke.button')}
                 </button>
               ) : (
-                <div role="alertdialog" aria-label={t('multisig:detail.revoke.confirmTitle')} className="space-y-2 bg-red-50 dark:bg-red-900/30 rounded p-2">
+                <div role="alertdialog" aria-label={t('multisig:detail.revoke.confirmTitle')} className="space-y-2 bg-red-50 dark:bg-red-900/30 rounded-sm p-2">
                   <div className="text-sm font-semibold text-red-900 dark:text-red-100">{t('multisig:detail.revoke.confirmTitle')}</div>
                   <p className="text-xs text-gray-800 dark:text-gray-200 break-all">
                     {t('multisig:detail.revoke.confirmText', {
@@ -627,7 +627,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
                   <div className="flex justify-end gap-2">
                     <button
                       type="button"
-                      className="px-3 py-1 rounded border hover:bg-gray-100 dark:hover:bg-gray-800 text-sm"
+                      className="px-3 py-1 rounded-sm border hover:bg-gray-100 dark:hover:bg-gray-800 text-sm"
                       onClick={() => { setRevokePrep(null); setRevokeError(''); }}
                       disabled={revoking}
                     >
@@ -635,7 +635,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
                     </button>
                     <button
                       type="button"
-                      className="px-3 py-1 rounded bg-red-600 text-white hover:bg-red-700 text-sm disabled:opacity-50"
+                      className="px-3 py-1 rounded-sm bg-red-600 text-white hover:bg-red-700 text-sm disabled:opacity-50"
                       onClick={() => { setRevokeError(''); setShowRevokeSecretModal(true); }}
                       disabled={revoking}
                     >
@@ -664,7 +664,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
             />
           )}
           {submitError && (
-            <div className="border border-red-400 bg-red-50 dark:bg-red-900/30 text-xs text-red-800 dark:text-red-200 rounded p-2 space-y-1">
+            <div className="border border-red-400 bg-red-50 dark:bg-red-900/30 text-xs text-red-800 dark:text-red-200 rounded-sm p-2 space-y-1">
               <div>{t('multisig:detail.submitFailed', { reason: submitError })}</div>
               {submitExtras && submitExtras.result_codes && (
                 <div className="font-mono break-all">
@@ -679,12 +679,12 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
             </div>
           )}
 
-          <div className="border rounded p-3">
+          <div className="border rounded-sm p-3">
             <div className="flex items-center justify-between mb-1">
               <h2 className="font-semibold text-sm">{t('multisig:detail.xdr.title')}</h2>
               <button
                 type="button"
-                className="text-xs px-2 py-1 rounded border border-blue-200 text-blue-700 dark:text-blue-200 dark:border-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900"
+                className="text-xs px-2 py-1 rounded-sm border border-blue-200 text-blue-700 dark:text-blue-200 dark:border-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900"
                 onClick={() => {
                   try {
                     navigator.clipboard.writeText(job.txXdrCurrent || job.txXdr || '');
@@ -698,23 +698,23 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
               </button>
             </div>
             <p className="text-xs text-gray-700 dark:text-gray-300 mb-2">{t('multisig:detail.xdr.hint')}</p>
-            <textarea className="w-full h-32 text-xs font-mono bg-gray-50 dark:bg-gray-900 border rounded px-2 py-1" readOnly value={job.txXdrCurrent || job.txXdr || ''} />
+            <textarea className="w-full h-32 text-xs font-mono bg-gray-50 dark:bg-gray-900 border rounded-sm px-2 py-1" readOnly value={job.txXdrCurrent || job.txXdr || ''} />
           </div>
 
-          <div className="border rounded p-3 space-y-2">
+          <div className="border rounded-sm p-3 space-y-2">
             <div>
               <h3 className="font-semibold text-sm">{t('multisig:detail.signedXdr.title')}</h3>
               <p className="text-xs text-gray-700 dark:text-gray-300">{t('multisig:detail.signedXdr.hint')}</p>
             </div>
             <textarea
-              className="w-full h-24 text-xs font-mono bg-gray-50 dark:bg-gray-900 border rounded px-2 py-1"
+              className="w-full h-24 text-xs font-mono bg-gray-50 dark:bg-gray-900 border rounded-sm px-2 py-1"
               placeholder={t('multisig:detail.signedXdr.label')}
               value={importXdr}
               onChange={(e) => setImportXdr(e.target.value)}
             />
             <button
               type="button"
-              className="px-4 py-2 rounded bg-blue-600 text-white disabled:opacity-50"
+              className="px-4 py-2 rounded-sm bg-blue-600 text-white disabled:opacity-50"
               onClick={handleMerge}
               disabled={importing || !importXdr.trim()}
             >

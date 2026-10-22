@@ -23,7 +23,7 @@ function MultisigPrepareDialog({ open, onClose, hash, xdr, summary }) {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 overflow-y-auto p-4">
-      <div className="bg-white dark:bg-gray-800 rounded p-4 w-full max-w-2xl my-auto max-h-[calc(100svh-2rem)] overflow-y-auto">
+      <div className="bg-white dark:bg-gray-800 rounded-sm p-4 w-full max-w-2xl my-auto max-h-[calc(100svh-2rem)] overflow-y-auto">
         <div className="flex items-start justify-between gap-3 mb-3">
           <div>
             <h3 className="text-lg font-semibold">{title}</h3>
@@ -31,7 +31,7 @@ function MultisigPrepareDialog({ open, onClose, hash, xdr, summary }) {
           </div>
           <button
             type="button"
-            className="px-3 py-1 rounded border hover:bg-gray-100 dark:hover:bg-gray-700"
+            className="px-3 py-1 rounded-sm border hover:bg-gray-100 dark:hover:bg-gray-700"
             onClick={onClose}
           >
             {t('common:option.cancel', 'Abbrechen')}
@@ -39,7 +39,7 @@ function MultisigPrepareDialog({ open, onClose, hash, xdr, summary }) {
         </div>
 
         {items.length > 0 && (
-          <div className="border rounded p-3 mb-3 space-y-1">
+          <div className="border rounded-sm p-3 mb-3 space-y-1">
             {items.map((item, idx) => (
               <div key={idx} className="text-sm flex flex-wrap gap-2">
                 <span className="text-gray-600 dark:text-gray-400">{item.label}:</span>
@@ -49,24 +49,24 @@ function MultisigPrepareDialog({ open, onClose, hash, xdr, summary }) {
           </div>
         )}
 
-        <div className="border rounded p-3 mb-3">
+        <div className="border rounded-sm p-3 mb-3">
           <div className="text-sm text-gray-700 dark:text-gray-300 mb-1">{t('multisig:prepare.hashLabel')}</div>
-          <div className="font-mono break-all text-xs bg-gray-50 dark:bg-gray-900 px-2 py-1 rounded">{hash}</div>
+          <div className="font-mono break-all text-xs bg-gray-50 dark:bg-gray-900 px-2 py-1 rounded-sm">{hash}</div>
         </div>
 
-        <div className="border rounded p-3">
+        <div className="border rounded-sm p-3">
           <div className="flex items-center justify-between gap-2 mb-1">
             <div className="text-sm text-gray-700 dark:text-gray-300">{t('multisig:prepare.xdrLabel')}</div>
             <button
               type="button"
-              className="px-3 py-1 rounded border border-blue-200 text-blue-700 dark:text-blue-200 dark:border-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900"
+              className="px-3 py-1 rounded-sm border border-blue-200 text-blue-700 dark:text-blue-200 dark:border-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900"
               onClick={handleCopy}
             >
               {copied ? t('multisig:prepare.copied', 'Kopiert') : t('multisig:prepare.copyXdrButton')}
             </button>
           </div>
           <textarea
-            className="w-full h-32 text-xs font-mono bg-gray-50 dark:bg-gray-900 border rounded px-2 py-1"
+            className="w-full h-32 text-xs font-mono bg-gray-50 dark:bg-gray-900 border rounded-sm px-2 py-1"
             readOnly
             value={xdr || ''}
           />

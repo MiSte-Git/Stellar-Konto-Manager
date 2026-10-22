@@ -198,7 +198,7 @@ export default function SettingsPage({ publicKey, onBack: _onBack }) {
           <button
             type="button"
             onClick={handleBack}
-            className="px-3 py-2 rounded border text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
+            className="px-3 py-2 rounded-sm border text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
             aria-label={t('settings:aria.back')}
           >
             {t('settings:back')}
@@ -223,7 +223,7 @@ export default function SettingsPage({ publicKey, onBack: _onBack }) {
         <section className="space-y-4">
           <h2 className="text-xl font-semibold">{t('settings:sections.general', t('settings:tabs.general'))}</h2>
           <SettingsPanel publicKey={publicKey} showDisplay={false} showTrustedWallets={false} showNetwork={false} />
-          <div className="border rounded p-3 space-y-2">
+          <div className="border rounded-sm p-3 space-y-2">
             <h3 className="font-semibold">{t('settings:multisig.timeoutTitle', 'Multisig Timeout')}</h3>
             <div className="text-sm text-gray-700 dark:text-gray-300">
               {t('settings:multisig.timeoutHint', 'Gültigkeitsdauer (Sekunden) für Multisig-Zahlungen, z. B. 86400 = 24h.')}
@@ -248,7 +248,7 @@ export default function SettingsPage({ publicKey, onBack: _onBack }) {
                   setMultisigTimeoutError('');
                   setMultisigTimeoutSeconds(v);
                 }}
-                className="w-32 border rounded px-2 py-1 text-sm"
+                className="w-32 border rounded-sm px-2 py-1 text-sm"
               />
               <span className="text-sm text-gray-600 dark:text-gray-300">{t('settings:multisig.seconds', 'Sekunden')}</span>
             </div>
@@ -256,7 +256,7 @@ export default function SettingsPage({ publicKey, onBack: _onBack }) {
               <p className="text-sm text-red-600 dark:text-red-400">{multisigTimeoutError}</p>
             )}
           </div>
-          <div className="border rounded p-3 space-y-2">
+          <div className="border rounded-sm p-3 space-y-2">
             <h3 className="font-semibold">{t('settings:fees.title')}</h3>
             <p className="text-sm text-gray-700 dark:text-gray-300">{t('settings:fees.hint')}</p>
             <label className="block text-sm" htmlFor="settings-fee-level">{t('settings:fees.levelLabel')}</label>
@@ -264,7 +264,7 @@ export default function SettingsPage({ publicKey, onBack: _onBack }) {
               id="settings-fee-level"
               value={feeLevel}
               onChange={(e) => { setStoredFeeLevel(e.target.value); setFeeLevel(e.target.value); }}
-              className="border rounded px-2 py-1 text-sm"
+              className="border rounded-sm px-2 py-1 text-sm"
             >
               {FEE_LEVELS.map((lvl) => (
                 <option key={lvl} value={lvl}>{t(`settings:fees.${lvl}`)}</option>
@@ -272,7 +272,7 @@ export default function SettingsPage({ publicKey, onBack: _onBack }) {
             </select>
             <p className="text-xs text-gray-600 dark:text-gray-400">{t('settings:fees.deferredNote')}</p>
           </div>
-          <div className="border rounded p-3 space-y-2">
+          <div className="border rounded-sm p-3 space-y-2">
             <h3 className="font-semibold">{t('settings:inputHistory.title')}</h3>
             <p className="text-sm text-gray-700 dark:text-gray-300">{t('settings:inputHistory.description')}</p>
             {clearHistoryDone && (
@@ -281,12 +281,12 @@ export default function SettingsPage({ publicKey, onBack: _onBack }) {
             <button
               type="button"
               onClick={handleClearInputHistory}
-              className="px-3 py-2 rounded bg-red-600 text-white hover:bg-red-700 text-sm"
+              className="px-3 py-2 rounded-sm bg-red-600 text-white hover:bg-red-700 text-sm"
             >
               {t('settings:inputHistory.clearAll')}
             </button>
           </div>
-          <div className="border rounded p-3 space-y-2">
+          <div className="border rounded-sm p-3 space-y-2">
             <h3 className="font-semibold">{t('settings:paymentCache.title')}</h3>
             <p className="text-sm text-gray-700 dark:text-gray-300">{t('settings:paymentCache.description')}</p>
             {clearCacheDone && (
@@ -298,7 +298,7 @@ export default function SettingsPage({ publicKey, onBack: _onBack }) {
             <button
               type="button"
               onClick={handleClearPaymentCache}
-              className="px-3 py-2 rounded bg-red-600 text-white hover:bg-red-700 text-sm"
+              className="px-3 py-2 rounded-sm bg-red-600 text-white hover:bg-red-700 text-sm"
             >
               {t('settings:paymentCache.clearAll')}
             </button>
@@ -307,7 +307,7 @@ export default function SettingsPage({ publicKey, onBack: _onBack }) {
             <h3 className="font-semibold">{t('settings:export.title')}</h3>
             <button
               type="button"
-              className="px-3 py-1 rounded border text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
+              className="px-3 py-1 rounded-sm border text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
               onClick={handleExportSettings}
             >
               {t('settings:export.button')}
@@ -317,7 +317,7 @@ export default function SettingsPage({ publicKey, onBack: _onBack }) {
               <div className="flex flex-wrap gap-2 items-center">
                 <button
                   type="button"
-                  className="px-3 py-1 rounded border text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
+                  className="px-3 py-1 rounded-sm border text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
                   onClick={() => importFileRef.current?.click()}
                 >
                   {t('settings:import.button')}
@@ -369,7 +369,7 @@ export default function SettingsPage({ publicKey, onBack: _onBack }) {
         <section className="space-y-4">
           <h2 className="text-xl font-semibold">{t('settings:sections.explorer', t('settings:tabs.explorer'))}</h2>
           <p className="text-sm text-gray-700 dark:text-gray-300">{t('settings:explorer.description')}</p>
-          <div className="rounded border p-4 space-y-3">
+          <div className="rounded-sm border p-4 space-y-3">
             <div className="text-sm font-semibold">
               {isEditingExplorer ? t('common:settings.explorer.editTitle') : t('settings:explorer.addButton')}
             </div>
@@ -377,7 +377,7 @@ export default function SettingsPage({ publicKey, onBack: _onBack }) {
               <label className="text-sm sm:w-40" htmlFor="explorer-name">{t('settings:explorer.nameLabel')}</label>
               <input
                 id="explorer-name"
-                className="border rounded px-2 py-1 w-full"
+                className="border rounded-sm px-2 py-1 w-full"
                 value={newExplorerName}
                 onChange={(e) => setNewExplorerName(e.target.value)}
               />
@@ -386,7 +386,7 @@ export default function SettingsPage({ publicKey, onBack: _onBack }) {
               <label className="text-sm sm:w-40" htmlFor="explorer-url">{t('settings:explorer.urlLabel')}</label>
               <input
                 id="explorer-url"
-                className="border rounded px-2 py-1 w-full"
+                className="border rounded-sm px-2 py-1 w-full"
                 value={newExplorerUrl}
                 onChange={(e) => setNewExplorerUrl(e.target.value)}
                 placeholder="https://…{address}"
@@ -396,7 +396,7 @@ export default function SettingsPage({ publicKey, onBack: _onBack }) {
               <label className="text-sm sm:w-40" htmlFor="explorer-testnet-url">{t('settings:explorer.testnetUrlLabel')}</label>
               <input
                 id="explorer-testnet-url"
-                className="border rounded px-2 py-1 w-full"
+                className="border rounded-sm px-2 py-1 w-full"
                 value={newExplorerTestnetUrl}
                 onChange={(e) => setNewExplorerTestnetUrl(e.target.value)}
                 placeholder={t('settings:explorer.testnetUrlPlaceholder')}
@@ -406,7 +406,7 @@ export default function SettingsPage({ publicKey, onBack: _onBack }) {
             <button
               type="button"
               onClick={addExplorer}
-              className="px-3 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 text-sm"
+              className="px-3 py-2 rounded-sm bg-blue-600 text-white hover:bg-blue-700 text-sm"
             >
               {isEditingExplorer ? t('common:settings.explorer.edit') : t('settings:explorer.addButton')}
             </button>
@@ -417,7 +417,7 @@ export default function SettingsPage({ publicKey, onBack: _onBack }) {
               <div className="text-sm text-gray-600">{t('settings:explorer.noEntries')}</div>
             )}
             {explorerList.map((exp) => (
-              <div key={exp.id} className="flex items-center gap-3 border rounded px-3 py-2">
+              <div key={exp.id} className="flex items-center gap-3 border rounded-sm px-3 py-2">
                 <input
                   type="radio"
                   name="default-explorer"
@@ -439,21 +439,21 @@ export default function SettingsPage({ publicKey, onBack: _onBack }) {
                 <button
                   type="button"
                   onClick={() => setAsDefault(exp.key || exp.id)}
-                  className="px-2 py-1 rounded border text-xs hover:bg-gray-100 dark:hover:bg-gray-800"
+                  className="px-2 py-1 rounded-sm border text-xs hover:bg-gray-100 dark:hover:bg-gray-800"
                 >
                   {t('settings:explorer.setDefault')}
                 </button>
                 <button
                   type="button"
                   onClick={() => handleEditExplorer(exp)}
-                  className="px-2 py-1 rounded border text-xs hover:bg-gray-100 dark:hover:bg-gray-800"
+                  className="px-2 py-1 rounded-sm border text-xs hover:bg-gray-100 dark:hover:bg-gray-800"
                 >
                   {t('settings:explorer.edit')}
                 </button>
                 <button
                   type="button"
                   onClick={() => removeExplorer(exp.id || exp.key)}
-                  className={`px-2 py-1 rounded border text-xs ${explorerList.length <= 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-100 dark:hover:bg-gray-800'}`}
+                  className={`px-2 py-1 rounded-sm border text-xs ${explorerList.length <= 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-100 dark:hover:bg-gray-800'}`}
                   disabled={explorerList.length <= 1}
                 >
                   {t('settings:explorer.removeButton')}
@@ -483,7 +483,7 @@ export default function SettingsPage({ publicKey, onBack: _onBack }) {
         <section className="space-y-4">
           <h2 className="text-xl font-semibold">{t('settings:scamSimulator.title')}</h2>
 
-          <div className="border rounded p-4 space-y-3">
+          <div className="border rounded-sm p-4 space-y-3">
             <h3 className="font-semibold">{t('settings:scamSimulator.typingSpeed.label')}</h3>
             <p className="text-sm text-gray-600 dark:text-gray-400">{t('settings:scamSimulator.typingSpeed.description')}</p>
             <div className="flex gap-3 flex-wrap">
@@ -503,7 +503,7 @@ export default function SettingsPage({ publicKey, onBack: _onBack }) {
             </div>
           </div>
 
-          <div className="border rounded p-4 space-y-2">
+          <div className="border rounded-sm p-4 space-y-2">
             <h3 className="font-semibold">{t('settings:scamSimulator.hints.label')}</h3>
             <p className="text-sm text-gray-600 dark:text-gray-400">{t('settings:scamSimulator.hints.description')}</p>
             <label className="flex items-center gap-3 cursor-pointer">
@@ -521,7 +521,7 @@ export default function SettingsPage({ publicKey, onBack: _onBack }) {
             </label>
           </div>
 
-          <div className="border rounded p-4 space-y-2">
+          <div className="border rounded-sm p-4 space-y-2">
             <h3 className="font-semibold">{t('settings:scamSimulator.resetStats.label')}</h3>
             {resetScamDone && <p className="text-sm text-green-600 dark:text-green-400">{t('settings:scamSimulator.resetStats.done')}</p>}
             <button
@@ -539,7 +539,7 @@ export default function SettingsPage({ publicKey, onBack: _onBack }) {
                 setResetScamDone(true);
                 setTimeout(() => setResetScamDone(false), 3000);
               }}
-              className="px-3 py-2 rounded bg-red-600 text-white hover:bg-red-700 text-sm"
+              className="px-3 py-2 rounded-sm bg-red-600 text-white hover:bg-red-700 text-sm"
             >
               {t('settings:scamSimulator.resetStats.button')}
             </button>

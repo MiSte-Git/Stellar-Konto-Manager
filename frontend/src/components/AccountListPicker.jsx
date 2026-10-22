@@ -84,7 +84,7 @@ export default function AccountListPicker({
         aria-haspopup="listbox"
         aria-expanded={open}
         className={[
-          'flex items-center justify-center px-2 py-0 border rounded text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 disabled:opacity-50',
+          'flex items-center justify-center px-2 py-0 border rounded-sm text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 disabled:opacity-50',
           open ? 'bg-gray-100 dark:bg-gray-800' : '',
           buttonClassName,
         ].filter(Boolean).join(' ')}
@@ -99,7 +99,7 @@ export default function AccountListPicker({
       </button>
       {open && (
         <div
-          className="absolute left-0 right-0 top-full z-30 mt-1 rounded border bg-white dark:bg-gray-900 shadow-lg"
+          className="absolute left-0 right-0 top-full z-30 mt-1 rounded-sm border bg-white dark:bg-gray-900 shadow-lg"
           data-testid="account-list-picker"
         >
           <div className="px-3 pt-2 pb-1 text-xs font-semibold text-gray-700 dark:text-gray-300">
@@ -118,7 +118,7 @@ export default function AccountListPicker({
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder={t('common:accountPicker.filterPlaceholder', 'Nach Label oder Adresse filtern')}
-                  className="w-full border rounded px-2 py-1 text-sm"
+                  className="w-full border rounded-sm px-2 py-1 text-sm"
                   autoComplete="off"
                   spellCheck={false}
                 />
@@ -136,17 +136,17 @@ export default function AccountListPicker({
                       {(e.isTestnet || e.compromised || e.deactivated) && (
                         <div className="mt-0.5 flex flex-wrap gap-1 text-xs">
                           {e.isTestnet && (
-                            <span className="px-1.5 py-0.5 rounded bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-200">
+                            <span className="px-1.5 py-0.5 rounded-sm bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-200">
                               {t('common:account.testnetLabel', '(Testnet)')}
                             </span>
                           )}
                           {e.compromised && (
-                            <span className="px-1.5 py-0.5 rounded bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-200">
+                            <span className="px-1.5 py-0.5 rounded-sm bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-200">
                               {t('common:accountPicker.compromised', 'kompromittiert')}
                             </span>
                           )}
                           {e.deactivated && (
-                            <span className="px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-200">
+                            <span className="px-1.5 py-0.5 rounded-sm bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-200">
                               {t('common:accountPicker.deactivated', 'deaktiviert')}
                             </span>
                           )}

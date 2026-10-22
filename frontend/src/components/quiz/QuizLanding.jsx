@@ -191,7 +191,7 @@ export default function QuizLanding({
       {/* 3. PREVIOUS PERFORMANCE */}
       {stars > 0 && (
         <div className="mt-5 flex justify-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-xs">
             <StarDisplay stars={stars} />
             <span className="text-sm text-gray-600 dark:text-gray-400">{stars}/3</span>
           </div>
@@ -214,7 +214,7 @@ export default function QuizLanding({
             type="checkbox"
             checked={openInNewTab}
             onChange={(e) => toggleStartInNewTab(e.target.checked)}
-            className="rounded border-gray-300 dark:border-gray-600 text-indigo-600 focus:ring-indigo-500"
+            className="rounded-sm border-gray-300 dark:border-gray-600 text-indigo-600 focus:ring-indigo-500"
           />
           {t('quiz.ui:openInNewTab.default', 'Quiz standardmäßig in neuem Tab öffnen')}
         </label>
@@ -301,7 +301,7 @@ export default function QuizLanding({
             </div>
             <button
               type="button"
-              className="flex-shrink-0 px-4 py-2 rounded-xl text-sm font-semibold bg-indigo-600 hover:bg-indigo-700 text-white transition-colors"
+              className="shrink-0 px-4 py-2 rounded-xl text-sm font-semibold bg-indigo-600 hover:bg-indigo-700 text-white transition-colors"
               onClick={() => {
                 try {
                   const url = quizRunPath('multisig');

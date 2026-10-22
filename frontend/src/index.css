@@ -1,8 +1,26 @@
-@import 'flag-icons/css/flag-icons.min.css';
+@import 'flag-icons/css/flag-icons.min.css' layer(base);
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+@source '../index.html';
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
 
 /* Wallet-Input: Deaktiviere Rechtschreib-/Auto-Korrektur und Pfeil bei Datalist */
 .wallet-input {
@@ -36,10 +54,6 @@
   transition: background-color 9999s ease-in-out 0s;
 }
 
-/* Global: Form-Controls sollen immer den Projekt-Font nutzen */
-input, textarea, select, button {
-  font-family: inherit;
-}
 
 /* Global: Chromium Autofill darf Font/Rendering nicht “umkippen” */
 input:-webkit-autofill,
@@ -57,69 +71,108 @@ select:-webkit-autofill:focus {
 }
 
 
-:root {
-  font-family: Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+/*
+  Globale Element-Styles liegen in @layer base: In Tailwind v4 stehen die
+  Utilities in @layer utilities, ungelayerte Regeln würden sie sonst immer
+  überschreiben (z. B. button-Hintergrund/Padding). In v3 gewannen die
+  Utility-Klassen über die höhere Spezifität.
+*/
+@layer base {
+  /* Global: Form-Controls sollen immer den Projekt-Font nutzen */
+  input, textarea, select, button {
+    font-family: inherit;
+  }
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
   :root {
-    color: #213547;
-    background-color: #ffffff;
+    font-family: Arial, sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
+
+    color-scheme: light dark;
+    color: rgba(255, 255, 255, 0.87);
+    background-color: #242424;
+
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
-  a:hover {
-    color: #747bff;
+
+  a {
+    font-weight: 500;
+    color: #646cff;
+    text-decoration: inherit;
   }
+
+  body {
+    margin: 0;
+    min-width: 320px;
+    min-height: 100vh;
+  }
+
+  h1 {
+    font-size: 3.2em;
+    line-height: 1.1;
+  }
+
   button {
-    background-color: #f9f9f9;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    padding: 0.6em 1.2em;
+    font-size: 1em;
+    font-weight: 500;
+    font-family: inherit;
+    background-color: #1a1a1a;
+    cursor: pointer;
+    transition: border-color 0.25s;
+  }
+
+  @media (prefers-color-scheme: light) {
+    :root {
+      color: #213547;
+      background-color: #ffffff;
+    }
+    button {
+      background-color: #f9f9f9;
+    }
+  }
+
+  /* v3-Preflight-Kompatibilität: Placeholder grau statt currentColor/50 % */
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--color-gray-400);
+  }
+
+  /* v3-Preflight-Kompatibilität: Pointer auch für role="button", Default bei disabled */
+  [role="button"] {
+    cursor: pointer;
+  }
+  button:disabled,
+  [role="button"]:disabled {
+    cursor: default;
+  }
+}
+
+/*
+  Pseudo-Klassen-Regeln hatten in v3 höhere Spezifität (0,1,1) als einfache
+  Utilities (0,1,0) und haben diese überschrieben. Im Utilities-Layer bleibt
+  dieses Verhalten erhalten, hover:/focus:-Utilities (0,2,0) gewinnen weiterhin.
+*/
+@layer utilities {
+  a:hover {
+    color: #535bf2;
+  }
+  button:hover {
+    border-color: #646cff;
+  }
+  button:focus,
+  button:focus-visible {
+    outline: 4px auto -webkit-focus-ring-color;
+  }
+
+  @media (prefers-color-scheme: light) {
+    a:hover {
+      color: #747bff;
+    }
   }
 }

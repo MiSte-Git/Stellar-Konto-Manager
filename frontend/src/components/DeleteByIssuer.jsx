@@ -94,19 +94,19 @@ function DeleteByIssuer({
         type="text"
         value={issuerAddress}
         onChange={(e) => { setIssuerAddress(e.target.value); if (localError) setLocalError(''); }}
-        className={`w-full p-2 border rounded ${localError ? 'border-red-500 ring-1 ring-red-400' : 'border-gray-300'}`}
+        className={`w-full p-2 border rounded-sm ${localError ? 'border-red-500 ring-1 ring-red-400' : 'border-gray-300'}`}
         placeholder="e.g., GA5ZSEJ..."
       />
       <div className="mt-2 flex items-center gap-2">
         <button
           onClick={handleDelete}
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:opacity-50"
+          className="bg-blue-500 text-white px-4 py-2 rounded-sm hover:bg-blue-600 disabled:opacity-50"
           disabled={isLoading}
         >
           {isLoading ? t('common:option.loading', 'Loading…') : t('common:option.delete')}
         </button>
         {localError && (
-          <span className="text-xs text-red-700 inline-block border border-red-500 rounded px-2 py-0.5">
+          <span className="text-xs text-red-700 inline-block border border-red-500 rounded-sm px-2 py-0.5">
             {localError}
           </span>
         )}
