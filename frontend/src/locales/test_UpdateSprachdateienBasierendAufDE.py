@@ -58,6 +58,10 @@ Deckt konkret aufgetretene Pipeline-Bugs ab:
    "Kreditlinie" (fi, it, ru, es, fr, hr). Entscheidung: Fachbegriffe bleiben in
    allen Sprachen englisch; TECH_TERMS wird in beiden Phasen per Platzhalter
    geschuetzt, --fix-terms repariert Bestandsuebersetzungen. Siehe TechTermTests.
+9. i18next-Variablen ({{time}}, {{detail}}, ...) gingen unmaskiert an DeepL, das die
+   Variablennamen mituebersetzte ({{time}} -> {{tempo}}, {{detail}} -> {{détail}};
+   35 Keys in 8 Sprachen). i18next fand die Variable nicht mehr, die Meldung zeigte
+   den Platzhalter roh an. Jetzt als __KEEP_VAR_n__ maskiert. Siehe I18nVarTests.
 
 Nur Standardbibliothek (unittest) - kein pytest/Netzwerk noetig.
 Aufruf: python3 -m unittest test_UpdateSprachdateienBasierendAufDE -v
@@ -848,6 +852,73 @@ class TechTermTests(unittest.TestCase):
         self.assertEqual(fr_out["t"], "Supprimer trustline")
         self.assertEqual(fr_out["o"], "Annuler", "Key ohne Fachbegriff darf nicht angefasst werden")
         self.assertEqual(sent, [("fr", "Delete __KEEP_TERM_1__")])
+
+
+class I18nVarTests(unittest.TestCase):
+    """Bug 9: {{...}}-Variablen dürfen nie übersetzt werden."""
+
+    def test_vars_masked_and_restored_in_both_phases(self):
+        for lang, text in (("en", "Dauer: {{time}}, Seite {{page}}"), ("it", "Elapsed: {{time}}")):
+            protected, ph = usd.protect_for_translation(text, lang)
+            self.assertNotIn("{{", protected)
+            self.assertEqual(usd.restore_parenthesized_english(protected, ph), text)
+
+    def test_var_in_parentheses_not_masked_twice(self):
+        protected, ph = usd.protect_for_translation("Fehler ({{code}})", "en")
+        self.assertEqual(protected, "Fehler (__KEEP_VAR_1__)")
+        self.assertEqual(ph, {"__KEEP_VAR_1__": "{{code}}"})
+
+    def test_var_with_tech_term_name_is_masked_as_var(self):
+        protected, ph = usd.protect_for_translation("Memo: {{ memo }}", "fr")
+        self.assertEqual(sorted(ph.values()), ["Memo", "{{ memo }}"])
+        self.assertEqual(usd.restore_parenthesized_english(protected, ph), "Memo: {{ memo }}")
+
+    def test_only_vars_skips_api_call(self):
+        protected, ph = usd.protect_for_translation("{{count}}", "ru")
+        with mock.patch.object(usd, "translate_text") as tt:
+            out = usd.translate_protected(protected, ph, "ru", "deepl", None, "k", "p")
+        tt.assert_not_called()
+        self.assertEqual(usd.restore_parenthesized_english(out, ph), "{{count}}")
+
+    def test_lost_var_token_counts_as_failure(self):
+        protected, ph = usd.protect_for_translation("Elapsed: {{time}}", "it")
+        counters = {}
+        with mock.patch.object(usd, "translate_text", return_value="Trascorso: {{tempo}}"):
+            out = usd.translate_protected(protected, ph, "it", "deepl", None, "k", "p", counters)
+        self.assertIsNone(out)
+        self.assertEqual(counters.get("lostPlaceholderKeys"), 1)
+
+    def test_deepl_cannot_rename_vars_end_to_end(self):
+        os.environ["DEEPL_API_KEY"] = "test-key-not-used"
+        self.addCleanup(lambda: os.environ.pop("DEEPL_API_KEY", None))
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        base_path = tmp.name
+        os.makedirs(os.path.join(base_path, "de"), exist_ok=True)
+        with open(os.path.join(base_path, "de", "ns.json"), "w", encoding="utf-8") as f:
+            json.dump({"elapsed": "Vergangen: {{time}}", "err": "Fehler: {{detail}}"}, f)
+
+        words = {"Vergangen": "Elapsed", "Fehler": "Error", "Elapsed": "Trascorso", "Error": "Errore",
+                 "time": "tempo", "detail": "dettaglio"}
+        sent = []
+
+        def fake_deepl(text, target_lang, api_key, api_url=None):
+            # Simuliert DeepL: übersetzt jedes bekannte Wort, auch innerhalb von {{...}}
+            sent.append(text)
+            return usd.re.sub(r"[A-Za-z]+", lambda m: words.get(m.group(0), m.group(0)), text)
+
+        argv = ["UpdateSprachdateienBasierendAufDE.py", "--provider", "deepl", "--base-path", base_path]
+        with mock.patch.object(usd, "TARGET_LANGS", ["en", "it"]), \
+             mock.patch.object(usd, "translate_text_deepl", side_effect=fake_deepl), \
+             mock.patch.object(usd, "HASH_DIR", os.path.join(base_path, ".i18n_hash")), \
+             mock.patch.object(sys, "argv", argv):
+            usd.main()
+
+        for lang, expected in (("en", {"elapsed": "Elapsed: {{time}}", "err": "Error: {{detail}}"}),
+                               ("it", {"elapsed": "Trascorso: {{time}}", "err": "Errore: {{detail}}"})):
+            with open(os.path.join(base_path, lang, "ns.json"), encoding="utf-8") as f:
+                self.assertEqual(json.load(f), expected, lang)
+        self.assertFalse(any("{{" in t for t in sent), sent)
 
 
 class FakeKeyring:

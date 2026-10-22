@@ -82,7 +82,7 @@ def translate_text_openai(text: str, target_lang: str, api_key: str) -> str | No
                     "role": "system",
                     "content": (
                         f"Übersetze den folgenden Text präzise ins {target_lang}. Behalte den Kontext und die Bedeutung bei. "
-                        "Platzhalter der Form __KEEP_TERM_1__ oder __KEEP_EN_TERM_1__ sowie {{...}}-Variablen exakt unverändert übernehmen."
+                        "Platzhalter der Form __KEEP_TERM_1__, __KEEP_EN_TERM_1__ oder __KEEP_VAR_1__ sowie {{...}}-Variablen exakt unverändert übernehmen."
                     ),
                 },
                 {"role": "user", "content": text},
@@ -379,6 +379,10 @@ def protect_parenthesized_english(text: str) -> tuple[str, dict[str, str]]:
 
     def _repl(match: re.Match[str]) -> str:
         inner = match.group(1)
+        # Bereits maskierte Variablen ("({{code}})" -> "(__KEEP_VAR_1__)") nicht erneut maskieren:
+        # das verschachtelte Token würde beim Wiederherstellen nicht mehr aufgelöst.
+        if KEEP_PLACEHOLDER_RE.fullmatch(inner or ""):
+            return match.group(0)
         if not inner or not ASCII_EN_ALLOWED.fullmatch(inner) or not _looks_like_kept_english_term(inner):
             return match.group(0)
         placeholder = f"__KEEP_EN_TERM_{len(placeholders) + 1}__"
@@ -460,7 +464,30 @@ TECH_TERM_RXS = [
     for t in sorted(TECH_TERMS, key=len, reverse=True)
 ]
 TECH_TERM_RE = re.compile("|".join(rx.pattern for _, rx in TECH_TERM_RXS), re.IGNORECASE)
-KEEP_PLACEHOLDER_RE = re.compile(r"__KEEP_(?:EN_)?TERM_\d+__")
+KEEP_PLACEHOLDER_RE = re.compile(r"__KEEP_(?:EN_TERM|TERM|VAR)_\d+__")
+
+# -------- i18next-Variablen: {{name}} nie übersetzen --------
+# DeepL behandelt "{{time}}" als normalen Text und übersetzt den Variablennamen mit
+# (konkret beobachtet, 35 Keys in 8 Sprachen: {{time}} -> {{tempo}}/{{время}},
+# {{detail}} -> {{détail}}/{{detalle}}/{{dettaglio}}, {{date}} -> {{datum}}/{{fecha}} ...).
+# i18next findet die Variable dann nicht mehr und zeigt den Platzhalter roh an.
+# Maskierung wie bei den Fachbegriffen; fehlt ein Token in der Antwort, greift dieselbe
+# Fehlerbehandlung (translate_protected -> None, nächster Lauf versucht es erneut).
+I18N_VAR_RE = re.compile(r"\{\{[^{}]*\}\}")
+
+
+def protect_i18n_vars(text: str) -> tuple[str, dict[str, str]]:
+    """Ersetzt {{...}}-Variablen durch __KEEP_VAR_n__. Beispiel: "Dauer: {{time}}" -> "Dauer: __KEEP_VAR_1__"."""
+    placeholders: dict[str, str] = {}
+    if not isinstance(text, str) or "{{" not in text:
+        return text, placeholders
+
+    def _repl(match: re.Match[str]) -> str:
+        placeholder = f"__KEEP_VAR_{len(placeholders) + 1}__"
+        placeholders[placeholder] = match.group(0)
+        return placeholder
+
+    return I18N_VAR_RE.sub(_repl, text), placeholders
 
 
 def rx_fullmatch(term: str, text: str) -> bool:
@@ -497,8 +524,12 @@ def _has_translatable_letters(text: str) -> bool:
 
 
 def protect_for_translation(text: str, target_lang: str) -> tuple[str, dict[str, str]]:
-    """Kombiniert Klammer-Schutz (nur Phase A) und Fachbegriff-Schutz (beide Phasen)."""
-    protected, placeholders = protect_parenthesized_english_for_target(text, target_lang)
+    """Kombiniert Variablen-Schutz, Klammer-Schutz (nur Phase A) und Fachbegriff-Schutz (beide Phasen).
+    Variablen zuerst, damit weder Klammer- noch Fachbegriff-Heuristik in {{...}} hineingreift.
+    """
+    protected, placeholders = protect_i18n_vars(text)
+    protected, paren_placeholders = protect_parenthesized_english_for_target(protected, target_lang)
+    placeholders.update(paren_placeholders)
     protected, term_placeholders = protect_tech_terms(protected)
     placeholders.update(term_placeholders)
     return protected, placeholders
