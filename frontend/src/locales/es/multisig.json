@@ -165,7 +165,7 @@
       "signed": "firmado",
       "missing": "falta",
       "noSessionSecret": "No hay ningún secret key almacenado en el navegador. Introduce el secreto o importa un XDR firmado.",
-      "signedLocalStatus": "Firma guardada. Estado actual: {{estado}}"
+      "signedLocalStatus": "Firma guardada. Estado actual: {{status}}"
     },
     "changes": {
       "title": "Cambios planeados",
@@ -248,7 +248,7 @@
       "success": "Tarea revocada. Transacción {{hash}}. El estado pasará a «no válido» en unos 30 segundos.",
       "insufficientWeight": "Los valores de Signers que has introducido no suman el peso requerido {{required}}.",
       "noTxData": "No se ha podido leer la transacción de trabajo; no se puede revocar.",
-      "failed": "Error en la revocación: {{motivo}}",
+      "failed": "Error en la revocación: {{reason}}",
       "sequenceTooFar": "La secuencia de esta tarea no coincide con la secuencia actual de la cuenta. Una tarea SKM que sigue siendo válida siempre tiene un número exactamente superior en uno. Revocarla podría dañar otras transacciones preparadas y, por lo tanto, se bloquea.",
       "ambiguous": "El resultado no es claro (error de red). Comprueba la transacción {{hash}} en el explorador antes de volver a intentarlo.",
       "sequenceInvalid": "La secuencia de la operación o de la cuenta es ilegible; no es posible revocarla.",
@@ -288,7 +288,7 @@
     "details": "Details & Signatures",
     "export": "Exportar",
     "signatures": "Firmas",
-    "signaturesProgress": "{{recopilado}} / {{requerido}} peso de la firma",
+    "signaturesProgress": "{{collected}} / {{required}} peso de la firma",
     "filter": {
       "mine": "Solo los pedidos que aún necesito firmar.",
       "assigned": "También los pedidos en los que soy un signer."

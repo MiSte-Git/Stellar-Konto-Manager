@@ -284,13 +284,13 @@
     "done": "Voltooid",
     "duration": "Duur: {{val}}",
     "elapsed": "Duur: {{time}}",
-    "eta": "ETA: {{minuten}} min.",
+    "eta": "ETA: {{minutes}} min.",
     "firstMatchAt": "Laatste storting: {{date}}",
     "mode": {
       "cache": "Modus: Cache",
       "live": "Live-modus (Horizon)"
     },
-    "oldest": "oudste datum op deze pagina: {{datum}}",
+    "oldest": "oudste datum op deze pagina: {{date}}",
     "oldestMatchInRangeAt": "Eerste storting in de periode: {{date}}",
     "phase": {
       "backfill": "Ontbrekende betalingen laden…",
@@ -302,7 +302,7 @@
       "finalize": "Voltooid",
       "finalizeDiag": "Diagnose voltooid",
       "idle": "Klaar…",
-      "pageDone": "Pagina {{pagina}} voltooid.",
+      "pageDone": "Pagina {{page}} voltooid.",
       "rehydrate": "Cache opnieuw opbouwen…",
       "scan": "Betalingen scannen (pagina {{page}})…",
       "scan_ops": "Scanne Operationen…",
@@ -364,7 +364,7 @@
       },
       "info": {
         "count": "Inzendingen: {{n}}",
-        "updatedAt": "Per {{datum}}"
+        "updatedAt": "Per {{date}}"
       },
       "table": {
         "addRow": "Regel toevoegen",

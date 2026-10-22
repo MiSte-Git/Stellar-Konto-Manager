@@ -248,7 +248,7 @@
       "success": "Lavoro revocato. Transazione {{hash}}. Lo stato passerà a \"non valido\" entro circa 30 secondi.",
       "insufficientWeight": "I valori Signers inseriti non raggiungono il peso richiesto {{required}}.",
       "noTxData": "Non è stato possibile leggere la transazione di lavoro; non è possibile revocarla.",
-      "failed": "Revoca non riuscita: {{motivo}}",
+      "failed": "Revoca non riuscita: {{reason}}",
       "sequenceTooFar": "La sequenza di questo processo non corrisponde alla sequenza attuale dell'account. Un processo SKM ancora valido ha sempre una sequenza esattamente superiore di uno. La sua revoca potrebbe compromettere altre transazioni preparate e pertanto è bloccata.",
       "ambiguous": "Il risultato non è chiaro (errore di rete). Si prega di controllare la transazione {{hash}} nell'explorer prima di riprovare.",
       "sequenceInvalid": "La sequenza relativa all'incarico o al conto è illeggibile; non è possibile procedere alla revoca.",

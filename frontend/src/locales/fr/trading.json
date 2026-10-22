@@ -225,7 +225,7 @@
         "sellXlmForToken": "Proposer des XLM contre {{asset}}"
       },
       "amount": "Montant de la vente {{asset}}",
-      "price": "Prix : {{achat}} par 1 {{vente}}",
+      "price": "Prix : {{buying}} par 1 {{selling}}",
       "create": "Passer un ordre à cours limité",
       "confirmTitle": "Confirmer l'ordre à cours limité",
       "cancelTitle": "Supprimer un ordre à cours limité",

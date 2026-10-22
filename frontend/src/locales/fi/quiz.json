@@ -650,7 +650,7 @@
   },
   "result": {
     "score": "Tuloksesi: {{score}}%",
-    "summary": "{{oikein}}/{{yhteensä}} oikein",
+    "summary": "{{correct}}/{{total}} oikein",
     "passInfo": "threshold:n läpäisy: {{pass}} % — Tila: {{status}}",
     "passed": "Läpäissyt",
     "failed": "Epäonnistui",

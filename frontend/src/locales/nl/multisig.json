@@ -248,7 +248,7 @@
       "success": "Taak ingetrokken. Transactie {{hash}}. De status verandert binnen ongeveer 30 seconden in ‘ongeldig’.",
       "insufficientWeight": "De Signers die je hebt ingevoerd, komen samen niet uit op het vereiste gewicht {{required}}.",
       "noTxData": "De transactie kon niet worden gelezen; deze kan niet worden ingetrokken.",
-      "failed": "Intrekking mislukt: {{reden}}",
+      "failed": "Intrekking mislukt: {{reason}}",
       "sequenceTooFar": "De volgnummering van deze taak komt niet overeen met de huidige volgnummering van de rekening. Een nog geldige SKM-taak heeft altijd precies één hoger volgnummer. Het intrekken ervan zou andere voorbereide transacties kunnen beschadigen en wordt daarom geblokkeerd.",
       "ambiguous": "Het resultaat is onduidelijk (netwerkfout). Controleer de transactie {{hash}} in de explorer voordat je het opnieuw probeert.",
       "sequenceInvalid": "De opdracht- of rekeningreeks is onleesbaar; intrekking is niet mogelijk.",
@@ -288,7 +288,7 @@
     "details": "Details & Signatures",
     "export": "Exporteren",
     "signatures": "Handtekeningen",
-    "signaturesProgress": "{{verzameld}} / {{vereist}} handtekeningengewicht",
+    "signaturesProgress": "{{collected}} / {{required}} handtekeningengewicht",
     "filter": {
       "mine": "Alleen bestellingen die ik nog moet ondertekenen.",
       "assigned": "Ook bestellingen waarbij ik een signer ben."

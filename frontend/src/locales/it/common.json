@@ -283,7 +283,7 @@
     "counts": "Verificato: {{ops}} • Corrispondenze: {{matches}}",
     "done": "Completato",
     "duration": "Durata: {{val}}",
-    "elapsed": "Durata: {{tempo}}",
+    "elapsed": "Durata: {{time}}",
     "eta": "ETA: {{minutes}} min.",
     "firstMatchAt": "Ultimo deposito: {{date}}",
     "mode": {
@@ -343,7 +343,7 @@
       "editTitle": "Modifica voce di Explorer"
     },
     "error": {
-      "fetchFailed": "Caricamento delle impostazioni non riuscito: {{dettaglio}}"
+      "fetchFailed": "Caricamento delle impostazioni non riuscito: {{detail}}"
     },
     "label": "Impostazioni",
     "prefetchDays": "Tempo di consegna",

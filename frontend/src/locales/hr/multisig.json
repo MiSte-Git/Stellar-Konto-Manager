@@ -195,7 +195,7 @@
       "hint": "Molimo unesite secret key za račun {{account}}.",
       "signNow": "Potpiši sada"
     },
-    "submitFailed": "Došlo je do pogreške prilikom slanja: {{razlog}}",
+    "submitFailed": "Došlo je do pogreške prilikom slanja: {{reason}}",
     "submitNoExtras": "Nema dodatnih detalja o grešci.",
     "noAccessToken": "Nema dostupnog pristupa token. Molimo najprije učitajte račun koji je signer ovog posla.",
     "notASigner": "Ovaj račun nije aktivni signer ove posla.",
@@ -288,7 +288,7 @@
     "details": "Details & Signatures",
     "export": "Izvoz",
     "signatures": "Potpisi",
-    "signaturesProgress": "{{prikupljena}} / {{potrebna}} težina potpisa",
+    "signaturesProgress": "{{collected}} / {{required}} težina potpisa",
     "filter": {
       "mine": "Samo narudžbe koje još trebam potpisati.",
       "assigned": "Također i narudžbe u kojima sam signer."

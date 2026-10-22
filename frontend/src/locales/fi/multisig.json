@@ -288,7 +288,7 @@
     "details": "Details & Signatures",
     "export": "Vienti",
     "signatures": "Allekirjoitukset",
-    "signaturesProgress": "{{kerätty}} / {{vaadittu}} allekirjoitusten määrä",
+    "signaturesProgress": "{{collected}} / {{required}} allekirjoitusten määrä",
     "filter": {
       "mine": "Vain tilaukset, jotka minun täytyy vielä allekirjoittaa.",
       "assigned": "Myös tilaukset, joissa olen signer."

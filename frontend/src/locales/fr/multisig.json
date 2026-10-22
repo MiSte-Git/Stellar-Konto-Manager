@@ -195,7 +195,7 @@
       "hint": "Veuillez saisir la valeur secret key pour le compte {{account}}.",
       "signNow": "Signez maintenant"
     },
-    "submitFailed": "Une erreur s'est produite lors de l'envoi : {{raison}}",
+    "submitFailed": "Une erreur s'est produite lors de l'envoi : {{reason}}",
     "submitNoExtras": "Aucun détail d'erreur supplémentaire disponible.",
     "noAccessToken": "Aucun accès token disponible. Veuillez d'abord charger le compte correspondant à un signer de cette tâche.",
     "notASigner": "Ce compte n'est pas un signer actif de cette mission.",

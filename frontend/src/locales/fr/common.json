@@ -431,7 +431,7 @@
       "sendButton": "Envoyer",
       "success": "Succès : Paiement envoyé. TX : {{hash}}",
       "successShort": "Envoyé avec succès",
-      "error": "Erreur lors de l'envoi : {{détail}}",
+      "error": "Erreur lors de l'envoi : {{detail}}",
       "amountMissing": "Veuillez entrer un montant.",
       "amountInvalid": "Montant non valide (7 décimales au maximum).",
       "amountPositive": "Le montant doit être supérieur à 0.",

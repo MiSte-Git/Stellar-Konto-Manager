@@ -182,7 +182,7 @@
     "invalidSlippage": "De afwijking moet tussen 0 en 50% liggen.",
     "targetNotAuthorized": "Je Trustline voor {{code}} is niet goedgekeurd door de uitgever; deze kan niet worden omgezet naar deze Asset.",
     "targetAuthRequired": "De redacteur van {{code}} eist dat de nieuwe Trustlines wordt goedgekeurd. Maak eerst de Trustline aan en laat deze goedkeuren.",
-    "previewFailed": "Het voorbeeld kon niet worden geladen: {{reden}}",
+    "previewFailed": "Het voorbeeld kon niet worden geladen: {{reason}}",
     "selectedCount": "{{count}} van de {{total}} geselecteerde",
     "selectAll": "Alles selecteren",
     "selectNone": "Niets selecteren",

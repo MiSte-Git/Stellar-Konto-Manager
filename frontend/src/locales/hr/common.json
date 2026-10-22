@@ -285,7 +285,7 @@
     "duration": "Trajanje: {{val}}",
     "elapsed": "Trajanje: {{time}}",
     "eta": "ETA: {{minutes}} min.",
-    "firstMatchAt": "Posljednji depozit: {{datum}}",
+    "firstMatchAt": "Posljednji depozit: {{date}}",
     "mode": {
       "cache": "Način: Keširanje",
       "live": "Način rada: Uživo (Horizon)"

@@ -225,7 +225,7 @@
         "sellXlmForToken": "Ofrece XLM a cambio de {{asset}}"
       },
       "amount": "Importe de la venta {{asset}}",
-      "price": "Precio: {{compra}} por 1 {{venta}}",
+      "price": "Precio: {{buying}} por 1 {{selling}}",
       "create": "Realizar una orden limitada",
       "confirmTitle": "Confirmar orden limitada",
       "cancelTitle": "Eliminar orden limitada",

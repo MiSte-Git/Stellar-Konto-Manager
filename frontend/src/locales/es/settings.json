@@ -21,7 +21,7 @@
     "title": "Anuncio"
   },
   "error": {
-    "fetchFailed": "Error al cargar la configuración: {{detalle}}"
+    "fetchFailed": "Error al cargar la configuración: {{detail}}"
   },
   "label": "Configuraciones",
   "prefetchDays": "Plazo de entrega",

@@ -364,7 +364,7 @@
       },
       "info": {
         "count": "Entradas: {{n}}",
-        "updatedAt": "Hasta {{fecha}}"
+        "updatedAt": "Hasta {{date}}"
       },
       "table": {
         "addRow": "Agregar línea",
@@ -431,7 +431,7 @@
       "sendButton": "Enviar",
       "success": "Éxito: Pago enviado. TX: {{hash}}",
       "successShort": "Enviado con éxito",
-      "error": "Error al enviar: {{detalle}}",
+      "error": "Error al enviar: {{detail}}",
       "amountMissing": "Por favor, introduzca una cantidad.",
       "amountInvalid": "Importe no válido (máx. 7 decimales).",
       "amountPositive": "La cantidad debe ser mayor que 0.",

@@ -288,7 +288,7 @@
     "details": "Details & Signatures",
     "export": "Экспорт",
     "signatures": "Подписи",
-    "signaturesProgress": "{{собрано}} / {{требуется}} вес подписи",
+    "signaturesProgress": "{{collected}} / {{required}} вес подписи",
     "filter": {
       "mine": "Только те заказы, которые мне ещё нужно подписать.",
       "assigned": "А также заказы, в которых я выступаю в качестве signer."
