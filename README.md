@@ -88,6 +88,7 @@ Local-first Stellar Wallet & Account Manager: Trustlines, Zahlungen, Muxed Accou
   npm run deploy:dry-run   # Prüfungen, Build und rsync-Dry-Run, lädt nichts hoch
   npm run deploy           # wie oben, danach Abfragen und Upload
   ```
+  Kurz: Änderung committen, `git push`, dann `npm run deploy`. Im Zweifel vorher `npm run deploy:dry-run`. `npm run start-build` allein baut nur und lädt nichts hoch.
   Ruft `scripts/start-build.js --deploy [--dry-run]` auf, die Deploy-Logik steht in `scripts/deploy-cyon.js`. Voraussetzung ist ein SSH-Eintrag `cyon-skm` in `~/.ssh/config` (Host `s014.cyon.net`, User `stegmann`, Key `~/.ssh/SSH_Cyon_new`) und lokal `rsync`. Ablauf:
   1. Git sauber und `HEAD` gleich `origin/main` (im Dry-Run nur Warnung), `npm test` im Root und in `frontend/` grün.
   2. Build mit `VITE_BASE=/` ohne `VITE_CSP_REPORT_ONLY`, Prüfung von `dist/.htaccess` und `index.html`, danach `gen-build-info.mjs` und `hash-dist.mjs`.
