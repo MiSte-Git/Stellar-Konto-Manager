@@ -28,7 +28,61 @@ async function withRetry(fn, { tries = 4, baseDelay = 400, signal } = {}) {
   throw lastErr;
 }
 
-/** 
+/**
+ * Macht aus einem beliebigen Fehler (Horizon/SDK, fetch, eigene Errors) einen lesbaren String
+ * für {{detail}}: HTTP-Status, Horizon-Titel/-Detail, extras.result_codes, sonst error.message.
+ * Liefert nie ein Objekt oder undefined.
+ */
+export function describeHorizonError(e) {
+  try {
+    if (e == null) return 'unknown';
+    if (typeof e === 'string') return e || 'unknown';
+    const resp = e.response || null;
+    const status = resp?.status || e.status || 0;
+    // stellar-sdk: e.response ist direkt der Horizon-Body ({ title, status, extras }); axios-artig: e.response.data
+    const data = resp?.data && typeof resp.data === 'object' ? resp.data : (resp && typeof resp === 'object' ? resp : null);
+    const parts = [];
+    if (status) parts.push(`HTTP ${status}`);
+    const title = data?.title || '';
+    if (title) parts.push(String(title));
+    const codes = data?.extras?.result_codes;
+    if (codes) parts.push(typeof codes === 'string' ? codes : JSON.stringify(codes));
+    const msg = typeof e.message === 'string' ? e.message.trim() : '';
+    if (msg && !parts.some((p) => p.includes(msg))) parts.push(msg);
+    if (!parts.length && data?.detail) parts.push(String(data.detail));
+    return parts.join(' – ') || String(e) || 'unknown';
+  } catch {
+    return 'unknown';
+  }
+}
+
+/**
+ * Erstellungsdatum eines Kontos aus der ersten verfügbaren Operation (order=asc, limit=1).
+ * Nur wenn diese ein create_account mit dem Konto als Ziel ist, ist sie die Erstellung.
+ * Sonst liegt die Erstellung vor der Horizon-History-Grenze → '' (unbekannt); die erste
+ * gefundene Operation wird bewusst nicht als Ersatz verwendet. Kein Weiterblättern.
+ */
+export async function fetchAccountCreatedAt({ server, publicKey }) {
+  if (!publicKey) return '';
+  const page = await server.operations().forAccount(publicKey).order('asc').limit(1).cursor('1').call();
+  const first = page?.records?.[0];
+  if (first?.type === 'create_account' && first.account === publicKey) return first.created_at || '';
+  return '';
+}
+
+/** Wirft den einheitlichen Ladefehler; detail ist immer ein String. */
+function throwFetchFailed(e) {
+  const prefix = 'fetchInvestedTokens.failed:';
+  const raw = e?.message || '';
+  if (raw.startsWith(prefix)) throw e;
+  const err = new Error(prefix + describeHorizonError(e));
+  err.detail = describeHorizonError(e);
+  err.isAborted = !!e?.isAborted || /aborted/i.test(raw);
+  err.cause = e;
+  throw err;
+}
+
+/**
  * Zählt AUSGEHENDE XLM-Zahlungen mit Memo (Groupfund) und summiert XLM je Memo.
  * Mehrfachzahlungen mit gleichem Memo werden als EIN Investment gezählt.
  */
@@ -63,6 +117,8 @@ export async function fetchGroupfundByMemo({
 
     let lastOldest = '';
     let stopEarly = false;
+    // Ausgehende XLM-Payments, zu denen der join keine Transaktionsdaten geliefert hat
+    let joinMissing = 0;
     while (!stopEarly) {
       if (signal?.aborted) throw new Error('fetch.groupfund.aborted');
       const recs = page?.records || [];
@@ -80,9 +136,13 @@ export async function fetchGroupfundByMemo({
         // Nur native (XLM) bzw. create_account
         const isNative = rec.asset_type === 'native' || type === 'create_account';
         if (!isNative) continue;
-        // Memo aus eingebetteter TX lesen (mit Fallback auf direkte Felder)
-        const memoRaw = rec?.transaction?.memo != null
-          ? String(rec.transaction.memo)
+        // Memo aus eingebetteter TX lesen. Das stellar-sdk macht aus dem Link `transaction`
+        // eine Lazy-Funktion; die per join eingebetteten Daten liegen in `transaction_attr`.
+        const txAttr = rec?.transaction_attr
+          || (rec?.transaction && typeof rec.transaction === 'object' ? rec.transaction : null);
+        if (!txAttr && rec?.transaction_memo == null) { joinMissing += 1; continue; }
+        const memoRaw = txAttr?.memo != null
+          ? String(txAttr.memo)
           : (rec?.transaction_memo != null ? String(rec.transaction_memo) : '');
         const memo = memoRaw.trim();
         if (!memo) continue;
@@ -112,7 +172,9 @@ export async function fetchGroupfundByMemo({
       if (stopEarly) break;
       if (pagesSeen >= limitPages) break;
 
-      // Cursor bestimmen und nächste Seite holen (robust gegen Horizon-Limits)
+      // Cursor bestimmen und nächste Seite holen. Leere Seite = Ende der verfügbaren
+      // Horizon-History (kein Fehler). Echte Fehler (Netz, Timeout, 429/5xx nach Retries)
+      // werden nicht verschluckt, sondern mit Detail gemeldet.
       const nextCursor = recs[recs.length - 1]?.paging_token || null;
       if (!nextCursor || nextCursor === lastCursor || seenCursors.has(nextCursor)) { break; }
       seenCursors.add(nextCursor);
@@ -124,20 +186,12 @@ export async function fetchGroupfundByMemo({
         .limit(200)
         .cursor(nextCursor)
         .join('transactions');
-      try {
-        page = await withRetry(() => builder.call(), { signal });
-      } catch {
-        break;
-      }
+      page = await withRetry(() => builder.call(), { signal });
     }
 
-    // Fallback TX-First:
-    //  a) Standard: Seiten nicht erschöpft und fromISO-Rand noch nicht erreicht (fehlende Seiten)
-    //  b) Sicherheitsnetz: Payments-Pfad fand 0 Gruppen (z.B. join lieferte keine Memos) → TX-Pfad als Fallback
-    if (
-      (pagesSeen < limitPages && (!fromISO || (lastOldest && lastOldest >= fromISO))) ||
-      memoGroups.size === 0
-    ) {
+    // Fallback TX-First nur als Sicherheitsnetz, wenn der join für ausgehende Payments keine
+    // Transaktionsdaten geliefert hat. Teuer: ein Request je Memo-Transaktion (→ Horizon-Rate-Limit).
+    if (joinMissing > 0) {
       onProgress?.({ phase: 'fallback_tx', page: pagesSeen, oldestOnPage: lastOldest });
       // 1) Transaktionen rückwärts scannen und Memos einsammeln
       let txPage = await withRetry(() => server.transactions().forAccount(publicKey).order('desc').limit(200).call(), { signal });
@@ -161,6 +215,7 @@ export async function fetchGroupfundByMemo({
       }
       // 2) Für jede Treffer-Tx payments laden und ausgehende native zählen
       const limit = 6; let done = 0;
+      let firstTxError = null;
       const q = [...hits];
       const workers = Array.from({ length: Math.min(limit, q.length) }, async () => {
         while (q.length) {
@@ -186,7 +241,11 @@ export async function fetchGroupfundByMemo({
                 g.count += 1; g.totalXlm += amountXlm; if (destAddr) g.destinations.set(destAddr, (g.destinations.get(destAddr) || 0) + 1);
               }
             }
-          } catch { /* ignore single tx */ }
+          } catch (e) {
+            // Nicht still verschlucken: sonst wäre das Ergebnis unbemerkt unvollständig
+            if (!firstTxError) firstTxError = e;
+            q.length = 0;
+          }
           done += 1;
           if (done % 10 === 0) onProgress?.({ phase: 'scan_payments', page: pagesSeen + Math.ceil(done / 10), elapsedMs: Date.now() - t0 });
           }
@@ -202,6 +261,7 @@ export async function fetchGroupfundByMemo({
            }
          })
        ]);
+      if (firstTxError) throw firstTxError;
      }
 
     const items = [...memoGroups.entries()].map(([memo, v]) => {
@@ -224,8 +284,7 @@ export async function fetchGroupfundByMemo({
 
     return { mode: 'groupfundByMemo.livePayments', totalGroups: items.length, items };
   } catch (e) {
-    const detail = e?.message || 'unknown';
-    throw new Error('fetchInvestedTokens.failed:' + detail);
+    throwFetchFailed(e);
   }
 }
 
@@ -309,8 +368,7 @@ export async function fetchGroupfundByMemoCached({
 
     return { mode: 'groupfundByMemo.cache', totalGroups: items.length, items };
   } catch (e) {
-    const detail = e?.message || 'unknown';
-    throw new Error('fetchInvestedTokens.failed:' + detail);
+    throwFetchFailed(e);
   }
 }
 
@@ -410,7 +468,6 @@ export async function fetchInvestedPerToken({
       items,
     };
   } catch (e) {
-    const detail = e?.message || 'unknown';
-    throw new Error('fetchInvestedTokens.failed:' + detail);
+    throwFetchFailed(e);
   }
 }

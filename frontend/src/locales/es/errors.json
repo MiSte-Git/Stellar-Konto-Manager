@@ -29,7 +29,7 @@
     "backend": "No se puede conectar al servidor. Por favor, asegúrate de que"
   },
   "fetchInvestedTokens": {
-    "failed": "Error al cargar datos de inversión: {{detalle}}"
+    "failed": "Error al cargar datos de inversión: {{detail}}"
   },
   "horizon": {
     "paymentsFetch": "Error al cargar los pagos desde Horizon"

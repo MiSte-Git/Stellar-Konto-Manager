@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { fetchGroupfundByMemo, fetchInvestedPerToken } from '../utils/stellar/investmentUtils';
+import { fetchAccountCreatedAt, fetchGroupfundByMemo, fetchInvestedPerToken } from '../utils/stellar/investmentUtils';
 import ProgressBar from './ProgressBar';
 import { useSettings } from '../utils/useSettings';
 import { buildDefaultFilename } from '../utils/filename';
@@ -132,10 +132,13 @@ export default function InvestedTokensPanel({ publicKey }) {
     } catch (e) {
       setData(null);
       const msg = e?.message || '';
-      if (String(msg).includes('aborted')) {
+      if (e?.isAborted || String(msg).includes('aborted')) {
         setErr('');
       } else {
-        setErr('error.fetchInvestedTokens.failed');
+        const detail = (typeof e?.detail === 'string' && e.detail)
+          || String(msg).replace(/^fetchInvestedTokens\.failed:/, '')
+          || 'unknown';
+        setErr({ key: 'error.fetchInvestedTokens.failed', detail });
       }
     } finally {
       clearInterval(hb);
@@ -178,18 +181,10 @@ export default function InvestedTokensPanel({ publicKey }) {
         const earliestLedger = led?.records?.[0]?.closed_at || '';
         if (!cancelled) setHistoryAvailableFrom(earliestLedger);
       } catch { /* noop */ }
-      // 2) create_account suchen (asc, paginiert) – parallel, darf länger dauern
+      // 2) Erstellungsdatum aus der ersten Operation (leer = vor der History-Grenze, unbekannt)
       try {
-        let page = await server.operations().forAccount(publicKey).order('asc').limit(200).cursor('1').call();
-        let stop = false;
-        while (!stop) {
-          const recs = page?.records || [];
-          for (const r of recs) {
-            if (r.type === 'create_account' && r.account === publicKey) { if (!cancelled) setAccountCreatedAt(r.created_at || ''); stop = true; break; }
-          }
-          if (stop || !page.next) break;
-          page = await page.next();
-        }
+        const createdAt = await fetchAccountCreatedAt({ server, publicKey });
+        if (!cancelled) setAccountCreatedAt(createdAt);
       } catch { /* noop */ }
       if (!cancelled) setHistoryLoading(false);
     }
@@ -268,7 +263,7 @@ export default function InvestedTokensPanel({ publicKey }) {
       </div>
           
 
-        {err && <div className="text-red-600 text-sm text-center">{t(err)}</div>}
+        {err && <div className="text-red-600 text-sm text-center">{typeof err === 'string' ? t(err) : t(err.key, { detail: err.detail })}</div>}
 
       {(loading || (view === 'memo' && progressState.elapsedMs > 0)) && (
         <div className="mt-2">

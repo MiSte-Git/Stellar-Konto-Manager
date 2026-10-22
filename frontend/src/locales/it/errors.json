@@ -29,7 +29,7 @@
     "backend": "Impossibile connettersi al backend. Assicurati di"
   },
   "fetchInvestedTokens": {
-    "failed": "Impossibile caricare i dati d'investimento: {{dettaglio}}"
+    "failed": "Impossibile caricare i dati d'investimento: {{detail}}"
   },
   "horizon": {
     "paymentsFetch": "Errore nel caricamento dei pagamenti da Horizon"

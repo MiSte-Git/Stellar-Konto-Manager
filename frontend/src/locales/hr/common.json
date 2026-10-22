@@ -657,7 +657,7 @@
       "backend": "Nije moguće uspostaviti vezu s backendom. Molimo osigurajte"
     },
     "fetchInvestedTokens": {
-      "failed": "Učitavanje podataka o investicijama nije uspjelo: {{detalji}}"
+      "failed": "Učitavanje podataka o investicijama nije uspjelo: {{detail}}"
     },
     "horizon": {
       "paymentsFetch": "Pogreška pri učitavanju uplata s Horizona"
