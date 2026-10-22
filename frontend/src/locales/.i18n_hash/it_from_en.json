@@ -5382,5 +5382,6 @@
   "wallet.qrScan.errors.contractAddress": "bdb28055bcace9c80d087c6f5a8e899e74f7e824437e3f28ba9e5971bcf6a06d",
   "common.error.trustline.notFound": "b8f60f91bd4cb781286631dd5f266a81dfcd682ba026ff25bac8c373c513a5f1",
   "common.resolveOrValidatePublicKey.invalid": "7bcde573b2158a185a711ad71aa857b5c688be3455eafb4d3be42b062d79de34",
-  "common.resolveOrValidatePublicKey.empty": "4db8a328d3b10bf6b98a840ba3d71a4edc09a3a98fa567fccbc147e30448d0ad"
+  "common.resolveOrValidatePublicKey.empty": "4db8a328d3b10bf6b98a840ba3d71a4edc09a3a98fa567fccbc147e30448d0ad",
+  "wallet.claimable.unsolicitedNote": "f6f4b90fe44f35578d2976a96e42aaeec4faf0a87f3bf6f69d2fc347599e21d4"
 }

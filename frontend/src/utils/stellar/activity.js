@@ -144,14 +144,19 @@ export function matchesMuxed(record, muxedAddress) {
   return fields.some((v) => v && String(v) === String(muxedAddress));
 }
 
+/** Nativer XLM-Betrag unter der Kleinstbetrag-Schwelle (ohne Richtung, z. B. Claimable Balances). */
+export function isDustAmount(asset, amount) {
+  if (!asset?.isNative || amount == null || amount === '') return false;
+  const n = Number(amount);
+  return Number.isFinite(n) && n < DUST_THRESHOLD_XLM;
+}
+
 /** Eingehende XLM-Kleinstzahlung (typisch fuer Spam/Phishing-Memos und Address Poisoning). */
 export function isDust(item) {
   return !!item
     && item.direction === 'in'
     && item.kind !== 'createAccount'
-    && item.asset?.isNative
-    && item.amount != null
-    && item.amount < DUST_THRESHOLD_XLM;
+    && isDustAmount(item.asset, item.amount);
 }
 
 /**

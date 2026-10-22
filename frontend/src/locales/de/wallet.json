@@ -130,6 +130,7 @@
     "title": "Claimable Balances",
     "empty": "Keine Claimable Balances vorhanden.",
     "intro": "Zahlungen, die für dein Konto bereitliegen und erst eingelöst werden müssen, bevor sie im Guthaben erscheinen.",
+    "unsolicitedNote": "Claimable Balances kann dir jedes Konto ungefragt schicken. Einlösen ist freiwillig. Erwartest du eine Zahlung nicht, lass sie liegen oder blende sie aus.",
     "claim": "Einlösen",
     "hide": "Ausblenden",
     "unhide": "Einblenden",

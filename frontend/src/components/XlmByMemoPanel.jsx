@@ -7,9 +7,22 @@ import { formatLocalDateTime, formatElapsedMmSs } from '../utils/datetime';
 import { buildDefaultFilename } from '../utils/filename';
 import { sumIncomingXLMByMemoNoCacheExact_Hybrid as sumIncomingXLMByMemoNoCacheExact, withRetry } from "../utils/stellar/queryUtils";
 import { getNewestCreatedAt } from '../utils/db/indexedDbClient';
+import { memoLooksLikeUrl, sanitizeMemo } from '../utils/stellar/activity.js';
+import { UrlBadge } from './wallet/ActivityWarnings.jsx';
 
 // Message queryUtils.js/handleCancel use to signal a user-initiated abort -
 // never shown as an error, in any of the 4 scan operations.
+// Memos stammen von Absendern: nur bereinigt als Text zeigen, Webadressen markieren.
+function MemoCell({ memo }) {
+  const shown = sanitizeMemo(memo);
+  return (
+    <div className="font-mono break-all">
+      {shown || '(leer)'}
+      {memoLooksLikeUrl(shown) && <div><UrlBadge /></div>}
+    </div>
+  );
+}
+
 const ABORT_MESSAGE = 'submitTransaction.failed:cache.backfill.aborted';
 const isAbortError = (e) => e?.message === ABORT_MESSAGE;
 
@@ -972,7 +985,7 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
                   <div className="font-mono">{r.created_at}</div>
                   <div className="font-mono break-all">{r.from}</div>
                   <div className="font-mono">{r.amount}</div>
-                  <div className="font-mono break-all">{r.memo || '(leer)'}</div>
+                  <MemoCell memo={r.memo} />
                   <div className="font-mono break-all">{r.tx_hash}</div>
                 </div>
               ))}
@@ -1022,7 +1035,7 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
                   <div className="font-mono">{r.created_at}</div>
                   <div className="font-mono break-all">{r.from}</div>
                   <div className="font-mono">{r.amount}</div>
-                  <div className="font-mono break-all">{r.memo || '(leer)'}</div>
+                  <MemoCell memo={r.memo} />
                   <div className="font-mono break-all">{r.tx_hash}</div>
                 </div>
               ))}

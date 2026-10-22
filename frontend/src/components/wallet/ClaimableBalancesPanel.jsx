@@ -11,7 +11,8 @@ import { isMultisigAccount } from '../../utils/stellar/isMultisigAccount.js';
 import { useSettings } from '../../utils/useSettings.js';
 import { getHorizonServer } from '../../utils/stellar/stellarUtils.js';
 import { shortenAddress } from '../../utils/stellar/walletSummary.js';
-import { looksLikeNativeCode } from '../../utils/stellar/activity.js';
+import { isDustAmount, looksLikeNativeCode } from '../../utils/stellar/activity.js';
+import { DustBadge, FakeNativeBadge } from './ActivityWarnings.jsx';
 import { resolveFeePerOp } from '../../utils/stellar/fees.js';
 import { submitTransactionSafely, AmbiguousSubmitResultError } from '../../utils/stellar/submitTransactionSafely.js';
 import { getRequiredThreshold } from '../../utils/getRequiredThreshold.js';
@@ -275,14 +276,8 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
           <div className="flex flex-wrap items-center gap-x-2 text-sm font-semibold text-gray-900 dark:text-white">
             <span className="tabular-nums">{fmt ? fmt(Number(item.amount), { min: 0, max: 7 }) : item.amount}</span>
             <span className="truncate">{item.asset.code}</span>
-            {!item.asset.isNative && looksLikeNativeCode({ code: item.asset.code, isNative: false }) && (
-              <span
-                className="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-900 dark:bg-amber-400/15 dark:text-amber-200"
-                title={t('wallet:activity.fakeNativeHint', 'Das ist ein Token eines Herausgebers, nicht das native XLM des Netzwerks.')}
-              >
-                {t('wallet:activity.fakeNative', 'Token, kein natives XLM')}
-              </span>
-            )}
+            {!item.asset.isNative && looksLikeNativeCode({ code: item.asset.code, isNative: false }) && <FakeNativeBadge />}
+            {isDustAmount(item.asset, item.amount) && <DustBadge />}
           </div>
           <div className="truncate font-mono text-xs text-gray-500 dark:text-gray-400">
             {!item.asset.isNative && (
@@ -352,6 +347,11 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
         </div>
       </div>
       <p className="px-5 pt-3 text-xs text-gray-600 dark:text-gray-300">{t('wallet:claimable.intro')}</p>
+      {items.length > 0 && (
+        <p className="px-5 pt-1 text-xs text-gray-600 dark:text-gray-300" data-testid="claimable-unsolicited">
+          {t('wallet:claimable.unsolicitedNote')}
+        </p>
+      )}
       {info && <p role="status" className="px-5 pt-2 text-xs text-green-700 dark:text-green-400 break-all">{info}</p>}
       {claimError && !claimItem && <p role="alert" className="px-5 pt-2 text-xs text-red-700 dark:text-red-300">{claimError}</p>}
       {loadError && <p className="px-5 pt-2 text-xs text-red-700 dark:text-red-300">{loadError}</p>}

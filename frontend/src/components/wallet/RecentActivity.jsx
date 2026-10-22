@@ -15,22 +15,14 @@ import {
   safeHttpUrl,
 } from '../../utils/stellar/activity.js';
 import { shortenAddress } from '../../utils/stellar/walletSummary.js';
+import { readHideDust, writeHideDust } from '../../utils/stellar/dustPreference.js';
+import { ActivityNotices, DustBadge, FakeNativeBadge, LookalikeBadge, UrlBadge } from './ActivityWarnings.jsx';
 import { useSettings } from '../../utils/useSettings.js';
 
 const HORIZON_MAIN = 'https://horizon.stellar.org';
 const HORIZON_TEST = 'https://horizon-testnet.stellar.org';
 const FETCH_LIMIT = 30;
 const SHOW_LIMIT = 8;
-const HIDE_DUST_KEY = 'SKM_HIDE_DUST';
-
-function readHideDust() {
-  try {
-    return window.localStorage?.getItem(HIDE_DUST_KEY) !== '0';
-  } catch {
-    return true;
-  }
-}
-
 function useRecentPayments(publicKey, network, reloadToken) {
   const [state, setState] = React.useState({ loading: false, error: '', records: [] });
 
@@ -106,7 +98,7 @@ export default function RecentActivity({ publicKey, muxedAddress, network, reloa
   const toggleDust = () => {
     setHideDust((prev) => {
       const next = !prev;
-      try { window.localStorage?.setItem(HIDE_DUST_KEY, next ? '1' : '0'); } catch { /* noop */ }
+      writeHideDust(next);
       return next;
     });
   };
@@ -202,38 +194,10 @@ export default function RecentActivity({ publicKey, muxedAddress, network, reloa
                         {t('wallet:activity.failed', 'Fehlgeschlagen')}
                       </span>
                     )}
-                    {suspicious && (
-                      <span
-                        className="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-900 dark:bg-amber-400/15 dark:text-amber-200"
-                        title={t('wallet:activity.lookalikeHint', 'Diese Adresse beginnt und endet wie eine Adresse, an die du gesendet hast, ist aber eine andere. Kopiere Empfänger nie aus dem Verlauf.')}
-                        data-testid="activity-lookalike"
-                      >
-                        {t('wallet:activity.lookalike', 'Ähnliche Adresse')}
-                      </span>
-                    )}
-                    {dust && (
-                      <span className="rounded bg-gray-100 px-1.5 py-0.5 text-[10px] font-semibold text-gray-600 dark:bg-gray-700 dark:text-gray-300">
-                        {t('wallet:activity.dust', 'Kleinstbetrag')}
-                      </span>
-                    )}
-                    {urlInMemo && (
-                      <span
-                        className="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-900 dark:bg-amber-400/15 dark:text-amber-200"
-                        title={t('wallet:activity.urlHint', 'Das Memo enthält eine Webadresse. Seriöse Zahlungen brauchen das nicht. Nicht öffnen.')}
-                        data-testid="activity-url"
-                      >
-                        {t('wallet:activity.url', 'Enthält Webadresse')}
-                      </span>
-                    )}
-                    {fakeNative && (
-                      <span
-                        className="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-900 dark:bg-amber-400/15 dark:text-amber-200"
-                        title={t('wallet:activity.fakeNativeHint', 'Das ist ein Token eines Herausgebers, nicht das native XLM des Netzwerks.')}
-                        data-testid="activity-fake-native"
-                      >
-                        {t('wallet:activity.fakeNative', 'Token, kein natives XLM')}
-                      </span>
-                    )}
+                    {suspicious && <LookalikeBadge />}
+                    {dust && <DustBadge />}
+                    {urlInMemo && <UrlBadge />}
+                    {fakeNative && <FakeNativeBadge />}
                   </div>
                   {item.counterparty && item.direction !== 'self' && (
                     <div className="truncate font-mono text-xs text-gray-500 dark:text-gray-400" title={item.counterparty}>
@@ -287,31 +251,12 @@ export default function RecentActivity({ publicKey, muxedAddress, network, reloa
         </ul>
       )}
 
-      {(dustCount > 0 || lookalikes.size > 0) && (
-        <div className="space-y-1 border-t border-gray-100 bg-gray-50 px-5 py-2.5 text-xs text-gray-600 dark:border-gray-700/70 dark:bg-gray-900/40 dark:text-gray-400">
-          {lookalikes.size > 0 && (
-            <p className="font-medium text-amber-800 dark:text-amber-300">
-              {t('wallet:activity.lookalikeWarning', 'Achtung: Mindestens ein Absender ähnelt einer Adresse, an die du gesendet hast. Kopiere Empfänger nie aus dem Verlauf, sondern aus einer sicheren Quelle.')}
-            </p>
-          )}
-          {dustCount > 0 && (
-            <p className="flex flex-wrap items-center gap-x-2">
-              <span>
-                {hideDust
-                  ? t('wallet:activity.dustHidden', { count: dustCount, defaultValue: '{{count}} Kleinstzahlungen ausgeblendet (oft Spam).' })
-                  : t('wallet:activity.dustShown', { count: dustCount, defaultValue: '{{count}} Kleinstzahlungen werden angezeigt.' })}
-              </span>
-              <button
-                type="button"
-                onClick={toggleDust}
-                className="rounded border-0 bg-transparent p-0 text-xs font-medium text-blue-700 underline-offset-2 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-blue-300"
-              >
-                {hideDust ? t('wallet:activity.showDust', 'Anzeigen') : t('wallet:activity.hideDust', 'Ausblenden')}
-              </button>
-            </p>
-          )}
-        </div>
-      )}
+      <ActivityNotices
+        dustCount={dustCount}
+        hideDust={hideDust}
+        onToggleDust={toggleDust}
+        hasLookalikes={lookalikes.size > 0}
+      />
     </section>
   );
 }

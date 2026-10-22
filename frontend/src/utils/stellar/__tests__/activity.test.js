@@ -1,6 +1,7 @@
 import {
   findLookalikeCounterparties,
   isDust,
+  isDustAmount,
   isValidTxHash,
   looksLikeNativeCode,
   matchesMuxed,
@@ -92,5 +93,14 @@ describe('activity', () => {
     expect(safeHttpUrl('http://stellar.expert/tx/abc')).toBe('');
     expect(safeHttpUrl('javascript:alert(1)')).toBe('');
     expect(safeHttpUrl('data:text/html,x')).toBe('');
+  });
+
+  it('erkennt Kleinstbetraege ohne Richtung (Claimable Balances)', () => {
+    const xlm = { code: 'XLM', issuer: '', isNative: true };
+    expect(isDustAmount(xlm, '0.0000001')).toBe(true);
+    expect(isDustAmount(xlm, 0.01)).toBe(false);
+    expect(isDustAmount(xlm, '')).toBe(false);
+    expect(isDustAmount(xlm, 'abc')).toBe(false);
+    expect(isDustAmount({ code: 'XLM', issuer: 'GX', isNative: false }, '0.0000001')).toBe(false);
   });
 });

@@ -165,7 +165,8 @@
     "blocked": {
       "trustlineNotAuthorized": "Julkaisija ei ole hyväksynyt tämän Asset:n osalta esittämääsi Trustline:tä.",
       "trustlineLimit": "Trustline-rajaasi ei riitä tämän summan kattamiseen."
-    }
+    },
+    "unsolicitedNote": "Mikä tahansa tili voi lähettää sinulle Claimable Balances:n ilman erillistä pyyntöä. Sen lunastaminen on vapaaehtoista. Jos et odota maksua, jätä se rauhaan tai piilota se."
   },
   "batchConvert": {
     "button": "Batch-Convert ({{count}})",

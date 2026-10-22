@@ -3,12 +3,23 @@ import { useTranslation } from 'react-i18next';
 import { getHorizonServer, extractMuxedIdFromAddress } from '../utils/stellar/stellarUtils.js';
 import { useSettings } from '../utils/useSettings.js';
 import { buildExplorerUrl } from '../utils/stellar/accountUtils.js';
+import {
+  findLookalikeCounterparties,
+  isDust,
+  looksLikeNativeCode,
+  memoLooksLikeUrl,
+  normalizeActivity,
+  safeHttpUrl,
+  sanitizeMemo,
+} from '../utils/stellar/activity.js';
+import { readHideDust, writeHideDust } from '../utils/stellar/dustPreference.js';
+import { ActivityNotices, DustBadge, FakeNativeBadge, LookalikeBadge, UrlBadge } from '../components/wallet/ActivityWarnings.jsx';
 
 const HORIZON_MAIN = 'https://horizon.stellar.org';
 const HORIZON_TEST = 'https://horizon-testnet.stellar.org';
 
 export default function BalancePage({ publicKey, muxedAddress }) {
-const { t, i18n } = useTranslation(['common']);
+const { t, i18n } = useTranslation(['common', 'wallet']);
 const { decimalsMode, explorers: explorerList, defaultExplorerKey } = useSettings();
 const [netLabel, setNetLabel] = useState(() => {
   try { return (localStorage.getItem('SKM_NETWORK') === 'TESTNET') ? 'TESTNET' : 'PUBLIC'; } catch { return 'PUBLIC'; }
@@ -24,6 +35,7 @@ const [fromTs, setFromTs] = useState(''); // datetime-local
 const [toTs, setToTs] = useState('');
 const [balSort, setBalSort] = useState({ key: 'code', dir: 'asc' });
 const [paySort, setPaySort] = useState({ key: 'date', dir: 'desc' });
+const [hideDust, setHideDust] = useState(readHideDust);
 const [selectedExplorerKey, setSelectedExplorerKey] = useState(() => {
   if (defaultExplorerKey) return defaultExplorerKey;
   if (explorerList && explorerList.length > 0) return explorerList[0].key;
@@ -176,7 +188,8 @@ const muxedId = useMemo(() => {
   }, [explorerList, selectedExplorerKey]);
   const txUrlFor = (hash) => {
     if (!hash || !selectedExplorer) return '';
-    return buildExplorerUrl(selectedExplorer, hash, netLabel, { type: 'tx' });
+    // Explorer-Vorlagen stammen aus Einstellungen/Backups: nur https zulassen.
+    return safeHttpUrl(buildExplorerUrl(selectedExplorer, hash, netLabel, { type: 'tx' }));
   };
   const matchesMuxedIdentity = useCallback((op) => {
     if (!muxedAddress) return true;
@@ -241,6 +254,33 @@ const muxedId = useMemo(() => {
     return true;
   }, [fromTs, toTs, paymentsMemoQuery, paymentsCounterpartyQuery, memoMap, matchesMuxedIdentity]);
   const filteredPayments = useMemo(() => (payments || []).filter(passesPaymentFilters), [payments, passesPaymentFilters]);
+
+  // Warnhinweise wie auf der Wallet-Startseite: Kleinstzahlungen, Lookalike-Absender,
+  // Webadressen im Memo, Token mit XLM-aehnlichem Code.
+  const normalizedByOp = useMemo(() => {
+    const map = new Map();
+    (payments || []).forEach((op) => map.set(op, normalizeActivity(op, publicKey)));
+    return map;
+  }, [payments, publicKey]);
+  const lookalikes = useMemo(
+    () => findLookalikeCounterparties([...normalizedByOp.values()].filter(Boolean)),
+    [normalizedByOp]
+  );
+  const dustCount = useMemo(
+    () => filteredPayments.filter((op) => isDust(normalizedByOp.get(op))).length,
+    [filteredPayments, normalizedByOp]
+  );
+  const shownPayments = useMemo(
+    () => (hideDust ? filteredPayments.filter((op) => !isDust(normalizedByOp.get(op))) : filteredPayments),
+    [hideDust, filteredPayments, normalizedByOp]
+  );
+  const toggleDust = () => {
+    setHideDust((prev) => {
+      const next = !prev;
+      writeHideDust(next);
+      return next;
+    });
+  };
 
   return (
     <div className="max-w-6xl mx-auto p-4">
@@ -446,6 +486,13 @@ const muxedId = useMemo(() => {
                 </div>
               </div>
             </div>
+            <ActivityNotices
+              className="mt-3 rounded border"
+              dustCount={dustCount}
+              hideDust={hideDust}
+              onToggleDust={toggleDust}
+              hasLookalikes={lookalikes.size > 0}
+            />
             <div className="overflow-x-auto"><table className="min-w-full text-sm">
               <thead>
                 <tr className="text-left border-b">
@@ -496,7 +543,7 @@ const muxedId = useMemo(() => {
                 </tr>
               </thead>
               <tbody>
-                {[...filteredPayments]
+                {[...shownPayments]
                   .sort((a,b)=>{
                     const dir = paySort.dir==='asc' ? 1 : -1;
                     const get = (op, key) => {
@@ -568,22 +615,43 @@ const muxedId = useMemo(() => {
                   const txMemo = op.transaction?.memo || op.transaction?.memo_text || memoMap[op.transaction_hash] || '';
                   const memo = txMemo || (op.memo ? String(op.memo) : '') || (op.transaction?.memo_type && op.transaction.memo_type !== 'none' ? op.transaction.memo_type : '');
                   const date = op.created_at || '';
+                  const item = normalizedByOp.get(op);
+                  const shownMemo = sanitizeMemo(memo);
+                  const urlInMemo = memoLooksLikeUrl(shownMemo);
+                  const dust = isDust(item);
+                  const suspicious = item?.direction === 'in' && lookalikes.has(item.counterparty);
+                  const fakeNative = looksLikeNativeCode(item?.asset);
+                  const txUrl = txUrlFor(op.transaction_hash);
                   return (
                     <tr key={i} className="border-b last:border-0">
                       <td className="py-1 pr-2 whitespace-nowrap">{date.replace('T', ' ').replace('Z','')}</td>
                       <td className="py-1 pr-2">{direction}</td>
                       <td className="py-1 pr-2">{op.type}</td>
-                      <td className="py-1 pr-2">{asset}</td>
-                      <td className="py-1 pr-2">{fmt(amount)}</td>
-                      <td className="py-1 pr-2 break-all">{counterparty}</td>
-                      <td className="py-1 pr-2 break-all">{memo}</td>
+                      <td className="py-1 pr-2">
+                        {asset}
+                        {fakeNative && <div><FakeNativeBadge /></div>}
+                      </td>
+                      <td className="py-1 pr-2">
+                        {fmt(amount)}
+                        {dust && <div><DustBadge /></div>}
+                      </td>
+                      <td className="py-1 pr-2 break-all">
+                        {counterparty}
+                        {suspicious && <div><LookalikeBadge /></div>}
+                      </td>
+                      <td className="py-1 pr-2 break-all">
+                        {shownMemo && (
+                          <span title={t('wallet:activity.memoHint', 'Memo vom Absender. Inhalt nicht von SKM geprüft.')}>{shownMemo}</span>
+                        )}
+                        {urlInMemo && <div><UrlBadge /></div>}
+                      </td>
                       <td className="py-1 pr-2 break-all">
                         {op.transaction_hash ? (
                           <a
-                            href={txUrlFor(op.transaction_hash)}
+                            href={txUrl || undefined}
                             target="_blank"
-                            rel="noreferrer"
-                            className={`text-blue-600 ${txUrlFor(op.transaction_hash) ? 'hover:underline' : 'opacity-50 pointer-events-none cursor-not-allowed'}`}
+                            rel="noopener noreferrer"
+                            className={`text-blue-600 ${txUrl ? 'hover:underline' : 'opacity-50 pointer-events-none cursor-not-allowed'}`}
                           >
                             {op.transaction_hash}
                           </a>
@@ -592,9 +660,13 @@ const muxedId = useMemo(() => {
                     </tr>
                   );
                 })}
-                {(filteredPayments.length === 0) && (
+                {(shownPayments.length === 0) && (
                   <tr>
-                    <td colSpan={8} className="py-2 text-gray-500">{t('common:balance.payments.empty')}</td>
+                    <td colSpan={8} className="py-2 text-gray-500">
+                      {dustCount > 0 && hideDust
+                        ? t('wallet:activity.onlyDust', 'Nur Kleinstzahlungen vorhanden.')
+                        : t('common:balance.payments.empty')}
+                    </td>
                   </tr>
                 )}
               </tbody>

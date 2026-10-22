@@ -165,7 +165,8 @@
     "blocked": {
       "trustlineNotAuthorized": "Tu Trustline para este Asset no ha sido aprobado por la editorial.",
       "trustlineLimit": "Tu límite de Trustline no es suficiente para esta cantidad."
-    }
+    },
+    "unsolicitedNote": "Cualquier cuenta puede enviarte Claimable Balances sin preguntarte. Canjearlo es opcional. Si no esperas ningún pago, simplemente ignóralo u ocúltalo."
   },
   "batchConvert": {
     "button": "Batch-Convert ({{count}})",

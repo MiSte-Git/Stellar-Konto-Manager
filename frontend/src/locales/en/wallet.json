@@ -165,7 +165,8 @@
     "blocked": {
       "trustlineNotAuthorized": "Your Trustline for this Asset has not been approved by the publisher.",
       "trustlineLimit": "Your Trustline limit is not sufficient for this amount."
-    }
+    },
+    "unsolicitedNote": "Any account can send you Claimable Balances without asking. Redeeming it is optional. If you're not expecting a payment, just leave it alone or hide it."
   },
   "batchConvert": {
     "button": "Batch-Convert ({{count}})",

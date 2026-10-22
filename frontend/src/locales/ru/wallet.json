@@ -165,7 +165,8 @@
     "blocked": {
       "trustlineNotAuthorized": "Ваш Trustline для данного Asset не был одобрен издателем.",
       "trustlineLimit": "Ваш лимит Trustline недостаточен для этой суммы."
-    }
+    },
+    "unsolicitedNote": "Любой аккаунт может отправить вам Claimable Balances без предварительного запроса. Получать его — дело ваше. Если вы не ожидаете платежа, просто оставьте его в покое или скройте."
   },
   "batchConvert": {
     "button": "Batch-Convert ({{count}})",

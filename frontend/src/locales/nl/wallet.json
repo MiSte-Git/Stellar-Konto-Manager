@@ -165,7 +165,8 @@
     "blocked": {
       "trustlineNotAuthorized": "Uw Trustline voor deze Asset is niet goedgekeurd door de uitgever.",
       "trustlineLimit": "Uw limiet van Trustline is niet voldoende voor dit bedrag."
-    }
+    },
+    "unsolicitedNote": "Elk account kan je zonder te vragen Claimable Balances sturen. Het inwisselen ervan is optioneel. Als je geen betaling verwacht, laat het dan gewoon met rust of verberg het."
   },
   "batchConvert": {
     "button": "Batch-Convert ({{count}})",

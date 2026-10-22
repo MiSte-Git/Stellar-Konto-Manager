@@ -106,6 +106,21 @@ describe('ClaimableBalancesPanel (P1.5)', () => {
     expect(screen.queryByText(/Betrugsversuche/)).not.toBeInTheDocument();
   });
 
+  it('markiert XLM-Kleinstbetraege und weist auf ungefragte Zusendung hin', async () => {
+    hoisted.recordsMock.mockResolvedValue({
+      records: [
+        ...RECORDS,
+        { id: id(5), asset: 'native', amount: '0.0000001', sponsor: SENDER, claimants: [{ destination: ME.publicKey, predicate: { unconditional: true } }] },
+      ],
+    });
+    renderPanel();
+    await screen.findByText('Claimable Balances');
+    await waitFor(() => expect(itemById(5)).toBeTruthy());
+    expect(within(itemById(5)).getByTestId('activity-dust')).toBeInTheDocument();
+    expect(within(itemById(1)).queryByTestId('activity-dust')).toBeNull();
+    expect(screen.getByTestId('claimable-unsolicited')).toHaveTextContent(/ungefragt/);
+  });
+
   it('nicht einloesbare Eintraege haben einen gesperrten Knopf', async () => {
     renderPanel();
     await screen.findByText('Claimable Balances');

@@ -165,7 +165,8 @@
     "blocked": {
       "trustlineNotAuthorized": "Vaš Trustline za ovaj Asset nije odobrio izdavač.",
       "trustlineLimit": "Vaš Trustline limit nije dovoljan za ovaj iznos."
-    }
+    },
+    "unsolicitedNote": "Bilo koji račun vam može poslati Claimable Balances bez pitanja. Iskorištavanje je dobrovoljno. Ako ne očekujete uplatu, jednostavno ga ostavite na miru ili ga sakrijte."
   },
   "batchConvert": {
     "button": "Batch-Convert ({{count}})",
