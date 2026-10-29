@@ -1,5 +1,5 @@
 {
-  "menu": "Modifier multisig",
+  "menu": "Gérer Multisig",
   "menuHint": "Modifier les paramètres Signer et Thresholds pour un compte existant",
   "confirm": {
     "removeSigner": "Signer Voulez-vous vraiment le supprimer ?"
@@ -18,7 +18,7 @@
   "signers": "Signer",
   "weight": "Pondération",
   "masterWeight": "Poids maître",
-  "title": "Modifier le compte multisig",
+  "title": "Gérer Multisig",
   "validation": {
     "signerKeyHint": "Remarque : Signer doit commencer par « G » (ed25519 Public Key).",
     "signerKeyInvalid": "Adresse Signer non valide. Une adresse G… (ed25519) est attendue."

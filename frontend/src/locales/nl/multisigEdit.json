@@ -1,5 +1,5 @@
 {
-  "menu": "Multisig bewerken",
+  "menu": "Beheer Multisig",
   "menuHint": "Pas Signer en Thresholds aan voor een bestaande rekening",
   "confirm": {
     "removeSigner": "Signer Echt verwijderen?"
@@ -18,7 +18,7 @@
   "signers": "Signer",
   "weight": "Weging",
   "masterWeight": "Meestergewicht",
-  "title": "Multisig-account bewerken",
+  "title": "Beheer Multisig",
   "validation": {
     "signerKeyHint": "Opmerking: Signer moet beginnen met een \"G\" (ed25519 Public Key).",
     "signerKeyInvalid": "Ongeldig Signer-adres. Er wordt een G…-adres (ed25519) verwacht."

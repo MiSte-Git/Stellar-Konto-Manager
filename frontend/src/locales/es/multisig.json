@@ -312,7 +312,7 @@
     "deleteTestnetConfirm": "Eliminar trabajos de testnet"
   },
   "actions": {
-    "createMultisigJob": "Crear tarea de Multisig"
+    "createMultisigJob": "Multisig Crear un trabajo"
   },
   "job": {
     "create": {

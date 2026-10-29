@@ -210,7 +210,7 @@
       "sendPayment": "Pošalji uplatu",
       "investedTokens": "Filter tokens/assets",
       "createAccount": "Kreiraj račun",
-      "multisigEdit": "Uredi multisig račun",
+      "multisigEdit": "Upravljaj Multisig",
       "settings": "Postavke",
       "feedback": "Povratne informacije",
       "other": "Drugi",
@@ -786,17 +786,18 @@
     "warning": {
       "safetyTitle": "Sigurnosna upozorenja",
       "highSingleSigner": "Samo jedan Signer zadovoljava visoki threshold. Preporuka: najmanje dva neovisna Signer.",
-      "medSingleSigner": "Med threshold > 0, ali je prisutan samo jedan Signer. Preporuka: Dodajte drugi Signer."
+      "medSingleSigner": "Med threshold > 0, ali je prisutan samo jedan Signer. Preporuka: Dodajte drugi Signer.",
+      "singleSignerReachesHigh": "Jedan Signer sam dostigne \"High\" threshold i može upravljati računom bez dodatnih potpisa. Preporuka: Postavite \"High\" threshold na temelju najveće pojedinačne težine."
     },
     "securityGuarantee": {
       "title": "🔒 SKM Sigurnosno jamstvo (Multisig)",
       "text": "Stellar Account Manager sprječava sva tehnička zaključavanja računa koja mogu nastati zbog neispravne konfiguracije Multisig.\n\nKonkretno, SKM blokira:\n- Deaktivaciju glavnog ključa bez ostvarivog Signer\n- Neostvariv thresholds (niska / srednja / visoka)\n- Pogreške u redoslijedu pri promjenama Signer i Threshold\n- Uklanjanje posljednjeg valjanog visokog Signers\n- Multisig postavke u kojima se SetOptions više ne može potpisati\n- Bezizlazne situacije uzrokovane hashX-om ili preAuthTx-om kao posljednjim Signer\n\nSKM postavlja samo ed25519-Signer. Za druge vrste Signer upotrijebite {link}.\n\nSKM jamči:\n- Svaka potvrđena promjena ostavlja otvorenom barem jednu valjanu putanju za daljnje upravljanje računom\n- SetOptions ostaje dostupan nakon promjene\n\nNe može se jamčiti (zbog ograničenja sustava):\n- Gubitak Secret Keys ili hardverskog Wallets\n- Nedostupnost ili kvar vanjskog Signer\n\nZaključak:\nSKM pruža pouzdanu zaštitu od zaključavanja konfiguracije.\nOrganizacijski rizici prikazuju se transparentno, ali se tehnički ne mogu spriječiti.",
       "linkLabel": "lab.stellar.org"
     },
-    "hint": "Učitajte postojeći račun, prilagodite signers, težine, glavnu težinu i thresholds te spremite promjene.",
+    "hint": "Prikazuje trenutačnu konfiguraciju računa Multisig. Podesite Signer, težine, glavnu težinu i thresholds te spremite promjene.",
     "load": "Učitavanje",
     "loaded": "Učitano. Dodatni signers: {{count}}",
-    "menu": "Uredi multisig račun",
+    "menu": "Upravljaj Multisig",
     "menuHint": "Podešavanje signers/thresholds postojećeg računa",
     "noteMaxSigners": "Napomena: Stellar dopušta najviše 20 dodatnih Signer po računu.",
     "signerTypeNote": "Napomena: SKM koristi samo ed25519-Signer. Za hashX/preAuthTx, upotrijebite",
@@ -807,11 +808,18 @@
     "signers": "Signer (ed25519)",
     "weight": "Vaganje",
     "masterWeight": "Majstorska težina",
-    "title": "Uredi multisig račun",
+    "title": "Upravljaj Multisig",
     "validation": {
       "signerKeyHint": "Napomena: Signer mora započeti s \"G\" (ed25519 Public Key).",
       "signerKeyInvalid": "Neispravna adresa Signer. Očekuje se adresa G… (ed25519)."
-    }
+    },
+    "risk": {
+      "title": "Upozorenje: Možete se zaključati.",
+      "masterDisabled": "Glavna težina je postavljena na 0. Secret Key za ovaj račun više ne može ništa potpisati—račun se sada može upravljati samo pomoću dodatnog Signer.",
+      "noRedundancy": "Ako se izgubi jedan ključ, visoka threshold više se ne može ispuniti i račun se više ne može upravljati (npr. promjenom Signer). Preporuka: Odaberite težine/Signer tako da gubitak jednog ključa bude upravljiv.",
+      "acknowledge": "Razumijem rizik i i dalje bih želio uštedjeti."
+    },
+    "saveIntro": "Da biste spremili podatke, stvara se transakcija SetOptions, koja mora biti potpisana pomoću Secret Keys od Signer. Odaberite kako ćete je potpisati:"
   },
   "navigation": {
     "back": "Nazad",

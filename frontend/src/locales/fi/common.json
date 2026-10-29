@@ -210,7 +210,7 @@
       "sendPayment": "Lähetä maksu",
       "investedTokens": "Suodata tokens/assets",
       "createAccount": "Luo tili",
-      "multisigEdit": "Muokkaa multisig-tiliä",
+      "multisigEdit": "Hallinnoi Multisig",
       "settings": "Asetukset",
       "feedback": "Palaute",
       "other": "Muu",
@@ -786,17 +786,18 @@
     "warning": {
       "safetyTitle": "Tietoturvavaroitukset",
       "highSingleSigner": "Vain yksi Signer täyttää korkean threshold-vaatimuksen. Suositus: vähintään kaksi toisistaan riippumatonta Signer:a.",
-      "medSingleSigner": "Med threshold > 0, mutta Signer-arvoja on vain yksi. Suositus: Lisää toinen Signer-arvo."
+      "medSingleSigner": "Med threshold > 0, mutta Signer-arvoja on vain yksi. Suositus: Lisää toinen Signer-arvo.",
+      "singleSignerReachesHigh": "Yksi ainoa Signer riittää saavuttamaan ”High”-tason threshold:n, ja tilin hallinta onnistuu ilman lisäallekirjoituksia. Suositus: Aseta ”High”-tason threshold suurimman yksittäisen painoarvon perusteella."
     },
     "securityGuarantee": {
       "title": "🔒 SKM-turvatakuu (Multisig)",
       "text": "Stellar Account Manager estää kaikki teknisistä syistä johtuvat tilin lukitukset, jotka voivat johtua virheellisestä Multisig-määrityksestä.\n\nErityisesti SKM estää seuraavat:\n- Pääavaimen deaktivoinnin ilman saavutettavissa olevaa Signer-arvoa\n- Saavuttamaton thresholds (matala / keskitaso / korkea)\n- Järjestysvirheet Signer- ja Threshold-muutoksissa\n- Viimeisen voimassa olevan korkean Signers:n poistaminen\n- Multisig-asetukset, joissa SetOptions-komentoa ei voi enää allekirjoittaa\n- Umpikujat, jotka johtuvat siitä, että hashX tai preAuthTx on viimeinen Signer\n\nSKM asettaa vain ed25519-Signer. Muiden Signer-tyyppien osalta käytä {linkki}.\n\nSKM takaa:\n- Jokainen vahvistettu muutos jättää vähintään yhden kelvollisen polun auki tilinhallinnan jatkamista varten\n- SetOptions-toimintoon pääsee edelleen käsiksi muutoksen jälkeen\n\nEi voida taata (järjestelmän rajoitusten vuoksi):\n- Secret Keys:n tai laitteistopohjaisen Wallets:n menetys\n- Ulkoisen Signer:n saatavuuden puuttuminen tai vika\n\nJohtopäätös:\nSKM tarjoaa luotettavan suojan konfiguraation lukkiutumista vastaan.\nOrganisaatiolliset riskit esitetään läpinäkyvästi, mutta niitä ei voida teknisesti estää.",
       "linkLabel": "lab.stellar.org"
     },
-    "hint": "Lataa olemassa oleva tili, säädä signers, painot, pääpaino ja thresholds ja tallenna muutokset.",
+    "hint": "Näyttää tilin nykyisen Multisig-asetuksen. Säädä Signer-arvoa, painotuksia, pääpainotusta ja thresholds-arvoa ja tallenna muutokset.",
     "load": "Ladataan",
     "loaded": "Ladattu. Lisätty signers: {{count}}",
-    "menu": "Muokkaa multisig-tiliä",
+    "menu": "Hallinnoi Multisig",
     "menuHint": "Olemassa olevan tilin signers/thresholds-asetusten muuttaminen",
     "noteMaxSigners": "Huomautus: Stellar sallii enintään 20 ylimääräistä Signer-tunnusta tiliä kohden.",
     "signerTypeNote": "Huomautus: SKM käyttää ainoastaan ed25519-Signer:tä. HashX/preAuthTx:n yhteydessä käytä",
@@ -807,11 +808,18 @@
     "signers": "Signer (ed25519)",
     "weight": "Painotus",
     "masterWeight": "Painonhallinta",
-    "title": "Muokkaa multisig-tiliä",
+    "title": "Hallinnoi Multisig",
     "validation": {
       "signerKeyHint": "Huomautus: Signer:n on alettava kirjaimella ”G” (ed25519 Public Key).",
       "signerKeyInvalid": "Virheellinen Signer-osoite. Odotetaan G…-osoitetta (ed25519)."
-    }
+    },
+    "risk": {
+      "title": "Varoitus: Saatat jäädä ulos",
+      "masterDisabled": "Pääpainotus on asetettu arvoon 0. Tämän tilin Secret Key ei voi enää allekirjoittaa mitään – tiliä voidaan nyt hallinnoida ainoastaan lisäasetuksen Signer avulla.",
+      "noRedundancy": "Jos yksikin avain katoaa, korkeaa threshold-arvoa ei voida enää täyttää, eikä tiliä voida enää hallinnoida (esim. muuttamalla Signer-arvoa). Suositus: Valitse painotukset/Signer siten, että yhden avaimen menetys on hallittavissa.",
+      "acknowledge": "Ymmärrän riskin, mutta haluaisin silti säästää."
+    },
+    "saveIntro": "Tietojen tallentamiseksi luodaan SetOptions-transaktio, joka on allekirjoitettava Secret Keys:llä ja Signer:lla. Valitse allekirjoitustapa:"
   },
   "navigation": {
     "back": "Takaisin",

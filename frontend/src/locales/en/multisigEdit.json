@@ -1,5 +1,5 @@
 {
-  "menu": "Edit multisig",
+  "menu": "Manage Multisig",
   "menuHint": "Adjust Signer and Thresholds for an existing account",
   "confirm": {
     "removeSigner": "Signer Really remove it?"
@@ -18,7 +18,7 @@
   "signers": "Signer",
   "weight": "Weighting",
   "masterWeight": "Master weight",
-  "title": "Edit multisig account",
+  "title": "Manage Multisig",
   "validation": {
     "signerKeyHint": "Note: Signer must begin with \"G\" (ed25519 Public Key).",
     "signerKeyInvalid": "Invalid Signer address. A G… address (ed25519) is expected."

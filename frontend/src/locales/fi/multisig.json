@@ -312,7 +312,7 @@
     "deleteTestnetConfirm": "Poista testnet-työtehtävät"
   },
   "actions": {
-    "createMultisigJob": "Luo Multisig TaskJob"
+    "createMultisigJob": "Multisig Luo työtehtävä"
   },
   "job": {
     "create": {

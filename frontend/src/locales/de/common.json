@@ -210,7 +210,7 @@
       "sendPayment": "Zahlung senden",
       "investedTokens": "Token/Assets filtern",
       "createAccount": "Konto erstellen",
-      "multisigEdit": "Multisig Konto bearbeiten",
+      "multisigEdit": "Multisig verwalten",
       "settings": "Einstellungen",
       "feedback": "Feedback",
       "other": "Sonstiges",
@@ -796,28 +796,36 @@
     "warning": {
       "safetyTitle": "Sicherheitswarnungen",
       "highSingleSigner": "Nur ein Signer erreicht die High-Schwelle. Empfehlung: mindestens zwei unabhängige Signer.",
-      "medSingleSigner": "Med-Schwelle > 0, aber nur ein Signer vorhanden. Empfehlung: zweiten Signer hinzufügen."
+      "medSingleSigner": "Med-Schwelle > 0, aber nur ein Signer vorhanden. Empfehlung: zweiten Signer hinzufügen.",
+    "singleSignerReachesHigh": "Ein einzelner Signer erreicht allein die High-Schwelle und kann das Konto ohne weitere Signaturen verwalten. Empfehlung: High-Schwelle über das grösste Einzelgewicht setzen."
+  },
+  "risk": {
+    "title": "Achtung: Mögliche Selbstaussperrung",
+    "masterDisabled": "Das Master-Gewicht wird auf 0 gesetzt. Der Secret Key dieses Kontos kann danach nichts mehr signieren - das Konto ist nur noch über die zusätzlichen Signer verwaltbar.",
+    "noRedundancy": "Geht ein einzelner Schlüssel verloren, ist die High-Schwelle nicht mehr erreichbar und das Konto kann nicht mehr verwaltet werden (z. B. Signer ändern). Empfehlung: Gewichte/Signer so wählen, dass der Ausfall eines Schlüssels verkraftbar ist.",
+    "acknowledge": "Ich habe das Risiko verstanden und möchte trotzdem speichern."
     },
     "securityGuarantee": {
       "title": "🔒 SKM Sicherheitsgarantie (Multisig)",
       "text": "Der Stellar Konto Manager verhindert alle technisch verursachten Konto-Sperren, die durch falsche Multisig-Konfiguration entstehen können.\n\nSKM blockiert insbesondere:\n- Deaktivieren des Master-Keys ohne erreichbare Signer\n- Unerreichbare Schwellen (low / med / high)\n- Reihenfolgefehler bei Signer- und Threshold-Änderungen\n- Entfernen des letzten gültigen High-Signers\n- Multisig-Setups, bei denen SetOptions nicht mehr signierbar ist\n- Sackgassen durch hashX oder preAuthTx als letzten Signer\n\nSKM setzt nur ed25519-Signer. Für andere Signer-Typen nutze {link}.\n\nSKM garantiert:\n- Jede bestätigte Änderung lässt mindestens einen gültigen Weg zur weiteren Kontoverwaltung offen\n- SetOptions bleibt nach der Änderung erreichbar\n\nNicht garantierbar (systembedingt):\n- Verlust von Secret Keys oder Hardware-Wallets\n- Nichterreichbarkeit oder Ausfall externer Signer\n\nFazit:\nSKM schützt zuverlässig vor Konfigurations-Lockouts.\nOrganisatorische Risiken werden transparent angezeigt, können aber nicht technisch verhindert werden.",
       "linkLabel": "lab.stellar.org"
     },
-    "hint": "Lade ein bestehendes Konto, passe Signer, Gewichte, Master-Gewicht und Schwellen an und speichere die Änderungen.",
+    "hint": "Zeigt die aktuelle Multisig-Konfiguration des Kontos. Passe Signer, Gewichte, Master-Gewicht und Schwellen an und speichere die Änderungen.",
     "load": "Laden",
     "loaded": "Geladen. Zusätzliche Signer: {{count}}",
-    "menu": "Multisig Konto bearbeiten",
+    "menu": "Multisig verwalten",
     "menuHint": "Signer/Schwellen eines bestehenden Kontos anpassen",
     "noteMaxSigners": "Hinweis: Stellar erlaubt max. 20 zusätzliche Signer pro Konto.",
     "signerTypeNote": "Hinweis: SKM setzt nur ed25519-Signer. Für hashX/preAuthTx nutze",
     "signerTypeLink": "lab.stellar.org",
     "reload": "Neu laden",
     "save": "Änderungen speichern",
+  "saveIntro": "Zum Speichern wird eine SetOptions-Transaktion erzeugt, die mit den Secret Keys der Signer signiert werden muss. Wähle, wie signiert wird:",
     "saved": "Änderungen gespeichert. TX: {{hash}}",
     "signers": "Signer (ed25519)",
     "weight": "Gewichtung",
     "masterWeight": "Master-Gewicht",
-    "title": "Multisig Konto bearbeiten",
+    "title": "Multisig verwalten",
     "validation": {
       "signerKeyHint": "Hinweis: Signer müssen mit \"G\" beginnen (ed25519 Public Key).",
       "signerKeyInvalid": "Ungültige Signer-Adresse. Erwartet wird eine G…-Adresse (ed25519)."

@@ -56,12 +56,38 @@ export function getMultisigSafetyCheck({
   if (plannedEd25519Weight < plannedThresholds.high) {
     errors.push(t('common:multisigEdit.error.setOptionsNotSignable', { sum: plannedEd25519Weight, high: plannedThresholds.high }));
   }
+  // Warnungen erst, wenn zusätzliche Signer konfiguriert sind - ein reines
+  // Einzelkonto (nur Master) hat naturgemäss nur einen Signer, das ist kein Befund.
+  const hasAdditionalSigners = (signers || []).length > 0;
   const warnings = [];
-  if (plannedThresholds.high > 0 && plannedEd25519Count === 1) {
+  if (hasAdditionalSigners && plannedThresholds.high > 0 && plannedEd25519Count === 1) {
     warnings.push(t('common:multisigEdit.warning.highSingleSigner'));
   }
-  if (plannedThresholds.med > 0 && plannedEd25519Count === 1) {
+  if (hasAdditionalSigners && plannedThresholds.med > 0 && plannedEd25519Count === 1) {
     warnings.push(t('common:multisigEdit.warning.medSingleSigner'));
   }
-  return { errors, warnings };
+  if (hasAdditionalSigners && plannedEd25519Count > 1 && plannedEd25519.some((s) => s.weight >= plannedThresholds.high)) {
+    warnings.push(t('common:multisigEdit.warning.singleSignerReachesHigh'));
+  }
+
+  // Risiken: nicht blockierend (Konfiguration ist gültig), aber vor dem Speichern
+  // explizit zu bestätigen, weil sie zu einer Selbstaussperrung führen können.
+  const risks = [];
+  if (errors.length === 0) {
+    const pk = defaultPublicKey ? String(defaultPublicKey).trim() : '';
+    const currentMasterEntry = (currentAccount?.signers || []).find((s) => s?.key === pk);
+    const currentMaster = currentMasterEntry ? clampByte(currentMasterEntry.weight) : 1;
+    if (pk && plannedMaster === 0 && currentMaster > 0) {
+      risks.push(t('common:multisigEdit.risk.masterDisabled'));
+    }
+    if (
+      hasAdditionalSigners
+      && plannedEd25519Count > 1
+      && plannedThresholds.high > 0
+      && plannedEd25519.some((s) => plannedEd25519Weight - s.weight < plannedThresholds.high)
+    ) {
+      risks.push(t('common:multisigEdit.risk.noRedundancy'));
+    }
+  }
+  return { errors, warnings, risks };
 }

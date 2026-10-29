@@ -312,7 +312,7 @@
     "deleteTestnetConfirm": "Izbrisati testnet poslove"
   },
   "actions": {
-    "createMultisigJob": "Kreiraj Multisig TaskJob."
+    "createMultisigJob": "Multisig Stvori posao"
   },
   "job": {
     "create": {

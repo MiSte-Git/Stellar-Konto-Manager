@@ -1,5 +1,5 @@
 {
-  "menu": "Muokkaa multisig",
+  "menu": "Hallinnoi Multisig",
   "menuHint": "Säädä olemassa olevan tilin asetuksia Signer ja Thresholds",
   "confirm": {
     "removeSigner": "Signer Haluatko todella poistaa sen?"
@@ -18,7 +18,7 @@
   "signers": "Signer",
   "weight": "Painotus",
   "masterWeight": "Mestari paino",
-  "title": "Muokkaa multisig-tiliä",
+  "title": "Hallinnoi Multisig",
   "validation": {
     "signerKeyHint": "Huomautus: Signer:n on alettava kirjaimella ”G” (ed25519 Public Key).",
     "signerKeyInvalid": "Virheellinen Signer-osoite. Odotetaan G…-osoitetta (ed25519)."

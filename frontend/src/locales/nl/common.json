@@ -210,7 +210,7 @@
       "sendPayment": "Betaling versturen",
       "investedTokens": "Tokens/assets filteren",
       "createAccount": "Account aanmaken",
-      "multisigEdit": "Multisig-account bewerken",
+      "multisigEdit": "Beheer Multisig",
       "settings": "Instellingen",
       "feedback": "Feedback",
       "other": "Andere",
@@ -786,17 +786,18 @@
     "warning": {
       "safetyTitle": "Beveiligingswaarschuwingen",
       "highSingleSigner": "Slechts één Signer voldoet aan de hoge threshold. Aanbeveling: ten minste twee onafhankelijke Signer.",
-      "medSingleSigner": "Med threshold > 0, maar er is slechts één Signer aanwezig. Aanbeveling: voeg een tweede Signer toe."
+      "medSingleSigner": "Med threshold > 0, maar er is slechts één Signer aanwezig. Aanbeveling: voeg een tweede Signer toe.",
+      "singleSignerReachesHigh": "Eén enkele Signer volstaat om de „High” threshold te bereiken en het account te beheren zonder dat er aanvullende handtekeningen nodig zijn. Aanbeveling: Stel de „High” threshold in op basis van het grootste individuele gewicht."
     },
     "securityGuarantee": {
       "title": "🔒 SKM Beveiligingsgarantie (Multisig)",
       "text": "De Stellar Account Manager voorkomt alle technisch veroorzaakte accountblokkades die het gevolg kunnen zijn van een onjuiste configuratie van Multisig.\n\nDe SKM blokkeert met name:\n- Deactivering van de hoofdsleutel zonder een haalbare Signer\n- Onbereikbare thresholds (laag / gemiddeld / hoog)\n- Volgordefouten bij wijzigingen in Signer en Threshold\n- Verwijdering van de laatste geldige hoge Signers\n- Multisig-configuraties waarbij SetOptions niet langer kan worden ondertekend\n- Doodlopende situaties veroorzaakt door hashX of preAuthTx als laatste Signer\n\nSKM stelt alleen ed25519-Signer in. Gebruik {link} voor andere Signer-typen.\n\nSKM garandeert:\n- Elke bevestigde wijziging laat ten minste één geldig pad open voor verder accountbeheer\n- SetOptions blijft toegankelijk na de wijziging\n\nKan niet worden gegarandeerd (vanwege systeembeperkingen):\n- Verlies van Secret Keys of hardware Wallets\n- Onbeschikbaarheid of storing van externe Signer\n\nConclusie:\nSKM biedt betrouwbare bescherming tegen configuratieblokkades.\nOrganisatorische risico’s worden transparant weergegeven, maar kunnen technisch niet worden voorkomen.",
       "linkLabel": "lab.stellar.org"
     },
-    "hint": "Laad een bestaande rekening, pas signers, de wegingen, het hoofdgewicht en thresholds aan, en sla de wijzigingen op.",
+    "hint": "Geeft de huidige Multisig-configuratie van de account weer. Pas Signer, de wegingen, de hoofdweging en thresholds aan en sla de wijzigingen op.",
     "load": "Laden",
     "loaded": "Geladen. Extra signers: {{count}}",
-    "menu": "Multisig-account bewerken",
+    "menu": "Beheer Multisig",
     "menuHint": "signers/thresholds van een bestaande rekening aanpassen",
     "noteMaxSigners": "Opmerking: Stellar staat maximaal 20 extra Signer per account toe.",
     "signerTypeNote": "Opmerking: SKM gebruikt uitsluitend ed25519-Signer. Gebruik voor hashX/preAuthTx",
@@ -807,11 +808,18 @@
     "signers": "Signer (ed25519)",
     "weight": "Weging",
     "masterWeight": "Meestergewicht",
-    "title": "Bewerk multisig-account",
+    "title": "Beheer Multisig",
     "validation": {
       "signerKeyHint": "Opmerking: Signer moet beginnen met een \"G\" (ed25519 Public Key).",
       "signerKeyInvalid": "Ongeldig Signer-adres. Er wordt een G…-adres (ed25519) verwacht."
-    }
+    },
+    "risk": {
+      "title": "Waarschuwing: je kunt jezelf buitensluiten",
+      "masterDisabled": "Het hoofdgewicht is ingesteld op 0. De Secret Key voor deze rekening kan niets meer ondertekenen — de rekening kan nu alleen nog worden beheerd met behulp van de aanvullende Signer.",
+      "noRedundancy": "Als één sleutel verloren gaat, kan aan de hoge threshold niet langer worden voldaan en kan de rekening niet langer worden beheerd (bijvoorbeeld het wijzigen van Signer). Aanbeveling: Kies gewichten/Signer zodanig dat het verlies van één sleutel beheersbaar is.",
+      "acknowledge": "Ik ben me bewust van het risico, maar wil toch graag sparen."
+    },
+    "saveIntro": "Om de gegevens op te slaan, wordt een SetOptions-transactie aangemaakt, die moet worden ondertekend met de Secret Keys van de Signer. Kies hoe je deze wilt ondertekenen:"
   },
   "navigation": {
     "back": "Terug",

@@ -210,7 +210,7 @@
       "sendPayment": "Envoyer le paiement",
       "investedTokens": "Filtrer tokens/assets",
       "createAccount": "Créer un compte",
-      "multisigEdit": "Modifier le compte multisig",
+      "multisigEdit": "Gérer Multisig",
       "settings": "Paramètres",
       "feedback": "Retour d'information",
       "other": "Autre",
@@ -786,17 +786,18 @@
     "warning": {
       "safetyTitle": "Avertissements de sécurité",
       "highSingleSigner": "Un seul Signer répond à la condition stricte threshold. Recommandation : au moins deux Signer indépendants.",
-      "medSingleSigner": "La valeur de threshold est supérieure à 0, mais il n'y a qu'un seul Signer. Recommandation : ajoutez un deuxième Signer."
+      "medSingleSigner": "La valeur de threshold est supérieure à 0, mais il n'y a qu'un seul Signer. Recommandation : ajoutez un deuxième Signer.",
+      "singleSignerReachesHigh": "Un seul Signer suffit pour atteindre le niveau « Élevé » de threshold et permettre la gestion du compte sans aucune signature supplémentaire. Recommandation : définissez le niveau « Élevé » de threshold en fonction de la pondération individuelle la plus élevée."
     },
     "securityGuarantee": {
       "title": "🔒 Garantie de sécurité SKM (Multisig)",
       "text": "Le Stellar Account Manager empêche tous les blocages de compte d'origine technique pouvant résulter d'une configuration incorrecte de Multisig.\n\nPlus précisément, le SKM bloque :\n- La désactivation de la clé principale sans Signer réalisable\n- Un thresholds inaccessible (faible / moyen / élevé)\n- Les erreurs d’ordre dans les modifications de Signer et Threshold\n- La suppression du dernier Signers élevé valide\n- Les configurations de Multisig où SetOptions ne peut plus être signé\n- Les impasses causées par hashX ou preAuthTx en tant que dernier Signer\n\nSKM ne définit que ed25519-Signer. Pour les autres types de Signer, utilisez {lien}.\n\nSKM garantit :\n- Chaque modification confirmée laisse au moins un chemin valide ouvert pour la gestion ultérieure du compte\n- SetOptions reste accessible après la modification\n\nNe peut être garanti (en raison des limitations du système) :\n- La perte de Secret Keys ou de Wallets matériel\n- L’indisponibilité ou la défaillance d’un Signer externe\n\nConclusion :\nSKM offre une protection fiable contre les blocages de configuration.\nLes risques organisationnels sont présentés de manière transparente, mais ne peuvent être techniquement évités.",
       "linkLabel": "lab.stellar.org"
     },
-    "hint": "Chargez un compte existant, modifiez signers, les poids, le poids maître et thresholds, puis enregistrez les modifications.",
+    "hint": "Affiche la configuration actuelle de Multisig pour le compte. Modifiez Signer, les pondérations, la pondération principale et thresholds, puis enregistrez les modifications.",
     "load": "Chargement",
     "loaded": "Chargé. signers supplémentaire : {{count}}",
-    "menu": "Modifier le compte multisig",
+    "menu": "Gérer Multisig",
     "menuHint": "Modification des paramètres signers/thresholds d'un compte existant",
     "noteMaxSigners": "Remarque : Stellar autorise un maximum de 20 Signer supplémentaires par compte.",
     "signerTypeNote": "Remarque : SKM utilise uniquement ed25519-Signer. Pour hashX/preAuthTx, utilisez",
@@ -807,11 +808,18 @@
     "signers": "Signer (ed25519)",
     "weight": "Pondération",
     "masterWeight": "Poids maître",
-    "title": "Modifier le compte multisig",
+    "title": "Gérer Multisig",
     "validation": {
       "signerKeyHint": "Remarque : Signer doit commencer par « G » (ed25519 Public Key).",
       "signerKeyInvalid": "Adresse Signer non valide. Une adresse G… (ed25519) est attendue."
-    }
+    },
+    "risk": {
+      "title": "Attention : vous risquez de vous retrouver enfermé à l'extérieur",
+      "masterDisabled": "Le poids principal est défini sur 0. Le Secret Key de ce compte ne peut plus signer quoi que ce soit ; le compte ne peut désormais être géré qu’à l’aide du Signer supplémentaire.",
+      "noRedundancy": "En cas de perte d'une seule clé, la valeur élevée de threshold ne peut plus être respectée et le compte ne peut plus être géré (par exemple, pour modifier Signer). Recommandation : choisissez des poids/Signer de manière à ce que la perte d'une seule clé reste gérable.",
+      "acknowledge": "Je comprends le risque, mais je souhaite tout de même épargner."
+    },
+    "saveIntro": "Pour enregistrer les données, une transaction SetOptions est créée ; celle-ci doit être signée avec la clé Secret Keys de la clé Signer. Choisissez la méthode de signature :"
   },
   "navigation": {
     "back": "Retour",

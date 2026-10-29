@@ -210,7 +210,7 @@
       "sendPayment": "Send payment",
       "investedTokens": "Filter tokens/assets",
       "createAccount": "Create account",
-      "multisigEdit": "Edit multisig account",
+      "multisigEdit": "Manage Multisig",
       "settings": "Settings",
       "feedback": "Feedback",
       "other": "Other",
@@ -786,17 +786,18 @@
     "warning": {
       "safetyTitle": "Security warnings",
       "highSingleSigner": "Only one Signer meets the high threshold. Recommendation: at least two independent Signer.",
-      "medSingleSigner": "Med threshold > 0, but only one Signer is present. Recommendation: Add a second Signer."
+      "medSingleSigner": "Med threshold > 0, but only one Signer is present. Recommendation: Add a second Signer.",
+      "singleSignerReachesHigh": "A single Signer alone reaches the \"High\" threshold and can manage the account without any additional signatures. Recommendation: Set the \"High\" threshold based on the largest individual weight."
     },
     "securityGuarantee": {
       "title": "🔒 SKM Security Guarantee (Multisig)",
       "text": "The Stellar Account Manager prevents all technically caused account locks that may result from incorrect Multisig configuration.\n\nIn particular, SKM blocks:\n- Deactivation of the master key without an attainable Signer\n- Unattainable thresholds (low / med / high)\n- Ordering errors in Signer and Threshold changes\n- Removal of the last valid high Signers\n- Multisig setups where SetOptions can no longer be signed\n- Dead ends caused by hashX or preAuthTx as the last Signer\n\nSKM only sets ed25519-Signer. For other Signer types, use {link}.\n\nSKM guarantees:\n- Every confirmed change leaves at least one valid path open for further account management\n- SetOptions remains accessible after the change\n\nCannot be guaranteed (due to system limitations):\n- Loss of Secret Keys or hardware Wallets\n- Unavailability or failure of external Signer\n\nConclusion:\nSKM provides reliable protection against configuration lockouts.\nOrganizational risks are displayed transparently but cannot be technically prevented.",
       "linkLabel": "lab.stellar.org"
     },
-    "hint": "Load an existing account, adjust signers, weights, master weight, and thresholds, and save the changes.",
+    "hint": "Displays the account's current Multisig configuration. Adjust Signer, weights, master weight, and thresholds, and save the changes.",
     "load": "Loading",
     "loaded": "Loaded. Additional signers: {{count}}",
-    "menu": "Edit multisig account",
+    "menu": "Manage Multisig",
     "menuHint": "Adjusting signers/thresholds of an existing account",
     "noteMaxSigners": "Note: Stellar allows a maximum of 20 additional Signer per account.",
     "signerTypeNote": "Note: SKM only uses ed25519-Signer. For hashX/preAuthTx, use",
@@ -807,11 +808,18 @@
     "signers": "Signer (ed25519)",
     "weight": "Weighting",
     "masterWeight": "Master weight",
-    "title": "Edit multisig account",
+    "title": "Manage Multisig",
     "validation": {
       "signerKeyHint": "Note: Signer must begin with \"G\" (ed25519 Public Key).",
       "signerKeyInvalid": "Invalid Signer address. A G… address (ed25519) is expected."
-    }
+    },
+    "risk": {
+      "title": "Warning: You may lock yourself out",
+      "masterDisabled": "The master weight is set to 0. The Secret Key for this account can no longer sign anything—the account can now only be managed using the additional Signer.",
+      "noRedundancy": "If a single key is lost, the high threshold can no longer be met and the account can no longer be managed (e.g., changing Signer). Recommendation: Choose weights/Signer so that the loss of a single key is manageable.",
+      "acknowledge": "I understand the risk and would still like to save."
+    },
+    "saveIntro": "To save the data, a SetOptions transaction is created, which must be signed with the Secret Keys of the Signer. Choose how to sign it:"
   },
   "navigation": {
     "back": "Back",

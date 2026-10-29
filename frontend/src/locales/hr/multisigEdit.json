@@ -1,5 +1,5 @@
 {
-  "menu": "Uredi multisig",
+  "menu": "Upravljaj Multisig",
   "menuHint": "Podesite Signer i Thresholds za postojeći račun",
   "confirm": {
     "removeSigner": "Signer Stvarno ga ukloniti?"
@@ -18,7 +18,7 @@
   "signers": "Signer",
   "weight": "Vaganje",
   "masterWeight": "Glavna težina",
-  "title": "Uredi multisig račun",
+  "title": "Upravljaj Multisig",
   "validation": {
     "signerKeyHint": "Napomena: Signer mora započeti s \"G\" (ed25519 Public Key).",
     "signerKeyInvalid": "Neispravna adresa Signer. Očekuje se adresa G… (ed25519)."

@@ -76,8 +76,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
   const [showSecretModal, setShowSecretModal] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [preparedTx, setPreparedTx] = useState(null);
-  // Multisig mode controls UI; test keeps legacy direct-sign flow, prod prepares XDR/Pending Jobs in next steps.
-  const [mode, setMode] = useState('test'); // 'test' | 'prod'
+  const [riskAcknowledged, setRiskAcknowledged] = useState(false);
   const [pendingAction, setPendingAction] = useState(null);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [currentAccount, setCurrentAccount] = useState(null); // Snapshot der aktuellen Kettenwerte fürs Signieren
@@ -85,9 +84,10 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
   // Account state
   const [masterWeight, setMasterWeight] = useState(1);
   const [signers, setSigners] = useState([]); // [{key, weight}], excludes master
-  const [lowT, setLowT] = useState(1);
-  const [medT, setMedT] = useState(2);
-  const [highT, setHighT] = useState(2);
+  // Startwerte = Stellar-Default eines neuen Kontos; nach dem Laden gelten die On-Chain-Werte.
+  const [lowT, setLowT] = useState(0);
+  const [medT, setMedT] = useState(0);
+  const [highT, setHighT] = useState(0);
   const thresholdsForModal = useMemo(() => ({
     low_threshold: clampByte(lowT),
     med_threshold: clampByte(medT),
@@ -135,6 +135,8 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
     });
   }, [currentAccount, defaultPublicKey, highT, lowT, masterWeight, medT, signers, t]);
   const hasSafetyErrors = safetyCheck.errors.length > 0;
+  const hasLockoutRisks = safetyCheck.risks.length > 0;
+  const saveBlockedByRisk = hasLockoutRisks && !riskAcknowledged;
 
   // Load account
   const loadAccount = useCallback(async () => {
@@ -151,19 +153,10 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
       const others = (acct.signers || []).filter(s => s.key !== pk && s.type && s.type.includes('ed25519'));
       setMasterWeight(clampByte(ms?.weight ?? 1));
       setSigners(others.map(s => ({ key: s.key, weight: clampByte(s.weight || 0) })));
-      const fetchedLow = clampByte(acct.thresholds?.low_threshold ?? 1);
-      const fetchedMed = clampByte(acct.thresholds?.med_threshold ?? 2);
-      const fetchedHigh = clampByte(acct.thresholds?.high_threshold ?? 2);
-      if (fetchedLow === 0 && fetchedMed === 0 && fetchedHigh === 0) {
-        // Fallback auf 1/2/2 für neue Konten ohne gesetzte Schwellen
-        setLowT(1);
-        setMedT(2);
-        setHighT(2);
-      } else {
-        setLowT(fetchedLow);
-        setMedT(fetchedMed);
-        setHighT(fetchedHigh);
-      }
+      // Immer die tatsächlichen On-Chain-Werte anzeigen (neues Konto: 0/0/0), kein Fallback.
+      setLowT(clampByte(acct.thresholds?.low_threshold ?? 0));
+      setMedT(clampByte(acct.thresholds?.med_threshold ?? 0));
+      setHighT(clampByte(acct.thresholds?.high_threshold ?? 0));
       setInfo(t('common:multisigEdit.loaded', { count: others.length }));
     } catch (e) {
       setError(String(e?.message || e));
@@ -376,6 +369,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
       }
     }
     setPendingAction('save');
+    setRiskAcknowledged(false);
     setShowConfirmModal(true);
   }
 
@@ -384,15 +378,17 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
       setError(t('common:multisigEdit.error.safetyBlocked'));
       return;
     }
+    if (saveBlockedByRisk) return;
     setShowConfirmModal(false);
     setShowSecretModal(true);
-  }, [hasSafetyErrors, t]);
+  }, [hasSafetyErrors, saveBlockedByRisk, t]);
 
   const handlePrepareMultisig = useCallback(async () => {
     if (hasSafetyErrors) {
       setError(t('common:multisigEdit.error.safetyBlocked'));
       return;
     }
+    if (saveBlockedByRisk) return;
     try {
       const { tx, plannedThresholds, plannedMaster, plannedSigners } = await buildSetOptionsTx(null, { signTx: false, requireSigners: false });
       const hashHex = txHashHex(tx);
@@ -473,7 +469,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
     } finally {
       setShowConfirmModal(false);
     }
-  }, [buildSetOptionsTx, defaultPublicKey, getSessionSecretForAccount, hasSafetyErrors, i18n.language, network, t]);
+  }, [buildSetOptionsTx, defaultPublicKey, getSessionSecretForAccount, hasSafetyErrors, i18n.language, network, saveBlockedByRisk, t]);
 
   const buildPlannedChanges = useCallback(() => {
     const pk = (defaultPublicKey || '').trim();
@@ -536,22 +532,6 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
 
       <div className="bg-white dark:bg-gray-800 rounded-sm border p-4 mb-4">
         <h3 className="font-semibold mb-2">{t('common:multisigEdit.currentConfig')}</h3>
-        <div className="flex flex-wrap gap-3 mb-4">
-          <label className="inline-flex items-center gap-2 text-sm">
-            <input type="radio" name="ms-mode" value="test" checked={mode === 'test'} onChange={() => setMode('test')} />
-            {t('multisig:mode.test.label')}
-          </label>
-          <label className="inline-flex items-center gap-2 text-sm">
-            <input type="radio" name="ms-mode" value="prod" checked={mode === 'prod'} onChange={() => setMode('prod')} />
-            {t('multisig:mode.prod.label')}
-          </label>
-        </div>
-        {mode === 'prod' && (
-          <div className="mb-4 border border-amber-300 bg-amber-50 dark:border-amber-700 dark:bg-amber-900/30 rounded-sm p-3">
-            <div className="text-sm font-semibold text-amber-900 dark:text-amber-100">{t('multisig:mode.prod.banner.title')}</div>
-            <p className="text-xs text-amber-800 dark:text-amber-200 mt-1">{t('multisig:mode.prod.banner.body')}</p>
-          </div>
-        )}
 
         <MultisigConfigForm
           signersTitle={t('multisigConfig:signersTitle')}
@@ -675,6 +655,28 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
                 </ul>
               </div>
             )}
+            {hasLockoutRisks && (
+              <div className="mb-4 border-2 border-red-500 bg-red-50 dark:border-red-600 dark:bg-red-900/30 rounded-sm p-3">
+                <div className="text-sm font-semibold text-red-900 dark:text-red-100">
+                  ⚠️ {t('common:multisigEdit.risk.title')}
+                </div>
+                <ul className="list-disc ml-4 text-xs text-red-800 dark:text-red-200 mt-1 space-y-1">
+                  {safetyCheck.risks.map((msg, idx) => (
+                    <li key={idx}>{msg}</li>
+                  ))}
+                </ul>
+                <label className="mt-2 flex items-start gap-2 text-sm text-red-900 dark:text-red-100">
+                  <input
+                    type="checkbox"
+                    className="mt-0.5"
+                    checked={riskAcknowledged}
+                    onChange={(e) => setRiskAcknowledged(e.target.checked)}
+                  />
+                  <span>{t('common:multisigEdit.risk.acknowledge')}</span>
+                </label>
+              </div>
+            )}
+            <p className="text-sm text-gray-700 dark:text-gray-300 mb-3">{t('common:multisigEdit.saveIntro')}</p>
               <div className="grid gap-3">
               <div className="border rounded-sm p-3">
                 <div className="font-semibold mb-1">{t('multisig:confirm.testModeTitle')}</div>
@@ -683,28 +685,21 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
                   type="button"
                   onClick={handleConfirmTestMode}
                   className="w-full px-3 py-2 rounded-sm bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50"
-                  disabled={mode === 'prod' || hasSafetyErrors}
+                  disabled={hasSafetyErrors || saveBlockedByRisk}
                 >
                   {t('multisig:confirm.testModeButton')}
                 </button>
-                {mode === 'prod' && (
-                  <p className="mt-2 text-xs text-amber-700 dark:text-amber-300">{t('multisig:mode.prod.banner.body')}</p>
-                )}
               </div>
               <div className="border rounded-sm p-3">
-                <div className="font-semibold mb-1">
-                  {mode === 'prod' ? t('multisig:actions.createMultisigJob') : t('multisig:confirm.prepareTitle')}
-                </div>
-                <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">
-                  {mode === 'prod' ? t('multisig:confirm.prepareDescription') : t('multisig:confirm.prepareDescription')}
-                </p>
+                <div className="font-semibold mb-1">{t('multisig:actions.createMultisigJob')}</div>
+                <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">{t('multisig:confirm.options.job.short')}</p>
                 <button
                   type="button"
                   onClick={handlePrepareMultisig}
-                  className="w-full px-3 py-2 rounded-sm border border-blue-200 text-blue-700 dark:text-blue-200 dark:border-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900"
-                  disabled={hasSafetyErrors}
+                  className="w-full px-3 py-2 rounded-sm border border-blue-200 text-blue-700 dark:text-blue-200 dark:border-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900 disabled:opacity-50"
+                  disabled={hasSafetyErrors || saveBlockedByRisk}
                 >
-                  {mode === 'prod' ? t('multisig:actions.createMultisigJob') : t('multisig:confirm.prepareButton')}
+                  {t('multisig:actions.createMultisigJob')}
                 </button>
               </div>
             </div>

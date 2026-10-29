@@ -312,7 +312,7 @@
     "deleteTestnetConfirm": "Testnet-Jobs löschen"
   },
   "actions": {
-    "createMultisigJob": "Multisig-AuftragJob erstellen"
+    "createMultisigJob": "Multisig-Job erstellen"
   },
   "job": {
     "create": {

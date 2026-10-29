@@ -210,7 +210,7 @@
       "sendPayment": "Enviar pago",
       "investedTokens": "Filtro tokens/assets",
       "createAccount": "Crear cuenta",
-      "multisigEdit": "Editar cuenta multisig",
+      "multisigEdit": "Gestionar Multisig",
       "settings": "Configuraciones",
       "feedback": "Retroalimentación",
       "other": "Otros",
@@ -786,17 +786,18 @@
     "warning": {
       "safetyTitle": "Advertencias de seguridad",
       "highSingleSigner": "Solo un Signer cumple el requisito de alto nivel de threshold. Recomendación: al menos dos Signer independientes.",
-      "medSingleSigner": "Med threshold > 0, pero solo hay un Signer. Recomendación: Añadir un segundo Signer."
+      "medSingleSigner": "Med threshold > 0, pero solo hay un Signer. Recomendación: Añadir un segundo Signer.",
+      "singleSignerReachesHigh": "Un solo Signer alcanza por sí solo el valor «Alto» de threshold y permite gestionar la cuenta sin necesidad de firmas adicionales. Recomendación: Establece el valor «Alto» de threshold en función de la ponderación individual más elevada."
     },
     "securityGuarantee": {
       "title": "🔒 Garantía de Seguridad SKM (Multisig)",
       "text": "El Gestor de Cuentas Stellar evita todos los bloqueos de cuentas de origen técnico que puedan derivarse de una configuración incorrecta de Multisig.\n\nEn concreto, el SKM bloquea:\n- La desactivación de la clave maestra sin un Signer alcanzable\n- Un thresholds inalcanzable (bajo / medio / alto)\n- Errores de ordenación en los cambios de Signer y Threshold\n- La eliminación del último Signers alto válido\n- Configuraciones de Multisig en las que ya no se puede firmar SetOptions\n- Callejones sin salida causados por hashX o preAuthTx como último Signer\n\nSKM solo establece ed25519-Signer. Para otros tipos de Signer, utilice {enlace}.\n\nSKM garantiza:\n- Que cada cambio confirmado deja abierta al menos una ruta válida para la gestión posterior de la cuenta\n- Que SetOptions sigue siendo accesible tras el cambio\n\nNo se puede garantizar (debido a limitaciones del sistema):\n- La pérdida de Secret Keys o de un Wallets de hardware.\n- La indisponibilidad o el fallo de un Signer externo.\n\nConclusión:\nSKM ofrece una protección fiable contra los bloqueos de configuración.\nLos riesgos organizativos se muestran de forma transparente, pero no pueden evitarse técnicamente.",
       "linkLabel": "lab.stellar.org"
     },
-    "hint": "Carga una cuenta existente, ajusta signers, las ponderaciones, la ponderación maestra y thresholds, y guarda los cambios.",
+    "hint": "Muestra la configuración actual de Multisig de la cuenta. Ajusta Signer, las ponderaciones, la ponderación principal y thresholds, y guarda los cambios.",
     "load": "Cargando",
     "loaded": "Cargado. signers adicional: {{count}}",
-    "menu": "Editar la cuenta multisig",
+    "menu": "Gestionar Multisig",
     "menuHint": "Modificación de signers/thresholds de una cuenta existente",
     "noteMaxSigners": "Nota: Stellar permite un máximo de 20 Signer adicionales por cuenta.",
     "signerTypeNote": "Nota: SKM solo utiliza ed25519-Signer. Para hashX/preAuthTx, utiliza",
@@ -807,11 +808,18 @@
     "signers": "Signer (ed25519)",
     "weight": "Ponderación",
     "masterWeight": "Peso maestro",
-    "title": "Editar la cuenta multisig",
+    "title": "Gestionar Multisig",
     "validation": {
       "signerKeyHint": "Nota: Signer debe comenzar por «G» (ed25519 Public Key).",
       "signerKeyInvalid": "Dirección Signer no válida. Se espera una dirección G… (ed25519)."
-    }
+    },
+    "risk": {
+      "title": "Advertencia: Es posible que te quedes fuera de casa",
+      "masterDisabled": "El peso maestro se ha establecido en 0. El Secret Key de esta cuenta ya no puede firmar nada; ahora, la cuenta solo se puede gestionar mediante el Signer adicional.",
+      "noRedundancy": "Si se pierde una sola clave, ya no se puede cumplir el valor alto de threshold y la cuenta deja de poder gestionarse (por ejemplo, para modificar Signer). Recomendación: Elige las ponderaciones y el valor de Signer de tal forma que la pérdida de una sola clave resulte manejable.",
+      "acknowledge": "Entiendo el riesgo, pero aun así me gustaría ahorrar."
+    },
+    "saveIntro": "Para guardar los datos, se crea una transacción SetOptions, que debe firmarse con el Secret Keys del Signer. Elige cómo firmarla:"
   },
   "navigation": {
     "back": "Regreso",

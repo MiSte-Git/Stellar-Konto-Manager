@@ -40,17 +40,72 @@ describe('getMultisigSafetyCheck', () => {
     ]);
   });
 
-  it('warns when the high threshold requires signing but only a single signer can provide it', () => {
+  it('does not warn about a single signer when no additional signers are configured (plain account)', () => {
     const result = getMultisigSafetyCheck({
       t,
       currentAccount: null,
       defaultPublicKey: KEY_A,
       masterWeight: 1,
       signers: [],
+      thresholds: { low: 1, med: 1, high: 1 },
+    });
+    expect(result.errors).toEqual([]);
+    expect(result.warnings).toEqual([]);
+    expect(result.risks).toEqual([]);
+  });
+
+  it('warns when signer rows exist but only a single valid signer can provide the high threshold', () => {
+    const result = getMultisigSafetyCheck({
+      t,
+      currentAccount: null,
+      defaultPublicKey: KEY_A,
+      masterWeight: 1,
+      signers: [{ key: '', weight: 1 }],
       thresholds: { low: 0, med: 0, high: 1 },
     });
     expect(result.errors).toEqual([]);
     expect(result.warnings).toEqual(['common:multisigEdit.warning.highSingleSigner']);
+  });
+
+  it('warns when an additional signer exists but thresholds stay 0/0/0 (any single signer controls the account)', () => {
+    const result = getMultisigSafetyCheck({
+      t,
+      currentAccount: null,
+      defaultPublicKey: KEY_A,
+      masterWeight: 1,
+      signers: [{ key: KEY_B, weight: 1 }],
+      thresholds: { low: 0, med: 0, high: 0 },
+    });
+    expect(result.errors).toEqual([]);
+    expect(result.warnings).toEqual(['common:multisigEdit.warning.singleSignerReachesHigh']);
+    expect(result.risks).toEqual([]);
+  });
+
+  it('flags a 2-of-2 setup as a lockout risk (losing one key makes high unreachable)', () => {
+    const result = getMultisigSafetyCheck({
+      t,
+      currentAccount: null,
+      defaultPublicKey: KEY_A,
+      masterWeight: 1,
+      signers: [{ key: KEY_B, weight: 1 }],
+      thresholds: { low: 1, med: 2, high: 2 },
+    });
+    expect(result.errors).toEqual([]);
+    expect(result.risks).toEqual(['common:multisigEdit.risk.noRedundancy']);
+  });
+
+  it('flags disabling the master key as a lockout risk', () => {
+    const KEY_C = 'GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ';
+    const result = getMultisigSafetyCheck({
+      t,
+      currentAccount: { signers: [{ key: KEY_A, weight: 1, type: 'ed25519_public_key' }] },
+      defaultPublicKey: KEY_A,
+      masterWeight: 0,
+      signers: [{ key: KEY_B, weight: 1 }, { key: KEY_C, weight: 1 }],
+      thresholds: { low: 1, med: 1, high: 1 },
+    });
+    expect(result.errors).toEqual([]);
+    expect(result.risks).toEqual(['common:multisigEdit.risk.masterDisabled']);
   });
 
   it('errors when a special (non-ed25519) signer holds enough weight to reach high on its own', () => {

@@ -1,5 +1,5 @@
 {
-  "menu": "Редактировать multisig",
+  "menu": "Управление Multisig",
   "menuHint": "Настройте параметры Signer и Thresholds для существующего счёта",
   "confirm": {
     "removeSigner": "Signer Действительно удалить?"
@@ -18,7 +18,7 @@
   "signers": "Signer",
   "weight": "Взвешивание",
   "masterWeight": "Мастер вес",
-  "title": "Изменить учетную запись multisig",
+  "title": "Управление Multisig",
   "validation": {
     "signerKeyHint": "Примечание: Signer должен начинаться с буквы «G» (ed25519 Public Key).",
     "signerKeyInvalid": "Недопустимый адрес Signer. Ожидается адрес G… (ed25519)."

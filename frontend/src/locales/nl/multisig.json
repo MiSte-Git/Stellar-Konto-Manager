@@ -312,7 +312,7 @@
     "deleteTestnetConfirm": "Verwijder testnet-taken"
   },
   "actions": {
-    "createMultisigJob": "Creëer Multisig TaakJob"
+    "createMultisigJob": "Multisig Een vacature aanmaken"
   },
   "job": {
     "create": {

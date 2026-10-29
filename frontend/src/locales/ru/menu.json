@@ -8,7 +8,7 @@
   "muxed": "Управление субадресами",
   "glossary": "Глоссарий",
   "createAccount": "Создать новую учетную запись",
-  "multisigEdit": "Редактировать multisig",
+  "multisigEdit": "Управление Multisig",
   "multisigJobs": "Открыть транзакции Multisig",
   "listAll": "Мои права доступа Token",
   "compareTrustlines": "Сравнение авторизаций Token",

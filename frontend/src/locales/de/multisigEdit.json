@@ -1,5 +1,5 @@
 {
-  "menu": "Multisig bearbeiten",
+  "menu": "Multisig verwalten",
   "menuHint": "Signer und Thresholds eines bestehenden Kontos anpassen",
   "confirm": {
     "removeSigner": "Signer wirklich entfernen?"
@@ -18,7 +18,7 @@
   "signers": "Signer",
   "weight": "Gewichtung",
   "masterWeight": "Master-Gewicht",
-  "title": "Multisig Konto bearbeiten",
+  "title": "Multisig verwalten",
   "validation": {
     "signerKeyHint": "Hinweis: Signer müssen mit \"G\" beginnen (ed25519 Public Key).",
     "signerKeyInvalid": "Ungültige Signer-Adresse. Erwartet wird eine G…-Adresse (ed25519)."
