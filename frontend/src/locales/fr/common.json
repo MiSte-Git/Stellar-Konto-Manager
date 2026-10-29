@@ -770,7 +770,6 @@
     "confirm": {
       "removeSigner": "Signer Voulez-vous vraiment le supprimer ?"
     },
-    "currentConfig": "Configuration actuelle / prévue",
     "error": {
       "thresholdTooHigh": "Thresholds ne doit pas dépasser la somme des poids.",
       "safetyTitle": "Contrôle de sécurité bloqué",

@@ -770,7 +770,6 @@
     "confirm": {
       "removeSigner": "Signer Stvarno ga ukloniti?"
     },
-    "currentConfig": "Trenutna / Planirana konfiguracija",
     "error": {
       "thresholdTooHigh": "Thresholds ne smije prelaziti zbroj težina.",
       "safetyTitle": "Sigurnosna provjera blokirana",

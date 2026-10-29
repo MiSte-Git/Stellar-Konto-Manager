@@ -770,7 +770,6 @@
     "confirm": {
       "removeSigner": "Signer Echt verwijderen?"
     },
-    "currentConfig": "Huidige / Geplande Configuratie",
     "error": {
       "thresholdTooHigh": "Thresholds mag niet groter zijn dan de som van de gewichten.",
       "safetyTitle": "Beveiligingscontrole geblokkeerd",

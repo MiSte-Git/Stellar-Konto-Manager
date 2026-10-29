@@ -770,7 +770,6 @@
     "confirm": {
       "removeSigner": "Signer Haluatko todella poistaa sen?"
     },
-    "currentConfig": "Nykyinen / Suunniteltu kokoonpano",
     "error": {
       "thresholdTooHigh": "Thresholds ei saa ylittää painojen summaa.",
       "safetyTitle": "Turvatarkastus estetty",

@@ -780,7 +780,6 @@
     "confirm": {
       "removeSigner": "Signer wirklich entfernen?"
     },
-    "currentConfig": "Aktuelle / geplante Konfiguration",
     "error": {
       "thresholdTooHigh": "Schwellen dürfen die Summe der Gewichte nicht überschreiten.",
       "safetyTitle": "Sicherheitscheck blockiert",

@@ -770,7 +770,6 @@
     "confirm": {
       "removeSigner": "Signer Действительно удалить?"
     },
-    "currentConfig": "Текущая / Планируемая конфигурация",
     "error": {
       "thresholdTooHigh": "Значение Thresholds не должно превышать сумму весов.",
       "safetyTitle": "Блокирована проверка безопасности",

@@ -531,7 +531,6 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
       <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">{t('common:multisigEdit.noteMaxSigners')}</p>
 
       <div className="bg-white dark:bg-gray-800 rounded-sm border p-4 mb-4">
-        <h3 className="font-semibold mb-2">{t('common:multisigEdit.currentConfig')}</h3>
 
         <MultisigConfigForm
           signersTitle={t('multisigConfig:signersTitle')}
