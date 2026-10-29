@@ -21,6 +21,7 @@
  */
 
 import React from "react";
+import { NETWORKS } from '../../../config/networks.js';
 import * as StellarSdk from "@stellar/stellar-sdk";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
@@ -45,7 +46,7 @@ import { changeTrust, friendbotFund } from "../TestnetAction";
 const MARCO_KEYPAIR = StellarSdk.Keypair.random(); // TESTNET ISSUER - replace before production
 const MARCO_PUBLIC_KEY = MARCO_KEYPAIR.publicKey();
 
-const HORIZON_TESTNET = "https://horizon-testnet.stellar.org";
+const HORIZON_TESTNET = NETWORKS.TESTNET.horizonUrl;
 const server = new StellarSdk.Horizon.Server(HORIZON_TESTNET);
 
 /** Ensures Marco's testnet account exists; funds it via Friendbot if needed. */

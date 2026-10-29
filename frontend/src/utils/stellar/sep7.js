@@ -7,7 +7,8 @@
 // den die CSP verhindert) und nur neutral als "nicht geprueft" angezeigt. callback wird nie
 // aufgerufen. web+stellar:tx (fremde Transaktion signieren) wird bewusst nicht unterstuetzt.
 import { Buffer } from 'buffer';
-import { Networks, StrKey } from '@stellar/stellar-sdk';
+import { getNetworkConfig, passphraseFor } from '../../config/networks.js';
+import { StrKey } from '@stellar/stellar-sdk';
 import { isContractAddress } from './addressType.js';
 
 const AMOUNT_RE = /^\d+(?:\.\d{1,7})?$/;
@@ -127,8 +128,8 @@ export function parsePaymentInput(raw) {
 
 /** true, wenn die Anfrage ein anderes Netzwerk verlangt als das gewaehlte. */
 export function networkMismatch(request, network) {
-  if (!request?.networkPassphrase) return network === 'TESTNET'; // ohne Angabe gilt laut SEP-7 Mainnet
-  const expected = network === 'TESTNET' ? Networks.TESTNET : Networks.PUBLIC;
+  if (!request?.networkPassphrase) return getNetworkConfig(network).id !== 'PUBLIC'; // ohne Angabe gilt laut SEP-7 Mainnet
+  const expected = passphraseFor(network);
   return request.networkPassphrase !== expected;
 }
 
@@ -144,7 +145,7 @@ export function buildSep7Pay({ destination, amount = '', asset = null, memo = nu
     parts.push(['memo', memo.value]);
     parts.push(['memo_type', memo.type === 'id' ? 'MEMO_ID' : 'MEMO_TEXT']);
   }
-  if (network === 'TESTNET') parts.push(['network_passphrase', Networks.TESTNET]);
+  if (getNetworkConfig(network).id !== 'PUBLIC') parts.push(['network_passphrase', passphraseFor(network)]);
   return `web+stellar:pay?${parts.map(([k, v]) => `${k}=${encodeURIComponent(v)}`).join('&')}`;
 }
 

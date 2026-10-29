@@ -1,4 +1,5 @@
 import React, { useMemo, useState, useEffect } from 'react';
+import { friendbotUrlFor, horizonUrlFor, passphraseFor, readStoredNetworkId } from '../config/networks.js';
 import { useTranslation } from 'react-i18next';
 import SecretKeyModal from '../components/SecretKeyModal.jsx';
 import MultiSigHelpDialog from '../components/multisig/MultiSigHelpDialog.jsx';
@@ -10,14 +11,11 @@ import { useRecentWalletOptions } from '../utils/useRecentWalletOptions.js';
 import { resolveFeePerOp } from '../utils/stellar/fees.js';
 import {
   Keypair,
-  Networks,
   Operation,
   TransactionBuilder,
   Horizon
 } from '@stellar/stellar-sdk';
 
-const HORIZON_MAIN = 'https://horizon.stellar.org';
-const HORIZON_TEST = 'https://horizon-testnet.stellar.org';
 
 function NetworkSelector({ value, onChange }) {
   const { t } = useTranslation(['multisigCreate', 'network', 'common']);
@@ -52,7 +50,7 @@ export default function MultisigCreatePage() {
 
   const [network, setNetwork] = useState(() => {
     try {
-      return (typeof window !== 'undefined' && window.localStorage?.getItem('SKM_NETWORK') === 'TESTNET') ? 'TESTNET' : 'PUBLIC';
+      return readStoredNetworkId();
     } catch {
       return 'PUBLIC';
     }
@@ -75,8 +73,8 @@ export default function MultisigCreatePage() {
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const { recentWalletOptions, removeRecentWalletOption, clearRecentWalletOptions } = useRecentWalletOptions();
 
-  const server = useMemo(() => getHorizonServer(network === 'TESTNET' ? HORIZON_TEST : HORIZON_MAIN), [network]);
-  const passphrase = network === 'TESTNET' ? Networks.TESTNET : Networks.PUBLIC;
+  const server = useMemo(() => getHorizonServer(horizonUrlFor(network)), [network]);
+  const passphrase = passphraseFor(network);
 
   // Weights & thresholds
   const [masterWeight, setMasterWeight] = useState(1);
@@ -201,7 +199,7 @@ export default function MultisigCreatePage() {
   }
 
   async function friendbotActivate(pub) {
-    const url = `https://friendbot.stellar.org?addr=${encodeURIComponent(pub)}`;
+    const url = `${friendbotUrlFor(network)}?addr=${encodeURIComponent(pub)}`;
     const r = await fetch(url);
     if (!r.ok) throw new Error('Friendbot request failed');
     return r.json();

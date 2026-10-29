@@ -3,6 +3,7 @@ const toml = require('toml');
 const dns = require('dns');
 const net = require('net');
 const { Agent } = require('undici');
+const { networkFromQuery } = require('./stellarNetworks.js');
 
 const ASSET_CODE_RE = /^[A-Za-z0-9]{1,12}$/;
 const TOML_FETCH_TIMEOUT_MS = 6000;
@@ -475,7 +476,7 @@ async function fetchExpertDirectoryEntry({ issuer, network }) {
 
   // The directory covers the public network; testnet issuers are throwaway
   // keys that can never be listed, so skip the upstream call entirely.
-  const isPublic = String(network || 'PUBLIC').toUpperCase() !== 'TESTNET';
+  const isPublic = networkFromQuery(network) === 'public';
   if (!isPublic) {
     return { issuer: accountId, status: 'notChecked', name: '', domain: '', tags: [] };
   }

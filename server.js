@@ -17,6 +17,7 @@ const { writeJsonFileLocked } = require('./services/jsonFileStore.js');
 const { createChallenge, consumeChallenge, verifyChallengeSignature } = require('./services/challengeStore.js');
 const { filterValidSignatures, requiredWeightForOperations, signatureKey } = require('./services/txSignatures.js');
 const { isLoopbackAddress } = require('./services/network.js');
+const stellarNetworks = require('./services/stellarNetworks.js');
 const { computeMultisigLifecycleStatus, extractMaxTimeUnix, mapSubmitResultCodeToLifecycleStatus, isMultisigTimeboundWithinCap, MULTISIG_JOB_MAX_TIMEBOUND_SECONDS } = require('./services/multisigLifecycle.js');
 const { expireStalePendingJobs } = require('./services/multisigJobsGuard.js');
 
@@ -52,13 +53,12 @@ const { expireStalePendingJobs } = require('./services/multisigJobsGuard.js');
 
 const app = express();
 const port = parseInt(process.env.PORT, 10) || 3000;
-const HORIZON_URL = 'https://horizon.stellar.org';
+const HORIZON_URL = stellarNetworks.horizonUrlFor('public');
 const horizon = new StellarSdk.Horizon.Server(HORIZON_URL);
 
 function getTradeHorizon(network = 'PUBLIC') {
-  return String(network || '').toUpperCase() === 'TESTNET'
-    ? new StellarSdk.Horizon.Server('https://horizon-testnet.stellar.org')
-    : horizon;
+  const net = stellarNetworks.networkFromQuery(network);
+  return net === 'public' ? horizon : new StellarSdk.Horizon.Server(stellarNetworks.horizonUrlFor(net));
 }
 
 // Security headers (Backlog P1.2) on every response, preflights and errors
@@ -470,16 +470,11 @@ app.patch('/api/bugreport/:id', async (req, res) => {
 });
 
 // --- Pending multisig jobs (file-backed, no secrets stored) ---
-function normalizeNetwork(raw) {
-  const v = String(raw || '').trim().toLowerCase();
-  if (v === 'public' || v === 'publicnet') return 'public';
-  if (v === 'testnet' || v === 'test') return 'testnet';
-  return null;
-}
+const { normalizeNetwork } = stellarNetworks;
 
 function parseTxAndHash(txXdr, network) {
   try {
-    const passphrase = network === 'public' ? StellarSdk.Networks.PUBLIC : StellarSdk.Networks.TESTNET;
+    const passphrase = stellarNetworks.passphraseFor(network);
     const tx = new StellarSdk.Transaction(txXdr, passphrase);
     // Buffer.from: ab stellar-sdk v17 liefert hash() ein Uint8Array, dessen toString('hex') kein Hex ist.
     const hashHex = Buffer.from(tx.hash()).toString('hex');
@@ -538,9 +533,7 @@ function extractSignerMeta(account) {
 }
 
 function horizonServerForNet(net) {
-  return net === 'public'
-    ? new StellarSdk.Horizon.Server('https://horizon.stellar.org')
-    : new StellarSdk.Horizon.Server('https://horizon-testnet.stellar.org');
+  return new StellarSdk.Horizon.Server(stellarNetworks.horizonUrlFor(net));
 }
 
 // Node equivalent of api/multisig.php's fetchAccountSignersCached() - a
@@ -577,7 +570,7 @@ async function fetchAccountMetaCached(net, accountId) {
 
 function parseJobTx(job) {
   try {
-    const passphrase = job.network === 'public' ? StellarSdk.Networks.PUBLIC : StellarSdk.Networks.TESTNET;
+    const passphrase = stellarNetworks.passphraseFor(job.network);
     return new StellarSdk.Transaction(job.txXdrCurrent || job.txXdrOriginal || '', passphrase);
   } catch {
     return null;
@@ -628,9 +621,7 @@ function collectSignersForTx(tx, signers = []) {
 }
 
 async function submitTx(tx, network) {
-  const horizon = network === 'public'
-    ? new StellarSdk.Horizon.Server('https://horizon.stellar.org')
-    : new StellarSdk.Horizon.Server('https://horizon-testnet.stellar.org');
+  const horizon = horizonServerForNet(network);
   const res = await horizon.submitTransaction(tx);
   return res;
 }
@@ -846,9 +837,7 @@ app.post('/api/multisig/jobs/:id/token', async (req, res) => {
       return res.status(403).json({ ok: false, error: 'invalid_signature' });
     }
 
-    const serverForNet = job.network === 'public'
-      ? new StellarSdk.Horizon.Server('https://horizon.stellar.org')
-      : new StellarSdk.Horizon.Server('https://horizon-testnet.stellar.org');
+    const serverForNet = horizonServerForNet(job.network);
     let signerMeta;
     try {
       const account = await loadAccount(serverForNet, job.accountId);
@@ -878,7 +867,7 @@ app.post('/api/multisig/jobs/:id/merge-signed-xdr', async (req, res) => {
     if (!signedXdr || typeof signedXdr !== 'string') {
       return res.status(400).json({ ok: false, error: 'invalid_xdr' });
     }
-    const net = job.network === 'public' ? 'public' : 'testnet';
+    const net = job.network;
     let incoming;
     try {
       incoming = parseTxAndHash(signedXdr, net);

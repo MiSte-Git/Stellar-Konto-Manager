@@ -1,6 +1,7 @@
 // import trustlineLogo from './assets/Trustline-Logo.jpg';
 import './i18n'; // Initialisiert die Sprachunterstützung
 import { useTranslation } from 'react-i18next';
+import { NETWORKS, horizonUrlFor, readStoredNetworkId } from './config/networks.js';
 import React, { useState, useEffect, useCallback, useMemo, useRef, lazy, Suspense } from 'react';
 import ReactDOM from 'react-dom/client';
 import { Link } from 'react-router-dom';
@@ -416,9 +417,7 @@ function Main() {
     const requestId = ++walletOpRequestRef.current;
     try {
       setXlmBalanceLoading(true);
-      const server = net === 'TESTNET'
-        ? getHorizonServer('https://horizon-testnet.stellar.org')
-        : getHorizonServer('https://horizon.stellar.org');
+      const server = getHorizonServer(horizonUrlFor(net));
       const summary = await getAccountSummary(pk, server);
       if (walletOpRequestRef.current !== requestId) return;
       setXlmBalance(summary?.xlmBalance ?? null);
@@ -512,7 +511,7 @@ function Main() {
     setIsLoading(true);
     setError('');
     try {
-      const net = (typeof window !== 'undefined' && window.localStorage?.getItem('SKM_NETWORK') === 'TESTNET') ? 'TESTNET' : 'PUBLIC';
+      const net = readStoredNetworkId();
       // Nur leichte Zusammenfassung nach Netzwechsel neu laden
       const { publicKey, summary } = await submitSourceInput(sourcePublicKey, t, net, { includeTrustlines: false });
       if (walletOpRequestRef.current !== requestId) return;
@@ -636,9 +635,7 @@ function Main() {
     setIsLoading(true);
     (async () => {
       try {
-        const server = devTestnet
-          ? getHorizonServer('https://horizon-testnet.stellar.org')
-          : getHorizonServer('https://horizon.stellar.org');
+        const server = getHorizonServer(horizonUrlFor(devTestnet ? 'TESTNET' : 'PUBLIC'));
         const tls = await loadTrustlines(sourcePublicKey, server);
         if (cancelled) return;
         setTrustlines(tls);
@@ -730,7 +727,7 @@ function Main() {
       setIsLoading(true);
       setError('');
       try {
-        const net = (typeof window !== 'undefined' && window.localStorage?.getItem('SKM_NETWORK') === 'TESTNET') ? 'TESTNET' : 'PUBLIC';
+        const net = readStoredNetworkId();
         const resolved = await resolveOrValidateAccount(trimmed);
         const displayInput = resolved.muxedAddress || resolved.accountId;
         const { publicKey, summary } = await submitSourceInput(resolved.accountId, t, net, { includeTrustlines: false });
@@ -817,7 +814,7 @@ function Main() {
                 <input
                   type="checkbox"
                   checked={devTestnet}
-                  onChange={(e)=>{ const next = !!e.target.checked; setDevTestnet(next); if (typeof window !== 'undefined' && window.localStorage) { if (next) { window.localStorage.setItem('SKM_NETWORK', 'TESTNET'); window.localStorage.setItem('SKM_HORIZON_URL', 'https://horizon-testnet.stellar.org'); } else { window.localStorage.setItem('SKM_NETWORK', 'PUBLIC'); window.localStorage.removeItem('SKM_HORIZON_URL'); } window.dispatchEvent(new CustomEvent('stm-network-changed', { detail: next ? 'TESTNET' : 'PUBLIC' })); } }}
+                  onChange={(e)=>{ const next = !!e.target.checked; setDevTestnet(next); if (typeof window !== 'undefined' && window.localStorage) { if (next) { window.localStorage.setItem('SKM_NETWORK', 'TESTNET'); window.localStorage.setItem('SKM_HORIZON_URL', NETWORKS.TESTNET.horizonUrl); } else { window.localStorage.setItem('SKM_NETWORK', 'PUBLIC'); window.localStorage.removeItem('SKM_HORIZON_URL'); } window.dispatchEvent(new CustomEvent('stm-network-changed', { detail: next ? 'TESTNET' : 'PUBLIC' })); } }}
                 />
                 {t('menu:devTestnet', 'Testnet (für Entwickler)')}
               </label>

@@ -3,6 +3,7 @@
  * Thema: Clawback – Schutz oder Macht?
  */
 import React, { useState, useRef, useEffect } from "react";
+import { NETWORKS } from '../../../config/networks.js';
 import * as StellarSdk from "@stellar/stellar-sdk";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
@@ -19,8 +20,8 @@ import "../storyCertificatePrint.css";
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const TRUST_CODE = "TRUST";
-const HORIZON = "https://horizon-testnet.stellar.org";
-const FRIENDBOT = "https://friendbot.stellar.org/?addr=";
+const HORIZON = NETWORKS.TESTNET.horizonUrl;
+const FRIENDBOT = `${NETWORKS.TESTNET.friendbotUrl}/?addr=`;
 const ACTION1_ID = "chapter9_create_clawback_asset";
 const ACTION2_ID = "chapter9_execute_clawback";
 const XP_ACTION = 60;

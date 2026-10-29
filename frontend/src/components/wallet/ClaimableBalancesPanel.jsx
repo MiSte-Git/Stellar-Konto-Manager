@@ -1,6 +1,6 @@
 import React from 'react';
+import { getNetworkConfig, horizonUrlFor, passphraseFor } from '../../config/networks.js';
 import { useTranslation } from 'react-i18next';
-import { Networks } from '@stellar/stellar-sdk';
 
 import SecretKeyModal from '../SecretKeyModal.jsx';
 import MultisigPrepareDialog from '../MultisigPrepareDialog.jsx';
@@ -29,8 +29,6 @@ import {
 } from '../../utils/stellar/claimableBalances.js';
 import { txHashHex } from '../../utils/stellar/txHash.js';
 
-const HORIZON_MAIN = 'https://horizon.stellar.org';
-const HORIZON_TEST = 'https://horizon-testnet.stellar.org';
 const TRUSTLINE_RESERVE_XLM = 0.5;
 
 const cardCls = 'rounded-2xl border border-gray-200 bg-white shadow-xs dark:border-gray-700 dark:bg-gray-800/70';
@@ -49,8 +47,8 @@ function needsTrustline(item) {
 export default function ClaimableBalancesPanel({ publicKey, account, network, available, fmt, locale, reloadToken = 0, onClaimed }) {
   const { t } = useTranslation(['wallet', 'common', 'secretKey']);
   const isTestnet = network === 'TESTNET';
-  const horizonUrl = isTestnet ? HORIZON_TEST : HORIZON_MAIN;
-  const networkPassphrase = isTestnet ? Networks.TESTNET : Networks.PUBLIC;
+  const horizonUrl = horizonUrlFor(network);
+  const networkPassphrase = passphraseFor(network);
 
   const [records, setRecords] = React.useState([]);
   const [truncated, setTruncated] = React.useState(false);
@@ -170,7 +168,7 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
       const fee = await resolveFeePerOp(server, { deferred: true });
       const tx = buildClaimTx({ account: fresh, item: current, fee, networkPassphrase, timeoutSeconds });
       const job = await createMultisigJobFromXdr({
-        network: isTestnet ? 'testnet' : 'public',
+        network: getNetworkConfig(network).backendId,
         accountId: publicKey,
         txXdr: tx.toXDR(),
       });

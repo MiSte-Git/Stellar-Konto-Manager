@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { horizonUrlFor } from '../../../config/networks.js';
 import { getHorizonServer, loadTrustlines } from '../../../utils/stellar/stellarUtils.js';
 import { DEFAULT_TRUSTLINE_LIMIT } from '../assetSearchUtils.js';
 
@@ -52,7 +53,7 @@ export default function useTrustlineStatus({ accountId, network, accountInput, s
     }
 
     setTrustlineStatus({ loading: true, state: 'loading', error: '', balance: null, limit: null, isAuthorized: null, isAuthorizedToMaintainLiabilities: null });
-    const server = getHorizonServer(network === 'TESTNET' ? 'https://horizon-testnet.stellar.org' : 'https://horizon.stellar.org');
+    const server = getHorizonServer(horizonUrlFor(network));
     loadTrustlines(accountId, server, { includeOps: false, ttlMs: 10000 })
       .then((trustlines) => {
         if (cancelled) return;

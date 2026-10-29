@@ -11,6 +11,7 @@
  * Charaktere: Lumio, Marco (speaker: "narrator")
  */
 import React, { useState, useEffect } from "react";
+import { NETWORKS } from '../../../config/networks.js';
 import * as StellarSdk from "@stellar/stellar-sdk";
 import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
@@ -34,7 +35,7 @@ const MARCO_PUBLIC_KEY = MARCO_KEYPAIR.publicKey();
 const FAKE_ISSUER = StellarSdk.Keypair.random().publicKey(); // TESTNET – fake issuer for scam demo
 const BERRY_CODE = "BERRY";
 
-const HORIZON_TESTNET = "https://horizon-testnet.stellar.org";
+const HORIZON_TESTNET = NETWORKS.TESTNET.horizonUrl;
 const server = new StellarSdk.Horizon.Server(HORIZON_TESTNET);
 
 const ACTION_ID = "chapter11_receive_berry";

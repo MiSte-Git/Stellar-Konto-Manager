@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { NETWORKS } from '../../config/networks.js';
 import { motion, AnimatePresence } from "framer-motion";
 import * as StellarSdk from "@stellar/stellar-sdk";
 import { useTranslation } from "react-i18next";
@@ -6,8 +7,8 @@ import { useStory } from "./StoryContext";
 import { useSettings } from "../../utils/useSettings";
 import ExplorerConfirmDialog from "./ExplorerConfirmDialog";
 
-const HORIZON_TESTNET = "https://horizon-testnet.stellar.org";
-const FRIENDBOT_URL = "https://friendbot.stellar.org";
+const HORIZON_TESTNET = NETWORKS.TESTNET.horizonUrl;
+const FRIENDBOT_URL = NETWORKS.TESTNET.friendbotUrl;
 const server = new StellarSdk.Horizon.Server(HORIZON_TESTNET);
 
 // ─── Stellar Helpers ──────────────────────────────────────────────────────────

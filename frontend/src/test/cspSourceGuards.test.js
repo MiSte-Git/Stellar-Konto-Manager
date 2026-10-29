@@ -10,6 +10,7 @@ import { fileURLToPath } from 'node:url';
 
 const require = createRequire(import.meta.url);
 const { BASE_CONNECT_SRC } = require('../../../services/securityHeaders.js');
+import { NETWORKS } from '../config/networks.js';
 
 const srcDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const frontendDir = path.resolve(srcDir, '..');
@@ -70,6 +71,16 @@ describe('frontend source stays compatible with the production CSP', () => {
           seen.add(m[1].toLowerCase());
           if (!allowed.has(m[1].toLowerCase())) found.push(`${rel}: ${m[1]}`);
         }
+      }
+    }
+    // Endpunkte aktivierter Netze aus der Registry (config/networks.js). rpcUrl
+    // nutzt das Frontend noch nicht; vor der ersten Nutzung hier aufnehmen.
+    for (const n of Object.values(NETWORKS)) {
+      if (!n.enabled) continue;
+      for (const url of [n.horizonUrl, n.friendbotUrl].filter(Boolean)) {
+        const origin = new URL(url).origin;
+        seen.add(origin);
+        if (!allowed.has(origin)) found.push(`config/networks.js (${n.id}): ${origin}`);
       }
     }
     expect(found).toEqual([]);

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Asset } from '@stellar/stellar-sdk';
+import { horizonUrlFor } from '../../../config/networks.js';
 import { getHorizonServer } from '../../../utils/stellar/stellarUtils.js';
 import { deriveOrderbookMidRate, bestPathDestinationAmount } from '../assetSearchUtils.js';
 
@@ -48,9 +49,7 @@ export default function useExchangeRate({ selectedStellarAsset, network, enabled
 
     const load = async () => {
       setExchangeRate({ ...EMPTY_EXCHANGE_RATE, loading: true });
-      const server = getHorizonServer(
-        network === 'TESTNET' ? 'https://horizon-testnet.stellar.org' : 'https://horizon.stellar.org'
-      );
+      const server = getHorizonServer(horizonUrlFor(network));
 
       const [orderbookResult, xlmToTokenResult, tokenToXlmResult] = await Promise.allSettled([
         server.orderbook(Asset.native(), selectedStellarAsset).call(),

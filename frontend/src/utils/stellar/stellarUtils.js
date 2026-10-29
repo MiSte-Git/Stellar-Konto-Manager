@@ -1,11 +1,11 @@
 import { resolveFeePerOp } from './fees.js';
+import { NETWORKS, horizonUrlFor, normalizeNetworkId, passphraseFor, readStoredNetworkId } from '../../config/networks.js';
 import { apiUrl } from '../apiBase.js';
 import { CONTRACT_ADDRESS_ERROR, isContractAddress } from './addressType.js';
 import {
   Horizon,
   StrKey,
   Keypair,
-  Networks,
   Operation,
   TransactionBuilder,
   Asset
@@ -111,7 +111,7 @@ function devHorizonOverride() {
 
 function resolveHorizonUrl(url) {
   // Global/Dev-Override: Hauptschalter über LocalStorage (SKM_NETWORK) oder explizite URL (SKM_HORIZON_URL, nur Dev)
-  let base = url || HORIZON_URL || 'https://horizon.stellar.org';
+  let base = url || HORIZON_URL || NETWORKS.PUBLIC.horizonUrl;
   try {
     const lsUrl = devHorizonOverride();
     const lsNet = window?.localStorage?.getItem('SKM_NETWORK'); // 'PUBLIC' | 'TESTNET'
@@ -121,8 +121,7 @@ function resolveHorizonUrl(url) {
 
     if (isDefault) {
       // Network is the source of truth on startup
-      if (lsNet === 'TESTNET') base = 'https://horizon-testnet.stellar.org';
-      else base = 'https://horizon.stellar.org';
+      base = horizonUrlFor(readStoredNetworkId());
       // Ignore SKM_HORIZON_URL when using the default path to avoid stale overrides across reloads
     } else if (!url && lsUrl) {
       // Only consider custom override when caller did not pass any url AND we are not in default-path check
@@ -136,7 +135,7 @@ function resolveHorizonUrl(url) {
 
   const isDev = typeof window !== 'undefined' && window.location && /^http:\/\/(localhost|127\.0\.1|127\.0\.0\.1)/.test(window.location.origin);
   // Wenn wir im Dev auf localhost laufen und Standard-Horizon verwenden, über den Vite-Proxy gehen
-  if (isDev && (base === 'https://horizon.stellar.org' || base === 'https://horizon.stellar.org/')) {
+  if (isDev && (base === NETWORKS.PUBLIC.horizonUrl || base === `${NETWORKS.PUBLIC.horizonUrl}/`)) {
     return (window.location.origin || 'http://localhost:5173') + '/horizon';
   }
   // Falls in .env bereits '/horizon' steht, in eine absolute URL umwandeln
@@ -515,11 +514,9 @@ export async function handleSourceSubmit(sourceInput, t, networkOverride /* 'PUB
   }
 
   try {
-    const server = networkOverride === 'TESTNET'
-      ? getHorizonServer('https://horizon-testnet.stellar.org')
-      : networkOverride === 'PUBLIC'
-        ? getHorizonServer('https://horizon.stellar.org')
-        : undefined;
+    const server = normalizeNetworkId(networkOverride)
+      ? getHorizonServer(horizonUrlFor(networkOverride))
+      : undefined;
 
     if (!includeTrustlines) {
       // Nur leichte Zusammenfassung für Header laden (kein ops-Listing)
@@ -567,8 +564,8 @@ export async function deleteTrustlinesInChunks({
   if (!primary) throw new Error('submitTransaction.failed:' + 'multisig.noKeysProvided');
   const targetAccount = accountPublicKey || primary.publicKey();
   if (!targetAccount) throw new Error('submitTransaction.failed:' + 'multisig.noKeysProvided');
-  const net = (typeof window !== 'undefined' && window.localStorage?.getItem('SKM_NETWORK') === 'TESTNET') ? 'TESTNET' : 'PUBLIC';
-  const server = getHorizonServer(net === 'TESTNET' ? 'https://horizon-testnet.stellar.org' : 'https://horizon.stellar.org');
+  const net = readStoredNetworkId();
+  const server = getHorizonServer(horizonUrlFor(net));
   const chunks = chunkArray(trustlines, 100);
   const allDeleted = [];
   let processed = 0;
@@ -604,7 +601,7 @@ export async function deleteTrustlinesInChunks({
     const fee = await resolveFeePerOp(server);
     const txb = new TransactionBuilder(account, {
       fee,
-      networkPassphrase: net === 'TESTNET' ? Networks.TESTNET : Networks.PUBLIC,
+      networkPassphrase: passphraseFor(net),
     });
 
     stillValid.forEach((tl) => {

@@ -1,6 +1,6 @@
 import React from 'react';
+import { getNetworkConfig, horizonUrlFor, passphraseFor } from '../../config/networks.js';
 import { useTranslation } from 'react-i18next';
-import { Networks } from '@stellar/stellar-sdk';
 
 import SecretKeyModal from '../SecretKeyModal.jsx';
 import MultisigPrepareDialog from '../MultisigPrepareDialog.jsx';
@@ -29,8 +29,6 @@ import {
 } from '../../utils/stellar/batchConvert.js';
 import { txHashHex } from '../../utils/stellar/txHash.js';
 
-const HORIZON_MAIN = 'https://horizon.stellar.org';
-const HORIZON_TEST = 'https://horizon-testnet.stellar.org';
 const BASE_RESERVE_XLM = 0.5;
 const STROOPS_PER_XLM = 10000000;
 const TRUSTLINE_LIST_LIMIT = 50;
@@ -46,8 +44,8 @@ const btnSecondary = 'rounded-lg border border-gray-300 bg-white px-4 py-2 text-
 export default function BatchConvertDialog({ publicKey, account, network, available, items, multisig, multisigTimeoutSeconds, fmt, onClose, onDone }) {
   const { t } = useTranslation(['wallet', 'common', 'multisig', 'secretKey']);
   const isTestnet = network === 'TESTNET';
-  const horizonUrl = isTestnet ? HORIZON_TEST : HORIZON_MAIN;
-  const networkPassphrase = isTestnet ? Networks.TESTNET : Networks.PUBLIC;
+  const horizonUrl = horizonUrlFor(network);
+  const networkPassphrase = passphraseFor(network);
   const f = (v) => (fmt ? fmt(Number(v || 0), { min: 0, max: 7 }) : String(v));
 
   const trustlineTargets = React.useMemo(
@@ -323,7 +321,7 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
         networkPassphrase,
         timeoutSeconds,
       });
-      const job = await createMultisigJobFromXdr({ network: isTestnet ? 'testnet' : 'public', accountId: publicKey, txXdr: tx.toXDR() });
+      const job = await createMultisigJobFromXdr({ network: getNetworkConfig(network).backendId, accountId: publicKey, txXdr: tx.toXDR() });
       setJobCreated(true);
       const chunkMin = chunk.reduce((acc, q) => acc + Number(q.destMin || 0), 0);
       setPreparedJob({

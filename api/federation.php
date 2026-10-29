@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/cors.php';
 require __DIR__ . '/federationService.php';
+require_once __DIR__ . '/stellarNetworks.php';
 
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
@@ -41,10 +42,7 @@ if ($retryAfter > 0) {
     exit;
 }
 
-$network = is_string($_GET['network'] ?? null) ? $_GET['network'] : 'PUBLIC';
-$horizonBase = strtoupper($network) === 'TESTNET'
-    ? 'https://horizon-testnet.stellar.org'
-    : 'https://horizon.stellar.org';
+$horizonBase = skm_horizon_url(skm_network_from_query($_GET['network'] ?? null));
 
 $result = federation_handle_request($_GET, function (string $accountId) use ($horizonBase): string {
     $account = fetch_json($horizonBase . '/accounts/' . rawurlencode($accountId));

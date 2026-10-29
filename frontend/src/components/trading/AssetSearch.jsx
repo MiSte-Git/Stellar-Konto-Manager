@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { horizonUrlFor, passphraseFor } from '../../config/networks.js';
 import { useTranslation } from 'react-i18next';
-import { Asset, Networks } from '@stellar/stellar-sdk';
+import { Asset } from '@stellar/stellar-sdk';
 import { getHorizonServer, loadTrustlines } from '../../utils/stellar/stellarUtils.js';
 import SecretKeyModal from '../SecretKeyModal.jsx';
 import { getRequiredThreshold } from '../../utils/getRequiredThreshold.js';
@@ -316,7 +317,7 @@ export default function AssetSearch() {
       setAccountInfo(null);
       return () => { cancelled = true; };
     }
-    const server = getHorizonServer(network === 'TESTNET' ? 'https://horizon-testnet.stellar.org' : 'https://horizon.stellar.org');
+    const server = getHorizonServer(horizonUrlFor(network));
     server.loadAccount(accountId)
       .then((account) => {
         if (!cancelled) setAccountInfo(account);
@@ -504,7 +505,7 @@ export default function AssetSearch() {
 
     setSwapPreview({ loading: true, error: '', path: null, loadedAt: null, refreshComparison: null });
     try {
-      const server = getHorizonServer(network === 'TESTNET' ? 'https://horizon-testnet.stellar.org' : 'https://horizon.stellar.org');
+      const server = getHorizonServer(horizonUrlFor(network));
       if (accountId && !swapDestinationAsset.isNative()) {
         const destinationTrustline = await findTrustlineForAsset(server, swapDestinationAsset, 10000);
         if (isStale()) return;
@@ -544,7 +545,7 @@ export default function AssetSearch() {
 
     setMarketData({ loading: true, error: '', orderbook: null, liquidityPools: [], loadedAt: null });
     try {
-      const server = getHorizonServer(network === 'TESTNET' ? 'https://horizon-testnet.stellar.org' : 'https://horizon.stellar.org');
+      const server = getHorizonServer(horizonUrlFor(network));
       const [orderbook, pools] = await Promise.all([
         server.orderbook(swapSourceAsset, swapDestinationAsset).call(),
         server.liquidityPools().forAssets(swapSourceAsset, swapDestinationAsset).call(),
@@ -613,7 +614,7 @@ export default function AssetSearch() {
 
   const submitChangeTrustTx = async ({ asset, limit, collectedSigners }) => {
     if (!accountId) throw new Error('submitTransaction.failed:trustlines.invalidInput');
-    const server = getHorizonServer(network === 'TESTNET' ? 'https://horizon-testnet.stellar.org' : 'https://horizon.stellar.org');
+    const server = getHorizonServer(horizonUrlFor(network));
     const accountPromise = server.loadAccount(accountId);
     const feePromise = resolveFeePerOp(server);
     const account = await accountPromise;
@@ -631,7 +632,7 @@ export default function AssetSearch() {
       asset,
       limit,
       fee,
-      networkPassphrase: network === 'TESTNET' ? Networks.TESTNET : Networks.PUBLIC,
+      networkPassphrase: passphraseFor(network),
     });
     return submitTransactionSafely(server, signTransactionWithCollectedSigners(tx, signers));
   };
@@ -647,7 +648,7 @@ export default function AssetSearch() {
     const pairError = validateSwapPair();
     if (pairError) throw new Error(pairError);
 
-    const server = getHorizonServer(network === 'TESTNET' ? 'https://horizon-testnet.stellar.org' : 'https://horizon.stellar.org');
+    const server = getHorizonServer(horizonUrlFor(network));
     const feePromise = resolveFeePerOp(server);
     const account = await server.loadAccount(accountId);
     const thresholds = account?.thresholds || {};
@@ -696,7 +697,7 @@ export default function AssetSearch() {
       destMin: confirmedMinimumDestinationAmount,
       path,
       fee,
-      networkPassphrase: network === 'TESTNET' ? Networks.TESTNET : Networks.PUBLIC,
+      networkPassphrase: passphraseFor(network),
     });
     return submitTransactionSafely(server, signTransactionWithCollectedSigners(tx, signers));
   };
@@ -715,7 +716,7 @@ export default function AssetSearch() {
       throw new Error(t('trading:assetSearch.swapPreview.invalidSlippage'));
     }
 
-    const server = getHorizonServer(network === 'TESTNET' ? 'https://horizon-testnet.stellar.org' : 'https://horizon.stellar.org');
+    const server = getHorizonServer(horizonUrlFor(network));
     const feePromise = resolveFeePerOp(server);
     const account = await server.loadAccount(accountId);
     const thresholds = account?.thresholds || {};
@@ -770,14 +771,14 @@ export default function AssetSearch() {
       destMin: confirmedMinimumDestinationAmount,
       path,
       fee,
-      networkPassphrase: network === 'TESTNET' ? Networks.TESTNET : Networks.PUBLIC,
+      networkPassphrase: passphraseFor(network),
     });
     return submitTransactionSafely(server, signTransactionWithCollectedSigners(tx, signers));
   };
 
   const submitManageSellOfferTx = async ({ selling, buying, amount, price, offerId = '0', collectedSigners }) => {
     if (!accountId || !selling || !buying) throw new Error('submitTransaction.failed:trustlines.invalidInput');
-    const server = getHorizonServer(network === 'TESTNET' ? 'https://horizon-testnet.stellar.org' : 'https://horizon.stellar.org');
+    const server = getHorizonServer(horizonUrlFor(network));
     const feePromise = resolveFeePerOp(server);
     const account = await server.loadAccount(accountId);
     const thresholds = account?.thresholds || {};
@@ -797,7 +798,7 @@ export default function AssetSearch() {
       price,
       offerId,
       fee,
-      networkPassphrase: network === 'TESTNET' ? Networks.TESTNET : Networks.PUBLIC,
+      networkPassphrase: passphraseFor(network),
     });
     return submitTransactionSafely(server, signTransactionWithCollectedSigners(tx, signers));
   };

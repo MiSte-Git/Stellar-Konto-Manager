@@ -1,4 +1,5 @@
 import * as StellarSdk from '@stellar/stellar-sdk';
+import { NETWORKS } from '../../config/networks.js';
 import { HORIZON_URL } from '../../config';
 import { getHorizonServer } from './stellarUtils';
 import { ensureCoverage } from './syncUtils';
@@ -88,7 +89,7 @@ function throwFetchFailed(e) {
  */
 export async function fetchGroupfundByMemo({
   publicKey,
-  horizonUrl = HORIZON_URL || 'https://horizon.stellar.org',
+  horizonUrl = HORIZON_URL || NETWORKS.PUBLIC.horizonUrl,
   limitPages = 2000,
   fromISO,
   toISO,
@@ -294,7 +295,7 @@ export async function fetchGroupfundByMemo({
  */
 export async function fetchGroupfundByMemoCached({
   publicKey,
-  horizonUrl = HORIZON_URL || 'https://horizon.stellar.org',
+  horizonUrl = HORIZON_URL || NETWORKS.PUBLIC.horizonUrl,
   prefetchDays = 90,
   requiredFromISO,
 }) {
@@ -380,7 +381,7 @@ export async function fetchGroupfundByMemoCached({
  */
 export async function fetchInvestedPerToken({
   publicKey,
-  horizonUrl = HORIZON_URL || 'https://horizon.stellar.org',
+  horizonUrl = HORIZON_URL || NETWORKS.PUBLIC.horizonUrl,
   limitPages = 2000,
   onProgress,
   signal,

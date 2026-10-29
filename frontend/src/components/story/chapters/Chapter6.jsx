@@ -3,6 +3,7 @@
  * Thema: Muxed Accounts – virtuelle Sub-Adressen für Lohnbuchhaltung
  */
 import React, { useState } from "react";
+import { NETWORKS } from '../../../config/networks.js';
 import { motion } from "framer-motion";
 import * as StellarSdk from "@stellar/stellar-sdk";
 import { useTranslation } from "react-i18next";
@@ -15,8 +16,8 @@ import ChapterSummary from "../ChapterSummary";
 // TESTNET ONLY – Muxed Account Demo-Basisadresse (dieselbe wie Cosmo/Lena)
 const DEMO_BASE_KEY = "GDTGA55CCRAMSW4KZFAIOCTYYS7H6UI7X7VWKOVPAYQSGEG6QI2ZCC4R";
 const DEMO_MUXED_ID = "42"; // numerische ID für die Muxed-Demo
-const HORIZON_TESTNET = "https://horizon-testnet.stellar.org";
-const FRIENDBOT_URL = "https://friendbot.stellar.org";
+const HORIZON_TESTNET = NETWORKS.TESTNET.horizonUrl;
+const FRIENDBOT_URL = NETWORKS.TESTNET.friendbotUrl;
 
 /** Konstruiert die M-Adresse aus Basis-G-Adresse + ID */
 function getMuxedAddress() {

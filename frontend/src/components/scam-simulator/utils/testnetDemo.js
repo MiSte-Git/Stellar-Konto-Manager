@@ -35,11 +35,12 @@ import {
   BASE_FEE,
   Horizon,
 } from '@stellar/stellar-sdk';
+import { NETWORKS } from '../../../config/networks.js';
 
 // ── Konfiguration ─────────────────────────────────────────────────────────────
 
-const HORIZON_TESTNET = 'https://horizon-testnet.stellar.org';
-const FRIENDBOT_URL   = 'https://friendbot.stellar.org';
+const HORIZON_TESTNET = NETWORKS.TESTNET.horizonUrl;
+const FRIENDBOT_URL   = NETWORKS.TESTNET.friendbotUrl;
 
 const POLL_INTERVAL_MS = 600;
 const POLL_TIMEOUT_MS  = 20_000;

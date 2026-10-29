@@ -4,6 +4,7 @@
 // Alle UI-Texte sollen über t() kommen; hier nur Defaults an Call-Sites nutzen.
 
 import { getHorizonServer, getAccountSummary, loadTrustlines, sumIncomingXLMByMemo } from './stellar/stellarUtils.js';
+import { NETWORKS } from '../config/networks.js';
 
 export const STORAGE_KEY = 'skm.learn.progress.v1';
 export const PROGRESS_VERSION = 'v1';
@@ -415,7 +416,7 @@ export async function recordPracticeCheck(id, checkId, params = {}, t /* i18n */
     };
   }
 
-  const server = getHorizonServer('https://horizon-testnet.stellar.org');
+  const server = getHorizonServer(NETWORKS.TESTNET.horizonUrl);
   let ok = false;
   let detail = '';
 

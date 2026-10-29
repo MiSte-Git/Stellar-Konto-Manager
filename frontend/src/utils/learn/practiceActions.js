@@ -8,10 +8,11 @@
 // - All user-facing strings must be provided via t(key, default)
 
 import { Horizon, StrKey } from '@stellar/stellar-sdk';
+import { NETWORKS } from '../../config/networks.js';
 import { getHorizonServer, loadTrustlines } from '../stellar/stellarUtils.js';
 import { withBackoff, classifyError } from '../net/retry.js';
 
-const TESTNET = 'https://horizon-testnet.stellar.org';
+const TESTNET = NETWORKS.TESTNET.horizonUrl;
 
 function nowIso() { return new Date().toISOString(); }
 function num(x) { const n = Number(x); return Number.isFinite(n) ? n : 0; }

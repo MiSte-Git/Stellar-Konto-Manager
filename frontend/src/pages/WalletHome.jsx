@@ -1,4 +1,5 @@
 import React from 'react';
+import { horizonUrlFor } from '../config/networks.js';
 import { useTranslation } from 'react-i18next';
 
 import NavIcon from '../components/layout/NavIcon.jsx';
@@ -10,8 +11,6 @@ import { looksLikeNativeCode } from '../utils/stellar/activity.js';
 import { useSettings } from '../utils/useSettings.js';
 import { useXlmPriceData } from '../utils/xlmPriceContext.js';
 
-const HORIZON_MAIN = 'https://horizon.stellar.org';
-const HORIZON_TEST = 'https://horizon-testnet.stellar.org';
 
 function readNetwork() {
   try {
@@ -43,7 +42,7 @@ function useAccountOverview(publicKey, reloadToken) {
     }
     let cancelled = false;
     setState((prev) => ({ ...prev, loading: true, error: '', notFound: false }));
-    const server = getHorizonServer(network === 'TESTNET' ? HORIZON_TEST : HORIZON_MAIN);
+    const server = getHorizonServer(horizonUrlFor(network));
     server
       .loadAccount(publicKey)
       .then((account) => {

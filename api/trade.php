@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/cors.php';
 require __DIR__ . '/ssrfGuard.php';
+require_once __DIR__ . '/stellarNetworks.php';
 
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
@@ -40,10 +41,7 @@ function request_path(): string {
 }
 
 function horizon_base_url(): string {
-    $network = strtoupper((string)($_GET['network'] ?? 'PUBLIC'));
-    return $network === 'TESTNET'
-        ? 'https://horizon-testnet.stellar.org'
-        : 'https://horizon.stellar.org';
+    return skm_horizon_url(skm_network_from_query($_GET['network'] ?? null));
 }
 
 function normalize_asset_search_input(): array {
@@ -376,8 +374,7 @@ function expert_directory(): void {
 
     // The directory covers the public network; testnet issuers can never be
     // listed, so skip the upstream call entirely.
-    $network = strtoupper((string)($_GET['network'] ?? 'PUBLIC'));
-    if ($network === 'TESTNET') json_out($entry);
+    if (skm_network_from_query($_GET['network'] ?? null) !== 'public') json_out($entry);
 
     try {
         $data = fetch_json('https://api.stellar.expert/explorer/directory/' . rawurlencode($issuer));

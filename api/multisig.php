@@ -24,6 +24,7 @@ if (file_exists($autoload)) {
 }
 
 require __DIR__ . '/challengeStore.php';
+require_once __DIR__ . '/stellarNetworks.php';
 require __DIR__ . '/txSignatures.php';
 require __DIR__ . '/multisigJobsGuard.php';
 require __DIR__ . '/multisigLifecycle.php';
@@ -179,10 +180,7 @@ function withJobsLock(string $jobFile, callable $mutator): array {
 }
 
 function normalizeNetwork(?string $net): ?string {
-    $v = strtolower(trim((string)$net));
-    if ($v === 'public' || $v === 'publicnet') return 'public';
-    if ($v === 'testnet' || $v === 'test') return 'testnet';
-    return null;
+    return skm_normalize_network($net);
 }
 
 function horizonClient(string $net): StellarSDK {
@@ -192,7 +190,7 @@ function horizonClient(string $net): StellarSDK {
 }
 
 function networkObj(string $net): Network {
-    return $net === 'public' ? Network::public() : Network::testnet();
+    return skm_network_obj($net);
 }
 
 function parseTx(string $xdr, string $net, ?string &$err = null): ?AbstractTransaction {
@@ -211,7 +209,7 @@ function txHash(AbstractTransaction $tx, string $net): string {
 }
 
 function submitToNetwork(AbstractTransaction $tx, string $net): array {
-    $horizon = $net === 'public' ? 'https://horizon.stellar.org' : 'https://horizon-testnet.stellar.org';
+    $horizon = skm_horizon_url($net);
     $xdr = $tx->toEnvelopeXdrBase64();
     $ch = curl_init($horizon . '/transactions');
     curl_setopt($ch, CURLOPT_POST, true);

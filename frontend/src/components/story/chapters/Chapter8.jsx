@@ -3,6 +3,7 @@
  * Thema: Soroban – Stellars Smart Contract Plattform
  */
 import React, { useState } from "react";
+import { NETWORKS } from '../../../config/networks.js';
 import { motion, AnimatePresence } from "framer-motion";
 import ExplorerConfirmDialog from "../ExplorerConfirmDialog";
 import { useTranslation } from "react-i18next";
@@ -16,7 +17,7 @@ import { useSettings } from "../../../utils/useSettings";
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const BUYER_ADDRESS = "GDQP2KPQGKIHYJGXNUIYOMHARUARCA7DJT5FO2FFOOKY3B2WSQHG4W37";
-const HORIZON_TESTNET = "https://horizon-testnet.stellar.org";
+const HORIZON_TESTNET = NETWORKS.TESTNET.horizonUrl;
 const ACTION_ID = "ch8-escrow-v2";
 const ESCROW_XP = 80;
 const CHOICE_XP = 25;

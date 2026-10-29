@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { horizonUrlFor } from '../config/networks.js';
 import { useTranslation } from 'react-i18next';
 import { getHorizonServer, extractMuxedIdFromAddress } from '../utils/stellar/stellarUtils.js';
 import { useSettings } from '../utils/useSettings.js';
@@ -15,8 +16,6 @@ import {
 import { readHideDust, writeHideDust } from '../utils/stellar/dustPreference.js';
 import { ActivityNotices, DustBadge, FakeNativeBadge, LookalikeBadge, UrlBadge } from '../components/wallet/ActivityWarnings.jsx';
 
-const HORIZON_MAIN = 'https://horizon.stellar.org';
-const HORIZON_TEST = 'https://horizon-testnet.stellar.org';
 
 export default function BalancePage({ publicKey, muxedAddress }) {
 const { t, i18n } = useTranslation(['common', 'wallet']);
@@ -51,7 +50,7 @@ const muxedId = useMemo(() => {
 }, [muxedAddress]);
  
   const server = useMemo(
-    () => getHorizonServer(netLabel === 'TESTNET' ? HORIZON_TEST : HORIZON_MAIN),
+    () => getHorizonServer(horizonUrlFor(netLabel)),
     [netLabel]
   );
 

@@ -57,6 +57,7 @@ Local-first Stellar Wallet & Account Manager: Trustlines, Zahlungen, Muxed Accou
 - Daten (Node-Backend): `data/bugreports.json`, `data/multisig_jobs.json` (lokale Laufzeitdaten, bewusst nicht in Git getrackt, siehe `.gitignore`).
 - PHP-Alternative: `api/` (siehe Abschnitt „PHP-Backend“ unten).
 - Keine externen Server, keine zentrale Datenspeicherung.
+- Stellar-Netzwerke (Passphrase, Horizon-, RPC-, Friendbot-URL) kommen aus einer Registry: `frontend/src/config/networks.js` (Frontend), `services/stellarNetworks.js` (Node) und `api/stellarNetworks.php` (PHP); Parität prüft `test/stellarNetworks.test.js`. Aktiv sind Mainnet und Testnet. Futurenet ist eingetragen, aber deaktiviert (`enabled: false`); die Schritte zum Aktivieren stehen im Kopfkommentar von `frontend/src/config/networks.js`.
 - Security-Header (Content-Security-Policy, HSTS, Referrer-Policy, Permissions-Policy, nosniff, X-Frame-Options) kommen aus einer Quelle: `services/securityHeaders.js`. Daraus erzeugt das Vite-Plugin in `frontend/vite.config.js` beim Build `dist/.htaccess` aus `frontend/.htaccess.template` (SPA-Rewrite plus Header, Base aus `VITE_BASE`), `vite preview` bekommt dieselben Header, `server.js` setzt die API-Header. `api/securityHeaders.php` ist der PHP-Zwilling für die API (Parität per Test). Der Vite-Dev-Server läuft bewusst ohne CSP (HMR). `VITE_CSP_REPORT_ONLY=1` beim Build setzt `Content-Security-Policy-Report-Only` statt der scharfen CSP.
 
 ## Installation & Start (lokal)

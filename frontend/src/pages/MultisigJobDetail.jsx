@@ -1,8 +1,9 @@
 import React, { useEffect, useState, useCallback, useMemo, useRef } from 'react';
+import { horizonUrlFor, passphraseFor } from '../config/networks.js';
 import { useTranslation } from 'react-i18next';
 import { getPendingMultisigJob, mergeSignedXdr, getMultisigJobChallenge, signMultisigJobChallenge, getMultisigJobAccessToken } from '../utils/multisigApi.js';
 import MultisigJobStatusBadge from '../components/MultisigJobStatusBadge.jsx';
-import { Keypair, Networks, TransactionBuilder } from '@stellar/stellar-sdk';
+import { Keypair, TransactionBuilder } from '@stellar/stellar-sdk';
 import { getSessionSecret } from '../utils/sessionSecrets.js';
 import { getMultisigJobToken } from '../utils/basePath.js';
 import { describeOperations, findOperationWarnings } from '../utils/multisig/describeOperations.js';
@@ -160,7 +161,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
   const decodedTx = useMemo(() => {
     if (!job) return null;
     try {
-      const netPass = (job.network === 'testnet' || job.network === 'TESTNET') ? Networks.TESTNET : Networks.PUBLIC;
+      const netPass = passphraseFor(job.network);
       return TransactionBuilder.fromXDR(job.txXdrCurrent || job.txXdrOriginal || job.txXdr || '', netPass);
     } catch {
       return null;
@@ -196,7 +197,6 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
   }, [job]);
 
   const jobNetwork = parseJobNetwork(job?.network);
-  const jobIsTestnet = jobNetwork === 'testnet';
 
   // Wechselt der Job (Neuladen, Signatur), gilt eine offene Bestaetigung nicht mehr.
   useEffect(() => {
@@ -244,8 +244,8 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
       setRevokeError(t('multisig:detail.revoke.accountMismatch'));
       return;
     }
-    const networkPassphrase = jobIsTestnet ? Networks.TESTNET : Networks.PUBLIC;
-    const horizonUrl = jobIsTestnet ? 'https://horizon-testnet.stellar.org' : 'https://horizon.stellar.org';
+    const networkPassphrase = passphraseFor(jobNetwork);
+    const horizonUrl = horizonUrlFor(jobNetwork);
     try {
       setRevoking(true);
       const account = await getHorizonServer(horizonUrl).loadAccount(seqInfo.sourceAccountId);
@@ -278,7 +278,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
     } finally {
       setRevoking(false);
     }
-  }, [decodedTx, describeRevokeError, job, jobIsTestnet, jobNetwork, t]);
+  }, [decodedTx, describeRevokeError, job, jobNetwork, t]);
 
   // Schritt 2: mit den im SecretKeyModal gesammelten Signern signieren und senden.
   // Die Secrets bleiben im Speicher dieses Aufrufs, sie werden weder gespeichert noch
@@ -339,7 +339,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
     }
     try {
       setLoading(true);
-      const netPass = (job.network === 'testnet' || job.network === 'TESTNET') ? Networks.TESTNET : Networks.PUBLIC;
+      const netPass = passphraseFor(job.network);
       const tx = TransactionBuilder.fromXDR(job.txXdrCurrent || job.txXdrOriginal || job.txXdr || '', netPass);
       const kp = Keypair.fromSecret(secret);
       tx.sign(kp);

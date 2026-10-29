@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { horizonUrlFor } from '../../../config/networks.js';
 import { getHorizonServer } from '../../../utils/stellar/stellarUtils.js';
 
 /**
@@ -38,7 +39,7 @@ export default function useLimitOffers({ selectedAsset, accountId, network }) {
     const loadOffers = async () => {
       setLimitOfferStatus((current) => ({ ...current, loading: true, error: '' }));
       try {
-        const server = getHorizonServer(network === 'TESTNET' ? 'https://horizon-testnet.stellar.org' : 'https://horizon.stellar.org');
+        const server = getHorizonServer(horizonUrlFor(network));
         const response = await server.offers().forAccount(accountId).limit(30).call();
         if (!cancelled) {
           setLimitOfferStatus({

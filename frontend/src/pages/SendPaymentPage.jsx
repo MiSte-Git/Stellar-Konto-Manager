@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useState, useRef, useCallback } from 'react';
+import { getNetworkConfig, horizonUrlFor, isNetworkEnabled, normalizeNetworkId, passphraseFor, readStoredNetworkId } from '../config/networks.js';
 import { useTranslation } from 'react-i18next';
 import { getHorizonServer, resolveOrValidateAccount, isValidAccountId, extractBasePublicKeyFromMuxed, reverseFederationLookup } from '../utils/stellar/stellarUtils';
-import { Asset, Keypair, Networks, Operation, TransactionBuilder, Memo, StrKey } from '@stellar/stellar-sdk';
+import { Asset, Keypair, Operation, TransactionBuilder, Memo, StrKey } from '@stellar/stellar-sdk';
 import { Buffer } from 'buffer';
 import SecretKeyModal from '../components/SecretKeyModal';
 import { getSessionSecrets } from '../utils/sessionSecrets.js';
@@ -323,10 +324,10 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   const [showReserveInfo, setShowReserveInfo] = useState(false);
 
   const [netLabel, setNetLabel] = useState(() => {
-    try { return (typeof window !== 'undefined' && window.localStorage?.getItem('SKM_NETWORK') === 'TESTNET') ? 'TESTNET' : 'PUBLIC'; } catch { return 'PUBLIC'; }
+    try { return readStoredNetworkId(); } catch { return 'PUBLIC'; }
   });
   const server = useMemo(() => {
-    const url = netLabel === 'TESTNET' ? 'https://horizon-testnet.stellar.org' : 'https://horizon.stellar.org';
+    const url = horizonUrlFor(netLabel);
     return getHorizonServer(url);
   }, [netLabel]);
   const popupRef = useRef(null);
@@ -677,8 +678,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       const sec = primary.secret?.();
       if (sec) Keypair.fromSecret(sec); // validate
     }
-    const isTestnet = typeof window !== 'undefined' && window.localStorage?.getItem('SKM_NETWORK') === 'TESTNET';
-    const net = isTestnet ? Networks.TESTNET : Networks.PUBLIC;
+    const net = passphraseFor(readStoredNetworkId());
     const account = await server.loadAccount(publicKey);
     const fee = await resolveFeePerOp(server, { deferred: !immediateSubmit });
     const { memo, display: memoDisplay } = buildMemoObject();
@@ -1047,7 +1047,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     const handler = (e) => {
       try {
         const v = (typeof e?.detail === 'string') ? e.detail : (window.localStorage?.getItem('SKM_NETWORK') || 'PUBLIC');
-        setNetLabel(v === 'TESTNET' ? 'TESTNET' : 'PUBLIC');
+        setNetLabel(isNetworkEnabled(v) ? normalizeNetworkId(v) : 'PUBLIC');
       } catch { /* noop */ }
     };
     window.addEventListener('stm-network-changed', handler);
@@ -1169,7 +1169,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
               }).filter(Boolean)
             : [];
           const payload = {
-            network: netLabel === 'TESTNET' ? 'testnet' : 'public',
+            network: getNetworkConfig(netLabel).backendId,
             accountId: publicKey,
             txXdr: xdr,
             createdBy: 'local',
@@ -2839,7 +2839,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
               // If we are signing an existing job from the result dialog, sign and merge, then exit.
               if (jobToSign?.jobId && jobToSign?.xdr) {
                 try {
-                  const netPass = netLabel === 'TESTNET' ? Networks.TESTNET : Networks.PUBLIC;
+                  const netPass = passphraseFor(netLabel);
                   const tx = TransactionBuilder.fromXDR(jobToSign.xdr, netPass);
                   collected.forEach((s) => {
                     try { tx.sign(s.keypair); } catch { /* noop */ }

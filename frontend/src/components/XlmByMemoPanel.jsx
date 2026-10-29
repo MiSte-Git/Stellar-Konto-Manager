@@ -1,5 +1,6 @@
 // SKM_VER:XlmByMemoPanel.jsx@2025-09-10
 import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import { NETWORKS } from '../config/networks.js';
 import { useTranslation } from "react-i18next";
 import { getHorizonServer } from "../utils/stellar/stellarUtils";
 import ProgressBar from "../components/ProgressBar.jsx";
@@ -39,7 +40,7 @@ const PAY_TYPES = new Set([
  * - Alle sichtbaren Texte via t()
  * - Errors werden als i18n-Key angezeigt
  */
-export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizon.stellar.org" , onBack: ON_BACK }) {
+export default function XlmByMemoPanel({ publicKey, horizonUrl = NETWORKS.PUBLIC.horizonUrl , onBack: ON_BACK }) {
   const { t } = useTranslation(['xlmByMemo', 'common']);
   void ON_BACK;
   const [memoQuery, setMemoQuery] = useState("");

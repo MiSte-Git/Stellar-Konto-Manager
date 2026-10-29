@@ -2,6 +2,7 @@
  * Kapitel 5 – Lumios Mission
  */
 import React, { useState, useEffect } from "react";
+import { NETWORKS } from '../../../config/networks.js';
 import { motion } from "framer-motion";
 import confetti from "canvas-confetti";
 import { useTranslation } from "react-i18next";
@@ -17,7 +18,7 @@ const LENA_PUBLIC_KEY = "GDTGA55CCRAMSW4KZFAIOCTYYS7H6UI7X7VWKOVPAYQSGEG6QI2ZCC4
 
 async function ensureLenaFunded() {
   try {
-    const res = await fetch(`https://horizon-testnet.stellar.org/accounts/${LENA_PUBLIC_KEY}`);
+    const res = await fetch(`${NETWORKS.TESTNET.horizonUrl}/accounts/${LENA_PUBLIC_KEY}`);
     if (res.ok) return;
     await friendbotFund(LENA_PUBLIC_KEY);
   } catch {

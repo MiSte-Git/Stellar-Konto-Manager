@@ -4,6 +4,7 @@
 // (step 1 of the file-split) without any behavior change - every function
 // here is verbatim what used to live at module scope in that file.
 import { Asset } from '@stellar/stellar-sdk';
+import { readStoredNetworkId } from '../../config/networks.js';
 
 export const STELLAR_PUBLIC_KEY_RE = /^G[A-Z2-7]{55}$/;
 export const ASSET_CODE_RE = /^[A-Za-z0-9]{1,12}$/;
@@ -79,12 +80,7 @@ export function getStoredAccountInput() {
 }
 
 export function getStoredNetwork() {
-  if (typeof window === 'undefined') return 'PUBLIC';
-  try {
-    return window.localStorage?.getItem('SKM_NETWORK') === 'TESTNET' ? 'TESTNET' : 'PUBLIC';
-  } catch {
-    return 'PUBLIC';
-  }
+  return readStoredNetworkId();
 }
 
 export function normalizeAmount(value) {

@@ -18,6 +18,7 @@
  */
 
 import React, { useRef } from "react";
+import { NETWORKS } from '../../../config/networks.js';
 import { useTranslation } from "react-i18next";
 import SceneRunner from "../SceneRunner";
 import ChapterSummary from "../ChapterSummary";
@@ -36,7 +37,7 @@ const COSMO_PUBLIC_KEY = "GDTGA55CCRAMSW4KZFAIOCTYYS7H6UI7X7VWKOVPAYQSGEG6QI2ZCC
 async function ensureCosmoFunded() {
   try {
     const res = await fetch(
-      `https://horizon-testnet.stellar.org/accounts/${COSMO_PUBLIC_KEY}`
+      `${NETWORKS.TESTNET.horizonUrl}/accounts/${COSMO_PUBLIC_KEY}`
     );
     if (res.ok) return; // Konto existiert bereits
     // 404 oder anderer Fehler → via Friendbot aktivieren

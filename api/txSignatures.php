@@ -14,6 +14,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/stellarNetworks.php';
 
 use Soneso\StellarSDK\AbstractOperation;
 use Soneso\StellarSDK\AbstractTransaction;
@@ -73,7 +74,7 @@ function requiredWeightForOperations(AbstractTransaction $tx, array $thresholds)
  * @return XdrDecoratedSignature[]
  */
 function filterValidSignatures(AbstractTransaction $tx, string $net, array $signers): array {
-    $network = $net === 'public' ? Network::public() : Network::testnet();
+    $network = skm_network_obj($net);
     // signatureBase() returns the *preimage* (network id + envelope type +
     // tagged transaction); what actually gets ed25519-signed by sign() is the
     // SHA256 digest of that preimage, i.e. hash(). Verifying against
@@ -122,7 +123,7 @@ function filterValidSignatures(AbstractTransaction $tx, string $net, array $sign
  * @return array{publicKey: string, weight: int}[]
  */
 function verifyCollected(AbstractTransaction $tx, string $net, array $signers): array {
-    $network = $net === 'public' ? Network::public() : Network::testnet();
+    $network = skm_network_obj($net);
     // hash(), not signatureBase() - see the comment in filterValidSignatures() above.
     $base = $tx->hash($network);
     $result = [];

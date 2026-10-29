@@ -1,5 +1,6 @@
 // src/components/ListTrustlines.jsx
 import React, { useState, useEffect, useMemo, useRef } from 'react';
+import { horizonUrlFor, passphraseFor, readStoredNetworkId } from '../config/networks.js';
 import { useTranslation } from 'react-i18next';
 import { 
   validateSecretKey, 
@@ -21,7 +22,7 @@ import { formatErrorForUi } from '../utils/formatErrorForUi.js';
 import { getRequiredThreshold } from '../utils/getRequiredThreshold.js';
 import { getHorizonServer } from '../utils/stellar/stellarUtils.js';
 import AddTrustlineModal from './AddTrustlineModal.jsx';
-import { Networks, TransactionBuilder, Operation, Asset } from '@stellar/stellar-sdk';
+import { TransactionBuilder, Operation, Asset } from '@stellar/stellar-sdk';
 import MultisigPrepareDialog from './MultisigPrepareDialog.jsx';
 import { apiUrl } from '../utils/apiBase.js';
 import { resolveFeePerOp } from '../utils/stellar/fees.js';
@@ -100,8 +101,8 @@ function ListTrustlines({
     async function loadAccountInfo() {
       if (!publicKey) return;
       try {
-        const net = (typeof window !== 'undefined' && window.localStorage?.getItem('SKM_NETWORK') === 'TESTNET') ? 'TESTNET' : 'PUBLIC';
-        const server = getHorizonServer(net === 'TESTNET' ? 'https://horizon-testnet.stellar.org' : 'https://horizon.stellar.org');
+        const net = readStoredNetworkId();
+        const server = getHorizonServer(horizonUrlFor(net));
         const acct = await server.loadAccount(publicKey);
         if (!cancelled) setAccountInfo(acct);
       } catch {
@@ -118,8 +119,8 @@ function ListTrustlines({
   };
 
   const submitChangeTrustTx = async ({ asset, limit, collectedSigners }) => {
-    const net = (typeof window !== 'undefined' && window.localStorage?.getItem('SKM_NETWORK') === 'TESTNET') ? 'TESTNET' : 'PUBLIC';
-    const server = getHorizonServer(net === 'TESTNET' ? 'https://horizon-testnet.stellar.org' : 'https://horizon.stellar.org');
+    const net = readStoredNetworkId();
+    const server = getHorizonServer(horizonUrlFor(net));
     const account = await server.loadAccount(publicKey);
     const thresholds = account?.thresholds || {};
     const required = getRequiredThreshold('changeTrust', thresholds);
@@ -140,7 +141,7 @@ function ListTrustlines({
     const fee = await resolveFeePerOp(server);
     const txb = new TransactionBuilder(account, {
       fee,
-      networkPassphrase: net === 'TESTNET' ? Networks.TESTNET : Networks.PUBLIC,
+      networkPassphrase: passphraseFor(net),
     });
     txb.addOperation(Operation.changeTrust({ asset, limit }));
     const tx = txb.setTimeout(60).build();
@@ -233,14 +234,14 @@ function ListTrustlines({
         setErrorMessage(t('common:trustlines.deleteConfirm', 'Ausgewählte Trustlines löschen?'));
         return;
       }
-      const net = (typeof window !== 'undefined' && window.localStorage?.getItem('SKM_NETWORK') === 'TESTNET') ? 'TESTNET' : 'PUBLIC';
-      const server = getHorizonServer(net === 'TESTNET' ? 'https://horizon-testnet.stellar.org' : 'https://horizon.stellar.org');
+      const net = readStoredNetworkId();
+      const server = getHorizonServer(horizonUrlFor(net));
       const account = await server.loadAccount(publicKey);
       // Multisig-Job: wird erst spaeter eingereicht
       const fee = await resolveFeePerOp(server, { deferred: true });
       const txb = new TransactionBuilder(account, {
         fee,
-        networkPassphrase: net === 'TESTNET' ? Networks.TESTNET : Networks.PUBLIC,
+        networkPassphrase: passphraseFor(net),
       });
       deletableOverview.forEach((tl) => {
         txb.addOperation(Operation.changeTrust({

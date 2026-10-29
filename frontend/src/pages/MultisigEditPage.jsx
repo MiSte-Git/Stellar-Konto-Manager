@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState, useCallback } from 'react';
+import { NETWORKS, horizonUrlFor, passphraseFor, readStoredNetworkId } from '../config/networks.js';
 import { useTranslation } from 'react-i18next';
 import SecretKeyModal from '../components/SecretKeyModal.jsx';
 import MultiSigHelpDialog from '../components/multisig/MultiSigHelpDialog.jsx';
@@ -9,7 +10,7 @@ import { getRequiredThreshold } from '../utils/getRequiredThreshold.js';
 import { getMultisigTxTimeout } from '../utils/getMultisigTxTimeout.js';
 import { validateMultisigConfig } from '../utils/validateMultisigConfig.js';
 import { getMultisigSafetyCheck } from '../utils/getMultisigSafetyCheck.js';
-import { Keypair, Networks, Operation, TransactionBuilder, StrKey } from '@stellar/stellar-sdk';
+import { Keypair, Operation, TransactionBuilder, StrKey } from '@stellar/stellar-sdk';
 import { apiUrl } from '../utils/apiBase.js';
 import { useRecentWalletOptions } from '../utils/useRecentWalletOptions.js';
 import { getSessionSecret } from '../utils/sessionSecrets.js';
@@ -18,8 +19,6 @@ import { formatValidUntil } from '../utils/multisig/formatValidUntil.js';
 import { resolveFeePerOp } from '../utils/stellar/fees.js';
 import { txHashHex } from '../utils/stellar/txHash.js';
 
-const HORIZON_MAIN = 'https://horizon.stellar.org';
-const HORIZON_TEST = 'https://horizon-testnet.stellar.org';
 // Same rationale as SendPaymentPage.jsx: a transaction that gets submitted
 // immediately after signing (test-mode direct submit) only needs to survive
 // the round-trip to Horizon, but one prepared for a distributed, asynchronous
@@ -45,7 +44,7 @@ function NetworkSelector({ value, onChange }) {
           {t('network:mainnet')}
         </label>
         <label className="flex items-center gap-2">
-        <input type="radio" name="network" value="TESTNET" checked={value === 'TESTNET'} onChange={() => { try { window.localStorage.setItem('SKM_NETWORK','TESTNET'); window.localStorage.setItem('SKM_HORIZON_URL','https://horizon-testnet.stellar.org'); } catch (e) { void e; } window.dispatchEvent(new CustomEvent('stm-network-changed', { detail: 'TESTNET' })); window.dispatchEvent(new Event('stm-trigger-recheck')); onChange('TESTNET'); }} />
+        <input type="radio" name="network" value="TESTNET" checked={value === 'TESTNET'} onChange={() => { try { window.localStorage.setItem('SKM_NETWORK','TESTNET'); window.localStorage.setItem('SKM_HORIZON_URL', NETWORKS.TESTNET.horizonUrl); } catch (e) { void e; } window.dispatchEvent(new CustomEvent('stm-network-changed', { detail: 'TESTNET' })); window.dispatchEvent(new Event('stm-trigger-recheck')); onChange('TESTNET'); }} />
           {t('network:testnet')}
         </label>
       </div>
@@ -64,10 +63,10 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
   const { multisigTimeoutSeconds } = useSettings();
 
   const [network, setNetwork] = useState(() => {
-  try { return (typeof window !== 'undefined' && window.localStorage?.getItem('SKM_NETWORK') === 'TESTNET') ? 'TESTNET' : 'PUBLIC'; } catch { return 'PUBLIC'; }
+  try { return readStoredNetworkId(); } catch { return 'PUBLIC'; }
   });
-  const server = useMemo(() => getHorizonServer(network === 'TESTNET' ? HORIZON_TEST : HORIZON_MAIN), [network]);
-  const passphrase = network === 'TESTNET' ? Networks.TESTNET : Networks.PUBLIC;
+  const server = useMemo(() => getHorizonServer(horizonUrlFor(network)), [network]);
+  const passphrase = passphraseFor(network);
 
   // use global wallet (defaultPublicKey) from header; no local input
   const [loading, setLoading] = useState(false);

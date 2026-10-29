@@ -1,4 +1,5 @@
 import React from 'react';
+import { horizonUrlFor } from '../../config/networks.js';
 import { useTranslation } from 'react-i18next';
 
 import NavIcon from '../layout/NavIcon.jsx';
@@ -19,8 +20,6 @@ import { readHideDust, writeHideDust } from '../../utils/stellar/dustPreference.
 import { ActivityNotices, DustBadge, FakeNativeBadge, LookalikeBadge, UrlBadge } from './ActivityWarnings.jsx';
 import { useSettings } from '../../utils/useSettings.js';
 
-const HORIZON_MAIN = 'https://horizon.stellar.org';
-const HORIZON_TEST = 'https://horizon-testnet.stellar.org';
 const FETCH_LIMIT = 30;
 const SHOW_LIMIT = 8;
 function useRecentPayments(publicKey, network, reloadToken) {
@@ -33,7 +32,7 @@ function useRecentPayments(publicKey, network, reloadToken) {
     }
     let cancelled = false;
     setState((prev) => ({ ...prev, loading: true, error: '' }));
-    const server = getHorizonServer(network === 'TESTNET' ? HORIZON_TEST : HORIZON_MAIN);
+    const server = getHorizonServer(horizonUrlFor(network));
     server
       .payments()
       .forAccount(publicKey)

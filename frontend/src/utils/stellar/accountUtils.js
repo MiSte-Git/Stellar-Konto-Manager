@@ -1,4 +1,5 @@
 import * as StellarSdk from '@stellar/stellar-sdk';
+import { NETWORKS } from '../../config/networks.js';
 
 async function accountExists(serverUrl, publicKey) {
   const server = new StellarSdk.Horizon.Server(serverUrl);
@@ -20,8 +21,8 @@ async function accountExists(serverUrl, publicKey) {
  */
 export async function isTestnetAccount(publicKey) {
   const [mainnetExists, testnetExists] = await Promise.all([
-    accountExists('https://horizon.stellar.org', publicKey),
-    accountExists('https://horizon-testnet.stellar.org', publicKey),
+    accountExists(NETWORKS.PUBLIC.horizonUrl, publicKey),
+    accountExists(NETWORKS.TESTNET.horizonUrl, publicKey),
   ]);
   if (mainnetExists === true) return false;
   if (mainnetExists === null) return false;
