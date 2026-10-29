@@ -1,0 +1,71 @@
+{
+  "menu": "Likvidnosni bazeni",
+  "swapLink": "Pogled na bazen",
+  "page": {
+    "title": "Likvidnosni bazeni",
+    "intro": "Nativni zvjezdani likvidnosni bazeni (konstantni proizvod, naknada 0,30%). Ovaj prikaz prikazuje samo podatke iz Horizon-a. Uplate i isplate ovdje još nisu dostupne.",
+    "network": "Mreža"
+  },
+  "source": {
+    "label": "Izvor",
+    "native": "Autohteni zvjezdani bazen"
+  },
+  "positions": {
+    "title": "Moje pozicije",
+    "loading": "Učitavanje pozicija …",
+    "empty": "Ovaj račun nema udio u bazenu Trustline.",
+    "loadFailed": "Pozicije se nisu mogle učitati (mrežna ili Horizon greška).",
+    "retry": "Ponovno učitaj",
+    "pair": "Bazen",
+    "shares": "Dionice bazena",
+    "sharePercent": "Udio u bazenu",
+    "sharePercentValue": "{{percent}} %",
+    "value": "Ekvivalentna vrijednost {{asset}}",
+    "zeroShares": "Trustline bez udjela u bazenu (stanje 0)",
+    "poolNotFound": "Bazen {{id}} nije pronađen u Horizonu.",
+    "poolLoadFailed": "Podaci za bazen {{id}} nisu mogli biti učitani.",
+    "showDetails": "Pogledajte detalje o bazenu"
+  },
+  "finder": {
+    "title": "Pronađi bazen",
+    "noAccountNeeded": "Ne treba vam račun za pretraživanje.",
+    "mode": {
+      "pair": "Asset par",
+      "id": "ID bazena"
+    },
+    "assetFirst": "Prvo Asset",
+    "assetSecond": "Drugi Asset",
+    "kind": {
+      "native": "XLM",
+      "token": "Token"
+    },
+    "tokenLabel": "Pretraži Token",
+    "tokenPlaceholder": "USDC, G... ili USDC:G...",
+    "tokenSearch": "Pretraži",
+    "tokenSelected": "Odabrano Token",
+    "selectBoth": "Molimo odaberite Asset za obje strane.",
+    "sameAsset": "Molimo odaberite dva različita Assets.",
+    "poolIdLabel": "ID bazena (64 heksadecimalna znaka)",
+    "invalidPoolId": "To nije valjana ID adresa bazena (očekuje se 64 heksadecimalna znaka).",
+    "submit": "Zbirka za učitavanje",
+    "loading": "Bazen se učitava …",
+    "notFoundPair": "Još nema bazena likvidnosti za ovaj Asset par.",
+    "notFoundId": "Ne postoji bazen likvidnosti s ovim ID-om bazena.",
+    "loadFailed": "Podaci bazena nisu mogli biti učitani (mrežna pogreška ili pogreška Horizon).",
+    "retry": "Pokušaj ponovno"
+  },
+  "facts": {
+    "title": "Činjenice o bazenu",
+    "reserve": "Rezerviraj {{asset}}",
+    "totalShares": "Ukupni udjeli u bazenu",
+    "participants": "Sudionici (Trustlines)",
+    "fee": "Naknada",
+    "feeValue": "{{percent}} % ({{bps}} bps)",
+    "poolId": "ID bazena",
+    "copy": "Kopiraj",
+    "copied": "Kopirano",
+    "emptyPool": "Ovaj bazen trenutno ne sadrži likvidnost (Ukupni udjeli u bazenu: 0).",
+    "assetFacts": "Činjenice o {{asset}}",
+    "nativeAsset": "XLM je nativni Asset mreže i nema izdavača."
+  }
+}

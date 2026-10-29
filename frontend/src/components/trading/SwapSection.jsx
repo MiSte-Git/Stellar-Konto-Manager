@@ -4,6 +4,10 @@ import { shortenKey, formatAssetPath, formatReserveAsset } from './assetSearchUt
 import { factValue } from './assetFactsUtils.js';
 import HelpLabel from './HelpLabel.jsx';
 import TokenFactsSummary from './TokenFactsSummary.jsx';
+import AssetPickerField from './AssetPickerField.jsx';
+import { isValidPoolId } from '../../utils/stellar/liquidityPools.js';
+import { liquidityPoolsPath } from '../../utils/basePath.js';
+import { openLiquidityPoolsView } from '../liquidity/liquidityNavigation.js';
 
 /**
  * Market-swap section: direction picker, token-to-token target search +
@@ -57,7 +61,7 @@ export default function SwapSection({
   swapSourceAsset,
   swapDestinationAsset,
 }) {
-  const { t } = useTranslation(['trading', 'common']);
+  const { t } = useTranslation(['trading', 'common', 'liquidity']);
   return (
     <section className="mt-4 rounded-sm border border-gray-200 bg-white p-3 dark:border-blue-900 dark:bg-blue-900/40">
       <h3 className="mb-3 text-sm font-semibold">
@@ -85,75 +89,30 @@ export default function SwapSection({
       </div>
       {swapDirection === 'token-to-token' && (
         <div className="mb-3 rounded-sm border border-gray-200 p-3 dark:border-gray-700">
-          <label className="block text-xs">
-            <span className="mb-1 block font-semibold">{t('trading:assetSearch.swapPreview.targetAsset')}</span>
-            <div className="flex flex-col gap-2 sm:flex-row">
-              <input
-                value={swapTargetQuery}
-                onChange={(event) => onTargetQueryChange(event.target.value)}
-                onKeyDown={(event) => {
-                  if (event.key === 'Enter') {
-                    event.preventDefault();
-                    onSearchTarget();
-                  }
-                }}
-                className="w-full rounded-sm border border-gray-300 px-3 py-2 font-mono text-sm dark:border-gray-700 dark:bg-gray-900"
-                placeholder={t('trading:assetSearch.swapPreview.targetPlaceholder')}
-              />
-              <button
-                type="button"
-                onClick={onSearchTarget}
-                disabled={swapTargetLoading}
-                className="rounded-sm bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
-              >
-                {swapTargetLoading
-                  ? t('common:loading', 'Loading...')
-                  : t('trading:assetSearch.swapPreview.targetSearch')}
-              </button>
-            </div>
-          </label>
-          {swapTargetError && (
-            <div className="mt-2 rounded-sm border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-200">
-              {swapTargetError}
-            </div>
-          )}
-          {selectedSwapTargetAsset && (
-            <div className="mt-2 rounded-sm border border-green-200 bg-green-50 px-3 py-2 text-xs text-green-900 dark:border-green-900 dark:bg-green-950 dark:text-green-100">
-              <div className="font-semibold">{t('trading:assetSearch.swapPreview.targetSelected')}</div>
-              <div className="font-mono">{selectedSwapTargetAsset.assetCode}</div>
-              <div className="break-all font-mono">{selectedSwapTargetAsset.assetIssuer}</div>
-            </div>
-          )}
-          {targetStellarAsset && (
-            <div className="mt-3 rounded-sm border border-gray-200 bg-white p-3 dark:border-gray-700 dark:bg-gray-900">
-              <h4 className="mb-2 text-xs font-semibold">
-                {t('trading:assetSearch.facts.destinationTitle')}
-              </h4>
-              <TokenFactsSummary facts={targetAssetFacts} asset={targetStellarAsset} includeRoute={false} routeStatus={swapRouteStatus} />
-            </div>
-          )}
-          {swapTargetResults.length > 0 && (
-            <div className="mt-3 max-h-56 overflow-y-auto rounded-sm border border-gray-200 dark:border-gray-700">
-              {swapTargetResults.map((item, index) => (
-                <button
-                  key={`${item.assetCode}-${item.assetIssuer}-${index}`}
-                  type="button"
-                  onClick={() => onSelectTarget(item)}
-                  className={`grid w-full grid-cols-[90px_1fr_auto] gap-2 border-t border-gray-100 px-3 py-2 text-left text-xs first:border-t-0 hover:bg-gray-50 dark:border-gray-800 dark:hover:bg-gray-800 ${
-                    selectedSwapTargetAsset?.assetCode === item.assetCode && selectedSwapTargetAsset?.assetIssuer === item.assetIssuer
-                      ? 'bg-blue-50 dark:bg-blue-950'
-                      : ''
-                  }`}
-                >
-                  <span className="font-mono font-semibold">{item.assetCode}</span>
-                  <span className="truncate font-mono" title={item.assetIssuer || ''}>
-                    {shortenKey(item.assetIssuer || '')}
-                  </span>
-                  <span>{formatTrustlineCount(item)}</span>
-                </button>
-              ))}
-            </div>
-          )}
+          <AssetPickerField
+            label={t('trading:assetSearch.swapPreview.targetAsset')}
+            placeholder={t('trading:assetSearch.swapPreview.targetPlaceholder')}
+            searchLabel={t('trading:assetSearch.swapPreview.targetSearch')}
+            selectedLabel={t('trading:assetSearch.swapPreview.targetSelected')}
+            query={swapTargetQuery}
+            onQueryChange={onTargetQueryChange}
+            onSearch={onSearchTarget}
+            loading={swapTargetLoading}
+            error={swapTargetError}
+            selected={selectedSwapTargetAsset}
+            onSelect={onSelectTarget}
+            results={swapTargetResults}
+            formatTrustlineCount={formatTrustlineCount}
+          >
+            {targetStellarAsset && (
+              <div className="mt-3 rounded-sm border border-gray-200 bg-white p-3 dark:border-gray-700 dark:bg-gray-900">
+                <h4 className="mb-2 text-xs font-semibold">
+                  {t('trading:assetSearch.facts.destinationTitle')}
+                </h4>
+                <TokenFactsSummary facts={targetAssetFacts} asset={targetStellarAsset} includeRoute={false} routeStatus={swapRouteStatus} />
+              </div>
+            )}
+          </AssetPickerField>
         </div>
       )}
       <div className="grid gap-3 sm:grid-cols-[1fr_140px_auto]">
@@ -357,7 +316,21 @@ export default function SwapSection({
               )}
               {marketData.liquidityPools.slice(0, 5).map((pool) => (
                 <div key={pool.id} className="border-t border-gray-100 py-2 text-xs dark:border-gray-800">
-                  <div className="font-mono">{shortenKey(pool.id || '')}</div>
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="font-mono">{shortenKey(pool.id || '')}</span>
+                    {isValidPoolId(pool.id) && (
+                      <a
+                        href={liquidityPoolsPath(pool.id)}
+                        onClick={(event) => {
+                          event.preventDefault();
+                          openLiquidityPoolsView(pool.id);
+                        }}
+                        className="text-blue-700 underline hover:no-underline dark:text-blue-300"
+                      >
+                        {t('liquidity:swapLink', 'Pool-Ansicht')}
+                      </a>
+                    )}
+                  </div>
                   {(pool.reserves || []).map((reserve) => (
                     <div key={reserve.asset} className="mt-1 flex justify-between gap-3">
                       <span>{formatReserveAsset(reserve.asset)}</span>

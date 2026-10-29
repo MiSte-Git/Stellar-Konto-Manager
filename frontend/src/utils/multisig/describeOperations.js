@@ -4,17 +4,26 @@
 // asked to sign). Covers the operation types this app's own multisig flows
 // actually build (SendPaymentPage: createAccount/payment; MultisigEditPage:
 // setOptions; ListTrustlines: changeTrust; Claimable Balances und Batch-Convert:
-// claimClaimableBalance/pathPaymentStrictSend; Widerruf: bumpSequence). Anything
+// claimClaimableBalance/pathPaymentStrictSend; Widerruf: bumpSequence; Liquidity
+// Pools: liquidityPoolDeposit/liquidityPoolWithdraw). Anything
 // else falls back to a generic "unknown operation type" line, and
 // findOperationWarnings() flags it so the signer must confirm explicitly.
 
 // Nur das echte native Asset heisst XLM. Ein Token mit dem Code XLM wird mit Herausgeber
 // angezeigt, damit es in der Job-Ansicht nicht wie natives XLM aussieht.
+// Pool-Share-Assets (LiquidityPoolAsset) haben keinen code und wuerden sonst
+// unten als XLM erscheinen; sie werden als "Pool A/B" mit beiden Assets angezeigt.
 function formatAsset(asset) {
   if (!asset) return 'XLM';
+  if (isPoolShareAsset(asset)) return `Pool ${formatAsset(asset.assetA)}/${formatAsset(asset.assetB)}`;
   if (typeof asset.isNative === 'function' ? asset.isNative() : asset.code === 'native') return 'XLM';
   if (!asset.code) return 'XLM';
   return asset.issuer ? `${asset.code} (${shortKey(asset.issuer)})` : asset.code;
+}
+
+function isPoolShareAsset(asset) {
+  if (typeof asset.getAssetType === 'function') return asset.getAssetType() === 'liquidity_pool_shares';
+  return !!(asset.assetA && asset.assetB);
 }
 
 function formatPath(path) {
@@ -26,6 +35,7 @@ function formatPath(path) {
 export const DESCRIBED_OPERATION_TYPES = new Set([
   'payment', 'createAccount', 'setOptions', 'changeTrust', 'accountMerge',
   'claimClaimableBalance', 'pathPaymentStrictSend', 'pathPaymentStrictReceive', 'bumpSequence',
+  'liquidityPoolDeposit', 'liquidityPoolWithdraw',
 ]);
 
 /**
@@ -164,6 +174,27 @@ export function describeOperations(operations, t, sourceAccountId = '') {
         lines.push(t('detail.operations.bumpSequence', {
           bumpTo: op.bumpTo,
           defaultValue: 'Sequenz des Kontos erhöhen auf {{bumpTo}}',
+        }));
+        break;
+      // Die Operation enthaelt nur die Pool-ID, nicht die Assets; A/B meint die
+      // kanonische Reihenfolge des Pools. Der Preis ist definiert als A/B.
+      case 'liquidityPoolDeposit':
+        lines.push(t('detail.operations.liquidityPoolDeposit', {
+          pool: shortKey(op.liquidityPoolId),
+          maxAmountA: op.maxAmountA,
+          maxAmountB: op.maxAmountB,
+          minPrice: op.minPrice,
+          maxPrice: op.maxPrice,
+          defaultValue: 'Liquidität einzahlen in Pool {{pool}}: höchstens {{maxAmountA}} Asset A und {{maxAmountB}} Asset B, Preis A/B zwischen {{minPrice}} und {{maxPrice}}',
+        }));
+        break;
+      case 'liquidityPoolWithdraw':
+        lines.push(t('detail.operations.liquidityPoolWithdraw', {
+          pool: shortKey(op.liquidityPoolId),
+          amount: op.amount,
+          minAmountA: op.minAmountA,
+          minAmountB: op.minAmountB,
+          defaultValue: 'Liquidität abheben aus Pool {{pool}}: {{amount}} Pool Shares gegen mindestens {{minAmountA}} Asset A und {{minAmountB}} Asset B',
         }));
         break;
       case 'accountMerge':

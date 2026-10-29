@@ -1,0 +1,71 @@
+{
+  "menu": "Liquiditeitspools",
+  "swapLink": "Uitzicht op het zwembad",
+  "page": {
+    "title": "Liquiditeitspools",
+    "intro": "Native Stellar-liquiditeitspools (constant product, kosten 0,30%). In dit overzicht worden uitsluitend gegevens van Horizon weergegeven. Stortingen en opnames zijn hier nog niet mogelijk.",
+    "network": "Netwerk"
+  },
+  "source": {
+    "label": "Bron",
+    "native": "Inheemse sterrenpool"
+  },
+  "positions": {
+    "title": "Mijn functies",
+    "loading": "Posities worden geladen …",
+    "empty": "Dit account heeft geen aandeel in de pool van Trustline.",
+    "loadFailed": "De vacatures konden niet worden geladen (netwerk- of Horizon-fout).",
+    "retry": "Opnieuw laden",
+    "pair": "Zwembad",
+    "shares": "Aandelen in zwembaden",
+    "sharePercent": "Aandeel in de pot",
+    "sharePercentValue": "{{percent}} %",
+    "value": "Equivalente waarde {{asset}}",
+    "zeroShares": "Trustline zonder pool-aandelen (saldo 0)",
+    "poolNotFound": "De pool {{id}} is niet gevonden in Horizon.",
+    "poolLoadFailed": "De gegevens voor pool {{id}} konden niet worden geladen.",
+    "showDetails": "Bekijk de details van het zwembad"
+  },
+  "finder": {
+    "title": "Zoek een zwembad",
+    "noAccountNeeded": "Je hebt geen account nodig om te zoeken.",
+    "mode": {
+      "pair": "Asset-paar",
+      "id": "Zwembad-ID"
+    },
+    "assetFirst": "Eerste Asset",
+    "assetSecond": "Tweede Asset",
+    "kind": {
+      "native": "XLM",
+      "token": "Token"
+    },
+    "tokenLabel": "Zoek naar Token",
+    "tokenPlaceholder": "USDC, G... of USDC:G...",
+    "tokenSearch": "Zoeken",
+    "tokenSelected": "Geselecteerd Token",
+    "selectBoth": "Kies alstublieft een Asset voor beide partijen.",
+    "sameAsset": "Kies alstublieft twee verschillende Assets.",
+    "poolIdLabel": "Pool-ID (64 hexadecimale tekens)",
+    "invalidPoolId": "Dat is geen geldige pool-ID (er worden 64 hexadecimale tekens verwacht).",
+    "submit": "Load Pool",
+    "loading": "Het zwembad wordt geladen …",
+    "notFoundPair": "Er is nog geen liquiditeitspool voor dit Asset-paar.",
+    "notFoundId": "Er bestaat geen liquiditeitspool met deze pool-ID.",
+    "loadFailed": "De poolgegevens konden niet worden geladen (netwerk- of Horizon-fout).",
+    "retry": "Probeer het nog eens"
+  },
+  "facts": {
+    "title": "Feiten over zwembaden",
+    "reserve": "Reserveer {{asset}}",
+    "totalShares": "Totaal aantal aandelen in de pool",
+    "participants": "Deelnemers (Trustlines)",
+    "fee": "Vergoeding",
+    "feeValue": "{{percent}} % ({{bps}} bps)",
+    "poolId": "Zwembad-ID",
+    "copy": "Kopiëren",
+    "copied": "Gekopieerd",
+    "emptyPool": "Deze pool bevat momenteel geen liquiditeit (Totaal aantal pool-aandelen: 0).",
+    "assetFacts": "Feiten over {{asset}}",
+    "nativeAsset": "XLM is de eigen cryptomunt Asset van het netwerk en heeft geen uitgever."
+  }
+}

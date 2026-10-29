@@ -220,6 +220,8 @@
       "pathPaymentStrictSend": "Tausch: {{sendAmount}} {{sendAsset}} gegen mindestens {{destMin}} {{destAsset}} an {{destination}} (Pfad: {{path}})",
       "pathPaymentStrictReceive": "Tausch: höchstens {{sendMax}} {{sendAsset}} für genau {{destAmount}} {{destAsset}} an {{destination}} (Pfad: {{path}})",
       "bumpSequence": "Sequenz des Kontos erhöhen auf {{bumpTo}}",
+      "liquidityPoolDeposit": "Liquidität einzahlen in Pool {{pool}}: höchstens {{maxAmountA}} Asset A und {{maxAmountB}} Asset B, Preis A/B zwischen {{minPrice}} und {{maxPrice}}",
+      "liquidityPoolWithdraw": "Liquidität abheben aus Pool {{pool}}: {{amount}} Pool Shares gegen mindestens {{minAmountA}} Asset A und {{minAmountB}} Asset B",
       "ownAccount": "das eigene Konto",
       "warnPathPaymentToOther": "Achtung: Mindestens ein Tausch zahlt den Erlös an ein anderes Konto als das Quellkonto aus. Prüfe die Zieladresse, bevor du signierst.",
       "warnUnknown": "Diese Transaktion enthält Operationen, die SKM nicht im Klartext anzeigen kann: {{types}}. Signiere nur, wenn du genau weisst, was sie bewirken.",

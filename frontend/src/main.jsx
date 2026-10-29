@@ -32,6 +32,7 @@ import {
   isMultisigJobsListPath,
   isSettingsPath,
   isTradingAssetsPath,
+  isLiquidityPoolsPath,
 } from './utils/basePath.js';
 
 function migrateLegacyStorageKeys() {
@@ -120,6 +121,7 @@ const MuxedAccountsPage  = lazy(() => import('./pages/MuxedAccountsPage.jsx'));
 const MultisigJobList    = lazy(() => import('./pages/MultisigJobList.jsx'));
 const MultisigJobDetail  = lazy(() => import('./pages/MultisigJobDetail.jsx'));
 const TradingAssetsPage  = lazy(() => import('./pages/TradingAssetsPage.jsx'));
+const LiquidityPoolsPage = lazy(() => import('./pages/LiquidityPoolsPage.jsx'));
 
 
 migrateLegacyStorageKeys();
@@ -160,7 +162,7 @@ const isDev = import.meta.env.MODE !== 'production';
 // reflection at all). This component is now the single source of truth for
 // those 3 features; the URL is only mirrored for deep-linking/back-forward/
 // bookmarking, never a second place that independently decides what to render.
-const MANAGED_MENU_SELECTIONS = ['settings', 'tradingAssets', 'multisigJobs'];
+const MANAGED_MENU_SELECTIONS = ['settings', 'tradingAssets', 'liquidityPools', 'multisigJobs'];
 
 function readMenuStateFromUrl() {
   if (typeof window === 'undefined') return { menuSelection: null, activeJobId: null, activeJobToken: null };
@@ -179,6 +181,9 @@ function readMenuStateFromUrl() {
   if (isTradingAssetsPath(pathname)) {
     return { menuSelection: 'tradingAssets', activeJobId: null, activeJobToken: null };
   }
+  if (isLiquidityPoolsPath(pathname)) {
+    return { menuSelection: 'liquidityPools', activeJobId: null, activeJobToken: null };
+  }
   return { menuSelection: null, activeJobId: null, activeJobToken: null };
 }
 
@@ -186,6 +191,7 @@ function pathForMenuState(menuSelection, activeJobId) {
   if (activeJobId) return buildPath(`multisig/jobs/${activeJobId}`);
   if (menuSelection === 'settings') return buildPath('settings');
   if (menuSelection === 'tradingAssets') return buildPath('trading/assets');
+  if (menuSelection === 'liquidityPools') return buildPath('trading/pools');
   if (menuSelection === 'multisigJobs') return buildPath('multisig/jobs');
   return null;
 }
@@ -767,6 +773,7 @@ function Main() {
   // Kontoabhaengige Seiten nur mit existierendem Konto rendern (sonst AccountGate).
   // Bewusst nicht gegated: receive (Adresse zum Aktivieren anzeigen), Startseite,
   // multisigJobs, createAccount, tradingAssets, settings, feedback.
+  // liquidityPools gated nur den Bereich "Meine Positionen" selbst (Pool finden geht ohne Konto).
   const accountGateActive = !!menuSelection
     && ACCOUNT_REQUIRED_MENUS.has(menuSelection)
     && (!sourcePublicKey || notFound);
@@ -1122,6 +1129,16 @@ function Main() {
           <TradingAssetsPage />
         </div>
       )}
+      {menuSelection === 'liquidityPools' && (
+        <div className="max-w-6xl mx-auto px-3">
+          <LiquidityPoolsPage
+            publicKey={sourcePublicKey}
+            notFound={notFound}
+            accountLoading={isLoading && !sourcePublicKey}
+            network={devTestnet ? 'TESTNET' : 'PUBLIC'}
+          />
+        </div>
+      )}
       {/* Wallet-Startseite: ohne Unteransicht */}
       {!menuSelection && (
         <WalletHome
@@ -1182,7 +1199,7 @@ function Main() {
       )}
        
        {menuSelection &&
-       !['listAll','compare','deleteAll','deleteByIssuer','xlmByMemo','payments','tradingAssets','settings','createAccount','multisigEdit','multisigJobs','balance','sendPayment','receive','feedback','muxed'].includes(menuSelection) && (
+       !['listAll','compare','deleteAll','deleteByIssuer','xlmByMemo','payments','tradingAssets','liquidityPools','settings','createAccount','multisigEdit','multisigJobs','balance','sendPayment','receive','feedback','muxed'].includes(menuSelection) && (
          <div className="p-3 text-sm text-red-600">
            {t('menu:unknown', { value: String(menuSelection) }, 'Unbekannte Menüauswahl')}
          </div>

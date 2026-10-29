@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { Account, Asset, Keypair, Networks, Operation, StrKey, TransactionBuilder } from '@stellar/stellar-sdk';
+import { Account, Asset, Keypair, LiquidityPoolAsset, LiquidityPoolFeeV18, Networks, Operation, StrKey, TransactionBuilder } from '@stellar/stellar-sdk';
 import { describeOperations, findOperationWarnings, shortKey } from '../describeOperations.js';
 
 // Mirrors react-i18next's t() signature closely enough for describeOperations()'s
@@ -204,3 +204,33 @@ describe('neue Operationstypen und Warnungen', () => {
   });
 });
 
+describe('Liquidity-Pool-Operationen', () => {
+  const issuer = Keypair.random().publicKey();
+  const usd = new Asset('USD', issuer);
+  const poolAsset = new LiquidityPoolAsset(Asset.native(), usd, LiquidityPoolFeeV18);
+  const poolId = 'a468d41d8e9b8f3c7209651608b74b7db7ac9952dcae0cdf24871d1d9c7b0088';
+
+  it('beschreibt liquidityPoolDeposit mit gekuerzter Pool-ID, Maximalbetraegen und Preisgrenzen', () => {
+    const tx = buildTx([Operation.liquidityPoolDeposit({ liquidityPoolId: poolId, maxAmountA: '100', maxAmountB: '50.5', minPrice: '1.9', maxPrice: '2.1' })]);
+    const [line] = describeOperations(tx.operations, fakeT);
+    expect(line).toBe(`Liquidität einzahlen in Pool ${shortKey(poolId)}: höchstens 100.0000000 Asset A und 50.5000000 Asset B, Preis A/B zwischen 1.9 und 2.1`);
+    expect(findOperationWarnings(tx.operations, '').unknownTypes).toEqual([]);
+  });
+
+  it('beschreibt liquidityPoolWithdraw mit Shares und Mindestbetraegen', () => {
+    const tx = buildTx([Operation.liquidityPoolWithdraw({ liquidityPoolId: poolId, amount: '10', minAmountA: '1', minAmountB: '2.25' })]);
+    const [line] = describeOperations(tx.operations, fakeT);
+    expect(line).toBe(`Liquidität abheben aus Pool ${shortKey(poolId)}: 10.0000000 Pool Shares gegen mindestens 1.0000000 Asset A und 2.2500000 Asset B`);
+    expect(findOperationWarnings(tx.operations, '').unknownTypes).toEqual([]);
+  });
+
+  it('zeigt changeTrust mit Pool-Asset als Pool A/B statt als XLM (setzen und entfernen)', () => {
+    const tx = buildTx([
+      Operation.changeTrust({ asset: poolAsset }),
+      Operation.changeTrust({ asset: poolAsset, limit: '0' }),
+    ]);
+    const [set, remove] = describeOperations(tx.operations, fakeT);
+    expect(set).toBe(`Trustline für Pool XLM/USD (${shortKey(issuer)}) setzen (Limit: 922337203685.4775807)`);
+    expect(remove).toBe(`Trustline für Pool XLM/USD (${shortKey(issuer)}) entfernen`);
+  });
+});

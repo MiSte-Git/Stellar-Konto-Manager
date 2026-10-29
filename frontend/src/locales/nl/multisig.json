@@ -224,7 +224,9 @@
       "ownAccount": "je eigen account",
       "warnPathPaymentToOther": "Waarschuwing: Bij ten minste één transactie wordt de opbrengst overgemaakt naar een andere rekening dan de bronrekening. Controleer het bestemmingsadres voordat u ondertekent.",
       "warnUnknown": "Deze transactie bevat bewerkingen die SKM niet in platte tekst kan weergeven: {{types}}. Onderteken alleen als je precies weet wat deze bewerkingen doen.",
-      "confirmUnknown": "Ik heb de transactie apart bekeken en wil deze nog steeds ondertekenen."
+      "confirmUnknown": "Ik heb de transactie apart bekeken en wil deze nog steeds ondertekenen.",
+      "liquidityPoolDeposit": "Liquiditeit storten in pool {{pool}}: tot maximaal {{maxAmountA}} Asset A en {{maxAmountB}} Asset B, A/B-prijs tussen {{minPrice}} en {{maxPrice}}",
+      "liquidityPoolWithdraw": "Liquiditeit opnemen uit de {{pool}}-pool: aandelen uit de {{amount}}-pool in ruil voor ten minste {{minAmountA}} Asset A en {{minAmountB}} Asset B"
     },
     "validUntil": {
       "label": "Geldig tot",

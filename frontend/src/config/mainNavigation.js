@@ -84,6 +84,7 @@ export const SIDEBAR_SECTIONS = [
     titleFallback: 'Handel',
     items: [
       { id: 'tradingAssets', kind: 'main', labelKey: 'menu:swap', icon: 'swap', glossaryTerm: 'tokenTrading' },
+      { id: 'liquidityPools', kind: 'main', labelKey: 'liquidity:menu', fallback: 'Liquidity Pools', icon: 'droplet' },
     ],
   },
   {

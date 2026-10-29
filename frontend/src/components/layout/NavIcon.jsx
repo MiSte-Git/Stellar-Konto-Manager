@@ -29,6 +29,7 @@ const PATHS = {
       <path d="M21 16H7" />
     </>
   ),
+  droplet: <path d="M12 3s6 6.4 6 11a6 6 0 0 1-12 0c0-4.6 6-11 6-11z" />,
   receipt: (
     <>
       <path d="M6 3h12v18l-3-2-3 2-3-2-3 2z" />

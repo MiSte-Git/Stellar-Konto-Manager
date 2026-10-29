@@ -7,6 +7,7 @@ import { describe, it, expect } from 'vitest';
 import wallet from '../../locales/de/wallet.json';
 import multisig from '../../locales/de/multisig.json';
 import trading from '../../locales/de/trading.json';
+import liquidity from '../../locales/de/liquidity.json';
 
 const FORBIDDEN = [
   /betrug/i, /scam/i, /\bfake\b/i, /gefälscht/i, /\bunseriös/i, /\bseriös/i, /vertrauenswürdig/i,
@@ -35,6 +36,7 @@ const SCOPES = [
   ['multisig.detail.operations', multisig.detail?.operations],
   ['wallet.activity', wallet.activity],
   ['trading', trading],
+  ['liquidity', liquidity],
 ];
 
 describe('Token-Trust-Prinzip in den Texten', () => {

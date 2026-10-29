@@ -1,0 +1,71 @@
+{
+  "menu": "Fondos de liquidez",
+  "swapLink": "Vistas a la piscina",
+  "page": {
+    "title": "Fondos de liquidez",
+    "intro": "Fondos de liquidez nativos de Stellar (producto constante, comisión del 0,30 %). Esta vista muestra únicamente datos de Horizon. Los depósitos y retiradas aún no están disponibles aquí.",
+    "network": "Red"
+  },
+  "source": {
+    "label": "Fuente",
+    "native": "Reserva estelar nativa"
+  },
+  "positions": {
+    "title": "Mis puestos",
+    "loading": "Cargando puestos…",
+    "empty": "Esta cuenta no tiene una participación en el fondo común de Trustline.",
+    "loadFailed": "No se han podido cargar las posiciones (error de red o de Horizon).",
+    "retry": "Actualizar",
+    "pair": "Piscina",
+    "shares": "Acciones de la piscina",
+    "sharePercent": "Participación en el fondo común",
+    "sharePercentValue": "{{percent}} %",
+    "value": "Valor equivalente {{asset}}",
+    "zeroShares": "Trustline sin participaciones en el fondo común (saldo 0)",
+    "poolNotFound": "No se ha encontrado el grupo {{id}} en Horizon.",
+    "poolLoadFailed": "No se han podido cargar los datos del grupo {{id}}.",
+    "showDetails": "Ver detalles de la piscina"
+  },
+  "finder": {
+    "title": "Buscar una piscina",
+    "noAccountNeeded": "No hace falta tener una cuenta para realizar búsquedas.",
+    "mode": {
+      "pair": "Asset par",
+      "id": "ID de grupo"
+    },
+    "assetFirst": "Primero Asset",
+    "assetSecond": "Segundo Asset",
+    "kind": {
+      "native": "XLM",
+      "token": "Token"
+    },
+    "tokenLabel": "Buscar Token",
+    "tokenPlaceholder": "USDC, G... o USDC:G...",
+    "tokenSearch": "Buscar",
+    "tokenSelected": "Seleccionado Token",
+    "selectBoth": "Selecciona un Asset para ambas partes.",
+    "sameAsset": "Selecciona dos valores diferentes de Assets.",
+    "poolIdLabel": "ID del grupo (64 caracteres hexadecimales)",
+    "invalidPoolId": "Ese ID de grupo no es válido (se esperan 64 caracteres hexadecimales).",
+    "submit": "Grupo de carga",
+    "loading": "Se está cargando la piscina…",
+    "notFoundPair": "Aún no hay un fondo de liquidez para este par Asset.",
+    "notFoundId": "No existe ningún fondo de liquidez con este ID de fondo.",
+    "loadFailed": "No se han podido cargar los datos del grupo (error de red o de Horizon).",
+    "retry": "Inténtalo de nuevo"
+  },
+  "facts": {
+    "title": "Datos sobre las piscinas",
+    "reserve": "Reserva {{asset}}",
+    "totalShares": "Total de participaciones del fondo común",
+    "participants": "Participantes (Trustlines)",
+    "fee": "Cuota",
+    "feeValue": "{{percent}} % ({{bps}} bps)",
+    "poolId": "ID de grupo",
+    "copy": "Copiar",
+    "copied": "Copiado",
+    "emptyPool": "Actualmente, este fondo no cuenta con liquidez (Total de participaciones del fondo: 0).",
+    "assetFacts": "Datos sobre {{asset}}",
+    "nativeAsset": "XLM es la moneda nativa de la red Asset y no tiene emisor."
+  }
+}

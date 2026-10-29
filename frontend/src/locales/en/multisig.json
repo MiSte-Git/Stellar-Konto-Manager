@@ -224,7 +224,9 @@
       "ownAccount": "your own account",
       "warnPathPaymentToOther": "Warning: At least one transaction will send the proceeds to an account other than the source account. Check the destination address before signing.",
       "warnUnknown": "This transaction contains operations that SKM cannot display in plain text: {{types}}. Only sign if you know exactly what they do.",
-      "confirmUnknown": "I have reviewed the transaction separately and would still like to sign it."
+      "confirmUnknown": "I have reviewed the transaction separately and would still like to sign it.",
+      "liquidityPoolDeposit": "Deposit liquidity into pool {{pool}}: up to {{maxAmountA}} Asset A and {{maxAmountB}} Asset B, A/B price between {{minPrice}} and {{maxPrice}}",
+      "liquidityPoolWithdraw": "Withdraw liquidity from the {{pool}} pool: {{amount}} pool shares in exchange for at least {{minAmountA}} Asset A and {{minAmountB}} Asset B"
     },
     "validUntil": {
       "label": "Valid until",

@@ -224,7 +224,9 @@
       "ownAccount": "vaš vlastiti račun",
       "warnPathPaymentToOther": "Upozorenje: Najmanje jedna transakcija će poslati prihode na račun koji nije izvorni račun. Provjerite odredišnu adresu prije potpisivanja.",
       "warnUnknown": "Ova transakcija sadrži operacije koje SKM ne može prikazati u običnom tekstu: {{types}}. Potpišite samo ako točno znate što rade.",
-      "confirmUnknown": "Pregledao sam transakciju zasebno i i dalje bih je želio potpisati."
+      "confirmUnknown": "Pregledao sam transakciju zasebno i i dalje bih je želio potpisati.",
+      "liquidityPoolDeposit": "Uplatite likvidnost u bazen {{pool}}: do {{maxAmountA}} Asset A i {{maxAmountB}} Asset B, Cijena A/B između {{minPrice}} i {{maxPrice}}",
+      "liquidityPoolWithdraw": "Povucite likvidnost iz {{pool}} bazena: {{amount}} udjele bazena u zamjenu za najmanje {{minAmountA}} Asset A i {{minAmountB}} Asset B"
     },
     "validUntil": {
       "label": "Važeće do",

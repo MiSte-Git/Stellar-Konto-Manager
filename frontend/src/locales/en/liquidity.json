@@ -1,0 +1,71 @@
+{
+  "menu": "Liquidity Pools",
+  "swapLink": "Pool View",
+  "page": {
+    "title": "Liquidity Pools",
+    "intro": "Native Stellar Liquidity Pools (constant product, fee 0.30%). This view displays data from Horizon only. Deposits and withdrawals are not yet available here.",
+    "network": "Network"
+  },
+  "source": {
+    "label": "Source",
+    "native": "Native Stellar Pool"
+  },
+  "positions": {
+    "title": "My Positions",
+    "loading": "Loading positions …",
+    "empty": "This account does not have a pool share of Trustline.",
+    "loadFailed": "Positions could not be loaded (network or Horizon error).",
+    "retry": "Reload",
+    "pair": "Pool",
+    "shares": "Pool Shares",
+    "sharePercent": "Share of the pool",
+    "sharePercentValue": "{{percent}} %",
+    "value": "Equivalent value {{asset}}",
+    "zeroShares": "Trustline without pool shares (balance 0)",
+    "poolNotFound": "Pool {{id}} was not found in Horizon.",
+    "poolLoadFailed": "Data for pool {{id}} could not be loaded.",
+    "showDetails": "View Pool Details"
+  },
+  "finder": {
+    "title": "Find a Pool",
+    "noAccountNeeded": "You don't need an account to search.",
+    "mode": {
+      "pair": "Asset pair",
+      "id": "Pool ID"
+    },
+    "assetFirst": "First Asset",
+    "assetSecond": "Second Asset",
+    "kind": {
+      "native": "XLM",
+      "token": "Token"
+    },
+    "tokenLabel": "Search for Token",
+    "tokenPlaceholder": "USDC, G... or USDC:G...",
+    "tokenSearch": "Search",
+    "tokenSelected": "Selected Token",
+    "selectBoth": "Please select a Asset for both sides.",
+    "sameAsset": "Please select two different Assets.",
+    "poolIdLabel": "Pool ID (64 hex characters)",
+    "invalidPoolId": "That is not a valid pool ID (64 hex characters expected).",
+    "submit": "Load Pool",
+    "loading": "Pool is loading …",
+    "notFoundPair": "There is no liquidity pool for this Asset pair yet.",
+    "notFoundId": "There is no liquidity pool with this pool ID.",
+    "loadFailed": "Pool data could not be loaded (network or Horizon error).",
+    "retry": "Try again"
+  },
+  "facts": {
+    "title": "Pool Facts",
+    "reserve": "Reserve {{asset}}",
+    "totalShares": "Total Pool Shares",
+    "participants": "Participants (Trustlines)",
+    "fee": "Fee",
+    "feeValue": "{{percent}} % ({{bps}} bps)",
+    "poolId": "Pool ID",
+    "copy": "Copy",
+    "copied": "Copied",
+    "emptyPool": "This pool currently contains no liquidity (Total Pool Shares: 0).",
+    "assetFacts": "Facts about {{asset}}",
+    "nativeAsset": "XLM is the network's native Asset and has no issuer."
+  }
+}

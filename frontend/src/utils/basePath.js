@@ -174,6 +174,23 @@ export function tradingAssetsPath() {
 }
 
 /**
+ * isLiquidityPoolsPath: Pfad zur Liquidity-Pool-Ansicht (/trading/pools)
+ */
+export function isLiquidityPoolsPath(pathname) {
+  const current = typeof pathname === 'string'
+    ? pathname
+    : (typeof window !== 'undefined' ? window.location.pathname : '');
+  const target = buildPath('trading/pools');
+  return normalizePath(current) === normalizePath(target) || normalizePath(current).endsWith('/trading/pools');
+}
+
+/** Pfad zur Liquidity-Pool-Ansicht, optional mit vorausgewaehltem Pool (?pool=<id>). */
+export function liquidityPoolsPath(poolId) {
+  const base = buildPath('trading/pools');
+  return poolId ? `${base}?pool=${encodeURIComponent(poolId)}` : base;
+}
+
+/**
  * Extracts multisig job id from path /multisig/jobs/:id
  */
 export function getMultisigJobId(pathname) {

@@ -1,0 +1,71 @@
+{
+  "menu": "Likviditeettipoolit",
+  "swapLink": "Näkymä uima-altaalle",
+  "page": {
+    "title": "Likviditeettipoolit",
+    "intro": "Stellar-alustan omat likviditeettipoolit (vakiokerroin, palkkio 0,30 %). Tässä näkymässä näkyvät ainoastaan Horizonin tiedot. Talletuksia ja nostoja ei voi vielä tehdä tässä.",
+    "network": "Verkko"
+  },
+  "source": {
+    "label": "Lähde",
+    "native": "Alkuperäinen tähtien joukko"
+  },
+  "positions": {
+    "title": "Omat kannat",
+    "loading": "Lataa tehtäviä …",
+    "empty": "Tällä tilillä ei ole Trustline-osuutta poolista.",
+    "loadFailed": "Sijainteja ei voitu ladata (verkko- tai Horizon-virhe).",
+    "retry": "Lataa uudelleen",
+    "pair": "Uima-allas",
+    "shares": "Uima-allasosuudet",
+    "sharePercent": "Osuus yhteispotista",
+    "sharePercentValue": "{{percent}} %",
+    "value": "Vastaava arvo {{asset}}",
+    "zeroShares": "Trustline ilman pooliosuuksia (saldo 0)",
+    "poolNotFound": "Horizonista ei löytynyt muuttujaa {{id}}.",
+    "poolLoadFailed": "Tietoja poolista {{id}} ei voitu ladata.",
+    "showDetails": "Katso uima-altaan tiedot"
+  },
+  "finder": {
+    "title": "Etsi uima-allas",
+    "noAccountNeeded": "Hakuun ei tarvita tiliä.",
+    "mode": {
+      "pair": "Asset-pari",
+      "id": "Alueen tunnus"
+    },
+    "assetFirst": "Ensimmäinen Asset",
+    "assetSecond": "Toinen Asset",
+    "kind": {
+      "native": "XLM",
+      "token": "Token"
+    },
+    "tokenLabel": "Etsi Token",
+    "tokenPlaceholder": "USDC, G... tai USDC:G...",
+    "tokenSearch": "Haku",
+    "tokenSelected": "Valittu Token",
+    "selectBoth": "Valitse molemmille osapuolille Asset.",
+    "sameAsset": "Valitse kaksi erilaista Assets:tä.",
+    "poolIdLabel": "Pool-tunnus (64 heksadesimaalimerkkiä)",
+    "invalidPoolId": "Tuo ei ole kelvollinen uima-altaan tunniste (odotetaan 64 heksadesimaalimerkkiä).",
+    "submit": "Kuormituspooli",
+    "loading": "Uima-allas latautuu …",
+    "notFoundPair": "Tälle Asset-parille ei ole vielä likviditeettipoolia.",
+    "notFoundId": "Tällä pool-tunnuksella ei ole likviditeettipoolia.",
+    "loadFailed": "Tietokannan tietoja ei voitu ladata (verkko- tai Horizon-virhe).",
+    "retry": "Yritä uudelleen"
+  },
+  "facts": {
+    "title": "Uima-altaita koskevia tietoja",
+    "reserve": "Varaa {{asset}}",
+    "totalShares": "Uima-altaan osuuksien kokonaismäärä",
+    "participants": "Osallistujat (Trustlines)",
+    "fee": "Maksu",
+    "feeValue": "{{percent}} % ({{bps}} bps)",
+    "poolId": "Alueen tunnus",
+    "copy": "Kopioi",
+    "copied": "Kopioitu",
+    "emptyPool": "Tässä poolissa ei tällä hetkellä ole likviditeettiä (poolin osuuksien kokonaismäärä: 0).",
+    "assetFacts": "Tietoja {{asset}}:stä",
+    "nativeAsset": "XLM on verkon oma Asset, eikä sillä ole liikkeeseenlaskijaa."
+  }
+}

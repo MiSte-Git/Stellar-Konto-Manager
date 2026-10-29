@@ -224,7 +224,9 @@
       "ownAccount": "oma tilisi",
       "warnPathPaymentToOther": "Varoitus: Ainakin yhdessä tapahtumassa varat siirretään muulle tilille kuin lähdetilille. Tarkista kohdeosoite ennen allekirjoittamista.",
       "warnUnknown": "Tämä tapahtuma sisältää toimintoja, joita SKM ei voi näyttää selväkielisenä: {{types}}. Allekirjoita vain, jos tiedät tarkalleen, mitä ne tekevät.",
-      "confirmUnknown": "Olen tarkastellut kauppaa erikseen ja haluaisin silti allekirjoittaa sen."
+      "confirmUnknown": "Olen tarkastellut kauppaa erikseen ja haluaisin silti allekirjoittaa sen.",
+      "liquidityPoolDeposit": "Talletetaan likviditeettiä pooliin {{pool}}: enintään {{maxAmountA}} Asset A ja {{maxAmountB}} Asset B, A/B-hinta välillä {{minPrice}} ja {{maxPrice}}",
+      "liquidityPoolWithdraw": "Nosta likviditeettiä {{pool}}-poolista: {{amount}}-poolin osuuksia vastineeksi vähintään {{minAmountA}} Asset A:ta ja {{minAmountB}} Asset B:tä"
     },
     "validUntil": {
       "label": "Voimassa asti",

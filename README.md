@@ -50,6 +50,15 @@ Local-first Stellar Wallet & Account Manager: Trustlines, Zahlungen, Muxed Accou
 - Multisig-Signing-Unterstützung im Trading-Flow (gleiches Signer-Sammel-Muster wie bei Zahlungen).
 - Referenzkurs XLM ↔ Token in der Token-Detailansicht: Orderbook-Mittelkurs plus simulierter Ausführungspreis (Pfadsuche, Referenzmenge 1), automatisch für das gerade angezeigte Asset, unabhängig von Trustline oder Swap-Eingabe.
 
+### I. Liquidity Pools (Stufe 1, nur lesend)
+- Eigene Seite unter Handel → „Liquidity Pools“ (`frontend/src/pages/LiquidityPoolsPage.jsx`, Pfad `/trading/pools`, optional `?pool=<64 Hex>` zum Vorauswählen; ungültige Werte werden ignoriert). Nur native Stellar Pools (CAP-38, constant product, Fee 30 bps), Konzept in `konzept_liquidity_pools.md`.
+- „Meine Positionen“: Pool Shares, Anteil in %, Gegenwert in Asset A/B und Quelle je Pool; Trustlines mit 0 Shares sind markiert. Braucht ein existierendes Konto (AccountGate wie bei den anderen kontoabhängigen Seiten).
+- „Pool finden“ per Asset-Paar (Token-Picker `components/trading/AssetPickerField.jsx`, gemeinsam mit dem Ziel-Token-Picker im Swap) oder per Pool-ID, auch ohne Konto: Reserven, Total Pool Shares, Teilnehmer (`total_trustlines`), Fee, Pool-ID kopierbar, `TokenFactsSummary` je Asset. Gibt es keinen Pool, erscheint ein neutraler Hinweis. Ein 404 und ein Netzwerkfehler werden getrennt angezeigt.
+- Im Swap-Bereich verlinkt jeder angezeigte Pool auf die Pool-Ansicht.
+- Es gibt weder Einzahlen noch Abheben noch Signieren; das kommt in Stufe 2. Gezeigt werden nur Fakten, ohne Bewertung oder Ranking (Token-Trust-Prinzip).
+- Module: `utils/stellar/liquidityPools.js` (reine Funktionen: kanonische Sortierung, Pool-ID, Horizon-Normalisierung, Positionsberechnung in Stroop-`BigInt`), Hooks `components/liquidity/hooks/usePoolPositions.js` und `usePoolLookup.js`, Texte im Namespace `liquidity` (vorerst nur DE).
+- Die Multisig-Job-Ansicht (`utils/multisig/describeOperations.js`) zeigt `liquidityPoolDeposit`/`liquidityPoolWithdraw` im Klartext an, und `changeTrust` auf Pool Shares erscheint dort als „Pool A/B“.
+
 ## Architekturüberblick
 - Frontend: React + Vite, Ordner `frontend/`.
 - Backend: Node.js/Express, `server.js` im Projekt-Root, lokale Dateiablage.

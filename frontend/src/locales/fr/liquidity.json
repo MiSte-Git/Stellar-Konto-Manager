@@ -1,0 +1,71 @@
+{
+  "menu": "Réserves de liquidités",
+  "swapLink": "Vue sur la piscine",
+  "page": {
+    "title": "Réserves de liquidités",
+    "intro": "Pools de liquidité natifs de Stellar (produit constant, frais de 0,30 %). Cette vue affiche uniquement les données provenant d'Horizon. Les dépôts et les retraits ne sont pas encore disponibles ici.",
+    "network": "Réseau"
+  },
+  "source": {
+    "label": "Source",
+    "native": "Réserve stellaire native"
+  },
+  "positions": {
+    "title": "Mes postes",
+    "loading": "Chargement des positions…",
+    "empty": "Ce compte ne détient pas de part du pool de Trustline.",
+    "loadFailed": "Impossible de charger les positions (erreur réseau ou Horizon).",
+    "retry": "Actualiser",
+    "pair": "Piscine",
+    "shares": "Parts de piscine",
+    "sharePercent": "Part du fonds commun",
+    "sharePercentValue": "{{percent}} %",
+    "value": "Valeur équivalente {{asset}}",
+    "zeroShares": "Trustline sans parts de pool (solde = 0)",
+    "poolNotFound": "Le pool {{id}} n'a pas été trouvé dans Horizon.",
+    "poolLoadFailed": "Impossible de charger les données du pool {{id}}.",
+    "showDetails": "Voir les détails de la piscine"
+  },
+  "finder": {
+    "title": "Trouver une piscine",
+    "noAccountNeeded": "Vous n'avez pas besoin d'un compte pour effectuer une recherche.",
+    "mode": {
+      "pair": "Asset paire",
+      "id": "Identifiant du pool"
+    },
+    "assetFirst": "Tout d'abord Asset",
+    "assetSecond": "Deuxième Asset",
+    "kind": {
+      "native": "XLM",
+      "token": "Token"
+    },
+    "tokenLabel": "Rechercher Token",
+    "tokenPlaceholder": "USDC, G... ou USDC:G...",
+    "tokenSearch": "Rechercher",
+    "tokenSelected": "Sélectionné : Token",
+    "selectBoth": "Veuillez sélectionner un Asset pour les deux parties.",
+    "sameAsset": "Veuillez sélectionner deux valeurs différentes pour Assets.",
+    "poolIdLabel": "Identifiant du pool (64 caractères hexadécimaux)",
+    "invalidPoolId": "Cet identifiant de pool n'est pas valide (64 caractères hexadécimaux requis).",
+    "submit": "Pool de charge",
+    "loading": "Chargement de la liste des piscines…",
+    "notFoundPair": "Il n'existe pas encore de réserve de liquidité pour cette paire Asset.",
+    "notFoundId": "Il n'existe aucun pool de liquidité portant cet identifiant.",
+    "loadFailed": "Impossible de charger les données du pool (erreur réseau ou Horizon).",
+    "retry": "Réessayez"
+  },
+  "facts": {
+    "title": "Tout ce qu'il faut savoir sur les piscines",
+    "reserve": "Réserve {{asset}}",
+    "totalShares": "Nombre total de parts du fonds commun",
+    "participants": "Participants (Trustlines)",
+    "fee": "Frais",
+    "feeValue": "{{percent}} % ({{bps}} bps)",
+    "poolId": "Identifiant du pool",
+    "copy": "Copier",
+    "copied": "Copié",
+    "emptyPool": "Ce pool ne contient actuellement aucune liquidité (nombre total de parts du pool : 0).",
+    "assetFacts": "Informations sur {{asset}}",
+    "nativeAsset": "Le XLM est la cryptomonnaie native Asset du réseau et n'a pas d'émetteur."
+  }
+}

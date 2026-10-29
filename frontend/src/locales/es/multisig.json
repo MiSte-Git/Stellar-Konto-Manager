@@ -224,7 +224,9 @@
       "ownAccount": "tu propia cuenta",
       "warnPathPaymentToOther": "Advertencia: Al menos una transacción enviará los fondos a una cuenta distinta de la cuenta de origen. Comprueba la dirección de destino antes de firmar.",
       "warnUnknown": "Esta transacción contiene operaciones que SKM no puede mostrar en texto sin formato: {{types}}. Fírmala solo si sabes exactamente qué hacen.",
-      "confirmUnknown": "He revisado la transacción por separado y sigo queriendo firmarla."
+      "confirmUnknown": "He revisado la transacción por separado y sigo queriendo firmarla.",
+      "liquidityPoolDeposit": "Aportar liquidez al fondo común {{pool}}: hasta {{maxAmountA}} Asset A y {{maxAmountB}} Asset B, precio A/B entre {{minPrice}} y {{maxPrice}}",
+      "liquidityPoolWithdraw": "Retirar liquidez del fondo {{pool}}: participaciones del fondo {{amount}} a cambio de, como mínimo, {{minAmountA}} Asset A y {{minAmountB}} Asset B"
     },
     "validUntil": {
       "label": "Válido hasta el",
