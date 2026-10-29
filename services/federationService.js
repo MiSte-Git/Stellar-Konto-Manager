@@ -193,13 +193,11 @@ async function queryFederationServer(serverUrl, q, type, fetchText) {
   return data;
 }
 
-// C... per SDK (inkl. Checksumme). W... (SEP-23 muxed contract, 69 Zeichen) nur ueber Praefix,
-// Laenge und Alphabet: das SDK vor Protocol 30 kennt den Typ noch nicht, und die Adresse wird
-// ausschliesslich abgelehnt. Gleiche Regel in api/federationService.php.
-const MUXED_CONTRACT_RE = /^W[A-Z2-7]{68}$/;
+// C... und W... (SEP-23 muxed contract, Protocol 30 / CAP-84) per SDK, inkl. Checksumme.
+// Gleiche Regel in api/federationService.php.
 function isContractAddressId(id) {
   if (typeof id !== 'string') return false;
-  return StellarSdk.StrKey.isValidContract(id) || MUXED_CONTRACT_RE.test(id);
+  return StellarSdk.StrKey.isValidContract(id) || StellarSdk.StrKey.isValidMuxedContract(id);
 }
 
 function isValidMemo(type, memo) {

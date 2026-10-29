@@ -17,7 +17,7 @@
     "i18n:sync-learn": "node scripts/dev/syncLearnNamespace.mjs"
   },
   "dependencies": {
-    "@stellar/stellar-sdk": "^16.0.1",
+    "@stellar/stellar-sdk": "^17.4.0",
     "express": "^4.18.2",
     "express-rate-limit": "^8.5.2",
     "express-session": "^1.19.0",

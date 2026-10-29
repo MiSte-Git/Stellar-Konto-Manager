@@ -15,7 +15,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@stellar/stellar-sdk": "^16.0.1",
+    "@stellar/stellar-sdk": "^17.4.0",
     "buffer": "^6.0.3",
     "canvas-confetti": "^1.9.4",
     "exceljs": "^4.4.0",

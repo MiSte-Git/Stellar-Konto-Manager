@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ad4a5e170565f6f45fc8d0f7028e94d3",
+    "content-hash": "05bab971c70db4980171fd46aa8839b2",
     "packages": [
         {
             "name": "christian-riesen/base32",
@@ -881,32 +881,33 @@
         },
         {
             "name": "soneso/stellar-php-sdk",
-            "version": "1.10.0",
+            "version": "1.17.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Soneso/stellar-php-sdk.git",
-                "reference": "456b7a93650c59f8641b4ac529df88bc50cbc71b"
+                "reference": "92b32b99557530c9363b00ea83fb1728b0df25ff"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Soneso/stellar-php-sdk/zipball/456b7a93650c59f8641b4ac529df88bc50cbc71b",
-                "reference": "456b7a93650c59f8641b4ac529df88bc50cbc71b",
+                "url": "https://api.github.com/repos/Soneso/stellar-php-sdk/zipball/92b32b99557530c9363b00ea83fb1728b0df25ff",
+                "reference": "92b32b99557530c9363b00ea83fb1728b0df25ff",
                 "shasum": ""
             },
             "require": {
                 "christian-riesen/base32": "~1.6",
                 "ext-bcmath": "*",
                 "ext-gmp": "*",
+                "ext-mbstring": "*",
                 "ext-sodium": "*",
                 "guzzlehttp/guzzle": "^7.3",
-                "php": ">=8.0",
+                "php": ">=8.1",
                 "phpseclib/phpseclib": "^3.0",
                 "psr/log": "^1.1 || ^2.0 || ^3.0",
                 "yosymfony/toml": "~1.0"
             },
             "require-dev": {
                 "league/uri": "7.5.1",
-                "phpdocumentor/phpdocumentor": "^3.9",
+                "phpdocumentor/shim": "^3.10",
                 "phpstan/phpstan": "^2.2",
                 "phpunit/phpunit": "~10.0"
             },
@@ -932,9 +933,9 @@
             "description": "Stellar PHP SDK for the Stellar Network",
             "support": {
                 "issues": "https://github.com/Soneso/stellar-php-sdk/issues",
-                "source": "https://github.com/Soneso/stellar-php-sdk/tree/1.10.0"
+                "source": "https://github.com/Soneso/stellar-php-sdk/tree/1.17.0"
             },
-            "time": "2026-06-18T22:48:42+00:00"
+            "time": "2026-10-24T18:53:33+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",

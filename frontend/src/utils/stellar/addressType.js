@@ -3,15 +3,9 @@
 // SKM arbeitet mit klassischen Konten (G) und muxed Konten (M). Contract-Adressen (C) und
 // muxed Contract-Adressen (W, neu mit Protocol 30 / CAP-84) sind nur Ziele von Soroban- bzw.
 // SAC-Transfers, nicht von klassischen Payment-Operationen. Sie werden deshalb erkannt und mit
-// einer eigenen Meldung abgelehnt, statt als "ungueltig" zu gelten.
-//
-// TODO(P30-SDK): Sobald das Protocol-30-SDK eingebunden ist, W ueber die SDK-StrKey-Validierung
-// pruefen (inkl. Checksumme). Bis dahin reicht Praefix + Laenge + Alphabet, da W-Adressen hier
-// ausschliesslich abgelehnt und nie verwendet werden.
+// einer eigenen Meldung abgelehnt, statt als "ungueltig" zu gelten. Alle Typen werden ueber
+// StrKey des SDK geprueft, inkl. Checksumme.
 import { StrKey } from '@stellar/stellar-sdk';
-
-// 1 Versionsbyte + 32 Byte Contract-ID + 8 Byte Mux-ID + 2 Byte CRC = 43 Byte -> 69 Zeichen Base32
-const MUXED_CONTRACT_RE = /^W[A-Z2-7]{68}$/;
 
 /**
  * @param {unknown} input
@@ -22,8 +16,8 @@ export function classifyStellarAddress(input) {
   if (!v) return 'invalid';
   if (StrKey.isValidEd25519PublicKey(v)) return 'account';
   if (StrKey.isValidMed25519PublicKey(v)) return 'muxed';
-  if (typeof StrKey.isValidContract === 'function' && StrKey.isValidContract(v)) return 'contract';
-  if (MUXED_CONTRACT_RE.test(v)) return 'muxedContract';
+  if (StrKey.isValidContract(v)) return 'contract';
+  if (StrKey.isValidMuxedContract(v)) return 'muxedContract';
   return 'invalid';
 }
 

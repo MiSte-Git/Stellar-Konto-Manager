@@ -4,7 +4,7 @@ const { Keypair } = require('@stellar/stellar-sdk');
 const { createChallenge, consumeChallenge, verifyChallengeSignature } = require('../services/challengeStore.js');
 
 function sign(keypair, challengeB64) {
-  return keypair.sign(Buffer.from(challengeB64, 'base64')).toString('base64');
+  return Buffer.from(keypair.sign(Buffer.from(challengeB64, 'base64'))).toString('base64');
 }
 
 test('createChallenge returns a base64 nonce with a ~60s expiry', () => {

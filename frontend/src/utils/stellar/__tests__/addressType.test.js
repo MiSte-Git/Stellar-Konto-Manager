@@ -22,6 +22,7 @@ describe('classifyStellarAddress', () => {
     ['C', C, 'contract'],
     ['W', W, 'muxedContract'],
     ['C mit falscher Checksumme', C.slice(0, -1) + 'A', 'invalid'],
+    ['W mit falscher Checksumme', W.slice(0, -1) + 'A', 'invalid'],
     ['W zu kurz', W.slice(0, -1), 'invalid'],
     ['W kleingeschrieben', W.toLowerCase(), 'invalid'],
     ['W mit Leerzeichen', ` ${W}`, 'invalid'],

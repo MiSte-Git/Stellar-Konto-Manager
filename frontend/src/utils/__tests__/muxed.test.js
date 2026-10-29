@@ -1,6 +1,7 @@
 // @vitest-environment node
 import { describe, expect, it } from 'vitest';
 import { StrKey } from '@stellar/stellar-sdk';
+import { Buffer } from 'buffer';
 import { buildMuxedAddress } from '../muxed.js';
 
 const BASE_KEY = 'GATHPDLDMA5UAHHUUBFAQNW7B3573IUMEGPZGXMT25CNUPY4BOYFAV7F';
@@ -11,7 +12,7 @@ describe('buildMuxedAddress', () => {
     expect(m.startsWith('M')).toBe(true);
     expect(StrKey.isValidMed25519PublicKey(m)).toBe(true);
 
-    const decoded = StrKey.decodeMed25519PublicKey(m);
+    const decoded = Buffer.from(StrKey.decodeMed25519PublicKey(m));
     const rawG = StrKey.decodeEd25519PublicKey(BASE_KEY);
     expect(decoded.subarray(0, 32).equals(rawG)).toBe(true);
     expect(decoded.subarray(32).readBigUInt64BE()).toBe(12345n);
@@ -19,14 +20,14 @@ describe('buildMuxedAddress', () => {
 
   it('accepts id 0 (the minimum valid uint64)', () => {
     const m = buildMuxedAddress(BASE_KEY, 0);
-    const decoded = StrKey.decodeMed25519PublicKey(m);
+    const decoded = Buffer.from(StrKey.decodeMed25519PublicKey(m));
     expect(decoded.subarray(32).readBigUInt64BE()).toBe(0n);
   });
 
   it('accepts the maximum uint64 id (2^64 - 1)', () => {
     const max = '18446744073709551615';
     const m = buildMuxedAddress(BASE_KEY, max);
-    const decoded = StrKey.decodeMed25519PublicKey(m);
+    const decoded = Buffer.from(StrKey.decodeMed25519PublicKey(m));
     expect(decoded.subarray(32).readBigUInt64BE()).toBe(18446744073709551615n);
   });
 

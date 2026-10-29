@@ -61,7 +61,7 @@ Local-first Stellar Wallet & Account Manager: Trustlines, Zahlungen, Muxed Accou
 - Security-Header (Content-Security-Policy, HSTS, Referrer-Policy, Permissions-Policy, nosniff, X-Frame-Options) kommen aus einer Quelle: `services/securityHeaders.js`. Daraus erzeugt das Vite-Plugin in `frontend/vite.config.js` beim Build `dist/.htaccess` aus `frontend/.htaccess.template` (SPA-Rewrite plus Header, Base aus `VITE_BASE`), `vite preview` bekommt dieselben Header, `server.js` setzt die API-Header. `api/securityHeaders.php` ist der PHP-Zwilling für die API (Parität per Test). Der Vite-Dev-Server läuft bewusst ohne CSP (HMR). `VITE_CSP_REPORT_ONLY=1` beim Build setzt `Content-Security-Policy-Report-Only` statt der scharfen CSP.
 
 ## Installation & Start (lokal)
-- Voraussetzungen: Node.js 22+ (ab `@stellar/stellar-sdk` 16 erforderlich), npm, moderner Browser.
+- Voraussetzungen: Node.js 22.12+ (ab `@stellar/stellar-sdk` 17 erforderlich), npm, moderner Browser.
 - Entwicklung (Dev-Server, Hot-Reload), Arbeitsverzeichnis: Projekt-Root:
   ```bash
   git clone https://github.com/MiSte-Git/Stellar-Trustline-Manager.git
@@ -151,10 +151,10 @@ Local-first Stellar Wallet & Account Manager: Trustlines, Zahlungen, Muxed Accou
   ];
   ```
   Ohne diese Datei antworten `bugreport.php` und `health.php` mit `missing_config`.
-- Abhängigkeiten: Composer + PHP (empfohlen PHP 8.1+ mit den Extensions `curl`, `gmp`, `bcmath`, `dom`, `intl`, `sodium`/`libsodium`, `openssl`). Auf Debian z. B.:
+- Abhängigkeiten: Composer + PHP 8.1+ (Pflicht ab `soneso/stellar-php-sdk` 1.16) mit den Extensions `curl`, `gmp`, `bcmath`, `mbstring`, `dom`, `intl`, `sodium`/`libsodium`, `openssl`. Auf Debian z. B.:
   ```bash
   sudo apt update
-  sudo apt install php-cli php-curl php-gmp php-bcmath php-intl composer
+  sudo apt install php-cli php-curl php-gmp php-bcmath php-mbstring php-intl composer
   cd /path/to/project/api
   composer install
   ```

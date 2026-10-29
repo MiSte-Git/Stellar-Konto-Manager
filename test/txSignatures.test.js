@@ -96,9 +96,9 @@ test('end-to-end: a garbage signature merged in from an incoming XDR never survi
   incoming.sign(signerB);
   incoming.signatures.push(garbageSignature());
 
-  const existingKeys = new Set(target.signatures.map((s) => `${s.hint().toString('base64')}:${s.signature().toString('base64')}`));
+  const existingKeys = new Set(target.signatures.map((s) => signatureKey(s)));
   incoming.signatures.forEach((sig) => {
-    const key = `${sig.hint().toString('base64')}:${sig.signature().toString('base64')}`;
+    const key = signatureKey(sig);
     if (!existingKeys.has(key)) {
       target.signatures.push(sig);
       existingKeys.add(key);
@@ -210,15 +210,20 @@ function v17Wrapper(bytes) {
   return { toBytes: () => raw, toString: () => Buffer.from(raw).toString('hex') };
 }
 function v17Signature(sig) {
-  return { hint: v17Wrapper(sig.hint()), signature: v17Wrapper(sig.signature()) };
+  const { hint, signature } = decoratedSignatureBytes(sig);
+  return { hint: v17Wrapper(hint), signature: v17Wrapper(signature) };
+}
+function rawBytes(value) {
+  return value instanceof Uint8Array ? value : value.toBytes();
 }
 
-test('signatureKey entspricht unter v16 dem bisherigen hint:signature in base64', () => {
+test('signatureKey liefert hint:signature in base64', () => {
   const kp = Keypair.random();
   const tx = buildTx(kp);
   tx.sign(kp);
   const sig = tx.signatures[0];
-  assert.equal(signatureKey(sig), `${sig.hint().toString('base64')}:${sig.signature().toString('base64')}`);
+  const expected = `${Buffer.from(rawBytes(kp.signatureHint())).toString('base64')}:${Buffer.from(kp.sign(tx.hash())).toString('base64')}`;
+  assert.equal(signatureKey(sig), expected);
 });
 
 test('signatureKey liefert fuer v16- und v17-Form denselben Schluessel', () => {
