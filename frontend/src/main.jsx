@@ -541,6 +541,9 @@ function Main() {
       const v = (typeof e?.detail === 'string') ? e.detail : (window.localStorage?.getItem('SKM_NETWORK') || 'PUBLIC');
       setDevTestnet(v === 'TESTNET');
       setInfoMessage('');
+      // Fehler des vorherigen Netzes (z. B. Konto nicht gefunden) gilt nach dem Wechsel nicht mehr
+      setError('');
+      setNotFound(false);
       try { if (sourcePublicKey) fetchXlmBalanceFor(sourcePublicKey, v === 'TESTNET' ? 'TESTNET' : 'PUBLIC'); } catch { /* noop */ }
       // Invalidate trustlines cache owner on network change
       setTrustlinesOwner('');
