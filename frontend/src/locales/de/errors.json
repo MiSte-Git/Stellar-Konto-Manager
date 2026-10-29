@@ -64,6 +64,24 @@
       },
       "trustlines": {
         "invalidInput": "Ungültige Eingabe"
+      },
+      "liquidity": {
+        "invalidInput": "Die Angaben für die Pool-Transaktion sind unvollständig oder ungültig.",
+        "removeTrustPartial": "Die Pool-Trustline kann nur entfernt werden, wenn alle Pool Shares abgehoben werden.",
+        "alreadySent": "Diese Transaktion wurde in diesem Vorgang bereits gesendet; ein zweites Senden wurde verhindert.",
+        "op_underfunded": "Das Guthaben reicht für diese Pool-Operation nicht aus (op_underfunded).",
+        "op_bad_price": "Der Pool-Preis lag beim Ausführen außerhalb der bestätigten Preisgrenzen (op_bad_price).",
+        "op_line_full": "Eine Trustline hat nicht genug Platz für den Betrag (op_line_full).",
+        "op_no_trust": "Eine benötigte Trustline fehlt (op_no_trust).",
+        "op_not_authorized": "Eine Trustline ist vom Issuer nicht autorisiert (op_not_authorized).",
+        "op_low_reserve": "Das XLM-Guthaben reicht nicht für die zusätzliche Mindestreserve (op_low_reserve).",
+        "op_cannot_delete": "Die Trustline kann nicht entfernt werden, solange sie noch verwendet wird oder einen Bestand hat (CHANGE_TRUST_CANNOT_DELETE).",
+        "op_under_minimum": "Die Auszahlung läge unter den bestätigten Mindestbeträgen (op_under_minimum).",
+        "op_pool_full": "Der Pool kann diesen Betrag nicht mehr aufnehmen (op_pool_full).",
+        "op_malformed": "Die Pool-Operation ist ungültig aufgebaut (op_malformed).",
+        "op_trust_line_missing": "Für die Pool-Trustline fehlt die Trustline eines der beiden Assets (op_trust_line_missing).",
+        "op_not_aut_maintain_liabilities": "Eine Asset-Trustline ist nicht ausreichend autorisiert, um die Pool-Trustline anzulegen (op_not_aut_maintain_liabilities).",
+        "op_trustline_frozen": "Eine für diese Pool-Operation benötigte Trustline ist eingefroren (op_trustline_frozen)."
       }
     }
   },

@@ -8,7 +8,7 @@ import { formatPoolAmount, formatSharePercent } from './formatPoolAmount.js';
 
 const NOTICE = 'rounded-sm border px-3 py-2 text-xs';
 
-function PositionRow({ entry, locale, onShowDetails }) {
+function PositionRow({ entry, locale, onShowDetails, onWithdraw }) {
   const { t } = useTranslation(['liquidity']);
   const { pool, position, poolError, poolId } = entry;
   if (poolError) {
@@ -32,9 +32,20 @@ function PositionRow({ entry, locale, onShowDetails }) {
             <span className="ml-2 rounded-sm border border-gray-300 px-2 py-0.5 dark:border-gray-600">{t('liquidity:positions.zeroShares')}</span>
           )}
         </div>
-        <button type="button" onClick={() => onShowDetails(poolId)} className="text-blue-700 underline hover:no-underline dark:text-blue-300">
-          {t('liquidity:positions.showDetails')}
-        </button>
+        <div className="flex flex-wrap items-center gap-3">
+          <button type="button" onClick={() => onShowDetails(poolId)} className="text-blue-700 underline hover:no-underline dark:text-blue-300">
+            {t('liquidity:positions.showDetails')}
+          </button>
+          {onWithdraw && position.shares > 0n && (
+            <button
+              type="button"
+              onClick={() => onWithdraw(poolId)}
+              className="rounded-sm border border-blue-600 px-3 py-1 font-semibold text-blue-700 hover:bg-blue-50 dark:text-blue-300 dark:hover:bg-blue-950"
+            >
+              {t('liquidity:positions.withdraw')}
+            </button>
+          )}
+        </div>
       </div>
       <dl className="grid gap-2 sm:grid-cols-4">
         <div>
@@ -59,7 +70,7 @@ function PositionRow({ entry, locale, onShowDetails }) {
 }
 
 /** Listet die Pool-Positionen eines existierenden Kontos (Paar in kanonischer Reihenfolge A/B). */
-function PositionsList({ publicKey, network, onShowDetails }) {
+function PositionsList({ publicKey, network, onShowDetails, onWithdraw }) {
   const { t, i18n } = useTranslation(['liquidity']);
   const { loading, error, positions, reload } = usePoolPositions(publicKey, network);
   if (loading) return <p className="text-xs text-gray-600 dark:text-gray-300">{t('liquidity:positions.loading')}</p>;
@@ -78,7 +89,7 @@ function PositionsList({ publicKey, network, onShowDetails }) {
   return (
     <ul className="space-y-2">
       {positions.map((entry) => (
-        <PositionRow key={entry.poolId} entry={entry} locale={i18n.language} onShowDetails={onShowDetails} />
+        <PositionRow key={entry.poolId} entry={entry} locale={i18n.language} onShowDetails={onShowDetails} onWithdraw={onWithdraw} />
       ))}
     </ul>
   );
@@ -89,13 +100,13 @@ function PositionsList({ publicKey, network, onShowDetails }) {
  * erscheint die AccountGate (wie bei den anderen kontoabhaengigen Seiten);
  * der Bereich "Pool finden" bleibt davon unberuehrt.
  */
-export default function PoolPositions({ publicKey, notFound, accountLoading, network, onShowDetails }) {
+export default function PoolPositions({ publicKey, notFound, accountLoading, network, onShowDetails, onWithdraw, refreshToken = 0 }) {
   const { t } = useTranslation(['liquidity']);
   const netName = network === 'TESTNET' ? 'Testnet' : 'Mainnet';
   let body;
   if (accountLoading) body = <p className="text-xs text-gray-600 dark:text-gray-300">{t('liquidity:positions.loading')}</p>;
   else if (!publicKey || notFound) body = <AccountGate publicKey={publicKey} notFound={!!publicKey && notFound} netName={netName} />;
-  else body = <PositionsList key={`${network}:${publicKey}`} publicKey={publicKey} network={network} onShowDetails={onShowDetails} />;
+  else body = <PositionsList key={`${network}:${publicKey}:${refreshToken}`} publicKey={publicKey} network={network} onShowDetails={onShowDetails} onWithdraw={onWithdraw} />;
   return (
     <section className="rounded-sm border border-gray-200 bg-white p-3 dark:border-blue-900 dark:bg-blue-900/40" data-testid="pool-positions">
       <h2 className="mb-2 text-lg font-semibold">{t('liquidity:positions.title')}</h2>

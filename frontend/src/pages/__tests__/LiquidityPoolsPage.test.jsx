@@ -1,18 +1,41 @@
 import React from 'react';
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { I18nextProvider } from 'react-i18next';
+import { Account, Asset, Keypair, Networks } from '@stellar/stellar-sdk';
 import i18n from '../../i18n.js';
 import LiquidityPoolsPage from '../LiquidityPoolsPage.jsx';
+import { poolIdFor } from '../../utils/stellar/liquidityPools.js';
 
 const hoisted = vi.hoisted(() => ({
+  loadAccount: vi.fn(),
   accountCall: vi.fn(),
   poolByIdCall: vi.fn(),
   forAssetsCall: vi.fn(),
+  submit: vi.fn(),
+  collected: [],
+}));
+
+vi.mock('../../utils/stellar/submitTransactionSafely.js', async (importOriginal) => ({
+  ...(await importOriginal()),
+  submitTransactionSafely: (...args) => hoisted.submit(...args),
+}));
+
+// Schlanker Ersatz fuer das SecretKeyModal: liefert die vorbereiteten Signer.
+vi.mock('../../components/SecretKeyModal.jsx', () => ({
+  default: ({ onConfirm, onCancel }) => (
+    <div data-testid="secret-modal">
+      <button type="button" onClick={() => onConfirm(hoisted.collected)}>keys-ok</button>
+      <button type="button" onClick={onCancel}>keys-cancel</button>
+    </div>
+  ),
 }));
 
 vi.mock('../../utils/stellar/stellarUtils.js', async (importOriginal) => ({
   ...(await importOriginal()),
   getHorizonServer: () => ({
+    loadAccount: (id) => hoisted.loadAccount(id),
+    feeStats: async () => ({}),
+    root: async () => ({ network_passphrase: Networks.PUBLIC }),
     accounts: () => ({ accountId: (id) => ({ call: () => hoisted.accountCall(id) }) }),
     liquidityPools: () => ({
       liquidityPoolId: (id) => ({ call: () => hoisted.poolByIdCall(id) }),
@@ -25,7 +48,8 @@ const PK = 'GATHPDLDMA5UAHHUUBFAQNW7B3573IUMEGPZGXMT25CNUPY4BOYFAV7F';
 const PK2 = 'GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN';
 const USDC_ISSUER = 'GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN';
 const POOL_ID = 'a468d41d8e9b8f3c7209651608b74b7db7ac9952dcae0cdf24871d1d9c7b0088';
-const OTHER_POOL_ID = 'b'.repeat(64);
+// normalizeNativePool prueft die Pool-ID gegen die Assets, daher eine echte ID (XLM/EURC)
+const OTHER_POOL_ID = poolIdFor(Asset.native(), new Asset('EURC', USDC_ISSUER));
 
 const poolRecord = (id = POOL_ID, overrides = {}) => ({
   id,
@@ -89,7 +113,9 @@ describe('LiquidityPoolsPage', () => {
         { asset_type: 'liquidity_pool_shares', liquidity_pool_id: OTHER_POOL_ID, balance: '0.0000000' },
       ],
     });
-    hoisted.poolByIdCall.mockImplementation(async (id) => poolRecord(id));
+    hoisted.poolByIdCall.mockImplementation(async (id) => (id === OTHER_POOL_ID
+      ? poolRecord(id, { reserves: [{ asset: 'native', amount: '10.0000000' }, { asset: `EURC:${USDC_ISSUER}`, amount: '5.0000000' }] })
+      : poolRecord(id)));
     renderPage({ publicKey: PK });
     const rows = await screen.findAllByTestId('pool-position');
     expect(rows).toHaveLength(2);
@@ -210,5 +236,90 @@ describe('LiquidityPoolsPage', () => {
       </I18nextProvider>
     );
     await waitFor(() => expect(screen.queryByText(/Pool-Daten konnten nicht geladen werden/)).toBeNull());
+  });
+
+  it('sperrt Einzahlen ohne Konto und schliesst den Dialog bei Kontowechsel', async () => {
+    window.history.replaceState({}, '', `/trading/pools?pool=${POOL_ID}`);
+    hoisted.poolByIdCall.mockResolvedValue(poolRecord());
+    hoisted.accountCall.mockResolvedValue({ balances: [] });
+    hoisted.loadAccount.mockReturnValue(new Promise(() => {}));
+    const view = renderPage({ publicKey: '' });
+    expect(await screen.findByRole('button', { name: 'Einzahlen' })).toBeDisabled();
+    expect(screen.getByText('Zum Einzahlen wird ein existierendes Konto benötigt.')).toBeInTheDocument();
+
+    view.rerender(
+      <I18nextProvider i18n={i18n}>
+        <LiquidityPoolsPage network="PUBLIC" publicKey={PK} />
+      </I18nextProvider>
+    );
+    fireEvent.click(await screen.findByRole('button', { name: 'Einzahlen' }));
+    expect(await screen.findByTestId('deposit-dialog')).toBeInTheDocument();
+    view.rerender(
+      <I18nextProvider i18n={i18n}>
+        <LiquidityPoolsPage network="PUBLIC" publicKey={PK2} />
+      </I18nextProvider>
+    );
+    await waitFor(() => expect(screen.queryByTestId('deposit-dialog')).toBeNull());
+  });
+
+  it('zeigt das Ergebnis eines Submits, dessen Dialog beim Netzwechsel abgebaut wurde, ohne Pool-Suche im neuen Netz', async () => {
+    window.history.replaceState({}, '', `/trading/pools?pool=${POOL_ID}`);
+    const owner = Keypair.random();
+    const shareLine = { asset_type: 'liquidity_pool_shares', liquidity_pool_id: POOL_ID, balance: '25.0000000' };
+    const usdcLine = { asset_type: 'credit_alphanum4', asset_code: 'USDC', asset_issuer: USDC_ISSUER, balance: '0', limit: '1000', buying_liabilities: '0', selling_liabilities: '0', is_authorized: true };
+    hoisted.accountCall.mockResolvedValue({ balances: [{ asset_type: 'native', balance: '100' }, shareLine] });
+    hoisted.poolByIdCall.mockResolvedValue(poolRecord());
+    hoisted.loadAccount.mockImplementation(async () => Object.assign(new Account(owner.publicKey(), '1'), {
+      balances: [{ asset_type: 'native', balance: '100.0000000', selling_liabilities: '0' }, usdcLine, shareLine],
+      subentry_count: 3,
+      thresholds: { low_threshold: 0, med_threshold: 0, high_threshold: 0 },
+      signers: [{ key: owner.publicKey(), weight: 1, type: 'ed25519_public_key' }],
+    }));
+    hoisted.collected = [{ keypair: owner }];
+    let rejectSubmit;
+    hoisted.submit.mockReset();
+    hoisted.submit.mockImplementation(() => new Promise((_resolve, reject) => { rejectSubmit = reject; }));
+
+    const view = renderPage({ publicKey: owner.publicKey() });
+    // Pool aus ?pool= ist in der Pool-Ansicht geladen
+    expect(await screen.findByTestId('pool-facts')).toHaveTextContent(POOL_ID);
+    fireEvent.click(await screen.findByRole('button', { name: 'Abheben' }));
+    fireEvent.click(await screen.findByRole('button', { name: '50 %' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Weiter: Operationen prüfen' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Signieren und senden' }));
+    await act(async () => { fireEvent.click(await screen.findByText('keys-ok')); });
+    await waitFor(() => expect(hoisted.submit).toHaveBeenCalledTimes(1));
+
+    view.rerender(
+      <I18nextProvider i18n={i18n}>
+        <LiquidityPoolsPage network="TESTNET" publicKey={owner.publicKey()} />
+      </I18nextProvider>
+    );
+    await waitFor(() => expect(screen.queryByTestId('withdraw-dialog')).toBeNull());
+    const callsBefore = hoisted.accountCall.mock.calls.length;
+    const { AmbiguousSubmitResultError } = await import('../../utils/stellar/submitTransactionSafely.js');
+    await act(async () => { rejectSubmit(new AmbiguousSubmitResultError('feedface')); });
+
+    const note = await screen.findByTestId('liquidity-background-result');
+    expect(note).toHaveTextContent('Status unklar – nicht erneut senden');
+    expect(note).toHaveTextContent('feedface');
+    // Hinweis nennt Netz und Konto des Absendens, nicht das aktuelle Netz
+    const pk = owner.publicKey();
+    expect(note).toHaveTextContent(`Gesendet im Netz Mainnet vom Konto ${pk.slice(0, 8)}...${pk.slice(-8)}.`);
+    // Positionen werden neu geladen
+    await waitFor(() => expect(hoisted.accountCall.mock.calls.length).toBeGreaterThan(callsBefore));
+    // keine Pool-Suche im neuen Netz (die Pool-Ansicht bleibt nach dem Netzwechsel leer)
+    expect(screen.queryByTestId('pool-facts')).toBeNull();
+    expect(screen.queryByTestId('pool-not-found')).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'Hinweis schließen' }));
+    expect(screen.queryByTestId('liquidity-background-result')).toBeNull();
+  });
+
+  it('sperrt Einzahlen bei leerem Pool', async () => {
+    window.history.replaceState({}, '', `/trading/pools?pool=${POOL_ID}`);
+    hoisted.poolByIdCall.mockResolvedValue(poolRecord(POOL_ID, { total_shares: '0.0000000', reserves: [{ asset: 'native', amount: '0.0000000' }, { asset: `USDC:${USDC_ISSUER}`, amount: '0.0000000' }] }));
+    hoisted.accountCall.mockResolvedValue({ balances: [] });
+    renderPage({ publicKey: PK });
+    expect(await screen.findByRole('button', { name: 'Einzahlen' })).toBeDisabled();
   });
 });

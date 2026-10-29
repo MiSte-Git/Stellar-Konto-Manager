@@ -1217,6 +1217,9 @@ def main():
     # lokale Variablen derselben Funktion weiterhin gültig - kein erneutes Lesen,
     # das würde einen aus Keyring/Eingabe stammenden Key stillschweigend verwerfen.
     counters: Dict[str, int] = {"skippedOriginalKeysCount": 0, "copiedOriginalKeysCount": 0}
+    # Abbrüche pro Sprache/Namespace (z.B. DeepL HTTP 456 Kontingent erschöpft) sammeln,
+    # damit sie am Ende gesammelt ausgegeben werden und nicht im Log untergehen.
+    aborts: list[tuple[str, str, str]] = []
 
     # Force-Keys einsammeln (dot-Pfade, können Subtrees sein)
     force_keys_raw = args.force_keys or []
@@ -1341,6 +1344,7 @@ def main():
             _save_manifest("en", "de", man_en)
         except Exception as e:
             print(f"❌ Abbruch für Sprache en / Namespace {ns_name}: {e}")
+            aborts.append(("en", ns_name, f"{e} (Folgesprachen für diesen Namespace übersprungen)"))
             continue
 
         # Phase B: en -> andere (hash-basiert, Pivot EN-NS)
@@ -1422,6 +1426,7 @@ def main():
                 _save_manifest(lang, "en", man_lang)
             except Exception as e:
                 print(f"❌ Abbruch für Sprache {lang} / Namespace {ns_name}: {e}")
+                aborts.append((lang, ns_name, str(e)))
                 continue
 
     print(f"\nZusammenfassung Namespaces: {{'skippedOriginalKeysCount': {counters.get('skippedOriginalKeysCount', 0)}, 'copiedOriginalKeysCount': {counters.get('copiedOriginalKeysCount', 0)}, 'preservedSpecialCharKeys': {counters.get('preservedSpecialCharKeys', 0)}, 'untranslatedEchoKeys': {counters.get('untranslatedEchoKeys', 0)}, 'lostPlaceholderKeys': {counters.get('lostPlaceholderKeys', 0)}}}")
@@ -1445,6 +1450,15 @@ def main():
             "Fachbegriff-Platzhalter verändert hat - siehe die 'Platzhalter verloren'-Zeilen oben. "
             "Diese Keys werden beim nächsten Lauf automatisch erneut versucht."
         )
+    if aborts:
+        print(f"\n❌ {len(aborts)} Abbruch/Abbrüche während der Verarbeitung:")
+        for a_lang, a_ns, a_err in aborts:
+            print(f"   - {a_lang}/{a_ns}: {a_err}")
+        if any("456" in a_err for _, _, a_err in aborts):
+            print("   Hinweis: DeepL HTTP 456 = Kontingent erschöpft. Nach Aufstockung bzw. Reset erneut starten.")
+        print("   Betroffene Keys wurden nicht ins Manifest übernommen und werden beim nächsten Lauf erneut versucht.")
+        print("\n⚠️  Namespaced-Verarbeitung mit Fehlern abgeschlossen.")
+        sys.exit(1)
     print("\n✅ Namespaced-Verarbeitung abgeschlossen.")
 
 

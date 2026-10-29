@@ -1,4 +1,4 @@
-import { fromStroops } from '../../utils/stellar/liquidityPools.js';
+import { fromStroops, toStroops } from '../../utils/stellar/liquidityPools.js';
 
 /**
  * Stroops (BigInt) -> lokalisierte Anzeige ohne Float-Umweg: Tausender-
@@ -25,4 +25,28 @@ export function formatSharePercent(value, locale) {
   } catch {
     return String(value);
   }
+}
+
+/**
+ * Preis { n, d } fuer die Anzeige (7 signifikante Stellen). invert zeigt d/n,
+ * z. B. fuer die Nutzerreihenfolge B/A. Nur Anzeige: die Grenzen selbst
+ * bleiben als exakte Brueche erhalten.
+ */
+export function formatPrice(price, locale, invert = false) {
+  if (!price || !price.n || !price.d) return '—';
+  const value = invert ? price.d / price.n : price.n / price.d;
+  try {
+    return new Intl.NumberFormat(locale, { maximumSignificantDigits: 7 }).format(value);
+  } catch {
+    return String(value);
+  }
+}
+
+const AMOUNT_INPUT_RE = /^\d+(?:\.\d{1,7})?$/;
+
+/** Nutzereingabe ('1,5' oder '1.5', max. 7 Nachkommastellen) -> Stroop-BigInt oder null. */
+export function parseAmountInput(value) {
+  const str = String(value ?? '').trim().replace(',', '.');
+  if (!AMOUNT_INPUT_RE.test(str)) return null;
+  return toStroops(str);
 }

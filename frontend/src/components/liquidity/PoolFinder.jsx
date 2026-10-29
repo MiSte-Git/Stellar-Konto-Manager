@@ -26,6 +26,8 @@ export default function PoolFinder({
   onLookupPair,
   lastLookupMode,
   firstAsset,
+  hasAccount = false,
+  onDeposit,
 }) {
   const { t } = useTranslation(['liquidity', 'trading', 'common']);
   const [kindFirst, setKindFirst] = useState('native');
@@ -139,7 +141,7 @@ export default function PoolFinder({
           </div>
         )}
         {lookup.status === 'found' && lookup.pool && (
-          <PoolFacts pool={lookup.pool} firstAsset={firstAsset} network={network} />
+          <PoolFacts pool={lookup.pool} firstAsset={firstAsset} network={network} hasAccount={hasAccount} onDeposit={onDeposit} />
         )}
       </div>
     </section>

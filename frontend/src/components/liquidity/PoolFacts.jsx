@@ -24,7 +24,7 @@ function Fact({ label, children, wide = false }) {
  * "Ziel-Asset eines Token-zu-Token-Tauschs"; hier werden die beiden Slots
  * fuer die zwei Pool-Assets genutzt.
  */
-export default function PoolFacts({ pool, firstAsset, network }) {
+export default function PoolFacts({ pool, firstAsset, network, hasAccount = false, onDeposit }) {
   const { t, i18n } = useTranslation(['liquidity', 'trading', 'common']);
   const locale = i18n.language;
   const [copied, setCopied] = useState(false);
@@ -83,6 +83,20 @@ export default function PoolFacts({ pool, firstAsset, network }) {
           <p className="mt-3 rounded-sm border border-gray-200 bg-gray-50 px-3 py-2 text-xs text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200">
             {t('liquidity:facts.emptyPool')}
           </p>
+        )}
+        {onDeposit && (
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={() => onDeposit(pool, firstAsset)}
+              disabled={!hasAccount || pool.totalShares === 0n}
+              className="rounded-sm bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
+            >
+              {t('liquidity:facts.deposit')}
+            </button>
+            {!hasAccount && <span className="text-xs text-gray-600 dark:text-gray-300">{t('liquidity:facts.depositNeedsAccount')}</span>}
+            {hasAccount && pool.totalShares === 0n && <span className="text-xs text-gray-600 dark:text-gray-300">{t('liquidity:facts.depositEmptyPool')}</span>}
+          </div>
         )}
       </div>
       <div className="grid gap-3 lg:grid-cols-2">

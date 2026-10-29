@@ -3,7 +3,7 @@
   "swapLink": "Pool-Ansicht",
   "page": {
     "title": "Liquidity Pools",
-    "intro": "Native Stellar Liquidity Pools (constant product, Fee 0,30 %). Diese Ansicht zeigt nur Daten aus Horizon an. Einzahlen und Abheben sind hier noch nicht möglich.",
+    "intro": "Native Stellar Liquidity Pools (constant product, Fee 0,30 %). Angezeigt werden Daten aus Horizon. Einzahlen und Abheben werden direkt mit deinen Keys signiert; Multisig-Jobs sind hier noch nicht möglich.",
     "network": "Netzwerk"
   },
   "source": {
@@ -24,7 +24,8 @@
     "zeroShares": "Trustline ohne Pool Shares (Bestand 0)",
     "poolNotFound": "Pool {{id}} wurde in Horizon nicht gefunden.",
     "poolLoadFailed": "Daten für Pool {{id}} konnten nicht geladen werden.",
-    "showDetails": "Pool-Details anzeigen"
+    "showDetails": "Pool-Details anzeigen",
+    "withdraw": "Abheben"
   },
   "finder": {
     "title": "Pool finden",
@@ -66,6 +67,87 @@
     "copied": "Kopiert",
     "emptyPool": "Dieser Pool enthält derzeit keine Liquidität (Total Pool Shares 0).",
     "assetFacts": "Fakten zu {{asset}}",
-    "nativeAsset": "XLM ist das native Asset des Netzwerks und hat keinen Issuer."
+    "nativeAsset": "XLM ist das native Asset des Netzwerks und hat keinen Issuer.",
+    "deposit": "Einzahlen",
+    "depositNeedsAccount": "Zum Einzahlen wird ein existierendes Konto benötigt.",
+    "depositEmptyPool": "Einzahlen in einen Pool ohne Liquidität ist hier nicht möglich."
+  },
+  "dialog": {
+    "close": "Schließen",
+    "loading": "Konto- und Pool-Daten werden geladen …",
+    "loadFailed": "Konto- oder Pool-Daten konnten nicht geladen werden.",
+    "poolIdMismatch": "Die von Horizon gelieferten Pool-Daten passen nicht zur Pool-ID. Es wurde nichts gesendet.",
+    "slippage": "Slippage-Toleranz in % (0,1 bis 5)",
+    "slippageRange": "Bitte eine Slippage zwischen 0,1 und 5 % mit höchstens 2 Nachkommastellen eingeben.",
+    "invalidAmount": "Bitte einen Betrag größer 0 mit höchstens 7 Nachkommastellen eingeben.",
+    "fee": "Netzwerk-Fee (höchstens)",
+    "review": "Weiter: Operationen prüfen",
+    "operations": "Diese Operationen werden signiert:",
+    "legend": "Asset A = {{a}}, Asset B = {{b}} (kanonische Reihenfolge des Pools)",
+    "sign": "Signieren und senden",
+    "back": "Zurück zur Eingabe",
+    "checksChanged": "Konto oder Pool haben sich seit der Prüfung geändert. Bitte die Werte erneut prüfen.",
+    "networkMismatch": "Der Horizon-Server gehört nicht zum gewählten Netzwerk. Es wurde nichts gesendet.",
+    "success": "Transaktion erfolgreich gesendet.",
+    "ambiguousTitle": "Status unklar – nicht erneut senden",
+    "ambiguousBody": "Die Transaktion konnte nicht eindeutig bestätigt werden (Zeitüberschreitung oder Serverfehler). Bitte den Transaktions-Hash im Explorer prüfen, bevor du es erneut versuchst."
+  },
+  "background": {
+    "success": "Eine Pool-Transaktion wurde nach dem Schließen des Dialogs erfolgreich gesendet.",
+    "failed": "Eine Pool-Transaktion ist nach dem Schließen des Dialogs fehlgeschlagen:",
+    "dismiss": "Hinweis schließen",
+    "context": "Gesendet im Netz {{network}} vom Konto {{account}}."
+  },
+  "deposit": {
+    "title": "Liquidität einzahlen",
+    "riskNote": "Hinweis: Pool Shares bilden einen Anteil an beiden Assets ab. Ändert sich der Kurs der Assets zueinander, ändert sich auch die Zusammensetzung deines Anteils (Impermanent Loss); zusätzlich trägst du das Kursrisiko beider Assets. Die Fee von 0,30 % je Tausch fließt in den Pool.",
+    "inputSide": "Betrag eingeben für",
+    "amount": "Betrag {{asset}}",
+    "currentPrice": "Aktueller Pool-Preis {{pair}}",
+    "provide": "Einzahlung {{asset}} (höchstens)",
+    "expectedShares": "Erwartete Pool Shares (Richtwert, kann bei Kursbewegung innerhalb der Slippage niedriger ausfallen)",
+    "priceBounds": "Zulässiger Preis {{pair}}",
+    "reserveIncrease": "Zusätzliche Mindestreserve",
+    "emptyPool": "Dieser Pool enthält keine Liquidität. Einzahlen (Pool eröffnen) ist hier nicht möglich.",
+    "priceChanged": "Der Pool-Preis hat sich seit der Bestätigung geändert und liegt außerhalb der bestätigten Grenzen. Es wurde nichts gesendet. Bitte die neuen Werte prüfen.",
+    "status": {
+      "emptyPool": "Dieser Pool enthält keine Liquidität.",
+      "amountTooSmall": "Der Betrag ist zu klein: Gegenseite oder Pool Shares wären 0, oder die Rundung läge außerhalb der Preisgrenzen.",
+      "priceUnrepresentable": "Der Pool-Preis lässt sich nicht als Stellar-Preis (int32-Bruch) mit dieser Slippage darstellen."
+    }
+  },
+  "withdraw": {
+    "title": "Liquidität abheben",
+    "balance": "Deine Pool Shares",
+    "noShares": "Dieses Konto hält keine Pool Shares in diesem Pool.",
+    "mode": {
+      "percent": "Prozent",
+      "shares": "Pool Shares"
+    },
+    "percent": "Anteil in %",
+    "shares": "Pool Shares",
+    "tooMany": "Das sind mehr Pool Shares, als das Konto hält.",
+    "sharesToWithdraw": "Abzuhebende Pool Shares",
+    "expected": "Erwartet {{asset}}",
+    "minimum": "Mindestens {{asset}}",
+    "removeTrust": "Pool-Trustline danach entfernen. Dadurch wird 1 XLM Mindestreserve frei.",
+    "priceChanged": "Die Pool-Reserven haben sich geändert; die Auszahlung läge unter den bestätigten Mindestbeträgen. Es wurde nichts gesendet. Bitte die neuen Werte prüfen.",
+    "status": {
+      "emptyPool": "Dieser Pool enthält keine Liquidität.",
+      "amountTooSmall": "Der Betrag ist zu klein: Die Auszahlung wäre 0.",
+      "exceedsPool": "Der Betrag übersteigt die Total Pool Shares."
+    }
+  },
+  "checks": {
+    "insufficientBalance": "Das verfügbare Guthaben in {{asset}} reicht nicht (nach Verbindlichkeiten, Mindestreserve und Fee).",
+    "insufficientXlmReserve": "Das XLM-Guthaben reicht nicht für die zusätzliche Mindestreserve und die Fee.",
+    "insufficientXlmFee": "Das XLM-Guthaben reicht nicht für die Fee.",
+    "missingTrustNoBalance": "Für {{asset}} besteht keine Trustline, das Konto hält dieses Asset also nicht.",
+    "authRequiredMissingTrust": "Der Issuer von {{asset}} verlangt eine Autorisierung (auth_required). Eine neue Trustline ist erst nach Freigabe durch den Issuer nutzbar; Einzahlen ist daher nicht in einem Schritt möglich.",
+    "notAuthorized": "Die Trustline für {{asset}} ist vom Issuer nicht autorisiert.",
+    "clawbackEnabled": "Für {{asset}} ist Clawback aktiv. Der Issuer kann Beträge zurückfordern, auch Auszahlungen aus dem Pool.",
+    "insufficientShares": "Das Konto hält weniger Pool Shares als angegeben.",
+    "missingAssetTrust": "Für {{asset}} besteht keine Trustline; die Auszahlung kann nicht gutgeschrieben werden.",
+    "lineFull": "Die Trustline für {{asset}} hat nicht genug Platz bis zum Limit (op_line_full)."
   }
 }
