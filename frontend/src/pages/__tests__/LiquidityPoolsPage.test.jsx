@@ -222,6 +222,79 @@ describe('LiquidityPoolsPage', () => {
     expect(text.indexOf('Reserve USDC')).toBeLessThan(text.indexOf('Reserve XLM'));
   });
 
+  it('setzt den Paar-Fehler zurueck, sobald sich am Asset-Paar etwas aendert', async () => {
+    renderPage({ publicKey: '' });
+    const submit = () => fireEvent.click(screen.getByRole('button', { name: 'Pool laden' }));
+    const pairError = 'Bitte für beide Seiten ein Asset wählen.';
+
+    // Art wechseln (erste Seite XLM -> Token)
+    submit();
+    expect(screen.getByText(pairError)).toBeInTheDocument();
+    fireEvent.click(screen.getAllByLabelText('Token')[0]);
+    expect(screen.queryByText(pairError)).toBeNull();
+
+    // Suche gestartet (auch eine ungueltige Eingabe zaehlt)
+    submit();
+    expect(screen.getByText(pairError)).toBeInTheDocument();
+    const [firstSearch] = screen.getAllByLabelText('Token suchen');
+    fireEvent.change(firstSearch, { target: { value: '!!' } });
+    fireEvent.click(screen.getAllByRole('button', { name: 'Suchen' })[0]);
+    expect(screen.queryByText(pairError)).toBeNull();
+
+    // Token gewaehlt (exakte Eingabe waehlt den Treffer direkt)
+    submit();
+    expect(screen.getByText(pairError)).toBeInTheDocument();
+    fireEvent.change(firstSearch, { target: { value: `USDC:${USDC_ISSUER}` } });
+    await act(async () => { fireEvent.click(screen.getAllByRole('button', { name: 'Suchen' })[0]); });
+    expect(await screen.findByText('Gewähltes Token')).toBeInTheDocument();
+    expect(screen.queryByText(pairError)).toBeNull();
+
+    // zweite Seite: zweimal dasselbe Asset, dann Art der zweiten Seite wechseln
+    fireEvent.click(screen.getAllByLabelText('XLM')[1]);
+    fireEvent.click(screen.getAllByLabelText('XLM')[0]);
+    submit();
+    expect(screen.getByText('Bitte zwei verschiedene Assets wählen.')).toBeInTheDocument();
+    fireEvent.click(screen.getAllByLabelText('Token')[1]);
+    expect(screen.queryByText('Bitte zwei verschiedene Assets wählen.')).toBeNull();
+  });
+
+  it('setzt beim Moduswechsel Fehler und gefundenen Pool zurueck', async () => {
+    renderPage({ publicKey: '' });
+    // Paar-Fehler verschwindet beim Wechsel zu Pool-ID und kommt nicht zurueck
+    fireEvent.click(screen.getByRole('button', { name: 'Pool laden' }));
+    expect(screen.getByText('Bitte für beide Seiten ein Asset wählen.')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('tab', { name: 'Pool-ID' }));
+    expect(screen.queryByText('Bitte für beide Seiten ein Asset wählen.')).toBeNull();
+
+    // ID-Fehler verschwindet beim Wechsel zum Asset-Paar
+    fireEvent.change(screen.getByLabelText('Pool-ID (64 Hex-Zeichen)'), { target: { value: 'abc' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Pool laden' }));
+    expect(await screen.findByText(/keine gültige Pool-ID/)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('tab', { name: 'Asset-Paar' }));
+    expect(screen.queryByText(/keine gültige Pool-ID/)).toBeNull();
+    fireEvent.click(screen.getByRole('tab', { name: 'Pool-ID' }));
+    expect(screen.queryByText(/keine gültige Pool-ID/)).toBeNull();
+    expect(screen.queryByText('Bitte für beide Seiten ein Asset wählen.')).toBeNull();
+  });
+
+  it('laesst einen gefundenen Pool beim Moduswechsel verschwinden', async () => {
+    window.history.replaceState({}, '', `/trading/pools?pool=${POOL_ID}`);
+    hoisted.poolByIdCall.mockResolvedValue(poolRecord());
+    renderPage({ publicKey: '' });
+    expect(await screen.findByTestId('pool-facts')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('tab', { name: 'Asset-Paar' }));
+    expect(screen.queryByTestId('pool-facts')).toBeNull();
+  });
+
+  it('meldet eine leere Pool-ID mit eigenem Hinweis', () => {
+    renderPage({ publicKey: '' });
+    fireEvent.click(screen.getByRole('tab', { name: 'Pool-ID' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Pool laden' }));
+    expect(screen.getByText('Bitte eine Pool-ID eingeben.')).toBeInTheDocument();
+    expect(screen.queryByText(/keine gültige Pool-ID/)).toBeNull();
+    expect(hoisted.poolByIdCall).not.toHaveBeenCalled();
+  });
+
   it('meldet ein Paar aus zweimal XLM, ohne Horizon zu fragen', () => {
     renderPage({ publicKey: '' });
     const [, secondXlmRadio] = screen.getAllByLabelText('XLM');

@@ -368,5 +368,22 @@
       "body": "Die letzte Transaktion konnte serverseitig nicht eindeutig bestätigt werden (Zeitüberschreitung oder Serverfehler). Bitte prüfen Sie den Transaktions-Hash im Explorer, bevor Sie es erneut versuchen.",
       "acknowledge": "Status geprüft – Aktionen wieder freigeben"
     }
+  },
+  "assetPicker": {
+    "results_one": "{{count}} Token gefunden",
+    "results_other": "{{count}} Tokens gefunden",
+    "resultsWithCode_one": "{{count}} Token mit dem Code {{code}} gefunden",
+    "resultsWithCode_other": "{{count}} Tokens mit dem Code {{code}} gefunden",
+    "sameCodeHint": "Gleicher Code heißt nicht gleiches Token. Ein Token ist nur durch Code und Issuer eindeutig. Prüfe den Issuer, bevor du wählst.",
+    "clickToSelect": "Treffer anklicken, um ein Token zu wählen.",
+    "issuer": "Issuer",
+    "homeDomain": "Home-Domain",
+    "copyIssuer": "Issuer kopieren",
+    "copied": "Kopiert",
+    "trustlineCount_one": "{{formatted}} Trustline",
+    "trustlineCount_other": "{{formatted}} Trustlines",
+    "trustlineCountUnknown": "Trustlines: —",
+    "trustlineCountTitle": "Anzahl Konten mit Trustline für dieses Asset",
+    "selectedMark": "gewählt"
   }
 }

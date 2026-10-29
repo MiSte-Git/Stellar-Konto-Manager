@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Asset } from '@stellar/stellar-sdk';
 import { assetFromSearchResult } from '../trading/assetSearchUtils.js';
@@ -36,6 +36,28 @@ export default function PoolFinder({
   const pickerFirst = useAssetPickerSearch({ network, t });
   const pickerSecond = useAssetPickerSearch({ network, t });
 
+  // Jede Aenderung am Asset-Paar macht einen alten Paar-Fehler hinfaellig:
+  // Art (XLM/Token), Suche gestartet, Token gewaehlt oder abgewaehlt, je Seite.
+  useEffect(() => {
+    setPairError('');
+  }, [kindFirst, kindSecond, pickerFirst.selected, pickerSecond.selected]);
+  const withPairReset = (picker) => ({
+    ...picker,
+    search: () => {
+      setPairError('');
+      return picker.search();
+    },
+  });
+
+  // Moduswechsel: Fehler und Ergebnis des anderen Modus verwerfen.
+  const changeMode = (value) => {
+    if (value !== mode) {
+      setPairError('');
+      lookup.reset();
+    }
+    onModeChange(value);
+  };
+
   const resolveSide = (kind, picker) => {
     if (kind === 'native') return Asset.native();
     return picker.selected ? assetFromSearchResult(picker.selected) : null;
@@ -69,7 +91,7 @@ export default function PoolFinder({
             type="button"
             role="tab"
             aria-selected={mode === value}
-            onClick={() => onModeChange(value)}
+            onClick={() => changeMode(value)}
             className={`rounded-sm border px-3 py-1.5 text-xs font-semibold ${
               mode === value
                 ? 'border-blue-600 bg-blue-600 text-white'
@@ -84,8 +106,8 @@ export default function PoolFinder({
       {mode === 'pair' ? (
         <div className="space-y-3">
           <div className="grid gap-3 lg:grid-cols-2">
-            <PoolAssetInput name="pool-asset-first" label={t('liquidity:finder.assetFirst')} kind={kindFirst} onKindChange={setKindFirst} picker={pickerFirst} />
-            <PoolAssetInput name="pool-asset-second" label={t('liquidity:finder.assetSecond')} kind={kindSecond} onKindChange={setKindSecond} picker={pickerSecond} />
+            <PoolAssetInput name="pool-asset-first" label={t('liquidity:finder.assetFirst')} kind={kindFirst} onKindChange={setKindFirst} picker={withPairReset(pickerFirst)} />
+            <PoolAssetInput name="pool-asset-second" label={t('liquidity:finder.assetSecond')} kind={kindSecond} onKindChange={setKindSecond} picker={withPairReset(pickerSecond)} />
           </div>
           {pairError && <div className={ERROR}>{pairError}</div>}
           <button
@@ -132,6 +154,7 @@ export default function PoolFinder({
             {lastLookupMode === 'id' ? t('liquidity:finder.notFoundId') : t('liquidity:finder.notFoundPair')}
           </div>
         )}
+        {lookup.status === 'error' && lookup.error === 'emptyPoolId' && <div className={ERROR}>{t('liquidity:finder.emptyPoolId')}</div>}
         {lookup.status === 'error' && lookup.error === 'invalidPoolId' && <div className={ERROR}>{t('liquidity:finder.invalidPoolId')}</div>}
         {lookup.status === 'error' && lookup.error === 'sameAsset' && <div className={ERROR}>{t('liquidity:finder.sameAsset')}</div>}
         {lookup.status === 'error' && lookup.error === 'loadFailed' && (

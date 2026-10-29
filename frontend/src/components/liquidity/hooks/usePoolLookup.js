@@ -11,7 +11,7 @@ const IDLE = { status: 'idle', pool: null, error: '' };
  * (server.liquidityPools().forAssets) oder per Pool-ID.
  *
  * status: 'idle' | 'loading' | 'found' | 'notFound' | 'error'
- * error:  '' | 'invalidPoolId' | 'sameAsset' | 'loadFailed'
+ * error:  '' | 'emptyPoolId' | 'invalidPoolId' | 'sameAsset' | 'loadFailed'
  *
  * notFound (404 bzw. leere Liste) und error (Netzwerk/Horizon) bleiben
  * getrennt, damit die UI "kein Pool fuer dieses Paar" neutral anzeigen kann.
@@ -50,6 +50,11 @@ export default function usePoolLookup(network) {
 
   const lookupById = useCallback((poolId) => {
     const id = String(poolId || '').trim().toLowerCase();
+    if (!id) {
+      requestRef.current += 1;
+      setState({ status: 'error', pool: null, error: 'emptyPoolId' });
+      return Promise.resolve();
+    }
     if (!isValidPoolId(id)) {
       requestRef.current += 1;
       setState({ status: 'error', pool: null, error: 'invalidPoolId' });

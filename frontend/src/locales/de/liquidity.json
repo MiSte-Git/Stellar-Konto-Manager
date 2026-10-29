@@ -47,6 +47,7 @@
     "selectBoth": "Bitte für beide Seiten ein Asset wählen.",
     "sameAsset": "Bitte zwei verschiedene Assets wählen.",
     "poolIdLabel": "Pool-ID (64 Hex-Zeichen)",
+    "emptyPoolId": "Bitte eine Pool-ID eingeben.",
     "invalidPoolId": "Das ist keine gültige Pool-ID (64 Hex-Zeichen erwartet).",
     "submit": "Pool laden",
     "loading": "Pool wird geladen …",
