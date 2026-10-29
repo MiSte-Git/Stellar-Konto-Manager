@@ -28,7 +28,8 @@ export default function usePoolLookup(network) {
     return () => { requestRef.current += 1; };
   }, [network]);
 
-  const run = useCallback(async (fetchRecord) => {
+  // expectedId: angefragte Pool-ID; eine Antwort fuer einen anderen Pool gilt als Ladefehler.
+  const run = useCallback(async (fetchRecord, expectedId) => {
     const requestId = ++requestRef.current;
     const isStale = () => requestRef.current !== requestId;
     setState({ status: 'loading', pool: null, error: '' });
@@ -39,7 +40,7 @@ export default function usePoolLookup(network) {
         setState({ status: 'notFound', pool: null, error: '' });
         return;
       }
-      setState({ status: 'found', pool: normalizeNativePool(record), error: '' });
+      setState({ status: 'found', pool: normalizeNativePool(record, expectedId), error: '' });
     } catch (err) {
       if (isStale()) return;
       if (isHorizonNotFound(err)) setState({ status: 'notFound', pool: null, error: '' });
@@ -54,7 +55,7 @@ export default function usePoolLookup(network) {
       setState({ status: 'error', pool: null, error: 'invalidPoolId' });
       return Promise.resolve();
     }
-    return run((server) => server.liquidityPools().liquidityPoolId(id).call());
+    return run((server) => server.liquidityPools().liquidityPoolId(id).call(), id);
   }, [run]);
 
   const lookupByAssets = useCallback((assetA, assetB) => {
@@ -72,7 +73,7 @@ export default function usePoolLookup(network) {
       // forAssets liefert jeden Pool, der beide Assets enthaelt; massgeblich ist
       // der constant-product-Pool mit der aus dem Paar berechneten ID.
       return records.find((r) => r.id === expectedId) || null;
-    });
+    }, expectedId);
   }, [run]);
 
   const reset = useCallback(() => {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { I18nextProvider } from 'react-i18next';
-import { Account, Asset, Keypair, Networks } from '@stellar/stellar-sdk';
+import { Account, Asset, Keypair, Networks, TransactionBuilder } from '@stellar/stellar-sdk';
 import i18n from '../../../i18n.js';
 import DepositDialog from '../DepositDialog.jsx';
 import WithdrawDialog from '../WithdrawDialog.jsx';
@@ -11,7 +11,13 @@ const hoisted = vi.hoisted(() => ({
   loadAccount: vi.fn(),
   poolCall: vi.fn(),
   submit: vi.fn(),
+  createJob: vi.fn(),
   collected: [],
+}));
+
+vi.mock('../../../utils/multisigApi.js', async (importOriginal) => ({
+  ...(await importOriginal()),
+  createMultisigJobFromXdr: (...args) => hoisted.createJob(...args),
 }));
 
 vi.mock('../../../utils/stellar/stellarUtils.js', async (importOriginal) => ({
@@ -401,5 +407,161 @@ describe('WithdrawDialog', () => {
     const tx = hoisted.submit.mock.calls[0][1];
     expect(tx.operations.map((op) => op.type)).toEqual(['liquidityPoolWithdraw', 'changeTrust']);
     expect(tx.operations[0]).toMatchObject({ liquidityPoolId: OWN_POOL_ID, amount: '30.0000000', minAmountA: '99.5000000', minAmountB: '9.9500000' });
+  });
+});
+
+describe('Multisig-Jobs (Stufe 2b)', () => {
+  const cosigner = Keypair.random();
+  const multisigProps = {
+    thresholds: { low_threshold: 1, med_threshold: 2, high_threshold: 2 },
+    signers: [{ key: owner.publicKey(), weight: 1, type: 'ed25519_public_key' }, { key: cosigner.publicKey(), weight: 1, type: 'ed25519_public_key' }],
+  };
+  const decodeJobTx = (call = 0) => TransactionBuilder.fromXDR(hoisted.createJob.mock.calls[call][0].txXdr, Networks.PUBLIC);
+
+  beforeAll(async () => { await i18n.changeLanguage('de'); });
+  beforeEach(() => {
+    hoisted.loadAccount.mockReset();
+    hoisted.poolCall.mockReset();
+    hoisted.submit.mockReset();
+    hoisted.createJob.mockReset();
+    hoisted.collected = [{ keypair: owner }];
+    hoisted.poolCall.mockResolvedValue(poolRecord());
+    hoisted.loadAccount.mockImplementation(async () => makeAccount(multisigProps));
+    hoisted.createJob.mockResolvedValue({ id: 'job-42', hash: 'jobhash', xdr: 'AAAA' });
+    window.localStorage.setItem('stm.multisigTimeoutSeconds', '3600');
+  });
+  afterEach(() => { window.localStorage.removeItem('stm.multisigTimeoutSeconds'); });
+
+  async function reviewDeposit(props = {}) {
+    const view = renderDeposit(props);
+    await enterDeposit('10');
+    fireEvent.click(screen.getByRole('button', { name: 'Weiter: Operationen prüfen' }));
+    return view;
+  }
+
+  it('bietet bei Multisig-Konten zusaetzlich den Job an und erstellt ihn ohne SecretKeyModal', async () => {
+    await reviewDeposit();
+    expect(screen.getByTestId('liquidity-job-hint')).toHaveTextContent('scheitert die Transaktion (op_bad_price) und der Job muss neu erstellt werden');
+    const before = Math.floor(Date.now() / 1000);
+    await act(async () => { fireEvent.click(screen.getByRole('button', { name: 'Multisig-Job vorbereiten' })); });
+    await waitFor(() => expect(hoisted.createJob).toHaveBeenCalledTimes(1));
+    expect(screen.queryByTestId('secret-modal')).toBeNull();
+    expect(hoisted.createJob.mock.calls[0][0]).toMatchObject({ network: 'public', accountId: owner.publicKey() });
+    const tx = decodeJobTx();
+    expect(tx.operations.map((op) => op.type)).toEqual(['changeTrust', 'liquidityPoolDeposit']);
+    expect(tx.operations[1]).toMatchObject({ liquidityPoolId: POOL_ID, maxAmountA: '10.0000000', maxAmountB: '1.0000000' });
+    // Gueltigkeit aus den Einstellungen (3600 s), nicht 60 s wie beim direkten Weg
+    expect(Number(tx.timeBounds.maxTime)).toBeGreaterThanOrEqual(before + 3600);
+    expect(Number(tx.timeBounds.maxTime)).toBeLessThanOrEqual(before + 3600 + 60);
+    expect(tx.signatures).toHaveLength(0);
+
+    expect(await screen.findByText('job-42')).toBeInTheDocument();
+    const summary = screen.getByText('job-42').closest('div.border');
+    expect(summary).toHaveTextContent(owner.publicKey());
+    expect(summary).toHaveTextContent('Mainnet');
+    expect(summary).toHaveTextContent('wird in derselben Transaktion angelegt');
+    expect(summary).toHaveTextContent('0,5 %');
+    // jobCreated-Sperre: weder zweiter Job noch direkter Weg
+    expect(screen.getByRole('button', { name: 'Multisig-Job vorbereiten' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Signieren und senden' })).toBeDisabled();
+    expect(hoisted.submit).not.toHaveBeenCalled();
+  });
+
+  it('erstellt bei Doppelklick nur einen Job', async () => {
+    let resolveJob;
+    hoisted.createJob.mockImplementation(() => new Promise((resolve) => { resolveJob = resolve; }));
+    await reviewDeposit();
+    const btn = screen.getByRole('button', { name: 'Multisig-Job vorbereiten' });
+    await act(async () => { fireEvent.click(btn); fireEvent.click(btn); });
+    await waitFor(() => expect(hoisted.createJob).toHaveBeenCalledTimes(1));
+    await act(async () => { resolveJob({ id: 'job-1', hash: 'h', xdr: 'x' }); });
+    expect(hoisted.createJob).toHaveBeenCalledTimes(1);
+  });
+
+  it('zeigt den Job-Weg nicht bei einem normalen Konto', async () => {
+    hoisted.loadAccount.mockImplementation(async () => makeAccount());
+    await reviewDeposit();
+    expect(screen.queryByRole('button', { name: 'Multisig-Job vorbereiten' })).toBeNull();
+    expect(screen.queryByTestId('liquidity-job-hint')).toBeNull();
+  });
+
+  it('weist beim direkten Weg mit zu wenig Gewicht auf den Job-Weg hin', async () => {
+    await reviewDeposit();
+    fireEvent.click(screen.getByRole('button', { name: 'Signieren und senden' }));
+    await act(async () => { fireEvent.click(await screen.findByText('keys-ok')); });
+    const err = await screen.findByTestId('modal-error');
+    expect(err).toHaveTextContent('Benötigt: 2, vorhanden: 1');
+    expect(err).toHaveTextContent('stattdessen ein Multisig-Job vorbereitet werden');
+    expect(hoisted.submit).not.toHaveBeenCalled();
+  });
+
+  it('sendet beim direkten Weg mit ausreichendem Gewicht trotz Multisig-Konto', async () => {
+    hoisted.collected = [{ keypair: owner }, { keypair: cosigner }];
+    hoisted.submit.mockResolvedValue({ hash: 'direct' });
+    await reviewDeposit();
+    fireEvent.click(screen.getByRole('button', { name: 'Signieren und senden' }));
+    await act(async () => { fireEvent.click(await screen.findByText('keys-ok')); });
+    await screen.findByTestId('liquidity-success');
+    expect(hoisted.submit.mock.calls[0][1].signatures).toHaveLength(2);
+    expect(hoisted.createJob).not.toHaveBeenCalled();
+  });
+
+  it('erstellt keinen Job, wenn sich der Kurs seit der Bestaetigung bewegt hat', async () => {
+    await reviewDeposit();
+    hoisted.poolCall.mockResolvedValue(poolRecord('1100.0000000', '90.0000000'));
+    await act(async () => { fireEvent.click(screen.getByRole('button', { name: 'Multisig-Job vorbereiten' })); });
+    expect(await screen.findByRole('alert')).toHaveTextContent('außerhalb der bestätigten Grenzen');
+    expect(hoisted.createJob).not.toHaveBeenCalled();
+  });
+
+  it('verwirft den Job, wenn der Dialog vor dem Erstellen abgebaut wird', async () => {
+    let resolvePool;
+    const onBackgroundResult = vi.fn();
+    const view = await reviewDeposit({ onBackgroundResult });
+    hoisted.poolCall.mockImplementation(() => new Promise((resolve) => { resolvePool = resolve; }));
+    await act(async () => { fireEvent.click(screen.getByRole('button', { name: 'Multisig-Job vorbereiten' })); });
+    view.unmount();
+    await act(async () => { resolvePool(poolRecord()); });
+    expect(hoisted.createJob).not.toHaveBeenCalled();
+    expect(onBackgroundResult).not.toHaveBeenCalled();
+  });
+
+  it('meldet einen bereits erstellten Job an die Seite, wenn der Dialog waehrenddessen abgebaut wird', async () => {
+    let resolveJob;
+    hoisted.createJob.mockImplementation(() => new Promise((resolve) => { resolveJob = resolve; }));
+    const onBackgroundResult = vi.fn();
+    const view = await reviewDeposit({ onBackgroundResult });
+    await act(async () => { fireEvent.click(screen.getByRole('button', { name: 'Multisig-Job vorbereiten' })); });
+    await waitFor(() => expect(hoisted.createJob).toHaveBeenCalledTimes(1));
+    view.unmount();
+    await act(async () => { resolveJob({ id: 'job-bg', hash: 'bghash', xdr: 'x' }); });
+    expect(onBackgroundResult).toHaveBeenCalledWith({ type: 'jobCreated', jobId: 'job-bg', hash: 'bghash', network: 'PUBLIC', publicKey: owner.publicKey() });
+  });
+
+  it('stellt als Issuer des eigenen Assets im Job kein changeTrust fuer dieses Asset voran', async () => {
+    hoisted.poolCall.mockResolvedValue(ownPoolRecord());
+    await reviewDeposit({ poolId: OWN_POOL_ID });
+    await act(async () => { fireEvent.click(screen.getByRole('button', { name: 'Multisig-Job vorbereiten' })); });
+    await waitFor(() => expect(hoisted.createJob).toHaveBeenCalledTimes(1));
+    const tx = decodeJobTx();
+    expect(tx.operations.map((op) => op.line?.getAssetType?.() || op.type)).toEqual(['liquidity_pool_shares', 'liquidityPoolDeposit']);
+  });
+
+  it('Abheben 100 %: Job mit Trustline-Entfernung, Hinweisen und bestaetigten Mindestbetraegen', async () => {
+    hoisted.loadAccount.mockImplementation(async () => makeAccount({ shares: '30.0000000', ...multisigProps }));
+    renderWithdraw();
+    fireEvent.click(await screen.findByRole('button', { name: '100 %' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Weiter: Operationen prüfen' }));
+    const hints = screen.getAllByTestId('liquidity-job-hint').map((el) => el.textContent).join(' ');
+    expect(hints).toContain('(op_under_minimum)');
+    expect(hints).toContain('Ändert sich der Share-Bestand bis dahin, scheitert die gesamte Transaktion.');
+    await act(async () => { fireEvent.click(screen.getByRole('button', { name: 'Multisig-Job vorbereiten' })); });
+    await waitFor(() => expect(hoisted.createJob).toHaveBeenCalledTimes(1));
+    const tx = decodeJobTx();
+    expect(tx.operations.map((op) => op.type)).toEqual(['liquidityPoolWithdraw', 'changeTrust']);
+    expect(tx.operations[0]).toMatchObject({ amount: '30.0000000', minAmountA: '99.5000000', minAmountB: '9.9500000' });
+    expect(tx.operations[1].limit).toBe('0.0000000');
+    const summary = (await screen.findByText('job-42')).closest('div.border');
+    expect(summary).toHaveTextContent('wird nach dem Abheben entfernt');
   });
 });

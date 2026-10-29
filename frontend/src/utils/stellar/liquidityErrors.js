@@ -24,13 +24,41 @@ export const LIQUIDITY_OP_CODES = Object.freeze([
   'op_trustline_frozen',
 ]);
 
-/** 'submitTransaction.failed:liquidity.<code>' fuer bekannte Codes, sonst null. */
-export function liquidityErrorKey(err) {
-  const codes = err?.response?.data?.extras?.result_codes;
-  if (!codes) return null;
+/** true fuer liquidityPoolDeposit/-Withdraw und changeTrust auf ein Pool-Share-Asset. */
+export function isLiquidityRelatedOperation(op) {
+  if (op?.type === 'liquidityPoolDeposit' || op?.type === 'liquidityPoolWithdraw') return true;
+  const line = op?.type === 'changeTrust' ? op.line : null;
+  return !!line && typeof line.getAssetType === 'function' && line.getAssetType() === 'liquidity_pool_shares';
+}
+
+/**
+ * Wie liquidityErrorKey, aber direkt fuer ein Horizon-result_codes-Objekt.
+ * operations (optional, dekodierte Ops der Transaktion): result_codes.operations
+ * ist positional; dann gilt der LP-Text nur, wenn der erste fehlgeschlagene Op
+ * tatsaechlich ein LP-Op bzw. changeTrust auf ein Pool-Asset ist.
+ */
+export function liquidityErrorKeyFromResultCodes(codes, operations) {
+  if (!codes || typeof codes !== 'object') return null;
   const ops = Array.isArray(codes.operations) ? codes.operations : [];
-  const op = ops.find((code) => code && code !== 'op_success');
-  if (op && LIQUIDITY_OP_CODES.includes(op)) return `submitTransaction.failed:liquidity.${op}`;
+  const index = ops.findIndex((code) => code && code !== 'op_success');
+  const op = index >= 0 ? ops[index] : null;
+  const relevant = !Array.isArray(operations) || isLiquidityRelatedOperation(operations[index]);
+  if (op && relevant && LIQUIDITY_OP_CODES.includes(op)) return `submitTransaction.failed:liquidity.${op}`;
   if (codes.transaction === 'tx_bad_auth') return 'submitTransaction.failed:tx_bad_auth';
   return null;
+}
+
+/** 'submitTransaction.failed:liquidity.<code>' fuer bekannte Codes, sonst null. */
+export function liquidityErrorKey(err) {
+  return liquidityErrorKeyFromResultCodes(err?.response?.data?.extras?.result_codes);
+}
+
+/**
+ * Horizon-result_codes aus dem submittedResult eines Multisig-Jobs. Die Backends
+ * legen sie unterschiedlich ab: PHP unter detail.extras, Node unter error.extras
+ * (error ist dort die Horizon-Antwort). Liefert null, wenn keine Codes vorliegen.
+ */
+export function jobSubmitResultCodes(submittedResult) {
+  const codes = submittedResult?.detail?.extras?.result_codes ?? submittedResult?.error?.extras?.result_codes;
+  return codes && typeof codes === 'object' ? codes : null;
 }

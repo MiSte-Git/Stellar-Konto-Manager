@@ -6,7 +6,7 @@ import MultisigJobStatusBadge from '../components/MultisigJobStatusBadge.jsx';
 import { Keypair, TransactionBuilder } from '@stellar/stellar-sdk';
 import { getSessionSecret } from '../utils/sessionSecrets.js';
 import { getMultisigJobToken } from '../utils/basePath.js';
-import { describeOperations, findOperationWarnings } from '../utils/multisig/describeOperations.js';
+import { describeOperations, findOperationWarnings, formatAsset } from '../utils/multisig/describeOperations.js';
 import { formatValidUntil } from '../utils/multisig/formatValidUntil.js';
 import SecretKeyModal from '../components/SecretKeyModal.jsx';
 import { getHorizonServer } from '../utils/stellar/stellarUtils.js';
@@ -16,6 +16,19 @@ import { getRequiredThreshold } from '../utils/getRequiredThreshold.js';
 import { formatErrorForUi } from '../utils/formatErrorForUi.js';
 import { accountSequenceOf, assertHorizonNetwork, buildJobRevocationTx, checkRevocationSequence, collectEffectiveSigners, getJobSequenceInfo, parseJobNetwork } from '../utils/multisig/jobRevocation.js';
 import { txHashHex } from '../utils/stellar/txHash.js';
+import { evaluateLiquidityOperation, exactDepositPrices, hasLiquidityPoolOps, resolveLiquidityPoolInfo } from '../utils/multisig/liquidityPoolInfo.js';
+import { jobSubmitResultCodes, liquidityErrorKeyFromResultCodes } from '../utils/stellar/liquidityErrors.js';
+import { formatPoolAmount, formatPrice } from '../components/liquidity/formatPoolAmount.js';
+
+const FAILED_PREFIX = 'submitTransaction.failed:';
+
+// Grund aus submittedResult.error: PHP liefert einen String, Node die Horizon-Antwort.
+function submitReasonText(submittedResult) {
+  const err = submittedResult?.error;
+  if (!err) return '';
+  if (typeof err === 'string') return err;
+  return String(err.title || err.detail || err.message || 'submit_failed');
+}
 
 function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
   const { t, i18n } = useTranslation(['multisig', 'common']);
@@ -145,8 +158,8 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
     const have = Number(job?.collectedWeight || 0);
     return req > 0 && have >= req;
   }, [job]);
-  const submitError = job?.submittedResult?.error;
-  const submitExtras = job?.submittedResult?.detail?.extras;
+  const submitError = submitReasonText(job?.submittedResult);
+  const submitResultCodes = jobSubmitResultCodes(job?.submittedResult);
   const isFinalState = useMemo(() => {
     const s = String(job?.status || '').toLowerCase();
     return ['submitted_success', 'submitted_failed', 'expired', 'obsolete_seq'].includes(s);
@@ -169,9 +182,14 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
   }, [job]);
 
   const txSourceAccountId = useMemo(() => getJobSequenceInfo(decodedTx)?.sourceAccountId || '', [decodedTx]);
+  const decodedOps = useMemo(() => (decodedTx ? (decodedTx.innerTransaction || decodedTx).operations : []), [decodedTx]);
+  const hasPoolOps = useMemo(() => hasLiquidityPoolOps(decodedOps), [decodedOps]);
+  // Pool-Assets und aktueller Pool-Stand fuer LP-Operationen (nur Anzeige):
+  // undefined = noch nicht geladen, {} = nichts bekannt.
+  const [poolInfo, setPoolInfo] = useState(undefined);
   const operationLines = useMemo(
-    () => (decodedTx ? describeOperations((decodedTx.innerTransaction || decodedTx).operations, t, txSourceAccountId) : []),
-    [decodedTx, t, txSourceAccountId]
+    () => (decodedTx ? describeOperations(decodedOps, t, txSourceAccountId, { poolInfo, locale: i18n.language }) : []),
+    [decodedTx, decodedOps, t, txSourceAccountId, poolInfo, i18n.language]
   );
   const operationWarnings = useMemo(
     () => (decodedTx ? findOperationWarnings((decodedTx.innerTransaction || decodedTx).operations, txSourceAccountId) : { unknownTypes: [], pathPaymentToOther: false }),
@@ -197,6 +215,74 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
   }, [job]);
 
   const jobNetwork = parseJobNetwork(job?.network);
+
+  // Pool-Daten nur neu laden, wenn sich die Transaktion selbst aendert: der Hash
+  // haengt nicht an den Signaturen, ein Signatur-Update laedt Horizon also nicht neu.
+  const poolOpsKey = useMemo(() => {
+    if (!hasPoolOps || !decodedTx) return '';
+    try {
+      return txHashHex(decodedTx);
+    } catch {
+      return '';
+    }
+  }, [decodedTx, hasPoolOps]);
+  const decodedOpsRef = useRef(decodedOps);
+  decodedOpsRef.current = decodedOps;
+
+  useEffect(() => {
+    setPoolInfo(undefined);
+    if (!poolOpsKey) return undefined;
+    // Unbekanntes Job-Netz: nichts laden, Fallback (Asset A/B mit Hinweis) zeigen.
+    if (!jobNetwork) {
+      setPoolInfo({});
+      return undefined;
+    }
+    let cancelled = false;
+    resolveLiquidityPoolInfo({ operations: decodedOpsRef.current, server: getHorizonServer(horizonUrlFor(jobNetwork)) })
+      .then((info) => { if (!cancelled) setPoolInfo(info); })
+      .catch(() => { if (!cancelled) setPoolInfo({}); });
+    return () => { cancelled = true; };
+  }, [poolOpsKey, jobNetwork]);
+
+  // Aktueller Stand je LP-Operation gegen den Pool laut Horizon, neutral formuliert.
+  const poolStateLines = useMemo(() => {
+    if (!hasPoolOps || !poolInfo) return [];
+    const prices = exactDepositPrices(decodedTx);
+    // Gleiche Beschriftung wie in describeOperations: Tokens immer mit Issuer, auch ein Token "XLM".
+    const label = formatAsset;
+    return decodedOps.flatMap((op, index) => {
+      if (op?.type !== 'liquidityPoolDeposit' && op?.type !== 'liquidityPoolWithdraw') return [];
+      const info = poolInfo[op.liquidityPoolId];
+      const state = info?.pool ? evaluateLiquidityOperation(op, info.pool, prices[index]) : null;
+      if (!state) {
+        const pool = String(op.liquidityPoolId || '');
+        return [t('multisig:detail.liquidityState.unavailable', { pool: pool.length > 16 ? `${pool.slice(0, 8)}…${pool.slice(-8)}` : pool })];
+      }
+      const pair = `${label(info.assetA)}/${label(info.assetB)}`;
+      if (state.kind === 'deposit') {
+        return [t(state.withinBounds ? 'multisig:detail.liquidityState.depositInside' : 'multisig:detail.liquidityState.depositOutside', {
+          pair,
+          price: formatPrice(state.currentPrice, i18n.language),
+        })];
+      }
+      return [t(state.meetsMinimum ? 'multisig:detail.liquidityState.withdrawOk' : 'multisig:detail.liquidityState.withdrawBelow', {
+        pair,
+        assetA: label(info.assetA),
+        assetB: label(info.assetB),
+        amountA: formatPoolAmount(state.amountA, i18n.language),
+        amountB: formatPoolAmount(state.amountB, i18n.language),
+      })];
+    });
+  }, [decodedOps, decodedTx, hasPoolOps, i18n.language, poolInfo, t]);
+
+  // LP-Op-Codes beim Absenden wie im direkten Weg uebersetzen (liquidityErrors.js).
+  const liquiditySubmitText = useCallback((submittedResult) => {
+    if (!hasPoolOps) return '';
+    const key = liquidityErrorKeyFromResultCodes(jobSubmitResultCodes(submittedResult), decodedOps);
+    if (!key) return '';
+    const detail = key.slice(FAILED_PREFIX.length);
+    return t(`errors:submitTransaction.failed.${detail}`, detail);
+  }, [decodedOps, hasPoolOps, t]);
 
   // Wechselt der Job (Neuladen, Signatur), gilt eine offene Bestaetigung nicht mehr.
   useEffect(() => {
@@ -362,9 +448,10 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
       setJob(merged);
       const st = merged?.status || 'pending_signatures';
       setInfo(t('multisig:detail.signatures.signedLocalStatus', { status: st }));
-      const submitErr = merged?.submittedResult?.error;
+      const submitErr = submitReasonText(merged?.submittedResult);
       if (submitErr) {
-        setError(t('multisig:detail.submitFailed', { reason: submitErr }));
+        const lpText = liquiditySubmitText(merged?.submittedResult);
+        setError(`${t('multisig:detail.submitFailed', { reason: submitErr })}${lpText ? ` ${lpText}` : ''}`);
       } else {
         setError('');
       }
@@ -385,7 +472,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
     } finally {
       setLoading(false);
     }
-  }, [job, jobId, canCurrentSign, signingBlockedByUnknownOps, t, resolveToken]);
+  }, [job, jobId, canCurrentSign, signingBlockedByUnknownOps, t, resolveToken, liquiditySubmitText]);
 
   const handleSignWithSession = useCallback(async () => {
     if (!job || signingBlockedByUnknownOps) return;
@@ -497,6 +584,18 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
               ) : (
                 <div className="text-gray-600 dark:text-gray-300">
                   {t('multisig:detail.operations.none', 'Keine Operationen erkennbar (XDR konnte nicht dekodiert werden).')}
+                </div>
+              )}
+              {hasPoolOps && (
+                <div className="mt-2 rounded-sm bg-gray-50 p-2 text-xs text-gray-700 dark:bg-gray-900/50 dark:text-gray-200" data-testid="job-pool-state">
+                  <div className="font-semibold">{t('multisig:detail.liquidityState.title')}</div>
+                  {poolInfo === undefined ? (
+                    <div>{t('multisig:detail.liquidityState.loading')}</div>
+                  ) : (
+                    <ul className="list-disc list-inside space-y-0.5">
+                      {poolStateLines.map((line, idx) => <li key={idx}>{line}</li>)}
+                    </ul>
+                  )}
                 </div>
               )}
               {operationWarnings.pathPaymentToOther && (
@@ -666,12 +765,15 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
           {submitError && (
             <div className="border border-red-400 bg-red-50 dark:bg-red-900/30 text-xs text-red-800 dark:text-red-200 rounded-sm p-2 space-y-1">
               <div>{t('multisig:detail.submitFailed', { reason: submitError })}</div>
-              {submitExtras && submitExtras.result_codes && (
+              {liquiditySubmitText(job.submittedResult) && (
+                <div data-testid="job-submit-liquidity-error">{liquiditySubmitText(job.submittedResult)}</div>
+              )}
+              {submitResultCodes && (
                 <div className="font-mono break-all">
-                  {JSON.stringify(submitExtras.result_codes)}
+                  {JSON.stringify(submitResultCodes)}
                 </div>
               )}
-              {!submitExtras && (
+              {!submitResultCodes && (
                 <div className="text-gray-700 dark:text-gray-300">
                   {t('multisig:detail.submitNoExtras', 'Keine weiteren Fehlerdetails verfügbar.')}
                 </div>

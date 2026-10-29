@@ -233,4 +233,31 @@ describe('Liquidity-Pool-Operationen', () => {
     expect(set).toBe(`Trustline für Pool XLM/USD (${shortKey(issuer)}) setzen (Limit: 922337203685.4775807)`);
     expect(remove).toBe(`Trustline für Pool XLM/USD (${shortKey(issuer)}) entfernen`);
   });
+
+  it('beschreibt Deposit und Withdraw mit echten Pool-Assets, Preis als Dezimalzahl', () => {
+    const tx = buildTx([
+      Operation.liquidityPoolDeposit({ liquidityPoolId: poolId, maxAmountA: '100', maxAmountB: '50.5', minPrice: { n: 1, d: 3 }, maxPrice: { n: 2, d: 3 } }),
+      Operation.liquidityPoolWithdraw({ liquidityPoolId: poolId, amount: '10', minAmountA: '1', minAmountB: '2.25' }),
+    ]);
+    const poolInfo = { [poolId]: { assetA: Asset.native(), assetB: usd } };
+    const [deposit, withdraw] = describeOperations(tx.operations, fakeT, '', { poolInfo, locale: 'de' });
+    const usdLabel = `USD (${shortKey(issuer)})`;
+    expect(deposit).toBe(`Liquidität einzahlen in Pool XLM/${usdLabel} (${shortKey(poolId)}): höchstens 100.0000000 XLM und 50.5000000 ${usdLabel}, Preis XLM/${usdLabel} zwischen 0,3333333 und 0,6666667`);
+    expect(withdraw).toBe(`Liquidität abheben aus Pool XLM/${usdLabel} (${shortKey(poolId)}): 10.0000000 Pool Shares gegen mindestens 1.0000000 XLM und 2.2500000 ${usdLabel}`);
+  });
+
+  it('faellt ohne Pool-Info auf Asset A/B mit Hinweis zurueck, ohne poolInfo (Laden) ohne Hinweis', () => {
+    const tx = buildTx([Operation.liquidityPoolWithdraw({ liquidityPoolId: poolId, amount: '10', minAmountA: '1', minAmountB: '2' })]);
+    const [missing] = describeOperations(tx.operations, fakeT, '', { poolInfo: {} });
+    expect(missing).toContain('1.0000000 Asset A und 2.0000000 Asset B');
+    expect(missing).toContain('(Pool-Assets konnten nicht geladen werden)');
+    const [loading] = describeOperations(tx.operations, fakeT);
+    expect(loading).not.toContain('nicht geladen');
+  });
+
+  it('formatiert sehr kleine Preise lesbar statt in Exponentenschreibweise', () => {
+    const tx = buildTx([Operation.liquidityPoolDeposit({ liquidityPoolId: poolId, maxAmountA: '1', maxAmountB: '1', minPrice: { n: 1, d: 300000000 }, maxPrice: { n: 1, d: 3 } })]);
+    const [line] = describeOperations(tx.operations, fakeT, '', { locale: 'de' });
+    expect(line).toContain('zwischen 0,000000003333333 und 0,3333333');
+  });
 });

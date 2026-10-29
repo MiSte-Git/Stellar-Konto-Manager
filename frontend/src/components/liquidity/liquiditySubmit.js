@@ -11,13 +11,16 @@ import { liquidityErrorKey } from '../../utils/stellar/liquidityErrors.js';
 // wie submitChangeTrustTx (getRequiredThreshold + getCollectedSignerWeight),
 // Signieren und Senden ueber die bestehende Pipeline, Fehlertexte.
 
-/** Konto und Pool frisch von Horizon laden (wirft liquidityPools.poolIdMismatch bei inkonsistenten Pool-Daten). */
+/**
+ * Konto und Pool frisch von Horizon laden. Wirft liquidityPools.poolIdMismatch,
+ * wenn die Pool-Daten inkonsistent sind oder zu einem anderen Pool gehoeren.
+ */
 export async function loadFreshState(server, publicKey, poolId) {
   const [account, record] = await Promise.all([
     server.loadAccount(publicKey),
     server.liquidityPools().liquidityPoolId(poolId).call(),
   ]);
-  return { account, pool: normalizeNativePool(record) };
+  return { account, pool: normalizeNativePool(record, poolId) };
 }
 
 /** Issuer-Flags fuer Assets ohne Trustline (auth_required, auth_clawback_enabled). */

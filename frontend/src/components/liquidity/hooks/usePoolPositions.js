@@ -45,7 +45,7 @@ export default function usePoolPositions(publicKey, network) {
       const poolId = String(balance.liquidity_pool_id || '');
       try {
         const record = await server.liquidityPools().liquidityPoolId(poolId).call();
-        const pool = normalizeNativePool(record);
+        const pool = normalizeNativePool(record, poolId);
         return { poolId, balance, pool, position: positionFromBalance(balance, pool), poolError: '' };
       } catch (err) {
         return { poolId, balance, pool: null, position: null, poolError: isHorizonNotFound(err) ? 'notFound' : 'loadFailed' };

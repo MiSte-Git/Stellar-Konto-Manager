@@ -8,6 +8,7 @@
 // Pools: liquidityPoolDeposit/liquidityPoolWithdraw). Anything
 // else falls back to a generic "unknown operation type" line, and
 // findOperationWarnings() flags it so the signer must confirm explicitly.
+import { formatPriceDecimal } from '../../components/liquidity/formatPoolAmount.js';
 
 // Nur das echte native Asset heisst XLM. Ein Token mit dem Code XLM wird mit Herausgeber
 // angezeigt, damit es in der Job-Ansicht nicht wie natives XLM aussieht.
@@ -65,9 +66,18 @@ function shortKey(pk) {
  * @param {Array<object>} operations - decoded operations from a stellar-sdk Transaction (tx.operations)
  * @param {(key: string, opts?: object) => string} t - react-i18next translate function, bound to the 'multisig' namespace
  * @param {string} [sourceAccountId] - Quellkonto, damit Tauschzahlungen an das eigene Konto als solche erkennbar sind
+ * @param {{ poolInfo?: Record<string, { assetA: object, assetB: object }>, locale?: string }} [options]
+ *   poolInfo: bekannte Pool-Assets je Pool-ID (kanonisch A/B). Ist poolInfo gesetzt, fehlt
+ *   aber ein Pool, wird die Zeile mit Asset A/B und einem Hinweis beschrieben; ohne poolInfo
+ *   (z. B. waehrend des Ladens) ohne Hinweis.
  * @returns {string[]} one human-readable line per operation (a single setOptions op can expand to several lines)
  */
-export function describeOperations(operations, t, sourceAccountId = '') {
+export function describeOperations(operations, t, sourceAccountId = '', options = {}) {
+  const { poolInfo, locale } = options || {};
+  const poolAssets = (id) => (poolInfo && poolInfo[id] ? poolInfo[id] : null);
+  const unknownPoolHint = (id) => (poolInfo && !poolInfo[id]
+    ? ` ${t('detail.operations.liquidityPoolAssetsUnknown', { defaultValue: '(Pool-Assets konnten nicht geladen werden)' })}`
+    : '');
   const ops = Array.isArray(operations) ? operations : [];
   const lines = [];
   ops.forEach((op) => {
@@ -177,26 +187,58 @@ export function describeOperations(operations, t, sourceAccountId = '') {
         }));
         break;
       // Die Operation enthaelt nur die Pool-ID, nicht die Assets; A/B meint die
-      // kanonische Reihenfolge des Pools. Der Preis ist definiert als A/B.
-      case 'liquidityPoolDeposit':
+      // kanonische Reihenfolge des Pools. Der Preis ist definiert als A/B
+      // (Menge A je Einheit B), angezeigt als Dezimalzahl.
+      case 'liquidityPoolDeposit': {
+        const info = poolAssets(op.liquidityPoolId);
+        const minPrice = formatPriceDecimal(op.minPrice, locale);
+        const maxPrice = formatPriceDecimal(op.maxPrice, locale);
+        if (info) {
+          lines.push(t('detail.operations.liquidityPoolDepositAssets', {
+            assetA: formatAsset(info.assetA),
+            assetB: formatAsset(info.assetB),
+            pool: shortKey(op.liquidityPoolId),
+            maxAmountA: op.maxAmountA,
+            maxAmountB: op.maxAmountB,
+            minPrice,
+            maxPrice,
+            defaultValue: 'Liquidität einzahlen in Pool {{assetA}}/{{assetB}} ({{pool}}): höchstens {{maxAmountA}} {{assetA}} und {{maxAmountB}} {{assetB}}, Preis {{assetA}}/{{assetB}} zwischen {{minPrice}} und {{maxPrice}}',
+          }));
+          break;
+        }
         lines.push(t('detail.operations.liquidityPoolDeposit', {
           pool: shortKey(op.liquidityPoolId),
           maxAmountA: op.maxAmountA,
           maxAmountB: op.maxAmountB,
-          minPrice: op.minPrice,
-          maxPrice: op.maxPrice,
+          minPrice,
+          maxPrice,
           defaultValue: 'Liquidität einzahlen in Pool {{pool}}: höchstens {{maxAmountA}} Asset A und {{maxAmountB}} Asset B, Preis A/B zwischen {{minPrice}} und {{maxPrice}}',
-        }));
+        }) + unknownPoolHint(op.liquidityPoolId));
         break;
-      case 'liquidityPoolWithdraw':
+      }
+      case 'liquidityPoolWithdraw': {
+        const info = poolAssets(op.liquidityPoolId);
+        if (info) {
+          lines.push(t('detail.operations.liquidityPoolWithdrawAssets', {
+            assetA: formatAsset(info.assetA),
+            assetB: formatAsset(info.assetB),
+            pool: shortKey(op.liquidityPoolId),
+            amount: op.amount,
+            minAmountA: op.minAmountA,
+            minAmountB: op.minAmountB,
+            defaultValue: 'Liquidität abheben aus Pool {{assetA}}/{{assetB}} ({{pool}}): {{amount}} Pool Shares gegen mindestens {{minAmountA}} {{assetA}} und {{minAmountB}} {{assetB}}',
+          }));
+          break;
+        }
         lines.push(t('detail.operations.liquidityPoolWithdraw', {
           pool: shortKey(op.liquidityPoolId),
           amount: op.amount,
           minAmountA: op.minAmountA,
           minAmountB: op.minAmountB,
           defaultValue: 'Liquidität abheben aus Pool {{pool}}: {{amount}} Pool Shares gegen mindestens {{minAmountA}} Asset A und {{minAmountB}} Asset B',
-        }));
+        }) + unknownPoolHint(op.liquidityPoolId));
         break;
+      }
       case 'accountMerge':
         lines.push(t('detail.operations.accountMerge', {
           destination: shortKey(op.destination),
@@ -213,4 +255,4 @@ export function describeOperations(operations, t, sourceAccountId = '') {
   return lines;
 }
 
-export { shortKey };
+export { formatAsset, shortKey };

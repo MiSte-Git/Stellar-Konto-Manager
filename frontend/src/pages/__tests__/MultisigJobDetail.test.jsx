@@ -1,10 +1,11 @@
 import React from 'react';
 import { render, screen, waitFor, fireEvent, within } from '@testing-library/react';
 import { I18nextProvider } from 'react-i18next';
-import { Account, Asset, Keypair, Networks, Operation, TransactionBuilder } from '@stellar/stellar-sdk';
+import { Account, Asset, Keypair, LiquidityPoolAsset, LiquidityPoolFeeV18, Networks, Operation, TransactionBuilder } from '@stellar/stellar-sdk';
 import i18n from '../../i18n.js';
 import MultisigJobDetail from '../MultisigJobDetail.jsx';
 import { txHashHex } from '../../utils/stellar/txHash.js';
+import { poolIdFor } from '../../utils/stellar/liquidityPools.js';
 
 // P2.3: Multisig-Job per bumpSequence widerrufen.
 const SIGNER_A = {
@@ -22,6 +23,7 @@ const hoisted = vi.hoisted(() => ({
   loadAccountMock: vi.fn(),
   submitMock: vi.fn(),
   rootMock: vi.fn(),
+  poolMock: vi.fn(),
 }));
 
 vi.mock('../../utils/multisigApi.js', async (importOriginal) => ({
@@ -35,6 +37,7 @@ vi.mock('../../utils/stellar/stellarUtils.js', async (importOriginal) => ({
     loadAccount: hoisted.loadAccountMock,
     root: hoisted.rootMock,
     feeStats: vi.fn(async () => ({ last_ledger_base_fee: '100', fee_charged: { mode: '100', p95: '100' } })),
+    liquidityPools: () => ({ liquidityPoolId: (id) => ({ call: () => hoisted.poolMock(id) }) }),
   }),
 }));
 
@@ -291,3 +294,169 @@ describe('Multisig-Job widerrufen (P2.3)', () => {
   });
 });
 
+describe('Liquidity-Pool-Jobs im Job-Detail (Stufe 2b)', () => {
+  const lpIssuer = Keypair.random().publicKey();
+  const usd = new Asset('USD', lpIssuer);
+  const POOL_ID = poolIdFor(Asset.native(), usd);
+  const poolRecord = (rA = '1000.0000000', rB = '100.0000000') => ({
+    id: POOL_ID,
+    fee_bp: 30,
+    total_trustlines: '3',
+    total_shares: '300.0000000',
+    reserves: [{ asset: 'native', amount: rA }, { asset: `USD:${lpIssuer}`, amount: rB }],
+  });
+  const lpJob = (ops, overrides = {}) => {
+    const builder = new TransactionBuilder(new Account(SOURCE, '100'), { fee: '1000', networkPassphrase: Networks.TESTNET });
+    ops.forEach((op) => builder.addOperation(op));
+    const tx = builder.setTimeout(86400).build();
+    return makeJob({ txHash: txHashHex(tx), txXdr: tx.toXDR(), ...overrides });
+  };
+  const depositOp = () => Operation.liquidityPoolDeposit({ liquidityPoolId: POOL_ID, maxAmountA: '10', maxAmountB: '1', minPrice: { n: 995, d: 100 }, maxPrice: { n: 1005, d: 100 } });
+  const poolTrustOp = () => Operation.changeTrust({ asset: new LiquidityPoolAsset(Asset.native(), usd, LiquidityPoolFeeV18) });
+  const withdrawOp = () => Operation.liquidityPoolWithdraw({ liquidityPoolId: POOL_ID, amount: '30', minAmountA: '99.5', minAmountB: '9.95' });
+  const usdLabel = `USD (${lpIssuer.slice(0, 8)}…${lpIssuer.slice(-8)})`;
+
+  it('loest die Pool-Assets aus der Pool-Trustline auf und zeigt den Kurs innerhalb der Grenzen', async () => {
+    hoisted.getJobMock.mockImplementation(async () => lpJob([poolTrustOp(), depositOp()]));
+    hoisted.poolMock.mockResolvedValue(poolRecord());
+    renderPage();
+    expect(await screen.findByText(new RegExp(`^Liquidität einzahlen in Pool XLM/USD \\(`))).toHaveTextContent(
+      `höchstens 10.0000000 XLM und 1.0000000 ${usdLabel}, Preis XLM/${usdLabel} zwischen 9,95 und 10,05`
+    );
+    const state = screen.getByTestId('job-pool-state');
+    await waitFor(() => expect(state).toHaveTextContent(`aktueller Kurs XLM/${usdLabel} 10. Bei diesem Stand liegt die Einzahlung innerhalb der Preisgrenzen`));
+    expect(hoisted.poolMock).toHaveBeenCalledWith(POOL_ID);
+  });
+
+  it('meldet neutral, wenn der aktuelle Kurs ausserhalb der Grenzen liegt', async () => {
+    hoisted.getJobMock.mockImplementation(async () => lpJob([poolTrustOp(), depositOp()]));
+    hoisted.poolMock.mockResolvedValue(poolRecord('1100.0000000', '90.0000000'));
+    renderPage();
+    const state = await screen.findByTestId('job-pool-state');
+    await waitFor(() => expect(state).toHaveTextContent('Der aktuelle Kurs liegt außerhalb der Grenzen dieser Operation. Die Transaktion würde derzeit fehlschlagen.'));
+  });
+
+  it('nimmt ohne Pool-Trustline die Assets aus Horizon und vergleicht Withdraw-Betraege mit den Mindestbetraegen', async () => {
+    hoisted.getJobMock.mockImplementation(async () => lpJob([withdrawOp()]));
+    hoisted.poolMock.mockResolvedValue(poolRecord('900.0000000', '111.0000000'));
+    renderPage();
+    expect(await screen.findByText(new RegExp('^Liquidität abheben aus Pool XLM/USD'))).toHaveTextContent(`gegen mindestens 99.5000000 XLM und 9.9500000 ${usdLabel}`);
+    await waitFor(() => expect(screen.getByTestId('job-pool-state')).toHaveTextContent(`aktuell zu erwarten 90 XLM und 11,1 ${usdLabel}. Die Mindestbeträge dieser Operation werden nicht erreicht.`));
+  });
+
+  it('faellt bei 404 oder falscher Pool-ID auf Asset A/B zurueck, ohne abzustuerzen', async () => {
+    hoisted.getJobMock.mockImplementation(async () => lpJob([withdrawOp()]));
+    hoisted.poolMock.mockRejectedValueOnce(Object.assign(new Error('Not Found'), { response: { status: 404 } }));
+    const view = renderPage();
+    expect(await screen.findByText(/Pool-Assets konnten nicht geladen werden/)).toHaveTextContent('Asset A');
+    expect(screen.getByTestId('job-pool-state')).toHaveTextContent('Der aktuelle Pool-Stand konnte nicht geladen werden.');
+    view.unmount();
+
+    // Horizon liefert unter der ID einen Pool mit anderen Assets (poolIdMismatch)
+    hoisted.poolMock.mockResolvedValueOnce({ ...poolRecord(), reserves: [{ asset: 'native', amount: '1' }, { asset: `EUR:${lpIssuer}`, amount: '1' }] });
+    renderPage();
+    expect(await screen.findByText(/Pool-Assets konnten nicht geladen werden/)).toBeInTheDocument();
+  });
+
+  it('zeigt LP-Fehlercodes beim Job-Submit verstaendlich an (PHP- und Node-Form)', async () => {
+    const codes = { transaction: 'tx_failed', operations: ['op_success', 'op_bad_price'] };
+    hoisted.poolMock.mockResolvedValue(poolRecord());
+    hoisted.getJobMock.mockImplementation(async () => lpJob([poolTrustOp(), depositOp()], {
+      status: 'submitted_failed',
+      submittedResult: { error: 'Transaction Failed', detail: { extras: { result_codes: codes } } },
+    }));
+    const view = renderPage();
+    expect(await screen.findByTestId('job-submit-liquidity-error')).toHaveTextContent('außerhalb der bestätigten Preisgrenzen (op_bad_price)');
+    view.unmount();
+
+    hoisted.getJobMock.mockImplementation(async () => lpJob([withdrawOp()], {
+      status: 'submitted_failed',
+      submittedResult: { error: { title: 'Transaction Failed', extras: { result_codes: { transaction: 'tx_failed', operations: ['op_under_minimum'] } } } },
+    }));
+    renderPage();
+    expect(await screen.findByTestId('job-submit-liquidity-error')).toHaveTextContent('unter den bestätigten Mindestbeträgen (op_under_minimum)');
+    expect(screen.getByText(/Beim Senden ist ein Fehler aufgetreten: Transaction Failed/)).toBeInTheDocument();
+  });
+
+  it('zeigt einen Token mit dem Code XLM im Pool-Stand nie als nacktes XLM', async () => {
+    const fakeXlm = new Asset('XLM', Keypair.random().publicKey());
+    const fakeId = poolIdFor(fakeXlm, usd);
+    const [first, second] = [fakeXlm, usd].sort((x, y) => Asset.compare(x, y));
+    const reserves = [first, second].map((a, i) => ({ asset: `${a.getCode()}:${a.getIssuer()}`, amount: i === 0 ? '100.0000000' : '100.0000000' }));
+    hoisted.poolMock.mockResolvedValue({ id: fakeId, fee_bp: 30, total_trustlines: '2', total_shares: '100.0000000', reserves });
+    hoisted.getJobMock.mockImplementation(async () => lpJob([
+      Operation.liquidityPoolWithdraw({ liquidityPoolId: fakeId, amount: '10', minAmountA: '1', minAmountB: '1' }),
+    ]));
+    renderPage();
+    const state = await screen.findByTestId('job-pool-state');
+    await waitFor(() => expect(state).toHaveTextContent('aktuell zu erwarten'));
+    const issuerShort = `${fakeXlm.getIssuer().slice(0, 8)}…${fakeXlm.getIssuer().slice(-8)}`;
+    expect(state).toHaveTextContent(`XLM (${issuerShort})`);
+    // jedes Vorkommen von XLM traegt den Issuer
+    expect(state.textContent).not.toMatch(/XLM(?! \()/);
+  });
+
+  it('nimmt keine Assets aus Horizon, wenn die Antwort zu einem anderen Pool gehoert', async () => {
+    const eur = new Asset('EUR', lpIssuer);
+    const eurId = poolIdFor(Asset.native(), eur);
+    hoisted.getJobMock.mockImplementation(async () => lpJob([withdrawOp()]));
+    // in sich gueltiger Record, aber fuer den EUR-Pool statt des angefragten USD-Pools
+    hoisted.poolMock.mockResolvedValue({ ...poolRecord(), id: eurId, reserves: [{ asset: 'native', amount: '1000.0000000' }, { asset: `EUR:${lpIssuer}`, amount: '100.0000000' }] });
+    renderPage();
+    expect(await screen.findByText(/Pool-Assets konnten nicht geladen werden/)).not.toHaveTextContent('EUR');
+    expect(screen.getByTestId('job-pool-state')).toHaveTextContent('Der aktuelle Pool-Stand konnte nicht geladen werden.');
+    expect(hoisted.poolMock).toHaveBeenCalledWith(POOL_ID);
+  });
+
+  it('zeigt bei unbekanntem Job-Netz den Fallback statt dauerhaft "wird geladen"', async () => {
+    hoisted.getJobMock.mockImplementation(async () => lpJob([withdrawOp()], { network: 'futurenet' }));
+    renderPage();
+    expect(await screen.findByText(/Pool-Assets konnten nicht geladen werden/)).toBeInTheDocument();
+    expect(screen.getByTestId('job-pool-state')).not.toHaveTextContent('Pool-Daten werden geladen');
+    expect(hoisted.poolMock).not.toHaveBeenCalled();
+  });
+
+  it('laedt Horizon bei einem Signatur-Update nicht erneut', async () => {
+    const builder = new TransactionBuilder(new Account(SOURCE, '100'), { fee: '1000', networkPassphrase: Networks.TESTNET });
+    const tx = builder.addOperation(withdrawOp()).setTimeout(86400).build();
+    const unsigned = tx.toXDR();
+    hoisted.poolMock.mockResolvedValue(poolRecord());
+    hoisted.getJobMock.mockImplementation(async () => makeJob({ txHash: txHashHex(tx), txXdr: unsigned }));
+    renderPage();
+    await waitFor(() => expect(screen.getByTestId('job-pool-state')).toHaveTextContent('aktuell zu erwarten'));
+    expect(hoisted.poolMock).toHaveBeenCalledTimes(1);
+
+    // Signatur kommt hinzu: neues XDR, gleiche Transaktion
+    tx.sign(Keypair.fromSecret(SIGNER_A.secret));
+    hoisted.getJobMock.mockImplementation(async () => makeJob({ txHash: txHashHex(tx), txXdr: unsigned, txXdrCurrent: tx.toXDR(), collectedWeight: 1 }));
+    fireEvent.click(screen.getByRole('button', { name: 'Neu laden' }));
+    await waitFor(() => expect(hoisted.getJobMock).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(screen.getByTestId('job-pool-state')).toHaveTextContent('aktuell zu erwarten'));
+    expect(hoisted.poolMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('ordnet einen LP-Text nur zu, wenn der fehlgeschlagene Op ein LP-Op ist', async () => {
+    hoisted.poolMock.mockResolvedValue(poolRecord());
+    hoisted.getJobMock.mockImplementation(async () => lpJob([
+      Operation.payment({ destination: SIGNER_A.publicKey, asset: Asset.native(), amount: '1' }),
+      withdrawOp(),
+    ], {
+      status: 'submitted_failed',
+      submittedResult: { error: 'Transaction Failed', detail: { extras: { result_codes: { transaction: 'tx_failed', operations: ['op_underfunded', 'op_success'] } } } },
+    }));
+    renderPage();
+    expect(await screen.findByText(/op_underfunded/)).toBeInTheDocument();
+    expect(screen.queryByTestId('job-submit-liquidity-error')).toBeNull();
+  });
+
+  it('uebersetzt Op-Codes anderer Jobs nicht als Pool-Fehler', async () => {
+    hoisted.getJobMock.mockImplementation(async () => makeJob({
+      status: 'submitted_failed',
+      submittedResult: { error: 'Transaction Failed', detail: { extras: { result_codes: { transaction: 'tx_failed', operations: ['op_underfunded'] } } } },
+    }));
+    renderPage();
+    expect(await screen.findByText(/op_underfunded/)).toBeInTheDocument();
+    expect(screen.queryByTestId('job-submit-liquidity-error')).toBeNull();
+    expect(hoisted.poolMock).not.toHaveBeenCalled();
+  });
+});

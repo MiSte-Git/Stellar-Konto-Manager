@@ -161,6 +161,11 @@ describe('normalizeNativePool', () => {
     expect(() => normalizeNativePool({ ...record, id: 'b'.repeat(64) })).toThrow('liquidityPools.poolIdMismatch');
     expect(() => normalizeNativePool({ ...record, id: undefined })).toThrow('liquidityPools.poolIdMismatch');
   });
+
+  it('prueft optional gegen die angefragte Pool-ID', () => {
+    expect(normalizeNativePool(record, XLM_USDC_POOL_ID).poolId).toBe(XLM_USDC_POOL_ID);
+    expect(() => normalizeNativePool(record, 'b'.repeat(64))).toThrow('liquidityPools.poolIdMismatch');
+  });
 });
 
 describe('positionFromBalance', () => {

@@ -34,9 +34,28 @@ export function formatSharePercent(value, locale) {
  */
 export function formatPrice(price, locale, invert = false) {
   if (!price || !price.n || !price.d) return '—';
-  const value = invert ? price.d / price.n : price.n / price.d;
+  return formatPriceDecimal(invert ? price.d / price.n : price.n / price.d, locale);
+}
+
+/**
+ * Preis als Zahl oder Dezimal-String (z. B. '0.0995049' oder '3.3e-9', wie das
+ * SDK minPrice/maxPrice dekodiert) fuer die Anzeige, 7 signifikante Stellen.
+ */
+export function formatPriceDecimal(value, locale) {
+  const num = Number(value);
+  if (!Number.isFinite(num) || num <= 0) return '—';
   try {
-    return new Intl.NumberFormat(locale, { maximumSignificantDigits: 7 }).format(value);
+    return new Intl.NumberFormat(locale, { maximumSignificantDigits: 7 }).format(num);
+  } catch {
+    return String(num);
+  }
+}
+
+/** Slippage in Basispunkten -> Prozent fuer die Anzeige (50 -> '0,5'). */
+export function formatSlippage(bps, locale) {
+  const value = Number(bps) / 100;
+  try {
+    return new Intl.NumberFormat(locale, { maximumFractionDigits: 2 }).format(value);
   } catch {
     return String(value);
   }

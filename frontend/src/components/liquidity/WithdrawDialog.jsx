@@ -1,6 +1,11 @@
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { passphraseFor } from '../../config/networks.js';
+import { getNetworkConfig, passphraseFor } from '../../config/networks.js';
+import { resolveFeePerOp } from '../../utils/stellar/fees.js';
+import { isMultisigAccount } from '../../utils/stellar/isMultisigAccount.js';
+import { getMultisigTxTimeout } from '../../utils/getMultisigTxTimeout.js';
+import { formatValidUntil } from '../../utils/multisig/formatValidUntil.js';
+import { useSettings } from '../../utils/useSettings.js';
 import SecretKeyModal from '../SecretKeyModal.jsx';
 import { describeOperations } from '../../utils/multisig/describeOperations.js';
 import { fromStroops, poolAssetFor, quoteWithdraw, toStroops } from '../../utils/stellar/liquidityPools.js';
@@ -9,14 +14,15 @@ import { buildLiquidityWithdrawTransaction } from '../../utils/stellar/tradingTr
 import { formatAssetLabelWithIssuer } from '../trading/assetSearchUtils.js';
 import useLiquidityAction from './hooks/useLiquidityAction.js';
 import { assertSignerWeight, describeLiquidityError, loadFreshState, previewAccount } from './liquiditySubmit.js';
-import { formatPoolAmount, parseAmountInput } from './formatPoolAmount.js';
+import { formatPoolAmount, formatSlippage, parseAmountInput } from './formatPoolAmount.js';
 import { parseSlippagePercent, sharesFromPercent } from './dialogInputs.js';
 import LiquidityDialogShell, { BTN_PRIMARY, BTN_SECONDARY, FactList, INPUT, NOTE_ERROR, NOTE_NEUTRAL, NOTE_WARN, OperationsPreview } from './LiquidityDialogShell.jsx';
 import { CheckProblems, ResultNote, SlippageField } from './dialogParts.jsx';
+import { JobNotes, PreparedJobDialog } from './jobParts.jsx';
 
 const PERCENT_PRESETS = ['25', '50', '75', '100'];
 
-function buildWithdrawTx({ account, pool, quote, shares, removePoolTrust, feePerOp, network }) {
+function buildWithdrawTx({ account, pool, quote, shares, removePoolTrust, feePerOp, network, timeoutSeconds }) {
   return buildLiquidityWithdrawTransaction({
     account,
     liquidityPoolId: pool.poolId,
@@ -27,11 +33,13 @@ function buildWithdrawTx({ account, pool, quote, shares, removePoolTrust, feePer
     poolAsset: poolAssetFor(pool.assetA, pool.assetB),
     fee: feePerOp,
     networkPassphrase: passphraseFor(network),
+    timeoutSeconds,
   });
 }
 
 /**
- * Abheben aus einem nativen Pool (direkt signiert). Prozent oder Share-Betrag,
+ * Abheben aus einem nativen Pool, direkt signiert oder bei Multisig-Konten
+ * zusaetzlich als Multisig-Job. Prozent oder Share-Betrag,
  * Mindestbetraege nach Slippage. Bei 100 % optional die Pool-Trustline
  * entfernen (Default an). Vor dem Bauen wird neu geladen; liegen die neuen
  * Betraege unter den bestaetigten Mindestbetraegen, wird abgebrochen.
@@ -40,9 +48,11 @@ export default function WithdrawDialog({ poolId, publicKey, network, onClose, on
   const { t, i18n } = useTranslation(['liquidity', 'errors', 'submitTransaction', 'common']);
   const { t: tOps } = useTranslation('multisig');
   const locale = i18n.language;
+  const { multisigTimeoutSeconds } = useSettings();
   const action = useLiquidityAction({ publicKey, network, poolId, operationType: 'liquidityPoolWithdraw', t, onDone, onBackgroundResult });
   const { data } = action;
   const pool = data.pool;
+  const multisig = isMultisigAccount(data.account);
   const [mode, setMode] = useState('percent');
   const [percentInput, setPercentInput] = useState('');
   const [sharesInput, setSharesInput] = useState('');
@@ -81,39 +91,76 @@ export default function WithdrawDialog({ poolId, publicKey, network, onClose, on
     if (!check || check.problems.length) return;
     try {
       const tx = buildWithdrawTx({ account: previewAccount(data.account), pool, quote, shares, removePoolTrust: effectiveRemove, feePerOp: data.feePerOp, network });
-      setConfirmed({ shares, removePoolTrust: effectiveRemove, slippageBps: quote.slippageBps, quote, lines: describeOperations(tx.operations, tOps, publicKey) });
+      const poolInfo = { [pool.poolId]: { assetA: pool.assetA, assetB: pool.assetB } };
+      setConfirmed({ shares, removePoolTrust: effectiveRemove, slippageBps: quote.slippageBps, quote, lines: describeOperations(tx.operations, tOps, publicKey, { poolInfo, locale }) });
     } catch (err) {
       setReviewError(describeLiquidityError(t, err));
     }
   };
 
+  // Frischer Stand gegen die bestaetigten Werte (direkter Weg und Job-Weg gleich):
+  // { changed, fresh } bei Abweichung, sonst { fresh }.
+  const verifyFresh = async (server, c, feePerOp) => {
+    const fresh = await loadFreshState(server, publicKey, poolId);
+    const freshQuote = quoteWithdraw({ pool: fresh.pool, shares: c.shares, slippageBps: c.slippageBps });
+    const freshLine = findPoolShareLine(fresh.account, poolId);
+    const freshBalance = freshLine ? toStroops(freshLine.balance) : 0n;
+    if (freshQuote.status !== 'ok' || freshQuote.amountA < c.quote.minAmountA || freshQuote.amountB < c.quote.minAmountB) {
+      return { changed: t('liquidity:withdraw.priceChanged'), fresh };
+    }
+    if (c.removePoolTrust && freshBalance !== c.shares) return { changed: t('liquidity:dialog.checksChanged'), fresh };
+    const freshCheck = checkWithdrawPreconditions({ account: fresh.account, pool: fresh.pool, shares: c.shares, amountA: freshQuote.amountA, amountB: freshQuote.amountB, feePerOp, opCount: c.removePoolTrust ? 2 : 1 });
+    if (freshCheck.problems.length) return { changed: t('liquidity:dialog.checksChanged'), fresh };
+    return { fresh };
+  };
+
   const handleSign = () => {
     const c = confirmed;
     action.begin(c, async (server, collected, alive, send) => {
-      const fresh = await loadFreshState(server, publicKey, poolId);
+      const v = await verifyFresh(server, c, data.feePerOp);
       if (!alive()) return null;
-      const freshQuote = quoteWithdraw({ pool: fresh.pool, shares: c.shares, slippageBps: c.slippageBps });
-      const freshLine = findPoolShareLine(fresh.account, poolId);
-      const freshBalance = freshLine ? toStroops(freshLine.balance) : 0n;
-      if (freshQuote.status !== 'ok' || freshQuote.amountA < c.quote.minAmountA || freshQuote.amountB < c.quote.minAmountB) {
+      if (v.changed) {
         setConfirmed(null);
-        return { changed: t('liquidity:withdraw.priceChanged'), fresh };
+        return v;
       }
-      if (c.removePoolTrust && freshBalance !== c.shares) {
-        setConfirmed(null);
-        return { changed: t('liquidity:dialog.checksChanged'), fresh };
-      }
-      const freshCheck = checkWithdrawPreconditions({ account: fresh.account, pool: fresh.pool, shares: c.shares, amountA: freshQuote.amountA, amountB: freshQuote.amountB, feePerOp: data.feePerOp, opCount: c.removePoolTrust ? 2 : 1 });
-      if (freshCheck.problems.length) {
-        setConfirmed(null);
-        return { changed: t('liquidity:dialog.checksChanged'), fresh };
-      }
-      assertSignerWeight(fresh.account, collected, 'liquidityPoolWithdraw');
+      assertSignerWeight(v.fresh.account, collected, 'liquidityPoolWithdraw');
       if (!alive()) return null;
       // Bestaetigte Mindestbetraege verwenden, nicht die neu berechneten.
-      const tx = buildWithdrawTx({ account: fresh.account, pool: fresh.pool, quote: c.quote, shares: c.shares, removePoolTrust: c.removePoolTrust, feePerOp: data.feePerOp, network });
+      const tx = buildWithdrawTx({ account: v.fresh.account, pool: v.fresh.pool, quote: c.quote, shares: c.shares, removePoolTrust: c.removePoolTrust, feePerOp: data.feePerOp, network });
       const res = await send(tx);
       return { hash: res?.hash || res?.id || '' };
+    });
+  };
+
+  // Multisig-Job: gleiche Pruefung, Fee fuer spaeteres Einreichen (deferred),
+  // Gueltigkeit aus den Einstellungen, bestaetigte Mindestbetraege.
+  const handlePrepareJob = () => {
+    const c = confirmed;
+    void action.prepareJob(async (server, alive) => {
+      const feePerOp = await resolveFeePerOp(server, { deferred: true });
+      const v = await verifyFresh(server, c, feePerOp);
+      if (!alive()) return null;
+      if (v.changed) {
+        setConfirmed(null);
+        return v;
+      }
+      const timeoutSeconds = getMultisigTxTimeout({ immediateSubmit: false, multisigTimeoutSeconds });
+      const tx = buildWithdrawTx({ account: v.fresh.account, pool: v.fresh.pool, quote: c.quote, shares: c.shares, removePoolTrust: c.removePoolTrust, feePerOp, network, timeoutSeconds });
+      return {
+        tx,
+        items: [
+          { label: t('liquidity:job.source'), value: publicKey },
+          { label: t('liquidity:job.network'), value: getNetworkConfig(network).label },
+          { label: t('liquidity:job.pool'), value: `${labelA} / ${labelB} (${pool.poolId})` },
+          { label: t('liquidity:withdraw.sharesToWithdraw'), value: formatPoolAmount(c.shares, locale) },
+          { label: t('liquidity:withdraw.minimum', { asset: labelA }), value: formatPoolAmount(c.quote.minAmountA, locale) },
+          { label: t('liquidity:withdraw.minimum', { asset: labelB }), value: formatPoolAmount(c.quote.minAmountB, locale) },
+          { label: t('liquidity:job.slippage'), value: `${formatSlippage(c.quote.slippageBps, locale)} %` },
+          { label: t('liquidity:job.poolTrust'), value: t(c.removePoolTrust ? 'liquidity:job.poolTrustRemove' : 'liquidity:job.poolTrustKeep') },
+          { label: t('liquidity:job.validUntil'), value: formatValidUntil(tx.timeBounds?.maxTime, locale, t) },
+          { label: t('liquidity:job.noteLabel'), value: [t('liquidity:job.withdrawHint'), c.removePoolTrust ? t('liquidity:job.removeTrustHint') : ''].filter(Boolean).join(' ') },
+        ],
+      };
     });
   };
 
@@ -177,12 +224,17 @@ export default function WithdrawDialog({ poolId, publicKey, network, onClose, on
         )}
         {check && <CheckProblems problems={check.problems} pool={pool} />}
         {reviewError && <div className={NOTE_ERROR}>{reviewError}</div>}
+        <JobNotes jobError={action.jobError} jobCreated={action.jobCreated} />
         {confirmed ? (
           <>
             <OperationsPreview lines={confirmed.lines} legend={t('liquidity:dialog.legend', { a: labelA, b: labelB })} />
+            {multisig && <JobNotes hints={[t('liquidity:job.withdrawHint'), confirmed.removePoolTrust ? t('liquidity:job.removeTrustHint') : '']} />}
             <div className="flex flex-wrap gap-2">
-              <button type="button" className={BTN_PRIMARY} onClick={handleSign} disabled={action.processing}>{t('liquidity:dialog.sign')}</button>
-              <button type="button" className={BTN_SECONDARY} onClick={() => setConfirmed(null)}>{t('liquidity:dialog.back')}</button>
+              <button type="button" className={BTN_PRIMARY} onClick={handleSign} disabled={action.processing || action.jobCreated}>{t('liquidity:dialog.sign')}</button>
+              {multisig && (
+                <button type="button" className={BTN_SECONDARY} onClick={handlePrepareJob} disabled={action.processing || action.jobCreated}>{t('liquidity:job.prepare')}</button>
+              )}
+              <button type="button" className={BTN_SECONDARY} onClick={() => setConfirmed(null)} disabled={action.jobCreated}>{t('liquidity:dialog.back')}</button>
             </div>
           </>
         ) : (
@@ -198,6 +250,7 @@ export default function WithdrawDialog({ poolId, publicKey, network, onClose, on
     <LiquidityDialogShell title={t('liquidity:withdraw.title')} onClose={onClose} closeDisabled={action.processing} testId="withdraw-dialog">
       {body}
       {action.showSecretModal && <SecretKeyModal {...action.modalProps} />}
+      <PreparedJobDialog job={action.preparedJob} onClose={onClose} />
     </LiquidityDialogShell>
   );
 }

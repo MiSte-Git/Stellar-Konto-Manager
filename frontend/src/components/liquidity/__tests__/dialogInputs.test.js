@@ -1,6 +1,8 @@
+import { Account, Asset, Keypair, LiquidityPoolAsset, LiquidityPoolFeeV18, Networks, Operation, TransactionBuilder } from '@stellar/stellar-sdk';
+import { poolIdFor } from '../../../utils/stellar/liquidityPools.js';
 import { describe, expect, it } from 'vitest';
 import { parseSlippagePercent, sharesFromPercent } from '../dialogInputs.js';
-import { LIQUIDITY_OP_CODES, liquidityErrorKey } from '../../../utils/stellar/liquidityErrors.js';
+import { LIQUIDITY_OP_CODES, jobSubmitResultCodes, liquidityErrorKey, liquidityErrorKeyFromResultCodes } from '../../../utils/stellar/liquidityErrors.js';
 import errors from '../../../locales/de/errors.json';
 
 describe('parseSlippagePercent', () => {
@@ -50,6 +52,54 @@ describe('liquidityErrorKey', () => {
   it('liefert null fuer unbekannte Codes und Fehler ohne Codes', () => {
     expect(liquidityErrorKey(err({ transaction: 'tx_failed', operations: ['op_too_few_offers'] }))).toBeNull();
     expect(liquidityErrorKey(new Error('x'))).toBeNull();
+  });
+});
+
+describe('jobSubmitResultCodes', () => {
+  const codes = { transaction: 'tx_failed', operations: ['op_success', 'op_bad_price'] };
+  it('liest result_codes aus beiden Backend-Formen (PHP detail.extras, Node error.extras)', () => {
+    expect(jobSubmitResultCodes({ error: 'Transaction Failed', detail: { extras: { result_codes: codes } } })).toEqual(codes);
+    expect(jobSubmitResultCodes({ error: { title: 'Transaction Failed', extras: { result_codes: codes } } })).toEqual(codes);
+    expect(liquidityErrorKeyFromResultCodes(jobSubmitResultCodes({ error: { extras: { result_codes: codes } } })))
+      .toBe('submitTransaction.failed:liquidity.op_bad_price');
+  });
+
+  it('liefert null ohne verwertbare Codes', () => {
+    expect(jobSubmitResultCodes(null)).toBeNull();
+    expect(jobSubmitResultCodes({ error: 'boom' })).toBeNull();
+    expect(jobSubmitResultCodes({ error: 'x', detail: { extras: { result_codes: 'unknown' } } })).toBeNull();
+    expect(liquidityErrorKeyFromResultCodes(null)).toBeNull();
+  });
+});
+
+describe('liquidityErrorKeyFromResultCodes mit Op-Liste (positional)', () => {
+  const issuer = Keypair.random().publicKey();
+  const usd = new Asset('USD', issuer);
+  const poolId = poolIdFor(Asset.native(), usd);
+  const ops = (...list) => {
+    const builder = new TransactionBuilder(new Account(Keypair.random().publicKey(), '1'), { fee: '100', networkPassphrase: Networks.TESTNET });
+    list.forEach((op) => builder.addOperation(op));
+    return builder.setTimeout(60).build().operations;
+  };
+  const payment = Operation.payment({ destination: issuer, asset: Asset.native(), amount: '1' });
+  const withdraw = Operation.liquidityPoolWithdraw({ liquidityPoolId: poolId, amount: '1', minAmountA: '0', minAmountB: '0' });
+  const poolTrust = Operation.changeTrust({ asset: new LiquidityPoolAsset(Asset.native(), usd, LiquidityPoolFeeV18) });
+  const assetTrust = Operation.changeTrust({ asset: usd });
+
+  it('kein LP-Text, wenn eine Zahlung scheitert und der LP-Op erfolgreich ist', () => {
+    expect(liquidityErrorKeyFromResultCodes({ transaction: 'tx_failed', operations: ['op_underfunded', 'op_success'] }, ops(payment, withdraw))).toBeNull();
+  });
+
+  it('LP-Text fuer LP-Ops und changeTrust auf ein Pool-Asset, nicht fuer normale Trustlines', () => {
+    expect(liquidityErrorKeyFromResultCodes({ transaction: 'tx_failed', operations: ['op_success', 'op_under_minimum'] }, ops(payment, withdraw)))
+      .toBe('submitTransaction.failed:liquidity.op_under_minimum');
+    expect(liquidityErrorKeyFromResultCodes({ transaction: 'tx_failed', operations: ['op_low_reserve', 'op_success'] }, ops(poolTrust, withdraw)))
+      .toBe('submitTransaction.failed:liquidity.op_low_reserve');
+    expect(liquidityErrorKeyFromResultCodes({ transaction: 'tx_failed', operations: ['op_low_reserve', 'op_success'] }, ops(assetTrust, withdraw))).toBeNull();
+  });
+
+  it('ohne Op-Liste wie bisher (direkter Weg)', () => {
+    expect(liquidityErrorKeyFromResultCodes({ transaction: 'tx_failed', operations: ['op_underfunded'] })).toBe('submitTransaction.failed:liquidity.op_underfunded');
   });
 });
 

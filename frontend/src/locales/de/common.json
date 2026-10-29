@@ -1285,6 +1285,11 @@
   "externalDomain": {
     "warning": "Tippe diese Adresse selbst in deinen Browser ein – klicke nie auf Links aus einer App oder Nachricht."
   },
+  "multisig": {
+    "jobs": {
+      "create_failed": "Der Multisig-Job konnte nicht erstellt werden."
+    }
+  },
   "resolveOrValidatePublicKey": {
     "invalid": "Ungültige Adresse. Erwartet wird ein Public Key (G…), eine Muxed-Adresse (M…) oder eine Federation-Adresse (name*domain).",
     "empty": "Bitte eine Adresse eingeben."

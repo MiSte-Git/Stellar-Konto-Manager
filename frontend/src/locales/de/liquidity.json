@@ -3,7 +3,7 @@
   "swapLink": "Pool-Ansicht",
   "page": {
     "title": "Liquidity Pools",
-    "intro": "Native Stellar Liquidity Pools (constant product, Fee 0,30 %). Angezeigt werden Daten aus Horizon. Einzahlen und Abheben werden direkt mit deinen Keys signiert; Multisig-Jobs sind hier noch nicht möglich.",
+    "intro": "Native Stellar Liquidity Pools (constant product, Fee 0,30 %). Angezeigt werden Daten aus Horizon. Einzahlen und Abheben werden direkt mit deinen Keys signiert; bei Multisig-Konten kann stattdessen ein Multisig-Job vorbereitet werden.",
     "network": "Netzwerk"
   },
   "source": {
@@ -96,7 +96,29 @@
     "success": "Eine Pool-Transaktion wurde nach dem Schließen des Dialogs erfolgreich gesendet.",
     "failed": "Eine Pool-Transaktion ist nach dem Schließen des Dialogs fehlgeschlagen:",
     "dismiss": "Hinweis schließen",
-    "context": "Gesendet im Netz {{network}} vom Konto {{account}}."
+    "context": "Gesendet im Netz {{network}} vom Konto {{account}}.",
+    "jobCreated": "Ein Multisig-Job wurde nach dem Schließen des Dialogs erstellt.",
+    "jobContext": "Erstellt im Netz {{network}} für das Konto {{account}}, Job-ID {{jobId}}."
+  },
+  "job": {
+    "prepare": "Multisig-Job vorbereiten",
+    "created": "Multisig-Job erstellt. Die Transaktion wird gesendet, sobald genug Signaturen gesammelt sind.",
+    "jobId": "Job-ID",
+    "source": "Quellkonto",
+    "network": "Netzwerk",
+    "pool": "Pool",
+    "slippage": "Slippage-Toleranz",
+    "poolTrust": "Pool-Trustline",
+    "poolTrustCreate": "wird in derselben Transaktion angelegt",
+    "poolTrustExists": "besteht bereits",
+    "poolTrustRemove": "wird nach dem Abheben entfernt",
+    "poolTrustKeep": "bleibt bestehen",
+    "validUntil": "Gültig bis",
+    "noteLabel": "Hinweis",
+    "depositHint": "Die Preisgrenzen beziehen sich auf den aktuellen Kurs. Bewegt sich der Kurs bis zur letzten Signatur darüber hinaus, scheitert die Transaktion (op_bad_price) und der Job muss neu erstellt werden.",
+    "withdrawHint": "Die Mindestbeträge beziehen sich auf den aktuellen Kurs. Bewegt sich der Kurs bis zur letzten Signatur so, dass sie unterschritten werden, scheitert die Transaktion (op_under_minimum) und der Job muss neu erstellt werden.",
+    "removeTrustHint": "Die Pool-Trustline wird nur entfernt, wenn bei der Ausführung genau dieser Share-Bestand vorliegt. Ändert sich der Share-Bestand bis dahin, scheitert die gesamte Transaktion.",
+    "useJobInstead": "Für dieses Multisig-Konto kann stattdessen ein Multisig-Job vorbereitet werden."
   },
   "deposit": {
     "title": "Liquidität einzahlen",

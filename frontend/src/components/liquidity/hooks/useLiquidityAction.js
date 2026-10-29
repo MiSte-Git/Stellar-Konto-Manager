@@ -1,10 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { horizonUrlFor, passphraseFor } from '../../../config/networks.js';
+import { getNetworkConfig, horizonUrlFor, passphraseFor } from '../../../config/networks.js';
 import { getHorizonServer } from '../../../utils/stellar/stellarUtils.js';
 import { resolveFeePerOp } from '../../../utils/stellar/fees.js';
 import { AmbiguousSubmitResultError } from '../../../utils/stellar/submitTransactionSafely.js';
 import { assertHorizonNetwork } from '../../../utils/multisig/jobRevocation.js';
 import { getRequiredThreshold } from '../../../utils/getRequiredThreshold.js';
+import { createMultisigJobFromXdr } from '../../../utils/multisigApi.js';
+import { txHashHex } from '../../../utils/stellar/txHash.js';
+import { isMultisigAccount } from '../../../utils/stellar/isMultisigAccount.js';
 import useTradingSubmit from '../../trading/hooks/useTradingSubmit.js';
 import { describeLiquidityError, loadFreshState, signAndSubmit } from '../liquiditySubmit.js';
 
@@ -25,6 +28,14 @@ import { describeLiquidityError, loadFreshState, signAndSubmit } from '../liquid
  * Ergebnis an onBackgroundResult ({ type: 'success'|'ambiguous', hash } bzw.
  * { type: 'error', message }, jeweils mit network und publicKey des Absendens),
  * damit die Seite es anzeigen kann.
+ *
+ * prepareJob(work) ist der Multisig-Job-Weg (kein SecretKeyModal): gleicher
+ * Doppelklick-Schutz und dieselbe Netzpruefung, dann work(server, alive) mit
+ * { changed, fresh } oder { tx, items } (unsignierte Transaktion und Zeilen fuer
+ * die Zusammenfassung). Daraus wird per createMultisigJobFromXdr ein Job.
+ * Nach einem erstellten Job sperrt jobCreated weitere Jobs in diesem Dialog.
+ * Wird der Dialog vor dem Erstellen abgebaut, wird verworfen; war der Job
+ * schon angelegt, geht { type: 'jobCreated', jobId, hash } an onBackgroundResult.
  */
 export default function useLiquidityAction({ publicKey, network, poolId, operationType, t, onDone, onBackgroundResult }) {
   const [data, setData] = useState({ loading: true, error: '', account: null, pool: null, feePerOp: '100' });
@@ -39,6 +50,11 @@ export default function useLiquidityAction({ publicKey, network, poolId, operati
   onDoneRef.current = onDone;
   const onBackgroundResultRef = useRef(onBackgroundResult);
   onBackgroundResultRef.current = onBackgroundResult;
+  const [jobError, setJobError] = useState('');
+  const [preparedJob, setPreparedJob] = useState(null);
+  const [jobCreated, setJobCreated] = useState(false);
+  const jobCreatedRef = useRef(false);
+  const accountRef = useRef(null);
 
   useEffect(() => {
     mountedRef.current = true;
@@ -59,6 +75,7 @@ export default function useLiquidityAction({ publicKey, network, poolId, operati
   }, [publicKey, network, poolId, t]);
 
   useEffect(() => { reload(); }, [reload]);
+  accountRef.current = data.account;
 
   const closeModal = useCallback(() => {
     setShowSecretModal(false);
@@ -112,13 +129,52 @@ export default function useLiquidityAction({ publicKey, network, poolId, operati
           onDoneRef.current?.();
           return;
         }
-        setModalError(describeLiquidityError(t, err));
+        // Zu wenig Gewicht bei einem Multisig-Konto: auf den Job-Weg hinweisen.
+        const jobHint = err?.required !== undefined && isMultisigAccount(accountRef.current) ? ` ${t('liquidity:job.useJobInstead')}` : '';
+        setModalError(`${describeLiquidityError(t, err)}${jobHint}`);
       } finally {
         inFlightRef.current = false;
         if (mountedRef.current) setProcessing(false);
       }
     });
   }, [alive, beginAction, closeModal, network, operationType, publicKey, t]);
+
+  const prepareJob = useCallback(async (work) => {
+    if (inFlightRef.current || jobCreatedRef.current) return;
+    inFlightRef.current = true;
+    setProcessing(true);
+    setJobError('');
+    setNotice('');
+    try {
+      const server = getHorizonServer(horizonUrlFor(network));
+      await assertHorizonNetwork(server, passphraseFor(network));
+      const outcome = await work(server, alive);
+      if (!outcome || !mountedRef.current) return;
+      if (outcome.changed) {
+        setData((d) => ({ ...d, account: outcome.fresh.account, pool: outcome.fresh.pool }));
+        setNotice(outcome.changed);
+        return;
+      }
+      const job = await createMultisigJobFromXdr({
+        network: getNetworkConfig(network).backendId,
+        accountId: publicKey,
+        txXdr: outcome.tx.toXDR(),
+      });
+      jobCreatedRef.current = true;
+      const hash = job.hash || txHashHex(outcome.tx);
+      if (!mountedRef.current) {
+        onBackgroundResultRef.current?.({ type: 'jobCreated', jobId: job.id, hash, network, publicKey });
+        return;
+      }
+      setJobCreated(true);
+      setPreparedJob({ id: job.id, hash, xdr: job.xdr, items: outcome.items || [] });
+    } catch (err) {
+      if (mountedRef.current) setJobError(describeLiquidityError(t, err));
+    } finally {
+      inFlightRef.current = false;
+      if (mountedRef.current) setProcessing(false);
+    }
+  }, [alive, network, publicKey, t]);
 
   const modalProps = {
     onConfirm: (collected) => pendingAction?.execute?.(collected),
@@ -135,5 +191,8 @@ export default function useLiquidityAction({ publicKey, network, poolId, operati
     requiredThreshold: getRequiredThreshold(operationType, data.account?.thresholds || {}),
   };
 
-  return { data, reload, begin, showSecretModal, modalProps, result, notice, setNotice, processing };
+  return {
+    data, reload, begin, showSecretModal, modalProps, result, notice, setNotice, processing,
+    prepareJob, jobError, preparedJob, jobCreated,
+  };
 }

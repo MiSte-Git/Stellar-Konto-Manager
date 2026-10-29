@@ -12,7 +12,7 @@ import { shortenKey } from '../components/trading/assetSearchUtils.js';
 
 /**
  * Liquidity Pools: eigene Positionen und Pool-Suche fuer native Stellar Pools,
- * Einzahlen und Abheben direkt signiert (Stufe 2a, keine Multisig-Jobs).
+ * Einzahlen und Abheben direkt signiert (Stufe 2a) oder bei Multisig-Konten als Multisig-Job (Stufe 2b).
  *
  * publicKey/notFound/accountLoading kommen aus main.jsx (dieselben Werte wie
  * fuer die AccountGate der anderen Seiten). Nur "Meine Positionen" braucht ein
@@ -171,15 +171,19 @@ function BackgroundResultNote({ result, onDismiss }) {
   } else if (result.type === 'error') {
     className = NOTE_ERROR;
     content = <div>{t('liquidity:background.failed')} {result.message}</div>;
+  } else if (result.type === 'jobCreated') {
+    content = <div className="font-semibold">{t('liquidity:background.jobCreated')}</div>;
   } else {
     content = <div className="font-semibold">{t('liquidity:background.success')}</div>;
   }
   return (
-    <div className={className} role={result.type === 'success' ? 'status' : 'alert'} data-testid="liquidity-background-result">
+    <div className={className} role={result.type === 'success' || result.type === 'jobCreated' ? 'status' : 'alert'} data-testid="liquidity-background-result">
       {content}
       {result.hash && <div className="mt-1 break-all font-mono">{result.hash}</div>}
       <div className="mt-1">
-        {t('liquidity:background.context', { network: NETWORKS[result.network]?.label || result.network, account: shortenKey(result.publicKey) })}
+        {result.type === 'jobCreated'
+          ? t('liquidity:background.jobContext', { network: NETWORKS[result.network]?.label || result.network, account: shortenKey(result.publicKey), jobId: result.jobId })
+          : t('liquidity:background.context', { network: NETWORKS[result.network]?.label || result.network, account: shortenKey(result.publicKey) })}
       </div>
       <button type="button" className="mt-2 text-xs underline" onClick={onDismiss}>{t('liquidity:background.dismiss')}</button>
     </div>

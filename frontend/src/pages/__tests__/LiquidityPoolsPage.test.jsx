@@ -12,7 +12,13 @@ const hoisted = vi.hoisted(() => ({
   poolByIdCall: vi.fn(),
   forAssetsCall: vi.fn(),
   submit: vi.fn(),
+  createJob: vi.fn(),
   collected: [],
+}));
+
+vi.mock('../../utils/multisigApi.js', async (importOriginal) => ({
+  ...(await importOriginal()),
+  createMultisigJobFromXdr: (...args) => hoisted.createJob(...args),
 }));
 
 vi.mock('../../utils/stellar/submitTransactionSafely.js', async (importOriginal) => ({
@@ -313,6 +319,45 @@ describe('LiquidityPoolsPage', () => {
     expect(screen.queryByTestId('pool-not-found')).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: 'Hinweis schließen' }));
     expect(screen.queryByTestId('liquidity-background-result')).toBeNull();
+  });
+
+  it('meldet einen Multisig-Job, der waehrend eines Netzwechsels erstellt wurde, mit Netz, Konto und Job-ID', async () => {
+    const owner = Keypair.random();
+    const cosigner = Keypair.random();
+    const shareLine = { asset_type: 'liquidity_pool_shares', liquidity_pool_id: POOL_ID, balance: '25.0000000' };
+    const usdcLine = { asset_type: 'credit_alphanum4', asset_code: 'USDC', asset_issuer: USDC_ISSUER, balance: '0', limit: '1000', buying_liabilities: '0', selling_liabilities: '0', is_authorized: true };
+    hoisted.accountCall.mockResolvedValue({ balances: [{ asset_type: 'native', balance: '100' }, shareLine] });
+    hoisted.poolByIdCall.mockResolvedValue(poolRecord());
+    hoisted.loadAccount.mockImplementation(async () => Object.assign(new Account(owner.publicKey(), '1'), {
+      balances: [{ asset_type: 'native', balance: '100.0000000', selling_liabilities: '0' }, usdcLine, shareLine],
+      subentry_count: 3,
+      thresholds: { low_threshold: 1, med_threshold: 2, high_threshold: 2 },
+      signers: [{ key: owner.publicKey(), weight: 1, type: 'ed25519_public_key' }, { key: cosigner.publicKey(), weight: 1, type: 'ed25519_public_key' }],
+    }));
+    let resolveJob;
+    hoisted.createJob.mockReset();
+    hoisted.createJob.mockImplementation(() => new Promise((resolve) => { resolveJob = resolve; }));
+
+    const view = renderPage({ publicKey: owner.publicKey() });
+    fireEvent.click(await screen.findByRole('button', { name: 'Abheben' }));
+    fireEvent.click(await screen.findByRole('button', { name: '50 %' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Weiter: Operationen prüfen' }));
+    await act(async () => { fireEvent.click(screen.getByRole('button', { name: 'Multisig-Job vorbereiten' })); });
+    await waitFor(() => expect(hoisted.createJob).toHaveBeenCalledTimes(1));
+
+    view.rerender(
+      <I18nextProvider i18n={i18n}>
+        <LiquidityPoolsPage network="TESTNET" publicKey={owner.publicKey()} />
+      </I18nextProvider>
+    );
+    await waitFor(() => expect(screen.queryByTestId('withdraw-dialog')).toBeNull());
+    await act(async () => { resolveJob({ id: 'job-77', hash: 'jobhash77', xdr: 'x' }); });
+
+    const note = await screen.findByTestId('liquidity-background-result');
+    const pk = owner.publicKey();
+    expect(note).toHaveTextContent('Ein Multisig-Job wurde nach dem Schließen des Dialogs erstellt.');
+    expect(note).toHaveTextContent(`Erstellt im Netz Mainnet für das Konto ${pk.slice(0, 8)}...${pk.slice(-8)}, Job-ID job-77.`);
+    expect(hoisted.createJob.mock.calls[0][0].network).toBe('public');
   });
 
   it('sperrt Einzahlen bei leerem Pool', async () => {

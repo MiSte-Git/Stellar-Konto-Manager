@@ -77,10 +77,11 @@ export function parseHorizonPoolAsset(str) {
  * Horizon-Record von /liquidity_pools/{id} -> einheitliches Pool-Modell.
  * Die Reserven werden ueber das Asset zugeordnet, nicht ueber die Position im
  * Array, und die Assets kanonisch sortiert. Die aus den Assets berechnete
- * Pool-ID muss record.id entsprechen, sonst wirft die Funktion
- * liquidityPools.poolIdMismatch (Horizon-Daten nicht konsistent).
+ * Pool-ID muss record.id entsprechen und, falls angegeben, der angefragten
+ * expectedPoolId; sonst wirft die Funktion liquidityPools.poolIdMismatch
+ * (Horizon-Daten nicht konsistent oder Antwort fuer einen anderen Pool).
  */
-export function normalizeNativePool(record) {
+export function normalizeNativePool(record, expectedPoolId) {
   const reserves = Array.isArray(record?.reserves) ? record.reserves : [];
   if (reserves.length !== 2) throw new Error('liquidityPools.invalidRecord');
   const parsed = reserves.map((r) => ({ asset: parseHorizonPoolAsset(r.asset), amount: toStroops(r.amount) }));
@@ -88,6 +89,7 @@ export function normalizeNativePool(record) {
   const [first, second] = swapped ? [parsed[1], parsed[0]] : parsed;
   const poolId = String(record.id || '');
   if (poolIdFor(first.asset, second.asset) !== poolId) throw new Error('liquidityPools.poolIdMismatch');
+  if (expectedPoolId !== undefined && poolId !== String(expectedPoolId)) throw new Error('liquidityPools.poolIdMismatch');
   return {
     source: POOL_SOURCE_NATIVE,
     poolId,
