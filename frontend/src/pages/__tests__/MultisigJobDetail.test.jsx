@@ -341,7 +341,7 @@ describe('Liquidity-Pool-Jobs im Job-Detail (Stufe 2b)', () => {
     hoisted.poolMock.mockResolvedValue(poolRecord('900.0000000', '111.0000000'));
     renderPage();
     expect(await screen.findByText(new RegExp('^Liquidität abheben aus Pool XLM/USD'))).toHaveTextContent(`gegen mindestens 99.5000000 XLM und 9.9500000 ${usdLabel}`);
-    await waitFor(() => expect(screen.getByTestId('job-pool-state')).toHaveTextContent(`aktuell zu erwarten 90 XLM und 11,1 ${usdLabel}. Die Mindestbeträge dieser Operation werden nicht erreicht.`));
+    await waitFor(() => expect(screen.getByTestId('job-pool-state')).toHaveTextContent(`aktuell zu erwarten 90,0 XLM und 11,1 ${usdLabel}. Die Mindestbeträge dieser Operation werden nicht erreicht.`));
   });
 
   it('faellt bei 404 oder falscher Pool-ID auf Asset A/B zurueck, ohne abzustuerzen', async () => {

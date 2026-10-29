@@ -128,8 +128,10 @@ describe('LiquidityPoolsPage', () => {
     expect(rows[0]).toHaveTextContent('XLM / USDC');
     expect(rows[0]).toHaveTextContent('Native Stellar Pool');
     expect(rows[0]).toHaveTextContent('25 %');
-    expect(rows[0]).toHaveTextContent('250');
-    expect(rows[0]).toHaveTextContent('50');
+    // Betraege mit Einheit im Wert
+    expect(rows[0]).toHaveTextContent('Pool Shares25,0 Pool Shares');
+    expect(rows[0]).toHaveTextContent('Gegenwert XLM250,0 XLM');
+    expect(rows[0]).toHaveTextContent(`Gegenwert USDC50,0 USDC:${USDC_ISSUER.slice(0, 8)}...${USDC_ISSUER.slice(-8)}`);
     expect(rows[0]).not.toHaveTextContent('Bestand 0');
     expect(rows[1]).toHaveTextContent('Trustline ohne Pool Shares (Bestand 0)');
   });
@@ -220,6 +222,9 @@ describe('LiquidityPoolsPage', () => {
     await waitFor(() => expect(facts).toHaveTextContent('USDC / XLM'));
     const text = facts.textContent;
     expect(text.indexOf('Reserve USDC')).toBeLessThan(text.indexOf('Reserve XLM'));
+    expect(facts).toHaveTextContent('Reserve XLM1.000,0 XLM');
+    expect(facts).toHaveTextContent(`Reserve USDC200,0 USDC:${USDC_ISSUER.slice(0, 8)}...${USDC_ISSUER.slice(-8)}`);
+    expect(facts).toHaveTextContent('Total Pool Shares100,0 Pool Shares');
   });
 
   it('setzt den Paar-Fehler zurueck, sobald sich am Asset-Paar etwas aendert', async () => {
@@ -364,7 +369,7 @@ describe('LiquidityPoolsPage', () => {
     expect(await screen.findByTestId('pool-facts')).toHaveTextContent(POOL_ID);
     fireEvent.click(await screen.findByRole('button', { name: 'Abheben' }));
     fireEvent.click(await screen.findByRole('button', { name: '50 %' }));
-    fireEvent.click(screen.getByRole('button', { name: 'Weiter: Operationen prüfen' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Operationen prüfen' }));
     fireEvent.click(screen.getByRole('button', { name: 'Signieren und senden' }));
     await act(async () => { fireEvent.click(await screen.findByText('keys-ok')); });
     await waitFor(() => expect(hoisted.submit).toHaveBeenCalledTimes(1));
@@ -414,8 +419,11 @@ describe('LiquidityPoolsPage', () => {
     const view = renderPage({ publicKey: owner.publicKey() });
     fireEvent.click(await screen.findByRole('button', { name: 'Abheben' }));
     fireEvent.click(await screen.findByRole('button', { name: '50 %' }));
-    fireEvent.click(screen.getByRole('button', { name: 'Weiter: Operationen prüfen' }));
-    await act(async () => { fireEvent.click(screen.getByRole('button', { name: 'Multisig-Job vorbereiten' })); });
+    fireEvent.click(screen.getByRole('button', { name: 'Operationen prüfen' }));
+    // Multisig-Konto: Optionsdialog, Standard ist "Multisig-Job erstellen"
+    fireEvent.click(screen.getByRole('button', { name: 'Signieren und senden' }));
+    expect(await screen.findByRole('radio', { name: /Multisig-Job erstellen/ })).toBeChecked();
+    await act(async () => { fireEvent.click(screen.getByRole('button', { name: 'Weiter' })); });
     await waitFor(() => expect(hoisted.createJob).toHaveBeenCalledTimes(1));
 
     view.rerender(

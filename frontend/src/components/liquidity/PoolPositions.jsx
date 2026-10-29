@@ -1,10 +1,11 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import AccountGate from '../AccountGate.jsx';
-import { formatAssetLabelWithIssuer } from '../trading/assetSearchUtils.js';
+import { formatAssetLabelWithIssuer, getAssetCode } from '../trading/assetSearchUtils.js';
 import { shortKey } from '../../utils/multisig/describeOperations.js';
 import usePoolPositions from './hooks/usePoolPositions.js';
-import { formatPoolAmount, formatSharePercent } from './formatPoolAmount.js';
+import { formatAmountWithUnit, formatSharePercent } from './formatPoolAmount.js';
+import { FactRow } from './LiquidityDialogShell.jsx';
 
 const NOTICE = 'rounded-sm border px-3 py-2 text-xs';
 
@@ -47,23 +48,11 @@ function PositionRow({ entry, locale, onShowDetails, onWithdraw }) {
           )}
         </div>
       </div>
-      <dl className="grid gap-2 sm:grid-cols-4">
-        <div>
-          <dt className="font-semibold">{t('liquidity:positions.shares')}</dt>
-          <dd className="font-mono">{formatPoolAmount(position.shares, locale)}</dd>
-        </div>
-        <div>
-          <dt className="font-semibold">{t('liquidity:positions.sharePercent')}</dt>
-          <dd className="font-mono">{t('liquidity:positions.sharePercentValue', { percent: formatSharePercent(position.sharePercent, locale) })}</dd>
-        </div>
-        <div>
-          <dt className="font-semibold">{t('liquidity:positions.value', { asset: labelA })}</dt>
-          <dd className="font-mono">{formatPoolAmount(position.amountA, locale)}</dd>
-        </div>
-        <div>
-          <dt className="font-semibold">{t('liquidity:positions.value', { asset: labelB })}</dt>
-          <dd className="font-mono">{formatPoolAmount(position.amountB, locale)}</dd>
-        </div>
+      <dl className="grid gap-x-6 sm:grid-cols-2">
+        <FactRow label={t('liquidity:positions.shares')} value={formatAmountWithUnit(position.shares, t('liquidity:units.shares'), locale)} />
+        <FactRow label={t('liquidity:positions.sharePercent')} value={t('liquidity:positions.sharePercentValue', { percent: formatSharePercent(position.sharePercent, locale) })} />
+        <FactRow label={t('liquidity:positions.value', { asset: getAssetCode(pool.assetA) })} value={formatAmountWithUnit(position.amountA, labelA, locale)} />
+        <FactRow label={t('liquidity:positions.value', { asset: getAssetCode(pool.assetB) })} value={formatAmountWithUnit(position.amountB, labelB, locale)} />
       </dl>
     </li>
   );

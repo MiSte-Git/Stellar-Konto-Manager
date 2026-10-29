@@ -38,7 +38,9 @@ function MultisigPrepareDialog({ open, onClose, hash, xdr, summary }) {
           </button>
         </div>
 
-        {items.length > 0 && (
+        {summary?.body && <div className="border rounded-sm p-3 mb-3">{summary.body}</div>}
+
+        {!summary?.body && items.length > 0 && (
           <div className="border rounded-sm p-3 mb-3 space-y-1">
             {items.map((item, idx) => (
               <div key={idx} className="text-sm flex flex-wrap gap-2">

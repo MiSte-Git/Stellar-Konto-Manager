@@ -7,7 +7,6 @@ import { assertHorizonNetwork } from '../../../utils/multisig/jobRevocation.js';
 import { getRequiredThreshold } from '../../../utils/getRequiredThreshold.js';
 import { createMultisigJobFromXdr } from '../../../utils/multisigApi.js';
 import { txHashHex } from '../../../utils/stellar/txHash.js';
-import { isMultisigAccount } from '../../../utils/stellar/isMultisigAccount.js';
 import useTradingSubmit from '../../trading/hooks/useTradingSubmit.js';
 import { describeLiquidityError, loadFreshState, signAndSubmit } from '../liquiditySubmit.js';
 
@@ -29,13 +28,20 @@ import { describeLiquidityError, loadFreshState, signAndSubmit } from '../liquid
  * { type: 'error', message }, jeweils mit network und publicKey des Absendens),
  * damit die Seite es anzeigen kann.
  *
- * prepareJob(work) ist der Multisig-Job-Weg (kein SecretKeyModal): gleicher
- * Doppelklick-Schutz und dieselbe Netzpruefung, dann work(server, alive) mit
- * { changed, fresh } oder { tx, items } (unsignierte Transaktion und Zeilen fuer
- * die Zusammenfassung). Daraus wird per createMultisigJobFromXdr ein Job.
- * Nach einem erstellten Job sperrt jobCreated weitere Jobs in diesem Dialog.
- * Wird der Dialog vor dem Erstellen abgebaut, wird verworfen; war der Job
- * schon angelegt, geht { type: 'jobCreated', jobId, hash } an onBackgroundResult.
+ * begin(payload, work, { local, onBackToSelection }): local = Multisig-Option
+ * "Alle Signaturen lokal eingeben" (SecretKeyModal wie in SendPayment im
+ * Kontext 'local', mit Rueckweg zur Optionsauswahl).
+ *
+ * prepareJob(work) und exportXdr(work) sind die Wege ohne SecretKeyModal:
+ * gleicher Doppelklick-Schutz und dieselbe Netzpruefung, dann work(server, alive)
+ * mit { changed, fresh } oder { tx, items } (unsignierte Transaktion und Zeilen
+ * fuer die Zusammenfassung).
+ * - prepareJob legt per createMultisigJobFromXdr einen Job an. Danach sperrt
+ *   jobCreated weitere Jobs in diesem Dialog. Wird der Dialog vor dem Erstellen
+ *   abgebaut, wird verworfen; war der Job schon angelegt, geht
+ *   { type: 'jobCreated', jobId, hash } an onBackgroundResult.
+ * - exportXdr legt keinen Job an und sendet nichts; XDR und Hash landen in
+ *   exportedXdr. Keine Sperre danach, nur kein paralleler Aufbau.
  */
 export default function useLiquidityAction({ publicKey, network, poolId, operationType, t, onDone, onBackgroundResult }) {
   const [data, setData] = useState({ loading: true, error: '', account: null, pool: null, feePerOp: '100' });
@@ -54,7 +60,9 @@ export default function useLiquidityAction({ publicKey, network, poolId, operati
   const [preparedJob, setPreparedJob] = useState(null);
   const [jobCreated, setJobCreated] = useState(false);
   const jobCreatedRef = useRef(false);
-  const accountRef = useRef(null);
+  const [exportedXdr, setExportedXdr] = useState(null);
+  // Optionen des laufenden SecretKeyModal-Ablaufs: { local, onBackToSelection }
+  const [signingMode, setSigningMode] = useState({ local: false, onBackToSelection: null });
 
   useEffect(() => {
     mountedRef.current = true;
@@ -75,16 +83,16 @@ export default function useLiquidityAction({ publicKey, network, poolId, operati
   }, [publicKey, network, poolId, t]);
 
   useEffect(() => { reload(); }, [reload]);
-  accountRef.current = data.account;
 
   const closeModal = useCallback(() => {
     setShowSecretModal(false);
     setPendingAction(null);
   }, [setShowSecretModal, setPendingAction]);
 
-  const begin = useCallback((payload, work) => {
+  const begin = useCallback((payload, work, { local = false, onBackToSelection = null } = {}) => {
     setModalError('');
     setNotice('');
+    setSigningMode({ local, onBackToSelection });
     beginAction(operationType, payload, async (collected) => {
       if (inFlightRef.current) return;
       inFlightRef.current = true;
@@ -129,9 +137,7 @@ export default function useLiquidityAction({ publicKey, network, poolId, operati
           onDoneRef.current?.();
           return;
         }
-        // Zu wenig Gewicht bei einem Multisig-Konto: auf den Job-Weg hinweisen.
-        const jobHint = err?.required !== undefined && isMultisigAccount(accountRef.current) ? ` ${t('liquidity:job.useJobInstead')}` : '';
-        setModalError(`${describeLiquidityError(t, err)}${jobHint}`);
+        setModalError(describeLiquidityError(t, err));
       } finally {
         inFlightRef.current = false;
         if (mountedRef.current) setProcessing(false);
@@ -139,8 +145,9 @@ export default function useLiquidityAction({ publicKey, network, poolId, operati
     });
   }, [alive, beginAction, closeModal, network, operationType, publicKey, t]);
 
-  const prepareJob = useCallback(async (work) => {
-    if (inFlightRef.current || jobCreatedRef.current) return;
+  // Gemeinsamer Ablauf fuer Job und XDR-Export (unsignierte Transaktion).
+  const prepareUnsigned = useCallback(async (work, mode) => {
+    if (inFlightRef.current || (mode === 'job' && jobCreatedRef.current)) return;
     inFlightRef.current = true;
     setProcessing(true);
     setJobError('');
@@ -153,6 +160,10 @@ export default function useLiquidityAction({ publicKey, network, poolId, operati
       if (outcome.changed) {
         setData((d) => ({ ...d, account: outcome.fresh.account, pool: outcome.fresh.pool }));
         setNotice(outcome.changed);
+        return;
+      }
+      if (mode === 'xdr') {
+        setExportedXdr({ hash: txHashHex(outcome.tx), xdr: outcome.tx.toXDR(), items: outcome.items || [] });
         return;
       }
       const job = await createMultisigJobFromXdr({
@@ -175,6 +186,9 @@ export default function useLiquidityAction({ publicKey, network, poolId, operati
       if (mountedRef.current) setProcessing(false);
     }
   }, [alive, network, publicKey, t]);
+  const prepareJob = useCallback((work) => prepareUnsigned(work, 'job'), [prepareUnsigned]);
+  const exportXdr = useCallback((work) => prepareUnsigned(work, 'xdr'), [prepareUnsigned]);
+  const clearExportedXdr = useCallback(() => setExportedXdr(null), []);
 
   const modalProps = {
     onConfirm: (collected) => pendingAction?.execute?.(collected),
@@ -189,10 +203,21 @@ export default function useLiquidityAction({ publicKey, network, poolId, operati
     account: data.account,
     operationType,
     requiredThreshold: getRequiredThreshold(operationType, data.account?.thresholds || {}),
+    // Multisig-Option "Alle Signaturen lokal eingeben": wie SendPayment im Kontext 'local'.
+    ...(signingMode.local ? {
+      initialCollectAllSignaturesLocally: true,
+      secretContext: 'local',
+      allowedSigners: data.account?.signers || [],
+      onBackToSelection: signingMode.onBackToSelection ? () => {
+        closeModal();
+        setModalError('');
+        signingMode.onBackToSelection();
+      } : null,
+    } : {}),
   };
 
   return {
     data, reload, begin, showSecretModal, modalProps, result, notice, setNotice, processing,
-    prepareJob, jobError, preparedJob, jobCreated,
+    prepareJob, jobError, preparedJob, jobCreated, exportXdr, exportedXdr, clearExportedXdr,
   };
 }

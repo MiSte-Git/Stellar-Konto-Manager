@@ -2,7 +2,10 @@ import { fromStroops, toStroops } from '../../utils/stellar/liquidityPools.js';
 
 /**
  * Stroops (BigInt) -> lokalisierte Anzeige ohne Float-Umweg: Tausender-
- * Trennung ueber BigInt.toLocaleString, Nachkommastellen ohne Nullen am Ende.
+ * Trennung ueber BigInt.toLocaleString, Nachkommastellen ohne Nullen am Ende,
+ * aber immer mindestens eine. Ohne Nachkommastelle waere "1.111" (de) nicht von
+ * 1,111 (en) zu unterscheiden; mit "1.111,0" bzw. "1’111.0" (de-CH) steht der
+ * Dezimaltrenner immer da und der Tausendertrenner ist eindeutig.
  */
 export function formatPoolAmount(stroops, locale) {
   const [whole, frac] = fromStroops(stroops).split('.');
@@ -14,8 +17,13 @@ export function formatPoolAmount(stroops, locale) {
   try {
     wholeText = BigInt(whole).toLocaleString(locale);
   } catch { /* noop */ }
-  const trimmed = frac.replace(/0+$/, '');
-  return trimmed ? `${wholeText}${decimal}${trimmed}` : wholeText;
+  const trimmed = frac.replace(/0+$/, '') || '0';
+  return `${wholeText}${decimal}${trimmed}`;
+}
+
+/** Betrag mit Einheit, z. B. "1.111,0 XLM" oder "5,0 USD:GA5ZSEJY...34K4KZVN". */
+export function formatAmountWithUnit(stroops, unit, locale) {
+  return `${formatPoolAmount(stroops, locale)} ${unit}`;
 }
 
 /** Anteil in Prozent fuer die Anzeige (max. 4 Nachkommastellen). */

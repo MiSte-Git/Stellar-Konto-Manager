@@ -26,15 +26,30 @@ export default function LiquidityDialogShell({ title, onClose, closeDisabled = f
   );
 }
 
-/** Liste von Faktenzeilen (Label, Wert). */
+/**
+ * Eine Faktenzeile: Label links (optional mit kleiner Erklaerung darunter), Wert
+ * rechts. Auf schmalen Breiten steht das Label oben und der Wert darunter.
+ * Werte brechen nicht innerhalb von Zahlen um; nur mit wrap (lange IDs und
+ * Adressen) ist break-all erlaubt.
+ */
+export function FactRow({ label, hint, value, wrap = false, className = '' }) {
+  return (
+    <div className={`flex flex-col gap-0.5 py-0.5 sm:flex-row sm:items-baseline sm:justify-between sm:gap-3 ${className}`}>
+      <dt className="min-w-0">
+        <span className="font-semibold">{label}</span>
+        {hint && <span className="block text-[11px] font-normal text-gray-600 dark:text-gray-400">{hint}</span>}
+      </dt>
+      <dd className={`font-mono sm:text-right ${wrap ? 'min-w-0 break-all' : 'sm:whitespace-nowrap'}`}>{value}</dd>
+    </div>
+  );
+}
+
+/** Liste von Faktenzeilen: [label, value, { hint, wrap }?]; falsy Eintraege werden ausgelassen. */
 export function FactList({ rows }) {
   return (
-    <dl className="grid gap-x-3 gap-y-1 text-xs sm:grid-cols-[auto_1fr]">
-      {rows.filter(Boolean).map(([label, value]) => (
-        <React.Fragment key={label}>
-          <dt className="font-semibold">{label}</dt>
-          <dd className="break-all font-mono">{value}</dd>
-        </React.Fragment>
+    <dl className="text-xs">
+      {rows.filter(Boolean).map(([label, value, opts = {}], index) => (
+        <FactRow key={`${index}-${label}`} label={label} value={value} hint={opts.hint} wrap={opts.wrap} />
       ))}
     </dl>
   );

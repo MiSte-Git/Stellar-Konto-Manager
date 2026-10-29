@@ -81,8 +81,8 @@
     "slippage": "Slippage-Toleranz in % (0,1 bis 5)",
     "slippageRange": "Bitte eine Slippage zwischen 0,1 und 5 % mit höchstens 2 Nachkommastellen eingeben.",
     "invalidAmount": "Bitte einen Betrag größer 0 mit höchstens 7 Nachkommastellen eingeben.",
-    "fee": "Netzwerk-Fee (höchstens)",
-    "review": "Weiter: Operationen prüfen",
+    "fee": "Netzwerk-Fee",
+    "review": "Operationen prüfen",
     "operations": "Diese Operationen werden signiert:",
     "legend": "Asset A = {{a}}, Asset B = {{b}} (kanonische Reihenfolge des Pools)",
     "sign": "Signieren und senden",
@@ -91,7 +91,9 @@
     "networkMismatch": "Der Horizon-Server gehört nicht zum gewählten Netzwerk. Es wurde nichts gesendet.",
     "success": "Transaktion erfolgreich gesendet.",
     "ambiguousTitle": "Status unklar – nicht erneut senden",
-    "ambiguousBody": "Die Transaktion konnte nicht eindeutig bestätigt werden (Zeitüberschreitung oder Serverfehler). Bitte den Transaktions-Hash im Explorer prüfen, bevor du es erneut versuchst."
+    "ambiguousBody": "Die Transaktion konnte nicht eindeutig bestätigt werden (Zeitüberschreitung oder Serverfehler). Bitte den Transaktions-Hash im Explorer prüfen, bevor du es erneut versuchst.",
+    "feeHint": "Höchstbetrag",
+    "signingSummary": "Zusammenfassung"
   },
   "background": {
     "success": "Eine Pool-Transaktion wurde nach dem Schließen des Dialogs erfolgreich gesendet.",
@@ -102,7 +104,6 @@
     "jobContext": "Erstellt im Netz {{network}} für das Konto {{account}}, Job-ID {{jobId}}."
   },
   "job": {
-    "prepare": "Multisig-Job vorbereiten",
     "created": "Multisig-Job erstellt. Die Transaktion wird gesendet, sobald genug Signaturen gesammelt sind.",
     "jobId": "Job-ID",
     "source": "Quellkonto",
@@ -118,18 +119,17 @@
     "noteLabel": "Hinweis",
     "depositHint": "Die Preisgrenzen beziehen sich auf den aktuellen Kurs. Bewegt sich der Kurs bis zur letzten Signatur darüber hinaus, scheitert die Transaktion (op_bad_price) und der Job muss neu erstellt werden.",
     "withdrawHint": "Die Mindestbeträge beziehen sich auf den aktuellen Kurs. Bewegt sich der Kurs bis zur letzten Signatur so, dass sie unterschritten werden, scheitert die Transaktion (op_under_minimum) und der Job muss neu erstellt werden.",
-    "removeTrustHint": "Die Pool-Trustline wird nur entfernt, wenn bei der Ausführung genau dieser Share-Bestand vorliegt. Ändert sich der Share-Bestand bis dahin, scheitert die gesamte Transaktion.",
-    "useJobInstead": "Für dieses Multisig-Konto kann stattdessen ein Multisig-Job vorbereitet werden."
+    "removeTrustHint": "Die Pool-Trustline wird nur entfernt, wenn bei der Ausführung genau dieser Share-Bestand vorliegt. Ändert sich der Share-Bestand bis dahin, scheitert die gesamte Transaktion."
   },
   "deposit": {
     "title": "Liquidität einzahlen",
     "riskNote": "Hinweis: Pool Shares bilden einen Anteil an beiden Assets ab. Ändert sich der Kurs der Assets zueinander, ändert sich auch die Zusammensetzung deines Anteils (Impermanent Loss); zusätzlich trägst du das Kursrisiko beider Assets. Die Fee von 0,30 % je Tausch fließt in den Pool.",
     "inputSide": "Betrag eingeben für",
     "amount": "Betrag {{asset}}",
-    "currentPrice": "Aktueller Pool-Preis {{pair}}",
-    "provide": "Einzahlung {{asset}} (höchstens)",
-    "expectedShares": "Erwartete Pool Shares (Richtwert, kann bei Kursbewegung innerhalb der Slippage niedriger ausfallen)",
-    "priceBounds": "Zulässiger Preis {{pair}}",
+    "currentPrice": "Aktueller Pool-Preis",
+    "provide": "Einzahlung {{asset}}",
+    "expectedShares": "Erwartete Pool Shares",
+    "priceBounds": "Zulässiger Preis",
     "reserveIncrease": "Zusätzliche Mindestreserve",
     "emptyPool": "Dieser Pool enthält keine Liquidität. Einzahlen (Pool eröffnen) ist hier nicht möglich.",
     "priceChanged": "Der Pool-Preis hat sich seit der Bestätigung geändert und liegt außerhalb der bestätigten Grenzen. Es wurde nichts gesendet. Bitte die neuen Werte prüfen.",
@@ -137,7 +137,12 @@
       "emptyPool": "Dieser Pool enthält keine Liquidität.",
       "amountTooSmall": "Der Betrag ist zu klein: Gegenseite oder Pool Shares wären 0, oder die Rundung läge außerhalb der Preisgrenzen.",
       "priceUnrepresentable": "Der Pool-Preis lässt sich nicht als Stellar-Preis (int32-Bruch) mit dieser Slippage darstellen."
-    }
+    },
+    "provideHint": "Höchstbetrag",
+    "expectedSharesHint": "Richtwert, kann bei Kursbewegung innerhalb der Slippage niedriger ausfallen",
+    "priceBoundsHint": "Außerhalb dieser Grenzen scheitert die Einzahlung (op_bad_price)",
+    "priceValue": "{{price}} {{a}} je {{b}}",
+    "priceRange": "{{min}} bis {{max}} {{a}} je {{b}}"
   },
   "withdraw": {
     "title": "Liquidität abheben",
@@ -159,7 +164,8 @@
       "emptyPool": "Dieser Pool enthält keine Liquidität.",
       "amountTooSmall": "Der Betrag ist zu klein: Die Auszahlung wäre 0.",
       "exceedsPool": "Der Betrag übersteigt die Total Pool Shares."
-    }
+    },
+    "minimumHint": "Untergrenze nach Slippage; darunter scheitert die Abhebung (op_under_minimum)"
   },
   "checks": {
     "insufficientBalance": "Das verfügbare Guthaben in {{asset}} reicht nicht (nach Verbindlichkeiten, Mindestreserve und Fee).",
@@ -172,5 +178,8 @@
     "insufficientShares": "Das Konto hält weniger Pool Shares als angegeben.",
     "missingAssetTrust": "Für {{asset}} besteht keine Trustline; die Auszahlung kann nicht gutgeschrieben werden.",
     "lineFull": "Die Trustline für {{asset}} hat nicht genug Platz bis zum Limit (op_line_full)."
+  },
+  "units": {
+    "shares": "Pool Shares"
   }
 }

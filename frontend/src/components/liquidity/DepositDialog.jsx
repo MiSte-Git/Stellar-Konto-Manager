@@ -23,11 +23,11 @@ import { buildLiquidityDepositTransaction } from '../../utils/stellar/tradingTra
 import { formatAssetLabelWithIssuer, getAssetCode } from '../trading/assetSearchUtils.js';
 import useLiquidityAction from './hooks/useLiquidityAction.js';
 import { assertSignerWeight, describeLiquidityError, loadFreshState, loadIssuerFlags, previewAccount } from './liquiditySubmit.js';
-import { formatPoolAmount, formatPrice, formatSlippage, parseAmountInput } from './formatPoolAmount.js';
+import { formatAmountWithUnit, formatPrice, formatSlippage, parseAmountInput } from './formatPoolAmount.js';
 import { parseSlippagePercent } from './dialogInputs.js';
 import LiquidityDialogShell, { BTN_PRIMARY, BTN_SECONDARY, FactList, INPUT, NOTE_ERROR, NOTE_NEUTRAL, NOTE_WARN, OperationsPreview } from './LiquidityDialogShell.jsx';
 import { CheckInfos, CheckProblems, ResultNote, SlippageField } from './dialogParts.jsx';
-import { JobNotes, PreparedJobDialog } from './jobParts.jsx';
+import { JobNotes, LiquiditySigningOptions, PreparedJobDialog } from './jobParts.jsx';
 
 function buildDepositTx({ account, pool, check, quote, feePerOp, network, timeoutSeconds }) {
   return buildLiquidityDepositTransaction({
@@ -69,6 +69,9 @@ export default function DepositDialog({ poolId, firstAsset, publicKey, network, 
   const [issuerFlags, setIssuerFlags] = useState({});
   const [confirmed, setConfirmed] = useState(null);
   const [reviewError, setReviewError] = useState('');
+  // Optionsauswahl fuer Multisig-Konten (Job, alle Signaturen lokal, XDR)
+  const [optionsOpen, setOptionsOpen] = useState(false);
+  const [signingChoice, setSigningChoice] = useState('job');
 
   const sides = useMemo(() => (pool ? poolSidesInOrder(pool, firstAsset) : []), [pool, firstAsset]);
   // Nutzerreihenfolge B/A: Preise invertiert anzeigen (Definition bleibt A/B).
@@ -91,8 +94,13 @@ export default function DepositDialog({ poolId, firstAsset, publicKey, network, 
   const labelOf = (asset) => formatAssetLabelWithIssuer(asset);
   const displayMin = (q) => formatPrice(invert ? q.maxPrice : q.minPrice, locale, invert);
   const displayMax = (q) => formatPrice(invert ? q.minPrice : q.maxPrice, locale, invert);
-  const priceLabel = sides.length ? `${getAssetCode(sides[0].asset)}/${getAssetCode(sides[1].asset)}` : '';
-  const currentPrice = pool ? formatPrice({ n: Number(pool.reserveA), d: Number(pool.reserveB) }, locale, invert) : '—';
+  // Preise als Menge der ersten Seite je Einheit der zweiten (Nutzerreihenfolge), mit Einheit.
+  const priceUnits = sides.length ? { a: labelOf(sides[0].asset), b: labelOf(sides[1].asset) } : { a: '', b: '' };
+  const currentPrice = pool
+    ? t('liquidity:deposit.priceValue', { price: formatPrice({ n: Number(pool.reserveA), d: Number(pool.reserveB) }, locale, invert), ...priceUnits })
+    : '—';
+  const priceRange = (q) => t('liquidity:deposit.priceRange', { min: displayMin(q), max: displayMax(q), ...priceUnits });
+  const sharesWithUnit = (stroops) => formatAmountWithUnit(stroops, t('liquidity:units.shares'), locale);
 
   const editInput = (setter) => (value) => {
     setter(value);
@@ -142,7 +150,8 @@ export default function DepositDialog({ poolId, firstAsset, publicKey, network, 
     return { fresh, freshCheck };
   };
 
-  const handleSign = () => {
+  // local: Multisig-Option "Alle Signaturen lokal eingeben" (Rueckweg zur Optionsauswahl).
+  const handleSign = ({ local = false } = {}) => {
     const c = confirmed;
     action.begin(c, async (server, collected, alive, send) => {
       const v = await verifyFresh(server, c, data.feePerOp);
@@ -156,41 +165,68 @@ export default function DepositDialog({ poolId, firstAsset, publicKey, network, 
       const tx = buildDepositTx({ account: v.fresh.account, pool: v.fresh.pool, check: v.freshCheck, quote: c.quote, feePerOp: data.feePerOp, network });
       const res = await send(tx);
       return { hash: res?.hash || res?.id || '' };
-    });
+    }, { local, onBackToSelection: local ? () => setOptionsOpen(true) : null });
   };
 
-  // Multisig-Job: gleiche Pruefung, Fee fuer spaeteres Einreichen (deferred),
-  // Gueltigkeit aus den Einstellungen. Gebaut wird mit den bestaetigten Werten.
-  const handlePrepareJob = () => {
-    const c = confirmed;
-    void action.prepareJob(async (server, alive) => {
-      const feePerOp = await resolveFeePerOp(server, { deferred: true });
-      const v = await verifyFresh(server, c, feePerOp);
-      if (!alive()) return null;
-      if (v.changed) {
-        setConfirmed(null);
-        return v;
-      }
-      const timeoutSeconds = getMultisigTxTimeout({ immediateSubmit: false, multisigTimeoutSeconds });
-      const tx = buildDepositTx({ account: v.fresh.account, pool: v.fresh.pool, check: v.freshCheck, quote: c.quote, feePerOp, network, timeoutSeconds });
-      const pair = sides.map((s) => labelOf(s.asset)).join(' / ');
-      return {
-        tx,
-        items: [
-          { label: t('liquidity:job.source'), value: publicKey },
-          { label: t('liquidity:job.network'), value: getNetworkConfig(network).label },
-          { label: t('liquidity:job.pool'), value: `${pair} (${pool.poolId})` },
-          ...sides.map((s) => ({ label: t('liquidity:deposit.provide', { asset: labelOf(s.asset) }), value: formatPoolAmount(s.asset.equals(pool.assetA) ? c.quote.maxAmountA : c.quote.maxAmountB, locale) })),
-          { label: t('liquidity:deposit.expectedShares'), value: formatPoolAmount(c.quote.expectedShares, locale) },
-          { label: t('liquidity:deposit.priceBounds', { pair: priceLabel }), value: `${displayMin(c.quote)} – ${displayMax(c.quote)}` },
-          { label: t('liquidity:job.slippage'), value: `${formatSlippage(c.quote.slippageBps, locale)} %` },
-          { label: t('liquidity:job.poolTrust'), value: t(v.freshCheck.needPoolTrust ? 'liquidity:job.poolTrustCreate' : 'liquidity:job.poolTrustExists') },
-          { label: t('liquidity:job.validUntil'), value: formatValidUntil(tx.timeBounds?.maxTime, locale, t) },
-          { label: t('liquidity:job.noteLabel'), value: t('liquidity:job.depositHint') },
-        ],
-      };
-    });
+  // Multisig-Job und XDR-Export: gleiche Pruefung, Fee fuer spaeteres Einreichen
+  // (deferred), Gueltigkeit aus den Einstellungen. Gebaut wird mit den
+  // bestaetigten Werten, unsigniert.
+  const unsignedWork = (c) => async (server, alive) => {
+    const feePerOp = await resolveFeePerOp(server, { deferred: true });
+    const v = await verifyFresh(server, c, feePerOp);
+    if (!alive()) return null;
+    if (v.changed) {
+      setConfirmed(null);
+      return v;
+    }
+    const timeoutSeconds = getMultisigTxTimeout({ immediateSubmit: false, multisigTimeoutSeconds });
+    const tx = buildDepositTx({ account: v.fresh.account, pool: v.fresh.pool, check: v.freshCheck, quote: c.quote, feePerOp, network, timeoutSeconds });
+    const pair = sides.map((s) => labelOf(s.asset)).join(' / ');
+    return {
+      tx,
+      items: [
+        { label: t('liquidity:job.source'), value: publicKey, wrap: true },
+        { label: t('liquidity:job.network'), value: getNetworkConfig(network).label },
+        { label: t('liquidity:job.pool'), value: `${pair} (${pool.poolId})`, wrap: true },
+        ...sides.map((s) => ({
+          label: t('liquidity:deposit.provide', { asset: getAssetCode(s.asset) }),
+          hint: t('liquidity:deposit.provideHint'),
+          value: formatAmountWithUnit(s.asset.equals(pool.assetA) ? c.quote.maxAmountA : c.quote.maxAmountB, labelOf(s.asset), locale),
+        })),
+        { label: t('liquidity:deposit.expectedShares'), hint: t('liquidity:deposit.expectedSharesHint'), value: sharesWithUnit(c.quote.expectedShares) },
+        { label: t('liquidity:deposit.priceBounds'), value: priceRange(c.quote) },
+        { label: t('liquidity:job.slippage'), value: `${formatSlippage(c.quote.slippageBps, locale)} %` },
+        { label: t('liquidity:job.poolTrust'), value: t(v.freshCheck.needPoolTrust ? 'liquidity:job.poolTrustCreate' : 'liquidity:job.poolTrustExists') },
+        { label: t('liquidity:job.validUntil'), value: formatValidUntil(tx.timeBounds?.maxTime, locale, t) },
+        { label: t('liquidity:job.noteLabel'), value: t('liquidity:job.depositHint'), note: true },
+      ],
+    };
   };
+
+  // Multisig-Konten: "Signieren und senden" oeffnet zuerst die Optionsauswahl.
+  const handleSignClick = () => {
+    if (!multisig) {
+      handleSign();
+      return;
+    }
+    setSigningChoice('job');
+    setOptionsOpen(true);
+  };
+  const handleOptionProceed = () => {
+    setOptionsOpen(false);
+    if (signingChoice === 'local') handleSign({ local: true });
+    else if (signingChoice === 'xdr') void action.exportXdr(unsignedWork(confirmed));
+    else void action.prepareJob(unsignedWork(confirmed));
+  };
+  const signingSummaryRows = confirmed && pool ? [
+    [t('liquidity:job.pool'), sides.map((s) => labelOf(s.asset)).join(' / ')],
+    ...sides.map((s) => [
+      t('liquidity:deposit.provide', { asset: getAssetCode(s.asset) }),
+      formatAmountWithUnit(s.asset.equals(pool.assetA) ? confirmed.quote.maxAmountA : confirmed.quote.maxAmountB, labelOf(s.asset), locale),
+      { hint: t('liquidity:deposit.provideHint') },
+    ]),
+    [t('liquidity:job.network'), getNetworkConfig(network).label],
+  ] : [];
 
   let body;
   if (data.loading && !pool) body = <p className="text-xs">{t('liquidity:dialog.loading')}</p>;
@@ -221,12 +257,12 @@ export default function DepositDialog({ poolId, firstAsset, publicKey, network, 
         {amountInput && amount === null && <div className={NOTE_ERROR}>{t('liquidity:dialog.invalidAmount')}</div>}
         <SlippageField value={slippageInput} onChange={editInput(setSlippageInput)} valid={slippage.valid} />
         <FactList rows={[
-          [t('liquidity:deposit.currentPrice', { pair: priceLabel }), currentPrice],
-          ...(quote ? sides.map((s) => [t('liquidity:deposit.provide', { asset: labelOf(s.asset) }), formatPoolAmount(amountOf(s.asset), locale)]) : []),
-          quote && [t('liquidity:deposit.expectedShares'), formatPoolAmount(quote.expectedShares, locale)],
-          quote?.minPrice && quote?.maxPrice && [t('liquidity:deposit.priceBounds', { pair: priceLabel }), `${displayMin(quote)} – ${displayMax(quote)}`],
-          check && [t('liquidity:deposit.reserveIncrease'), `${formatPoolAmount(check.reserveIncrease, locale)} XLM`],
-          check && [t('liquidity:dialog.fee'), `${formatPoolAmount(check.feeStroops, locale)} XLM`],
+          [t('liquidity:deposit.currentPrice'), currentPrice],
+          ...(quote ? sides.map((s) => [t('liquidity:deposit.provide', { asset: getAssetCode(s.asset) }), formatAmountWithUnit(amountOf(s.asset), labelOf(s.asset), locale), { hint: t('liquidity:deposit.provideHint') }]) : []),
+          quote && [t('liquidity:deposit.expectedShares'), sharesWithUnit(quote.expectedShares), { hint: t('liquidity:deposit.expectedSharesHint') }],
+          quote?.minPrice && quote?.maxPrice && [t('liquidity:deposit.priceBounds'), priceRange(quote), { hint: t('liquidity:deposit.priceBoundsHint') }],
+          check && [t('liquidity:deposit.reserveIncrease'), formatAmountWithUnit(check.reserveIncrease, 'XLM', locale)],
+          check && [t('liquidity:dialog.fee'), formatAmountWithUnit(check.feeStroops, 'XLM', locale), { hint: t('liquidity:dialog.feeHint') }],
         ]} />
         {statusText && <div className={NOTE_NEUTRAL}>{statusText}</div>}
         {check && <CheckInfos infos={check.infos} pool={pool} />}
@@ -238,10 +274,7 @@ export default function DepositDialog({ poolId, firstAsset, publicKey, network, 
             <OperationsPreview lines={confirmed.lines} legend={t('liquidity:dialog.legend', { a: labelOf(pool.assetA), b: labelOf(pool.assetB) })} />
             {multisig && <JobNotes hints={[t('liquidity:job.depositHint')]} />}
             <div className="flex flex-wrap gap-2">
-              <button type="button" className={BTN_PRIMARY} onClick={handleSign} disabled={action.processing || action.jobCreated}>{t('liquidity:dialog.sign')}</button>
-              {multisig && (
-                <button type="button" className={BTN_SECONDARY} onClick={handlePrepareJob} disabled={action.processing || action.jobCreated}>{t('liquidity:job.prepare')}</button>
-              )}
+              <button type="button" className={BTN_PRIMARY} onClick={handleSignClick} disabled={action.processing || action.jobCreated}>{t('liquidity:dialog.sign')}</button>
               <button type="button" className={BTN_SECONDARY} onClick={() => setConfirmed(null)} disabled={action.jobCreated}>{t('liquidity:dialog.back')}</button>
             </div>
           </>
@@ -257,8 +290,17 @@ export default function DepositDialog({ poolId, firstAsset, publicKey, network, 
   return (
     <LiquidityDialogShell title={t('liquidity:deposit.title')} onClose={onClose} closeDisabled={action.processing} testId="deposit-dialog">
       {body}
+      <LiquiditySigningOptions
+        open={optionsOpen}
+        choice={signingChoice}
+        onChoiceChange={setSigningChoice}
+        onProceed={handleOptionProceed}
+        onCancel={() => setOptionsOpen(false)}
+        rows={signingSummaryRows}
+      />
       {action.showSecretModal && <SecretKeyModal {...action.modalProps} />}
       <PreparedJobDialog job={action.preparedJob} onClose={onClose} />
+      <PreparedJobDialog job={action.exportedXdr} onClose={action.clearExportedXdr} />
     </LiquidityDialogShell>
   );
 }

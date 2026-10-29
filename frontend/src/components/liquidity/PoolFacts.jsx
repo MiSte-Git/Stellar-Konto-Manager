@@ -4,16 +4,8 @@ import { poolSidesInOrder } from '../../utils/stellar/liquidityPools.js';
 import { formatAssetLabelWithIssuer, getAssetCode, getAssetIssuer } from '../trading/assetSearchUtils.js';
 import TokenFactsSummary from '../trading/TokenFactsSummary.jsx';
 import useAssetFacts from '../trading/hooks/useAssetFacts.js';
-import { formatPoolAmount } from './formatPoolAmount.js';
-
-function Fact({ label, children, wide = false }) {
-  return (
-    <div className={wide ? 'sm:col-span-2' : ''}>
-      <dt className="font-semibold">{label}</dt>
-      <dd className="break-all font-mono">{children}</dd>
-    </div>
-  );
-}
+import { formatAmountWithUnit } from './formatPoolAmount.js';
+import { FactRow } from './LiquidityDialogShell.jsx';
 
 /**
  * Fakten eines Pools: Quelle, Reserven (in Nutzerreihenfolge), Total Shares,
@@ -58,26 +50,35 @@ export default function PoolFacts({ pool, firstAsset, network, hasAccount = fals
         <h4 className="mb-2 text-sm font-semibold">
           {t('liquidity:facts.title')}: {sides.map((s) => getAssetCode(s.asset)).join(' / ')}
         </h4>
-        <dl className="grid gap-2 text-xs sm:grid-cols-2">
-          <Fact label={t('liquidity:source.label')}>{t('liquidity:source.native')}</Fact>
-          <Fact label={t('liquidity:facts.fee')}>{t('liquidity:facts.feeValue', { percent: feePercent, bps: pool.feeBps })}</Fact>
+        <dl className="grid gap-x-6 text-xs sm:grid-cols-2">
+          <FactRow label={t('liquidity:source.label')} value={t('liquidity:source.native')} />
+          <FactRow label={t('liquidity:facts.fee')} value={t('liquidity:facts.feeValue', { percent: feePercent, bps: pool.feeBps })} />
           {sides.map((side) => (
-            <Fact key={formatAssetLabelWithIssuer(side.asset)} label={t('liquidity:facts.reserve', { asset: formatAssetLabelWithIssuer(side.asset) })}>
-              {formatPoolAmount(side.reserve, locale)}
-            </Fact>
+            <FactRow
+              key={formatAssetLabelWithIssuer(side.asset)}
+              label={t('liquidity:facts.reserve', { asset: getAssetCode(side.asset) })}
+              value={formatAmountWithUnit(side.reserve, formatAssetLabelWithIssuer(side.asset), locale)}
+            />
           ))}
-          <Fact label={t('liquidity:facts.totalShares')}>{formatPoolAmount(pool.totalShares, locale)}</Fact>
-          <Fact label={t('liquidity:facts.participants')}>{pool.totalTrustlines.toLocaleString(locale)}</Fact>
-          <Fact label={t('liquidity:facts.poolId')} wide>
-            <span className="mr-2">{pool.poolId}</span>
-            <button
-              type="button"
-              onClick={handleCopy}
-              className="rounded-sm border border-gray-300 px-2 py-0.5 font-sans text-xs hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-800"
-            >
-              {copied ? t('liquidity:facts.copied') : t('liquidity:facts.copy')}
-            </button>
-          </Fact>
+          <FactRow label={t('liquidity:facts.totalShares')} value={formatAmountWithUnit(pool.totalShares, t('liquidity:units.shares'), locale)} />
+          <FactRow label={t('liquidity:facts.participants')} value={pool.totalTrustlines.toLocaleString(locale)} />
+          <FactRow
+            className="sm:col-span-2"
+            wrap
+            label={t('liquidity:facts.poolId')}
+            value={(
+              <>
+                <span className="mr-2">{pool.poolId}</span>
+                <button
+                  type="button"
+                  onClick={handleCopy}
+                  className="rounded-sm border border-gray-300 px-2 py-0.5 font-sans text-xs hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-800"
+                >
+                  {copied ? t('liquidity:facts.copied') : t('liquidity:facts.copy')}
+                </button>
+              </>
+            )}
+          />
         </dl>
         {pool.totalShares === 0n && (
           <p className="mt-3 rounded-sm border border-gray-200 bg-gray-50 px-3 py-2 text-xs text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200">
