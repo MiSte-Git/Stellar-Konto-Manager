@@ -1285,5 +1285,8 @@
   "resolveOrValidatePublicKey": {
     "invalid": "Virheellinen osoite. Osoitteen tulisi olla muodossa Public Key (G…), yhdistetty osoite (M…) tai federaatio-osoite (nimi*verkkotunnus).",
     "empty": "Syötä osoite."
+  },
+  "accountGate": {
+    "noAccount": "Tiliä ei ole ladattu. Syötä yllä oleva Stellar-osoite."
   }
 }

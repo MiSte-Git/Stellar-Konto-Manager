@@ -1285,5 +1285,8 @@
   "resolveOrValidatePublicKey": {
     "invalid": "Dirección no válida. El formato esperado es un Public Key (G…), una dirección multiplexada (M…) o una dirección de federación (nombre*dominio).",
     "empty": "Introduce una dirección, por favor."
+  },
+  "accountGate": {
+    "noAccount": "No se ha cargado ninguna cuenta. Introduce una dirección de Stellar en el campo de arriba."
   }
 }

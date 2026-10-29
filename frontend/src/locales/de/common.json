@@ -1,4 +1,7 @@
 {
+  "accountGate": {
+    "noAccount": "Kein Konto geladen. Bitte oben eine Stellar-Adresse eingeben."
+  },
   "app": {
     "errorBoundary": {
       "title": "Etwas ist schiefgelaufen."

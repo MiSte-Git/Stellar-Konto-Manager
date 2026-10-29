@@ -1285,5 +1285,8 @@
   "resolveOrValidatePublicKey": {
     "invalid": "Adresse non valide. Le format attendu est un Public Key (G…), une adresse multiplexée (M…) ou une adresse fédérée (nom*domaine).",
     "empty": "Veuillez saisir une adresse."
+  },
+  "accountGate": {
+    "noAccount": "Aucun compte n'a été chargé. Veuillez saisir une adresse Stellar ci-dessus."
   }
 }

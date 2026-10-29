@@ -10,7 +10,6 @@ import {
   loadTrustlines, 
   handleSourceSubmit as submitSourceInput,
   getHorizonServer,
-  getAccountSummary,
   resolveOrValidateAccount,
   extractBasePublicKeyFromMuxed,
   extractMuxedIdFromAddress
@@ -85,6 +84,8 @@ function loadRecentWalletsFromStorage() {
 import App from './App.jsx';
 import { confirmAutoClear } from './utils/confirmAutoClear.js';
 import ActivateAccountPrompt from './components/ActivateAccountPrompt.jsx';
+import AccountGate from './components/AccountGate.jsx';
+import { MAIN_MENU_NAV } from './config/mainNavigation.js';
 import { emitAccountSelected } from './utils/accountBus.js';
 
 import { consumePendingMainView, navigateToPath, publishActiveAccount, publishActiveMainView, setMainMounted } from './utils/appNavigation.js';
@@ -107,6 +108,8 @@ const XlmByMemoPage      = lazy(() => import('./pages/XlmByMemoPage'));
 const InvestedTokensPage = lazy(() => import('./pages/InvestedTokensPage'));
 const SettingsPage       = lazy(() => import('./pages/SettingsPage.jsx'));
 const MultisigCreatePage = lazy(() => import('./pages/MultisigCreatePage.jsx'));
+// Menues, die ein existierendes (geladenes) Konto voraussetzen.
+const ACCOUNT_REQUIRED_MENUS = new Set(['listAll', 'compare', 'deleteAll', 'deleteByIssuer', 'xlmByMemo', 'payments', 'balance', 'sendPayment', 'muxed', 'multisigEdit']);
 const MultisigEditPage   = lazy(() => import('./pages/MultisigEditPage.jsx'));
 const BalancePage        = lazy(() => import('./pages/BalancePage.jsx'));
 const WalletHome         = lazy(() => import('./pages/WalletHome.jsx'));
@@ -204,7 +207,7 @@ function Main() {
   const ITEMS_PER_PAGE = 333;const [menuSelection, setMenuSelection] = useState(() => readMenuStateFromUrl().menuSelection);
   const autoRestoredRef = useRef(false);
   // Shared "latest wins" token for the wallet-identity operations below
-  // (fetchXlmBalanceFor, handleHeaderApply, revalidateActiveWallet, auto-restore),
+  // (handleHeaderApply, revalidateActiveWallet, auto-restore),
   // since they all write overlapping state (sourcePublicKey, xlmBalance, notFound, error, ...).
   const walletOpRequestRef = useRef(0);
 
@@ -412,23 +415,6 @@ function Main() {
     });
   }, [persistRecent]);
 
-  async function fetchXlmBalanceFor(pk, net) {
-    if (!pk) { setXlmBalance(null); return; }
-    const requestId = ++walletOpRequestRef.current;
-    try {
-      setXlmBalanceLoading(true);
-      const server = getHorizonServer(horizonUrlFor(net));
-      const summary = await getAccountSummary(pk, server);
-      if (walletOpRequestRef.current !== requestId) return;
-      setXlmBalance(summary?.xlmBalance ?? null);
-    } catch {
-      // Unfunded or error → null
-      if (walletOpRequestRef.current !== requestId) return;
-      setXlmBalance(null);
-    } finally {
-      if (walletOpRequestRef.current === requestId) setXlmBalanceLoading(false);
-    }
-  }
 
   async function handleHeaderApply(inputOverride) {
     const input = (inputOverride ?? walletHeaderInput ?? '').trim();
@@ -436,8 +422,9 @@ function Main() {
     const requestId = ++walletOpRequestRef.current;
     setIsLoading(true);
     setError('');
+    let resolved = null;
     try {
-      const resolved = await resolveOrValidateAccount(input);
+      resolved = await resolveOrValidateAccount(input);
       const displayInput = resolved.muxedAddress || resolved.accountId;
       // Phase 1: nur leichte Konto-Zusammenfassung (verhindert Burst beim bloßen Laden)
       const { publicKey, summary } = await submitSourceInput(resolved.accountId, t, devTestnet ? 'TESTNET' : 'PUBLIC', { includeTrustlines: false });
@@ -455,8 +442,17 @@ function Main() {
     } catch (err) {
       if (walletOpRequestRef.current !== requestId) return;
       const msg = String(err?.message || '');
+      const isNotFound = /nicht gefunden|not found/i.test(msg);
       setError(msg);
-      setNotFound(/nicht gefunden|not found/i.test(msg));
+      setNotFound(isNotFound);
+      // Nicht existierendes Konto trotzdem als aktive Adresse uebernehmen, damit
+      // Seiten nicht weiter das zuvor geladene Konto anzeigen.
+      if (isNotFound && resolved?.accountId) {
+        setSourcePublicKey(resolved.accountId);
+        setSourceMuxedAddress(resolved.muxedAddress || '');
+        setXlmBalance(null);
+        setRefreshToken(prev => prev + 1);
+      }
     } finally {
       if (walletOpRequestRef.current === requestId) setIsLoading(false);
     }
@@ -509,6 +505,7 @@ function Main() {
     if (!sourcePublicKey) return;
     const requestId = ++walletOpRequestRef.current;
     setIsLoading(true);
+    setXlmBalanceLoading(true);
     setError('');
     try {
       const net = readStoredNetworkId();
@@ -522,10 +519,15 @@ function Main() {
     } catch (err) {
       if (walletOpRequestRef.current !== requestId) return;
       const msg = String(err?.message || '');
+      const isNotFound = /nicht gefunden|not found/i.test(msg);
       setError(msg);
-      setNotFound(/nicht gefunden|not found/i.test(msg));
+      setNotFound(isNotFound);
+      if (isNotFound) setXlmBalance(null);
     } finally {
-      if (walletOpRequestRef.current === requestId) setIsLoading(false);
+      if (walletOpRequestRef.current === requestId) {
+        setIsLoading(false);
+        setXlmBalanceLoading(false);
+      }
     }
   }, [sourcePublicKey, t]);
 
@@ -544,7 +546,8 @@ function Main() {
       // Fehler des vorherigen Netzes (z. B. Konto nicht gefunden) gilt nach dem Wechsel nicht mehr
       setError('');
       setNotFound(false);
-      try { if (sourcePublicKey) fetchXlmBalanceFor(sourcePublicKey, v === 'TESTNET' ? 'TESTNET' : 'PUBLIC'); } catch { /* noop */ }
+      // Konto im neuen Netz neu pruefen (setzt notFound/Saldo korrekt)
+      revalidateActiveWallet();
       // Invalidate trustlines cache owner on network change
       setTrustlinesOwner('');
     };
@@ -552,7 +555,7 @@ function Main() {
     // Initialize once from storage without emitting
     try { const v = window.localStorage?.getItem('SKM_NETWORK') || 'PUBLIC'; setDevTestnet(v === 'TESTNET'); } catch { /* noop */ }
     return () => window.removeEventListener('stm-network-changed', handler);
-  }, [sourcePublicKey]);
+  }, [revalidateActiveWallet]);
 
   // Navigation consolidation (finding #8): reacts to the URL changing outside
   // of this component's own control - browser back/forward, or App.jsx's own
@@ -729,9 +732,10 @@ function Main() {
     (async () => {
       setIsLoading(true);
       setError('');
+      let resolved = null;
       try {
         const net = readStoredNetworkId();
-        const resolved = await resolveOrValidateAccount(trimmed);
+        resolved = await resolveOrValidateAccount(trimmed);
         const displayInput = resolved.muxedAddress || resolved.accountId;
         const { publicKey, summary } = await submitSourceInput(resolved.accountId, t, net, { includeTrustlines: false });
         if (cancelled || walletOpRequestRef.current !== requestId) return;
@@ -743,13 +747,35 @@ function Main() {
         setRefreshToken(prev => prev + 1);
       } catch (err) {
         if (cancelled || walletOpRequestRef.current !== requestId) return;
-        setError(String(err?.message || ''));
+        const msg = String(err?.message || '');
+        const isNotFound = /nicht gefunden|not found/i.test(msg);
+        setError(msg);
+        setNotFound(isNotFound);
+        if (isNotFound && resolved?.accountId) {
+          setSourcePublicKey(resolved.accountId);
+          setSourceMuxedAddress(resolved.muxedAddress || '');
+          setWalletHeaderInput(resolved.muxedAddress || resolved.accountId);
+          setXlmBalance(null);
+        }
       } finally {
         if (!cancelled && walletOpRequestRef.current === requestId) setIsLoading(false);
       }
     })();
     return () => { cancelled = true; };
   }, [sourcePublicKey, t]);
+
+  // Kontoabhaengige Seiten nur mit existierendem Konto rendern (sonst AccountGate).
+  // Bewusst nicht gegated: receive (Adresse zum Aktivieren anzeigen), Startseite,
+  // multisigJobs, createAccount, tradingAssets, settings, feedback.
+  const accountGateActive = !!menuSelection
+    && ACCOUNT_REQUIRED_MENUS.has(menuSelection)
+    && (!sourcePublicKey || notFound);
+  // Waehrend das Konto beim Start noch geladen wird, keinen Hinweis aufblitzen lassen.
+  const showAccountGate = accountGateActive && !(isLoading && !sourcePublicKey);
+  const accountGateTitle = React.useMemo(() => {
+    const nav = MAIN_MENU_NAV.find((item) => item.id === menuSelection);
+    return nav ? t(nav.labelKey) : '';
+  }, [menuSelection, t]);
 
   const errorDisplay = React.useMemo(() => {
     const raw = String(error || '');
@@ -951,8 +977,17 @@ function Main() {
         {error && <p className="text-red-500 mt-4">{errorDisplay}</p>}
       </div>
 
+      {showAccountGate && (
+        <AccountGate
+          title={accountGateTitle}
+          publicKey={sourcePublicKey}
+          notFound={!!sourcePublicKey && notFound}
+          netName={devTestnet ? 'Testnet' : 'Mainnet'}
+        />
+      )}
+
       {/* Menüansicht anzeigen (z.B. ListAll) */}
-      {menuSelection === 'listAll' && (
+      {menuSelection === 'listAll' && !accountGateActive && (
         sourcePublicKey ? (
           <div className="max-w-6xl mx-auto px-3">
             {error && <p className="text-sm text-gray-400">{errorDisplay}</p>}
@@ -991,7 +1026,7 @@ function Main() {
           </div>
         )
       )}
-      {menuSelection === 'compare' && (
+      {menuSelection === 'compare' && !accountGateActive && (
         sourcePublicKey ? (
           <div className="max-w-6xl mx-auto px-3">
             <CompareTrustlines
@@ -1022,7 +1057,7 @@ function Main() {
           </div>
         )
       )}
-      {menuSelection === 'deleteAll' && (
+      {menuSelection === 'deleteAll' && !accountGateActive && (
         <DeleteAllTrustlines
           key={refreshToken}
           sourcePublicKey={sourcePublicKey}
@@ -1039,7 +1074,7 @@ function Main() {
           setIsLoading={setIsLoading}
         />
       )}
-      {menuSelection === 'deleteByIssuer' && (
+      {menuSelection === 'deleteByIssuer' && !accountGateActive && (
         <DeleteByIssuer
           key={refreshToken}
           issuerAddress={issuerAddress}
@@ -1059,7 +1094,7 @@ function Main() {
           setIsLoading={setIsLoading}
         />
       )}
-      {menuSelection === 'xlmByMemo' && (
+      {menuSelection === 'xlmByMemo' && !accountGateActive && (
         sourcePublicKey ? (
           <XlmByMemoPage
             key={refreshToken}
@@ -1073,7 +1108,7 @@ function Main() {
           </div>
         )
       )}
-      {menuSelection === 'payments' && (
+      {menuSelection === 'payments' && !accountGateActive && (
         <div className="max-w-6xl mx-auto px-3">
           <InvestedTokensPage
             key={refreshToken}
@@ -1100,7 +1135,7 @@ function Main() {
       {menuSelection === 'receive' && (
         <ReceivePage publicKey={sourcePublicKey} muxedAddress={sourceMuxedAddress} />
       )}
-      {menuSelection === 'balance' && (
+      {menuSelection === 'balance' && !accountGateActive && (
         <BalancePage
           key={refreshToken}
           publicKey={sourcePublicKey}
@@ -1108,14 +1143,14 @@ function Main() {
           onBack={() => setMenuSelection(null)}
         />
       )}
-      {menuSelection === 'sendPayment' && (
+      {menuSelection === 'sendPayment' && !accountGateActive && (
         <SendPaymentPage
           publicKey={sourcePublicKey}
           onBack={() => setMenuSelection(null)}
           initial={sendInit}
         />
       )}
-      {menuSelection === 'muxed' && (
+      {menuSelection === 'muxed' && !accountGateActive && (
         <MuxedAccountsPage publicKey={sourcePublicKey} onBack={() => setMenuSelection(null)} />
       )}
       {menuSelection === 'feedback' && (
@@ -1133,7 +1168,7 @@ function Main() {
       {menuSelection === 'createAccount' && (
         <MultisigCreatePage />
       )}
-      {menuSelection === 'multisigEdit' && (
+      {menuSelection === 'multisigEdit' && !accountGateActive && (
         <MultisigEditPage key={refreshToken} defaultPublicKey={sourcePublicKey} />
       )}
       {menuSelection === 'multisigJobs' && (

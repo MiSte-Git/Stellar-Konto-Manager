@@ -1285,5 +1285,8 @@
   "resolveOrValidatePublicKey": {
     "invalid": "Neispravna adresa. Očekivani format je Public Key (G…), muxirana adresa (M…) ili federacijska adresa (ime*domena).",
     "empty": "Molimo unesite adresu."
+  },
+  "accountGate": {
+    "noAccount": "Nije učitana nijedna adresa. Molimo unesite Stellar adresu iznad."
   }
 }

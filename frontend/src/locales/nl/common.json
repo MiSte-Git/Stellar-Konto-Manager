@@ -1285,5 +1285,8 @@
   "resolveOrValidatePublicKey": {
     "invalid": "Ongeldig adres. Het verwachte formaat is een Public Key (G…), een gemengd adres (M…) of een federatieadres (naam*domein).",
     "empty": "Voer een adres in."
+  },
+  "accountGate": {
+    "noAccount": "Er is geen account geladen. Voer hierboven een Stellar-adres in."
   }
 }

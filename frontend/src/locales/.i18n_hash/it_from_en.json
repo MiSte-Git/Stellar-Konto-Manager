@@ -5389,5 +5389,6 @@
   "common.multisigEdit.risk.masterDisabled": "0a8a66695305bb9b8212ac99e1afcdf871adabf1ba5e5217cfcd7cfaffc6a942",
   "common.multisigEdit.risk.noRedundancy": "16a88c317f4bfed46c5c8ede71f8250290bdda9e6e3392d6e6ee66cf8c844580",
   "common.multisigEdit.risk.acknowledge": "d40e2327b3530c05395e78b4f7012fd58bc618f4bd4d146cff10df69a9fc1f18",
-  "common.multisigEdit.saveIntro": "be8016d1553f780dd8b4caedcba569f86b057e9196919b9b71ca5c79fc7ce4d0"
+  "common.multisigEdit.saveIntro": "be8016d1553f780dd8b4caedcba569f86b057e9196919b9b71ca5c79fc7ce4d0",
+  "common.accountGate.noAccount": "fccaec54a99625d79db33d11e0fa958e6d8ba76d4240b775a6c04ac04b31c595"
 }

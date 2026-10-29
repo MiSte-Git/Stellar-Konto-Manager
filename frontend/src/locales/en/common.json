@@ -1285,5 +1285,8 @@
   "resolveOrValidatePublicKey": {
     "invalid": "Invalid address. The expected format is a Public Key (G…), a muxed address (M…), or a federation address (name*domain).",
     "empty": "Please enter an address."
+  },
+  "accountGate": {
+    "noAccount": "No account has been loaded. Please enter a Stellar address above."
   }
 }

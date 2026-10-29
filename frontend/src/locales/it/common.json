@@ -1285,5 +1285,8 @@
   "resolveOrValidatePublicKey": {
     "invalid": "Indirizzo non valido. Il formato previsto è un Public Key (G…), un indirizzo muxed (M…) o un indirizzo di federazione (nome*dominio).",
     "empty": "Inserisci un indirizzo."
+  },
+  "accountGate": {
+    "noAccount": "Non è stato caricato alcun account. Inserisci un indirizzo Stellar nel campo sopra."
   }
 }
