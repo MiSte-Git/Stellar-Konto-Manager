@@ -1,7 +1,10 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import MultisigPrepareDialog from '../MultisigPrepareDialog.jsx';
 import MultisigSigningOptions from '../multisig/MultisigSigningOptions.jsx';
+import MultisigResultDialog from '../multisig/MultisigResultDialog.jsx';
+import { openMultisigJob } from '../multisig/multisigNavigation.js';
+import { computeJobSigningState } from '../../utils/multisig/jobSigningState.js';
+import { getRequiredThreshold } from '../../utils/getRequiredThreshold.js';
 import { FactList, FactRow, NOTE_ERROR, NOTE_NEUTRAL, NOTE_WARN } from './LiquidityDialogShell.jsx';
 
 /** Hinweise zum Multisig-Job-Weg vor dem Erstellen sowie Fehler und Status danach. */
@@ -40,42 +43,49 @@ export function LiquiditySigningOptions({ open, choice, onChoiceChange, onProcee
 }
 
 /**
- * MultisigPrepareDialog mit der Zusammenfassung des erstellten Jobs (inkl. Job-ID)
- * bzw. des exportierten XDR (ohne Job-ID, kein Job angelegt).
- * job.items: { label, value, hint?, wrap?, note? }. Zeilen wie in den Dialogen
- * (Label links, Wert rechts); note-Eintraege erscheinen als Text unter der Liste.
+ * Ergebnis eines Multisig-Jobs bzw. XDR-Exports im gemeinsamen
+ * MultisigResultDialog. result.items: { label, value, hint?, wrap?, note? } als
+ * LP-Zusammenfassung (children); note-Eintraege erscheinen als Text unter der Liste.
+ * Beim Job kommen Signaturstand (Konto-Signer, benoetigtes Gewicht) und
+ * "Zum Job" dazu.
  */
-export function PreparedJobDialog({ job, onClose }) {
-  const { t } = useTranslation(['liquidity', 'multisig']);
-  if (!job) return null;
-  const rows = job.id
-    ? [...job.items.filter((item) => !item.note), { label: t('liquidity:job.jobId'), value: job.id, wrap: true }]
-    : job.items.filter((item) => !item.note);
-  const notes = job.items.filter((item) => item.note);
+export function LiquidityResultDialog({ type, result, account, operationType, onClose }) {
+  if (!result) return null;
+  const rows = result.items.filter((item) => !item.note);
+  const notes = result.items.filter((item) => item.note);
+  const signing = type === 'job'
+    ? computeJobSigningState({
+      accountSigners: account?.signers || [],
+      requiredWeight: result.requiredWeight || getRequiredThreshold(operationType, account?.thresholds || {}),
+      collectedSigners: result.collectedSigners || [],
+    })
+    : null;
   return (
-    <MultisigPrepareDialog
-      open
+    <MultisigResultDialog
+      type={type}
+      jobId={type === 'job' ? result.id : undefined}
+      hash={result.hash}
+      xdr={result.xdr}
+      validUntil={result.validUntil}
+      signing={signing}
       onClose={onClose}
-      hash={job.hash}
-      xdr={job.xdr}
-      summary={{
-        title: t('multisig:prepare.title'),
-        subtitle: t('multisig:prepare.subtitle'),
-        body: (
-          <div className="space-y-2" data-testid="liquidity-job-summary">
-            <dl className="text-xs">
-              {rows.map((item, index) => (
-                <FactRow key={`${index}-${item.label}`} label={item.label} hint={item.hint} value={item.value} wrap={item.wrap} />
-              ))}
-            </dl>
-            {notes.map((item) => (
-              <p key={item.label} className="text-xs">
-                <span className="font-semibold">{item.label}:</span> {item.value}
-              </p>
-            ))}
-          </div>
-        ),
-      }}
-    />
+      onOpenJob={type === 'job' && result.id ? () => {
+        onClose();
+        openMultisigJob(result.id, result.accessToken);
+      } : undefined}
+    >
+      <div className="space-y-2" data-testid="liquidity-job-summary">
+        <dl className="text-xs">
+          {rows.map((item, index) => (
+            <FactRow key={`${index}-${item.label}`} label={item.label} hint={item.hint} value={item.value} wrap={item.wrap} />
+          ))}
+        </dl>
+        {notes.map((item) => (
+          <p key={item.label} className="text-xs">
+            <span className="font-semibold">{item.label}:</span> {item.value}
+          </p>
+        ))}
+      </div>
+    </MultisigResultDialog>
   );
 }

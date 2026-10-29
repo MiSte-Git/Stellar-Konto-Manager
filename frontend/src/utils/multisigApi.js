@@ -131,5 +131,9 @@ export async function createMultisigJobFromXdr({ network, accountId, txXdr }) {
     id,
     hash: data?.txHash || data?.tx_hash || '',
     xdr: data?.txXdrCurrent || data?.tx_xdr_current || txXdr,
+    // Signaturstand und Zugriffstoken, soweit das Backend sie liefert (Ergebnisdialog, "Zum Job")
+    requiredWeight: Number(data?.requiredWeight || 0) || null,
+    collectedSigners: Array.isArray(data?.collectedSigners) ? data.collectedSigners : [],
+    accessToken: data?.accessToken || '',
   };
 }

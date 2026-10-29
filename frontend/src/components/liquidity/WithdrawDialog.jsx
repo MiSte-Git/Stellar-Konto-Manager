@@ -4,7 +4,6 @@ import { getNetworkConfig, passphraseFor } from '../../config/networks.js';
 import { resolveFeePerOp } from '../../utils/stellar/fees.js';
 import { isMultisigAccount } from '../../utils/stellar/isMultisigAccount.js';
 import { getMultisigTxTimeout } from '../../utils/getMultisigTxTimeout.js';
-import { formatValidUntil } from '../../utils/multisig/formatValidUntil.js';
 import { useSettings } from '../../utils/useSettings.js';
 import SecretKeyModal from '../SecretKeyModal.jsx';
 import { describeOperations } from '../../utils/multisig/describeOperations.js';
@@ -18,7 +17,7 @@ import { formatAmountWithUnit, formatSlippage, parseAmountInput } from './format
 import { parseSlippagePercent, sharesFromPercent } from './dialogInputs.js';
 import LiquidityDialogShell, { BTN_PRIMARY, BTN_SECONDARY, FactList, INPUT, NOTE_ERROR, NOTE_NEUTRAL, NOTE_WARN, OperationsPreview } from './LiquidityDialogShell.jsx';
 import { CheckProblems, ResultNote, SlippageField } from './dialogParts.jsx';
-import { JobNotes, LiquiditySigningOptions, PreparedJobDialog } from './jobParts.jsx';
+import { JobNotes, LiquidityResultDialog, LiquiditySigningOptions } from './jobParts.jsx';
 
 const PERCENT_PRESETS = ['25', '50', '75', '100'];
 
@@ -163,7 +162,6 @@ export default function WithdrawDialog({ poolId, publicKey, network, onClose, on
         { label: t('liquidity:withdraw.minimum', { asset: codeB }), hint: t('liquidity:withdraw.minimumHint'), value: formatAmountWithUnit(c.quote.minAmountB, labelB, locale) },
         { label: t('liquidity:job.slippage'), value: `${formatSlippage(c.quote.slippageBps, locale)} %` },
         { label: t('liquidity:job.poolTrust'), value: t(c.removePoolTrust ? 'liquidity:job.poolTrustRemove' : 'liquidity:job.poolTrustKeep') },
-        { label: t('liquidity:job.validUntil'), value: formatValidUntil(tx.timeBounds?.maxTime, locale, t) },
         { label: t('liquidity:job.noteLabel'), value: [t('liquidity:job.withdrawHint'), c.removePoolTrust ? t('liquidity:job.removeTrustHint') : ''].filter(Boolean).join(' '), note: true },
       ],
     };
@@ -283,8 +281,8 @@ export default function WithdrawDialog({ poolId, publicKey, network, onClose, on
         rows={signingSummaryRows}
       />
       {action.showSecretModal && <SecretKeyModal {...action.modalProps} />}
-      <PreparedJobDialog job={action.preparedJob} onClose={onClose} />
-      <PreparedJobDialog job={action.exportedXdr} onClose={action.clearExportedXdr} />
+      <LiquidityResultDialog type="job" result={action.preparedJob} account={data.account} operationType="liquidityPoolWithdraw" onClose={onClose} />
+      <LiquidityResultDialog type="xdr" result={action.exportedXdr} account={data.account} operationType="liquidityPoolWithdraw" onClose={action.clearExportedXdr} />
     </LiquidityDialogShell>
   );
 }

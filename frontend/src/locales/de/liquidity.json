@@ -105,7 +105,6 @@
   },
   "job": {
     "created": "Multisig-Job erstellt. Die Transaktion wird gesendet, sobald genug Signaturen gesammelt sind.",
-    "jobId": "Job-ID",
     "source": "Quellkonto",
     "network": "Netzwerk",
     "pool": "Pool",
@@ -115,7 +114,6 @@
     "poolTrustExists": "besteht bereits",
     "poolTrustRemove": "wird nach dem Abheben entfernt",
     "poolTrustKeep": "bleibt bestehen",
-    "validUntil": "Gültig bis",
     "noteLabel": "Hinweis",
     "depositHint": "Die Preisgrenzen beziehen sich auf den aktuellen Kurs. Bewegt sich der Kurs bis zur letzten Signatur darüber hinaus, scheitert die Transaktion (op_bad_price) und der Job muss neu erstellt werden.",
     "withdrawHint": "Die Mindestbeträge beziehen sich auf den aktuellen Kurs. Bewegt sich der Kurs bis zur letzten Signatur so, dass sie unterschritten werden, scheitert die Transaktion (op_under_minimum) und der Job muss neu erstellt werden.",

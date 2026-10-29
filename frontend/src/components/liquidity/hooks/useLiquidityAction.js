@@ -163,7 +163,12 @@ export default function useLiquidityAction({ publicKey, network, poolId, operati
         return;
       }
       if (mode === 'xdr') {
-        setExportedXdr({ hash: txHashHex(outcome.tx), xdr: outcome.tx.toXDR(), items: outcome.items || [] });
+        setExportedXdr({
+          hash: txHashHex(outcome.tx),
+          xdr: outcome.tx.toXDR(),
+          validUntil: outcome.tx.timeBounds?.maxTime,
+          items: outcome.items || [],
+        });
         return;
       }
       const job = await createMultisigJobFromXdr({
@@ -178,7 +183,16 @@ export default function useLiquidityAction({ publicKey, network, poolId, operati
         return;
       }
       setJobCreated(true);
-      setPreparedJob({ id: job.id, hash, xdr: job.xdr, items: outcome.items || [] });
+      setPreparedJob({
+        id: job.id,
+        hash,
+        xdr: job.xdr,
+        validUntil: outcome.tx.timeBounds?.maxTime,
+        requiredWeight: job.requiredWeight,
+        collectedSigners: job.collectedSigners || [],
+        accessToken: job.accessToken || '',
+        items: outcome.items || [],
+      });
     } catch (err) {
       if (mountedRef.current) setJobError(describeLiquidityError(t, err));
     } finally {

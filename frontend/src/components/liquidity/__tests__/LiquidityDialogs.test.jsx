@@ -1,5 +1,5 @@
 import React from 'react';
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { I18nextProvider } from 'react-i18next';
 import { Account, Asset, Keypair, Networks, TransactionBuilder } from '@stellar/stellar-sdk';
 import i18n from '../../../i18n.js';
@@ -498,7 +498,16 @@ describe('Multisig-Konten: Optionsdialog (Job, lokal, XDR)', () => {
     expect(tx.signatures).toHaveLength(0);
 
     const summary = await screen.findByTestId('liquidity-job-summary');
-    expect(summary).toHaveTextContent('job-42');
+    // gemeinsamer Ergebnisdialog: Job-ID, Signaturstand, fehlende Signer, Frist, "Zum Job"
+    const result = screen.getByTestId('multisig-result-dialog');
+    expect(result).toHaveTextContent('job-42');
+    expect(within(result).getByTestId('multisig-result-progress')).toHaveTextContent('Signaturgewicht: gesammelt 0 von 2.');
+    const missing = within(result).getByTestId('multisig-result-missing');
+    expect(missing).toHaveTextContent(`${owner.publicKey().slice(0, 8)}…${owner.publicKey().slice(-8)} (Gewicht 1)`);
+    expect(missing).toHaveTextContent(`${cosigner.publicKey().slice(0, 8)}…${cosigner.publicKey().slice(-8)} (Gewicht 1)`);
+    expect(within(result).getByTestId('multisig-result-deadline')).toHaveTextContent(/^Muss bis .+ vollständig signiert und eingereicht sein\.$/);
+    expect(within(result).getByRole('button', { name: 'Zum Job' })).toBeInTheDocument();
+    expect(summary).not.toHaveTextContent('Gültig bis');
     expect(summary).toHaveTextContent(owner.publicKey());
     expect(summary).toHaveTextContent('Mainnet');
     expect(summary).toHaveTextContent('wird in derselben Transaktion angelegt');
@@ -510,6 +519,26 @@ describe('Multisig-Konten: Optionsdialog (Job, lokal, XDR)', () => {
     // jobCreated-Sperre: kein weiterer Job, kein direkter Weg
     expect(screen.getByRole('button', { name: 'Signieren und senden' })).toBeDisabled();
     expect(hoisted.submit).not.toHaveBeenCalled();
+  });
+
+  it('Option Job: "Zum Job" schliesst den Dialog und oeffnet das Job-Detail mit Zugriffstoken', async () => {
+    hoisted.createJob.mockResolvedValue({ id: 'job-77', hash: 'h77', xdr: 'AAAA', requiredWeight: 2, collectedSigners: [], accessToken: 'tok-77' });
+    const onClose = vi.fn();
+    const popstate = vi.fn();
+    window.addEventListener('popstate', popstate);
+    try {
+      await reviewDeposit({ onClose });
+      await chooseOption(JOB);
+      const result = await screen.findByTestId('multisig-result-dialog');
+      fireEvent.click(within(result).getByRole('button', { name: 'Zum Job' }));
+      expect(onClose).toHaveBeenCalled();
+      expect(window.location.pathname).toMatch(/\/multisig\/jobs\/job-77$/);
+      expect(window.location.search).toBe('?token=tok-77');
+      expect(popstate).toHaveBeenCalled();
+    } finally {
+      window.removeEventListener('popstate', popstate);
+      window.history.replaceState({}, '', '/');
+    }
   });
 
   it('Option Job: waehrend der Erstellung kein zweiter Start', async () => {
@@ -571,8 +600,14 @@ describe('Multisig-Konten: Optionsdialog (Job, lokal, XDR)', () => {
     // Gueltigkeit wie beim Job
     expect(Number(tx.timeBounds.maxTime)).toBeGreaterThanOrEqual(before + 3600);
     expect(screen.getByText(txHashHex(tx))).toBeInTheDocument();
-    // keine Sperre: Dialog schliessen, Signieren bleibt moeglich
-    fireEvent.click(screen.getByRole('button', { name: 'Abbrechen' }));
+    const result = screen.getByTestId('multisig-result-dialog');
+    expect(result).toHaveTextContent('Es wurde kein Multisig-Job angelegt.');
+    expect(result).toHaveTextContent('Es wurde nichts an das Netzwerk gesendet.');
+    expect(within(result).getByTestId('multisig-result-deadline')).toHaveTextContent(/^Muss bis /);
+    expect(within(result).queryByRole('button', { name: 'Zum Job' })).toBeNull();
+    // keine Sperre: Dialog schliessen (unten rechts), Signieren bleibt moeglich
+    const closeButtons = within(result).getAllByRole('button', { name: 'Schließen' });
+    fireEvent.click(closeButtons[closeButtons.length - 1]);
     expect(screen.queryByTestId('liquidity-job-summary')).toBeNull();
     expect(screen.getByRole('button', { name: 'Signieren und senden' })).toBeEnabled();
   });

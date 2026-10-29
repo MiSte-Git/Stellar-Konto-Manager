@@ -6,6 +6,9 @@ import { Asset, Keypair, Operation, TransactionBuilder, Memo, StrKey } from '@st
 import { Buffer } from 'buffer';
 import SecretKeyModal from '../components/SecretKeyModal';
 import MultisigSigningOptions from '../components/multisig/MultisigSigningOptions.jsx';
+import MultisigResultDialog from '../components/multisig/MultisigResultDialog.jsx';
+import { openMultisigJob } from '../components/multisig/multisigNavigation.js';
+import { computeJobSigningState } from '../utils/multisig/jobSigningState.js';
 import { getSessionSecrets } from '../utils/sessionSecrets.js';
 import { isMultisigAccount } from '../utils/stellar/isMultisigAccount.js';
 import { apiUrl } from '../utils/apiBase.js';
@@ -239,10 +242,6 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [confirmChoice, setConfirmChoice] = useState('job');
   const [resultDialog, setResultDialog] = useState(null);
-  const [copiedXdr, setCopiedXdr] = useState(false);
-  const [copiedJobId, setCopiedJobId] = useState(false);
-  const [copiedDetails, setCopiedDetails] = useState(false);
-  const [showJobInfo, setShowJobInfo] = useState(false);
   const [pendingLocalPreflight, setPendingLocalPreflight] = useState(null);
   const [reviewDialog, setReviewDialog] = useState({ open: false, signers: [], preflight: null, snapshot: null });
   const [reviewError, setReviewError] = useState('');
@@ -531,7 +530,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     return net || '';
   }, [t]);
 
-  const buildSummaryItems = useCallback((summary) => {
+  const buildSummaryItems = useCallback((summary, { includeValidUntil = true } = {}) => {
     if (!summary) return [];
     const items = [
       { label: t('publicKey:source', 'Quelle'), value: summary.source },
@@ -560,7 +559,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     // creation time below) - the immediate-submit 'sent' summary never
     // carries this, since by the time that dialog shows, the transaction has
     // already executed and a validity window is no longer meaningful.
-    if (summary.validUntil !== undefined) {
+    if (includeValidUntil && summary.validUntil !== undefined) {
       items.push({ label: t('multisig:detail.validUntil.label', 'Gültig bis'), value: formatValidUntil(summary.validUntil, i18n.language, t) });
     }
     return items;
@@ -568,34 +567,14 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
 
   const reopenSelection = useCallback((choice) => {
     setResultDialog(null);
-    setCopiedXdr(false);
     if (choice) setConfirmChoice(choice);
     setShowConfirmModal(true);
     void runPreflight();
   }, [runPreflight]);
 
-  const handleCopyXdr = useCallback(async (text) => {
-    try {
-      await navigator.clipboard.writeText(text || '');
-      setCopiedXdr(true);
-      setTimeout(() => setCopiedXdr(false), 1500);
-    } catch (e) {
-      console.error('copy failed', e);
-    }
-  }, []);
-
-  const handleCopyJobId = useCallback(async (text) => {
-    try {
-      await navigator.clipboard.writeText(text || '');
-      setCopiedJobId(true);
-      setTimeout(() => setCopiedJobId(false), 1500);
-    } catch (e) {
-      console.error('copy job id failed', e);
-    }
-  }, []);
-
-  const handleCopySentDetails = useCallback(async (dialog) => {
-    if (!dialog) return;
+  // Text fuer "Details kopieren" im Ergebnis einer gesendeten Transaktion.
+  const sentDetailsText = useCallback((dialog) => {
+    if (!dialog) return '';
     const lines = buildSummaryItems(dialog.summary).map((item) => `${item.label}: ${item.value}`);
     if (dialog.hash) {
       const hashLabel = dialog.type === 'sent'
@@ -603,13 +582,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
         : t('multisig:confirm.result.job.hashLabel', 'Transaktions-Hash');
       lines.push(`${hashLabel}: ${dialog.hash}`);
     }
-    try {
-      await navigator.clipboard.writeText(lines.filter(Boolean).join('\n'));
-      setCopiedDetails(true);
-      setTimeout(() => setCopiedDetails(false), 1500);
-    } catch (e) {
-      console.error('copy details failed', e);
-    }
+    return lines.filter(Boolean).join('\n');
   }, [buildSummaryItems, t]);
 
   const showErrorMessage = useCallback((msg) => {
@@ -623,10 +596,6 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
 
   const closeResultDialog = useCallback(() => {
     setResultDialog(null);
-    setCopiedXdr(false);
-    setCopiedJobId(false);
-    setCopiedDetails(false);
-    setShowJobInfo(false);
     setLastResultDialog(null);
     setSecretReturnTo('');
   }, []);
@@ -1222,6 +1191,10 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
             hash: jobHash,
             xdr: jobXdr,
             muxedActivationCapture: meta.muxedActivationCapture,
+            // Signaturstand und Zugriffstoken aus der Backend-Antwort (fuer Fortschritt und "Zum Job")
+            requiredWeight: Number(job?.requiredWeight || 0) || null,
+            collectedSigners: Array.isArray(job?.collectedSigners) ? job.collectedSigners : collectedForJob,
+            accessToken: job?.accessToken || '',
           });
           closeConfirmDialogs();
         } catch (err) {
@@ -2395,226 +2368,55 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       )}
 
       {resultDialog && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-55 overflow-y-auto p-4">
-          <div className="bg-white dark:bg-gray-800 rounded-sm p-4 w-full max-w-2xl my-auto max-h-[calc(100svh-2rem)] overflow-y-auto">
-            <div className="flex items-start justify-between gap-3 mb-3">
-              <h3 className="text-lg font-semibold">
-                {resultDialog.type === 'job' && t('multisig:confirm.result.job.title')}
-                {resultDialog.type === 'xdr' && t('multisig:confirm.result.xdr.title')}
-                {resultDialog.type === 'sent' && t('multisig:confirm.result.sent.title')}
-              </h3>
-              <button
-                type="button"
-                className="p-2 rounded-sm border hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300"
-                onClick={closeResultDialog}
-                aria-label={t('common:close')}
-              >
-                ×
-              </button>
-            </div>
-
-            {resultDialog.type === 'sent' && (
-              <div className="flex flex-wrap items-center justify-between gap-2 text-sm text-green-700 dark:text-green-300 mb-3">
-                <span>{t('multisig:confirm.result.sent.status')}</span>
-                <button
-                  type="button"
-                  className="px-2 py-1 rounded-sm border border-blue-200 text-blue-700 dark:border-blue-800 dark:text-blue-100 hover:bg-blue-50 dark:hover:bg-blue-900"
-                  onClick={() => handleCopySentDetails(resultDialog)}
-                >
-                  {copiedDetails
-                    ? t('multisig:confirm.result.sent.copiedDetails', 'Kopiert')
-                    : t('multisig:confirm.result.sent.copyDetails', 'Details kopieren')}
-                </button>
-              </div>
-            )}
-            {resultDialog.type === 'sent' && resultDialog.muxedActivationCapture && (
-              <div className="text-sm text-green-800 dark:text-green-200 font-medium mb-3">
-                {t('common:payment.send.muxedActivationCapture', 'Account was activated; an additional minimal transaction fee applied to also record the muxed ID on-chain.')}
-              </div>
-            )}
-            {resultDialog.type === 'job' && (
-              <div className="text-sm text-blue-700 dark:text-blue-200 mb-3">
-                {t('multisig:confirm.result.job.status')}
-              </div>
-            )}
-            {resultDialog.type === 'job' && resultDialog.muxedActivationCapture && (
-              <div className="text-sm text-blue-700 dark:text-blue-200 font-medium mb-3">
-                {t('common:payment.send.muxedActivationCaptureJob', 'This job contains two operations (account activation + muxed-ID capture), so it costs two operation fees.')}
-              </div>
-            )}
-            {resultDialog.type === 'job' && (
-              <div className="flex justify-end mb-3">
-                <button
-                  type="button"
-                  className="px-3 py-1 text-sm rounded-sm border border-blue-200 text-blue-700 dark:border-blue-800 dark:text-blue-100 hover:bg-blue-50 dark:hover:bg-blue-900"
-                  onClick={() => setShowJobInfo((v) => !v)}
-                  aria-expanded={showJobInfo}
-                >
-                  {t('multisig:confirm.result.job.infoButton')}
-                </button>
-              </div>
-            )}
-            {resultDialog.type === 'job' && showJobInfo && (
-              <div className="border rounded-sm p-3 mb-3 bg-blue-50 dark:bg-blue-900/30 text-sm text-gray-800 dark:text-gray-100">
-                <div className="font-semibold mb-1">{t('multisig:confirm.result.job.infoTitle')}</div>
-                <p className="mb-2 text-gray-700 dark:text-gray-200">{t('multisig:confirm.options.job.desc')}</p>
-                <ul className="list-disc ml-5 space-y-1">
-                  {[
-                    t('multisig:confirm.options.job.infoBody.one'),
-                    t('multisig:confirm.options.job.infoBody.two'),
-                    t('multisig:confirm.options.job.infoBody.three'),
-                    t('multisig:confirm.options.job.infoBody.four'),
-                  ].map((line, idx) => (
-                    <li key={idx}>{line}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
-            {resultDialog.type === 'xdr' && (
-              <div className="text-sm text-amber-700 dark:text-amber-300 mb-3 space-y-1">
-                <div>{t('multisig:confirm.result.xdr.status')}</div>
-                <div>{t('multisig:confirm.result.xdr.noJob')}</div>
-                <div className="text-gray-700 dark:text-gray-200">{t('multisig:confirm.result.xdr.hint')}</div>
-              </div>
-            )}
-            {resultDialog.type === 'xdr' && resultDialog.muxedActivationCapture && (
-              <div className="text-sm text-amber-800 dark:text-amber-200 font-medium mb-3">
-                {t('common:payment.send.muxedActivationCaptureXdr', 'This transaction contains two operations (account activation + muxed-ID capture), so it costs two operation fees.')}
-              </div>
-            )}
-
-            {buildSummaryItems(resultDialog.summary).length > 0 && (
-              <div className="border rounded-sm p-3 mb-3 space-y-1">
-                {buildSummaryItems(resultDialog.summary).map((item, idx) => (
-                  <div key={idx} className="text-sm flex flex-wrap gap-2">
-                    <span className="text-gray-600 dark:text-gray-400">{item.label}:</span>
-                    <span className="font-mono break-all">{item.value}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {(resultDialog.jobId || resultDialog.hash) && (
-              <div className="grid gap-2 mb-3">
-                {resultDialog.jobId && (
-                  <div className="flex flex-wrap gap-2 text-sm items-center">
-                    <span className="text-gray-600 dark:text-gray-400">{t('multisig:confirm.result.job.jobIdLabel')}</span>
-                    <span className="font-mono break-all">{resultDialog.jobId}</span>
-                    <button
-                      type="button"
-                      className="px-2 py-1 rounded-sm border border-blue-200 text-blue-700 dark:border-blue-800 dark:text-blue-100 hover:bg-blue-50 dark:hover:bg-blue-900"
-                      onClick={() => handleCopyJobId(resultDialog.jobId)}
-                    >
-                      {copiedJobId ? t('multisig:confirm.result.job.copiedJobId') : t('multisig:confirm.result.job.copyJobId')}
-                    </button>
-                  </div>
-                )}
-                {resultDialog.hash && (
-                  <div className="flex flex-wrap gap-2 text-sm items-center">
-                    <span className="text-gray-600 dark:text-gray-400">
-                      {resultDialog.type === 'sent'
-                        ? t('multisig:confirm.result.sent.hashLabel')
-                        : resultDialog.type === 'xdr'
-                          ? t('multisig:confirm.result.xdr.hashLabel')
-                          : t('multisig:confirm.result.job.hashLabel')}
-                    </span>
-                    <span className="font-mono break-all">{resultDialog.hash}</span>
-                    {resultDialog.type === 'sent' && (
-                      <div className="flex flex-wrap gap-2">
-                        {buildExplorerUrl(txExplorers.stellarchain, resultDialog.hash, netLabel, { type: 'tx' }) && (
-                          <a
-                            className="px-2 py-1 rounded-sm border border-blue-200 text-blue-700 dark:border-blue-800 dark:text-blue-100 hover:bg-blue-50 dark:hover:bg-blue-900"
-                            href={buildExplorerUrl(txExplorers.stellarchain, resultDialog.hash, netLabel, { type: 'tx' })}
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            {t('common:balance.explorer.stellarchain', 'Stellarchain.io')}
-                          </a>
-                        )}
-                        {buildExplorerUrl(txExplorers.stellarExpert, resultDialog.hash, netLabel, { type: 'tx' }) && (
-                          <a
-                            className="px-2 py-1 rounded-sm border border-blue-200 text-blue-700 dark:border-blue-800 dark:text-blue-100 hover:bg-blue-50 dark:hover:bg-blue-900"
-                            href={buildExplorerUrl(txExplorers.stellarExpert, resultDialog.hash, netLabel, { type: 'tx' })}
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            {t('common:balance.explorer.expert', 'stellar.expert')}
-                          </a>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            )}
-
-            {resultDialog.type === 'job' && (
-              <div className="flex flex-wrap gap-2 mb-3">
-                <button
-                  type="button"
-                  className="px-3 py-1 rounded-sm border border-blue-200 text-blue-700 dark:border-blue-700 dark:text-blue-100 hover:bg-blue-50 dark:hover:bg-blue-900"
-                  onClick={() => {
-                    setLastResultDialog(resultDialog);
-                    setResultDialog(null);
-                    setCopiedXdr(false);
-                    setCopiedJobId(false);
-                    setShowJobInfo(false);
-                    openSecretModal(false, 'job', 1, 'result');
-                  }}
-                >
-                  {t('multisig:detail.secretPrompt.signNow', 'Jetzt signieren')}
-                </button>
-              </div>
-            )}
-
-            {resultDialog.type === 'xdr' && resultDialog.xdr && (
-              <div className="border rounded-sm p-3">
-                <div className="flex items-center justify-between gap-2 mb-1">
-                  <div className="text-sm text-gray-700 dark:text-gray-300">{t('multisig:prepare.xdrLabel')}</div>
-                  <button
-                    type="button"
-                    className="px-3 py-1 rounded-sm border border-blue-200 text-blue-700 dark:text-blue-200 dark:border-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900"
-                    onClick={() => handleCopyXdr(resultDialog.xdr)}
-                  >
-                    {copiedXdr ? t('multisig:prepare.copied', 'Kopiert') : t('multisig:confirm.result.copyXdr')}
-                  </button>
+        <MultisigResultDialog
+          type={resultDialog.type}
+          jobId={resultDialog.jobId}
+          hash={resultDialog.hash}
+          xdr={resultDialog.xdr}
+          validUntil={resultDialog.summary?.validUntil}
+          signing={resultDialog.type === 'job' ? computeJobSigningState({
+            accountSigners: accountInfo?.signers || [],
+            requiredWeight: resultDialog.requiredWeight || requiredThreshold,
+            collectedSigners: resultDialog.collectedSigners || [],
+          }) : null}
+          summaryItems={buildSummaryItems(resultDialog.summary, { includeValidUntil: false })}
+          notice={(
+            <>
+              {resultDialog.type === 'sent' && resultDialog.muxedActivationCapture && (
+                <div className="text-sm text-green-800 dark:text-green-200 font-medium mb-3">
+                  {t('common:payment.send.muxedActivationCapture', 'Account was activated; an additional minimal transaction fee applied to also record the muxed ID on-chain.')}
                 </div>
-                <textarea
-                  className="w-full h-32 text-xs font-mono bg-gray-50 dark:bg-gray-900 border rounded-sm px-2 py-1"
-                  readOnly
-                  value={resultDialog.xdr || ''}
-                />
-              </div>
-            )}
-
-            {resultDialog.type === 'job' && (
-              <div className="mt-3 text-sm space-y-1 text-amber-700 dark:text-amber-400">
-                <p>{t('multisig:prepare.notSentHint')}</p>
-                <p className="text-gray-700 dark:text-gray-300">{t('multisig:prepare.closeHint', 'Du kannst diesen Dialog schließen, sobald Du unterzeichnet hast und der Multisig-Auftrag erstellt wurde; der nächste Signer findet die Job-ID im Menü „Multisig-Jobs“.')}</p>
-              </div>
-            )}
-
-	            <div className="mt-4 flex justify-end gap-2">
-	              <button
-	                type="button"
-	                className="px-3 py-2 rounded-sm border hover:bg-gray-100 dark:hover:bg-gray-700"
-	                onClick={closeResultDialog}
-	              >
-	                {t('common:close')}
-	              </button>
-	              {isMultisig === true && (
-	                <button
-	                  type="button"
-	                  className="px-4 py-2 rounded-sm bg-blue-600 text-white hover:bg-blue-700"
-	                  onClick={() => reopenSelection(resultDialog.type === 'sent' ? 'local' : resultDialog.type)}
-	                >
-	                  {t('common:option.back', 'Zurück')}
-	                </button>
-	              )}
-	            </div>
-	          </div>
-	        </div>
-	      )}
+              )}
+              {resultDialog.type === 'job' && resultDialog.muxedActivationCapture && (
+                <div className="text-sm text-blue-700 dark:text-blue-200 font-medium mb-3">
+                  {t('common:payment.send.muxedActivationCaptureJob', 'This job contains two operations (account activation + muxed-ID capture), so it costs two operation fees.')}
+                </div>
+              )}
+              {resultDialog.type === 'xdr' && resultDialog.muxedActivationCapture && (
+                <div className="text-sm text-amber-800 dark:text-amber-200 font-medium mb-3">
+                  {t('common:payment.send.muxedActivationCaptureXdr', 'This transaction contains two operations (account activation + muxed-ID capture), so it costs two operation fees.')}
+                </div>
+              )}
+            </>
+          )}
+          explorerLinks={resultDialog.type === 'sent' && resultDialog.hash ? [
+            { href: buildExplorerUrl(txExplorers.stellarchain, resultDialog.hash, netLabel, { type: 'tx' }), label: t('common:balance.explorer.stellarchain', 'Stellarchain.io') },
+            { href: buildExplorerUrl(txExplorers.stellarExpert, resultDialog.hash, netLabel, { type: 'tx' }), label: t('common:balance.explorer.expert', 'stellar.expert') },
+          ].filter((link) => link.href) : []}
+          copyDetailsText={resultDialog.type === 'sent' ? sentDetailsText(resultDialog) : undefined}
+          onClose={closeResultDialog}
+          onBack={isMultisig === true ? () => reopenSelection(resultDialog.type === 'sent' ? 'local' : resultDialog.type) : undefined}
+          onSignNow={resultDialog.type === 'job' ? () => {
+            setLastResultDialog(resultDialog);
+            setResultDialog(null);
+            openSecretModal(false, 'job', 1, 'result');
+          } : undefined}
+          onOpenJob={resultDialog.type === 'job' && resultDialog.jobId ? () => {
+            closeResultDialog();
+            openMultisigJob(resultDialog.jobId, resultDialog.accessToken);
+          } : undefined}
+        />
+      )}
 
       {showSecretModal && (
         <SecretKeyModal
@@ -2729,6 +2531,9 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                     xdr: merged?.txXdrCurrent || merged?.txXdr || jobToSign.xdr,
                     summary,
                     status,
+                    requiredWeight: Number(merged?.requiredWeight || jobToSign.requiredWeight || 0) || null,
+                    collectedSigners: Array.isArray(merged?.collectedSigners) ? merged.collectedSigners : (jobToSign.collectedSigners || []),
+                    accessToken: jobToSign.accessToken || '',
                   });
                   setSecretError('');
                   closeSecretModal();

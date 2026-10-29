@@ -191,6 +191,15 @@ export function liquidityPoolsPath(poolId) {
 }
 
 /**
+ * Pfad zum Job-Detail (/multisig/jobs/:id), optional mit Zugriffstoken (?token=),
+ * wie bei geteilten Job-Links.
+ */
+export function multisigJobPath(jobId, token) {
+  const base = buildPath(`multisig/jobs/${encodeURIComponent(jobId)}`);
+  return token ? `${base}?token=${encodeURIComponent(token)}` : base;
+}
+
+/**
  * Extracts multisig job id from path /multisig/jobs/:id
  */
 export function getMultisigJobId(pathname) {

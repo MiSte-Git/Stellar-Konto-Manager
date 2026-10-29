@@ -5,7 +5,6 @@ import { getHorizonServer } from '../../utils/stellar/stellarUtils.js';
 import { resolveFeePerOp } from '../../utils/stellar/fees.js';
 import { isMultisigAccount } from '../../utils/stellar/isMultisigAccount.js';
 import { getMultisigTxTimeout } from '../../utils/getMultisigTxTimeout.js';
-import { formatValidUntil } from '../../utils/multisig/formatValidUntil.js';
 import { useSettings } from '../../utils/useSettings.js';
 import SecretKeyModal from '../SecretKeyModal.jsx';
 import { describeOperations } from '../../utils/multisig/describeOperations.js';
@@ -27,7 +26,7 @@ import { formatAmountWithUnit, formatPrice, formatSlippage, parseAmountInput } f
 import { parseSlippagePercent } from './dialogInputs.js';
 import LiquidityDialogShell, { BTN_PRIMARY, BTN_SECONDARY, FactList, INPUT, NOTE_ERROR, NOTE_NEUTRAL, NOTE_WARN, OperationsPreview } from './LiquidityDialogShell.jsx';
 import { CheckInfos, CheckProblems, ResultNote, SlippageField } from './dialogParts.jsx';
-import { JobNotes, LiquiditySigningOptions, PreparedJobDialog } from './jobParts.jsx';
+import { JobNotes, LiquidityResultDialog, LiquiditySigningOptions } from './jobParts.jsx';
 
 function buildDepositTx({ account, pool, check, quote, feePerOp, network, timeoutSeconds }) {
   return buildLiquidityDepositTransaction({
@@ -197,7 +196,6 @@ export default function DepositDialog({ poolId, firstAsset, publicKey, network, 
         { label: t('liquidity:deposit.priceBounds'), value: priceRange(c.quote) },
         { label: t('liquidity:job.slippage'), value: `${formatSlippage(c.quote.slippageBps, locale)} %` },
         { label: t('liquidity:job.poolTrust'), value: t(v.freshCheck.needPoolTrust ? 'liquidity:job.poolTrustCreate' : 'liquidity:job.poolTrustExists') },
-        { label: t('liquidity:job.validUntil'), value: formatValidUntil(tx.timeBounds?.maxTime, locale, t) },
         { label: t('liquidity:job.noteLabel'), value: t('liquidity:job.depositHint'), note: true },
       ],
     };
@@ -299,8 +297,8 @@ export default function DepositDialog({ poolId, firstAsset, publicKey, network, 
         rows={signingSummaryRows}
       />
       {action.showSecretModal && <SecretKeyModal {...action.modalProps} />}
-      <PreparedJobDialog job={action.preparedJob} onClose={onClose} />
-      <PreparedJobDialog job={action.exportedXdr} onClose={action.clearExportedXdr} />
+      <LiquidityResultDialog type="job" result={action.preparedJob} account={data.account} operationType="liquidityPoolDeposit" onClose={onClose} />
+      <LiquidityResultDialog type="xdr" result={action.exportedXdr} account={data.account} operationType="liquidityPoolDeposit" onClose={action.clearExportedXdr} />
     </LiquidityDialogShell>
   );
 }

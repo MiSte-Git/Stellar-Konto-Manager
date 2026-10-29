@@ -72,6 +72,8 @@
     "result": {
       "backToSelection": "Zurück",
       "copyXdr": "XDR kopieren",
+      "deadline": "Muss bis {{date}} vollständig signiert und eingereicht sein.",
+      "deadlineUnbounded": "Ohne zeitliche Begrenzung gültig.",
       "job": {
         "title": "Transaktion für Multisig vorbereitet",
         "status": "Multisig-Job wurde erstellt. Die Transaktion wurde noch nicht gesendet.",
@@ -85,7 +87,11 @@
           "submit": "Wenn genug Signaturen gesammelt sind, sendet einer der Signer den Job im SKM (Menü „Job-ID“) final an das Netzwerk."
         },
         "copyJobId": "Job-ID kopieren",
-        "copiedJobId": "Kopiert"
+        "copiedJobId": "Kopiert",
+        "progress": "Signaturgewicht: gesammelt {{collected}} von {{required}}.",
+        "missingTitle": "Noch fehlende Signer",
+        "missingItem": "{{signer}} (Gewicht {{weight}})",
+        "openJob": "Zum Job"
       },
       "sent": {
         "title": "Transaktion gesendet",
