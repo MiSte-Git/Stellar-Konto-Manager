@@ -15,6 +15,8 @@ import { toStroops } from '../stellar/liquidityPools.js';
 // Groesster Trustline-Wert (int64 in Stroops): wer "kein Limit" angibt, setzt genau diesen.
 export const TRUSTLINE_LIMIT_MAX_STROOPS = 2n ** 63n - 1n;
 
+const OPERATION_AMOUNT_RE = /^\d+(\.\d{1,7})?$/;
+
 // Bits der Konto-Flags, Reihenfolge wie im Protokoll.
 const ACCOUNT_FLAGS = [
   [1, 'auth_required'],
@@ -40,29 +42,37 @@ function isPoolShareAsset(asset) {
   return !!(asset.assetA && asset.assetB);
 }
 
-// Issuer eines Assets (bei Pool Shares beider Pool-Assets), native Assets haben keinen.
-function issuersOf(asset) {
-  if (!asset) return [];
-  if (isPoolShareAsset(asset)) return [...issuersOf(asset.assetA), ...issuersOf(asset.assetB)];
-  return asset.code && asset.issuer ? [{ code: asset.code, issuer: asset.issuer }] : [];
-}
-
+// Nur ein Betrag im Format der Operationen ist darstellbar: toStroops schneidet
+// Stellen ueber 7 Dezimalen ab, das wuerde den Wert still veraendern.
 function parseStroops(value) {
-  try {
-    return toStroops(value);
-  } catch {
-    return null;
-  }
+  if (!OPERATION_AMOUNT_RE.test(String(value ?? ''))) return null;
+  return toStroops(String(value));
 }
 
 // Der SDK liefert sha256Hash und preAuthTx als Bytes; als X.../T... bleiben sie mit
-// Horizon und Stellar Lab vergleichbar.
+// Horizon und Stellar Lab vergleichbar. null: Signer-Typ nicht erkannt.
 function formatSignerKey(signer) {
-  if (signer.ed25519PublicKey) return signer.ed25519PublicKey;
-  if (signer.ed25519SignedPayload) return signer.ed25519SignedPayload;
-  if (signer.sha256Hash) return StrKey.encodeSha256Hash(signer.sha256Hash);
-  if (signer.preAuthTx) return StrKey.encodePreAuthTx(signer.preAuthTx);
-  return '-';
+  try {
+    if (signer.ed25519PublicKey) return signer.ed25519PublicKey;
+    if (signer.ed25519SignedPayload) return signer.ed25519SignedPayload;
+    if (signer.sha256Hash) return StrKey.encodeSha256Hash(signer.sha256Hash);
+    if (signer.preAuthTx) return StrKey.encodePreAuthTx(signer.preAuthTx);
+  } catch { /* unten als Rohdaten */ }
+  return null;
+}
+
+// Rohdaten eines nicht erkannten Signers (ohne Gewicht), Bytes als Hex.
+function formatRawSigner(signer) {
+  const fields = Object.fromEntries(Object.entries(signer).filter(([key]) => key !== 'weight'));
+  try {
+    const raw = JSON.stringify(fields, (_key, value) => {
+      if (ArrayBuffer.isView(value)) return Array.from(value, (byte) => byte.toString(16).padStart(2, '0')).join('');
+      return typeof value === 'bigint' ? String(value) : value;
+    });
+    return raw === '{}' ? '-' : raw;
+  } catch {
+    return Object.keys(fields).join(', ') || '-';
+  }
 }
 
 function formatAccountFlags(value) {
@@ -149,7 +159,8 @@ export function describeOperations(operations, t, sourceAccountId = '', options 
 
   const amount = (value, unit) => {
     const stroops = parseStroops(value);
-    return stroops === null ? `${value ?? '-'} ${unit}` : formatAmountWithUnit(stroops, unit, locale);
+    if (stroops !== null) return formatAmountWithUnit(stroops, unit, locale);
+    return `${value === '' || value === undefined || value === null ? '-' : value} ${unit}`;
   };
 
   // Volle Adresse; bei M... zusaetzlich das Basiskonto, damit keine fremde G-Adresse verdeckt bleibt.
@@ -164,16 +175,37 @@ export function describeOperations(operations, t, sourceAccountId = '', options 
   };
 
   // formatAsset kuerzt den Issuer; die Tabelle nennt ihn deshalb einmal vollstaendig.
-  const issuerRows = (...assets) => {
+  // entries: [asset, rolle?]. Die Rolle haelt zwei Issuer mit gleichem Code auseinander;
+  // dasselbe Asset in mehreren Rollen bleibt eine Zeile und nennt alle Rollen.
+  const issuerRows = (entries) => {
     const seen = new Map();
-    assets.flatMap(issuersOf).forEach((item) => seen.set(`${item.code}:${item.issuer}`, item));
-    return [...seen.entries()].map(([id, item]) => ({
+    entries.forEach(([asset, role]) => {
+      if (!asset?.code || !asset.issuer) return;
+      const id = `${asset.code}:${asset.issuer}`;
+      const item = seen.get(id) || { code: asset.code, issuer: asset.issuer, roles: [] };
+      if (role) item.roles.push(role);
+      seen.set(id, item);
+    });
+    return [...seen.entries()].map(([id, { code, issuer, roles }]) => ({
       key: `issuer:${id}`,
-      label: label('issuer', 'Issuer {{code}}', { code: item.code }),
-      value: item.issuer,
+      label: roles.length
+        ? label('issuerRole', 'Issuer {{code}} ({{role}})', { code, role: roles.join(', ') })
+        : label('issuer', 'Issuer {{code}}', { code }),
+      value: issuer,
       wrap: true,
     }));
   };
+
+  const poolAssetEntries = (assetA, assetB) => [
+    [assetA, label('roleAssetA', 'Asset A')],
+    [assetB, label('roleAssetB', 'Asset B')],
+  ];
+
+  const swapIssuerRows = (op) => issuerRows([
+    [op.sendAsset, label('roleSend', 'sendet')],
+    [op.destAsset, label('roleReceive', 'erhält')],
+    ...(op.path || []).map((asset, index) => [asset, label('rolePath', 'Pfad {{index}}', { index: index + 1 })]),
+  ]);
 
   const destinationOfPathPayment = (op) => {
     const own = isSameAccount(op.destination, sourceAccountId);
@@ -194,7 +226,7 @@ export function describeOperations(operations, t, sourceAccountId = '', options 
       assetB,
       pool: shortKey(op.liquidityPoolId),
       poolRow: { key: 'poolId', label: label('poolId', 'Pool-ID'), value: String(op.liquidityPoolId ?? '-'), wrap: true },
-      issuers: info ? issuerRows(info.assetA, info.assetB) : [],
+      issuers: info ? issuerRows(poolAssetEntries(info.assetA, info.assetB)) : [],
       warnings: poolInfo && !info
         ? [t('detail.operations.liquidityPoolAssetsUnknown', { defaultValue: '(Pool-Assets konnten nicht geladen werden)' })]
         : [],
@@ -210,7 +242,7 @@ export function describeOperations(operations, t, sourceAccountId = '', options 
       rows.push({ key: 'masterWeight', label: label('masterWeight', 'Master-Gewicht'), value: String(op.masterWeight) });
     }
     if (op.signer) {
-      const signerKey = formatSignerKey(op.signer);
+      const signerKey = formatSignerKey(op.signer) ?? formatRawSigner(op.signer);
       if (Number(op.signer.weight) > 0) {
         rows.push({ key: 'signer', label: label('signer', 'Signer'), value: signerKey, wrap: true });
         rows.push({ key: 'signerWeight', label: label('signerWeight', 'Gewicht für Signer'), value: String(op.signer.weight) });
@@ -231,7 +263,7 @@ export function describeOperations(operations, t, sourceAccountId = '', options 
     }
     if (isSet(op.setFlags)) rows.push({ key: 'setFlags', label: label('setFlags', 'Flags setzen'), value: formatAccountFlags(op.setFlags) });
     if (isSet(op.clearFlags)) rows.push({ key: 'clearFlags', label: label('clearFlags', 'Flags entfernen'), value: formatAccountFlags(op.clearFlags) });
-    if (isSet(op.inflationDest)) rows.push(...addressRows('inflationDest', label('inflationDest', 'Inflation-Ziel'), op.inflationDest));
+    if (isSet(op.inflationDest)) rows.push(...addressRows('inflationDest', label('inflationDest', 'Inflation Destination'), op.inflationDest));
     if (!rows.length) {
       rows.push({ key: 'noFields', label: label('note', 'Hinweis'), value: t('detail.operations.noFieldsSet', { defaultValue: 'Diese Operation setzt keine Felder.' }) });
     }
@@ -246,7 +278,7 @@ export function describeOperations(operations, t, sourceAccountId = '', options 
           rows: [
             { key: 'amount', label: label('amount', 'Betrag'), value: amount(op.amount, formatAsset(op.asset)), emphasis: true },
             ...addressRows('destination', label('destination', 'Empfänger'), op.destination, { emphasis: true }),
-            ...issuerRows(op.asset),
+            ...issuerRows([[op.asset]]),
           ],
         };
       case 'createAccount':
@@ -258,16 +290,23 @@ export function describeOperations(operations, t, sourceAccountId = '', options 
           ],
         };
       case 'setOptions':
-        return { title: title('setOptions', 'Kontooptionen ändern'), rows: setOptionsRows(op) };
+        return {
+          title: title('setOptions', 'Kontooptionen ändern'),
+          rows: setOptionsRows(op),
+          warnings: op.signer && formatSignerKey(op.signer) === null
+            ? [t('detail.operations.warnUnknownSigner', { defaultValue: 'Signer-Typ nicht erkannt.' })]
+            : [],
+        };
       case 'changeTrust': {
         const line = op.line || op.asset;
         const asset = formatAsset(line);
         const limit = parseStroops(op.limit);
         const assetRow = { key: 'asset', label: label('asset', 'Asset'), value: asset };
+        const lineIssuers = issuerRows(line && isPoolShareAsset(line) ? poolAssetEntries(line.assetA, line.assetB) : [[line]]);
         if (limit === 0n) {
           return {
             title: t('detail.operations.changeTrustRemove', { asset, defaultValue: 'Trustline für {{asset}} entfernen' }),
-            rows: [assetRow, ...issuerRows(line)],
+            rows: [assetRow, ...lineIssuers],
           };
         }
         const unit = line && isPoolShareAsset(line) ? label('poolShares', 'Pool Shares') : asset;
@@ -283,7 +322,7 @@ export function describeOperations(operations, t, sourceAccountId = '', options 
                 : amount(op.limit, unit),
               emphasis: true,
             },
-            ...issuerRows(line),
+            ...lineIssuers,
           ],
         };
       }
@@ -300,7 +339,7 @@ export function describeOperations(operations, t, sourceAccountId = '', options 
             { key: 'destMin', label: label('receiveMin', 'Erhält mindestens'), value: amount(op.destMin, formatAsset(op.destAsset)), emphasis: true },
             ...destinationOfPathPayment(op),
             ...pathRows(op),
-            ...issuerRows(op.sendAsset, op.destAsset, ...(op.path || [])),
+            ...swapIssuerRows(op),
           ],
         };
       case 'pathPaymentStrictReceive':
@@ -311,7 +350,7 @@ export function describeOperations(operations, t, sourceAccountId = '', options 
             { key: 'destAmount', label: label('receiveExact', 'Erhält genau'), value: amount(op.destAmount, formatAsset(op.destAsset)), emphasis: true },
             ...destinationOfPathPayment(op),
             ...pathRows(op),
-            ...issuerRows(op.sendAsset, op.destAsset, ...(op.path || [])),
+            ...swapIssuerRows(op),
           ],
         };
       case 'bumpSequence':
@@ -370,16 +409,15 @@ export function describeOperations(operations, t, sourceAccountId = '', options 
     }
   };
 
-  // Regel fuer op.source steht bei isForeignOpSource: gleiches Basiskonto ist keine
-  // Warnung; eine abweichende M-Adresse bleibt aber als Zeile sichtbar.
+  // Regel fuer op.source steht bei isForeignOpSource: gleiches Basiskonto gilt als
+  // Quellkonto der Transaktion und bekommt keine Zeile.
   return (Array.isArray(operations) ? operations : []).map((op) => {
     const { title: blockTitle, rows, warnings = [] } = describe(op);
     const block = { type: op?.type || '?', title: blockTitle, rows, warnings: [...warnings] };
-    if (op?.source && op.source !== sourceAccountId) {
-      const foreign = isForeignOpSource(op, sourceAccountId);
+    if (isForeignOpSource(op, sourceAccountId)) {
       block.source = op.source;
-      block.rows = [...addressRows('source', label('source', 'Quellkonto'), op.source, foreign ? { emphasis: true } : {}), ...rows];
-      if (foreign) block.warnings.unshift(t('detail.operations.warnOpSource', { defaultValue: 'Diese Operation wird von einem anderen Konto ausgeführt.' }));
+      block.rows = [...addressRows('source', label('source', 'Quellkonto'), op.source, { emphasis: true }), ...rows];
+      block.warnings.unshift(t('detail.operations.warnOpSource', { defaultValue: 'Diese Operation wird von einem anderen Konto ausgeführt.' }));
     }
     return block;
   });

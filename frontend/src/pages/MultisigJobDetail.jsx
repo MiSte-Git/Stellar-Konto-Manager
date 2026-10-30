@@ -113,36 +113,6 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
     void fetchJob();
   }, [fetchJob]);
 
-  const handleMerge = useCallback(async () => {
-    if (!jobId || !importXdr.trim()) return;
-    setImporting(true);
-    setError('');
-    try {
-      const token = await resolveToken();
-      const data = await mergeSignedXdr({ jobId, signedXdr: importXdr.trim(), accessToken: token });
-      setJob(data);
-      setImportXdr('');
-      setInfo(t('multisig:detail.signedXdr.success.body', { status: data?.status || '' }));
-    } catch (e) {
-      const raw = e?.message || 'merge_failed';
-      if (e?.code === 'no_public_key') {
-        setError(t('multisig:detail.noAccessToken', 'Kein Zugriffstoken verfügbar. Bitte zuerst das Konto laden, das Signer dieses Auftrags ist.'));
-      } else if (e?.code === 'no_local_secret') {
-        setError(t('multisig:detail.noLocalSecretForToken', 'Kein Zugriffstoken verfügbar: Es bleibt nur bis zum Neuladen der Seite erhalten, und für dieses Konto ist in diesem Browser kein Secret gespeichert. Bitte den Job-Link mit Zugriffstoken erneut öffnen oder das Konto einmal mit "Secret merken" laden.'));
-      } else if (e?.status === 403) {
-        setError(t('multisig:detail.notASigner', 'Dieses Konto ist kein aktiver Signer dieses Auftrags.'));
-      } else if (raw === 'mismatched_hash') {
-        setError(t('multisig:errors.mismatchedHash'));
-      } else if (raw === 'signers_unavailable') {
-        setError(t('multisig:errors.signersUnavailable'));
-      } else {
-        setError(raw);
-      }
-    } finally {
-      setImporting(false);
-    }
-  }, [importXdr, jobId, resolveToken, t]);
-
   const collectedSet = useMemo(() => new Set((job?.collectedSigners || []).map((s) => s.publicKey)), [job]);
   const shortPk = useCallback((pk) => {
     const val = pk || '';
@@ -196,10 +166,19 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
     () => (decodedTx ? findOperationWarnings((decodedTx.innerTransaction || decodedTx).operations, txSourceAccountId) : { unknownTypes: [], pathPaymentToOther: false, foreignOpSources: [] }),
     [decodedTx, txSourceAccountId]
   );
-  // Unbekannte Operationen: Signieren erst nach ausdruecklicher Bestaetigung.
+  // Unbekannte Operationen und fremde Quellkonten: Signieren erst nach ausdruecklicher
+  // Bestaetigung. Bewusst zwei getrennte Bestaetigungen: Sie gelten verschiedenen Risiken
+  // (nicht lesbare Wirkung gegen Autorisierung fuer ein anderes Konto), keine deckt die andere ab.
   const [unknownOpsConfirmed, setUnknownOpsConfirmed] = useState(false);
-  useEffect(() => { setUnknownOpsConfirmed(false); }, [decodedTx]);
-  const signingBlockedByUnknownOps = operationWarnings.unknownTypes.length > 0 && !unknownOpsConfirmed;
+  const [foreignSourcesConfirmed, setForeignSourcesConfirmed] = useState(false);
+  useEffect(() => {
+    setUnknownOpsConfirmed(false);
+    setForeignSourcesConfirmed(false);
+  }, [decodedTx]);
+  const signingBlocked = (operationWarnings.unknownTypes.length > 0 && !unknownOpsConfirmed)
+    || (operationWarnings.foreignOpSources.length > 0 && !foreignSourcesConfirmed);
+  // Importierte Signaturen zaehlen wie eigene: der Merge kann den Job einreichen.
+  const importBlocked = signingBlocked && !isFinalState;
 
   const validUntilLabel = useMemo(
     () => formatValidUntil(decodedTx?.timeBounds?.maxTime, i18n.language, t),
@@ -418,8 +397,38 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
     }
   }, [describeRevokeError, fetchJob, revokePrep, t]);
 
+  const handleMerge = useCallback(async () => {
+    if (!jobId || !importXdr.trim() || importBlocked) return;
+    setImporting(true);
+    setError('');
+    try {
+      const token = await resolveToken();
+      const data = await mergeSignedXdr({ jobId, signedXdr: importXdr.trim(), accessToken: token });
+      setJob(data);
+      setImportXdr('');
+      setInfo(t('multisig:detail.signedXdr.success.body', { status: data?.status || '' }));
+    } catch (e) {
+      const raw = e?.message || 'merge_failed';
+      if (e?.code === 'no_public_key') {
+        setError(t('multisig:detail.noAccessToken', 'Kein Zugriffstoken verfügbar. Bitte zuerst das Konto laden, das Signer dieses Auftrags ist.'));
+      } else if (e?.code === 'no_local_secret') {
+        setError(t('multisig:detail.noLocalSecretForToken', 'Kein Zugriffstoken verfügbar: Es bleibt nur bis zum Neuladen der Seite erhalten, und für dieses Konto ist in diesem Browser kein Secret gespeichert. Bitte den Job-Link mit Zugriffstoken erneut öffnen oder das Konto einmal mit "Secret merken" laden.'));
+      } else if (e?.status === 403) {
+        setError(t('multisig:detail.notASigner', 'Dieses Konto ist kein aktiver Signer dieses Auftrags.'));
+      } else if (raw === 'mismatched_hash') {
+        setError(t('multisig:errors.mismatchedHash'));
+      } else if (raw === 'signers_unavailable') {
+        setError(t('multisig:errors.signersUnavailable'));
+      } else {
+        setError(raw);
+      }
+    } finally {
+      setImporting(false);
+    }
+  }, [importXdr, importBlocked, jobId, resolveToken, t]);
+
   const signWithSecret = useCallback(async (secret) => {
-    if (!job || signingBlockedByUnknownOps) return;
+    if (!job || signingBlocked) return;
     if (!canCurrentSign) {
       setError(t('multisig:detail.signatures.missing', 'fehlt'));
       return;
@@ -473,10 +482,10 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
     } finally {
       setLoading(false);
     }
-  }, [job, jobId, canCurrentSign, signingBlockedByUnknownOps, t, resolveToken, liquiditySubmitText]);
+  }, [job, jobId, canCurrentSign, signingBlocked, t, resolveToken, liquiditySubmitText]);
 
   const handleSignWithSession = useCallback(async () => {
-    if (!job || signingBlockedByUnknownOps) return;
+    if (!job || signingBlocked) return;
     if (!canCurrentSign) {
       setError(t('multisig:detail.signatures.missing', 'fehlt'));
       return;
@@ -488,7 +497,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
       return;
     }
     await signWithSecret(secret);
-  }, [job, canCurrentSign, currentPublicKey, signingBlockedByUnknownOps, t, signWithSecret]);
+  }, [job, canCurrentSign, currentPublicKey, signingBlocked, t, signWithSecret]);
 
   if (!jobId) return null;
 
@@ -603,17 +612,23 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
                 </p>
               )}
               {operationWarnings.foreignOpSources.length > 0 && (
-                <div role="alert" className="mt-2 rounded-sm bg-amber-50 p-2 text-xs font-medium text-amber-900 dark:bg-amber-900/30 dark:text-amber-100" data-testid="job-foreign-sources">
-                  <p>{t('multisig:detail.operations.warnForeignSources', 'Achtung: Mindestens eine Operation wird von einem anderen Konto als dem Quellkonto ausgeführt. Dieses Konto muss die Transaktion ebenfalls signieren. Prüfe die Adressen, bevor du signierst:')}</p>
-                  <ul className="mt-1 list-disc pl-4 font-mono font-normal">
+                <div role="alert" className="mt-2 space-y-1 rounded-sm border border-red-300 bg-red-50 p-2 text-xs text-red-900 dark:border-red-700 dark:bg-red-900/30 dark:text-red-100" data-testid="job-foreign-sources">
+                  <p className="font-medium">{t('multisig:detail.operations.warnForeignSources', 'Achtung: Mindestens eine Operation hat ein anderes Quellkonto als die Transaktion. Für sie zählen die Signer und Thresholds des jeweiligen Kontos, nicht nur die des Job-Kontos; die angezeigte Signaturanzahl berücksichtigt das nicht. Gehört einer deiner Keys zu diesem Konto, autorisiert deine Signatur auch diese Operation. Prüfe die Adressen, bevor du signierst:')}</p>
+                  <ul className="list-disc pl-4 font-mono">
                     {operationWarnings.foreignOpSources.map((account) => <li key={account} className="break-all">{account}</li>)}
                   </ul>
+                  {!isFinalState && (
+                    <label className="flex items-center gap-2">
+                      <input type="checkbox" checked={foreignSourcesConfirmed} onChange={(e) => setForeignSourcesConfirmed(e.target.checked)} />
+                      {t('multisig:detail.operations.confirmForeignSources', 'Ich habe die fremden Quellkonten geprüft und möchte trotzdem signieren.')}
+                    </label>
+                  )}
                 </div>
               )}
               {operationWarnings.unknownTypes.length > 0 && (
                 <div role="alert" className="mt-2 space-y-1 rounded-sm border border-red-300 bg-red-50 p-2 text-xs text-red-900 dark:border-red-700 dark:bg-red-900/30 dark:text-red-100">
                   <p className="font-medium">{t('multisig:detail.operations.warnUnknown', { types: operationWarnings.unknownTypes.join(', ') })}</p>
-                  {canCurrentSign && !isFinalState && (
+                  {!isFinalState && (
                     <label className="flex items-center gap-2">
                       <input type="checkbox" checked={unknownOpsConfirmed} onChange={(e) => setUnknownOpsConfirmed(e.target.checked)} />
                       {t('multisig:detail.operations.confirmUnknown')}
@@ -659,7 +674,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
                 type="button"
                 className="text-xs px-3 py-1 rounded-sm border border-green-200 text-green-700 dark:text-green-200 dark:border-green-700 hover:bg-green-50 dark:hover:bg-green-900"
                 onClick={handleSignWithSession}
-                disabled={loading || signingComplete || signingBlockedByUnknownOps}
+                disabled={loading || signingComplete || signingBlocked}
               >
                 {t('multisig:detail.secretPrompt.signNow', 'Jetzt signieren')}
               </button>
@@ -696,7 +711,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
                   type="button"
                   className="px-3 py-1 rounded-sm bg-green-600 text-white hover:bg-green-700 text-sm disabled:opacity-50"
                   onClick={() => signWithSecret(secretInput.trim())}
-                  disabled={loading || !secretInput.trim() || signingBlockedByUnknownOps}
+                  disabled={loading || !secretInput.trim() || signingBlocked}
                 >
                   {t('multisig:detail.secretPrompt.signNow', 'Jetzt signieren')}
                 </button>
@@ -825,10 +840,15 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
               type="button"
               className="px-4 py-2 rounded-sm bg-blue-600 text-white disabled:opacity-50"
               onClick={handleMerge}
-              disabled={importing || !importXdr.trim()}
+              disabled={importing || !importXdr.trim() || importBlocked}
             >
               {importing ? t('common:common.loading') : t('multisig:detail.signedXdr.submit')}
             </button>
+            {importBlocked && (
+              <p className="text-xs text-red-800 dark:text-red-200" data-testid="job-import-blocked">
+                {t('multisig:detail.signedXdr.blockedHint', 'Zuerst die Warnungen bei den Transaktionsoperationen oben bestätigen.')}
+              </p>
+            )}
           </div>
         </div>
       )}

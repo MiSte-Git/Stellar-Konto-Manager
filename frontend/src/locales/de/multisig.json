@@ -194,7 +194,8 @@
       "success": {
         "title": "Signaturen aktualisiert",
         "body": "Die Signaturen wurden erfolgreich mit diesem Multisig-Job gemergt. Aktueller Status: {{status}}."
-      }
+      },
+      "blockedHint": "Zuerst die Warnungen bei den Transaktionsoperationen oben bestätigen."
     },
     "secretPrompt": {
       "title": "Secret eingeben, um zu signieren",
@@ -261,8 +262,6 @@
         "accountMerge": "Konto zusammenführen"
       },
       "labels": {
-        "field": "Feld",
-        "value": "Wert",
         "source": "Quellkonto",
         "baseAccount": "Basiskonto",
         "amount": "Betrag",
@@ -282,7 +281,7 @@
         "homeDomain": "Home-Domain",
         "setFlags": "Flags setzen",
         "clearFlags": "Flags entfernen",
-        "inflationDest": "Inflation-Ziel",
+        "inflationDest": "Inflation Destination",
         "note": "Hinweis",
         "balanceId": "Balance-ID",
         "sendExact": "Sendet genau",
@@ -300,14 +299,22 @@
         "minAmountA": "Mindestbetrag Asset A",
         "minAmountB": "Mindestbetrag Asset B",
         "mergeDestination": "Zielkonto",
-        "type": "Typ"
+        "type": "Typ",
+        "issuerRole": "Issuer {{code}} ({{role}})",
+        "roleSend": "sendet",
+        "roleReceive": "erhält",
+        "rolePath": "Pfad {{index}}",
+        "roleAssetA": "Asset A",
+        "roleAssetB": "Asset B"
       },
       "limitUnlimited": "unbegrenzt",
       "homeDomainCleared": "wird entfernt",
       "noFieldsSet": "Diese Operation setzt keine Felder.",
       "warnOpSource": "Diese Operation wird von einem anderen Konto ausgeführt.",
       "warnUnknownOperation": "SKM kann diese Operation nicht im Klartext anzeigen.",
-      "warnForeignSources": "Achtung: Mindestens eine Operation wird von einem anderen Konto als dem Quellkonto ausgeführt. Dieses Konto muss die Transaktion ebenfalls signieren. Prüfe die Adressen, bevor du signierst:"
+      "warnForeignSources": "Achtung: Mindestens eine Operation hat ein anderes Quellkonto als die Transaktion. Für sie zählen die Signer und Thresholds des jeweiligen Kontos, nicht nur die des Job-Kontos; die angezeigte Signaturanzahl berücksichtigt das nicht. Gehört einer deiner Keys zu diesem Konto, autorisiert deine Signatur auch diese Operation. Prüfe die Adressen, bevor du signierst:",
+      "confirmForeignSources": "Ich habe die fremden Quellkonten geprüft und möchte trotzdem signieren.",
+      "warnUnknownSigner": "Signer-Typ nicht erkannt."
     },
     "validUntil": {
       "label": "Gültig bis",

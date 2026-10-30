@@ -28,8 +28,8 @@ describe('OperationBlocks', () => {
     expect(second).toHaveTextContent('2. Konto erstellen');
     const row = within(first).getByRole('row', { name: /Empfänger/ });
     expect(row).toHaveTextContent(ADDRESS);
-    expect(within(first).getByRole('columnheader', { name: 'Feld' })).toBeInTheDocument();
-    expect(within(first).getByRole('columnheader', { name: 'Wert' })).toBeInTheDocument();
+    expect(within(first).getByRole('table', { name: 'Zahlung' })).toBeInTheDocument();
+    expect(within(first).getByRole('rowheader', { name: 'Empfänger' })).toBeInTheDocument();
   });
 
   it('bricht Adressen ueberall um, Betraege nur an Wortgrenzen; feste Tabellenbreite gegen horizontales Scrollen', () => {
@@ -52,6 +52,14 @@ describe('OperationBlocks', () => {
     expect(unknown).toHaveClass('border-red-300');
     expect(normal).toHaveClass('border-gray-200');
     expect(within(normal).queryByTestId('operation-block-warnings')).toBeNull();
+  });
+
+  it('rendert gleiche Warnungen ohne doppelte Keys', () => {
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    renderBlocks([block({ warnings: ['Gleich', 'Gleich'] })]);
+    expect(screen.getAllByText('Gleich')).toHaveLength(2);
+    expect(errorSpy).not.toHaveBeenCalled();
+    errorSpy.mockRestore();
   });
 
   it('behaelt beim Nachladen den DOM-Knoten eines Blocks', () => {

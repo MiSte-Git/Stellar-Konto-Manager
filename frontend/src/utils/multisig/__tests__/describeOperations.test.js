@@ -37,6 +37,7 @@ function describeOne(op, options = {}) {
 const rowOf = (block, key) => block.rows.find((row) => row.key === key);
 const valueOf = (block, key) => rowOf(block, key)?.value;
 const keysOf = (block) => block.rows.map((row) => row.key);
+const issuerLabels = (block) => block.rows.filter((row) => row.key.startsWith('issuer:')).map((row) => [row.label, row.value]);
 const muxedOf = (publicKey, id = '42') => new MuxedAccount(new Account(publicKey, '1'), id).accountId();
 
 describe('shortKey', () => {
@@ -158,10 +159,50 @@ describe('Betraege', () => {
     const issuerB = Keypair.random().publicKey();
     const usd = new Asset('USD', issuerA);
     const block = describeOne(Operation.pathPaymentStrictSend({ sendAsset: usd, sendAmount: '1', destination: dest, destAsset: Asset.native(), destMin: '1', path: [new Asset('EUR', issuerB), usd] }));
-    expect(block.rows.filter((row) => row.key.startsWith('issuer:')).map((row) => [row.label, row.value])).toEqual([
-      ['Issuer USD', issuerA],
-      ['Issuer EUR', issuerB],
+    expect(issuerLabels(block)).toEqual([
+      ['Issuer USD (sendet, Pfad 2)', issuerA],
+      ['Issuer EUR (Pfad 1)', issuerB],
     ]);
+  });
+
+  it('haelt gleichen Code mit zwei Issuern im Tausch auseinander', () => {
+    const issuerA = Keypair.random().publicKey();
+    const issuerB = Keypair.random().publicKey();
+    const block = describeOne(Operation.pathPaymentStrictSend({ sendAsset: new Asset('USD', issuerA), sendAmount: '1', destination: dest, destAsset: new Asset('USD', issuerB), destMin: '1', path: [] }));
+    expect(issuerLabels(block)).toEqual([
+      ['Issuer USD (sendet)', issuerA],
+      ['Issuer USD (erhält)', issuerB],
+    ]);
+  });
+
+  it('fasst identisches Asset in mehreren Rollen zu einer Zeile zusammen', () => {
+    const issuer = Keypair.random().publicKey();
+    const usd = new Asset('USD', issuer);
+    const block = describeOne(Operation.pathPaymentStrictReceive({ sendAsset: usd, sendMax: '1', destination: dest, destAsset: usd, destAmount: '1', path: [] }));
+    expect(issuerLabels(block)).toEqual([['Issuer USD (sendet, erhält)', issuer]]);
+  });
+
+  it('nennt bei nur einem Asset keine Rolle', () => {
+    const issuer = Keypair.random().publicKey();
+    expect(issuerLabels(describeOne(Operation.payment({ destination: dest, asset: new Asset('USD', issuer), amount: '1' })))).toEqual([['Issuer USD', issuer]]);
+  });
+
+  it.each([
+    ['acht Nachkommastellen', '1.12345678', '1.12345678 XLM'],
+    ['Exponent', '1e3', '1e3 XLM'],
+    ['negativ', '-5', '-5 XLM'],
+    ['Leerzeichen', ' 7 ', ' 7  XLM'],
+    ['leerer String', '', '- XLM'],
+    ['undefined', undefined, '- XLM'],
+    ['null', null, '- XLM'],
+  ])('zeigt einen nicht darstellbaren Betrag (%s) roh, nie gekuerzt oder als 0', (_name, value, expected) => {
+    const [block] = describeOperations([{ type: 'payment', amount: value, asset: Asset.native(), destination: dest }], fakeT, SOURCE, { locale: 'de' });
+    expect(valueOf(block, 'amount')).toBe(expected);
+  });
+
+  it('nimmt genau 7 Nachkommastellen noch als Betrag', () => {
+    const [block] = describeOperations([{ type: 'payment', amount: '1.1234567', asset: Asset.native(), destination: dest }], fakeT, SOURCE, { locale: 'de' });
+    expect(valueOf(block, 'amount')).toBe('1,1234567 XLM');
   });
 });
 
@@ -187,6 +228,12 @@ describe('changeTrust', () => {
     expect(valueOf(describeOne(Operation.changeTrust({ asset, limit: '922337203685.4775806' })), 'limit')).toBe(`922.337.203.685,4775806 ${label}`);
   });
 
+  it('zeigt ein nicht lesbares Limit roh und nicht als Entfernen', () => {
+    const [block] = describeOperations([{ type: 'changeTrust', line: asset, limit: '0.00000000' }], fakeT, SOURCE, { locale: 'de' });
+    expect(block.title).toBe(`Trustline für ${label} setzen`);
+    expect(valueOf(block, 'limit')).toBe(`0.00000000 ${label}`);
+  });
+
   it('Limit 0 bleibt Trustline entfernen', () => {
     const block = describeOne(Operation.changeTrust({ asset, limit: '0' }));
     expect(block.title).toBe(`Trustline für ${label} entfernen`);
@@ -199,7 +246,7 @@ describe('changeTrust', () => {
     const set = describeOne(Operation.changeTrust({ asset: poolAsset }));
     expect(set.title).toBe(`Trustline für Pool XLM/USD (${shortKey(issuer)}) setzen`);
     expect(valueOf(set, 'limit')).toBe('unbegrenzt');
-    expect(valueOf(set, `issuer:USD:${issuer}`)).toBe(issuer);
+    expect(rowOf(set, `issuer:USD:${issuer}`)).toMatchObject({ label: 'Issuer USD (Asset B)', value: issuer });
     expect(describeOne(Operation.changeTrust({ asset: poolAsset, limit: '0' })).title).toBe(`Trustline für Pool XLM/USD (${shortKey(issuer)}) entfernen`);
     expect(valueOf(describeOne(Operation.changeTrust({ asset: poolAsset, limit: '5' })), 'limit')).toBe('5,0 Pool Shares');
   });
@@ -244,12 +291,29 @@ describe('setOptions', () => {
     expect(valueOf(describeOne(Operation.setOptions({ signer: { preAuthTx: hash, weight: 1 } })), 'signer')).toBe(preAuth);
   });
 
-  it('unterschlaegt keine Flags und kein Inflation-Ziel (Regression: gab frueher keine Zeile)', () => {
+  it('unbekannter Signer-Typ: Block-Warnung und Rohdaten statt "-"', () => {
+    const [block] = describeOperations([{ type: 'setOptions', signer: { futureKey: Uint8Array.from([0xab, 0x01]), weight: 2 } }], fakeT, SOURCE);
+    expect(valueOf(block, 'signer')).toBe('{"futureKey":"ab01"}');
+    expect(valueOf(block, 'signerWeight')).toBe('2');
+    expect(block.warnings).toEqual(['Signer-Typ nicht erkannt.']);
+  });
+
+  it('Signer ohne erkennbare Daten: Warnung, auch beim Entfernen', () => {
+    const [block] = describeOperations([{ type: 'setOptions', signer: { weight: 0 } }], fakeT, SOURCE);
+    expect(valueOf(block, 'signerRemove')).toBe('-');
+    expect(block.warnings).toEqual(['Signer-Typ nicht erkannt.']);
+  });
+
+  it('bekannte Signer-Typen loesen keine Warnung aus', () => {
+    expect(describeOne(Operation.setOptions({ signer: { ed25519PublicKey: Keypair.random().publicKey(), weight: 1 } })).warnings).toEqual([]);
+  });
+
+  it('unterschlaegt keine Flags und keine Inflation Destination (Regression: gab frueher keine Zeile)', () => {
     const inflation = Keypair.random().publicKey();
     const block = describeOne(Operation.setOptions({ setFlags: 9, clearFlags: 2, inflationDest: inflation }));
     expect(valueOf(block, 'setFlags')).toBe('auth_required, auth_clawback_enabled (9)');
     expect(valueOf(block, 'clearFlags')).toBe('auth_revocable (2)');
-    expect(valueOf(block, 'inflationDest')).toBe(inflation);
+    expect(rowOf(block, 'inflationDest')).toMatchObject({ label: 'Inflation Destination', value: inflation });
     expect(rowOf(block, 'noFields')).toBeUndefined();
   });
 
@@ -343,13 +407,12 @@ describe('Quellkonto je Operation', () => {
     expect(findOperationWarnings(ops, '').foreignOpSources).toEqual([foreign]);
   });
 
-  it('Muxed mit gleichem Basiskonto: sichtbar, aber kein Alarm', () => {
+  it('Muxed mit gleichem Basiskonto: keine Zeile, kein Alarm', () => {
     const ownMuxed = muxedOf(SOURCE);
     const ops = decoded([paymentFrom(ownMuxed)]);
     const [block] = describeOperations(ops, fakeT, SOURCE, { locale: 'de' });
-    expect(valueOf(block, 'source')).toBe(ownMuxed);
-    expect(valueOf(block, 'sourceBase')).toBe(SOURCE);
-    expect(rowOf(block, 'source').emphasis).toBeUndefined();
+    expect(rowOf(block, 'source')).toBeUndefined();
+    expect(block.source).toBeUndefined();
     expect(block.warnings).toEqual([]);
     expect(findOperationWarnings(ops, SOURCE).foreignOpSources).toEqual([]);
   });
@@ -364,11 +427,12 @@ describe('Quellkonto je Operation', () => {
     expect(findOperationWarnings(ops, SOURCE).foreignOpSources).toEqual([foreign]);
   });
 
-  it('Muxed-Tx-Source: gleiche M-Adresse ist keine Abweichung, die G-Adresse dazu kein Alarm', () => {
+  it('Muxed-Tx-Source: gleiche M-Adresse und ihre G-Adresse ergeben keine Zeile', () => {
     const ownMuxed = muxedOf(SOURCE);
     const same = describeOperations(decoded([paymentFrom(ownMuxed)]), fakeT, ownMuxed, { locale: 'de' })[0];
     expect(rowOf(same, 'source')).toBeUndefined();
     const base = describeOperations(decoded([paymentFrom(SOURCE)]), fakeT, ownMuxed, { locale: 'de' })[0];
+    expect(rowOf(base, 'source')).toBeUndefined();
     expect(base.warnings).toEqual([]);
   });
 
@@ -462,7 +526,7 @@ describe('Liquidity-Pool-Operationen', () => {
     expect(valueOf(depositBlock, 'maxAmountB')).toBe(`50,5 ${usdLabel}`);
     expect(rowOf(depositBlock, 'minPrice')).toMatchObject({ label: `Mindestpreis XLM/${usdLabel}`, value: '0,3333333' });
     expect(valueOf(depositBlock, 'maxPrice')).toBe('0,6666667');
-    expect(valueOf(depositBlock, `issuer:USD:${issuer}`)).toBe(issuer);
+    expect(rowOf(depositBlock, `issuer:USD:${issuer}`)).toMatchObject({ label: 'Issuer USD (Asset B)', value: issuer });
     expect(depositBlock.warnings).toEqual([]);
     expect(withdrawBlock.title).toBe(`Liquidität abheben aus Pool XLM/${usdLabel} (${shortKey(poolId)})`);
     expect(valueOf(withdrawBlock, 'minAmountB')).toBe(`2,25 ${usdLabel}`);

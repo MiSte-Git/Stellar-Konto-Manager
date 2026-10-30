@@ -20,6 +20,8 @@ const SOURCE = Keypair.random().publicKey();
 
 const hoisted = vi.hoisted(() => ({
   getJobMock: vi.fn(),
+  mergeMock: vi.fn(),
+  sessionSecretMock: vi.fn(),
   loadAccountMock: vi.fn(),
   submitMock: vi.fn(),
   rootMock: vi.fn(),
@@ -29,6 +31,12 @@ const hoisted = vi.hoisted(() => ({
 vi.mock('../../utils/multisigApi.js', async (importOriginal) => ({
   ...(await importOriginal()),
   getPendingMultisigJob: hoisted.getJobMock,
+  mergeSignedXdr: hoisted.mergeMock,
+}));
+
+vi.mock('../../utils/sessionSecrets.js', async (importOriginal) => ({
+  ...(await importOriginal()),
+  getSessionSecret: hoisted.sessionSecretMock,
 }));
 
 vi.mock('../../utils/stellar/stellarUtils.js', async (importOriginal) => ({
@@ -115,6 +123,8 @@ beforeEach(() => {
   hoisted.loadAccountMock.mockImplementation(async () => horizonAccount('100'));
   hoisted.submitMock.mockResolvedValue({ hash: 'revokehash' });
   hoisted.rootMock.mockResolvedValue({ network_passphrase: Networks.TESTNET });
+  hoisted.sessionSecretMock.mockResolvedValue('');
+  hoisted.mergeMock.mockImplementation(async () => makeJob());
 });
 
 describe('Multisig-Job widerrufen (P2.3)', () => {
@@ -309,7 +319,9 @@ describe('Fremdes Quellkonto einer Operation', () => {
     renderPage();
     const warning = await screen.findByTestId('job-foreign-sources');
     expect(warning).toHaveAttribute('role', 'alert');
-    expect(warning).toHaveTextContent('von einem anderen Konto als dem Quellkonto ausgeführt');
+    expect(warning).toHaveClass('border-red-300');
+    expect(warning).toHaveTextContent('hat ein anderes Quellkonto als die Transaktion');
+    expect(warning).toHaveTextContent('die angezeigte Signaturanzahl berücksichtigt das nicht');
     expect(warning).toHaveTextContent(SIGNER_A.publicKey);
     const block = screen.getByTestId('operation-block');
     expect(block).toHaveTextContent(`Quellkonto${SIGNER_A.publicKey}`);
@@ -322,6 +334,137 @@ describe('Fremdes Quellkonto einer Operation', () => {
     const block = await screen.findByTestId('operation-block');
     expect(block).not.toHaveTextContent('Quellkonto');
     expect(screen.queryByTestId('job-foreign-sources')).toBeNull();
+  });
+
+  const signButton = () => screen.getAllByRole('button', { name: 'Jetzt signieren' })[0];
+  const FOREIGN = /fremden Quellkonten geprüft/;
+  const UNKNOWN = /anderweitig geprüft/;
+  const SIGNED_XDR = 'AAAA-signiert';
+  const importInput = () => screen.getByPlaceholderText('Signiertes XDR');
+  const importButton = () => screen.getByRole('button', { name: 'Signiertes XDR mergen' });
+
+  it('sperrt das Signieren bis zur Bestaetigung und gibt es danach frei', async () => {
+    hoisted.getJobMock.mockImplementation(async () => jobFor(paymentTx(SIGNER_A.publicKey)));
+    hoisted.sessionSecretMock.mockResolvedValue(SIGNER_A.secret);
+    renderPage();
+    await screen.findByTestId('job-foreign-sources');
+    expect(signButton()).toBeDisabled();
+    fireEvent.click(signButton());
+    expect(hoisted.mergeMock).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole('checkbox', { name: FOREIGN }));
+    expect(signButton()).toBeEnabled();
+    fireEvent.click(signButton());
+    await waitFor(() => expect(hoisted.mergeMock).toHaveBeenCalledTimes(1));
+  });
+
+  it('sperrt die Secret-Eingabe wieder, wenn die Bestaetigung zurueckgenommen wird', async () => {
+    hoisted.getJobMock.mockImplementation(async () => jobFor(paymentTx(SIGNER_A.publicKey)));
+    renderPage();
+    fireEvent.click(await screen.findByRole('checkbox', { name: FOREIGN }));
+    fireEvent.click(signButton());
+    await waitFor(() => expect(document.querySelector('input[type="password"]')).not.toBeNull());
+    fireEvent.change(document.querySelector('input[type="password"]'), { target: { value: SIGNER_A.secret } });
+    const promptButton = () => screen.getAllByRole('button', { name: 'Jetzt signieren' })[1];
+    expect(promptButton()).toBeEnabled();
+    fireEvent.click(screen.getByRole('checkbox', { name: FOREIGN }));
+    expect(promptButton()).toBeDisabled();
+    fireEvent.click(promptButton());
+    expect(hoisted.mergeMock).not.toHaveBeenCalled();
+  });
+
+  it('sperrt auch den XDR-Import, mit Hinweis, und gibt ihn nach Bestaetigung frei', async () => {
+    hoisted.getJobMock.mockImplementation(async () => jobFor(paymentTx(SIGNER_A.publicKey)));
+    renderPage();
+    await screen.findByTestId('job-foreign-sources');
+    fireEvent.change(importInput(), { target: { value: SIGNED_XDR } });
+    expect(importButton()).toBeDisabled();
+    expect(screen.getByTestId('job-import-blocked')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('checkbox', { name: FOREIGN }));
+    expect(screen.queryByTestId('job-import-blocked')).toBeNull();
+    fireEvent.click(importButton());
+    await waitFor(() => expect(hoisted.mergeMock).toHaveBeenCalledTimes(1));
+    expect(hoisted.mergeMock.mock.calls[0][0].signedXdr).toBe(SIGNED_XDR);
+  });
+
+  it('sperrt den XDR-Import auch bei unbekannten Operationen', async () => {
+    const tx = new TransactionBuilder(new Account(SOURCE, '100'), { fee: '1000', networkPassphrase: Networks.TESTNET })
+      .addOperation(Operation.manageData({ name: 'x', value: 'y' }))
+      .setTimeout(86400)
+      .build();
+    hoisted.getJobMock.mockImplementation(async () => jobFor(tx));
+    renderPage();
+    await screen.findByRole('checkbox', { name: UNKNOWN });
+    fireEvent.change(importInput(), { target: { value: SIGNED_XDR } });
+    expect(importButton()).toBeDisabled();
+    fireEvent.click(screen.getByRole('checkbox', { name: UNKNOWN }));
+    expect(importButton()).toBeEnabled();
+  });
+
+  it('bietet die Bestaetigung auch ohne eigenen Signer-Key an, sonst bliebe der Import gesperrt', async () => {
+    hoisted.getJobMock.mockImplementation(async () => jobFor(paymentTx(SIGNER_A.publicKey)));
+    render(
+      <I18nextProvider i18n={i18n}>
+        <MultisigJobDetail jobId="job-1" accessToken="tok" currentPublicKey={SOURCE} onBack={() => {}} />
+      </I18nextProvider>
+    );
+    await screen.findByRole('checkbox', { name: FOREIGN });
+    expect(screen.queryByRole('button', { name: 'Jetzt signieren' })).toBeNull();
+  });
+
+  it('verlangt bei beiden Warnungen beide Bestaetigungen, keine deckt die andere ab', async () => {
+    const tx = new TransactionBuilder(new Account(SOURCE, '100'), { fee: '1000', networkPassphrase: Networks.TESTNET })
+      .addOperation(Operation.manageData({ name: 'x', value: 'y', source: SIGNER_A.publicKey }))
+      .setTimeout(86400)
+      .build();
+    hoisted.getJobMock.mockImplementation(async () => jobFor(tx));
+    renderPage();
+    const foreign = await screen.findByRole('checkbox', { name: FOREIGN });
+    const unknown = screen.getByRole('checkbox', { name: UNKNOWN });
+    fireEvent.click(foreign);
+    expect(signButton()).toBeDisabled();
+    fireEvent.click(foreign);
+    fireEvent.click(unknown);
+    expect(signButton()).toBeDisabled();
+    fireEvent.click(foreign);
+    expect(signButton()).toBeEnabled();
+  });
+
+  it('setzt die Bestaetigung bei einem neuen Job zurueck', async () => {
+    hoisted.getJobMock.mockImplementation(async () => jobFor(paymentTx(SIGNER_A.publicKey)));
+    const page = (jobId) => (
+      <I18nextProvider i18n={i18n}>
+        <MultisigJobDetail jobId={jobId} accessToken="tok" currentPublicKey={SIGNER_A.publicKey} onBack={() => {}} />
+      </I18nextProvider>
+    );
+    const view = render(page('job-1'));
+    fireEvent.click(await screen.findByRole('checkbox', { name: FOREIGN }));
+    expect(signButton()).toBeEnabled();
+    view.rerender(page('job-2'));
+    await waitFor(() => expect(hoisted.getJobMock).toHaveBeenCalledWith('job-2', 'tok'));
+    await waitFor(() => expect(screen.getByRole('checkbox', { name: FOREIGN })).not.toBeChecked());
+    expect(signButton()).toBeDisabled();
+  });
+
+  it('sperrt in einem abgeschlossenen Job den Import nicht zusaetzlich und fragt nichts ab', async () => {
+    hoisted.getJobMock.mockImplementation(async () => ({ ...jobFor(paymentTx(SIGNER_A.publicKey)), status: 'expired' }));
+    renderPage();
+    await screen.findByTestId('job-foreign-sources');
+    expect(screen.queryByRole('checkbox', { name: FOREIGN })).toBeNull();
+    fireEvent.change(importInput(), { target: { value: SIGNED_XDR } });
+    expect(importButton()).toBeEnabled();
+  });
+
+  it('Fee-Bump mit fremder op.source in der inneren Transaktion: Warnung und Sperre', async () => {
+    const inner = paymentTx(SIGNER_B.publicKey);
+    inner.sign(Keypair.fromSecret(SIGNER_A.secret));
+    const bump = TransactionBuilder.buildFeeBumpTransaction(Keypair.fromSecret(SIGNER_A.secret), '2000', inner, Networks.TESTNET);
+    hoisted.getJobMock.mockImplementation(async () => makeJob({ txXdr: bump.toXDR(), txHash: txHashHex(bump) }));
+    renderPage();
+    expect(await screen.findByTestId('job-foreign-sources')).toHaveTextContent(SIGNER_B.publicKey);
+    expect(screen.getByTestId('operation-block')).toHaveTextContent(`Quellkonto${SIGNER_B.publicKey}`);
+    expect(signButton()).toBeDisabled();
+    fireEvent.click(screen.getByRole('checkbox', { name: FOREIGN }));
+    expect(signButton()).toBeEnabled();
   });
 
   it('Fee-Bump: wertet gegen die innere Transaktion und zeigt deren Operationen', async () => {

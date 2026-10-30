@@ -1,5 +1,4 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { DESCRIBED_OPERATION_TYPES } from '../../utils/multisig/describeOperations.js';
 
 const BASE = 'rounded-sm border p-2';
@@ -19,7 +18,6 @@ function blockStyle(block) {
  * lange Werte um, statt die Seite breiter zu machen.
  */
 export default function OperationBlocks({ blocks }) {
-  const { t } = useTranslation(['multisig']);
   return (
     <ol className="space-y-2 text-xs" data-testid="operation-blocks">
       {blocks.map((block, index) => (
@@ -28,13 +26,7 @@ export default function OperationBlocks({ blocks }) {
             <span>{index + 1}.</span>{' '}
             <span>{block.title}</span>
           </div>
-          <table className="w-full table-fixed border-collapse text-left">
-            <thead className="sr-only">
-              <tr>
-                <th scope="col">{t('multisig:detail.operations.labels.field', 'Feld')}</th>
-                <th scope="col">{t('multisig:detail.operations.labels.value', 'Wert')}</th>
-              </tr>
-            </thead>
+          <table aria-label={block.title} className="w-full table-fixed border-collapse text-left">
             <tbody>
               {block.rows.map((row) => (
                 <tr key={row.key} className="align-top">
@@ -46,7 +38,7 @@ export default function OperationBlocks({ blocks }) {
           </table>
           {block.warnings.length > 0 && (
             <ul className="mt-1 space-y-0.5 font-medium" data-testid="operation-block-warnings">
-              {block.warnings.map((warning) => <li key={warning}>{warning}</li>)}
+              {block.warnings.map((warning, warningIndex) => <li key={`${warningIndex}-${warning}`}>{warning}</li>)}
             </ul>
           )}
         </li>
