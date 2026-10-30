@@ -8,6 +8,7 @@ import SecretKeyModal from '../components/SecretKeyModal';
 import MultisigSigningOptions from '../components/multisig/MultisigSigningOptions.jsx';
 import MultisigResultDialog from '../components/multisig/MultisigResultDialog.jsx';
 import { openMultisigJob } from '../components/multisig/multisigNavigation.js';
+import ClearInputButton from '../components/ClearInputButton.jsx';
 import { computeJobSigningState } from '../utils/multisig/jobSigningState.js';
 import { getSessionSecrets } from '../utils/sessionSecrets.js';
 import { isMultisigAccount } from '../utils/stellar/isMultisigAccount.js';
@@ -2008,7 +2009,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
               setAmount(s);
             }}
             rightAdornment={amount ? (
-              <button type="button" onClick={()=>{ clearSuccess(); setAmount(''); }} title={t('common:clear', 'Clear')} aria-label={t('common:clear', 'Clear')} className="absolute right-1 top-1/2 -translate-y-1/2 w-7 h-7 md:w-6 md:h-6 rounded-full bg-gray-300 hover:bg-red-500 text-gray-600 hover:text-white text-sm flex items-center justify-center">×</button>
+              <ClearInputButton onClick={()=>{ clearSuccess(); setAmount(''); }} />
             ) : null}
           />
           </div>
@@ -2085,7 +2086,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                 onRemoveSuggestion={(next) => removeFromHistory(PAYMENT_MEMO_HISTORY_KEY, next, setHistoryMemos)}
                 onClearSuggestions={() => clearHistory(PAYMENT_MEMO_HISTORY_KEY, setHistoryMemos)}
                 rightAdornment={memoVal ? (
-                  <button type="button" onClick={()=>{ clearSuccess(); markMemoManuallyEdited(); setMemoVal(''); }} title={t('common:clear', 'Clear')} aria-label={t('common:clear', 'Clear')} className="absolute right-1 top-1/2 -translate-y-1/2 w-7 h-7 md:w-6 md:h-6 rounded-full bg-gray-300 hover:bg-red-500 text-gray-600 hover:text-white text-sm flex items-center justify-center">×</button>
+                  <ClearInputButton onClick={()=>{ clearSuccess(); markMemoManuallyEdited(); setMemoVal(''); }} />
                 ) : null}
               />
               {inputWasFederation && federationMemoApplied && (

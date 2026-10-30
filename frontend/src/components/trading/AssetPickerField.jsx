@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import ClearInputButton from '../ClearInputButton.jsx';
 import { getAssetTrustlineCount, parseHorizonNumber, shortenKey } from './assetSearchUtils.js';
 
 // Home-Domain nur, wenn die Suchdaten sie mitliefern (derzeit liefern die
@@ -81,19 +82,10 @@ export default function AssetPickerField({
                   onSearch();
                 }
               }}
-              className="w-full rounded-sm border border-gray-300 py-2 pl-3 pr-8 font-mono text-sm dark:border-gray-700 dark:bg-gray-900"
+              className="block w-full rounded-sm border border-gray-300 py-2 pl-3 pr-9 font-mono text-sm dark:border-gray-700 dark:bg-gray-900"
               placeholder={placeholder}
             />
-            {onClear && (query || selected) && (
-              <button
-                type="button"
-                onClick={onClear}
-                aria-label={t('trading:assetPicker.clear')}
-                className="absolute right-1 top-1/2 -translate-y-1/2 rounded-sm px-1.5 text-base leading-none text-gray-500 hover:bg-gray-100 hover:text-gray-800 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-100"
-              >
-                <span aria-hidden="true">×</span>
-              </button>
-            )}
+            {onClear && (query || selected) && <ClearInputButton onClick={onClear} />}
           </div>
           <button
             type="button"
