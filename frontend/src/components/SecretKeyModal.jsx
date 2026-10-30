@@ -21,6 +21,8 @@ function SecretKeyModal({
   secretContext = '',
   initialSecretValues = [],
   allowRememberSession = true,
+  // Optionaler Hinweis unter dem Titel, z.B. fuer welches Konto der Key gebraucht wird.
+  subtitle = '',
 }) {
   const { t } = useTranslation(['secretKey', 'trustline', 'common', 'publicKey']);
   const [secretInputs, setSecretInputs] = useState(
@@ -222,6 +224,9 @@ function SecretKeyModal({
         <h2 className={`text-xl font-semibold mb-4 ${error ? 'text-red-700' : 'text-black dark:text-white'}`}>
           {t('secretKey:label', 'Secret key')}
         </h2>
+        {subtitle && (
+          <div className="mb-3 text-sm text-gray-700 dark:text-gray-300 break-all" data-testid="secret-modal-subtitle">{subtitle}</div>
+        )}
         {isProcessing && (
           <div className="mb-3 text-sm text-blue-700 dark:text-blue-300">
             {t('common:main.processing')}

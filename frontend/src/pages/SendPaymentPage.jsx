@@ -41,6 +41,7 @@ import { networkMismatch, parsePaymentInput } from '../utils/stellar/sep7.js';
 import { CONTRACT_ADDRESS_ERROR, isContractAddress } from '../utils/stellar/addressType.js';
 import { txHashHex } from '../utils/stellar/txHash.js';
 import { readSendPaymentDraft, writeSendPaymentDraft } from '../utils/sendPaymentDraft.js';
+import BatchPaymentDialog from '../components/wallet/BatchPaymentDialog.jsx';
 
 // Immediate local submits (single-sig send, or a multisig job collected and
 // submitted right away) expect a near-term Horizon confirmation, unlike a
@@ -220,7 +221,7 @@ function normalizeRecipientHistoryValue(raw) {
 }
 
 export default function SendPaymentPage({ publicKey, onBack: _onBack, initial }) {
-  const { t, i18n } = useTranslation(['common', 'errors', 'publicKey', 'secretKey', 'investedTokens', 'wallet', 'multisig', 'network']);
+  const { t, i18n } = useTranslation(['common', 'errors', 'publicKey', 'secretKey', 'investedTokens', 'wallet', 'multisig', 'network', 'batchPayment']);
   void _onBack;
   const { wallets } = useTrustedWallets();
   const { decimalsMode, multisigTimeoutSeconds, explorers } = useSettings();
@@ -1751,6 +1752,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   // QR-Scan / eingefuegter Link (SEP-7). Fuellt nur das Formular vor; alle Pruefungen beim
   // Senden laufen danach unveraendert. Gibt einen Fehlertext zurueck, wenn nichts uebernommen wurde.
   const [showQrScan, setShowQrScan] = useState(false);
+  const [showBatchDialog, setShowBatchDialog] = useState(false);
   const [qrInfo, setQrInfo] = useState(null); // { msg, originDomain, hasCallback, assetMissing }
   const applyScannedPayment = useCallback((text) => {
     const parsed = parsePaymentInput(text);
@@ -1815,7 +1817,15 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     <div className="space-y-4">
       <div className="text-center">
         <h2 className="text-xl font-semibold">{t('common:payment.send.title')}</h2>
+        <button
+          type="button"
+          onClick={() => setShowBatchDialog(true)}
+          className="mt-2 rounded-md border border-gray-300 bg-white px-3 py-1 text-sm font-medium text-gray-800 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100"
+        >
+          {t('batchPayment:openButton')}
+        </button>
       </div>
+      {showBatchDialog && <BatchPaymentDialog onClose={() => setShowBatchDialog(false)} />}
 
       {error && <div className="text-red-600 text-sm text-center">{error}</div>}
       {ambiguousSubmission && (
