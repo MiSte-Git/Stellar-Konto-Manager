@@ -1,33 +1,24 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ProgressBar from '../components/ProgressBar.jsx';
 import { NOTE_ERROR, NOTE_NEUTRAL, NOTE_WARN } from '../components/liquidity/LiquidityDialogShell.jsx';
 import { formatAmountWithUnit, parseAmountInput } from '../components/liquidity/formatPoolAmount.js';
 import RoundPicker from '../components/groupfund/RoundPicker.jsx';
 import SenderList from '../components/groupfund/SenderList.jsx';
-import useGroupfundScan, { setGroupfundSummary } from '../components/groupfund/hooks/useGroupfundScan.js';
+import useGroupfundPrefs, { bufferStroopsOf } from '../components/groupfund/hooks/useGroupfundPrefs.js';
+import useGroupfundScan from '../components/groupfund/hooks/useGroupfundScan.js';
+import { muxedIdOf } from '../components/groupfund/hooks/useIdentityRound.js';
 import { isTestNetwork, NETWORKS } from '../config/networks.js';
 import { formatLocalDateTime } from '../utils/datetime';
 import { getCachedDirectoryEntry, loadDirectoryBatch } from '../utils/expert/expertDirectory.js';
 import { buildDefaultFilename } from '../utils/filename';
-import { loadGroupfundPrefs, saveGroupfundPrefs } from '../utils/groupfundPrefs.js';
 import { findLookalikeCounterparties } from '../utils/stellar/activity.js';
 import { aggregateRound, assetUnitLabel, counterpartiesOfRound } from '../utils/stellar/groupfundAggregate.js';
 import { buildGroupfundExport, downloadTextFile, groupfundExportToCsv, groupfundExportToJson } from '../utils/stellar/groupfundExport.js';
-import { DEFAULT_BUFFER_XLM, buildDateRangeRound } from '../utils/stellar/groupfundRounds.js';
-import { extractMuxedIdFromAddress } from '../utils/stellar/stellarUtils.js';
+import { buildDateRangeRound } from '../utils/stellar/groupfundRounds.js';
 
 const BTN = 'rounded-sm border border-gray-300 px-3 py-1 text-sm hover:bg-gray-50 disabled:opacity-50 dark:border-gray-600 dark:hover:bg-gray-800';
 const FIELD = 'w-full rounded-sm border border-gray-300 px-3 py-2 font-mono text-sm dark:border-gray-700 dark:bg-gray-900';
-
-function muxedIdOf(address) {
-  if (!address) return '';
-  try {
-    return extractMuxedIdFromAddress(address);
-  } catch {
-    return '';
-  }
-}
 
 /**
  * Groupfund-Ansicht, nur lesend. Eingaenge einer Runde ueber eine M-Adresse oder ein Memo,
@@ -38,30 +29,21 @@ export default function GroupfundPage({ publicKey, muxedAddress = '', network = 
   const { t, i18n } = useTranslation(['groupfund', 'common']);
   const locale = i18n.language;
   const muxedId = muxedIdOf(muxedAddress);
-  const [prefs, setPrefs] = useState(() => loadGroupfundPrefs(network, publicKey));
-  const updatePrefs = useCallback((patch) => {
-    setPrefs((current) => {
-      const next = { ...current, ...patch };
-      saveGroupfundPrefs(network, publicKey, next);
-      return next;
-    });
-  }, [network, publicKey]);
+  const [prefs, updatePrefs] = useGroupfundPrefs(network, publicKey);
 
   const mode = muxedId && prefs.mode === 'muxed' ? 'muxed' : 'memo';
   const identifier = useMemo(() => (mode === 'muxed' ? { mode, id: muxedId } : { mode, memo: prefs.memo }), [mode, muxedId, prefs.memo]);
   const hasIdentifier = mode === 'muxed' || !!prefs.memo.trim();
 
   const parsedBuffer = parseAmountInput(prefs.bufferXlm);
-  const bufferStroops = parsedBuffer ?? parseAmountInput(DEFAULT_BUFFER_XLM);
+  const bufferStroops = bufferStroopsOf(prefs);
   const dismissedIds = useMemo(() => prefs.dismissed.map((b) => b.opId), [prefs.dismissed]);
   const scan = useGroupfundScan({ accountId: publicKey, network, bufferStroops, dismissed: dismissedIds, manual: prefs.manual });
-  const { analysis, start, status } = scan;
+  const { analysis, start, startIfIdle, status } = scan;
   const scanning = status === 'scanning';
 
-  const startRef = useRef(start);
-  startRef.current = start;
-  const autoStart = hasIdentifier && status === 'idle';
-  useEffect(() => { if (autoStart) void startRef.current({ rounds: 1 }); }, [autoStart]);
+  // Laeuft im Identitaetsmodus schon ein Scan aus dem Kopfbereich, bleibt es bei diesem einen.
+  useEffect(() => { if (hasIdentifier) void startIfIdle({ rounds: 1 }); }, [hasIdentifier, startIfIdle]);
 
   const [selectedId, setSelectedId] = useState('current');
   const [range, setRange] = useState(null);
@@ -96,18 +78,6 @@ export default function GroupfundPage({ publicKey, muxedAddress = '', network = 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [analysis, round, publicKey]
   );
-
-  useEffect(() => {
-    if (!result || scanning || !round?.complete || round.id === 'range' || analysis?.rounds[0]?.id !== round.id) return;
-    // Eine Summe mit fehlendem Betrag darf die Kachel nicht als Zahl zeigen.
-    const incomplete = result.amountUnknownCount > 0;
-    setGroupfundSummary(network, publicKey, {
-      identifierKey: `${mode}:${mode === 'muxed' ? muxedId : prefs.memo}`,
-      incomplete,
-      totals: incomplete ? [] : result.totals,
-      at: scan.scannedAt,
-    });
-  }, [analysis, mode, muxedId, network, prefs.memo, publicKey, result, round, scan.scannedAt, scanning]);
 
   // Directory nur auf Knopfdruck, siehe expertDirectory.js
   const senders = useMemo(() => [...new Set((result?.rows || []).map((row) => row.sender))], [result]);
@@ -206,6 +176,9 @@ export default function GroupfundPage({ publicKey, muxedAddress = '', network = 
             <button type="button" className={BTN} onClick={() => (analysis ? scan.refresh() : start({ rounds: 1 }))} disabled={!hasIdentifier}>
               {analysis ? t('groupfund:scan.refresh') : t('groupfund:scan.start')}
             </button>
+          )}
+          {round && !round.complete && analysis && !analysis.complete && !scanning && round.id !== 'range' && (
+            <button type="button" className={BTN} onClick={() => start({})} data-testid="groupfund-continue">{t('groupfund:scan.continue')}</button>
           )}
           {scan.scannedAt && <span className="self-center text-xs text-gray-600 dark:text-gray-300">{t('groupfund:scan.scannedAt', { time: formatLocalDateTime(scan.scannedAt) })}</span>}
         </div>

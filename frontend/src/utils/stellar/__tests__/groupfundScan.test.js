@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { advanceScan, createScanState, loadScanAccount } from '../groupfundScan.js';
+import { advanceScan, createScanState, isFeedLimitReached, loadScanAccount } from '../groupfundScan.js';
 import { G, effect, payment } from './groupfundFixtures.js';
 
 function feed(pages) {
@@ -50,6 +50,19 @@ describe('Groupfund-Scan', () => {
     await advanceScan(scan, server);
     expect(scan.payments.length).toBeGreaterThan(0);
     expect(scan.pages).toBe(3);
+  });
+
+  it('zaehlt Seiten je Feed und meldet das Limit des naechsten Feeds', async () => {
+    const scan = createScanState(G);
+    const server = fakeServer([fullPage((i) => payment(9000 - i)), fullPage((i) => payment(8000 - i))], [fullPage((i) => effect(9500 - i, 'account_credited', '1.0000000'))]);
+    expect(isFeedLimitReached(scan, 1)).toBe(false);
+    await advanceScan(scan, server);
+    expect(scan.feedPages).toEqual({ payments: 1, effects: 0 });
+    expect(isFeedLimitReached(scan, 1)).toBe(false);
+    await advanceScan(scan, server);
+    expect(scan.feedPages).toEqual({ payments: 1, effects: 1 });
+    expect(isFeedLimitReached(scan, 1)).toBe(true);
+    expect(isFeedLimitReached(scan, 2)).toBe(false);
   });
 
   it('bricht bei abgebrochenem Signal ab', async () => {

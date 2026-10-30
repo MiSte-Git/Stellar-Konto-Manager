@@ -1,5 +1,6 @@
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { G, TARGET, effect, payment } from '../../../../utils/stellar/__tests__/groupfundFixtures.js';
+import { getScanEntry } from '../groupfundScanStore.js';
 import useGroupfundScan, { clearGroupfundSessions } from '../useGroupfundScan.js';
 
 const hoisted = vi.hoisted(() => ({ paymentPages: [], effectPages: [], responder: null, calls: [], loadAccount: vi.fn() }));
@@ -152,24 +153,55 @@ describe('useGroupfundScan', () => {
     expect(result.current.status).toBe('done');
   });
 
-  it('eine schon uebernommene Seite gilt nicht als Abbruch', async () => {
-    // Zwei Instanzen teilen sich den Stand, keine bricht die andere ab.
-    const { held, releaseAll } = holdAnswers();
+  it('zwei Ansichten teilen Stand und Status, ein zweiter startIfIdle loest keinen Scan aus', async () => {
     const first = hook();
     const second = hook();
+    await act(async () => {
+      await Promise.all([first.result.current.startIfIdle({ rounds: 1 }), second.result.current.startIfIdle({ rounds: 1 })]);
+    });
+    expect(hoisted.loadAccount).toHaveBeenCalledTimes(1);
+    expect(first.result.current.status).toBe('done');
+    expect(second.result.current.status).toBe('done');
+    expect(ids(second.result)).toHaveLength(401);
+  });
+
+  it('geht die letzte Ansicht, endet der Scan und der Stand bleibt fuer die Rueckkehr', async () => {
+    const { releaseAll } = holdAnswers();
+    const first = hook();
     await act(async () => { first.result.current.start({ rounds: 1 }); });
     await flush();
-    await act(async () => { second.result.current.start({ rounds: 1 }); });
+    first.unmount();
     await flush();
-    expect(held).toHaveLength(2);
+    expect(getScanEntry('PUBLIC', G).status).toBe('idle');
+    await act(async () => { releaseAll(); });
+    await flush();
+    expect(getScanEntry('PUBLIC', G).scan.payments).toHaveLength(0);
+  });
+
+  it('bricht beim Wechsel zwischen zwei Ansichten nicht ab', async () => {
+    const { held, releaseAll } = holdAnswers();
+    const first = hook();
+    await act(async () => { first.result.current.start({ rounds: 1 }); });
+    await flush();
+    first.unmount();
+    const second = hook();
+    await flush();
+    expect(second.result.current.status).toBe('scanning');
+    expect(held).toHaveLength(1);
     hoisted.responder = null;
     await act(async () => { releaseAll(); });
-    await waitFor(() => {
-      expect(first.result.current.status).toBe('done');
-      expect(second.result.current.status).toBe('done');
-    });
-    expect(new Set(ids(first.result)).size).toBe(ids(first.result).length);
-    expect(ids(first.result)).toHaveLength(401);
+    await waitFor(() => expect(second.result.current.status).toBe('done'));
+  });
+
+  it('stoppt am Seitenlimit mit eigenem Status', async () => {
+    hoisted.paymentPages = Array.from({ length: 15 }, (_, i) => fullPage(90000 - i * 1000));
+    const { result } = hook();
+    await act(async () => { await result.current.start({ rounds: 1, maxPagesPerFeed: 3 }); });
+    expect(result.current.status).toBe('limited');
+    expect(ids(result)).toHaveLength(600);
+    await act(async () => { await result.current.start({}); });
+    expect(result.current.status).toBe('done');
+    expect(ids(result)).toHaveLength(3000);
   });
 
   it('Neu laden behaelt die gewuenschte Rundenzahl', async () => {

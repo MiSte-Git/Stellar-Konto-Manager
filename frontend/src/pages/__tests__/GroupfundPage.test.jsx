@@ -4,7 +4,6 @@ import { I18nextProvider } from 'react-i18next';
 import { Account, MuxedAccount } from '@stellar/stellar-sdk';
 import i18n from '../../i18n.js';
 import GroupfundPage from '../GroupfundPage.jsx';
-import GroupfundTile from '../../components/groupfund/GroupfundTile.jsx';
 import { clearGroupfundSessions } from '../../components/groupfund/hooks/useGroupfundScan.js';
 import { clearDirectoryCache } from '../../utils/expert/expertDirectory.js';
 import { G, SENDER_A, SENDER_B, TARGET, effect, opId, payment } from '../../utils/stellar/__tests__/groupfundFixtures.js';
@@ -83,6 +82,22 @@ describe('GroupfundPage', () => {
     expect(row).toHaveTextContent('Ausgänge ohne Kennzeichen0,0 XLM');
     expect(screen.getByTestId('groupfund-unmarked-hint')).toHaveTextContent('nicht verrechnet');
     expect(within(row).getByRole('link')).toHaveAttribute('rel', 'noopener noreferrer');
+  });
+
+  it('scannt erst per Button weiter, wenn die Runde nicht vollstaendig ist', async () => {
+    // Volle Seite ohne Reset: Der Autoscan aus dem Kopfbereich waere hier am Limit.
+    hoisted.hangNext = true;
+    hoisted.effects = [];
+    hoisted.payments = Array.from({ length: 200 }, (_, i) => inflow(5000 - i, { amount: '1.0000000' }));
+    renderPage();
+    await waitFor(() => expect(screen.getByTestId('groupfund-summary')).toHaveTextContent('200,0 XLM'));
+    fireEvent.click(screen.getByRole('button', { name: 'Abbrechen' }));
+    hoisted.hangNext = false;
+    const next = await screen.findByTestId('groupfund-continue');
+    expect(next).toHaveTextContent('Weiter scannen');
+    await act(async () => { fireEvent.click(next); });
+    await screen.findByTestId('groupfund-history-end');
+    expect(screen.queryByTestId('groupfund-continue')).toBeNull();
   });
 
   it('wechselt ohne neuen Scan auf eine fruehere Runde', async () => {
@@ -212,42 +227,6 @@ describe('GroupfundPage', () => {
     expect(await screen.findByRole('alert')).toHaveTextContent('Horizon-Daten konnten nicht geladen werden: Not Found');
   });
 
-  it('die Kachel scannt nicht selbst und zeigt die Sitzungssumme', async () => {
-    const tile = () => render(
-      <I18nextProvider i18n={i18n}>
-        <GroupfundTile publicKey={G} muxedAddress={M} network="PUBLIC" locale="de" onOpen={() => {}} />
-      </I18nextProvider>
-    );
-    const first = tile();
-    expect(screen.getByTestId('groupfund-tile')).toHaveTextContent('Eingänge dieser M-Adresse');
-    expect(hoisted.loadAccount).not.toHaveBeenCalled();
-    first.unmount();
-    const view = renderPage();
-    await screen.findByTestId('groupfund-sender');
-    view.unmount();
-    tile();
-    const shown = screen.getByTestId('groupfund-tile');
-    expect(shown).toHaveTextContent('50,0 XLM');
-    expect(shown).toHaveTextContent(/Aktuelle Runde, Stand .*\d/);
-  });
-
-  it('die Kachel speichert keine unvollstaendige Runde', async () => {
-    // Volle Seite ohne Reset: Der Scan muss weiterlaufen, die Folgeseite kommt nicht.
-    hoisted.hangNext = true;
-    hoisted.effects = [];
-    hoisted.payments = Array.from({ length: 200 }, (_, i) => inflow(5000 - i, { amount: '1.0000000' }));
-    const view = renderPage();
-    await waitFor(() => expect(screen.getByTestId('groupfund-summary')).toHaveTextContent('200,0 XLM'));
-    fireEvent.click(screen.getByRole('button', { name: 'Abbrechen' }));
-    expect(await screen.findByTestId('groupfund-incomplete')).toBeInTheDocument();
-    expect(screen.getByRole('status')).toHaveTextContent('Scan abgebrochen');
-    view.unmount();
-    hoisted.hangNext = false;
-    render(<I18nextProvider i18n={i18n}><GroupfundTile publicKey={G} muxedAddress={M} network="PUBLIC" locale="de" onOpen={() => {}} /></I18nextProvider>);
-    expect(screen.getByTestId('groupfund-tile')).not.toHaveTextContent('200,0 XLM');
-    expect(screen.getByTestId('groupfund-tile')).toHaveTextContent('Eingänge dieser M-Adresse');
-  });
-
   it('zeigt Abfluss, Saldo danach und Quelle der Grenze', async () => {
     renderPage();
     await screen.findByTestId('groupfund-sender');
@@ -320,28 +299,6 @@ describe('GroupfundPage', () => {
     const row = screen.getByTestId('groupfund-sender');
     expect(row).toHaveTextContent('Brutto-Eingängemindestens 0,0 XLM');
     expect(row).toHaveTextContent('Netto0,0 XLM (unvollständig)');
-  });
-
-  it('die Kachel zeigt bei unbekanntem Betrag keine Zahl, sondern einen Hinweis mit Link', async () => {
-    hoisted.payments = [
-      inflow(40, { amount: '7.0000000' }),
-      payment(30, { type: 'account_merge', account: SENDER_B, into: G, into_muxed_id: MUX_ID, from: undefined, to: undefined, amount: undefined }),
-      payment(20, { from: G, to: TARGET, amount: '90.0000000' }),
-    ];
-    hoisted.effects = [effect(40, 'account_credited', '7.0000000'), effect(20, 'account_debited', '90.0000000')];
-    hoisted.loadAccount.mockImplementation(async () => ({ balances: [{ asset_type: 'native', balance: '10.0000000' }], subentry_count: 0 }));
-    const view = renderPage();
-    await screen.findByTestId('groupfund-amount-unknown-note');
-    await waitFor(() => expect(screen.getByTestId('groupfund-summary')).toHaveTextContent('mindestens 7,0 XLM'));
-    view.unmount();
-    const onOpen = vi.fn();
-    render(<I18nextProvider i18n={i18n}><GroupfundTile publicKey={G} muxedAddress={M} network="PUBLIC" locale="de" onOpen={onOpen} /></I18nextProvider>);
-    const tile = screen.getByTestId('groupfund-tile');
-    expect(tile).not.toHaveTextContent('7,0 XLM');
-    expect(tile).not.toHaveTextContent('Aktuelle Runde, Stand');
-    expect(screen.getByTestId('groupfund-tile-incomplete')).toHaveTextContent('Diese Runde enthält unvollständige Beträge.');
-    fireEvent.click(screen.getByRole('button', { name: 'Details ansehen' }));
-    expect(onOpen).toHaveBeenCalledTimes(1);
   });
 
   it('nennt in der Grenzen-Liste Eingaenge der Transaktion und unbekannte Werte', async () => {

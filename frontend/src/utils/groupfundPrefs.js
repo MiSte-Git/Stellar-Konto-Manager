@@ -44,8 +44,21 @@ export function loadGroupfundPrefs(network, accountId) {
   }
 }
 
+const listeners = new Set();
+
+/** Meldet Aenderungen an alle Ansichten desselben Kontos, auch ohne verfuegbaren Speicher. */
+export function subscribeGroupfundPrefs(network, accountId, listener) {
+  const key = storageKey(network, accountId);
+  const entry = { key, listener };
+  listeners.add(entry);
+  return () => listeners.delete(entry);
+}
+
 export function saveGroupfundPrefs(network, accountId, prefs) {
+  const key = storageKey(network, accountId);
   try {
-    window.localStorage.setItem(storageKey(network, accountId), JSON.stringify(sanitize(prefs)));
+    window.localStorage.setItem(key, JSON.stringify(sanitize(prefs)));
   } catch { /* Speicher nicht verfuegbar: Einstellungen gelten nur bis zum Neuladen */ }
+  // Rohwert: Ein gerade geleertes Eingabefeld darf nicht auf den Standard zurueckspringen.
+  listeners.forEach((entry) => { if (entry.key === key) entry.listener(prefs); });
 }

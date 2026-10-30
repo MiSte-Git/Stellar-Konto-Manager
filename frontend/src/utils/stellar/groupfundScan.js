@@ -30,6 +30,7 @@ export function createScanState(accountId) {
     paymentsPage: null,
     effectsPage: null,
     pages: 0,
+    feedPages: { payments: 0, effects: 0 },
     scannedAt: '',
   };
 }
@@ -64,6 +65,7 @@ async function fetchNext(scan, server, feed, signal) {
   scan[feed].push(...records);
   scan[pageKey] = page;
   scan.pages += 1;
+  scan.feedPages[feed] += 1;
   if (records.length < PAGE_LIMIT) scan[`${feed}Done`] = true;
 }
 
@@ -75,6 +77,12 @@ function pickFeed(scan) {
   if (!oldestPayment) return 'payments';
   if (!oldestEffect) return 'effects';
   return BigInt(oldestPayment) >= BigInt(oldestEffect) ? 'payments' : 'effects';
+}
+
+/** true, wenn die naechste Seite ueber dem Limit je Feed laege. */
+export function isFeedLimitReached(scan, maxPagesPerFeed) {
+  const feed = pickFeed(scan);
+  return !!feed && scan.feedPages[feed] >= maxPagesPerFeed;
 }
 
 /** Laedt eine Seite. false, wenn beide Feeds zu Ende sind. */

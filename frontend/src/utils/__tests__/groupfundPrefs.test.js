@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { DEFAULT_PREFS, loadGroupfundPrefs, saveGroupfundPrefs } from '../groupfundPrefs.js';
+import { DEFAULT_PREFS, loadGroupfundPrefs, saveGroupfundPrefs, subscribeGroupfundPrefs } from '../groupfundPrefs.js';
 
 const KEY = 'skm.groupfund.v1:PUBLIC:GA';
 
@@ -25,6 +25,19 @@ describe('Groupfund-Einstellungen', () => {
     expect(loadGroupfundPrefs('PUBLIC', 'GA')).toEqual(DEFAULT_PREFS);
     window.localStorage.setItem(KEY, JSON.stringify({ mode: 'x', dismissed: [{ opId: '1' }, 2, { opId: 'a' }], manual: [{ opId: 'x' }, { opId: '5' }] }));
     expect(loadGroupfundPrefs('PUBLIC', 'GA')).toMatchObject({ mode: 'muxed', dismissed: [{ opId: '1' }], manual: [{ opId: '5' }] });
+  });
+
+  it('meldet Aenderungen nur fuer dasselbe Konto und Netz, mit Rohwert', () => {
+    const same = vi.fn();
+    const other = vi.fn();
+    const off = subscribeGroupfundPrefs('PUBLIC', 'GA', same);
+    subscribeGroupfundPrefs('TESTNET', 'GA', other);
+    saveGroupfundPrefs('PUBLIC', 'GA', { ...DEFAULT_PREFS, bufferXlm: '' });
+    expect(same).toHaveBeenCalledWith(expect.objectContaining({ bufferXlm: '' }));
+    expect(other).not.toHaveBeenCalled();
+    off();
+    saveGroupfundPrefs('PUBLIC', 'GA', DEFAULT_PREFS);
+    expect(same).toHaveBeenCalledTimes(1);
   });
 
   it('uebersteht einen gesperrten Speicher', () => {

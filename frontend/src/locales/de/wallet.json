@@ -18,13 +18,17 @@
     "available": "Verfügbar",
     "reserved": "Reserviert",
     "reservedHint": "Mindestreserve des Netzwerks (pro Token-Freigabe, Angebot oder Signer) plus XLM in offenen Verkaufsangeboten. Dieser Betrag kann nicht gesendet werden.",
-    "muxedNote": "Muxed-Identität: angezeigt wird das Guthaben des Basiskontos.",
+    "muxedNote": "Eine M-Adresse hat kein eigenes Guthaben. Eingänge werden über die Muxed-ID dem G-Konto zugeordnet.",
     "loadError": "Kontodaten konnten nicht geladen werden.",
     "actions": {
       "send": "Senden",
       "swap": "Tauschen",
       "details": "Kontodetails",
-      "receive": "Empfangen"
+      "receive": "Empfangen",
+      "sendFromBase": "Senden vom Basiskonto",
+      "receiveOnMuxed": "Auf M-Adresse empfangen",
+      "swapFromBase": "Tauschen vom Basiskonto",
+      "identityHint": "Senden wechselt zuerst zum Basiskonto. Tauschen läuft direkt über das Basiskonto."
     },
     "assets": "Assets",
     "manageTrustlines": "Token-Freigaben verwalten",
@@ -48,7 +52,8 @@
         "text": "Quiz, Scam-Simulator und eine Story mit Lumio – lern Stellar ganz entspannt kennen, ohne Risiko und ohne echtes Geld.",
         "cta": "Los geht’s"
       }
-    }
+    },
+    "assetsBase": "Assets des Basiskontos"
   },
   "receive": {
     "title": "Empfangen",

@@ -89,6 +89,7 @@ import { MAIN_MENU_NAV } from './config/mainNavigation.js';
 import { emitAccountSelected } from './utils/accountBus.js';
 
 import { takeMultisigJobToken } from './components/multisig/multisigNavigation.js';
+import IdentityHeaderRows from './components/groupfund/IdentityHeaderRows.jsx';
 import { consumePendingMainView, consumePendingTrustlineAsset, navigateToPath, publishActiveAccount, publishActiveMainView, setMainMounted } from './utils/appNavigation.js';
 import ListTrustlines from './components/ListTrustlines';
 import ResultDisplay from './components/ResultDisplay';
@@ -779,6 +780,10 @@ function Main() {
     && ACCOUNT_REQUIRED_MENUS.has(menuSelection)
     && (!sourcePublicKey || notFound);
   // Waehrend das Konto beim Start noch geladen wird, keinen Hinweis aufblitzen lassen.
+  let headerBalanceText = '—';
+  if (xlmBalanceLoading) headerBalanceText = t('common:loading', 'Loading…');
+  else if (sourcePublicKey) headerBalanceText = xlmBalance != null ? `${xlmBalance}` : t('wallet:unfunded', 'Unfunded');
+
   const showAccountGate = accountGateActive && !(isLoading && !sourcePublicKey);
   const accountGateTitle = React.useMemo(() => {
     const nav = MAIN_MENU_NAV.find((item) => item.id === menuSelection);
@@ -911,37 +916,26 @@ function Main() {
                       {t('wallet:flag.deactivated', 'Note: This wallet is marked as deactivated in your trusted list.')}
                     </div>
                   )}
-                  {sourceMuxedAddress && (
-                    <div className="mt-1 space-y-0.5">
-                      <div>
-                        <span className="font-semibold">{t('common:accountMode.muxedAddress', 'Muxed address')}:</span>{' '}
-                        <span className="font-mono break-all">{sourceMuxedAddress}</span>
-                      </div>
-                      <div>
-                        <span className="font-semibold">{t('common:accountMode.baseAccount', 'Base G account')}:</span>{' '}
-                        <span className="font-mono break-all">{sourcePublicKey}</span>
-                      </div>
-                      {sourceMuxedId && (
-                        <div>
-                          <span className="font-semibold">{t('common:accountMode.muxedId', 'Muxed ID')}:</span>{' '}
-                          <span className="font-mono break-all">{sourceMuxedId}</span>
-                        </div>
-                      )}
-                    </div>
+                  {sourceMuxedAddress && sourcePublicKey && (
+                    <IdentityHeaderRows
+                      key={`${devTestnet ? 'TESTNET' : 'PUBLIC'}:${sourcePublicKey}`}
+                      publicKey={sourcePublicKey}
+                      muxedAddress={sourceMuxedAddress}
+                      muxedId={sourceMuxedId}
+                      network={devTestnet ? 'TESTNET' : 'PUBLIC'}
+                      balanceText={headerBalanceText}
+                    />
                   )}
                 </div>
 
-                {/* Rechts: XLM-Kontostand als Label (rechtsbündig), ohne Überlagerung auf Mobil */}
-                <div className="text-right">
-                  <span className="font-semibold">{t('wallet:xlmBalance', 'XLM')}:</span>{' '}
-                  <span className="font-mono">
-                    {xlmBalanceLoading
-                      ? t('common:loading', 'Loading…')
-                      : (sourcePublicKey
-                          ? (xlmBalance != null ? `${xlmBalance}` : t('wallet:unfunded', 'Unfunded'))
-                          : '—')}
-                  </span>
-                </div>
+                {/* Rechts: XLM-Kontostand als Label (rechtsbündig), ohne Überlagerung auf Mobil.
+                    Im Identitaetsmodus steht er beim Basis-G-Konto. */}
+                {!sourceMuxedAddress && (
+                  <div className="text-right">
+                    <span className="font-semibold">{t('wallet:xlmBalance', 'XLM')}:</span>{' '}
+                    <span className="font-mono">{headerBalanceText}</span>
+                  </div>
+                )}
               </div>
             </div>
             <div className="mt-2 flex flex-wrap gap-2 justify-start">

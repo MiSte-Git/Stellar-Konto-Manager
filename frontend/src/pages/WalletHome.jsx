@@ -5,11 +5,12 @@ import { useTranslation } from 'react-i18next';
 import NavIcon from '../components/layout/NavIcon.jsx';
 import RecentActivity from '../components/wallet/RecentActivity.jsx';
 import ClaimableBalancesPanel from '../components/wallet/ClaimableBalancesPanel.jsx';
-import GroupfundTile from '../components/groupfund/GroupfundTile.jsx';
+import IdentityRoundCard from '../components/groupfund/IdentityRoundCard.jsx';
 import { getHorizonServer } from '../utils/stellar/stellarUtils.js';
 import { computeWalletSummary, shortenAddress } from '../utils/stellar/walletSummary.js';
 import { looksLikeNativeCode } from '../utils/stellar/activity.js';
 import { useSettings } from '../utils/useSettings.js';
+import { loadGroupfundPrefs, saveGroupfundPrefs } from '../utils/groupfundPrefs.js';
 import { useXlmPriceData } from '../utils/xlmPriceContext.js';
 
 
@@ -168,10 +169,11 @@ function DiscoverTeaser({ onOpenRoute }) {
  * @param {{ publicKey?: string, muxedAddress?: string, onAction: (id: string) => void, onOpenRoute?: (path: string) => void }} props
  */
 export default function WalletHome({ publicKey, muxedAddress, onAction, onOpenRoute }) {
-  const { t, i18n } = useTranslation(['wallet', 'menu', 'network', 'common']);
+  const { t, i18n } = useTranslation(['wallet', 'menu', 'network', 'common', 'groupfund']);
   const { decimalsMode } = useSettings();
   const price = useXlmPriceData();
   const [reloadToken, setReloadToken] = React.useState(0);
+  const [scanRefreshToken, setScanRefreshToken] = React.useState(0);
   // Assets standardmaessig eingeklappt (bei vielen Trustlines sonst langes Scrollen); Wahl pro Browser merken.
   const [assetsOpen, setAssetsOpen] = React.useState(() => {
     try { return window.localStorage?.getItem(ASSETS_OPEN_KEY) === '1'; } catch { return false; }
@@ -209,6 +211,12 @@ export default function WalletHome({ publicKey, muxedAddress, onAction, onOpenRo
     }
   }, [locale, price]);
 
+  // Details fuehren immer zur Muxed-ID dieser Adresse, auch wenn zuletzt ein Memo gewaehlt war.
+  const openGroupfund = () => {
+    saveGroupfundPrefs(network, publicKey, { ...loadGroupfundPrefs(network, publicKey), mode: 'muxed' });
+    onAction?.('groupfund');
+  };
+
   const netName = network === 'TESTNET' ? t('network:testnet', 'Testnet') : t('network:mainnet', 'Mainnet');
 
   // Leerzustand: noch kein Konto geladen
@@ -240,7 +248,7 @@ export default function WalletHome({ publicKey, muxedAddress, onAction, onOpenRo
       <section className={`${cardCls} p-5 sm:p-6`}>
         <div className="flex items-start justify-between gap-3">
           <div className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
-            {t('wallet:home.balance', 'Guthaben')}
+            {muxedAddress ? t('groupfund:summary.titleMuxed') : t('wallet:home.balance', 'Guthaben')}
           </div>
           <div className="flex items-center gap-1">
           <button
@@ -252,7 +260,10 @@ export default function WalletHome({ publicKey, muxedAddress, onAction, onOpenRo
           </button>
           <button
             type="button"
-            onClick={() => setReloadToken((v) => v + 1)}
+            onClick={() => {
+              setReloadToken((v) => v + 1);
+              setScanRefreshToken((v) => v + 1);
+            }}
             disabled={loading}
             aria-label={t('wallet:home.refresh', 'Aktualisieren')}
             title={t('wallet:home.refresh', 'Aktualisieren')}
@@ -284,6 +295,19 @@ export default function WalletHome({ publicKey, muxedAddress, onAction, onOpenRo
             <div className="h-9 w-56 animate-pulse rounded-lg bg-gray-200 dark:bg-gray-700" />
             <div className="h-4 w-32 animate-pulse rounded-sm bg-gray-200 dark:bg-gray-700" />
           </div>
+        ) : muxedAddress ? (
+          <IdentityRoundCard
+            key={`${network}:${publicKey}`}
+            publicKey={publicKey}
+            muxedAddress={muxedAddress}
+            network={network}
+            locale={locale}
+            summary={summary}
+            fmt={fmt}
+            fiat={fiat}
+            refreshToken={scanRefreshToken}
+            onOpenDetails={openGroupfund}
+          />
         ) : (
           <>
             <div className="mt-2 flex flex-wrap items-baseline gap-x-2">
@@ -317,15 +341,18 @@ export default function WalletHome({ publicKey, muxedAddress, onAction, onOpenRo
 
         {muxedAddress && (
           <p className="mt-4 rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:bg-amber-500/10 dark:text-amber-200">
-            {t('wallet:home.muxedNote', 'Muxed-Identität: angezeigt wird das Guthaben des Basiskontos.')}
+            {t('wallet:home.muxedNote')}
           </p>
         )}
 
         <div className="mt-5 grid grid-cols-3 gap-2 sm:flex sm:flex-wrap">
-          <ActionButton primary icon="send" label={t('wallet:home.actions.send', 'Senden')} onClick={() => onAction?.('sendPayment')} />
-          <ActionButton icon="receive" label={t('wallet:home.actions.receive', 'Empfangen')} onClick={() => onAction?.('receive')} />
-          <ActionButton icon="swap" label={t('wallet:home.actions.swap', 'Tauschen')} onClick={() => onAction?.('tradingAssets')} />
+          <ActionButton primary icon="send" label={muxedAddress ? t('wallet:home.actions.sendFromBase') : t('wallet:home.actions.send', 'Senden')} onClick={() => onAction?.('sendPayment')} />
+          <ActionButton icon="receive" label={muxedAddress ? t('wallet:home.actions.receiveOnMuxed') : t('wallet:home.actions.receive', 'Empfangen')} onClick={() => onAction?.('receive')} />
+          <ActionButton icon="swap" label={muxedAddress ? t('wallet:home.actions.swapFromBase') : t('wallet:home.actions.swap', 'Tauschen')} onClick={() => onAction?.('tradingAssets')} />
         </div>
+        {muxedAddress && (
+          <p className="mt-2 text-xs text-gray-600 dark:text-gray-300" data-testid="identity-actions-hint">{t('wallet:home.actions.identityHint')}</p>
+        )}
       </section>
 
       {/* Assets */}
@@ -341,7 +368,7 @@ export default function WalletHome({ publicKey, muxedAddress, onAction, onOpenRo
                 className="inline-flex items-center gap-2 rounded-md border-0 bg-transparent p-0 text-sm font-semibold text-gray-900 hover:text-blue-700 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-white dark:hover:text-blue-300"
               >
                 <span aria-hidden="true" className={`inline-block transition-transform ${assetsOpen ? 'rotate-90' : ''}`}>▸</span>
-                {t('wallet:home.assets', 'Assets')}
+                {muxedAddress ? t('wallet:home.assetsBase') : t('wallet:home.assets', 'Assets')}
                 <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600 dark:bg-gray-700 dark:text-gray-300">
                   {summary.assets.length + 1}
                 </span>
@@ -428,10 +455,6 @@ export default function WalletHome({ publicKey, muxedAddress, onAction, onOpenRo
           reloadToken={reloadToken}
           onClaimed={() => setReloadToken((v) => v + 1)}
         />
-      )}
-
-      {muxedAddress && (
-        <GroupfundTile publicKey={publicKey} muxedAddress={muxedAddress} network={network} locale={locale} onOpen={() => onAction?.('groupfund')} />
       )}
 
       {/* Letzte Aktivitaet */}

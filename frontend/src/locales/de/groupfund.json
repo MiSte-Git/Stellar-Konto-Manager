@@ -18,7 +18,8 @@
     "cancel": "Abbrechen",
     "aborted": "Scan abgebrochen. Die Anzeige umfasst nur den bisher geladenen Bereich.",
     "failed": "Horizon-Daten konnten nicht geladen werden: {{detail}}",
-    "scannedAt": "Stand: {{time}}"
+    "scannedAt": "Stand: {{time}}",
+    "continue": "Weiter scannen"
   },
   "summary": {
     "titleMuxed": "Eingänge über diese M-Adresse",
@@ -110,12 +111,22 @@
     "json": "JSON exportieren",
     "hint": "JSON ist das maßgebliche Format für die Weiterverarbeitung. In der CSV kann Excel lange Muxed-IDs kürzen."
   },
-  "tile": {
-    "title": "Groupfund-Eingänge",
-    "open": "Ansehen",
-    "hint": "Eingänge dieser M-Adresse in der aktuellen Runde ansehen.",
-    "stand": "Aktuelle Runde, Stand {{time}}",
-    "incomplete": "Diese Runde enthält unvollständige Beträge.",
-    "details": "Details ansehen"
+  "header": {
+    "incoming": "Eingänge aktuelle Runde",
+    "balance": "Guthaben",
+    "loading": "wird geladen …",
+    "unavailable": "nicht verfügbar",
+    "more": "+{{count}} weitere"
+  },
+  "card": {
+    "since": "seit {{time}}",
+    "sinceHistory": "seit Beginn der geladenen Historie",
+    "unmarkedHint": "Nicht verrechnet: Zahlungen vom G-Konto an diese Absender ohne Muxed-ID.",
+    "limited": "Die Runde ist noch nicht vollständig geladen. Auf der Groupfund-Seite kannst du weiter scannen.",
+    "failed": "Die Eingänge konnten nicht geladen werden.",
+    "details": "Details",
+    "baseTitle": "Guthaben Basiskonto",
+    "baseShared": "gemeinsam für alle M-Adressen dieses Kontos",
+    "baseTotal": "Gesamt"
   }
 }
