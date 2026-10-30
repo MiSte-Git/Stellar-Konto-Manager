@@ -4,6 +4,7 @@ import { I18nextProvider } from 'react-i18next';
 import { Account, Keypair, MuxedAccount } from '@stellar/stellar-sdk';
 import i18n from '../../i18n.js';
 import SendPaymentPage from '../SendPaymentPage.jsx';
+import { clearSendPaymentDraft } from '../../utils/sendPaymentDraft.js';
 
 // Covers three fixes to the federation-memo-autofill flow (fix 1):
 // - K1: a recipient change must not leave a stale auto-filled memo behind, and must
@@ -110,6 +111,7 @@ const SENDER_FOO_BALANCE = { asset_type: 'credit_alphanum4', asset_code: ASSET_C
 beforeEach(() => {
   vi.clearAllMocks();
   window.localStorage.clear();
+  clearSendPaymentDraft();
   hoisted.loadAccountMock.mockImplementation(async (pk) => (
     pk === SENDER.publicKey
       ? makeFundedAccount(pk, { extraBalances: [SENDER_FOO_BALANCE] })
@@ -1050,3 +1052,48 @@ describe('QR-Scan und SEP-7 beim Senden (P2.1)', () => {
   });
 });
 
+
+describe('form draft survives an account switch', () => {
+  const OTHER_SENDER = Keypair.random().publicKey();
+  const renderFor = (publicKey, initial) => render(
+    <I18nextProvider i18n={i18n}>
+      <SendPaymentPage publicKey={publicKey} initial={initial} />
+    </I18nextProvider>
+  );
+
+  it('keeps recipient, amount and memo when the page is remounted for another account', async () => {
+    const first = renderFor(SENDER.publicKey);
+    fireEvent.change(destInput(), { target: { value: DEST_PK } });
+    fireEvent.change(amountInput(), { target: { value: '12' } });
+    fireEvent.change(memoInput(), { target: { value: 'Runde 7' } });
+    first.unmount();
+
+    // Kontowechsel: Seite wird mit dem neuen Konto frisch eingehaengt.
+    renderFor(OTHER_SENDER);
+    expect(destInput().value).toBe(DEST_PK);
+    expect(amountInput().value).toBe('12');
+    expect(memoInput().value).toBe('Runde 7');
+  });
+
+  it('does not let the same initial prefill overwrite edits after remount', async () => {
+    const initial = { recipient: DEST_PK, amount: 5, memoText: 'Spende' };
+    const first = renderFor(SENDER.publicKey, initial);
+    await waitFor(() => expect(amountInput().value).toBe('5'));
+    fireEvent.change(amountInput(), { target: { value: '8' } });
+    first.unmount();
+
+    renderFor(OTHER_SENDER, initial);
+    await new Promise((r) => setTimeout(r, 0));
+    expect(amountInput().value).toBe('8');
+  });
+
+  it('applies a new initial prefill over an older draft', async () => {
+    const first = renderFor(SENDER.publicKey);
+    fireEvent.change(amountInput(), { target: { value: '3' } });
+    first.unmount();
+
+    renderFor(SENDER.publicKey, { recipient: DEST_PK, amount: 5, memoText: 'Spende' });
+    await waitFor(() => expect(amountInput().value).toBe('5'));
+    expect(destInput().value).toBe(DEST_PK);
+  });
+});

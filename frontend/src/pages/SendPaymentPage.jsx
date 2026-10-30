@@ -40,6 +40,7 @@ import QrScanDialog from '../components/wallet/QrScanDialog.jsx';
 import { networkMismatch, parsePaymentInput } from '../utils/stellar/sep7.js';
 import { CONTRACT_ADDRESS_ERROR, isContractAddress } from '../utils/stellar/addressType.js';
 import { txHashHex } from '../utils/stellar/txHash.js';
+import { readSendPaymentDraft, writeSendPaymentDraft } from '../utils/sendPaymentDraft.js';
 
 // Immediate local submits (single-sig send, or a multisig job collected and
 // submitted right away) expect a near-term Horizon confirmation, unlike a
@@ -224,12 +225,19 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   const { wallets } = useTrustedWallets();
   const { decimalsMode, multisigTimeoutSeconds, explorers } = useSettings();
 
-  const [dest, setDest] = useState(initial?.recipient || '');
-  const [amount, setAmount] = useState('');
+  // Entwurf vom letzten Einhaengen (z.B. vor einem Kontowechsel) uebernehmen. Ein neues
+  // `initial` (Spende, Prefill) hat Vorrang; dasselbe `initial` wie im Entwurf nicht,
+  // sonst wuerde es die seither gemachten Eingaben ueberschreiben.
+  const [restoredDraft] = useState(() => {
+    const d = readSendPaymentDraft();
+    return d && (!initial || d.initial === initial) ? d : null;
+  });
+  const [dest, setDest] = useState(restoredDraft ? restoredDraft.dest : (initial?.recipient || ''));
+  const [amount, setAmount] = useState(restoredDraft?.amount ?? '');
   const [amountFocused, setAmountFocused] = useState(false);
-  const [assetKey, setAssetKey] = useState('XLM'); // 'XLM' or 'CODE:ISSUER'
-  const [memoType, setMemoType] = useState('text'); // 'none' | 'text' | 'id' | 'hash' | 'return'
-  const [memoVal, setMemoVal] = useState('');
+  const [assetKey, setAssetKey] = useState(restoredDraft?.assetKey ?? 'XLM'); // 'XLM' or 'CODE:ISSUER'
+  const [memoType, setMemoType] = useState(restoredDraft?.memoType ?? 'text'); // 'none' | 'text' | 'id' | 'hash' | 'return'
+  const [memoVal, setMemoVal] = useState(restoredDraft?.memoVal ?? '');
   const memoValRef = useRef(memoVal);
   useEffect(() => { memoValRef.current = memoVal; }, [memoVal]);
   // Tracks the memo value WE last auto-filled from a federation lookup, so a later lookup
@@ -237,7 +245,21 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   // there" (safe to overwrite/clear) apart from "user has since edited it" (never touch
   // again). `null` means the user has taken manual control; a string means that value is
   // still ours. Initialized to '' to match the pristine (never-touched) memoVal state.
-  const autoFilledMemoRef = useRef('');
+  // Beim Wiederherstellen den Zustand aus dem Entwurf uebernehmen, damit ein manuell
+  // geaendertes Memo manuell bleibt und ein Federation-Memo weiter gepflegt wird.
+  const autoFilledMemoRef = useRef(restoredDraft ? restoredDraft.autoFilledMemo : '');
+  // Merkt sich, welches `initial` schon angewendet wurde (siehe Effekt weiter unten).
+  const appliedInitialRef = useRef(restoredDraft ? restoredDraft.initial : undefined);
+
+  // Formular-Entwurf bei jeder Aenderung festhalten, damit er ein Aus- und Einhaengen
+  // der Seite (Kontowechsel) uebersteht.
+  useEffect(() => {
+    writeSendPaymentDraft({
+      dest, amount, assetKey, memoType, memoVal,
+      autoFilledMemo: autoFilledMemoRef.current,
+      initial: appliedInitialRef.current,
+    });
+  });
   const [showSecretModal, setShowSecretModal] = useState(false);
   const [secretModalPrefill, setSecretModalPrefill] = useState([]);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -1765,6 +1787,10 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   // Update fields when donation is triggered again or initial changes
   useEffect(() => {
     try {
+      // Jedes `initial` nur einmal anwenden: Nach einem Kontowechsel wird die Seite mit
+      // demselben Objekt neu eingehaengt und darf die Eingaben dann nicht ueberschreiben.
+      if (initial === appliedInitialRef.current) return;
+      appliedInitialRef.current = initial;
       if (!initial) return;
       clearSuccess();
       if (initial.recipient) setDest(initial.recipient);
