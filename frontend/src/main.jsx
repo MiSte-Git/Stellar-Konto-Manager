@@ -28,7 +28,6 @@ import {
 import {
   buildPath,
   getMultisigJobId,
-  getMultisigJobToken,
   isMultisigJobsListPath,
   isSettingsPath,
   isTradingAssetsPath,
@@ -89,6 +88,7 @@ import AccountGate from './components/AccountGate.jsx';
 import { MAIN_MENU_NAV } from './config/mainNavigation.js';
 import { emitAccountSelected } from './utils/accountBus.js';
 
+import { takeMultisigJobToken } from './components/multisig/multisigNavigation.js';
 import { consumePendingMainView, consumePendingTrustlineAsset, navigateToPath, publishActiveAccount, publishActiveMainView, setMainMounted } from './utils/appNavigation.js';
 import ListTrustlines from './components/ListTrustlines';
 import ResultDisplay from './components/ResultDisplay';
@@ -167,10 +167,9 @@ const MANAGED_MENU_SELECTIONS = ['settings', 'tradingAssets', 'liquidityPools', 
 function readMenuStateFromUrl() {
   if (typeof window === 'undefined') return { menuSelection: null, activeJobId: null, activeJobToken: null };
   const pathname = window.location.pathname;
-  const search = window.location.search;
   const jobId = getMultisigJobId(pathname);
   if (jobId) {
-    return { menuSelection: 'multisigJobs', activeJobId: jobId, activeJobToken: getMultisigJobToken(search) };
+    return { menuSelection: 'multisigJobs', activeJobId: jobId, activeJobToken: takeMultisigJobToken(jobId) };
   }
   if (isMultisigJobsListPath(pathname)) {
     return { menuSelection: 'multisigJobs', activeJobId: null, activeJobToken: null };

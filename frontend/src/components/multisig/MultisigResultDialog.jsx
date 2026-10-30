@@ -198,7 +198,7 @@ export default function MultisigResultDialog({
                 {type === 'sent' && explorerLinks.length > 0 && (
                   <div className="flex flex-wrap gap-2">
                     {explorerLinks.map((link) => (
-                      <a key={link.href} className={BTN_SMALL} href={link.href} target="_blank" rel="noreferrer">{link.label}</a>
+                      <a key={link.href} className={BTN_SMALL} href={link.href} target="_blank" rel="noopener noreferrer">{link.label}</a>
                     ))}
                   </div>
                 )}

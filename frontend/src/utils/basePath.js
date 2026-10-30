@@ -191,12 +191,11 @@ export function liquidityPoolsPath(poolId) {
 }
 
 /**
- * Pfad zum Job-Detail (/multisig/jobs/:id), optional mit Zugriffstoken (?token=),
- * wie bei geteilten Job-Links.
+ * Pfad zum Job-Detail (/multisig/jobs/:id). Das Zugriffstoken gehoert nicht in
+ * diesen Pfad, siehe openMultisigJob in multisigNavigation.js.
  */
-export function multisigJobPath(jobId, token) {
-  const base = buildPath(`multisig/jobs/${encodeURIComponent(jobId)}`);
-  return token ? `${base}?token=${encodeURIComponent(token)}` : base;
+export function multisigJobPath(jobId) {
+  return buildPath(`multisig/jobs/${encodeURIComponent(jobId)}`);
 }
 
 /**
@@ -214,7 +213,8 @@ export function getMultisigJobId(pathname) {
 /**
  * Extracts the per-job access token (B3) from the URL's ?token= query parameter,
  * used when a multisig job detail page is opened via a bookmarked/shared link
- * (as opposed to in-app navigation, which passes the token directly).
+ * (as opposed to in-app navigation, which passes the token directly). Callers
+ * use takeMultisigJobToken, which also removes it from the address bar.
  */
 export function getMultisigJobToken(search) {
   try {

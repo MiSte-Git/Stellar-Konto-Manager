@@ -283,12 +283,12 @@ describe('LiquidityPoolsPage', () => {
 
     it('verwirft den Pool beim Abwaehlen ueber den Loeschen-Button und leert den Picker', async () => {
       await loadPair();
-      fireEvent.click(screen.getByRole('button', { name: 'Eingabe und Auswahl löschen' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Eingabe löschen' }));
       expect(screen.queryByTestId('pool-facts')).toBeNull();
       expect(screen.getByLabelText('Token suchen')).toHaveValue('');
       expect(screen.queryByTestId('asset-picker-selected')).toBeNull();
       expect(screen.queryByTestId('asset-picker-results')).toBeNull();
-      expect(screen.queryByRole('button', { name: 'Eingabe und Auswahl löschen' })).toBeNull();
+      expect(screen.queryByRole('button', { name: 'Eingabe löschen' })).toBeNull();
     });
 
     it('verwirft den Pool nicht beim Tippen, aber sobald eine neue Suche die Auswahl zuruecksetzt', async () => {

@@ -258,7 +258,7 @@ describe('AssetSearch - Limit-Order stornieren', () => {
 });
 
 describe('AssetSearch - Ziel-Token-Picker im Swap', () => {
-  const CLEAR = 'Eingabe und Auswahl löschen';
+  const CLEAR = 'Eingabe löschen';
   const TARGET_QUERY = `${ASSET_CODE}:${ISSUER_PK}`;
 
   async function openTargetPicker() {

@@ -515,7 +515,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
             <a
               href="https://lab.stellar.org"
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               className="font-semibold underline underline-offset-2 text-blue-900 dark:text-blue-100"
             >
               {t('common:multisigEdit.securityGuarantee.linkLabel')}

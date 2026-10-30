@@ -204,7 +204,7 @@ export default function MultisigConfigForm({
               <a
                 href={signerTypeLinkUrl}
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 className="font-semibold underline underline-offset-2 text-blue-900 dark:text-blue-100"
               >
                 {signerTypeLinkLabel}

@@ -213,7 +213,7 @@
       "unavailable": "Pool {{pool}}: Der aktuelle Pool-Stand konnte nicht geladen werden."
     },
     "noAccessToken": "Kein Zugriffstoken verfügbar. Bitte zuerst das Konto laden, das Signer dieses Auftrags ist.",
-    "noLocalSecretForToken": "Kein gespeichertes Secret für dieses Konto in diesem Browser. Bitte über einen geteilten Link mit Zugriffstoken öffnen, oder das Konto einmal mit \"Secret merken\" laden.",
+    "noLocalSecretForToken": "Kein Zugriffstoken verfügbar: Es bleibt nur bis zum Neuladen der Seite erhalten, und für dieses Konto ist in diesem Browser kein Secret gespeichert. Bitte den Job-Link mit Zugriffstoken erneut öffnen oder das Konto einmal mit \"Secret merken\" laden.",
     "notASigner": "Dieses Konto ist kein aktiver Signer dieses Auftrags.",
     "transparency": {
       "title": "Transaktionsdetails"

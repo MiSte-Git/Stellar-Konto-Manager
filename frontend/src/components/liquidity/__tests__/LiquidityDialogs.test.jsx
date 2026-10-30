@@ -8,6 +8,7 @@ import WithdrawDialog from '../WithdrawDialog.jsx';
 import { poolIdFor } from '../../../utils/stellar/liquidityPools.js';
 import { txHashHex } from '../../../utils/stellar/txHash.js';
 import { consumePendingTrustlineAsset, setMainMounted } from '../../../utils/appNavigation.js';
+import { takeMultisigJobToken } from '../../multisig/multisigNavigation.js';
 
 const hoisted = vi.hoisted(() => ({
   loadAccount: vi.fn(),
@@ -612,7 +613,10 @@ describe('Multisig-Konten: Optionsdialog (Job, lokal, XDR)', () => {
       fireEvent.click(within(result).getByRole('button', { name: 'Zum Job' }));
       expect(onClose).toHaveBeenCalled();
       expect(window.location.pathname).toMatch(/\/multisig\/jobs\/job-77$/);
-      expect(window.location.search).toBe('?token=tok-77');
+      // Token bleibt im Speicher, nicht in Adresszeile und Verlauf
+      expect(window.location.search).toBe('');
+      expect(window.location.href).not.toContain('tok-77');
+      expect(takeMultisigJobToken('job-77')).toBe('tok-77');
       expect(popstate).toHaveBeenCalled();
     } finally {
       window.removeEventListener('popstate', popstate);
