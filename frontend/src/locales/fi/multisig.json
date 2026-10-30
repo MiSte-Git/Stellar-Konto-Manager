@@ -111,6 +111,7 @@
   },
   "jobCreated": "Multisig-työ luotu (tunnus: {{id}}). Avaa \"Monisig-tapahtumat\" nähdäksesi tilan.",
   "errors": {
+    "accountMismatch": "Tapahtuman lähdetili ei vastaa työn tiliä. Allekirjoitusta ei lisätty.",
     "mismatchedHash": "Allekirjoitettu XDR ei kuulu tähän tapahtumaan.",
     "signersUnavailable": "Tilin signers-luetteloa ei ole tällä hetkellä käytettävissä Horizonissa. Allekirjoitusta ei voitu lisätä. Yritä uudelleen muutaman sekunnin kuluttua.",
     "timeboundTooLong": "Aikaväli on liian pitkä. Pienennä multisig-aikakatkaisuasetusta enintään {{maxDays}} päivään."
@@ -180,7 +181,23 @@
       "copy.success": "XDR kopioitu leikepöydälle.",
       "copy.error": "XDR:ää ei voitu kopioida leikepöydälle."
     },
+    "sourceUnknown": "ei luettavissa",
+    "sourceMuxed": "M-osoite",
+    "integrity": {
+      "title": "Tämä tapahtuma ei vastaa työtä. Allekirjoittaminen ja XDR-tuonti on estetty.",
+      "accountMismatch": "Tapahtuman lähdetili eroaa työn tilistä. Allekirjoitus koskisi tapahtuman lähdetiliä, mutta työn signers kuuluvat toiselle tilille.",
+      "jobAccount": "Tili työn mukaan",
+      "txSource": "Lähde tapahtuman mukaan",
+      "hashMismatch": "Tapahtuma ei vastaa tallennettua hashia.",
+      "jobHash": "Hash työn mukaan",
+      "txHash": "Tapahtuman hash",
+      "networkUnknown": "Tämän työn verkko on tuntematon: {{network}}",
+      "missingJobData": "Tästä työstä puuttuu hash tai tili.",
+      "undecodable": "Tapahtumaa ei voitu dekoodata, joten allekirjoitettavaa sisältöä ei voi näyttää eikä tarkistaa.",
+      "revokeHint": "Peruuttaminen on edelleen mahdollista. Se koskee tapahtuman lähdetiliä ja vaatii sen signers."
+    },
     "signedXdr": {
+      "blockedIntegrityHint": "Tuonti on estetty, koska tapahtuma ei läpäissyt yllä olevaa tarkistusta.",
       "title": "Allekirjoitetun XDR:n tuonti",
       "hint": "Lisää tähän toisen Signer:n allekirjoittama XDR, jotta allekirjoitukset yhdistetään tähän Multisig-tehtävään.",
       "label": "Allekirjoitettu XDR",
@@ -244,6 +261,7 @@
       "confirmTitle": "Oliko Job todella perunut sanansa?",
       "confirmText": "Tili {{account}} ({{network}}): Järjestys on asetettu arvoon {{sequence}}. Tämän jälkeen tätä tehtävää ei voi enää lähettää. Tätä toimintoa ei voi peruuttaa.",
       "sideEffect": "Huomautus: Myös kaikki muut tämän tilin jonossa olevat tapahtumat ja tehtävät, joiden sequence numbers-arvo on sama tai pienempi, mitätöidään.",
+      "differentAccount": "Tili tehtävän mukaan: {{jobAccount}}. Peruutus koskee tiliä {{account}}, käyttää tämän tilin seuraavan sequence-arvon ja voi mitätöidä tämän tilin aidon valmistellun tapahtuman, jolla on sama sequence.",
       "thresholdInfo": "Vaatii painoltaan {{required}} olevia allekirjoituksia (Low-Threshold).",
       "continue": "Jatka allekirjoittamiseen",
       "alreadyDead": "Tämä työtehtävä on jo vanhentunut; tilisarja on edennyt eteenpäin. Peruuttamista ei tarvita.",
@@ -256,7 +274,6 @@
       "sequenceInvalid": "Työ- tai tilitiedot ovat lukukelvottomia; peruuttaminen ei ole mahdollista.",
       "networkUnknown": "Tähän tehtävään liittyvää verkkoa ei tunneta; peruuttaminen on poistettu käytöstä turvallisuussyistä.",
       "hashMismatch": "Työskentelytapahtuma ei vastaa tallennettua hajautusarvoa. Peruuttaminen on poistettu käytöstä turvallisuussyistä.",
-      "accountMismatch": "Tapahtuman lähdetili eroaa työn tilistä. Peruuttaminen on poistettu käytöstä turvallisuussyistä.",
       "networkMismatch": "Horizon-palvelin ei kuulu tämän työn verkkoon. Mitään ei allekirjoitettu eikä lähetetty.",
       "noThresholds": "Tilin Thresholds -arvoa ei voitu lukea; peruuttaminen ei ole mahdollista.",
       "missingJobData": "Tästä tehtävästä puuttuu hash-arvo tai tili. Peruuttaminen on poistettu käytöstä turvallisuussyistä."

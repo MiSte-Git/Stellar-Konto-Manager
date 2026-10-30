@@ -111,6 +111,7 @@
   },
   "jobCreated": "Tâche Multisig créée (ID : {{id}}). Ouvrez « Commandes Multisig » pour consulter son statut.",
   "errors": {
+    "accountMismatch": "Le compte d'origine de la transaction ne correspond pas au compte de la tâche. La signature n'a pas été appliquée.",
     "mismatchedHash": "Le XDR signé n'appartient pas à cette transaction.",
     "signersUnavailable": "La liste signers de ce compte n'est actuellement pas disponible dans Horizon. La signature n'a pas été appliquée. Veuillez réessayer dans quelques secondes.",
     "timeboundTooLong": "La plage horaire est trop longue. Veuillez réduire le délai d'expiration multisig à un maximum de {{maxDays}} jours."
@@ -180,7 +181,23 @@
       "copy.success": "XDR copié dans le presse-papiers.",
       "copy.error": "XDR n'a pas pu être copié dans le presse-papiers."
     },
+    "sourceUnknown": "illisible",
+    "sourceMuxed": "Adresse M",
+    "integrity": {
+      "title": "Cette transaction ne correspond pas à la tâche. La signature et l'importation XDR sont bloquées.",
+      "accountMismatch": "Le compte d'origine de la transaction est différent du compte de la tâche. Une signature s'appliquerait au compte d'origine de la transaction, mais les signers de la tâche appartiennent à l'autre compte.",
+      "jobAccount": "Compte selon la tâche",
+      "txSource": "Origine selon la transaction",
+      "hashMismatch": "La transaction ne correspond pas au hash enregistré.",
+      "jobHash": "Hash selon la tâche",
+      "txHash": "Hash de la transaction",
+      "networkUnknown": "Le réseau de cette tâche est inconnu : {{network}}",
+      "missingJobData": "Il manque le hash ou le compte de cette tâche.",
+      "undecodable": "La transaction n'a pas pu être décodée : ce qui serait signé ne peut donc être ni affiché ni vérifié.",
+      "revokeHint": "La révocation reste possible. Elle s'applique au compte d'origine de la transaction et nécessite ses signers."
+    },
     "signedXdr": {
+      "blockedIntegrityHint": "Importation bloquée, car la transaction n'a pas passé le contrôle ci-dessus.",
       "title": "Importation de XDR signé",
       "hint": "Insérez ici un XDR signé par un autre Signer afin de fusionner les signatures avec celles de cette tâche Multisig.",
       "label": "DTS signés",
@@ -244,6 +261,7 @@
       "confirmTitle": "Job l'a-t-il vraiment repris ?",
       "confirmText": "Compte {{account}} ({{network}}) : la séquence est définie sur {{sequence}}. À partir de ce moment, ce travail ne pourra plus être soumis. Cette action est irréversible.",
       "sideEffect": "Remarque : toutes les autres transactions et tâches en attente pour ce compte dont la valeur sequence numbers est identique ou inférieure seront également invalidées.",
+      "differentAccount": "Compte selon le travail : {{jobAccount}}. La révocation s'applique à {{account}}, consomme la prochaine sequence de ce compte et peut invalider une véritable transaction préparée de ce compte avec cette sequence.",
       "thresholdInfo": "Nécessite des signatures d'un poids de {{required}} (faible - Threshold).",
       "continue": "Passer à la signature",
       "alreadyDead": "Cette commande n'est déjà plus valide ; la séquence comptable a évolué. Aucune annulation n'est nécessaire.",
@@ -256,7 +274,6 @@
       "sequenceInvalid": "La séquence de l'opération ou du compte est illisible ; la révocation n'est pas possible.",
       "networkUnknown": "Le réseau associé à cette tâche est inconnu ; la révocation est désactivée pour des raisons de sécurité.",
       "hashMismatch": "La transaction de tâche ne correspond pas au hachage enregistré. La révocation est désactivée pour des raisons de sécurité.",
-      "accountMismatch": "Le compte d'origine de la transaction est différent du compte de la tâche. La révocation est désactivée pour des raisons de sécurité.",
       "networkMismatch": "Le serveur Horizon ne fait pas partie du réseau de cette tâche. Rien n'a été signé ni envoyé.",
       "noThresholds": "Impossible de lire le paramètre Thresholds du compte ; la révocation n'est pas possible.",
       "missingJobData": "Il manque un hachage ou un compte pour cette tâche. La révocation est désactivée pour des raisons de sécurité."

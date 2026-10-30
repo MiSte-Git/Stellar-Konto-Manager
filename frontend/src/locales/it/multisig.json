@@ -111,6 +111,7 @@
   },
   "jobCreated": "Lavoro multisig creato (ID: {{id}}). Apri \"Ordini multisig\" per vedere lo stato.",
   "errors": {
+    "accountMismatch": "Il conto di origine della transazione non corrisponde al conto del lavoro. La firma non è stata applicata.",
     "mismatchedHash": "L'XDR firmato non appartiene a questa transazione.",
     "signersUnavailable": "L'elenco signers dell'account non è attualmente disponibile in Horizon. La firma non è stata applicata. Riprovare tra qualche secondo.",
     "timeboundTooLong": "L'intervallo di tempo è troppo lungo. Si prega di ridurre l'impostazione del timeout multisig a un massimo di {{maxDays}} giorni."
@@ -180,7 +181,23 @@
       "copy.success": "XDR copiato negli appunti.",
       "copy.error": "XDR non può essere copiato negli appunti."
     },
+    "sourceUnknown": "non leggibile",
+    "sourceMuxed": "Indirizzo M",
+    "integrity": {
+      "title": "Questa transazione non corrisponde al lavoro. La firma e l'importazione XDR sono bloccate.",
+      "accountMismatch": "Il conto di origine della transazione è diverso dal conto del lavoro. Una firma varrebbe per il conto di origine della transazione, ma i signers del lavoro appartengono all'altro conto.",
+      "jobAccount": "Conto secondo il lavoro",
+      "txSource": "Origine secondo la transazione",
+      "hashMismatch": "La transazione non corrisponde all'hash memorizzato.",
+      "jobHash": "Hash secondo il lavoro",
+      "txHash": "Hash della transazione",
+      "networkUnknown": "La rete di questo lavoro è sconosciuta: {{network}}",
+      "missingJobData": "A questo lavoro manca l'hash o il conto.",
+      "undecodable": "Non è stato possibile decodificare la transazione, quindi ciò che verrebbe firmato non può essere né mostrato né verificato.",
+      "revokeHint": "La revoca resta possibile. Si applica al conto di origine della transazione e richiede i suoi signers."
+    },
     "signedXdr": {
+      "blockedIntegrityHint": "Importazione bloccata perché la transazione non ha superato il controllo qui sopra.",
       "title": "Importazione di XDR firmato",
       "hint": "Inserisci qui un XDR firmato da un altro Signer per unire le firme con questo lavoro Multisig.",
       "label": "XDR firmato",
@@ -244,6 +261,7 @@
       "confirmTitle": "Giobbe si è davvero rimesso in riga?",
       "confirmText": "Account {{account}} ({{network}}): La sequenza è impostata su {{sequence}}. A questo punto, questo processo non potrà più essere inviato. Questa azione non può essere annullata.",
       "sideEffect": "Nota: anche tutte le altre transazioni e attività in coda relative a questo account con un valore di sequence numbers uguale o inferiore verranno invalidate.",
+      "differentAccount": "Conto secondo il processo: {{jobAccount}}. La revoca si applica a {{account}}, consuma la sequence successiva di quel conto e può invalidare una vera transazione preparata di quel conto con questa sequence.",
       "thresholdInfo": "Richiede firme con peso {{required}} (Basso-Threshold).",
       "continue": "Vai alla pagina di registrazione",
       "alreadyDead": "Questo incarico non è più valido; la sequenza contabile è proseguita. Non è necessaria alcuna cancellazione.",
@@ -256,7 +274,6 @@
       "sequenceInvalid": "La sequenza relativa all'incarico o al conto è illeggibile; non è possibile procedere alla revoca.",
       "networkUnknown": "La rete associata a questo processo è sconosciuta; la revoca è disabilitata per motivi di sicurezza.",
       "hashMismatch": "La transazione relativa al lavoro non corrisponde all'hash memorizzato. La revoca è disabilitata per motivi di sicurezza.",
-      "accountMismatch": "Il conto di origine della transazione è diverso dal conto del lavoro. La revoca è disabilitata per motivi di sicurezza.",
       "networkMismatch": "Il server Horizon non fa parte della rete di questo processo. Non è stato firmato né inviato nulla.",
       "noThresholds": "Impossibile leggere il valore Thresholds dell'account; la revoca non è possibile.",
       "missingJobData": "In questo lavoro manca un hash o un account. La revoca è disabilitata per motivi di sicurezza."

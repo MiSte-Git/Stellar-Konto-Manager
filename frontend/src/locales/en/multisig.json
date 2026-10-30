@@ -111,6 +111,7 @@
   },
   "jobCreated": "Multisig job created (ID: {{id}}). Open \"Multisig orders\" to see the status.",
   "errors": {
+    "accountMismatch": "The transaction's source account does not match the job's account. The signature was not applied.",
     "mismatchedHash": "The signed XDR does not belong to this transaction.",
     "signersUnavailable": "The account's list of signers is currently unavailable in Horizon. The signature was not applied. Please try again in a few seconds.",
     "timeboundTooLong": "The time window is too long. Please reduce the multisig timeout setting to a maximum of {{maxDays}} days."
@@ -180,7 +181,23 @@
       "copy.success": "XDR copied to the clipboard.",
       "copy.error": "XDR could not be copied to the clipboard."
     },
+    "sourceUnknown": "not readable",
+    "sourceMuxed": "M address",
+    "integrity": {
+      "title": "This transaction does not match the job. Signing and XDR import are blocked.",
+      "accountMismatch": "The transaction's source account differs from the job's account. A signature would apply to the transaction's source account, but the job's signers belong to the other account.",
+      "jobAccount": "Account according to the job",
+      "txSource": "Source according to the transaction",
+      "hashMismatch": "The transaction does not match the stored hash.",
+      "jobHash": "Hash according to the job",
+      "txHash": "Transaction hash",
+      "networkUnknown": "The network of this job is unknown: {{network}}",
+      "missingJobData": "This job is missing a hash or account.",
+      "undecodable": "The transaction could not be decoded, so what would be signed can neither be shown nor checked.",
+      "revokeHint": "Revocation remains possible. It applies to the transaction's source account and needs that account's signers."
+    },
     "signedXdr": {
+      "blockedIntegrityHint": "Import is blocked because the transaction failed the check above.",
       "title": "Importing signed XDR",
       "hint": "Insert an XDR signed by another Signer here to merge the signatures with this Multisig job.",
       "label": "Signed XDR",
@@ -244,6 +261,7 @@
       "confirmTitle": "Did Job really take it back?",
       "confirmText": "Account {{account}} ({{network}}): The sequence is set to {{sequence}}. After that, this job can no longer be submitted. This action cannot be undone.",
       "sideEffect": "Note: All other queued transactions and jobs for this account with the same or lower sequence numbers will also be invalidated.",
+      "differentAccount": "Account according to the job: {{jobAccount}}. The revocation applies to {{account}}, uses up that account's next sequence and can invalidate a genuine prepared transaction of that account with this sequence.",
       "thresholdInfo": "Requires signatures with weight {{required}} (Low-Threshold).",
       "continue": "Continue to Signing",
       "alreadyDead": "This job is already invalid; the account sequence has moved on. No cancellation is necessary.",
@@ -256,7 +274,6 @@
       "sequenceInvalid": "The job or account sequence is illegible; revocation is not possible.",
       "networkUnknown": "The network associated with this job is unknown; revocation is disabled for security reasons.",
       "hashMismatch": "The job transaction does not match the stored hash. Revocation is disabled for security reasons.",
-      "accountMismatch": "The source account for the transaction is different from the job's account. Revocation is disabled for security reasons.",
       "networkMismatch": "The Horizon server is not part of this job's network. Nothing was signed or sent.",
       "noThresholds": "The account's Thresholds could not be read; revocation is not possible.",
       "missingJobData": "This job is missing a hash or account. Revocation is disabled for security reasons."

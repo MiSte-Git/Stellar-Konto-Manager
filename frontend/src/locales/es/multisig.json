@@ -111,6 +111,7 @@
   },
   "jobCreated": "Trabajo multisig creado (ID: {{id}}). Abre „Trabajos multisig“ para ver el estado.",
   "errors": {
+    "accountMismatch": "La cuenta de origen de la transacción no coincide con la cuenta del trabajo. No se ha aplicado la firma.",
     "mismatchedHash": "El XDR firmado no pertenece a esta transacción.",
     "signersUnavailable": "La lista de signers de la cuenta no está disponible actualmente en Horizon. No se ha aplicado la firma. Inténtalo de nuevo dentro de unos segundos.",
     "timeboundTooLong": "El intervalo de tiempo es demasiado largo. Por favor, reduce el valor de tiempo de espera de multisig a un máximo de {{maxDays}} días."
@@ -180,7 +181,23 @@
       "copy.success": "XDR copiado al portapapeles.",
       "copy.error": "XDR no se pudo copiar al portapapeles."
     },
+    "sourceUnknown": "no legible",
+    "sourceMuxed": "Dirección M",
+    "integrity": {
+      "title": "Esta transacción no coincide con el trabajo. La firma y la importación de XDR están bloqueadas.",
+      "accountMismatch": "La cuenta de origen de la transacción es diferente de la cuenta del trabajo. Una firma se aplicaría a la cuenta de origen de la transacción, pero los signers del trabajo pertenecen a la otra cuenta.",
+      "jobAccount": "Cuenta según el trabajo",
+      "txSource": "Origen según la transacción",
+      "hashMismatch": "La transacción no coincide con el hash almacenado.",
+      "jobHash": "Hash según el trabajo",
+      "txHash": "Hash de la transacción",
+      "networkUnknown": "La red de este trabajo es desconocida: {{network}}",
+      "missingJobData": "A este trabajo le falta el hash o la cuenta.",
+      "undecodable": "No se ha podido decodificar la transacción, por lo que lo que se firmaría no se puede mostrar ni comprobar.",
+      "revokeHint": "La revocación sigue siendo posible. Se aplica a la cuenta de origen de la transacción y necesita sus signers."
+    },
     "signedXdr": {
+      "blockedIntegrityHint": "Importación bloqueada porque la transacción no ha superado la comprobación anterior.",
       "title": "Importación de XDR firmado",
       "hint": "Inserta aquí un XDR firmado por otro Signer para fusionar las firmas con este trabajo Multisig.",
       "label": "XDR firmado",
@@ -244,6 +261,7 @@
       "confirmTitle": "¿De verdad se lo quitó Job?",
       "confirmText": "Cuenta {{account}} ({{network}}): La secuencia se ha establecido en {{sequence}}. A partir de ese momento, ya no se podrá enviar este trabajo. Esta acción no se puede deshacer.",
       "sideEffect": "Nota: El resto de transacciones y tareas en cola de esta cuenta que tengan un valor de sequence numbers igual o inferior también quedarán invalidadas.",
+      "differentAccount": "Cuenta según el trabajo: {{jobAccount}}. La revocación se aplica a {{account}}, consume la siguiente sequence de esa cuenta y puede invalidar una transacción preparada legítima de esa cuenta con esta sequence.",
       "thresholdInfo": "Requiere firmas con un peso de {{required}} (Bajo-Threshold).",
       "continue": "Continuar con la firma",
       "alreadyDead": "Este encargo ya no es válido; la secuencia de cuentas ha avanzado. No es necesario cancelarlo.",
@@ -256,7 +274,6 @@
       "sequenceInvalid": "La secuencia de la operación o de la cuenta es ilegible; no es posible revocarla.",
       "networkUnknown": "Se desconoce la red asociada a este trabajo; la revocación está desactivada por motivos de seguridad.",
       "hashMismatch": "La transacción de trabajo no coincide con el hash almacenado. La revocación está desactivada por motivos de seguridad.",
-      "accountMismatch": "La cuenta de origen de la transacción es diferente de la cuenta del trabajo. La revocación está desactivada por motivos de seguridad.",
       "networkMismatch": "El servidor Horizon no forma parte de la red de este trabajo. No se ha firmado ni enviado nada.",
       "noThresholds": "No se ha podido leer el valor Thresholds de la cuenta; no es posible revocar la cuenta.",
       "missingJobData": "A esta tarea le falta un hash o una cuenta. La revocación está desactivada por motivos de seguridad."

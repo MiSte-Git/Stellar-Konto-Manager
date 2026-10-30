@@ -15,7 +15,7 @@ const { createApiSecurityHeadersMiddleware } = require('./services/securityHeade
 const { handleFederationRequest, HOP_HEADER: FEDERATION_HOP_HEADER } = require('./services/federationService.js');
 const { writeJsonFileLocked } = require('./services/jsonFileStore.js');
 const { createChallenge, consumeChallenge, verifyChallengeSignature } = require('./services/challengeStore.js');
-const { filterValidSignatures, requiredWeightForOperations, signatureKey } = require('./services/txSignatures.js');
+const { filterValidSignatures, requiredWeightForOperations, signatureKey, txSourceBaseAccount } = require('./services/txSignatures.js');
 const { isLoopbackAddress } = require('./services/network.js');
 const stellarNetworks = require('./services/stellarNetworks.js');
 const { computeMultisigLifecycleStatus, extractMaxTimeUnix, mapSubmitResultCodeToLifecycleStatus, isMultisigTimeboundWithinCap, MULTISIG_JOB_MAX_TIMEBOUND_SECONDS } = require('./services/multisigLifecycle.js');
@@ -608,6 +608,11 @@ async function annotateJobsLifecycleStatus(items) {
   });
 }
 
+// K1: Signer und Gewichte eines Jobs kommen aus accountId, das Netz prueft die
+// Signaturen aber gegen die Quelle der Transaktion. Beide muessen uebereinstimmen.
+// Gleicher Wortlaut wie in api/multisig.php.
+const ACCOUNT_MISMATCH_BODY = { ok: false, error: 'account_mismatch', detail: 'Transaction source does not match accountId.' };
+
 function collectSignersForTx(tx, signers = []) {
   const collected = [];
   for (const s of signers) {
@@ -631,13 +636,18 @@ app.post('/api/multisig/jobs', async (req, res) => {
     const { network, accountId, txXdr, createdBy } = req.body || {};
     const net = normalizeNetwork(network);
     if (!net) return res.status(400).json({ ok: false, error: 'invalid_network' });
-    if (!accountId || typeof accountId !== 'string') return res.status(400).json({ ok: false, error: 'invalid_account' });
+    if (typeof accountId !== 'string' || !StellarSdk.StrKey.isValidEd25519PublicKey(accountId.trim())) {
+      return res.status(400).json({ ok: false, error: 'invalid_account' });
+    }
     if (!txXdr || typeof txXdr !== 'string') return res.status(400).json({ ok: false, error: 'invalid_xdr' });
     let parsed;
     try {
       parsed = parseTxAndHash(txXdr, net);
     } catch (e) {
       return res.status(400).json({ ok: false, error: 'invalid_xdr', detail: e?.message || 'invalid_xdr' });
+    }
+    if (txSourceBaseAccount(parsed.tx) !== accountId.trim()) {
+      return res.status(400).json(ACCOUNT_MISMATCH_BODY);
     }
 
     // G5 stage 2: reject a timebound longer than the app's own cap before any
@@ -876,6 +886,11 @@ app.post('/api/multisig/jobs/:id/merge-signed-xdr', async (req, res) => {
     }
     if (incoming.hashHex !== job.txHash) {
       return res.status(400).json({ ok: false, error: 'mismatched_hash' });
+    }
+    // K1: Altjobs von vor dieser Pruefung bleiben gespeichert, nehmen aber keine
+    // Signatur mehr an. Damit gibt es fuer sie auch keine automatische Einreichung.
+    if (txSourceBaseAccount(incoming.tx) !== job.accountId) {
+      return res.status(400).json(ACCOUNT_MISMATCH_BODY);
     }
     const current = parseTxAndHash(job.txXdrCurrent || job.txXdrOriginal, net);
 

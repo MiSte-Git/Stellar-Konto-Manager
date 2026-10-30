@@ -10,9 +10,20 @@
 // (the exact same hint+verify check collectSignersForTx already does per
 // signer, just applied per individual signature here so invalid ones can be
 // dropped instead of merely not counted), then caps whatever remains at 20.
-const { Keypair } = require('@stellar/stellar-sdk');
+const { Keypair, StrKey } = require('@stellar/stellar-sdk');
 
 const MAX_TX_SIGNATURES = 20; // Stellar XDR: Signatures is DecoratedSignature<20>
+
+// Basiskonto (G-Adresse) der Transaktionsquelle: Eine M-Adresse zaehlt zu ihrem
+// Basiskonto, bei einem Fee-Bump gilt die innere Transaktion. Pendant:
+// txSourceBaseAccount() in api/txSignatures.php.
+function txSourceBaseAccount(tx) {
+  const source = String((tx?.innerTransaction || tx)?.source || '');
+  if (StrKey.isValidMed25519PublicKey(source)) {
+    return StrKey.encodeEd25519PublicKey(StrKey.decodeMed25519PublicKey(source).subarray(0, 32));
+  }
+  return StrKey.isValidEd25519PublicKey(source) ? source : null;
+}
 
 // --- SDK-Versionsunabhaengiger Zugriff auf DecoratedSignature -----------------
 // stellar-sdk bis v16: Feld-Getter hint()/signature() liefern einen Buffer.
@@ -133,4 +144,5 @@ module.exports = {
   MAX_TX_SIGNATURES,
   operationThresholdCategory,
   requiredWeightForOperations,
+  txSourceBaseAccount,
 };

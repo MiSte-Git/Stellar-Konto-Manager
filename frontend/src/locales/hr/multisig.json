@@ -111,6 +111,7 @@
   },
   "jobCreated": "Multisig posao je kreiran (ID: {{id}}). Otvorite „Multisig poslovi“ da vidite status.",
   "errors": {
+    "accountMismatch": "Izvorni račun transakcije ne odgovara računu posla. Potpis nije primijenjen.",
     "mismatchedHash": "Potpisani XDR ne pripada ovoj transakciji.",
     "signersUnavailable": "Popis signers računa trenutno nije dostupan u Horizonu. Potpis nije primijenjen. Molimo pokušajte ponovno za nekoliko sekundi.",
     "timeboundTooLong": "Vremenski prozor je predug. Molimo smanjite postavku multisig timeouta na najviše {{maxDays}} dana."
@@ -180,7 +181,23 @@
       "copy.success": "XDR kopiran u međuspremnik.",
       "copy.error": "XDR nije mogao biti kopiran u međuspremnik."
     },
+    "sourceUnknown": "nije čitljivo",
+    "sourceMuxed": "M-adresa",
+    "integrity": {
+      "title": "Ova transakcija ne odgovara poslu. Potpisivanje i uvoz XDR-a su blokirani.",
+      "accountMismatch": "Izvorni račun transakcije razlikuje se od računa posla. Potpis bi vrijedio za izvorni račun transakcije, ali signers posla pripadaju drugom računu.",
+      "jobAccount": "Račun prema poslu",
+      "txSource": "Izvor prema transakciji",
+      "hashMismatch": "Transakcija ne odgovara spremljenom hashu.",
+      "jobHash": "Hash prema poslu",
+      "txHash": "Hash transakcije",
+      "networkUnknown": "Mreža ovog posla nije poznata: {{network}}",
+      "missingJobData": "Ovom poslu nedostaje hash ili račun.",
+      "undecodable": "Transakciju nije moguće dekodirati, pa se ono što bi se potpisalo ne može ni prikazati ni provjeriti.",
+      "revokeHint": "Povlačenje je i dalje moguće. Vrijedi za izvorni račun transakcije i zahtijeva njegove signers."
+    },
     "signedXdr": {
+      "blockedIntegrityHint": "Uvoz je blokiran jer transakcija nije prošla gornju provjeru.",
       "title": "Uvoz potpisanog XDR-a",
       "hint": "Umetnite XDR potpisan od strane drugog Signer ovdje kako biste spojili potpise s ovim Multisig zadatkom.",
       "label": "Potpisani XDR",
@@ -244,6 +261,7 @@
       "confirmTitle": "Je li Job doista vratio?",
       "confirmText": "Račun {{account}} ({{network}}): Niz je postavljen na {{sequence}}. Nakon toga ovaj se posao više ne može predati. Ova se radnja ne može poništiti.",
       "sideEffect": "Napomena: Sve ostale transakcije i zadaci za ovaj račun koji su na čekanju i imaju isti ili niži sequence numbers također će biti poništeni.",
+      "differentAccount": "Račun prema poslu: {{jobAccount}}. Povlačenje vrijedi za {{account}}, troši sljedeći sequence tog računa i može poništiti stvarnu pripremljenu transakciju tog računa s tim sequence.",
       "thresholdInfo": "Zahtijeva potpise s težinom {{required}} (Low-Threshold).",
       "continue": "Nastavi s potpisivanjem",
       "alreadyDead": "Ovaj je posao već nevažeći; slijed računa je prešao dalje. Nije potrebno otkazivanje.",
@@ -256,7 +274,6 @@
       "sequenceInvalid": "Redoslijed poslova ili računa je nečitljiv; opoziv nije moguć.",
       "networkUnknown": "Mreža povezana s ovim zadatkom je nepoznata; opoziv je onemogućen iz sigurnosnih razloga.",
       "hashMismatch": "Transakcija posla ne odgovara pohranjenom hash-u. Povlačenje je onemogućeno iz sigurnosnih razloga.",
-      "accountMismatch": "Izvorni račun za transakciju razlikuje se od računa posla. Povlačenje je onemogućeno iz sigurnosnih razloga.",
       "networkMismatch": "Horizon poslužitelj nije dio mreže ovog posla. Ništa nije potpisano niti poslano.",
       "noThresholds": "Thresholds računa nije moguće pročitati; opoziv nije moguć.",
       "missingJobData": "Ovaj zadatak nedostaje hash ili račun. Oduzimanje je onemogućeno iz sigurnosnih razloga."

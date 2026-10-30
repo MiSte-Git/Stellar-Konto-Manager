@@ -3,7 +3,7 @@ import { horizonUrlFor, passphraseFor } from '../config/networks.js';
 import { useTranslation } from 'react-i18next';
 import { getPendingMultisigJob, mergeSignedXdr, getMultisigJobChallenge, signMultisigJobChallenge, getMultisigJobAccessToken } from '../utils/multisigApi.js';
 import MultisigJobStatusBadge from '../components/MultisigJobStatusBadge.jsx';
-import { Keypair, TransactionBuilder } from '@stellar/stellar-sdk';
+import { Keypair } from '@stellar/stellar-sdk';
 import { getSessionSecret } from '../utils/sessionSecrets.js';
 import { takeMultisigJobToken } from '../components/multisig/multisigNavigation.js';
 import { describeOperations, findOperationWarnings, formatAsset } from '../utils/multisig/describeOperations.js';
@@ -16,12 +16,30 @@ import { submitTransactionSafely, AmbiguousSubmitResultError } from '../utils/st
 import { getRequiredThreshold } from '../utils/getRequiredThreshold.js';
 import { formatErrorForUi } from '../utils/formatErrorForUi.js';
 import { accountSequenceOf, assertHorizonNetwork, buildJobRevocationTx, checkRevocationSequence, collectEffectiveSigners, getJobSequenceInfo, parseJobNetwork } from '../utils/multisig/jobRevocation.js';
+import { decodeJobTransaction, verifyJobTransaction } from '../utils/multisig/verifyJobTransaction.js';
 import { txHashHex } from '../utils/stellar/txHash.js';
 import { evaluateLiquidityOperation, exactDepositPrices, hasLiquidityPoolOps, resolveLiquidityPoolInfo } from '../utils/multisig/liquidityPoolInfo.js';
 import { jobSubmitResultCodes, liquidityErrorKeyFromResultCodes } from '../utils/stellar/liquidityErrors.js';
 import { formatPoolAmount, formatPrice } from '../components/liquidity/formatPoolAmount.js';
 
 const FAILED_PREFIX = 'submitTransaction.failed:';
+
+// Sperren den Widerruf. account_mismatch fehlt bewusst: Der Widerruf wirkt immer auf die Quelle
+// laut XDR, also auf das Konto, gegen das die Transaktion wirklich laeuft.
+const REVOKE_BLOCKING_ISSUES = {
+  undecodable: 'multisig:detail.revoke.noTxData',
+  network_unknown: 'multisig:detail.revoke.networkUnknown',
+  missing_job_data: 'multisig:detail.revoke.missingJobData',
+  hash_mismatch: 'multisig:detail.revoke.hashMismatch',
+};
+
+const INTEGRITY_ISSUE_TEXTS = {
+  undecodable: 'multisig:detail.integrity.undecodable',
+  network_unknown: 'multisig:detail.integrity.networkUnknown',
+  missing_job_data: 'multisig:detail.integrity.missingJobData',
+  hash_mismatch: 'multisig:detail.integrity.hashMismatch',
+  account_mismatch: 'multisig:detail.integrity.accountMismatch',
+};
 
 // Grund aus submittedResult.error: PHP liefert einen String, Node die Horizon-Antwort.
 function submitReasonText(submittedResult) {
@@ -142,17 +160,10 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
   // network. Decoding failures (malformed/missing XDR) degrade to an empty
   // operations list and an unbounded validity display rather than breaking
   // the page.
-  const decodedTx = useMemo(() => {
-    if (!job) return null;
-    try {
-      const netPass = passphraseFor(job.network);
-      return TransactionBuilder.fromXDR(job.txXdrCurrent || job.txXdrOriginal || job.txXdr || '', netPass);
-    } catch {
-      return null;
-    }
-  }, [job]);
+  const decodedTx = useMemo(() => (job ? decodeJobTransaction(job) : null), [job]);
 
-  const txSourceAccountId = useMemo(() => getJobSequenceInfo(decodedTx)?.sourceAccountId || '', [decodedTx]);
+  const jobCheck = useMemo(() => verifyJobTransaction(job, decodedTx), [job, decodedTx]);
+  const txSourceAccountId = jobCheck.sourceAccountId;
   const decodedOps = useMemo(() => (decodedTx ? (decodedTx.innerTransaction || decodedTx).operations : []), [decodedTx]);
   const hasPoolOps = useMemo(() => hasLiquidityPoolOps(decodedOps), [decodedOps]);
   // Pool-Assets und aktueller Pool-Stand fuer LP-Operationen (nur Anzeige):
@@ -175,7 +186,13 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
     setUnknownOpsConfirmed(false);
     setForeignSourcesConfirmed(false);
   }, [decodedTx]);
-  const signingBlocked = (operationWarnings.unknownTypes.length > 0 && !unknownOpsConfirmed)
+  // Passt die Transaktion nicht zum Job, gibt es bewusst keine Bestaetigung: Das ist kein
+  // abwaegbares Risiko, sondern die Aussage des Servers ist falsch.
+  const integrityBlocked = !!job && !isFinalState && !jobCheck.ok;
+  const revokeAccountMismatch = jobCheck.issues.find((i) => i.code === 'account_mismatch');
+  const visibleIssues = isFinalState ? jobCheck.issues.filter((i) => i.code !== 'undecodable') : jobCheck.issues;
+  const signingBlocked = integrityBlocked
+    || (operationWarnings.unknownTypes.length > 0 && !unknownOpsConfirmed)
     || (operationWarnings.foreignOpSources.length > 0 && !foreignSourcesConfirmed);
   // Importierte Signaturen zaehlen wie eigene: der Merge kann den Job einreichen.
   const importBlocked = signingBlocked && !isFinalState;
@@ -287,29 +304,14 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
   const startRevoke = useCallback(async () => {
     setRevokeError('');
     setError('');
-    const seqInfo = getJobSequenceInfo(decodedTx);
-    if (!seqInfo) {
-      setRevokeError(t('multisig:detail.revoke.noTxData'));
-      return;
-    }
     // Server-Daten nicht blind vertrauen: Netzwerk muss bekannt sein, das XDR muss zum
-    // gespeicherten Hash passen (der Hash haengt am Netzwerk) und zum Konto des Jobs.
-    if (!jobNetwork) {
-      setRevokeError(t('multisig:detail.revoke.networkUnknown'));
+    // gespeicherten Hash passen (der Hash haengt am Netzwerk).
+    const blocking = jobCheck.issues.find((i) => REVOKE_BLOCKING_ISSUES[i.code]);
+    if (blocking) {
+      setRevokeError(t(REVOKE_BLOCKING_ISSUES[blocking.code]));
       return;
     }
-    if (!job?.txHash || !job?.accountId) {
-      setRevokeError(t('multisig:detail.revoke.missingJobData'));
-      return;
-    }
-    if (txHashHex(decodedTx) !== String(job.txHash).toLowerCase()) {
-      setRevokeError(t('multisig:detail.revoke.hashMismatch'));
-      return;
-    }
-    if (job.accountId !== seqInfo.sourceAccountId) {
-      setRevokeError(t('multisig:detail.revoke.accountMismatch'));
-      return;
-    }
+    const seqInfo = getJobSequenceInfo(decodedTx);
     const networkPassphrase = passphraseFor(jobNetwork);
     const horizonUrl = horizonUrlFor(jobNetwork);
     try {
@@ -344,7 +346,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
     } finally {
       setRevoking(false);
     }
-  }, [decodedTx, describeRevokeError, job, jobNetwork, t]);
+  }, [decodedTx, describeRevokeError, job, jobCheck, jobNetwork, t]);
 
   // Schritt 2: mit den im SecretKeyModal gesammelten Signern signieren und senden.
   // Die Secrets bleiben im Speicher dieses Aufrufs, sie werden weder gespeichert noch
@@ -417,6 +419,8 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
         setError(t('multisig:detail.notASigner', 'Dieses Konto ist kein aktiver Signer dieses Auftrags.'));
       } else if (raw === 'mismatched_hash') {
         setError(t('multisig:errors.mismatchedHash'));
+      } else if (raw === 'account_mismatch') {
+        setError(t('multisig:errors.accountMismatch'));
       } else if (raw === 'signers_unavailable') {
         setError(t('multisig:errors.signersUnavailable'));
       } else {
@@ -435,8 +439,12 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
     }
     try {
       setLoading(true);
-      const netPass = passphraseFor(job.network);
-      const tx = TransactionBuilder.fromXDR(job.txXdrCurrent || job.txXdrOriginal || job.txXdr || '', netPass);
+      // Frisch dekodiert: tx.sign() veraendert das Objekt, decodedTx dient der Anzeige.
+      const tx = decodeJobTransaction(job);
+      if (!verifyJobTransaction(job, tx).ok) {
+        setError(t('multisig:detail.integrity.title'));
+        return;
+      }
       const kp = Keypair.fromSecret(secret);
       tx.sign(kp);
       const signerMeta = (job.signers || []).map((s) => ({
@@ -476,6 +484,8 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
         setError(t('multisig:detail.notASigner', 'Dieses Konto ist kein aktiver Signer dieses Auftrags.'));
       } else if (String(e?.message || '') === 'signers_unavailable') {
         setError(t('multisig:errors.signersUnavailable'));
+      } else if (String(e?.message || '') === 'account_mismatch') {
+        setError(t('multisig:errors.accountMismatch'));
       } else {
         setError(String(e?.message || 'multisig.jobs.merge_failed'));
       }
@@ -537,11 +547,43 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
 
       {job && (
         <div className="space-y-3">
+          {visibleIssues.length > 0 && (
+            <div role="alert" className="space-y-2 rounded-sm border border-red-400 bg-red-50 p-3 text-sm text-red-900 dark:border-red-700 dark:bg-red-900/30 dark:text-red-100" data-testid="job-integrity-block">
+              <p className="font-semibold">{t('multisig:detail.integrity.title')}</p>
+              {visibleIssues.map((issue) => (
+                <div key={issue.code} className="space-y-1 text-xs">
+                  <p>{t(INTEGRITY_ISSUE_TEXTS[issue.code], { network: issue.actual })}</p>
+                  {issue.code === 'account_mismatch' && (
+                    <dl className="font-mono break-all">
+                      <dt className="font-sans font-medium">{t('multisig:detail.integrity.jobAccount')}</dt>
+                      <dd>{issue.expected}</dd>
+                      <dt className="font-sans font-medium">{t('multisig:detail.integrity.txSource')}</dt>
+                      <dd>{issue.actual}</dd>
+                    </dl>
+                  )}
+                  {issue.code === 'hash_mismatch' && (
+                    <dl className="font-mono break-all">
+                      <dt className="font-sans font-medium">{t('multisig:detail.integrity.jobHash')}</dt>
+                      <dd>{issue.expected}</dd>
+                      <dt className="font-sans font-medium">{t('multisig:detail.integrity.txHash')}</dt>
+                      <dd>{issue.actual}</dd>
+                    </dl>
+                  )}
+                </div>
+              ))}
+              {!isFinalState && visibleIssues.every((i) => !REVOKE_BLOCKING_ISSUES[i.code]) && (
+                <p className="text-xs">{t('multisig:detail.integrity.revokeHint')}</p>
+              )}
+            </div>
+          )}
           <div className="border rounded-sm p-3 text-sm">
             <div className="font-mono break-all text-xs text-gray-600 dark:text-gray-300">ID: {job.id}</div>
             <div className="flex flex-wrap gap-3 mt-2">
               <span className="text-gray-700 dark:text-gray-200">{t('multisig:detail.network', 'Netzwerk')}: {job.network}</span>
-              <span className="text-gray-700 dark:text-gray-200">{t('publicKey:source', 'Quelle')}: <span className="font-mono break-all">{job.accountId}</span></span>
+              <span className="text-gray-700 dark:text-gray-200">{t('publicKey:source', 'Quelle')}: <span className="font-mono break-all" data-testid="job-source">{jobCheck.sourceAccountId || t('multisig:detail.sourceUnknown')}</span></span>
+              {jobCheck.muxedSource && (
+                <span className="text-gray-700 dark:text-gray-200">{t('multisig:detail.sourceMuxed')}: <span className="font-mono break-all" data-testid="job-source-muxed">{jobCheck.muxedSource}</span></span>
+              )}
               <span className="text-gray-700 dark:text-gray-200">{t('multisig:prepare.hashLabel')}: <span className="font-mono break-all">{job.txHash}</span></span>
               <span className="text-gray-700 dark:text-gray-200">{t('multisig:detail.statusLabel', 'Status')}: {job.status}</span>
               <span className="text-gray-700 dark:text-gray-200">{t('common:createdAt', 'Angelegt')}: {job.createdAt}</span>
@@ -617,7 +659,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
                   <ul className="list-disc pl-4 font-mono">
                     {operationWarnings.foreignOpSources.map((account) => <li key={account} className="break-all">{account}</li>)}
                   </ul>
-                  {!isFinalState && (
+                  {!isFinalState && !integrityBlocked && (
                     <label className="flex items-center gap-2">
                       <input type="checkbox" checked={foreignSourcesConfirmed} onChange={(e) => setForeignSourcesConfirmed(e.target.checked)} />
                       {t('multisig:detail.operations.confirmForeignSources', 'Ich habe die fremden Quellkonten geprüft und möchte trotzdem signieren.')}
@@ -628,7 +670,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
               {operationWarnings.unknownTypes.length > 0 && (
                 <div role="alert" className="mt-2 space-y-1 rounded-sm border border-red-300 bg-red-50 p-2 text-xs text-red-900 dark:border-red-700 dark:bg-red-900/30 dark:text-red-100">
                   <p className="font-medium">{t('multisig:detail.operations.warnUnknown', { types: operationWarnings.unknownTypes.join(', ') })}</p>
-                  {!isFinalState && (
+                  {!isFinalState && !integrityBlocked && (
                     <label className="flex items-center gap-2">
                       <input type="checkbox" checked={unknownOpsConfirmed} onChange={(e) => setUnknownOpsConfirmed(e.target.checked)} />
                       {t('multisig:detail.operations.confirmUnknown')}
@@ -741,6 +783,11 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
                       sequence: revokePrep.sequence,
                     })}
                   </p>
+                  {revokeAccountMismatch && (
+                    <p className="text-xs font-medium text-red-800 dark:text-red-200 break-all" data-testid="revoke-account-mismatch">
+                      {t('multisig:detail.revoke.differentAccount', { jobAccount: revokeAccountMismatch.expected, account: revokePrep.sourceAccountId })}
+                    </p>
+                  )}
                   <p className="text-xs font-medium text-red-800 dark:text-red-200">{t('multisig:detail.revoke.sideEffect')}</p>
                   <p className="text-xs text-gray-700 dark:text-gray-300">
                     {t('multisig:detail.revoke.thresholdInfo', { required: revokePrep.requiredThreshold })}
@@ -846,7 +893,9 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
             </button>
             {importBlocked && (
               <p className="text-xs text-red-800 dark:text-red-200" data-testid="job-import-blocked">
-                {t('multisig:detail.signedXdr.blockedHint', 'Zuerst die Warnungen bei den Transaktionsoperationen oben bestätigen.')}
+                {integrityBlocked
+                  ? t('multisig:detail.signedXdr.blockedIntegrityHint')
+                  : t('multisig:detail.signedXdr.blockedHint', 'Zuerst die Warnungen bei den Transaktionsoperationen oben bestätigen.')}
               </p>
             )}
           </div>

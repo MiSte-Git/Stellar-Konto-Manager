@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, waitFor, fireEvent, within } from '@testing-library/react';
 import { I18nextProvider } from 'react-i18next';
-import { Account, Asset, Keypair, LiquidityPoolAsset, LiquidityPoolFeeV18, Networks, Operation, TransactionBuilder } from '@stellar/stellar-sdk';
+import { Account, Asset, Keypair, LiquidityPoolAsset, LiquidityPoolFeeV18, MuxedAccount, Networks, Operation, TransactionBuilder } from '@stellar/stellar-sdk';
 import i18n from '../../i18n.js';
 import MultisigJobDetail from '../MultisigJobDetail.jsx';
 import { txHashHex } from '../../utils/stellar/txHash.js';
@@ -238,11 +238,10 @@ describe('Multisig-Job widerrufen (P2.3)', () => {
     expect(screen.queryByText(/Für diese Sitzung merken|Remember for this session/i)).not.toBeInTheDocument();
   });
 
-  it('sperrt den Widerruf bei unbekanntem Netzwerk, falschem Hash oder abweichendem Konto', async () => {
+  it('sperrt den Widerruf bei unbekanntem Netzwerk oder falschem Hash', async () => {
     for (const [overrides, text] of [
-      [{ network: 'futurenet' }, /Netzwerk dieses Jobs ist unbekannt/],
-      [{ txHash: 'deadbeef' }, /passt nicht zum gespeicherten Hash/],
-      [{ accountId: SIGNER_B.publicKey }, /weicht vom Konto des Jobs ab/],
+      [{ network: 'futurenet' }, /Netzwerk dieses Jobs ist unbekannt, ein Widerruf/],
+      [{ txHash: 'deadbeef' }, /Hash\. Ein Widerruf ist aus Sicherheitsgründen gesperrt/],
     ]) {
       hoisted.getJobMock.mockImplementation(async () => makeJob(overrides));
       const view = renderPage();
@@ -269,7 +268,7 @@ describe('Multisig-Job widerrufen (P2.3)', () => {
       hoisted.getJobMock.mockImplementation(async () => makeJob(overrides));
       const view = renderPage();
       fireEvent.click(await screen.findByRole('button', { name: 'Job widerrufen' }));
-      await screen.findByText(/fehlen Hash oder Konto/);
+      await screen.findByText(/fehlen Hash oder Konto\. Ein Widerruf/);
       view.unmount();
     }
     expect(hoisted.loadAccountMock).not.toHaveBeenCalled();
@@ -304,6 +303,142 @@ describe('Multisig-Job widerrufen (P2.3)', () => {
     expect(screen.getByText(`5,0 ${spamLabel}`)).toBeInTheDocument();
     expect(screen.getByText(SIGNER_A.publicKey)).toHaveClass('break-all');
     expect(screen.getByText(/Erlös an ein anderes Konto/)).toBeInTheDocument();
+  });
+});
+
+describe('Pruefung der Job-Transaktion (K1, M1)', () => {
+  const importBox = () => screen.getByPlaceholderText('Signiertes XDR');
+  const signButton = () => screen.getAllByRole('button', { name: 'Jetzt signieren' })[0];
+  const importButton = () => screen.getByRole('button', { name: 'Signiertes XDR mergen' });
+
+  async function expectLocked(block) {
+    fireEvent.change(importBox(), { target: { value: 'AAAA' } });
+    expect(signButton()).toBeDisabled();
+    expect(importButton()).toBeDisabled();
+    expect(screen.getByTestId('job-import-blocked')).toHaveTextContent('Prüfung oben nicht bestanden');
+    expect(screen.queryByRole('checkbox')).not.toBeInTheDocument();
+    expect(block).toHaveAttribute('role', 'alert');
+    fireEvent.click(signButton());
+    fireEvent.click(importButton());
+    await waitFor(() => expect(hoisted.sessionSecretMock).not.toHaveBeenCalledWith(expect.anything(), SIGNER_A.publicKey));
+    expect(hoisted.mergeMock).not.toHaveBeenCalled();
+  }
+
+  it('sperrt das Szenario K1: Job nennt Konto A, das XDR zahlt vom Konto des Opfers', async () => {
+    const attackerAccount = Keypair.random().publicKey();
+    const victimTx = new TransactionBuilder(new Account(SIGNER_A.publicKey, '100'), { fee: '1000', networkPassphrase: Networks.TESTNET })
+      .addOperation(Operation.payment({ destination: SIGNER_B.publicKey, asset: Asset.native(), amount: '9000' }))
+      .setTimeout(86400)
+      .build();
+    hoisted.getJobMock.mockImplementation(async () => makeJob({ accountId: attackerAccount, txXdr: victimTx.toXDR(), txHash: txHashHex(victimTx) }));
+    hoisted.sessionSecretMock.mockResolvedValue(SIGNER_A.secret);
+    renderPage();
+    const block = await screen.findByTestId('job-integrity-block');
+    expect(block).toHaveTextContent('Quellkonto der Transaktion weicht vom Konto des Jobs ab');
+    expect(block).toHaveTextContent(attackerAccount);
+    expect(block).toHaveTextContent(SIGNER_A.publicKey);
+    expect(screen.getByTestId('job-source')).toHaveTextContent(SIGNER_A.publicKey);
+    expect(screen.getByTestId('job-source')).not.toHaveTextContent(attackerAccount);
+    await expectLocked(block);
+  });
+
+  it('entfernt bei Abweichung auch die Bestaetigung fuer fremde Quellkonten', async () => {
+    const tx = new TransactionBuilder(new Account(SOURCE, '100'), { fee: '1000', networkPassphrase: Networks.TESTNET })
+      .addOperation(Operation.payment({ destination: SIGNER_B.publicKey, asset: Asset.native(), amount: '1', source: SIGNER_A.publicKey }))
+      .setTimeout(86400)
+      .build();
+    hoisted.getJobMock.mockImplementation(async () => makeJob({ accountId: SIGNER_B.publicKey, txXdr: tx.toXDR(), txHash: txHashHex(tx) }));
+    renderPage();
+    await screen.findByTestId('job-foreign-sources');
+    await expectLocked(screen.getByTestId('job-integrity-block'));
+  });
+
+  it('laesst den Widerruf fuer das echte Konto zu, auch wenn der Job ein anderes nennt', async () => {
+    const claimed = Keypair.random().publicKey();
+    hoisted.getJobMock.mockImplementation(async () => makeJob({ accountId: claimed }));
+    renderPage();
+    expect(await screen.findByTestId('job-integrity-block')).toHaveTextContent('Der Widerruf bleibt möglich');
+    fireEvent.click(await screen.findByRole('button', { name: 'Job widerrufen' }));
+    const confirm = await screen.findByRole('alertdialog');
+    expect(within(confirm).getAllByText(new RegExp(SOURCE))).toHaveLength(2);
+    const notice = within(confirm).getByTestId('revoke-account-mismatch');
+    expect(notice).toHaveTextContent(`Konto laut Job: ${claimed}`);
+    expect(notice).toHaveTextContent(`wirkt auf ${SOURCE}`);
+    expect(notice).toHaveTextContent('nächste Sequenz');
+    expect(hoisted.loadAccountMock).toHaveBeenCalledWith(SOURCE);
+  });
+
+  it('sperrt bei Hash-Abweichung und zeigt beide Hashes', async () => {
+    const realHash = txHashHex(jobTx('100'));
+    const claimedHash = 'a'.repeat(64);
+    hoisted.getJobMock.mockImplementation(async () => makeJob({ txHash: claimedHash }));
+    renderPage();
+    const block = await screen.findByTestId('job-integrity-block');
+    expect(block).toHaveTextContent(claimedHash);
+    expect(block).toHaveTextContent(realHash);
+    expect(block).not.toHaveTextContent('Der Widerruf bleibt möglich');
+    await expectLocked(block);
+  });
+
+  it('sperrt bei unbekanntem Netz und macht daraus nie still Mainnet', async () => {
+    hoisted.getJobMock.mockImplementation(async () => makeJob({ network: 'futurenet' }));
+    renderPage();
+    const block = await screen.findByTestId('job-integrity-block');
+    expect(block).toHaveTextContent('Das Netzwerk dieses Jobs ist unbekannt: futurenet');
+    expect(block).not.toHaveTextContent('Hash laut Job');
+    await expectLocked(block);
+  });
+
+  it('sperrt Signieren und Import bei nicht dekodierbarem XDR (M1)', async () => {
+    hoisted.getJobMock.mockImplementation(async () => makeJob({ txXdr: 'kein-xdr' }));
+    renderPage();
+    const block = await screen.findByTestId('job-integrity-block');
+    expect(block).toHaveTextContent('konnte nicht dekodiert werden');
+    expect(screen.getByTestId('job-source')).toHaveTextContent('nicht lesbar');
+    await expectLocked(block);
+  });
+
+  it('zeigt bei Endzustaenden keinen Dekodier-Hinweis mehr', async () => {
+    hoisted.getJobMock.mockImplementation(async () => makeJob({ txXdr: 'kein-xdr', status: 'submitted_success' }));
+    renderPage();
+    await screen.findByText(/submitted_success/);
+    expect(screen.queryByTestId('job-integrity-block')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('job-import-blocked')).not.toBeInTheDocument();
+  });
+
+  it('zeigt bei M-Adresse als Quelle Basiskonto und M-Adresse, Signieren bleibt moeglich', async () => {
+    const muxed = new MuxedAccount(new Account(SOURCE, '100'), '7');
+    const tx = new TransactionBuilder(muxed, { fee: '1000', networkPassphrase: Networks.TESTNET })
+      .addOperation(Operation.payment({ destination: SIGNER_B.publicKey, asset: Asset.native(), amount: '1' }))
+      .setTimeout(86400)
+      .build();
+    hoisted.getJobMock.mockImplementation(async () => makeJob({ txXdr: tx.toXDR(), txHash: txHashHex(tx) }));
+    renderPage();
+    expect(await screen.findByTestId('job-source')).toHaveTextContent(SOURCE);
+    expect(screen.getByTestId('job-source-muxed')).toHaveTextContent(muxed.accountId());
+    expect(screen.queryByTestId('job-integrity-block')).not.toBeInTheDocument();
+    expect(signButton()).not.toBeDisabled();
+  });
+
+  it('Normalfall: keine rote Box, Signieren laeuft mit dem Token bis zum Merge', async () => {
+    hoisted.sessionSecretMock.mockResolvedValue(SIGNER_A.secret);
+    renderPage();
+    expect(await screen.findByTestId('job-source')).toHaveTextContent(SOURCE);
+    expect(screen.queryByTestId('job-integrity-block')).not.toBeInTheDocument();
+    fireEvent.click(signButton());
+    await waitFor(() => expect(hoisted.mergeMock).toHaveBeenCalledTimes(1));
+    const call = hoisted.mergeMock.mock.calls[0][0];
+    expect(call.accessToken).toBe('tok');
+    expect(TransactionBuilder.fromXDR(call.signedXdr, Networks.TESTNET).signatures).toHaveLength(1);
+  });
+
+  it('uebersetzt die Backend-Ablehnung account_mismatch', async () => {
+    hoisted.sessionSecretMock.mockResolvedValue(SIGNER_A.secret);
+    hoisted.mergeMock.mockRejectedValue(Object.assign(new Error('account_mismatch'), { status: 400 }));
+    renderPage();
+    await screen.findByTestId('job-source');
+    fireEvent.click(signButton());
+    await screen.findByText(/Die Signatur wurde nicht übernommen/);
   });
 });
 

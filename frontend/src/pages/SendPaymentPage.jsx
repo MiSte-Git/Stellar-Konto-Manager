@@ -13,7 +13,7 @@ import { computeJobSigningState } from '../utils/multisig/jobSigningState.js';
 import { getSessionSecrets } from '../utils/sessionSecrets.js';
 import { isMultisigAccount } from '../utils/stellar/isMultisigAccount.js';
 import { apiUrl } from '../utils/apiBase.js';
-import { mergeSignedXdr } from '../utils/multisigApi.js';
+import { JOB_INTEGRITY_ERROR, signAndMergeResultJob } from '../utils/multisig/signResultJob.js';
 import { getRequiredThreshold } from '../utils/getRequiredThreshold.js';
 import { useSettings } from '../utils/useSettings';
 import { buildExplorerUrl } from '../utils/stellar/accountUtils.js';
@@ -1219,6 +1219,8 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
             requiredWeight: Number(job?.requiredWeight || 0) || null,
             collectedSigners: Array.isArray(job?.collectedSigners) ? job.collectedSigners : collectedForJob,
             accessToken: job?.accessToken || '',
+            // Lokal bekannte Werte, nicht aus der Backend-Antwort: Dagegen prueft "Jetzt signieren".
+            expectedJob: { network: getNetworkConfig(netLabel).backendId, accountId: publicKey, txHash: hashHex },
           });
           closeConfirmDialogs();
         } catch (err) {
@@ -2536,11 +2538,6 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
               // If we are signing an existing job from the result dialog, sign and merge, then exit.
               if (jobToSign?.jobId && jobToSign?.xdr) {
                 try {
-                  const netPass = passphraseFor(netLabel);
-                  const tx = TransactionBuilder.fromXDR(jobToSign.xdr, netPass);
-                  collected.forEach((s) => {
-                    try { tx.sign(s.keypair); } catch { /* noop */ }
-                  });
                   const clientCollected = collected.map((s) => {
                     const pk = s?.keypair?.publicKey?.() || '';
                     if (!pk) return null;
@@ -2552,9 +2549,9 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                     publicKey: s.public_key || s.publicKey || s.key || '',
                     weight: Number(s.weight || 0),
                   })).filter((s) => s.publicKey && s.weight > 0);
-                  const merged = await mergeSignedXdr({
-                    jobId: jobToSign.jobId,
-                    signedXdr: tx.toXDR(),
+                  const merged = await signAndMergeResultJob({
+                    jobToSign,
+                    keypairs: collected.map((s) => s.keypair),
                     clientCollected,
                     signers: signerMeta,
                   });
@@ -2571,12 +2568,15 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                     requiredWeight: Number(merged?.requiredWeight || jobToSign.requiredWeight || 0) || null,
                     collectedSigners: Array.isArray(merged?.collectedSigners) ? merged.collectedSigners : (jobToSign.collectedSigners || []),
                     accessToken: jobToSign.accessToken || '',
+                    expectedJob: jobToSign.expectedJob,
                   });
                   setSecretError('');
                   closeSecretModal();
                   setLastResultDialog(null);
                 } catch (mergeErr) {
-                  const detail = mergeErr?.message || 'multisig.jobs.merge_failed';
+                  let detail = mergeErr?.message || 'multisig.jobs.merge_failed';
+                  if (mergeErr?.code === JOB_INTEGRITY_ERROR) detail = t('multisig:detail.integrity.title');
+                  else if (detail === 'account_mismatch') detail = t('multisig:errors.accountMismatch');
                   showErrorMessage(detail);
                 } finally {
                   setIsProcessing(false);

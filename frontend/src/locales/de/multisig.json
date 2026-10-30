@@ -117,6 +117,7 @@
   },
   "jobCreated": "Multisig-Job erstellt (ID: {{id}}). Öffne „Multisig-Jobs“, um den Status zu sehen.",
   "errors": {
+    "accountMismatch": "Das Quellkonto der Transaktion stimmt nicht mit dem Konto des Jobs überein. Die Signatur wurde nicht übernommen.",
     "mismatchedHash": "Die signierte XDR gehört nicht zu dieser Transaktion.",
     "signersUnavailable": "Die Signer-Liste des Kontos ist bei Horizon gerade nicht abrufbar. Die Signatur wurde nicht übernommen. Bitte in ein paar Sekunden erneut versuchen.",
     "timeboundTooLong": "Das Zeitfenster ist zu lang. Bitte die Multisig-Timeout-Einstellung auf maximal {{maxDays}} Tage reduzieren."
@@ -186,6 +187,21 @@
       "copy.success": "XDR in die Zwischenablage kopiert.",
       "copy.error": "XDR konnte nicht in die Zwischenablage kopiert werden."
     },
+    "sourceUnknown": "nicht lesbar",
+    "sourceMuxed": "M-Adresse",
+    "integrity": {
+      "title": "Diese Transaktion passt nicht zum Job. Signieren und XDR-Import sind gesperrt.",
+      "accountMismatch": "Das Quellkonto der Transaktion weicht vom Konto des Jobs ab. Eine Signatur würde für das Quellkonto der Transaktion gelten, die Signer des Jobs gehören aber zum anderen Konto.",
+      "jobAccount": "Konto laut Job",
+      "txSource": "Quelle laut Transaktion",
+      "hashMismatch": "Die Transaktion passt nicht zum gespeicherten Hash.",
+      "jobHash": "Hash laut Job",
+      "txHash": "Hash der Transaktion",
+      "networkUnknown": "Das Netzwerk dieses Jobs ist unbekannt: {{network}}",
+      "missingJobData": "Dem Job fehlen Hash oder Konto.",
+      "undecodable": "Die Transaktion konnte nicht dekodiert werden. Was signiert würde, lässt sich deshalb weder anzeigen noch prüfen.",
+      "revokeHint": "Der Widerruf bleibt möglich. Er wirkt auf das Quellkonto der Transaktion und braucht dessen Signer."
+    },
     "signedXdr": {
       "title": "Signiertes XDR importieren",
       "hint": "Fügen Sie hier ein von einem anderen Signer signiertes XDR ein, um die Signaturen mit diesem Multisig-Job zu mergen.",
@@ -195,6 +211,7 @@
         "title": "Signaturen aktualisiert",
         "body": "Die Signaturen wurden erfolgreich mit diesem Multisig-Job gemergt. Aktueller Status: {{status}}."
       },
+      "blockedIntegrityHint": "Import gesperrt, weil die Transaktion die Prüfung oben nicht bestanden hat.",
       "blockedHint": "Zuerst die Warnungen bei den Transaktionsoperationen oben bestätigen."
     },
     "secretPrompt": {
@@ -332,6 +349,7 @@
       "confirmTitle": "Job wirklich widerrufen?",
       "confirmText": "Konto {{account}} ({{network}}): Die Sequenz wird auf {{sequence}} gesetzt. Danach kann dieser Job nicht mehr eingereicht werden. Das lässt sich nicht rückgängig machen.",
       "sideEffect": "Achtung: Alle anderen vorbereiteten Transaktionen und Jobs dieses Kontos mit gleicher oder niedrigerer Sequenz werden ebenfalls ungültig.",
+      "differentAccount": "Konto laut Job: {{jobAccount}}. Der Widerruf wirkt auf {{account}}, verbraucht die nächste Sequenz dieses Kontos und kann eine echte vorbereitete Transaktion dieses Kontos mit dieser Sequenz ungültig machen.",
       "thresholdInfo": "Benötigt Signaturen mit Gewicht {{required}} (Low-Threshold).",
       "continue": "Weiter zum Signieren",
       "alreadyDead": "Dieser Job ist bereits ungültig, die Sequenz des Kontos ist schon weiter. Ein Widerruf ist nicht nötig.",
@@ -344,7 +362,6 @@
       "sequenceInvalid": "Die Sequenz des Jobs oder des Kontos ist nicht lesbar, ein Widerruf ist nicht möglich.",
       "networkUnknown": "Das Netzwerk dieses Jobs ist unbekannt, ein Widerruf ist aus Sicherheitsgründen gesperrt.",
       "hashMismatch": "Die Transaktion des Jobs passt nicht zum gespeicherten Hash. Ein Widerruf ist aus Sicherheitsgründen gesperrt.",
-      "accountMismatch": "Das Quellkonto der Transaktion weicht vom Konto des Jobs ab. Ein Widerruf ist aus Sicherheitsgründen gesperrt.",
       "networkMismatch": "Der Horizon-Server gehört nicht zum Netzwerk dieses Jobs. Es wurde nichts signiert oder gesendet.",
       "noThresholds": "Die Thresholds des Kontos konnten nicht gelesen werden, ein Widerruf ist nicht möglich.",
       "ambiguous": "Das Ergebnis ist unklar (Netzwerkfehler). Bitte prüfe die Transaktion {{hash}} im Explorer, bevor du es erneut versuchst."

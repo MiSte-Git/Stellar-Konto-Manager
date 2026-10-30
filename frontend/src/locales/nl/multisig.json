@@ -111,6 +111,7 @@
   },
   "jobCreated": "Multisig-taak aangemaakt (ID: {{id}}). Open \"Multisig-bestellingen\" om de status te zien.",
   "errors": {
+    "accountMismatch": "De bronrekening van de transactie komt niet overeen met de rekening van de opdracht. De handtekening is niet toegepast.",
     "mismatchedHash": "De ondertekende XDR behoort niet tot deze transactie.",
     "signersUnavailable": "De lijst met signers van het account is momenteel niet beschikbaar in Horizon. De handtekening is niet toegepast. Probeer het over een paar seconden opnieuw.",
     "timeboundTooLong": "Het tijdsbestek is te lang. Verlaag de time-outinstelling voor multisig alstublieft tot maximaal {{maxDays}} dagen."
@@ -180,7 +181,23 @@
       "copy.success": "XDR naar het klembord gekopieerd.",
       "copy.error": "XDR kon niet naar het klembord worden gekopieerd."
     },
+    "sourceUnknown": "niet leesbaar",
+    "sourceMuxed": "M-adres",
+    "integrity": {
+      "title": "Deze transactie past niet bij de opdracht. Ondertekenen en XDR-import zijn geblokkeerd.",
+      "accountMismatch": "De bronrekening van de transactie verschilt van de rekening van de opdracht. Een handtekening zou gelden voor de bronrekening van de transactie, maar de signers van de opdracht horen bij de andere rekening.",
+      "jobAccount": "Rekening volgens de opdracht",
+      "txSource": "Bron volgens de transactie",
+      "hashMismatch": "De transactie past niet bij de opgeslagen hash.",
+      "jobHash": "Hash volgens de opdracht",
+      "txHash": "Hash van de transactie",
+      "networkUnknown": "Het netwerk van deze opdracht is onbekend: {{network}}",
+      "missingJobData": "Bij deze opdracht ontbreekt de hash of de rekening.",
+      "undecodable": "De transactie kon niet worden gedecodeerd, dus wat ondertekend zou worden, kan niet worden getoond of gecontroleerd.",
+      "revokeHint": "Intrekken blijft mogelijk. Het geldt voor de bronrekening van de transactie en vereist de signers daarvan."
+    },
     "signedXdr": {
+      "blockedIntegrityHint": "Import is geblokkeerd omdat de transactie de bovenstaande controle niet heeft doorstaan.",
       "title": "Geïmporteerde ondertekende XDR",
       "hint": "Voeg hier een XDR in die door een andere Signer is ondertekend om de handtekeningen samen te voegen met deze Multisig-taak.",
       "label": "Ondertekende XDR",
@@ -244,6 +261,7 @@
       "confirmTitle": "Heeft Job het echt teruggenomen?",
       "confirmText": "Account {{account}} ({{network}}): De volgorde is ingesteld op {{sequence}}. Daarna kan deze taak niet meer worden ingediend. Deze handeling kan niet ongedaan worden gemaakt.",
       "sideEffect": "Opmerking: Alle andere transacties en taken in de wachtrij voor deze rekening met een gelijke of lagere sequence numbers-waarde worden eveneens ongeldig verklaard.",
+      "differentAccount": "Rekening volgens de taak: {{jobAccount}}. De intrekking geldt voor {{account}}, verbruikt de volgende sequence van die rekening en kan een echte voorbereide transactie van die rekening met deze sequence ongeldig maken.",
       "thresholdInfo": "Vereist handtekeningen met een gewicht van {{required}} (Laag-Threshold).",
       "continue": "Ga verder naar het ondertekenen",
       "alreadyDead": "Deze opdracht is al ongeldig; de accountreeks is verder gegaan. Annulering is niet nodig.",
@@ -256,7 +274,6 @@
       "sequenceInvalid": "De opdracht- of rekeningreeks is onleesbaar; intrekking is niet mogelijk.",
       "networkUnknown": "Het netwerk dat aan deze taak is gekoppeld, is onbekend; intrekking is om veiligheidsredenen uitgeschakeld.",
       "hashMismatch": "De transactie komt niet overeen met de opgeslagen hash. Intrekking is om veiligheidsredenen uitgeschakeld.",
-      "accountMismatch": "De bronrekening voor de transactie verschilt van de rekening van de opdracht. Intrekking is om veiligheidsredenen uitgeschakeld.",
       "networkMismatch": "De Horizon-server maakt geen deel uit van het netwerk van deze taak. Er is niets ondertekend of verzonden.",
       "noThresholds": "De Thresholds van het account kon niet worden gelezen; intrekking is niet mogelijk.",
       "missingJobData": "Bij deze taak ontbreekt een hash of account. Intrekking is om veiligheidsredenen uitgeschakeld."

@@ -33,6 +33,7 @@ use Soneso\StellarSDK\StellarSDK;
 use Soneso\StellarSDK\AbstractTransaction;
 use Soneso\StellarSDK\Network;
 use Soneso\StellarSDK\Crypto\KeyPair;
+use Soneso\StellarSDK\Crypto\StrKey;
 use Soneso\StellarSDK\Xdr\XdrDecoratedSignature;
 use phpseclib3\Math\BigInteger;
 
@@ -98,6 +99,13 @@ function hasValidJobToken(array $job): bool {
     $provided = getRequestToken();
     if ($expected === '' || $provided === '') return false;
     return hash_equals($expected, $provided);
+}
+
+// K1: Signer und Gewichte eines Jobs kommen aus accountId, das Netz prueft die
+// Signaturen aber gegen die Quelle der Transaktion. Beide muessen uebereinstimmen.
+// Gleicher Wortlaut wie in server.js.
+function sendAccountMismatch(): void {
+    sendJson(['ok' => false, 'error' => 'account_mismatch', 'detail' => 'Transaction source does not match accountId.'], 400);
 }
 
 // Storage helpers
@@ -463,15 +471,16 @@ if ($method === 'POST' && $path === '/api/multisig/jobs') {
 
         $body = jsonBody();
         $net = normalizeNetwork($body['network'] ?? null);
-        $accountId = $body['accountId'] ?? '';
+        $accountId = is_string($body['accountId'] ?? null) ? trim($body['accountId']) : '';
         $txXdr = $body['txXdr'] ?? '';
         if (!$net) return sendJson(['ok' => false, 'error' => 'invalid_network'], 400);
-        if (!$accountId) return sendJson(['ok' => false, 'error' => 'invalid_account'], 400);
+        if (!StrKey::isValidAccountId($accountId)) return sendJson(['ok' => false, 'error' => 'invalid_account'], 400);
         if (!$txXdr) return sendJson(['ok' => false, 'error' => 'invalid_xdr'], 400);
 
         $parseErr = null;
         $tx = parseTx($txXdr, $net, $parseErr);
         if (!$tx) return sendJson(['ok' => false, 'error' => 'invalid_xdr', 'detail' => $parseErr], 400);
+        if (txSourceBaseAccount($tx) !== $accountId) return sendAccountMismatch();
 
         // G5 stage 2: reject a timebound longer than the app's own cap before
         // any Horizon work - clientside multisigTimeoutSeconds is clamped to
@@ -726,6 +735,9 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/merge-
         if (!$incoming) return sendJson(['ok' => false, 'error' => 'invalid_xdr', 'detail' => $parseErr], 400);
         $hash = txHash($incoming, $net);
         if ($hash !== ($job['txHash'] ?? '')) return sendJson(['ok' => false, 'error' => 'mismatched_hash'], 400);
+        // K1: Altjobs von vor dieser Pruefung bleiben gespeichert, nehmen aber keine
+        // Signatur mehr an. Damit gibt es fuer sie auch keine automatische Einreichung.
+        if (txSourceBaseAccount($incoming) !== ($job['accountId'] ?? '')) return sendAccountMismatch();
 
         $resultRow = null;
         $signersUnavailable = false;

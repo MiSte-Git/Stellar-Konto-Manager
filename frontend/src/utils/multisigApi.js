@@ -107,9 +107,14 @@ export async function mergeSignedXdr(payload) {
       }),
     });
     const data = await r.json().catch(() => ({}));
-    ensureOk(r);
+    if (!r.ok) {
+      const err = new Error(data?.error || 'multisig.jobs.merge_failed');
+      err.status = r.status;
+      throw err;
+    }
     return data;
   } catch (e) {
+    if (e?.status) throw e;
     const msg = e?.message || 'multisig.jobs.merge_failed';
     throw new Error(msg);
   }
