@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, waitFor, fireEvent, within } from '@testing-library/react';
+import { act, render, screen, waitFor, fireEvent, within } from '@testing-library/react';
 import { I18nextProvider } from 'react-i18next';
 import { Account, Asset, Keypair, LiquidityPoolAsset, LiquidityPoolFeeV18, MuxedAccount, Networks, Operation, TransactionBuilder } from '@stellar/stellar-sdk';
 import i18n from '../../i18n.js';
@@ -474,6 +474,7 @@ describe('Fremdes Quellkonto einer Operation', () => {
   const signButton = () => screen.getAllByRole('button', { name: 'Jetzt signieren' })[0];
   const FOREIGN = /fremden Quellkonten geprüft/;
   const UNKNOWN = /anderweitig geprüft/;
+  const REFRESH = 'Neu laden';
   const SIGNED_XDR = 'AAAA-signiert';
   const importInput = () => screen.getByPlaceholderText('Signiertes XDR');
   const importButton = () => screen.getByRole('button', { name: 'Signiertes XDR mergen' });
@@ -574,6 +575,82 @@ describe('Fremdes Quellkonto einer Operation', () => {
     const view = render(page('job-1'));
     fireEvent.click(await screen.findByRole('checkbox', { name: FOREIGN }));
     expect(signButton()).toBeEnabled();
+    view.rerender(page('job-2'));
+    await waitFor(() => expect(hoisted.getJobMock).toHaveBeenCalledWith('job-2', 'tok'));
+    await waitFor(() => expect(screen.getByRole('checkbox', { name: FOREIGN })).not.toBeChecked());
+    expect(signButton()).toBeDisabled();
+  });
+
+  it('verliert keine Bestaetigung, die im selben Commit wie der Job gesetzt wird', async () => {
+    let resolveJob;
+    hoisted.getJobMock.mockImplementation(() => new Promise((resolve) => { resolveJob = resolve; }));
+    // Die Probe committet zusammen mit dem Job. Ihr Layout-Effekt laeuft in diesem Commit, der
+    // Klick liegt also garantiert vor allen Passive-Effekten der Seite.
+    let commitWithJob;
+    function ClickDuringJobCommit() {
+      const [armed, setArmed] = React.useState(false);
+      commitWithJob = () => setArmed(true);
+      React.useLayoutEffect(() => {
+        if (armed) fireEvent.click(screen.getByRole('checkbox', { name: FOREIGN }));
+      }, [armed]);
+      return null;
+    }
+    render(
+      <I18nextProvider i18n={i18n}>
+        <MultisigJobDetail jobId="job-1" accessToken="tok" currentPublicKey={SIGNER_A.publicKey} onBack={() => {}} />
+        <ClickDuringJobCommit />
+      </I18nextProvider>
+    );
+    await waitFor(() => expect(resolveJob).toBeDefined());
+    // Innerhalb von act reiht React nur ein, beide Updates landen in einem Commit.
+    await act(async () => {
+      resolveJob(jobFor(paymentTx(SIGNER_A.publicKey)));
+      await new Promise((r) => setTimeout(r, 0));
+      commitWithJob();
+    });
+    expect(screen.getByRole('checkbox', { name: FOREIGN })).toBeChecked();
+    expect(signButton()).toBeEnabled();
+  });
+
+  it('setzt die Bestaetigung bei neuem XDR im selben Job zurueck', async () => {
+    const first = paymentTx(SIGNER_A.publicKey);
+    const second = new TransactionBuilder(new Account(SOURCE, '200'), { fee: '1000', networkPassphrase: Networks.TESTNET })
+      .addOperation(Operation.payment({ destination: SIGNER_B.publicKey, asset: Asset.native(), amount: '1', source: SIGNER_A.publicKey }))
+      .setTimeout(86400)
+      .build();
+    hoisted.getJobMock.mockImplementation(async () => jobFor(first));
+    renderPage();
+    fireEvent.click(await screen.findByRole('checkbox', { name: FOREIGN }));
+    expect(signButton()).toBeEnabled();
+
+    hoisted.getJobMock.mockImplementation(async () => jobFor(second));
+    fireEvent.click(screen.getByRole('button', { name: REFRESH }));
+    await waitFor(() => expect(screen.getByRole('checkbox', { name: FOREIGN })).not.toBeChecked());
+    expect(signButton()).toBeDisabled();
+  });
+
+  it('behaelt die Bestaetigung, wenn derselbe Job mit gleichem Hash neu geladen wird', async () => {
+    const tx = paymentTx(SIGNER_A.publicKey);
+    hoisted.getJobMock.mockImplementation(async () => jobFor(tx));
+    renderPage();
+    fireEvent.click(await screen.findByRole('checkbox', { name: FOREIGN }));
+    fireEvent.click(screen.getByRole('button', { name: REFRESH }));
+    await waitFor(() => expect(hoisted.getJobMock).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(screen.getByRole('button', { name: REFRESH })).toBeEnabled());
+    expect(screen.getByRole('checkbox', { name: FOREIGN })).toBeChecked();
+    expect(signButton()).toBeEnabled();
+  });
+
+  it('gilt fuer gleiches XDR in einem anderen Job nicht', async () => {
+    const tx = paymentTx(SIGNER_A.publicKey);
+    hoisted.getJobMock.mockImplementation(async () => jobFor(tx));
+    const page = (jobId) => (
+      <I18nextProvider i18n={i18n}>
+        <MultisigJobDetail jobId={jobId} accessToken="tok" currentPublicKey={SIGNER_A.publicKey} onBack={() => {}} />
+      </I18nextProvider>
+    );
+    const view = render(page('job-1'));
+    fireEvent.click(await screen.findByRole('checkbox', { name: FOREIGN }));
     view.rerender(page('job-2'));
     await waitFor(() => expect(hoisted.getJobMock).toHaveBeenCalledWith('job-2', 'tok'));
     await waitFor(() => expect(screen.getByRole('checkbox', { name: FOREIGN })).not.toBeChecked());

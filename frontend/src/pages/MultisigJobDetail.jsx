@@ -180,12 +180,21 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
   // Unbekannte Operationen und fremde Quellkonten: Signieren erst nach ausdruecklicher
   // Bestaetigung. Bewusst zwei getrennte Bestaetigungen: Sie gelten verschiedenen Risiken
   // (nicht lesbare Wirkung gegen Autorisierung fuer ein anderes Konto), keine deckt die andere ab.
-  const [unknownOpsConfirmed, setUnknownOpsConfirmed] = useState(false);
-  const [foreignSourcesConfirmed, setForeignSourcesConfirmed] = useState(false);
-  useEffect(() => {
-    setUnknownOpsConfirmed(false);
-    setForeignSourcesConfirmed(false);
-  }, [decodedTx]);
+  // Eine Bestaetigung gilt nur fuer den Job und den aus dem XDR berechneten Hash, fuer die sie
+  // gegeben wurde: Job-ID, weil zwei Jobs dasselbe XDR haben koennen. Signaturen aendern den Hash
+  // nicht, Neuladen und Merge lassen sie also stehen. Ohne Hash ist nichts bestaetigt.
+  const confirmationKey = useMemo(() => {
+    if (!decodedTx) return null;
+    try {
+      return `${jobId}:${txHashHex(decodedTx)}`;
+    } catch {
+      return null;
+    }
+  }, [decodedTx, jobId]);
+  const [confirmedFor, setConfirmedFor] = useState({});
+  const setConfirmed = (kind, checked) => setConfirmedFor((prev) => ({ ...prev, [kind]: checked ? confirmationKey : null }));
+  const unknownOpsConfirmed = !!confirmationKey && confirmedFor.unknownOps === confirmationKey;
+  const foreignSourcesConfirmed = !!confirmationKey && confirmedFor.foreignSources === confirmationKey;
   // Passt die Transaktion nicht zum Job, gibt es bewusst keine Bestaetigung: Das ist kein
   // abwaegbares Risiko, sondern die Aussage des Servers ist falsch.
   const integrityBlocked = !!job && !isFinalState && !jobCheck.ok;
@@ -661,7 +670,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
                   </ul>
                   {!isFinalState && !integrityBlocked && (
                     <label className="flex items-center gap-2">
-                      <input type="checkbox" checked={foreignSourcesConfirmed} onChange={(e) => setForeignSourcesConfirmed(e.target.checked)} />
+                      <input type="checkbox" checked={foreignSourcesConfirmed} onChange={(e) => setConfirmed('foreignSources', e.target.checked)} />
                       {t('multisig:detail.operations.confirmForeignSources', 'Ich habe die fremden Quellkonten geprüft und möchte trotzdem signieren.')}
                     </label>
                   )}
@@ -672,7 +681,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
                   <p className="font-medium">{t('multisig:detail.operations.warnUnknown', { types: operationWarnings.unknownTypes.join(', ') })}</p>
                   {!isFinalState && !integrityBlocked && (
                     <label className="flex items-center gap-2">
-                      <input type="checkbox" checked={unknownOpsConfirmed} onChange={(e) => setUnknownOpsConfirmed(e.target.checked)} />
+                      <input type="checkbox" checked={unknownOpsConfirmed} onChange={(e) => setConfirmed('unknownOps', e.target.checked)} />
                       {t('multisig:detail.operations.confirmUnknown')}
                     </label>
                   )}
