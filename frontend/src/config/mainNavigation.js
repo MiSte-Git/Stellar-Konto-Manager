@@ -15,6 +15,7 @@ export const MAIN_MENU_NAV = [
   // Gruppe 2
   { id: 'payments', labelKey: 'menu:tokenPurchases', group: 2 },
   { id: 'xlmByMemo', labelKey: 'menu:xlmByMemo', group: 2 },
+  { id: 'groupfund', labelKey: 'menu:groupfund', group: 2 },
   { id: 'tradingAssets', labelKey: 'menu:swap', group: 2, glossaryTerm: 'tokenTrading' },
 
   // Gruppe 3
@@ -94,6 +95,7 @@ export const SIDEBAR_SECTIONS = [
     items: [
       { id: 'payments', kind: 'main', labelKey: 'menu:tokenPurchases', icon: 'receipt' },
       { id: 'xlmByMemo', kind: 'main', labelKey: 'menu:xlmByMemo', icon: 'search' },
+      { id: 'groupfund', kind: 'main', labelKey: 'menu:groupfund', icon: 'users' },
     ],
   },
   {

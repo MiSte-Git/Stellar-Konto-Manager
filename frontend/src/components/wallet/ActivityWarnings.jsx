@@ -57,6 +57,11 @@ export function FakeNativeBadge() {
   );
 }
 
+/** Tag aus dem StellarExpert-Directory. Nur der Eintrag dort, keine Bewertung der Adresse. */
+export function DirectoryTagBadge({ tag }) {
+  return <span className={neutralCls} data-testid="directory-tag">{tag}</span>;
+}
+
 /**
  * Hinweisleiste unter/ueber einem Verlauf: Lookalike-Warnung und Kleinstzahlungen ein-/ausblenden.
  * @param {{ dustCount: number, hideDust: boolean, onToggleDust: () => void, hasLookalikes: boolean, className?: string }} props

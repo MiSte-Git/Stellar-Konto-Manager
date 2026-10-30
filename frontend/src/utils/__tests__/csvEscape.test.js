@@ -35,6 +35,15 @@ describe('csvEscape (F2 - CSV/spreadsheet formula injection guard)', () => {
     expect(csvEscape('@SUM(1,2)', ',')).toBe('"\'@SUM(1,2)"');
   });
 
+  it('neutralizes a leading tab and carriage return', () => {
+    expect(csvEscape('\t=1+1', ',')).toBe("'\t=1+1");
+    expect(csvEscape('\r=1+1', ',')).toBe('"\'\r=1+1"');
+  });
+
+  it('quotes cells containing a carriage return', () => {
+    expect(csvEscape('line1\rline2', ',')).toBe('"line1\rline2"');
+  });
+
   it('combines the leading-quote neutralization with delimiter quoting', () => {
     expect(csvEscape('=1,2', ',')).toBe('"\'=1,2"');
   });

@@ -1,0 +1,121 @@
+{
+  "page": {
+    "title": "Groupfund-Eingänge",
+    "intro": "Eingänge einer Runde über eine M-Adresse oder ein Memo, je Absender und Asset. Nur Anzeige und Export, SKM zahlt nichts aus.",
+    "network": "Netzwerk"
+  },
+  "identifier": {
+    "label": "Kennzeichen",
+    "muxed": "Muxed-ID",
+    "memo": "Memo",
+    "id": "Muxed-ID {{id}}",
+    "memoLabel": "Memo der Einzahlungen",
+    "noMuxed": "Für die Muxed-ID die M-Adresse als Konto laden."
+  },
+  "scan": {
+    "start": "Runde laden",
+    "refresh": "Neu laden",
+    "cancel": "Abbrechen",
+    "aborted": "Scan abgebrochen. Die Anzeige umfasst nur den bisher geladenen Bereich.",
+    "failed": "Horizon-Daten konnten nicht geladen werden: {{detail}}",
+    "scannedAt": "Stand: {{time}}"
+  },
+  "summary": {
+    "titleMuxed": "Eingänge über diese M-Adresse",
+    "titleMemo": "Eingänge mit diesem Memo",
+    "counts_one": "{{count}} Zahlung, {{senders}} Absender",
+    "counts_other": "{{count}} Zahlungen, {{senders}} Absender",
+    "empty": "In dieser Runde gibt es keine Eingänge mit diesem Kennzeichen.",
+    "noIdentifier": "Bitte ein Memo eingeben.",
+    "notBalance": "Das ist eine Summe aus der Historie, kein Guthaben.",
+    "pickRange": "Zeitraum wählen.",
+    "atLeast": "mindestens {{amount}}"
+  },
+  "balance": {
+    "label": "Saldo des G-Kontos",
+    "hint": "Die verfügbaren Mittel liegen auf dem G-Konto."
+  },
+  "rounds": {
+    "label": "Runde",
+    "current": "Aktuelle Runde, seit {{from}}",
+    "past": "{{from}} bis {{to}}",
+    "historyStart": "Beginn der Historie",
+    "range": "Eigener Zeitraum",
+    "from": "Von",
+    "to": "Bis (optional)",
+    "applyRange": "Zeitraum laden",
+    "loadMore": "Frühere Runde laden"
+  },
+  "corrections": {
+    "title": "Rundengrenzen korrigieren",
+    "buffer": "Puffer in XLM",
+    "bufferHint": "Ein Reset liegt vor, wenn eine Transaktion das G-Konto fast vollständig leert und der Saldo des G-Kontos danach höchstens Mindestreserve plus Puffer beträgt. Bei einer Leerung über mehrere Transaktionen zählt jede einzeln, die Grenze ist dann eventuell manuell zu setzen.",
+    "bufferInvalid": "Ungültiger Puffer. Es gilt der Standardwert.",
+    "boundaries": "Grenzen",
+    "noBoundaries": "Im geladenen Bereich gibt es keine Grenze.",
+    "discard": "Verwerfen",
+    "dismissed": "Verworfene Grenzen",
+    "restore": "Wiederherstellen",
+    "candidates": "Ausgehende Zahlungen",
+    "setBoundary": "Als Grenze setzen",
+    "manualCount_one": "{{count}} manuelle Grenze gespeichert.",
+    "manualCount_other": "{{count}} manuelle Grenzen gespeichert.",
+    "outflow": "Abfluss {{amount}}",
+    "balanceAfter": "Saldo des G-Kontos danach {{amount}}",
+    "source": {
+      "detected": "erkannt",
+      "manual": "manuell"
+    },
+    "unknown": "unbekannt",
+    "hasIncoming": "Diese Transaktion enthält Eingänge. Sie zählen zu keiner Runde."
+  },
+  "senders": {
+    "gross": "Brutto-Eingänge",
+    "refunds": "Rückzahlungen",
+    "net": "Netto",
+    "unmarkedOut": "Ausgänge ohne Kennzeichen",
+    "count": "Anzahl",
+    "first": "Erste Zahlung",
+    "last": "Letzte Zahlung",
+    "txHashes_one": "{{count}} Transaktion",
+    "txHashes_other": "{{count}} Transaktionen",
+    "unmarkedHint": "Ausgänge ohne Kennzeichen sind Zahlungen vom G-Konto an diesen Absender ohne Muxed-ID oder Memo. Sie werden nicht verrechnet und gehen nicht ins Netto ein.",
+    "exchangeHint": "Im StellarExpert-Directory ist diese Adresse mit dem Tag {{tag}} gelistet.",
+    "directoryName": "Name im Directory: {{name}}.",
+    "amountUnknown": "Enthält einen account_merge ohne bekannten Betrag. Brutto und Netto sind zu niedrig.",
+    "atLeast": "mindestens {{amount}}",
+    "netIncomplete": "{{amount}} (unvollständig)"
+  },
+  "directory": {
+    "check": "Börsen-Tags prüfen",
+    "busy": "Tags werden geprüft …",
+    "progress": "{{done}} von {{total}} Absendern geprüft",
+    "testnet": "Börsen-Tags gibt es nur im Public-Netz.",
+    "rateLimited": "Das Abfragelimit ist vermutlich erreicht, oder StellarExpert hat die Abfragen nicht beantwortet. Bitte später erneut prüfen.",
+    "unavailable": "Die Abfrage ist gerade nicht erreichbar. Bitte später erneut prüfen."
+  },
+  "notes": {
+    "unsureEffects": "Im geladenen Bereich gibt es Trades oder Liquidity-Pool-Vorgänge mit XLM. Sie ändern den Saldo des G-Kontos, fließen aber nicht in die Rekonstruktion ein. Prüfe die Rundengrenzen und korrigiere sie bei Bedarf manuell.",
+    "historyEnd": "Kein Reset gefunden. Die Runde reicht bis zum Beginn der verfügbaren Historie.",
+    "incomplete": "Diese Runde ist nicht vollständig geladen. Export ist erst danach möglich.",
+    "accountCreated": "In dieser Runde wurde das Konto erstellt. Das Startguthaben (create_account) zählt nicht als Eingang.",
+    "memoJoinMissing_one": "Für {{count}} Zahlung fehlt das Memo in der Horizon-Antwort. Sie wurde nicht zugeordnet.",
+    "memoJoinMissing_other": "Für {{count}} Zahlungen fehlt das Memo in der Horizon-Antwort. Sie wurden nicht zugeordnet.",
+    "roundGone": "Die gewählte Runde gibt es nicht mehr. Angezeigt wird die aktuelle Runde.",
+    "amountUnknown_one": "Für {{count}} account_merge fehlt der Betrag. Er ist in der Summe nicht enthalten.",
+    "amountUnknown_other": "Für {{count}} account_merge fehlt der Betrag. Sie sind in der Summe nicht enthalten."
+  },
+  "export": {
+    "csv": "CSV exportieren",
+    "json": "JSON exportieren",
+    "hint": "JSON ist das maßgebliche Format für die Weiterverarbeitung. In der CSV kann Excel lange Muxed-IDs kürzen."
+  },
+  "tile": {
+    "title": "Groupfund-Eingänge",
+    "open": "Ansehen",
+    "hint": "Eingänge dieser M-Adresse in der aktuellen Runde ansehen.",
+    "stand": "Aktuelle Runde, Stand {{time}}",
+    "incomplete": "Diese Runde enthält unvollständige Beträge.",
+    "details": "Details ansehen"
+  }
+}

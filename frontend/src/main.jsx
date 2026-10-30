@@ -106,11 +106,12 @@ import {
 } from './utils/uiHelpers.js';
 import XlmByMemoPanel from './components/XlmByMemoPanel';
 const XlmByMemoPage      = lazy(() => import('./pages/XlmByMemoPage'));
+const GroupfundPage      = lazy(() => import('./pages/GroupfundPage.jsx'));
 const InvestedTokensPage = lazy(() => import('./pages/InvestedTokensPage'));
 const SettingsPage       = lazy(() => import('./pages/SettingsPage.jsx'));
 const MultisigCreatePage = lazy(() => import('./pages/MultisigCreatePage.jsx'));
 // Menues, die ein existierendes (geladenes) Konto voraussetzen.
-const ACCOUNT_REQUIRED_MENUS = new Set(['listAll', 'compare', 'deleteAll', 'deleteByIssuer', 'xlmByMemo', 'payments', 'balance', 'sendPayment', 'muxed', 'multisigEdit']);
+const ACCOUNT_REQUIRED_MENUS = new Set(['listAll', 'compare', 'deleteAll', 'deleteByIssuer', 'xlmByMemo', 'groupfund', 'payments', 'balance', 'sendPayment', 'muxed', 'multisigEdit']);
 const MultisigEditPage   = lazy(() => import('./pages/MultisigEditPage.jsx'));
 const BalancePage        = lazy(() => import('./pages/BalancePage.jsx'));
 const WalletHome         = lazy(() => import('./pages/WalletHome.jsx'));
@@ -1167,6 +1168,14 @@ function Main() {
           initial={sendInit}
         />
       )}
+      {menuSelection === 'groupfund' && !accountGateActive && sourcePublicKey && (
+        <GroupfundPage
+          key={`${devTestnet ? 'TESTNET' : 'PUBLIC'}:${sourcePublicKey}`}
+          publicKey={sourcePublicKey}
+          muxedAddress={sourceMuxedAddress}
+          network={devTestnet ? 'TESTNET' : 'PUBLIC'}
+        />
+      )}
       {menuSelection === 'muxed' && !accountGateActive && (
         <MuxedAccountsPage publicKey={sourcePublicKey} onBack={() => setMenuSelection(null)} />
       )}
@@ -1199,7 +1208,7 @@ function Main() {
       )}
        
        {menuSelection &&
-       !['listAll','compare','deleteAll','deleteByIssuer','xlmByMemo','payments','tradingAssets','liquidityPools','settings','createAccount','multisigEdit','multisigJobs','balance','sendPayment','receive','feedback','muxed'].includes(menuSelection) && (
+       !['listAll','compare','deleteAll','deleteByIssuer','xlmByMemo','groupfund','payments','tradingAssets','liquidityPools','settings','createAccount','multisigEdit','multisigJobs','balance','sendPayment','receive','feedback','muxed'].includes(menuSelection) && (
          <div className="p-3 text-sm text-red-600">
            {t('menu:unknown', { value: String(menuSelection) }, 'Unbekannte Menüauswahl')}
          </div>

@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import NavIcon from '../components/layout/NavIcon.jsx';
 import RecentActivity from '../components/wallet/RecentActivity.jsx';
 import ClaimableBalancesPanel from '../components/wallet/ClaimableBalancesPanel.jsx';
+import GroupfundTile from '../components/groupfund/GroupfundTile.jsx';
 import { getHorizonServer } from '../utils/stellar/stellarUtils.js';
 import { computeWalletSummary, shortenAddress } from '../utils/stellar/walletSummary.js';
 import { looksLikeNativeCode } from '../utils/stellar/activity.js';
@@ -427,6 +428,10 @@ export default function WalletHome({ publicKey, muxedAddress, onAction, onOpenRo
           reloadToken={reloadToken}
           onClaimed={() => setReloadToken((v) => v + 1)}
         />
+      )}
+
+      {muxedAddress && (
+        <GroupfundTile publicKey={publicKey} muxedAddress={muxedAddress} network={network} locale={locale} onOpen={() => onAction?.('groupfund')} />
       )}
 
       {/* Letzte Aktivitaet */}
