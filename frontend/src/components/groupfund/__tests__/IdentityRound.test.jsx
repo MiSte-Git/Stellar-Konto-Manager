@@ -256,6 +256,26 @@ describe('Identitaetsmodus: Karte, Kopfbereich, gemeinsamer Scan', () => {
       await waitFor(() => expect(screen.getByTestId('identity-header-round')).toHaveTextContent('50,0 XLM +1 weitere'));
     });
 
+    it('Konto fehlt im Netz: nicht verfuegbar, kein Feed-Abruf, kein Fehlerstatus', async () => {
+      hoisted.loadAccount.mockRejectedValue(Object.assign(new Error('Not Found'), { response: { status: 404 } }));
+      render(wrap(header()));
+      await waitFor(() => expect(screen.getByTestId('identity-header-round')).toHaveTextContent('nicht verfügbar'));
+      expect(hoisted.paymentCalls).toBe(0);
+      expect(hoisted.effectCalls).toBe(0);
+      const entry = getScanEntry('PUBLIC', G);
+      expect(entry.status).toBe('idle');
+      expect(entry.error).toBe('');
+    });
+
+    it('Konto als fehlend bekannt: Es startet gar nichts, nach Aktivierung schon', async () => {
+      const view = render(wrap(header({ accountMissing: true })));
+      await flush();
+      expect(hoisted.loadAccount).not.toHaveBeenCalled();
+      expect(screen.getByTestId('identity-header-round')).toHaveTextContent('nicht verfügbar');
+      view.rerender(wrap(header({ accountMissing: false })));
+      await waitFor(() => expect(screen.getByTestId('identity-header-round')).toHaveTextContent('50,0 XLM'));
+    });
+
     it('bleibt bei einem Scan-Fehler bedienbar', async () => {
       hoisted.failFeeds = Object.assign(new Error('kaputt'), { response: { status: 400 } });
       render(wrap(header()));

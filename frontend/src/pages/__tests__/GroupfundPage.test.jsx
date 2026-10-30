@@ -222,9 +222,22 @@ describe('GroupfundPage', () => {
   });
 
   it('meldet Horizon-Fehler und bricht nicht zusammen', async () => {
-    hoisted.loadAccount.mockRejectedValue(Object.assign(new Error('Not Found'), { response: { status: 404 } }));
+    hoisted.loadAccount.mockRejectedValue(Object.assign(new Error('Bad Request'), { response: { status: 400 } }));
     renderPage();
-    expect(await screen.findByRole('alert')).toHaveTextContent('Horizon-Daten konnten nicht geladen werden: Not Found');
+    expect(await screen.findByRole('alert')).toHaveTextContent('Horizon-Daten konnten nicht geladen werden: Bad Request');
+  });
+
+  it.each([
+    ['PUBLIC', 'Mainnet'],
+    ['TESTNET', 'Testnet'],
+  ])('nennt ein im Netz %s fehlendes Konto neutral mit Netzname, ohne Fehlerbox und Aktivierungstext', async (network, label) => {
+    hoisted.loadAccount.mockRejectedValue(Object.assign(new Error('Not Found'), { response: { status: 404 } }));
+    renderPage({ network });
+    const note = await screen.findByTestId('groupfund-account-missing');
+    expect(note).toHaveTextContent(`Dieses Konto existiert im ${label} nicht. Prüfe, ob das richtige Netzwerk gewählt ist.`);
+    expect(screen.queryByRole('alert')).toBeNull();
+    expect(screen.getByTestId('groupfund-page')).not.toHaveTextContent('Einzahlung in XLM');
+    expect(screen.queryByTestId('groupfund-summary')).toBeNull();
   });
 
   it('zeigt Abfluss, Saldo danach und Quelle der Grenze', async () => {

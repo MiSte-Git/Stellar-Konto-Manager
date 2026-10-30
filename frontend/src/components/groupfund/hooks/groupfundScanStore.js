@@ -1,4 +1,5 @@
 import { advanceScan, createScanState, isFeedLimitReached, loadScanAccount } from '../../../utils/stellar/groupfundScan.js';
+import { isHorizonNotFound } from '../../liquidity/hooks/poolErrors.js';
 
 // Gemeinsamer Scan-Stand je Netz und G-Konto, nur im Speicher dieses Tabs. Der Scan haengt
 // nicht vom Kennzeichen ab: Alle M-Adressen eines Kontos teilen ihn, erst die Auswertung
@@ -18,6 +19,7 @@ export function getScanEntry(network, accountId) {
       rangeActive: false,
       status: SCAN_STATUS.IDLE,
       error: '',
+      accountMissing: false,
       controller: null,
       version: 0,
       listeners: new Set(),
@@ -72,7 +74,7 @@ async function runScan(entry, server, target, analyze) {
   // Status nur aus dem aktuellen, nicht abgebrochenen Lauf.
   const isCurrent = () => entry.controller === controller;
   const { scan } = entry;
-  setState(entry, { status: SCAN_STATUS.SCANNING, error: '' });
+  setState(entry, { status: SCAN_STATUS.SCANNING, error: '', accountMissing: false });
   try {
     if (!scan.account) {
       await loadScanAccount(scan, server, signal);
@@ -94,6 +96,9 @@ async function runScan(entry, server, target, analyze) {
   } catch (e) {
     if (!isCurrent()) return;
     if (e?.isAborted || signal.aborted) setState(entry, { status: SCAN_STATUS.ABORTED });
+    // Kein Fehler: Das Konto gibt es in diesem Netz nicht, also auch nichts zu scannen. Der
+    // Status bleibt idle, damit ein spaeter aktiviertes Konto neu geladen werden kann.
+    else if (!scan.account && isHorizonNotFound(e)) setState(entry, { status: SCAN_STATUS.IDLE, accountMissing: true });
     else setState(entry, { status: SCAN_STATUS.ERROR, error: String(e?.message || 'unknown') });
   }
 }

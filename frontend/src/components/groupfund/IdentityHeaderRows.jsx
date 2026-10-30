@@ -5,9 +5,9 @@ import useIdentityRound from './hooks/useIdentityRound.js';
 
 function RoundIncoming({ round, locale }) {
   const { t } = useTranslation(['groupfund']);
-  const { scanning, failed, native, others, isPartial, result } = round;
-  if (!result) {
-    return <span className={scanning ? 'animate-pulse' : ''}>{failed ? t('groupfund:header.unavailable') : t('groupfund:header.loading')}</span>;
+  const { scanning, unavailable, native, others, isPartial, result } = round;
+  if (!result || unavailable) {
+    return <span className={scanning ? 'animate-pulse' : ''}>{unavailable ? t('groupfund:header.unavailable') : t('groupfund:header.loading')}</span>;
   }
   const amount = formatAmountWithUnit(native?.gross ?? 0n, 'XLM', locale);
   const partial = isPartial(native) || others.some(isPartial);
@@ -23,9 +23,9 @@ function RoundIncoming({ round, locale }) {
  * Zeilen des Kopfbereichs im Identitaetsmodus. Das Guthaben steht beim Basis-G-Konto,
  * zur M-Adresse gehoeren nur die Eingaenge der aktuellen Runde.
  */
-export default function IdentityHeaderRows({ publicKey, muxedAddress, muxedId, network, balanceText }) {
+export default function IdentityHeaderRows({ publicKey, muxedAddress, muxedId, network, balanceText, accountMissing = false }) {
   const { t, i18n } = useTranslation(['common', 'groupfund']);
-  const round = useIdentityRound({ publicKey, muxedAddress, network });
+  const round = useIdentityRound({ publicKey, muxedAddress, network, accountMissing });
   return (
     <div className="mt-1 space-y-0.5" data-testid="identity-header">
       <div>

@@ -34,4 +34,19 @@ describe('AccountGate', () => {
     expect(screen.getByText(/Kein Konto geladen/)).toBeTruthy();
     expect(screen.queryByText(/nicht aktiviert/)).toBeNull();
   });
+
+  it('zeigt mit neutralem Text nur diesen, ohne Aktivierung', () => {
+    renderGate({ publicKey: ADDR, notFound: true, netName: 'Testnet', neutralNotFoundText: 'Dieses Konto existiert im Testnet nicht.' });
+    const box = screen.getByTestId('account-gate-neutral');
+    expect(box.textContent).toContain('Dieses Konto existiert im Testnet nicht.');
+    expect(box.textContent).toContain(ADDR);
+    expect(screen.queryByText(/nicht aktiviert/)).toBeNull();
+    expect(screen.queryByText(/Einzahlung in XLM/)).toBeNull();
+  });
+
+  it('bleibt ohne neutralen Text bei der Aktivierung', () => {
+    renderGate({ publicKey: ADDR, notFound: true, netName: 'Testnet' });
+    expect(screen.queryByTestId('account-gate-neutral')).toBeNull();
+    expect(screen.getByText(/nicht aktiviert/)).toBeTruthy();
+  });
 });

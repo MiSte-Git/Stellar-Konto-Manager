@@ -50,10 +50,11 @@ export default function useGroupfundScan({ accountId, network, bufferStroops, di
     if (analysis.boundaries.length < entry.wantedRounds) void start();
   }, [analysis, autoExtend, entry, start, status]);
 
-  const { scan, error } = entry;
+  const { scan, error, accountMissing } = entry;
   return {
     status,
     error,
+    accountMissing,
     analysis,
     payments: scan.payments,
     effects: scan.effects,

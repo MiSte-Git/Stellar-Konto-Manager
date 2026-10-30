@@ -128,5 +128,6 @@
     "baseTitle": "Guthaben Basiskonto",
     "baseShared": "gemeinsam für alle M-Adressen dieses Kontos",
     "baseTotal": "Gesamt"
-  }
+  },
+  "notFoundInNetwork": "Dieses Konto existiert im {{net}} nicht. Prüfe, ob das richtige Netzwerk gewählt ist."
 }

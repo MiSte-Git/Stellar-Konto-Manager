@@ -204,6 +204,27 @@ describe('useGroupfundScan', () => {
     expect(ids(result)).toHaveLength(3000);
   });
 
+  it('Konto existiert im Netz nicht: kein Scan, kein Fehlerstatus, spaeter wiederholbar', async () => {
+    hoisted.loadAccount.mockRejectedValueOnce(Object.assign(new Error('Not Found'), { response: { status: 404 } }));
+    const { result } = hook();
+    await act(async () => { await result.current.startIfIdle({ rounds: 1 }); });
+    expect(hoisted.calls).toHaveLength(0);
+    expect(result.current.status).toBe('idle');
+    expect(result.current.error).toBe('');
+    expect(result.current.accountMissing).toBe(true);
+    await act(async () => { await result.current.startIfIdle({ rounds: 1 }); });
+    expect(result.current.accountMissing).toBe(false);
+    expect(result.current.status).toBe('done');
+  });
+
+  it('andere Ladefehler bleiben Fehler', async () => {
+    hoisted.loadAccount.mockRejectedValueOnce(Object.assign(new Error('kaputt'), { response: { status: 400 } }));
+    const { result } = hook();
+    await act(async () => { await result.current.startIfIdle({ rounds: 1 }); });
+    expect(result.current.status).toBe('error');
+    expect(result.current.accountMissing).toBe(false);
+  });
+
   it('Neu laden behaelt die gewuenschte Rundenzahl', async () => {
     const reset = (ledger) => payment(ledger, { from: G, to: TARGET, amount: '90.0000000' });
     hoisted.paymentPages = [[reset(30), reset(20)]];

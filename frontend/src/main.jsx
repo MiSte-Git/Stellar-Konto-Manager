@@ -664,7 +664,14 @@ function Main() {
     return () => { cancelled = true; };
   }, [menuSelection, sourcePublicKey, devTestnet, trustlinesOwner, trustlines.length]);
 
+  // Entlaedt nur das Konto, das gewaehlte Netz bleibt: Wer danach eine andere Adresse
+  // eingibt, arbeitet im selben Netz weiter. Laufende Ladevorgaenge werden verworfen.
   const unloadActiveWallet = useCallback(() => {
+    walletOpRequestRef.current += 1;
+    setIsLoading(false);
+    setXlmBalanceLoading(false);
+    setNotFound(false);
+    setInfoMessage('');
     setSourcePublicKey('');
     setSourceMuxedAddress('');
     try { window.localStorage?.removeItem('SKM_LAST_ACCOUNT'); } catch { /* noop */ }
@@ -785,6 +792,8 @@ function Main() {
   else if (sourcePublicKey) headerBalanceText = xlmBalance != null ? `${xlmBalance}` : t('wallet:unfunded', 'Unfunded');
 
   const showAccountGate = accountGateActive && !(isLoading && !sourcePublicKey);
+  // Auf der Groupfund-Seite sagt der Hinweis alles: keine zweite und dritte Meldung dazu.
+  const notFoundOnlyInGate = showAccountGate && notFound && menuSelection === 'groupfund';
   const accountGateTitle = React.useMemo(() => {
     const nav = MAIN_MENU_NAV.find((item) => item.id === menuSelection);
     return nav ? t(nav.labelKey) : '';
@@ -881,7 +890,7 @@ function Main() {
               rightAdornment={walletHeaderInput ? (
                 <button
                   type="button"
-                  onClick={() => { setWalletHeaderInput(''); unloadActiveWallet(); setDevTestnet(false); if (typeof window !== 'undefined' && window.localStorage) { window.localStorage.setItem('SKM_NETWORK', 'PUBLIC'); window.localStorage.removeItem('SKM_HORIZON_URL'); window.dispatchEvent(new CustomEvent('stm-network-changed', { detail: 'PUBLIC' })); } }}
+                  onClick={() => { setWalletHeaderInput(''); unloadActiveWallet(); }}
                   title={t('common:clear')}
                   aria-label={t('common:clear')}
                   className="absolute right-1 top-1/2 -translate-y-1/2 w-7 h-7 md:w-6 md:h-6 rounded-full bg-gray-300 hover:bg-red-500 text-gray-600 hover:text-white text-sm flex items-center justify-center"
@@ -924,6 +933,7 @@ function Main() {
                       muxedId={sourceMuxedId}
                       network={devTestnet ? 'TESTNET' : 'PUBLIC'}
                       balanceText={headerBalanceText}
+                      accountMissing={notFound}
                     />
                   )}
                 </div>
@@ -968,7 +978,7 @@ function Main() {
             <p className="mb-1 pb-1 text-sm text-gray-700 dark:text-gray-200 font-mono break-all">
               {t('publicKey:source')}: {sourcePublicKey}
             </p>
-            {notFound && (
+            {notFound && !notFoundOnlyInGate && (
               <div className="text-center text-xs text-red-700 mb-3 inline-block border border-red-500 rounded-sm px-2 py-0.5">
                 {t('errors:accountNotFoundInNetwork', { net: devTestnet ? 'Testnet' : 'Mainnet' })}
               </div>
@@ -976,7 +986,7 @@ function Main() {
           </>
         )}
 
-        {error && <p className="text-red-500 mt-4">{errorDisplay}</p>}
+        {error && !notFoundOnlyInGate && <p className="text-red-500 mt-4">{errorDisplay}</p>}
       </div>
 
       {showAccountGate && (
@@ -985,6 +995,9 @@ function Main() {
           publicKey={sourcePublicKey}
           notFound={!!sourcePublicKey && notFound}
           netName={devTestnet ? 'Testnet' : 'Mainnet'}
+          neutralNotFoundText={menuSelection === 'groupfund'
+            ? t('groupfund:notFoundInNetwork', { net: devTestnet ? 'Testnet' : 'Mainnet' })
+            : ''}
         />
       )}
 

@@ -24,7 +24,7 @@ export function muxedIdOf(address) {
  * gemeinsamen Scan selbst, begrenzt und nur einmal je Sitzung. Fehler bleiben im
  * Status: Der G-Saldo der Ansichten haengt nicht davon ab.
  */
-export default function useIdentityRound({ publicKey, muxedAddress, network }) {
+export default function useIdentityRound({ publicKey, muxedAddress, network, accountMissing = false }) {
   const muxedId = muxedIdOf(muxedAddress);
   const [prefs] = useGroupfundPrefs(network, publicKey);
   const dismissed = useMemo(() => prefs.dismissed.map((b) => b.opId), [prefs.dismissed]);
@@ -34,8 +34,8 @@ export default function useIdentityRound({ publicKey, muxedAddress, network }) {
   const { analysis, payments, effects, pages, status, startIfIdle } = scan;
 
   useEffect(() => {
-    if (publicKey && muxedId) void startIfIdle(AUTOSCAN_TARGET);
-  }, [muxedId, publicKey, startIfIdle]);
+    if (publicKey && muxedId && !accountMissing) void startIfIdle(AUTOSCAN_TARGET);
+  }, [accountMissing, muxedId, publicKey, startIfIdle]);
 
   const round = analysis?.rounds[0] || null;
   // Vor der ersten Seite gibt es noch keine Aussage, auch nicht "mindestens 0".
@@ -52,6 +52,7 @@ export default function useIdentityRound({ publicKey, muxedAddress, network }) {
     status,
     scanning: status === SCAN_STATUS.SCANNING,
     failed: status === SCAN_STATUS.ERROR,
+    unavailable: status === SCAN_STATUS.ERROR || accountMissing || scan.accountMissing,
     limited: status === SCAN_STATUS.LIMITED,
     round,
     result,

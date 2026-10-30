@@ -184,6 +184,11 @@ export default function GroupfundPage({ publicKey, muxedAddress = '', network = 
         </div>
         {scanning && <ProgressBar progress={null} phase="scan" page={scan.pages} oldest={analysis?.coveredAt ? formatLocalDateTime(analysis.coveredAt) : ''} />}
         {status === 'aborted' && <div className={NOTE_WARN} role="status">{t('groupfund:scan.aborted')}</div>}
+        {scan.accountMissing && (
+          <div className={NOTE_NEUTRAL} role="status" data-testid="groupfund-account-missing">
+            {t('groupfund:notFoundInNetwork', { net: NETWORKS[network]?.label || network })}
+          </div>
+        )}
         {status === 'error' && <div className={NOTE_ERROR} role="alert">{t('groupfund:scan.failed', { detail: scan.error })}</div>}
       </section>
 
