@@ -1310,11 +1310,13 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     }
   }, [memoVal]);
 
-  // Any manual memo change (typing, clearing, picking a history suggestion, or an external
-  // prefill) takes the field out of federation-autofill control until a fresh lookup applies
+  // Any manual memo change (typing, clearing, picking a history suggestion, choosing a memo
+  // type, or an external prefill) takes the field out of federation-autofill control until a fresh lookup applies
   // a genuinely new value — see applyFederationMemo's safeToTouch check above.
   const markMemoManuallyEdited = useCallback(() => {
     autoFilledMemoRef.current = null;
+    // A sync effect still pending from an auto-fill must not run for this manual change.
+    pendingAutoFillMemoTypeRef.current = undefined;
     setFederationMemoApplied(false);
   }, []);
 
@@ -2098,7 +2100,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
             <div>
               <label className="block text-sm">{t('common:payment.send.memoType')}</label>
-              <select className="border rounded-sm w-full px-2 py-1 text-base md:text-sm" value={memoType} onChange={(e)=>{ clearSuccess(); setMemoType(e.target.value); }}>
+              <select className="border rounded-sm w-full px-2 py-1 text-base md:text-sm" value={memoType} onChange={(e)=>{ clearSuccess(); markMemoManuallyEdited(); setMemoType(e.target.value); }}>
                 <option value="none">{t('common:payment.send.memoTypes.none')}</option>
                 <option value="text">{t('common:payment.send.memoTypes.text')}</option>
                 <option value="id">{t('common:payment.send.memoTypes.id')}</option>

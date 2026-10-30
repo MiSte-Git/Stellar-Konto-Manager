@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, waitFor, fireEvent, within } from '@testing-library/react';
+import { act, render, screen, waitFor, fireEvent, within } from '@testing-library/react';
 import { I18nextProvider } from 'react-i18next';
 import { Account, Keypair, MuxedAccount } from '@stellar/stellar-sdk';
 import i18n from '../../i18n.js';
@@ -171,6 +171,96 @@ describe('federation memo autofill on recipient change (K1)', () => {
     await waitFor(() => expect(hoisted.resolveOrValidateAccountMock).toHaveBeenCalledWith(FED_NO_MEMO));
     expect(memoInput().value).toBe('my own note');
     expect(screen.queryByText(FEDERATION_HINT_TEXT)).not.toBeInTheDocument();
+  });
+
+  // Renders the page next to a probe that commits together with the autofill. The probe's layout
+  // effect runs inside that commit, so onCommit acts while the page's passive sync effect is
+  // guaranteed to be pending. Returns once everything has settled.
+  async function runDuringAutofillCommit(onCommit) {
+    let resolveLookup;
+    hoisted.resolveOrValidateAccountMock.mockImplementation((input) => {
+      if (input === FED_WITH_MEMO) {
+        return new Promise((resolve) => { resolveLookup = resolve; });
+      }
+      return Promise.resolve({ accountId: input, muxedAddress: null, address: input });
+    });
+
+    let commitWithAutofill;
+    function AutofillCommitProbe() {
+      const [armed, setArmed] = React.useState(false);
+      commitWithAutofill = () => setArmed(true);
+      React.useLayoutEffect(() => {
+        if (armed) onCommit();
+      }, [armed]);
+      return null;
+    }
+
+    render(
+      <I18nextProvider i18n={i18n}>
+        <SendPaymentPage publicKey={SENDER.publicKey} />
+        <AutofillCommitProbe />
+      </I18nextProvider>
+    );
+    fireEvent.change(destInput(), { target: { value: FED_WITH_MEMO } });
+    await waitFor(() => expect(resolveLookup).toBeDefined());
+
+    // Inside act React only queues its work, so both updates end up in one commit.
+    await act(async () => {
+      resolveLookup({ accountId: DEST_PK, muxedAddress: null, address: FED_WITH_MEMO, memo: '999', memoType: 'id' });
+      await new Promise((r) => setTimeout(r, 0));
+      commitWithAutofill();
+    });
+  }
+
+  it('keeps a manual memo typed after the autofill committed but before its sync effect ran', async () => {
+    let memoWhenTyped = null;
+    await runDuringAutofillCommit(() => {
+      memoWhenTyped = memoInput().value;
+      fireEvent.change(memoInput(), { target: { value: 'typed-before-sync' } });
+    });
+
+    expect(memoWhenTyped).toBe('999');
+    expect(memoInput().value).toBe('typed-before-sync');
+    expect(memoTypeSelect().value).toBe('text');
+    expect(screen.queryByText(FEDERATION_HINT_TEXT)).not.toBeInTheDocument();
+  });
+
+  it('keeps a manual memo type picked after the autofill committed but before its sync effect ran', async () => {
+    let memoWhenPicked = null;
+    await runDuringAutofillCommit(() => {
+      memoWhenPicked = memoInput().value;
+      fireEvent.change(memoTypeSelect(), { target: { value: 'hash' } });
+    });
+
+    expect(memoWhenPicked).toBe('999');
+    expect(memoTypeSelect().value).toBe('hash');
+    expect(memoInput().value).toBe('999');
+    expect(screen.queryByText(FEDERATION_HINT_TEXT)).not.toBeInTheDocument();
+  });
+
+  it('leaves a manually picked memo type and the memo alone on a later lookup', async () => {
+    const FED_OTHER_MEMO = 'other*example.com';
+    hoisted.resolveOrValidateAccountMock.mockImplementation(async (input) => {
+      if (input === FED_WITH_MEMO) return { accountId: DEST_PK, muxedAddress: null, address: input, memo: '999', memoType: 'id' };
+      if (input === FED_OTHER_MEMO) return { accountId: DEST_PK, muxedAddress: null, address: input, memo: '777', memoType: 'id' };
+      return { accountId: DEST_PK, muxedAddress: null, address: input };
+    });
+    renderPage();
+    fireEvent.change(destInput(), { target: { value: FED_WITH_MEMO } });
+    expect(await screen.findByText(FEDERATION_HINT_TEXT)).toBeInTheDocument();
+    expect(memoTypeSelect().value).toBe('id');
+
+    fireEvent.change(memoTypeSelect(), { target: { value: 'text' } });
+    expect(screen.queryByText(FEDERATION_HINT_TEXT)).not.toBeInTheDocument();
+
+    for (const dest of [FED_OTHER_MEMO, FED_NO_MEMO]) {
+      fireEvent.change(destInput(), { target: { value: dest } });
+      await waitFor(() => expect(hoisted.resolveOrValidateAccountMock).toHaveBeenCalledWith(dest));
+      await act(async () => { await new Promise((r) => setTimeout(r, 0)); });
+      expect(memoTypeSelect().value).toBe('text');
+      expect(memoInput().value).toBe('999');
+      expect(screen.queryByText(FEDERATION_HINT_TEXT)).not.toBeInTheDocument();
+    }
   });
 });
 
