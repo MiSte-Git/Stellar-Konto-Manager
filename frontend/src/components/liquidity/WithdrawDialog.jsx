@@ -193,7 +193,7 @@ export default function WithdrawDialog({ poolId, publicKey, network, onClose, on
   let body;
   if (data.loading && !pool) body = <p className="text-xs">{t('liquidity:dialog.loading')}</p>;
   else if (data.error && !pool) body = <div className={NOTE_ERROR}>{data.error}</div>;
-  else if (action.result) body = <ResultNote result={action.result} onClose={onClose} />;
+  else if (action.result) body = <ResultNote result={action.result} network={network} onClose={onClose} />;
   else if (shareBalance === 0n) body = <div className={NOTE_NEUTRAL}>{t('liquidity:withdraw.noShares')}</div>;
   else {
     body = (

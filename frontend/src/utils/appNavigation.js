@@ -27,6 +27,7 @@ export const ACCOUNT_CHANGED_EVENT = 'stm:activeAccountChanged';
 
 let mainMounted = false;
 let pendingMainView = null;
+let pendingTrustlineAsset = null;
 let activeMainView = null;
 let activeAccount = '';
 
@@ -42,6 +43,13 @@ export function isMainMounted() {
 export function consumePendingMainView() {
   const next = pendingMainView;
   pendingMainView = null;
+  return next;
+}
+
+/** Liefert das vorgemerkte Asset fuer "Trustline hinzufuegen" genau einmal. */
+export function consumePendingTrustlineAsset() {
+  const next = pendingTrustlineAsset;
+  pendingTrustlineAsset = null;
   return next;
 }
 
@@ -111,6 +119,15 @@ export function openMainView(id) {
   try {
     window.dispatchEvent(new CustomEvent('stm:openMenu', { detail: id }));
   } catch { /* noop */ }
+}
+
+/**
+ * Oeffnet die Trustline-Seite mit dem Dialog "Trustline hinzufuegen" und
+ * vorausgefuelltem Asset. Signiert wird dort, auf dem Weg der Trustline-Seite.
+ */
+export function openAddTrustline({ code, issuer }) {
+  pendingTrustlineAsset = { code, issuer };
+  openMainView('listAll');
 }
 
 /** Ermittelt den Sidebar-Eintrag einer eigenen Route (oder null). */

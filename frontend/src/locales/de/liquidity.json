@@ -13,7 +13,7 @@
   "positions": {
     "title": "Meine Positionen",
     "loading": "Positionen werden geladen …",
-    "empty": "Dieses Konto hat keine Pool-Share-Trustline.",
+    "empty": "Keine Positionen. Über Pool finden kannst du in einen Pool einzahlen.",
     "loadFailed": "Positionen konnten nicht geladen werden (Netzwerk- oder Horizon-Fehler).",
     "retry": "Erneut laden",
     "pair": "Pool",
@@ -170,6 +170,7 @@
     "insufficientXlmReserve": "Das XLM-Guthaben reicht nicht für die zusätzliche Mindestreserve und die Fee.",
     "insufficientXlmFee": "Das XLM-Guthaben reicht nicht für die Fee.",
     "missingTrustNoBalance": "Für {{asset}} besteht keine Trustline, das Konto hält dieses Asset also nicht.",
+    "addTrustline": "Trustline für {{asset}} hinzufügen",
     "authRequiredMissingTrust": "Der Issuer von {{asset}} verlangt eine Autorisierung (auth_required). Eine neue Trustline ist erst nach Freigabe durch den Issuer nutzbar; Einzahlen ist daher nicht in einem Schritt möglich.",
     "notAuthorized": "Die Trustline für {{asset}} ist vom Issuer nicht autorisiert.",
     "clawbackEnabled": "Für {{asset}} ist Clawback aktiv. Der Issuer kann Beträge zurückfordern, auch Auszahlungen aus dem Pool.",

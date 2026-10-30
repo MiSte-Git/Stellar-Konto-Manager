@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, within, waitFor, fireEvent } from '@testing-library/react';
+import { act, render, screen, within, waitFor, fireEvent } from '@testing-library/react';
 import { I18nextProvider } from 'react-i18next';
 import { Account } from '@stellar/stellar-sdk';
 import i18n from '../../../i18n.js';
@@ -254,6 +254,48 @@ describe('AssetSearch - Limit-Order stornieren', () => {
     expect(op.type).toBe('manageSellOffer');
     expect(op.amount).toBe('0.0000000');
     expect(op.offerId).toBe('555');
+  });
+});
+
+describe('AssetSearch - Ziel-Token-Picker im Swap', () => {
+  const CLEAR = 'Eingabe und Auswahl löschen';
+  const TARGET_QUERY = `${ASSET_CODE}:${ISSUER_PK}`;
+
+  async function openTargetPicker() {
+    renderPage();
+    await searchAndSelectAsset();
+    const swapSection = screen.getByText('Swap-Preview').closest('section');
+    fireEvent.click(within(swapSection).getByRole('button', { name: 'Token -> Token' }));
+    return swapSection;
+  }
+
+  it('setzt ueber den Loeschen-Button Eingabe, Treffer und Auswahl zurueck', async () => {
+    const swapSection = await openTargetPicker();
+    expect(within(swapSection).queryByRole('button', { name: CLEAR })).toBeNull();
+    const input = within(swapSection).getByLabelText('Ziel-Token');
+    fireEvent.change(input, { target: { value: TARGET_QUERY } });
+    fireEvent.click(within(swapSection).getByRole('button', { name: 'Ziel suchen' }));
+    await within(swapSection).findByTestId('asset-picker-selected');
+    expect(within(swapSection).getByTestId('asset-picker-results')).toBeInTheDocument();
+
+    fireEvent.click(within(swapSection).getByRole('button', { name: CLEAR }));
+    expect(input).toHaveValue('');
+    expect(within(swapSection).queryByTestId('asset-picker-selected')).toBeNull();
+    expect(within(swapSection).queryByTestId('asset-picker-results')).toBeNull();
+    expect(within(swapSection).queryByRole('button', { name: CLEAR })).toBeNull();
+  });
+
+  it('verwirft eine laufende Suche beim Loeschen', async () => {
+    const swapSection = await openTargetPicker();
+    let resolveSearch;
+    vi.stubGlobal('fetch', vi.fn(() => new Promise((resolve) => { resolveSearch = resolve; })));
+    fireEvent.change(within(swapSection).getByLabelText('Ziel-Token'), { target: { value: TARGET_QUERY } });
+    fireEvent.click(within(swapSection).getByRole('button', { name: 'Ziel suchen' }));
+    fireEvent.click(within(swapSection).getByRole('button', { name: CLEAR }));
+    expect(within(swapSection).getByRole('button', { name: 'Ziel suchen' })).toBeEnabled();
+    await act(async () => { resolveSearch({ ok: true, json: async () => ({ items: [ASSET_SEARCH_RESULT] }) }); });
+    expect(within(swapSection).queryByTestId('asset-picker-results')).toBeNull();
+    expect(within(swapSection).queryByTestId('asset-picker-selected')).toBeNull();
   });
 });
 

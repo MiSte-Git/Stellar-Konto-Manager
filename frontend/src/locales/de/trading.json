@@ -384,6 +384,7 @@
     "trustlineCount_other": "{{formatted}} Trustlines",
     "trustlineCountUnknown": "Trustlines: —",
     "trustlineCountTitle": "Anzahl Konten mit Trustline für dieses Asset",
-    "selectedMark": "gewählt"
+    "selectedMark": "gewählt",
+    "clear": "Eingabe und Auswahl löschen"
   }
 }

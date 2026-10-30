@@ -89,7 +89,7 @@ import AccountGate from './components/AccountGate.jsx';
 import { MAIN_MENU_NAV } from './config/mainNavigation.js';
 import { emitAccountSelected } from './utils/accountBus.js';
 
-import { consumePendingMainView, navigateToPath, publishActiveAccount, publishActiveMainView, setMainMounted } from './utils/appNavigation.js';
+import { consumePendingMainView, consumePendingTrustlineAsset, navigateToPath, publishActiveAccount, publishActiveMainView, setMainMounted } from './utils/appNavigation.js';
 import ListTrustlines from './components/ListTrustlines';
 import ResultDisplay from './components/ResultDisplay';
 import CompareTrustlines from './components/CompareTrustlines';
@@ -496,6 +496,7 @@ function Main() {
   }, [sourceMuxedAddress, t, setSendInit, setMenuSelection]);
 
   const closeIdentityGuard = useCallback(() => {
+    consumePendingTrustlineAsset();
     setIdentityGuard({ open: false, nextAction: '' });
   }, []);
 

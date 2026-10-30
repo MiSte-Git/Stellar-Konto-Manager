@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Asset } from '@stellar/stellar-sdk';
 import { assetFromSearchResult } from '../trading/assetSearchUtils.js';
@@ -9,6 +9,12 @@ import PoolFacts from './PoolFacts.jsx';
 const NOTICE = 'rounded-sm border px-3 py-2 text-xs';
 const NEUTRAL = `${NOTICE} border-gray-200 bg-gray-50 text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200`;
 const ERROR = `${NOTICE} border-red-200 bg-red-50 text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-200`;
+
+// Vergleichswert einer Paar-Seite: XLM, gewaehltes Token oder leer.
+const sideKey = (kind, picker) => {
+  if (kind === 'native') return 'native';
+  return picker.selected ? `${picker.selected.assetCode}:${picker.selected.assetIssuer}` : '';
+};
 
 /**
  * Bereich "Pool finden": Asset-Paar (XLM oder Token je Seite) oder Pool-ID.
@@ -41,6 +47,18 @@ export default function PoolFinder({
   useEffect(() => {
     setPairError('');
   }, [kindFirst, kindSecond, pickerFirst.selected, pickerSecond.selected]);
+
+  // Aendert sich im Modus Asset-Paar das Paar, gehoert der angezeigte Pool nicht
+  // mehr dazu: Fakten und Einzahlen verschwinden, laufende Antworten verfallen.
+  const pairKey = `${sideKey(kindFirst, pickerFirst)}|${sideKey(kindSecond, pickerSecond)}`;
+  const lastPairKey = useRef(pairKey);
+  const { reset: resetLookup } = lookup;
+  useEffect(() => {
+    if (lastPairKey.current === pairKey) return;
+    lastPairKey.current = pairKey;
+    if (mode === 'pair') resetLookup();
+  }, [pairKey, mode, resetLookup]);
+
   const withPairReset = (picker) => ({
     ...picker,
     search: () => {

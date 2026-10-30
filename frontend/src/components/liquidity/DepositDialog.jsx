@@ -4,6 +4,7 @@ import { getNetworkConfig, horizonUrlFor, passphraseFor } from '../../config/net
 import { getHorizonServer } from '../../utils/stellar/stellarUtils.js';
 import { resolveFeePerOp } from '../../utils/stellar/fees.js';
 import { isMultisigAccount } from '../../utils/stellar/isMultisigAccount.js';
+import { openAddTrustline } from '../../utils/appNavigation.js';
 import { getMultisigTxTimeout } from '../../utils/getMultisigTxTimeout.js';
 import { useSettings } from '../../utils/useSettings.js';
 import SecretKeyModal from '../SecretKeyModal.jsx';
@@ -226,10 +227,17 @@ export default function DepositDialog({ poolId, firstAsset, publicKey, network, 
     [t('liquidity:job.network'), getNetworkConfig(network).label],
   ] : [];
 
+  // Fehlende Asset-Trustline: Dialog schliessen, die Trustline-Seite uebernimmt
+  // mit vorausgefuelltem Asset. Waehrend eines Vorgangs bleibt der Dialog offen.
+  const handleAddTrustline = (asset) => {
+    onClose();
+    openAddTrustline({ code: asset.getCode(), issuer: asset.getIssuer() });
+  };
+
   let body;
   if (data.loading && !pool) body = <p className="text-xs">{t('liquidity:dialog.loading')}</p>;
   else if (data.error && !pool) body = <div className={NOTE_ERROR}>{data.error}</div>;
-  else if (action.result) body = <ResultNote result={action.result} onClose={onClose} />;
+  else if (action.result) body = <ResultNote result={action.result} network={network} onClose={onClose} />;
   else if (pool.totalShares === 0n) body = <div className={NOTE_NEUTRAL}>{t('liquidity:deposit.emptyPool')}</div>;
   else {
     const statusText = quote && quote.status !== 'ok' ? t(`liquidity:deposit.status.${quote.status}`) : '';
@@ -264,7 +272,7 @@ export default function DepositDialog({ poolId, firstAsset, publicKey, network, 
         ]} />
         {statusText && <div className={NOTE_NEUTRAL}>{statusText}</div>}
         {check && <CheckInfos infos={check.infos} pool={pool} />}
-        {check && <CheckProblems problems={check.problems} pool={pool} />}
+        {check && <CheckProblems problems={check.problems} pool={pool} onAddTrustline={action.processing ? undefined : handleAddTrustline} />}
         {reviewError && <div className={NOTE_ERROR}>{reviewError}</div>}
         <JobNotes jobError={action.jobError} jobCreated={action.jobCreated} />
         {confirmed ? (

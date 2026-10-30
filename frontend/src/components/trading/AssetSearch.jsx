@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { horizonUrlFor, passphraseFor } from '../../config/networks.js';
 import { useTranslation } from 'react-i18next';
 import { Asset } from '@stellar/stellar-sdk';
@@ -109,6 +109,7 @@ export default function AssetSearch() {
   const [isSubmittingTrustline, setIsSubmittingTrustline] = useState(false);
   const [isSubmittingSwap, setIsSubmittingSwap] = useState(false);
   const [actionMessage, setActionMessage] = useState('');
+  const swapTargetRequestRef = useRef(0);
   const {
     swapAmount,
     setSwapAmount,
@@ -574,6 +575,7 @@ export default function AssetSearch() {
       setSwapTargetError(translateInputError(query.error));
       return;
     }
+    const requestId = ++swapTargetRequestRef.current;
     setSwapTargetError('');
     setSwapTargetResults([]);
     setSelectedSwapTargetAsset(null);
@@ -587,6 +589,7 @@ export default function AssetSearch() {
       const response = await fetch(`${apiUrl('trade/assets/search')}?${params.toString()}`);
       const data = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(data?.error || 'assetSearch.failed:generic');
+      if (swapTargetRequestRef.current !== requestId) return;
       const items = Array.isArray(data?.items) ? data.items : [];
       setSwapTargetResults(items);
       if (query.mode === 'exact') {
@@ -597,6 +600,7 @@ export default function AssetSearch() {
         if (exact) setSelectedSwapTargetAsset(exact);
       }
     } catch (error) {
+      if (swapTargetRequestRef.current !== requestId) return;
       const msg = error?.message || '';
       if (msg.startsWith('assetSearch.invalidInput:queryMissing')) {
         setSwapTargetError(t('trading:assetSearch.invalidInput.queryMissing'));
@@ -608,8 +612,18 @@ export default function AssetSearch() {
         setSwapTargetError(t('trading:assetSearch.failed.generic'));
       }
     } finally {
-      setSwapTargetLoading(false);
+      if (swapTargetRequestRef.current === requestId) setSwapTargetLoading(false);
     }
+  };
+
+  // Loeschen-Button im Ziel-Token-Picker; eine laufende Suche wird verworfen.
+  const handleSwapTargetClear = () => {
+    swapTargetRequestRef.current += 1;
+    setSwapTargetQuery('');
+    setSwapTargetResults([]);
+    setSelectedSwapTargetAsset(null);
+    setSwapTargetError('');
+    setSwapTargetLoading(false);
   };
 
   const submitChangeTrustTx = async ({ asset, limit, collectedSigners }) => {
@@ -1317,6 +1331,7 @@ export default function AssetSearch() {
                 setSwapTargetError('');
               }}
               onSearchTarget={handleSwapTargetSearch}
+              onClearTarget={handleSwapTargetClear}
               swapTargetLoading={swapTargetLoading}
               swapTargetError={swapTargetError}
               selectedSwapTargetAsset={selectedSwapTargetAsset}

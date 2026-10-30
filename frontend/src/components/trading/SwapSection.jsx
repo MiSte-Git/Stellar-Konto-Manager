@@ -27,6 +27,7 @@ export default function SwapSection({
   swapTargetQuery,
   onTargetQueryChange,
   onSearchTarget,
+  onClearTarget,
   swapTargetLoading,
   swapTargetError,
   selectedSwapTargetAsset,
@@ -97,6 +98,7 @@ export default function SwapSection({
             query={swapTargetQuery}
             onQueryChange={onTargetQueryChange}
             onSearch={onSearchTarget}
+            onClear={onClearTarget}
             loading={swapTargetLoading}
             error={swapTargetError}
             selected={selectedSwapTargetAsset}

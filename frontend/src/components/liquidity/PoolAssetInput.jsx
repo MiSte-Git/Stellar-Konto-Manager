@@ -34,6 +34,7 @@ export default function PoolAssetInput({ name, label, kind, onKindChange, picker
           query={picker.query}
           onQueryChange={picker.setQuery}
           onSearch={picker.search}
+          onClear={picker.clear}
           loading={picker.loading}
           error={picker.error}
           selected={picker.selected}

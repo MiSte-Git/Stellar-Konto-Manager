@@ -9,7 +9,8 @@ import { parseAssetSearchQuery } from '../assetSearchUtils.js';
  * (handleSwapTargetSearch). Jener ist noch nicht auf diesen Hook umgestellt.
  *
  * Bei exakter Eingabe CODE:ISSUER wird der passende Treffer direkt gewaehlt.
- * Beim Netzwechsel wird alles zurueckgesetzt; veraltete Antworten verworfen.
+ * Beim Netzwechsel und ueber clear wird alles zurueckgesetzt; veraltete
+ * Antworten werden verworfen.
  */
 export default function useAssetPickerSearch({ network, t }) {
   const [query, setQuery] = useState('');
@@ -19,14 +20,18 @@ export default function useAssetPickerSearch({ network, t }) {
   const [loading, setLoading] = useState(false);
   const requestRef = useRef(0);
 
-  useEffect(() => {
+  const clear = useCallback(() => {
     requestRef.current += 1;
     setQuery('');
     setResults([]);
     setSelected(null);
     setError('');
     setLoading(false);
-  }, [network]);
+  }, []);
+
+  useEffect(() => {
+    clear();
+  }, [network, clear]);
 
   const translateInputError = useCallback((code) => {
     if (code === 'queryMissing') return t('trading:assetSearch.invalidInput.queryMissing');
@@ -81,5 +86,5 @@ export default function useAssetPickerSearch({ network, t }) {
     setError('');
   }, []);
 
-  return { query, setQuery, results, selected, select, error, loading, search };
+  return { query, setQuery, results, selected, select, error, loading, search, clear };
 }

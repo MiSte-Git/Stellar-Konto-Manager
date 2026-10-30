@@ -1,6 +1,8 @@
 import {
   consumePendingMainView,
+  consumePendingTrustlineAsset,
   getActiveRouteItemId,
+  openAddTrustline,
   openMainView,
   resolveMainItemId,
   setMainMounted,
@@ -29,6 +31,17 @@ describe('appNavigation', () => {
     expect(getActiveRouteItemId('/legal')).toBe('legal');
     expect(getActiveRouteItemId('/')).toBeNull();
     expect(getActiveRouteItemId('/settings')).toBeNull();
+  });
+
+  it('oeffnet die Trustline-Seite und liefert das vorgemerkte Asset genau einmal', () => {
+    setMainMounted(true);
+    const handler = vi.fn();
+    window.addEventListener('stm:openMenu', handler);
+    openAddTrustline({ code: 'USD', issuer: 'GISSUER' });
+    window.removeEventListener('stm:openMenu', handler);
+    expect(handler.mock.calls[0][0].detail).toBe('listAll');
+    expect(consumePendingTrustlineAsset()).toEqual({ code: 'USD', issuer: 'GISSUER' });
+    expect(consumePendingTrustlineAsset()).toBeNull();
   });
 
   it('merkt die Ansicht vor, wenn Main nicht gemountet ist', () => {

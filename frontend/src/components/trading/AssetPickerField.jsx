@@ -26,6 +26,9 @@ function sameAsset(a, b) {
  *
  * children wird zwischen gewaehltem Asset und Trefferliste gerendert (in
  * SwapSection die Token-Fakten des Ziel-Assets).
+ *
+ * onClear setzt Eingabe, Treffer und Auswahl beim Aufrufer zurueck; der
+ * Loeschen-Button erscheint nur, wenn es etwas zu loeschen gibt.
  */
 export default function AssetPickerField({
   label,
@@ -35,6 +38,7 @@ export default function AssetPickerField({
   query,
   onQueryChange,
   onSearch,
+  onClear,
   loading,
   error,
   selected,
@@ -67,18 +71,30 @@ export default function AssetPickerField({
       <label className="block text-xs">
         <span className="mb-1 block font-semibold">{label}</span>
         <div className="flex flex-col gap-2 sm:flex-row">
-          <input
-            value={query}
-            onChange={(event) => onQueryChange(event.target.value)}
-            onKeyDown={(event) => {
-              if (event.key === 'Enter') {
-                event.preventDefault();
-                onSearch();
-              }
-            }}
-            className="w-full rounded-sm border border-gray-300 px-3 py-2 font-mono text-sm dark:border-gray-700 dark:bg-gray-900"
-            placeholder={placeholder}
-          />
+          <div className="relative w-full">
+            <input
+              value={query}
+              onChange={(event) => onQueryChange(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter') {
+                  event.preventDefault();
+                  onSearch();
+                }
+              }}
+              className="w-full rounded-sm border border-gray-300 py-2 pl-3 pr-8 font-mono text-sm dark:border-gray-700 dark:bg-gray-900"
+              placeholder={placeholder}
+            />
+            {onClear && (query || selected) && (
+              <button
+                type="button"
+                onClick={onClear}
+                aria-label={t('trading:assetPicker.clear')}
+                className="absolute right-1 top-1/2 -translate-y-1/2 rounded-sm px-1.5 text-base leading-none text-gray-500 hover:bg-gray-100 hover:text-gray-800 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-100"
+              >
+                <span aria-hidden="true">×</span>
+              </button>
+            )}
+          </div>
           <button
             type="button"
             onClick={onSearch}

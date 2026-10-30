@@ -1,5 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSettings } from '../../utils/useSettings.js';
+import { buildExplorerUrl } from '../../utils/stellar/accountUtils.js';
+import { safeHttpUrl } from '../../utils/stellar/activity.js';
 import { formatAssetLabelWithIssuer } from '../trading/assetSearchUtils.js';
 import { BTN_SECONDARY, INPUT, NOTE_ERROR, NOTE_NEUTRAL, NOTE_WARN } from './LiquidityDialogShell.jsx';
 
@@ -16,8 +19,11 @@ export function SlippageField({ value, onChange, valid }) {
   );
 }
 
-/** Fakten aus den Vorpruefungen (checkDepositPreconditions/checkWithdrawPreconditions). */
-export function CheckProblems({ problems, pool }) {
+/**
+ * Fakten aus den Vorpruefungen (checkDepositPreconditions/checkWithdrawPreconditions).
+ * Mit onAddTrustline(asset) erscheint bei fehlender Asset-Trustline ein Button dazu.
+ */
+export function CheckProblems({ problems, pool, onAddTrustline }) {
   const { t } = useTranslation(['liquidity']);
   if (!problems?.length) return null;
   const assetFor = (side) => (side === 'B' ? pool.assetB : pool.assetA);
@@ -26,6 +32,14 @@ export function CheckProblems({ problems, pool }) {
       {problems.map((p) => (
         <li key={`${p.code}-${p.side || ''}`}>
           {t(`liquidity:checks.${p.code}`, { asset: p.side ? formatAssetLabelWithIssuer(assetFor(p.side)) : '' })}
+          {onAddTrustline && p.code === 'missingTrustNoBalance' && (
+            <>
+              {' '}
+              <button type="button" className="font-semibold underline hover:no-underline" onClick={() => onAddTrustline(assetFor(p.side))}>
+                {t('liquidity:checks.addTrustline', { asset: formatAssetLabelWithIssuer(assetFor(p.side)) })}
+              </button>
+            </>
+          )}
         </li>
       ))}
     </ul>
@@ -48,7 +62,28 @@ export function CheckInfos({ infos, pool }) {
   );
 }
 
-export function ResultNote({ result, onClose }) {
+/** Explorer-Links zum Hash; Eintraege ohne gueltige https-Vorlage entfallen. */
+function ExplorerLinks({ hash, network }) {
+  const { t } = useTranslation(['common']);
+  const { explorers } = useSettings();
+  const urlFor = (key) => safeHttpUrl(buildExplorerUrl((explorers || []).find((e) => (e.key || e.id) === key), hash, network, { type: 'tx' }));
+  const links = [
+    { href: urlFor('stellar_expert'), label: t('common:balance.explorer.expert') },
+    { href: urlFor('stellarchain'), label: t('common:balance.explorer.stellarchain') },
+  ].filter((link) => link.href);
+  if (!links.length) return null;
+  return (
+    <div className="mt-1 flex flex-wrap gap-3">
+      {links.map((link) => (
+        <a key={link.href} href={link.href} target="_blank" rel="noopener noreferrer" className="text-blue-700 underline hover:no-underline dark:text-blue-300">
+          {link.label}
+        </a>
+      ))}
+    </div>
+  );
+}
+
+export function ResultNote({ result, network, onClose }) {
   const { t } = useTranslation(['liquidity']);
   return (
     <>
@@ -62,6 +97,7 @@ export function ResultNote({ result, onClose }) {
         <div className={NOTE_NEUTRAL} role="status" data-testid="liquidity-success">
           <div className="font-semibold">{t('liquidity:dialog.success')}</div>
           {result.hash && <div className="mt-1 break-all font-mono">{result.hash}</div>}
+          {result.hash && <ExplorerLinks hash={result.hash} network={network} />}
         </div>
       )}
       <button type="button" className={BTN_SECONDARY} onClick={onClose}>{t('liquidity:dialog.close')}</button>

@@ -147,7 +147,7 @@ describe('LiquidityPoolsPage', () => {
         <LiquidityPoolsPage network="PUBLIC" publicKey={PK2} />
       </I18nextProvider>
     );
-    expect(await screen.findByText('Dieses Konto hat keine Pool-Share-Trustline.')).toBeInTheDocument();
+    expect(await screen.findByText('Keine Positionen. Über Pool finden kannst du in einen Pool einzahlen.')).toBeInTheDocument();
     await act(async () => {
       resolveOld({ balances: [{ asset_type: 'liquidity_pool_shares', liquidity_pool_id: POOL_ID, balance: '1' }] });
     });
@@ -261,6 +261,64 @@ describe('LiquidityPoolsPage', () => {
     expect(screen.getByText('Bitte zwei verschiedene Assets wählen.')).toBeInTheDocument();
     fireEvent.click(screen.getAllByLabelText('Token')[1]);
     expect(screen.queryByText('Bitte zwei verschiedene Assets wählen.')).toBeNull();
+  });
+
+  describe('veraltete Pool-Fakten im Modus Asset-Paar', () => {
+    // XLM (erste Seite) / USDC (zweite Seite) laden
+    async function loadPair() {
+      renderPage({ publicKey: '' });
+      fireEvent.change(screen.getByLabelText('Token suchen'), { target: { value: `USDC:${USDC_ISSUER}` } });
+      await act(async () => { fireEvent.click(screen.getByRole('button', { name: 'Suchen' })); });
+      await screen.findByText('Gewähltes Token');
+      hoisted.forAssetsCall.mockResolvedValue({ records: [poolRecord()] });
+      fireEvent.click(screen.getByRole('button', { name: 'Pool laden' }));
+      await screen.findByTestId('pool-facts');
+    }
+
+    it('verwirft den Pool, wenn sich die Art einer Seite aendert', async () => {
+      await loadPair();
+      fireEvent.click(screen.getAllByLabelText('Token')[0]);
+      expect(screen.queryByTestId('pool-facts')).toBeNull();
+    });
+
+    it('verwirft den Pool beim Abwaehlen ueber den Loeschen-Button und leert den Picker', async () => {
+      await loadPair();
+      fireEvent.click(screen.getByRole('button', { name: 'Eingabe und Auswahl löschen' }));
+      expect(screen.queryByTestId('pool-facts')).toBeNull();
+      expect(screen.getByLabelText('Token suchen')).toHaveValue('');
+      expect(screen.queryByTestId('asset-picker-selected')).toBeNull();
+      expect(screen.queryByTestId('asset-picker-results')).toBeNull();
+      expect(screen.queryByRole('button', { name: 'Eingabe und Auswahl löschen' })).toBeNull();
+    });
+
+    it('verwirft den Pool nicht beim Tippen, aber sobald eine neue Suche die Auswahl zuruecksetzt', async () => {
+      await loadPair();
+      fireEvent.change(screen.getByLabelText('Token suchen'), { target: { value: `USDC:${USDC_ISSUER} ` } });
+      expect(screen.getByTestId('pool-facts')).toBeInTheDocument();
+      await act(async () => { fireEvent.click(screen.getByRole('button', { name: 'Suchen' })); });
+      await screen.findByText('Gewähltes Token');
+      expect(screen.queryByTestId('pool-facts')).toBeNull();
+    });
+
+    it('verwirft eine laufende Antwort, wenn sich das Paar waehrend des Ladens aendert', async () => {
+      renderPage({ publicKey: '' });
+      fireEvent.change(screen.getByLabelText('Token suchen'), { target: { value: `USDC:${USDC_ISSUER}` } });
+      await act(async () => { fireEvent.click(screen.getByRole('button', { name: 'Suchen' })); });
+      await screen.findByText('Gewähltes Token');
+      let resolvePool;
+      hoisted.forAssetsCall.mockImplementation(() => new Promise((resolve) => { resolvePool = resolve; }));
+      fireEvent.click(screen.getByRole('button', { name: 'Pool laden' }));
+      fireEvent.click(screen.getAllByLabelText('Token')[0]);
+      await act(async () => { resolvePool({ records: [poolRecord()] }); });
+      expect(screen.queryByTestId('pool-facts')).toBeNull();
+    });
+
+    it('laesst einen per ?pool= geladenen Pool beim Oeffnen stehen', async () => {
+      window.history.replaceState({}, '', `/trading/pools?pool=${POOL_ID}`);
+      hoisted.poolByIdCall.mockResolvedValue(poolRecord());
+      renderPage({ publicKey: '' });
+      expect(await screen.findByTestId('pool-facts')).toBeInTheDocument();
+    });
   });
 
   it('setzt beim Moduswechsel Fehler und gefundenen Pool zurueck', async () => {

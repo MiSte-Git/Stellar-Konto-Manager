@@ -113,6 +113,31 @@ describe('AssetPickerField Trefferliste', () => {
     expect(await within(first).findByRole('button', { name: 'Kopiert' })).toBeInTheDocument();
   });
 
+  it('zeigt den Loeschen-Button nur mit Eingabe oder Auswahl und ruft onClear', () => {
+    const onClear = vi.fn();
+    const name = 'Eingabe und Auswahl löschen';
+    const { rerender } = renderPicker({ onClear });
+    expect(screen.queryByRole('button', { name })).toBeNull();
+    const withProps = (props) => (
+      <I18nextProvider i18n={i18n}>
+        <AssetPickerField label="Token suchen" placeholder="" searchLabel="Suchen" selectedLabel="" onQueryChange={() => {}} onSearch={() => {}}
+          loading={false} error="" onSelect={() => {}} results={[]} formatTrustlineCount={() => ''} onClear={onClear} {...props} />
+      </I18nextProvider>
+    );
+    rerender(withProps({ query: 'USD', selected: null }));
+    fireEvent.click(screen.getByRole('button', { name }));
+    expect(onClear).toHaveBeenCalledTimes(1);
+    rerender(withProps({ query: '', selected: sameCodeResults[0] }));
+    expect(screen.getByRole('button', { name })).toBeInTheDocument();
+    // Beschriftung des Eingabefelds bleibt eindeutig
+    expect(screen.getByLabelText('Token suchen')).toHaveValue('');
+  });
+
+  it('zeigt ohne onClear keinen Loeschen-Button', () => {
+    renderPicker({ query: 'USD' });
+    expect(screen.queryByRole('button', { name: 'Eingabe und Auswahl löschen' })).toBeNull();
+  });
+
   it('zeigt ohne Treffer keine Liste und keine Hinweise', () => {
     renderPicker({ results: [] });
     expect(screen.queryByTestId('asset-picker-results')).toBeNull();

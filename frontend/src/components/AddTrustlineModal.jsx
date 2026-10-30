@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
-function AddTrustlineModal({ onSubmit, onCancel }) {
+function AddTrustlineModal({ onSubmit, onCancel, initialCode = '', initialIssuer = '' }) {
   const { t } = useTranslation(['trustline', 'errors']);
-  const [code, setCode] = useState('');
-  const [issuer, setIssuer] = useState('');
+  const [code, setCode] = useState(initialCode);
+  const [issuer, setIssuer] = useState(initialIssuer);
   const [limit, setLimit] = useState('1000000');
   const [error, setError] = useState('');
   const assetCodeInputRef = useRef(null);

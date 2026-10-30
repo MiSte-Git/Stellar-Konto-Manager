@@ -7,6 +7,7 @@ import DepositDialog from '../DepositDialog.jsx';
 import WithdrawDialog from '../WithdrawDialog.jsx';
 import { poolIdFor } from '../../../utils/stellar/liquidityPools.js';
 import { txHashHex } from '../../../utils/stellar/txHash.js';
+import { consumePendingTrustlineAsset, setMainMounted } from '../../../utils/appNavigation.js';
 
 const hoisted = vi.hoisted(() => ({
   loadAccount: vi.fn(),
@@ -14,6 +15,7 @@ const hoisted = vi.hoisted(() => ({
   submit: vi.fn(),
   createJob: vi.fn(),
   collected: [],
+  passphrase: null,
 }));
 
 vi.mock('../../../utils/multisigApi.js', async (importOriginal) => ({
@@ -27,7 +29,7 @@ vi.mock('../../../utils/stellar/stellarUtils.js', async (importOriginal) => ({
     loadAccount: (id) => hoisted.loadAccount(id),
     liquidityPools: () => ({ liquidityPoolId: (id) => ({ call: () => hoisted.poolCall(id) }) }),
     feeStats: async () => { throw new Error('offline'); },
-    root: async () => ({ network_passphrase: Networks.PUBLIC }),
+    root: async () => ({ network_passphrase: hoisted.passphrase || Networks.PUBLIC }),
   }),
 }));
 
@@ -110,6 +112,7 @@ describe('DepositDialog', () => {
     hoisted.poolCall.mockReset();
     hoisted.submit.mockReset();
     hoisted.collected = [{ keypair: owner }];
+    hoisted.passphrase = null;
     hoisted.poolCall.mockResolvedValue(poolRecord());
     hoisted.loadAccount.mockImplementation(async () => makeAccount());
   });
@@ -141,6 +144,69 @@ describe('DepositDialog', () => {
     expect(tx.operations[1]).toMatchObject({ liquidityPoolId: POOL_ID, maxAmountA: '10.0000000', maxAmountB: '1.0000000' });
     expect(tx.signatures).toHaveLength(1);
     expect(onDone).toHaveBeenCalled();
+  });
+
+  it.each([
+    ['PUBLIC', 'https://stellar.expert/explorer/public/tx/abc123', 'https://stellarchain.io/tx/abc123'],
+    ['TESTNET', 'https://stellar.expert/explorer/testnet/tx/abc123', 'https://testnet.stellarchain.io/transactions/abc123'],
+  ])('verlinkt den Hash nach dem Senden im Netz %s auf beide Explorer', async (network, expert, stellarchain) => {
+    hoisted.passphrase = Networks[network];
+    hoisted.submit.mockResolvedValue({ hash: 'abc123' });
+    renderDeposit({ network });
+    await enterDeposit('10');
+    fireEvent.click(screen.getByRole('button', { name: 'Operationen prüfen' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Signieren und senden' }));
+    await act(async () => { fireEvent.click(await screen.findByText('keys-ok')); });
+    const note = await screen.findByTestId('liquidity-success');
+    expect(note).toHaveTextContent('abc123');
+    expect(within(note).getByRole('link', { name: 'stellar.expert' })).toHaveAttribute('href', expert);
+    const link = within(note).getByRole('link', { name: 'Stellarchain.io' });
+    expect(link).toHaveAttribute('href', stellarchain);
+    expect(link).toHaveAttribute('target', '_blank');
+    expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+  });
+
+  it('zeigt ohne Hash keine Explorer-Links', async () => {
+    hoisted.submit.mockResolvedValue({});
+    renderDeposit();
+    await enterDeposit('10');
+    fireEvent.click(screen.getByRole('button', { name: 'Operationen prüfen' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Signieren und senden' }));
+    await act(async () => { fireEvent.click(await screen.findByText('keys-ok')); });
+    expect(within(await screen.findByTestId('liquidity-success')).queryByRole('link')).toBeNull();
+  });
+
+  it('bietet bei fehlender Asset-Trustline den Weg zur Trustline-Seite mit vorausgefuelltem Asset an', async () => {
+    hoisted.loadAccount.mockImplementation(async (id) => (id === owner.publicKey()
+      ? Object.assign(makeAccount(), { balances: makeAccount().balances.filter((b) => b.asset_type === 'native') })
+      : { flags: {} }));
+    const onClose = vi.fn();
+    const openMenu = vi.fn();
+    setMainMounted(true);
+    window.addEventListener('stm:openMenu', openMenu);
+    try {
+      renderDeposit({ onClose });
+      await enterDeposit('10');
+      const problems = await screen.findByTestId('liquidity-problems');
+      expect(problems).toHaveTextContent('besteht keine Trustline');
+      fireEvent.click(within(problems).getByRole('button', { name: /^Trustline für USD:.+ hinzufügen$/ }));
+      expect(onClose).toHaveBeenCalledTimes(1);
+      expect(openMenu.mock.calls[0][0].detail).toBe('listAll');
+      expect(consumePendingTrustlineAsset()).toEqual({ code: 'USD', issuer });
+      expect(hoisted.submit).not.toHaveBeenCalled();
+    } finally {
+      window.removeEventListener('stm:openMenu', openMenu);
+      setMainMounted(false);
+    }
+  });
+
+  it('zeigt den Trustline-Button nur bei fehlender Trustline', async () => {
+    hoisted.loadAccount.mockImplementation(async () => makeAccount({ usdLine: { balance: '0.0000000' } }));
+    renderDeposit();
+    await enterDeposit('10');
+    const problems = await screen.findByTestId('liquidity-problems');
+    expect(problems).toHaveTextContent('reicht nicht');
+    expect(within(problems).queryByRole('button')).toBeNull();
   });
 
   it('zeigt die Nutzerreihenfolge (USD zuerst) mit invertiertem Preis', async () => {
@@ -343,6 +409,7 @@ describe('WithdrawDialog', () => {
     hoisted.poolCall.mockReset();
     hoisted.submit.mockReset();
     hoisted.collected = [{ keypair: owner }];
+    hoisted.passphrase = null;
     hoisted.poolCall.mockResolvedValue(poolRecord());
     hoisted.loadAccount.mockImplementation(async () => makeAccount({ shares: '30.0000000' }));
     hoisted.submit.mockResolvedValue({ hash: 'w1' });
@@ -367,6 +434,17 @@ describe('WithdrawDialog', () => {
     expect(tx.operations.map((op) => op.type)).toEqual(['liquidityPoolWithdraw', 'changeTrust']);
     // 30 von 300 Shares: 100 XLM / 10 USD, minus 0,5 %
     expect(tx.operations[0]).toMatchObject({ amount: '30.0000000', minAmountA: '99.5000000', minAmountB: '9.9500000' });
+  });
+
+  it('verlinkt den Hash auch nach dem Abheben, im Netz des Dialogs', async () => {
+    hoisted.passphrase = Networks.TESTNET;
+    renderWithdraw({ network: 'TESTNET' });
+    await pickPercent('50');
+    fireEvent.click(screen.getByRole('button', { name: 'Operationen prüfen' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Signieren und senden' }));
+    await act(async () => { fireEvent.click(await screen.findByText('keys-ok')); });
+    const note = await screen.findByTestId('liquidity-success');
+    expect(within(note).getByRole('link', { name: 'stellar.expert' })).toHaveAttribute('href', 'https://stellar.expert/explorer/testnet/tx/w1');
   });
 
   it('laesst die Trustline bei 100 % ohne Haken stehen', async () => {
@@ -437,6 +515,7 @@ describe('Multisig-Konten: Optionsdialog (Job, lokal, XDR)', () => {
     hoisted.submit.mockReset();
     hoisted.createJob.mockReset();
     hoisted.collected = [{ keypair: owner }];
+    hoisted.passphrase = null;
     hoisted.poolCall.mockResolvedValue(poolRecord());
     hoisted.loadAccount.mockImplementation(async () => makeAccount(multisigProps));
     hoisted.createJob.mockResolvedValue({ id: 'job-42', hash: 'jobhash', xdr: 'AAAA' });

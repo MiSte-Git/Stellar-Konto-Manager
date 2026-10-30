@@ -22,6 +22,7 @@ import { formatErrorForUi } from '../utils/formatErrorForUi.js';
 import { getRequiredThreshold } from '../utils/getRequiredThreshold.js';
 import { getHorizonServer } from '../utils/stellar/stellarUtils.js';
 import AddTrustlineModal from './AddTrustlineModal.jsx';
+import { consumePendingTrustlineAsset } from '../utils/appNavigation.js';
 import { TransactionBuilder, Operation, Asset } from '@stellar/stellar-sdk';
 import MultisigPrepareDialog from './MultisigPrepareDialog.jsx';
 import { apiUrl } from '../utils/apiBase.js';
@@ -69,6 +70,7 @@ function ListTrustlines({
   // Ergebnisse für Info- oder Fehlermeldungen nach Löschaktionen
   const [errorMessage, setErrorMessage] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);
+  const [addPrefill, setAddPrefill] = useState(null);
   const [pendingAdd, setPendingAdd] = useState(null);
   const [pendingAction, setPendingAction] = useState(null); // 'delete' | 'add'
   const [preparedTx, setPreparedTx] = useState(null);
@@ -85,6 +87,16 @@ function ListTrustlines({
   }, [deleteProgress, isProcessing]);
   const [delElapsedMs, setDelElapsedMs] = useState(0);
   const delStartedAtRef = useRef(0);
+
+  // Aus dem Einzahlen-Dialog der Liquidity Pools: Dialog mit Asset vorausgefuellt oeffnen.
+  useEffect(() => {
+    const prefill = consumePendingTrustlineAsset();
+    if (!prefill) return;
+    setAddPrefill(prefill);
+    setPendingAdd(null);
+    setPendingAction('add');
+    setShowAddModal(true);
+  }, []);
 
   const balanceFmt = useMemo(() => {
     const isAuto = decimalsMode === 'auto';
@@ -569,7 +581,7 @@ function ListTrustlines({
           <div className="ml-2">
             <button
               type="button"
-              onClick={() => { setShowAddModal(true); setPendingAdd(null); setPendingAction('add'); }}
+              onClick={() => { setAddPrefill(null); setShowAddModal(true); setPendingAdd(null); setPendingAction('add'); }}
               className="px-4 py-1 bg-green-600 text-white rounded-sm hover:bg-green-700"
             >
               {t('trustline:add.button')}
@@ -761,6 +773,8 @@ function ListTrustlines({
 
       {showAddModal && (
         <AddTrustlineModal
+          initialCode={addPrefill?.code}
+          initialIssuer={addPrefill?.issuer}
           onSubmit={(payload) => {
             setPendingAdd(payload);
             setPendingAction('add');
