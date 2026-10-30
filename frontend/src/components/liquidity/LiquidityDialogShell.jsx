@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import OperationBlocks from '../multisig/OperationBlocks.jsx';
 
 export const BTN_PRIMARY = 'rounded-sm bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50';
 export const BTN_SECONDARY = 'rounded-sm border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-800 hover:bg-gray-50 disabled:opacity-50 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100';
@@ -55,15 +56,13 @@ export function FactList({ rows }) {
   );
 }
 
-/** Operationen im Klartext (describeOperations) vor dem Signieren. */
-export function OperationsPreview({ lines, legend }) {
+/** Operationen als Bloecke (describeOperations) vor dem Signieren. */
+export function OperationsPreview({ blocks, legend }) {
   const { t } = useTranslation(['liquidity']);
   return (
     <div className={NOTE_NEUTRAL} data-testid="liquidity-ops">
       <div className="mb-1 font-semibold">{t('liquidity:dialog.operations')}</div>
-      <ol className="list-decimal pl-4">
-        {lines.map((line, index) => <li key={`${index}-${line}`}>{line}</li>)}
-      </ol>
+      <OperationBlocks blocks={blocks} />
       {legend && <div className="mt-1">{legend}</div>}
     </div>
   );

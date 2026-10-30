@@ -128,7 +128,7 @@ export default function DepositDialog({ poolId, firstAsset, publicKey, network, 
     try {
       const tx = buildDepositTx({ account: previewAccount(data.account), pool, check, quote, feePerOp: data.feePerOp, network });
       const poolInfo = { [pool.poolId]: { assetA: pool.assetA, assetB: pool.assetB } };
-      setConfirmed({ side, amount, slippageBps: quote.slippageBps, quote, check, lines: describeOperations(tx.operations, tOps, publicKey, { poolInfo, locale }) });
+      setConfirmed({ side, amount, slippageBps: quote.slippageBps, quote, check, blocks: describeOperations(tx.operations, tOps, publicKey, { poolInfo, locale }) });
     } catch (err) {
       setReviewError(describeLiquidityError(t, err));
     }
@@ -277,7 +277,7 @@ export default function DepositDialog({ poolId, firstAsset, publicKey, network, 
         <JobNotes jobError={action.jobError} jobCreated={action.jobCreated} />
         {confirmed ? (
           <>
-            <OperationsPreview lines={confirmed.lines} legend={t('liquidity:dialog.legend', { a: labelOf(pool.assetA), b: labelOf(pool.assetB) })} />
+            <OperationsPreview blocks={confirmed.blocks} legend={t('liquidity:dialog.legend', { a: labelOf(pool.assetA), b: labelOf(pool.assetB) })} />
             {multisig && <JobNotes hints={[t('liquidity:job.depositHint')]} />}
             <div className="flex flex-wrap gap-2">
               <button type="button" className={BTN_PRIMARY} onClick={handleSignClick} disabled={action.processing || action.jobCreated}>{t('liquidity:dialog.sign')}</button>

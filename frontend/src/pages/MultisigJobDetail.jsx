@@ -7,6 +7,7 @@ import { Keypair, TransactionBuilder } from '@stellar/stellar-sdk';
 import { getSessionSecret } from '../utils/sessionSecrets.js';
 import { takeMultisigJobToken } from '../components/multisig/multisigNavigation.js';
 import { describeOperations, findOperationWarnings, formatAsset } from '../utils/multisig/describeOperations.js';
+import OperationBlocks from '../components/multisig/OperationBlocks.jsx';
 import { formatValidUntil } from '../utils/multisig/formatValidUntil.js';
 import SecretKeyModal from '../components/SecretKeyModal.jsx';
 import { getHorizonServer } from '../utils/stellar/stellarUtils.js';
@@ -187,12 +188,12 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
   // Pool-Assets und aktueller Pool-Stand fuer LP-Operationen (nur Anzeige):
   // undefined = noch nicht geladen, {} = nichts bekannt.
   const [poolInfo, setPoolInfo] = useState(undefined);
-  const operationLines = useMemo(
+  const operationBlocks = useMemo(
     () => (decodedTx ? describeOperations(decodedOps, t, txSourceAccountId, { poolInfo, locale: i18n.language }) : []),
     [decodedTx, decodedOps, t, txSourceAccountId, poolInfo, i18n.language]
   );
   const operationWarnings = useMemo(
-    () => (decodedTx ? findOperationWarnings((decodedTx.innerTransaction || decodedTx).operations, txSourceAccountId) : { unknownTypes: [], pathPaymentToOther: false }),
+    () => (decodedTx ? findOperationWarnings((decodedTx.innerTransaction || decodedTx).operations, txSourceAccountId) : { unknownTypes: [], pathPaymentToOther: false, foreignOpSources: [] }),
     [decodedTx, txSourceAccountId]
   );
   // Unbekannte Operationen: Signieren erst nach ausdruecklicher Bestaetigung.
@@ -577,10 +578,8 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
               <div className="text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">
                 {t('multisig:detail.operations.title', 'Transaktionsoperationen')}
               </div>
-              {operationLines.length > 0 ? (
-                <ul className="list-disc list-inside space-y-0.5 text-gray-800 dark:text-gray-100">
-                  {operationLines.map((line, idx) => <li key={idx}>{line}</li>)}
-                </ul>
+              {operationBlocks.length > 0 ? (
+                <OperationBlocks blocks={operationBlocks} />
               ) : (
                 <div className="text-gray-600 dark:text-gray-300">
                   {t('multisig:detail.operations.none', 'Keine Operationen erkennbar (XDR konnte nicht dekodiert werden).')}
@@ -602,6 +601,14 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
                 <p role="alert" className="mt-2 rounded-sm bg-amber-50 p-2 text-xs font-medium text-amber-900 dark:bg-amber-900/30 dark:text-amber-100">
                   {t('multisig:detail.operations.warnPathPaymentToOther')}
                 </p>
+              )}
+              {operationWarnings.foreignOpSources.length > 0 && (
+                <div role="alert" className="mt-2 rounded-sm bg-amber-50 p-2 text-xs font-medium text-amber-900 dark:bg-amber-900/30 dark:text-amber-100" data-testid="job-foreign-sources">
+                  <p>{t('multisig:detail.operations.warnForeignSources', 'Achtung: Mindestens eine Operation wird von einem anderen Konto als dem Quellkonto ausgeführt. Dieses Konto muss die Transaktion ebenfalls signieren. Prüfe die Adressen, bevor du signierst:')}</p>
+                  <ul className="mt-1 list-disc pl-4 font-mono font-normal">
+                    {operationWarnings.foreignOpSources.map((account) => <li key={account} className="break-all">{account}</li>)}
+                  </ul>
+                </div>
               )}
               {operationWarnings.unknownTypes.length > 0 && (
                 <div role="alert" className="mt-2 space-y-1 rounded-sm border border-red-300 bg-red-50 p-2 text-xs text-red-900 dark:border-red-700 dark:bg-red-900/30 dark:text-red-100">

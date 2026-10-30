@@ -289,8 +289,51 @@ describe('Multisig-Job widerrufen (P2.3)', () => {
     hoisted.getJobMock.mockImplementation(async () => makeJob({ txXdr: tx.toXDR(), txHash: txHashHex(tx) }));
     renderPage();
     await screen.findByText(/^Claimable Balance einlösen/);
-    expect(screen.getByText(/^Tausch: 5.0000000 SPAM/)).toBeInTheDocument();
+    const spamLabel = `SPAM (${SIGNER_B.publicKey.slice(0, 8)}…${SIGNER_B.publicKey.slice(-8)})`;
+    expect(screen.getByText('Tausch')).toBeInTheDocument();
+    expect(screen.getByText(`5,0 ${spamLabel}`)).toBeInTheDocument();
+    expect(screen.getByText(SIGNER_A.publicKey)).toHaveClass('break-all');
     expect(screen.getByText(/Erlös an ein anderes Konto/)).toBeInTheDocument();
+  });
+});
+
+describe('Fremdes Quellkonto einer Operation', () => {
+  const jobFor = (tx) => makeJob({ txXdr: tx.toXDR(), txHash: txHashHex(tx) });
+  const paymentTx = (opSource, txSource = SOURCE) => new TransactionBuilder(new Account(txSource, '100'), { fee: '1000', networkPassphrase: Networks.TESTNET })
+    .addOperation(Operation.payment({ destination: SIGNER_B.publicKey, asset: Asset.native(), amount: '1', source: opSource }))
+    .setTimeout(86400)
+    .build();
+
+  it('listet ein fremdes Konto wie die anderen Warnungen und markiert den Block', async () => {
+    hoisted.getJobMock.mockImplementation(async () => jobFor(paymentTx(SIGNER_A.publicKey)));
+    renderPage();
+    const warning = await screen.findByTestId('job-foreign-sources');
+    expect(warning).toHaveAttribute('role', 'alert');
+    expect(warning).toHaveTextContent('von einem anderen Konto als dem Quellkonto ausgeführt');
+    expect(warning).toHaveTextContent(SIGNER_A.publicKey);
+    const block = screen.getByTestId('operation-block');
+    expect(block).toHaveTextContent(`Quellkonto${SIGNER_A.publicKey}`);
+    expect(block).toHaveTextContent('Diese Operation wird von einem anderen Konto ausgeführt.');
+  });
+
+  it('zeigt bei op.source gleich Quellkonto weder Zeile noch Warnung', async () => {
+    hoisted.getJobMock.mockImplementation(async () => jobFor(paymentTx(SOURCE)));
+    renderPage();
+    const block = await screen.findByTestId('operation-block');
+    expect(block).not.toHaveTextContent('Quellkonto');
+    expect(screen.queryByTestId('job-foreign-sources')).toBeNull();
+  });
+
+  it('Fee-Bump: wertet gegen die innere Transaktion und zeigt deren Operationen', async () => {
+    const inner = paymentTx(SOURCE);
+    inner.sign(Keypair.fromSecret(SIGNER_A.secret));
+    const bump = TransactionBuilder.buildFeeBumpTransaction(Keypair.fromSecret(SIGNER_B.secret), '2000', inner, Networks.TESTNET);
+    hoisted.getJobMock.mockImplementation(async () => makeJob({ txXdr: bump.toXDR(), txHash: txHashHex(bump) }));
+    renderPage();
+    const block = await screen.findByTestId('operation-block');
+    expect(block).toHaveTextContent('Zahlung');
+    expect(block).not.toHaveTextContent('Quellkonto');
+    expect(screen.queryByTestId('job-foreign-sources')).toBeNull();
   });
 });
 
@@ -320,9 +363,12 @@ describe('Liquidity-Pool-Jobs im Job-Detail (Stufe 2b)', () => {
     hoisted.getJobMock.mockImplementation(async () => lpJob([poolTrustOp(), depositOp()]));
     hoisted.poolMock.mockResolvedValue(poolRecord());
     renderPage();
-    expect(await screen.findByText(new RegExp(`^Liquidität einzahlen in Pool XLM/USD \\(`))).toHaveTextContent(
-      `höchstens 10.0000000 XLM und 1.0000000 ${usdLabel}, Preis XLM/${usdLabel} zwischen 9,95 und 10,05`
-    );
+    const title = await screen.findByText(new RegExp(`^Liquidität einzahlen in Pool XLM/USD \\(`));
+    const block = title.closest('[data-testid="operation-block"]');
+    expect(block).toHaveTextContent('Höchstbetrag Asset A10,0 XLM');
+    expect(block).toHaveTextContent(`Höchstbetrag Asset B1,0 ${usdLabel}`);
+    expect(block).toHaveTextContent(`Mindestpreis XLM/${usdLabel}9,95`);
+    expect(block).toHaveTextContent(`Höchstpreis XLM/${usdLabel}10,05`);
     const state = screen.getByTestId('job-pool-state');
     await waitFor(() => expect(state).toHaveTextContent(`aktueller Kurs XLM/${usdLabel} 10. Bei diesem Stand liegt die Einzahlung innerhalb der Preisgrenzen`));
     expect(hoisted.poolMock).toHaveBeenCalledWith(POOL_ID);
@@ -340,7 +386,10 @@ describe('Liquidity-Pool-Jobs im Job-Detail (Stufe 2b)', () => {
     hoisted.getJobMock.mockImplementation(async () => lpJob([withdrawOp()]));
     hoisted.poolMock.mockResolvedValue(poolRecord('900.0000000', '111.0000000'));
     renderPage();
-    expect(await screen.findByText(new RegExp('^Liquidität abheben aus Pool XLM/USD'))).toHaveTextContent(`gegen mindestens 99.5000000 XLM und 9.9500000 ${usdLabel}`);
+    const title = await screen.findByText(new RegExp('^Liquidität abheben aus Pool XLM/USD'));
+    const block = title.closest('[data-testid="operation-block"]');
+    expect(block).toHaveTextContent('Mindestbetrag Asset A99,5 XLM');
+    expect(block).toHaveTextContent(`Mindestbetrag Asset B9,95 ${usdLabel}`);
     await waitFor(() => expect(screen.getByTestId('job-pool-state')).toHaveTextContent(`aktuell zu erwarten 90,0 XLM und 11,1 ${usdLabel}. Die Mindestbeträge dieser Operation werden nicht erreicht.`));
   });
 
@@ -348,7 +397,8 @@ describe('Liquidity-Pool-Jobs im Job-Detail (Stufe 2b)', () => {
     hoisted.getJobMock.mockImplementation(async () => lpJob([withdrawOp()]));
     hoisted.poolMock.mockRejectedValueOnce(Object.assign(new Error('Not Found'), { response: { status: 404 } }));
     const view = renderPage();
-    expect(await screen.findByText(/Pool-Assets konnten nicht geladen werden/)).toHaveTextContent('Asset A');
+    const hint = await screen.findByText(/Pool-Assets konnten nicht geladen werden/);
+    expect(hint.closest('[data-testid="operation-block"]')).toHaveTextContent('Mindestbetrag Asset A99,5 Asset A');
     expect(screen.getByTestId('job-pool-state')).toHaveTextContent('Der aktuelle Pool-Stand konnte nicht geladen werden.');
     view.unmount();
 

@@ -97,7 +97,7 @@ export default function WithdrawDialog({ poolId, publicKey, network, onClose, on
     try {
       const tx = buildWithdrawTx({ account: previewAccount(data.account), pool, quote, shares, removePoolTrust: effectiveRemove, feePerOp: data.feePerOp, network });
       const poolInfo = { [pool.poolId]: { assetA: pool.assetA, assetB: pool.assetB } };
-      setConfirmed({ shares, removePoolTrust: effectiveRemove, slippageBps: quote.slippageBps, quote, lines: describeOperations(tx.operations, tOps, publicKey, { poolInfo, locale }) });
+      setConfirmed({ shares, removePoolTrust: effectiveRemove, slippageBps: quote.slippageBps, quote, blocks: describeOperations(tx.operations, tOps, publicKey, { poolInfo, locale }) });
     } catch (err) {
       setReviewError(describeLiquidityError(t, err));
     }
@@ -253,7 +253,7 @@ export default function WithdrawDialog({ poolId, publicKey, network, onClose, on
         <JobNotes jobError={action.jobError} jobCreated={action.jobCreated} />
         {confirmed ? (
           <>
-            <OperationsPreview lines={confirmed.lines} legend={t('liquidity:dialog.legend', { a: labelA, b: labelB })} />
+            <OperationsPreview blocks={confirmed.blocks} legend={t('liquidity:dialog.legend', { a: labelA, b: labelB })} />
             {multisig && <JobNotes hints={[t('liquidity:job.withdrawHint'), confirmed.removePoolTrust ? t('liquidity:job.removeTrustHint') : '']} />}
             <div className="flex flex-wrap gap-2">
               <button type="button" className={BTN_PRIMARY} onClick={handleSignClick} disabled={action.processing || action.jobCreated}>{t('liquidity:dialog.sign')}</button>
