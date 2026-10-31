@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { getPendingMultisigJob, mergeSignedXdr, getMultisigJobChallenge, signMultisigJobChallenge, getMultisigJobAccessToken } from '../utils/multisigApi.js';
 import MultisigJobStatusBadge from '../components/MultisigJobStatusBadge.jsx';
 import { Keypair, extractBaseAddress } from '@stellar/stellar-sdk';
-import { getSessionSecret } from '../utils/sessionSecrets.js';
+import { SESSION_LOCKED_EVENT, getSessionSecret, rememberSessionSecrets } from '../utils/sessionSecrets.js';
 import { takeMultisigJobToken } from '../components/multisig/multisigNavigation.js';
 import { describeOperations, findOperationWarnings, formatAsset } from '../utils/multisig/describeOperations.js';
 import OperationBlocks from '../components/multisig/OperationBlocks.jsx';
@@ -75,62 +75,180 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
   // present, resolveToken() fetches it on demand, verified server-side against
   // currentPublicKey being an active signer of the job's account. Cached in a
   // ref (not state) since it never affects what's rendered by itself.
-  const fetchedTokenRef = useRef(null);
+  const fetchedTokenRef = useRef(null); // { key: 'jobId:konto', token }
+  // Laufende Token-Abfrage je Job und Konto: Parallele Aufrufe (z. B. doppelter Effekt im
+  // StrictMode) holen nur eine Challenge, sonst verbraucht die eine die andere
+  // (challenge_missing_or_expired).
+  const tokenPromiseRef = useRef(null); // { key, promise }
+  // Erhoeht bei Job- oder Kontowechsel: Antworten aelterer Aufrufe werden verworfen.
+  const scopeRef = useRef(0);
+  const tokenKey = `${jobId}:${currentPublicKey || ''}`;
+  // Ohne Token und ohne gemerktes Secret gibt der Signer hier seinen Secret Key ein (Job oeffnen).
+  // Ohne "merken" bleibt der Keypair nur in diesem Ref, damit "Jetzt signieren" danach nicht
+  // erneut fragt. Verworfen nach jedem Signierversuch, bei Sperre (Integritaet, eigenes Konto),
+  // beim Sperren der Session, bei Job- oder Kontowechsel und beim Aushaengen.
+  const [needsUnlock, setNeedsUnlock] = useState(false);
+  const [unlockInput, setUnlockInput] = useState('');
+  const [unlockRemember, setUnlockRemember] = useState(false);
+  const [unlockError, setUnlockError] = useState('');
+  const [unlocking, setUnlocking] = useState(false);
+  const [hasUnlockedKey, setHasUnlockedKey] = useState(false);
+  const unlockedKeypairRef = useRef(null);
+  const forgetUnlockedKey = useCallback(() => {
+    unlockedKeypairRef.current = null;
+    setHasUnlockedKey(false);
+  }, []);
+  useEffect(() => {
+    scopeRef.current += 1;
+    unlockedKeypairRef.current = null;
+    setHasUnlockedKey(false);
+    fetchedTokenRef.current = null;
+    setJob(null);
+    setNeedsUnlock(false);
+    setUnlockInput('');
+    setUnlockError('');
+    setUnlocking(false);
+    return () => { unlockedKeypairRef.current = null; };
+  }, [jobId, currentPublicKey]);
+  useEffect(() => {
+    window.addEventListener(SESSION_LOCKED_EVENT, forgetUnlockedKey);
+    return () => window.removeEventListener(SESSION_LOCKED_EVENT, forgetUnlockedKey);
+  }, [forgetUnlockedKey]);
 
-  // Fetching a token from scratch (no prop/URL token yet) now requires proving
-  // possession of currentPublicKey's private key (H1 fix): get a one-time
-  // challenge, sign it locally, then redeem it for the token. This only works
-  // if a session secret for currentPublicKey is already remembered in this
-  // browser (the self-bucket lookup below matches how SendPaymentPage/
-  // MultisigEditPage store it after "remember for this session") - if none is
-  // stored, there is no secret to sign with yet, so this surfaces a distinct
-  // error instead of silently failing the signature check server-side.
+  // Fehler beim Zugriff auf den Job (Challenge, Token, Abruf) als lesbarer Text.
+  const accessErrorText = useCallback((e) => {
+    const code = String(e?.message || '');
+    if (e?.status === 403 || code === 'forbidden') return t('multisig:detail.notASigner', 'Dieses Konto ist kein aktiver Signer dieses Auftrags.');
+    if (e?.status === 404 || code === 'not_found') return t('multisig:detail.access.notFound', 'Diesen Job gibt es nicht mehr. Abgeschlossene Jobs werden nach 30 Tagen gelöscht.');
+    if (code === 'challenge_missing_or_expired') return t('multisig:detail.access.challengeExpired', 'Die Anmeldung am Job ist abgelaufen oder wurde schon verwendet. Bitte erneut versuchen.');
+    if (code === 'invalid_signature') return t('multisig:detail.access.invalidSignature', 'Die Signatur der Anmeldung wurde abgelehnt. Bitte erneut versuchen.');
+    if (code === 'timeout') return t('multisig:detail.access.timeout', 'Der Server antwortet nicht. Bitte später erneut versuchen.');
+    return t('multisig:detail.access.failed', { code: code || '-', defaultValue: 'Der Job konnte nicht geladen werden ({{code}}). Bitte Verbindung prüfen und erneut versuchen.' });
+  }, [t]);
+
+  // Challenge holen, lokal signieren, gegen das Token tauschen. Mit Zeitlimit, damit ein
+  // haengender Server die Ansicht nicht dauerhaft blockiert.
+  const requestToken = useCallback(async (secret) => {
+    const withTimeout = (promise) => Promise.race([
+      promise,
+      new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 20000)),
+    ]);
+    const { challenge } = await withTimeout(getMultisigJobChallenge(jobId, currentPublicKey));
+    return withTimeout(getMultisigJobAccessToken(jobId, currentPublicKey, signMultisigJobChallenge(secret, challenge)));
+  }, [jobId, currentPublicKey]);
+
+  // Token aus Prop, URL/Speicher, schon geholt oder per Challenge mit gemerktem Secret.
   const resolveToken = useCallback(async () => {
     const known = takeMultisigJobToken(jobId);
     if (accessToken) return accessToken;
     if (known) return known;
-    if (fetchedTokenRef.current) return fetchedTokenRef.current;
+    if (fetchedTokenRef.current?.key === tokenKey) return fetchedTokenRef.current.token;
     if (!currentPublicKey) {
       throw Object.assign(new Error('multisig:detail.noAccessToken'), { code: 'no_public_key' });
     }
-    const secret = await getSessionSecret(currentPublicKey, currentPublicKey);
-    if (!secret) {
-      throw Object.assign(new Error('multisig:detail.noLocalSecretForToken'), { code: 'no_local_secret' });
+    if (tokenPromiseRef.current?.key === tokenKey) return tokenPromiseRef.current.promise;
+    const promise = (async () => {
+      const secret = await getSessionSecret(currentPublicKey, currentPublicKey);
+      if (!secret) {
+        throw Object.assign(new Error('multisig:detail.noLocalSecretForToken'), { code: 'no_local_secret' });
+      }
+      const token = await requestToken(secret);
+      fetchedTokenRef.current = { key: tokenKey, token };
+      return token;
+    })();
+    tokenPromiseRef.current = { key: tokenKey, promise };
+    try {
+      return await promise;
+    } finally {
+      if (tokenPromiseRef.current?.promise === promise) tokenPromiseRef.current = null;
     }
-    const { challenge } = await getMultisigJobChallenge(jobId, currentPublicKey);
-    const signature = signMultisigJobChallenge(secret, challenge);
-    const token = await getMultisigJobAccessToken(jobId, currentPublicKey, signature);
-    fetchedTokenRef.current = token;
-    return token;
-  }, [accessToken, jobId, currentPublicKey]);
+  }, [accessToken, jobId, currentPublicKey, tokenKey, requestToken]);
 
   const fetchJob = useCallback(async () => {
     if (!jobId) return;
+    const scope = scopeRef.current;
+    const stale = () => scope !== scopeRef.current;
     setLoading(true);
     setError('');
+    let token = null;
     try {
-      const token = await resolveToken();
+      token = await resolveToken();
       const data = await getPendingMultisigJob(jobId, token);
+      if (stale()) return;
       setJob(data);
       setInfo('');
+      setNeedsUnlock(false);
     } catch (e) {
+      if (stale()) return;
+      const fetchedTokenFailed = !!token && fetchedTokenRef.current?.token === token;
       if (e?.code === 'no_public_key') {
         setError(t('multisig:detail.noAccessToken', 'Kein Zugriffstoken verfügbar. Bitte zuerst das Konto laden, das Signer dieses Auftrags ist.'));
       } else if (e?.code === 'no_local_secret') {
-        setError(t('multisig:detail.noLocalSecretForToken', 'Kein Zugriffstoken verfügbar: Es bleibt nur bis zum Neuladen der Seite erhalten, und für dieses Konto ist in diesem Browser kein Secret gespeichert. Bitte den Job-Link mit Zugriffstoken erneut öffnen oder das Konto einmal mit "Secret merken" laden.'));
-      } else if (e?.status === 403) {
-        setError(t('multisig:detail.notASigner', 'Dieses Konto ist kein aktiver Signer dieses Auftrags.'));
+        // Kein Fehler, sondern der normale Weg fuer einen weiteren Signer: Secret abfragen.
+        setNeedsUnlock(true);
+      } else if (fetchedTokenFailed && e?.status === 403) {
+        // Geholtes Token abgelehnt: verwerfen und erneut anmelden lassen, statt bei jedem
+        // Neuladen am selben Token zu scheitern.
+        fetchedTokenRef.current = null;
+        forgetUnlockedKey();
+        setUnlockError(t('multisig:detail.access.tokenRejected', 'Der Zugriff wurde abgelehnt. Bitte den Secret Key erneut eingeben.'));
+        setNeedsUnlock(true);
       } else {
-        setError(e?.message || 'fetch_failed');
+        setError(accessErrorText(e));
       }
     } finally {
-      setLoading(false);
+      if (!stale()) setLoading(false);
     }
-  }, [jobId, resolveToken, t]);
+  }, [jobId, resolveToken, t, accessErrorText, forgetUnlockedKey]);
 
   useEffect(() => {
     void fetchJob();
   }, [fetchJob]);
+
+  // Job mit eingegebenem Secret oeffnen: Challenge lokal signieren, Token holen, Job laden.
+  // Der Key muss zum geladenen Konto gehoeren; ob es Signer des Jobs ist, prueft der Server.
+  const unlockWithSecret = useCallback(async () => {
+    if (unlocking) return;
+    setUnlockError('');
+    let kp;
+    try {
+      kp = Keypair.fromSecret(unlockInput.trim());
+    } catch {
+      setUnlockError(t('multisig:detail.unlock.invalid', 'Ungültiger Secret Key.'));
+      return;
+    }
+    if (kp.publicKey() !== currentPublicKey) {
+      setUnlockError(t('multisig:detail.unlock.wrongKey', { account: currentPublicKey, defaultValue: 'Dieser Secret Key gehört nicht zum geladenen Konto {{account}}.' }));
+      return;
+    }
+    const scope = scopeRef.current;
+    const key = tokenKey;
+    setUnlocking(true);
+    try {
+      const token = await requestToken(kp.secret());
+      if (scope !== scopeRef.current) return;
+      fetchedTokenRef.current = { key, token };
+      let remembered = false;
+      if (unlockRemember) {
+        try { remembered = !!(await rememberSessionSecrets(currentPublicKey, [{ keypair: kp }])); } catch { remembered = false; }
+      }
+      if (scope !== scopeRef.current) return;
+      if (!remembered) {
+        unlockedKeypairRef.current = kp;
+        setHasUnlockedKey(true);
+      }
+      setUnlockInput('');
+      setNeedsUnlock(false);
+      await fetchJob();
+      if (unlockRemember && !remembered && scope === scopeRef.current) {
+        setInfo(t('multisig:detail.unlock.rememberFailed', 'Der Key konnte nicht in der Session gemerkt werden. Er bleibt nur in dieser Ansicht.'));
+      }
+    } catch (e) {
+      if (scope === scopeRef.current) setUnlockError(accessErrorText(e));
+    } finally {
+      if (scope === scopeRef.current) setUnlocking(false);
+    }
+  }, [unlocking, unlockInput, unlockRemember, currentPublicKey, tokenKey, requestToken, fetchJob, accessErrorText, t]);
 
   const collectedSet = useMemo(() => new Set((job?.collectedSigners || []).map((s) => s.publicKey)), [job]);
   const shortPk = useCallback((pk) => {
@@ -226,6 +344,10 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
     || (unusualPreconditions.length > 0 && !preconditionsConfirmed);
   // Importierte Signaturen zaehlen wie eigene: der Merge kann den Job einreichen.
   const importBlocked = signingBlocked && !isFinalState;
+  // Harte Sperren: einen nur im Speicher gehaltenen Key nicht laenger aufheben.
+  useEffect(() => {
+    if (integrityBlocked || ownAccountBlocked) forgetUnlockedKey();
+  }, [integrityBlocked, ownAccountBlocked, forgetUnlockedKey]);
 
   // Deliberately NOT a new lifecycle computation (G5 stage 1's
   // computeMultisigLifecycleStatus() already runs server-side on every GET -
@@ -501,7 +623,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
       });
       setJob(merged);
       const st = merged?.status || 'pending_signatures';
-      setInfo(t('multisig:detail.signatures.signedLocalStatus', { status: st }));
+      setInfo(t('multisig:detail.signatures.signedLocalStatus', { status: t(`multisig:list.status.${st}`, st) }));
       const submitErr = submitReasonText(merged?.submittedResult);
       if (submitErr) {
         const lpText = liquiditySubmitText(merged?.submittedResult);
@@ -511,6 +633,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
       }
       setShowSecretPrompt(false);
       setSecretInput('');
+      forgetUnlockedKey();
     } catch (e) {
       if (e?.code === 'no_public_key') {
         setError(t('multisig:detail.noAccessToken', 'Kein Zugriffstoken verfügbar. Bitte zuerst das Konto laden, das Signer dieses Auftrags ist.'));
@@ -528,7 +651,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
     } finally {
       setLoading(false);
     }
-  }, [job, jobId, canCurrentSign, signingBlocked, t, resolveToken, liquiditySubmitText]);
+  }, [job, jobId, canCurrentSign, signingBlocked, t, resolveToken, liquiditySubmitText, forgetUnlockedKey]);
 
   const handleSignWithSession = useCallback(async () => {
     if (!job || signingBlocked) return;
@@ -536,14 +659,20 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
       setError(t('multisig:detail.signatures.missing', 'fehlt'));
       return;
     }
-    const secret = await getSessionSecret(job?.accountId || '', currentPublicKey);
+    const stored = await getSessionSecret(job?.accountId || '', currentPublicKey);
+    const secret = stored || unlockedKeypairRef.current?.secret() || '';
     if (!secret) {
       setError(t('multisig:detail.signatures.noSessionSecret', 'Kein Secret Key im Browser gespeichert. Bitte Secret eingeben oder signiertes XDR importieren.'));
       setShowSecretPrompt(true);
       return;
     }
-    await signWithSecret(secret);
-  }, [job, canCurrentSign, currentPublicKey, signingBlocked, t, signWithSecret]);
+    try {
+      await signWithSecret(secret);
+    } finally {
+      // Der eingegebene Key gilt fuer genau einen Signierversuch, ob erfolgreich oder nicht.
+      if (!stored) forgetUnlockedKey();
+    }
+  }, [job, canCurrentSign, currentPublicKey, signingBlocked, t, signWithSecret, forgetUnlockedKey]);
 
   if (!jobId) return null;
 
@@ -566,18 +695,63 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
               {t('common:option.back', 'Zurück')}
             </button>
           )}
-          <button
-            type="button"
-            className="text-sm px-3 py-1 rounded-sm border hover:bg-gray-100 dark:hover:bg-gray-800"
-            onClick={fetchJob}
-            disabled={loading}
-          >
-            {t('common:refresh', 'Refresh')}
-          </button>
+          {/* Neu laden nur, solange sich am Job noch etwas aendern kann (andere Signer). */}
+          {!isFinalState && (
+            <button
+              type="button"
+              className="text-sm px-3 py-1 rounded-sm border hover:bg-gray-100 dark:hover:bg-gray-800"
+              onClick={fetchJob}
+              disabled={loading}
+            >
+              {t('common:refresh', 'Refresh')}
+            </button>
+          )}
         </div>
       </div>
 
       {error && <div className="text-sm text-red-600">{error}</div>}
+      {needsUnlock && !job && (
+        <div className="border border-amber-500 rounded-sm p-3 space-y-3 bg-amber-50 dark:bg-amber-900/40 shadow-xs" data-testid="job-unlock">
+          <div className="text-sm font-semibold text-amber-900 dark:text-amber-100">
+            {t('multisig:detail.unlock.title', 'Secret Key eingeben, um den Job zu öffnen')}
+          </div>
+          <div className="text-xs text-gray-700 dark:text-gray-300 break-words">
+            {t('multisig:detail.unlock.hint', {
+              account: currentPublicKey,
+              defaultValue: 'Der Zugriff auf diesen Job ist in diesem Browser nicht gespeichert (z. B. nach dem Neuladen oder auf einem anderen Gerät). Gib den Secret Key von {{account}} ein. SKM signiert damit lokal eine einmalige Anfrage, der Server prüft, ob das Konto Signer des Jobs ist. Der Key verlässt den Browser nicht. Danach siehst du die Transaktion und signierst sie mit einem Klick, der Key wird nicht erneut abgefragt.',
+            })}
+          </div>
+          <form
+            className="space-y-2"
+            onSubmit={(e) => { e.preventDefault(); void unlockWithSecret(); }}
+          >
+            <input
+              type="password"
+              value={unlockInput}
+              onChange={(e) => setUnlockInput(e.target.value)}
+              aria-label={t('multisig:detail.unlock.label', 'Secret Key')}
+              className="w-full border-2 border-amber-500 rounded-sm px-3 py-2 text-sm bg-white dark:bg-gray-800 focus:outline-hidden focus:ring-2 focus:ring-amber-400"
+              placeholder={t('secretKey:placeholder', 'Secret Key eingeben')}
+              autoComplete="off"
+              spellCheck="false"
+            />
+            <label className="flex items-center gap-2 text-xs">
+              <input type="checkbox" checked={unlockRemember} onChange={(e) => setUnlockRemember(e.target.checked)} />
+              {t('multisig:detail.unlock.remember', 'In dieser Session merken (verschlüsselt, gelöscht nach Sperren, Inaktivität oder Neuladen)')}
+            </label>
+            {unlockError && <div className="text-xs text-red-600" role="alert">{unlockError}</div>}
+            <div className="flex justify-end">
+              <button
+                type="submit"
+                className="px-3 py-1 rounded-sm bg-blue-600 text-white hover:bg-blue-700 text-sm disabled:opacity-50"
+                disabled={unlocking || !unlockInput.trim()}
+              >
+                {unlocking ? t('common:common.loading') : t('multisig:detail.unlock.submit', 'Job öffnen und prüfen')}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
       {info && <div className="text-sm text-green-700 dark:text-green-400">{info}</div>}
       {loading && <div className="text-sm text-gray-600">{t('common:common.loading')}</div>}
 
@@ -621,7 +795,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
                 <span className="text-gray-700 dark:text-gray-200">{t('multisig:detail.sourceMuxed')}: <span className="font-mono break-all" data-testid="job-source-muxed">{jobCheck.muxedSource}</span></span>
               )}
               <span className="text-gray-700 dark:text-gray-200">{t('multisig:prepare.hashLabel')}: <span className="font-mono break-all">{job.txHash}</span></span>
-              <span className="text-gray-700 dark:text-gray-200">{t('multisig:detail.statusLabel', 'Status')}: {job.status}</span>
+              <span className="text-gray-700 dark:text-gray-200">{t('multisig:detail.statusLabel', 'Status')}: {t(`multisig:list.status.${job.status}`, job.status)}</span>
               <span className="text-gray-700 dark:text-gray-200">{t('common:createdAt', 'Angelegt')}: {job.createdAt}</span>
               <span className="text-gray-700 dark:text-gray-200">{t('common:createdBy', 'Erstellt von')}: {job.createdBy || '-'}</span>
               <span className="text-gray-700 dark:text-gray-200">{t('multisig:detail.updatedAt', 'Aktualisiert am')}: {job.updatedAt || '-'}</span>
@@ -788,7 +962,14 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
 
           {canCurrentSign && !isFinalState && (
             <div className="flex items-center justify-between gap-3 border rounded-sm p-3">
-              <div className="text-sm font-semibold">{t('multisig:detail.secretPrompt.signNow', 'Jetzt signieren')}</div>
+              <div className="text-sm font-semibold">
+                {t('multisig:detail.secretPrompt.signNow', 'Jetzt signieren')}
+                {hasUnlockedKey && (
+                  <div className="text-xs font-normal text-gray-600 dark:text-gray-300" data-testid="job-key-ready">
+                    {t('multisig:detail.unlock.keyReady', 'Der eingegebene Key wird verwendet, keine weitere Abfrage.')}
+                  </div>
+                )}
+              </div>
               <button
                 type="button"
                 className="text-xs px-3 py-1 rounded-sm border border-green-200 text-green-700 dark:text-green-200 dark:border-green-700 hover:bg-green-50 dark:hover:bg-green-900"

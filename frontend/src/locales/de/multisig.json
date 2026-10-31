@@ -419,6 +419,25 @@
         "extraSigners": "Extra Signer"
       },
       "warnSequenceJump": "Mit Min. Account Sequence ist die Transaktion auch gültig, wenn die Sequence des Kontos weit unter ihrer eigenen liegt ({{sequence}}). Wird sie ausgeführt, springt das Konto auf diese Sequence. Liegt sie sehr hoch, kann das Konto danach keine weiteren Transaktionen mehr senden, und andere vorbereitete Transaktionen und der Widerruf werden ungültig."
+    },
+    "unlock": {
+      "title": "Secret Key eingeben, um den Job zu öffnen",
+      "hint": "Der Zugriff auf diesen Job ist in diesem Browser nicht gespeichert (z. B. nach dem Neuladen oder auf einem anderen Gerät). Gib den Secret Key von {{account}} ein. SKM signiert damit lokal eine einmalige Anfrage, der Server prüft, ob das Konto Signer des Jobs ist. Der Key verlässt den Browser nicht. Danach siehst du die Transaktion und signierst sie mit einem Klick, der Key wird nicht erneut abgefragt.",
+      "label": "Secret Key",
+      "remember": "In dieser Session merken (verschlüsselt, gelöscht nach Sperren, Inaktivität oder Neuladen)",
+      "submit": "Job öffnen und prüfen",
+      "invalid": "Ungültiger Secret Key.",
+      "wrongKey": "Dieser Secret Key gehört nicht zum geladenen Konto {{account}}.",
+      "keyReady": "Der eingegebene Key wird verwendet, keine weitere Abfrage.",
+      "rememberFailed": "Der Key konnte nicht in der Session gemerkt werden. Er bleibt nur in dieser Ansicht."
+    },
+    "access": {
+      "notFound": "Diesen Job gibt es nicht mehr. Abgeschlossene Jobs werden nach 30 Tagen gelöscht.",
+      "challengeExpired": "Die Anmeldung am Job ist abgelaufen oder wurde schon verwendet. Bitte erneut versuchen.",
+      "invalidSignature": "Die Signatur der Anmeldung wurde abgelehnt. Bitte erneut versuchen.",
+      "timeout": "Der Server antwortet nicht. Bitte später erneut versuchen.",
+      "failed": "Der Job konnte nicht geladen werden ({{code}}). Bitte Verbindung prüfen und erneut versuchen.",
+      "tokenRejected": "Der Zugriff wurde abgelehnt. Bitte den Secret Key erneut eingeben."
     }
   },
   "secretModal": {

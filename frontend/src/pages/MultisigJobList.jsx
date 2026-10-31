@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { apiUrl } from '../utils/apiBase.js';
 import { needsSignatureFrom } from '../utils/multisig/jobSigningState.js';
 
-function MultisigJobList({ onBack, publicKey, onOpenDetail }) {
+function MultisigJobList({ onBack, publicKey, onOpenDetail, refreshKey = 0 }) {
   const { t } = useTranslation(['multisig', 'common']);
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -62,7 +62,8 @@ function MultisigJobList({ onBack, publicKey, onOpenDetail }) {
     }
   }, [netLabel, accountId, includeSignerJobs, onlyPendingForMe]);
 
-  useEffect(() => { void loadJobs(); }, [loadJobs]);
+  // refreshKey: nach dem Schliessen eines Jobs neu laden (Status kann sich geaendert haben).
+  useEffect(() => { void loadJobs(); }, [loadJobs, refreshKey]);
 
   const renderStatus = (status) => t(`multisig:list.status.${status}`, status);
 

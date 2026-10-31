@@ -28,12 +28,17 @@ const hoisted = vi.hoisted(() => ({
   submitMock: vi.fn(),
   rootMock: vi.fn(),
   poolMock: vi.fn(),
+  challengeMock: vi.fn(),
+  tokenMock: vi.fn(),
 }));
 
 vi.mock('../../utils/multisigApi.js', async (importOriginal) => ({
   ...(await importOriginal()),
   getPendingMultisigJob: hoisted.getJobMock,
   mergeSignedXdr: hoisted.mergeMock,
+  getMultisigJobChallenge: hoisted.challengeMock,
+  getMultisigJobAccessToken: hoisted.tokenMock,
+  signMultisigJobChallenge: () => 'signature',
 }));
 
 vi.mock('../../utils/sessionSecrets.js', async (importOriginal) => ({
@@ -187,7 +192,7 @@ describe('Multisig-Job widerrufen (P2.3)', () => {
     hoisted.getJobMock.mockImplementation(async () => makeJob({ status: 'obsolete_seq' }));
     renderPage();
     await waitFor(() => expect(hoisted.getJobMock).toHaveBeenCalled());
-    await screen.findByText(/obsolete_seq/);
+    await screen.findByText(/Status: Veraltete Sequence/);
     expect(screen.queryByRole('button', { name: 'Job widerrufen' })).not.toBeInTheDocument();
   });
 
@@ -403,7 +408,7 @@ describe('Pruefung der Job-Transaktion (K1, M1)', () => {
   it('zeigt bei Endzustaenden keinen Dekodier-Hinweis mehr', async () => {
     hoisted.getJobMock.mockImplementation(async () => makeJob({ txXdr: 'kein-xdr', status: 'submitted_success' }));
     renderPage();
-    await screen.findByText(/submitted_success/);
+    await screen.findByText(/Status: Gesendet/);
     expect(screen.queryByTestId('job-integrity-block')).not.toBeInTheDocument();
     expect(screen.queryByTestId('job-import-blocked')).not.toBeInTheDocument();
   });
@@ -1109,5 +1114,60 @@ describe('F2: eigenes Konto als Quelle einer Operation', () => {
     expect(screen.queryByTestId('job-own-account-source')).toBeNull();
     fireEvent.click(signButton());
     await waitFor(() => expect(hoisted.mergeMock).toHaveBeenCalledTimes(1));
+  });
+});
+
+describe('Job ohne Token oeffnen und signieren', () => {
+  const pageFor = (jobId) => (
+    <I18nextProvider i18n={i18n}>
+      <MultisigJobDetail jobId={jobId} currentPublicKey={SIGNER_A.publicKey} onBack={() => {}} />
+    </I18nextProvider>
+  );
+  const unlock = async () => {
+    await screen.findByTestId('job-unlock');
+    fireEvent.change(screen.getByLabelText('Secret Key'), { target: { value: SIGNER_A.secret } });
+    fireEvent.click(screen.getByRole('button', { name: 'Job öffnen und prüfen' }));
+  };
+  const signButton = () => screen.getAllByRole('button', { name: 'Jetzt signieren' })[0];
+
+  beforeEach(() => {
+    hoisted.challengeMock.mockResolvedValue({ challenge: 'AAAA' });
+    hoisted.tokenMock.mockResolvedValue('tok-unlock');
+  });
+
+  it('signiert nach dem Oeffnen mit dem eingegebenen Key ohne zweite Abfrage und verwirft ihn danach', async () => {
+    render(pageFor('job-1'));
+    await unlock();
+    await screen.findByTestId('job-key-ready');
+    fireEvent.click(signButton());
+    await waitFor(() => expect(hoisted.mergeMock).toHaveBeenCalledTimes(1));
+    expect(hoisted.mergeMock.mock.calls[0][0].accessToken).toBe('tok-unlock');
+    expect(document.querySelector('input[type="password"]')).toBeNull();
+    expect(screen.queryByTestId('job-key-ready')).toBeNull();
+  });
+
+  it('verwirft den eingegebenen Key beim Sperren der Session', async () => {
+    render(pageFor('job-1'));
+    await unlock();
+    await screen.findByTestId('job-key-ready');
+    act(() => { window.dispatchEvent(new CustomEvent('skm:session-locked')); });
+    expect(screen.queryByTestId('job-key-ready')).toBeNull();
+    fireEvent.click(signButton());
+    await waitFor(() => expect(document.querySelector('input[type="password"]')).not.toBeNull());
+    expect(hoisted.mergeMock).not.toHaveBeenCalled();
+  });
+
+  it('uebernimmt bei Jobwechsel waehrend der Anmeldung weder Token noch Key', async () => {
+    let release;
+    hoisted.tokenMock.mockImplementationOnce(() => new Promise((resolve) => { release = () => resolve('tok-alt'); }));
+    const view = render(pageFor('job-1'));
+    await unlock();
+    await waitFor(() => expect(release).toBeDefined());
+    view.rerender(pageFor('job-2'));
+    await act(async () => { release(); });
+    await screen.findByTestId('job-unlock');
+    expect(hoisted.getJobMock).not.toHaveBeenCalledWith('job-2', 'tok-alt');
+    expect(hoisted.getJobMock).not.toHaveBeenCalledWith('job-1', 'tok-alt');
+    expect(screen.queryByTestId('job-key-ready')).toBeNull();
   });
 });

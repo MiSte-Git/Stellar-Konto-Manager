@@ -241,6 +241,8 @@ function Main() {
   const [showSecretInfo, setShowSecretInfo] = useState(false);
   const [activeJobId, setActiveJobId] = useState(() => readMenuStateFromUrl().activeJobId);
   const [activeJobToken, setActiveJobToken] = useState(() => readMenuStateFromUrl().activeJobToken);
+  // Erhoeht beim Schliessen eines Jobs, damit die Jobliste den neuen Status laedt.
+  const [jobListRefresh, setJobListRefresh] = useState(0);
   // Dev/Testnet toggle state synced with localStorage
   const [devTestnet, setDevTestnet] = useState(false);
    // Send Payment initial values (e.g., for donation)
@@ -1207,6 +1209,7 @@ function Main() {
       {menuSelection === 'multisigJobs' && (
         <div className="max-w-5xl mx-auto px-3">
           <MultisigJobList
+            refreshKey={jobListRefresh}
             publicKey={sourcePublicKey}
             onBack={() => setMenuSelection(null)}
             onOpenDetail={(id) => { setActiveJobId(id); setActiveJobToken(null); }}
@@ -1310,9 +1313,9 @@ function Main() {
               <button
                 type="button"
                 className="text-sm px-3 py-1 rounded-sm border hover:bg-gray-100 dark:hover:bg-gray-800"
-                onClick={() => { setActiveJobId(null); setActiveJobToken(null); }}
+                onClick={() => { setActiveJobId(null); setActiveJobToken(null); setJobListRefresh((n) => n + 1); }}
               >
-                {t('common:option.back', 'Zurück')}
+                {t('common:close', 'Schliessen')}
               </button>
             </div>
             <div className="p-4">

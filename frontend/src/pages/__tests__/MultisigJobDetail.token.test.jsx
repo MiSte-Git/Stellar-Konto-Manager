@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { I18nextProvider } from 'react-i18next';
 import i18n from '../../i18n.js';
 import MultisigJobDetail from '../MultisigJobDetail.jsx';
@@ -13,6 +13,7 @@ const hoisted = vi.hoisted(() => ({
   challenge: vi.fn(),
   accessToken: vi.fn(),
   sessionSecret: vi.fn(),
+  remember: vi.fn(),
 }));
 
 vi.mock('../../utils/multisigApi.js', async (importOriginal) => ({
@@ -26,6 +27,7 @@ vi.mock('../../utils/multisigApi.js', async (importOriginal) => ({
 vi.mock('../../utils/sessionSecrets.js', async (importOriginal) => ({
   ...(await importOriginal()),
   getSessionSecret: hoisted.sessionSecret,
+  rememberSessionSecrets: hoisted.remember,
 }));
 
 function renderDetail(props) {
@@ -81,9 +83,97 @@ describe('MultisigJobDetail: Zugriffstoken', () => {
       expect(hoisted.accessToken).toHaveBeenCalledWith('d-reload', SIGNER, 'signature');
     });
 
-    it('erklaert ohne Secret, warum das Token fehlt und was zu tun ist', async () => {
+    const OTHER_SECRET = 'SBFKGXZFIZJ5U2RZTPBZ3EUCKQQGT5APKWAHGTQCJQSLD4CXIIHOVYVO';
+    const unlockInput = () => screen.getByLabelText('Secret Key');
+    const openButton = () => screen.getByRole('button', { name: 'Job öffnen und prüfen' });
+
+    it('fragt ohne gemerktes Secret den Secret Key ab, statt nur einen Fehler zu zeigen', async () => {
       renderDetail({ jobId: 'd-reload', currentPublicKey: SIGNER });
-      expect(await screen.findByText(/bleibt nur bis zum Neuladen der Seite erhalten.*"Secret merken"/)).toBeInTheDocument();
+      expect(await screen.findByTestId('job-unlock')).toHaveTextContent(SIGNER);
+      expect(hoisted.getJob).not.toHaveBeenCalled();
+      expect(hoisted.challenge).not.toHaveBeenCalled();
+      expect(openButton()).toBeDisabled();
+    });
+
+    it('oeffnet den Job mit dem eingegebenen Key ueber die Challenge, ohne ihn zu merken', async () => {
+      renderDetail({ jobId: 'd-reload', currentPublicKey: SIGNER });
+      await screen.findByTestId('job-unlock');
+      fireEvent.change(unlockInput(), { target: { value: SECRET } });
+      fireEvent.click(openButton());
+      await waitFor(() => expect(hoisted.getJob).toHaveBeenCalledWith('d-reload', 'tok-challenge'));
+      expect(hoisted.challenge).toHaveBeenCalledWith('d-reload', SIGNER);
+      expect(hoisted.accessToken).toHaveBeenCalledWith('d-reload', SIGNER, 'signature');
+      expect(hoisted.remember).not.toHaveBeenCalled();
+      expect(screen.queryByTestId('job-unlock')).toBeNull();
+    });
+
+    it('merkt den Key nur, wenn ausdruecklich gewaehlt', async () => {
+      renderDetail({ jobId: 'd-reload', currentPublicKey: SIGNER });
+      await screen.findByTestId('job-unlock');
+      fireEvent.change(unlockInput(), { target: { value: SECRET } });
+      fireEvent.click(screen.getByRole('checkbox', { name: /In dieser Session merken/ }));
+      fireEvent.click(openButton());
+      await waitFor(() => expect(hoisted.remember).toHaveBeenCalledTimes(1));
+      expect(hoisted.remember.mock.calls[0][0]).toBe(SIGNER);
+      expect(hoisted.remember.mock.calls[0][1][0].keypair.publicKey()).toBe(SIGNER);
+    });
+
+    it('lehnt einen Key eines anderen Kontos und ungueltige Eingaben ab, ohne Challenge', async () => {
+      renderDetail({ jobId: 'd-reload', currentPublicKey: SIGNER });
+      await screen.findByTestId('job-unlock');
+      fireEvent.change(unlockInput(), { target: { value: OTHER_SECRET } });
+      fireEvent.click(openButton());
+      expect(await screen.findByText(/gehört nicht zum geladenen Konto/)).toBeInTheDocument();
+      fireEvent.change(unlockInput(), { target: { value: 'SKAPUTT' } });
+      fireEvent.click(openButton());
+      expect(await screen.findByText('Ungültiger Secret Key.')).toBeInTheDocument();
+      expect(hoisted.challenge).not.toHaveBeenCalled();
+    });
+
+    it('holt bei doppeltem Laden nur eine Challenge (kein challenge_missing_or_expired)', async () => {
+      hoisted.sessionSecret.mockResolvedValue(SECRET);
+      let release;
+      hoisted.challenge.mockImplementation(() => new Promise((resolve) => { release = () => resolve({ challenge: 'AAAA' }); }));
+      render(
+        <React.StrictMode>
+          <I18nextProvider i18n={i18n}>
+            <MultisigJobDetail jobId="d-reload" currentPublicKey={SIGNER} onBack={() => {}} />
+          </I18nextProvider>
+        </React.StrictMode>
+      );
+      await waitFor(() => expect(hoisted.challenge).toHaveBeenCalled());
+      await act(async () => { release(); });
+      await waitFor(() => expect(hoisted.getJob).toHaveBeenCalledWith('d-reload', 'tok-challenge'));
+      expect(hoisted.challenge).toHaveBeenCalledTimes(1);
+    });
+
+    it('zeigt verstaendliche Texte statt Fehlercodes', async () => {
+      hoisted.challenge.mockResolvedValue({ challenge: 'AAAA' });
+      hoisted.accessToken.mockRejectedValue(Object.assign(new Error('challenge_missing_or_expired'), { status: 400 }));
+      renderDetail({ jobId: 'd-reload', currentPublicKey: SIGNER });
+      await screen.findByTestId('job-unlock');
+      fireEvent.change(unlockInput(), { target: { value: SECRET } });
+      fireEvent.click(openButton());
+      expect(await screen.findByText(/Die Anmeldung am Job ist abgelaufen/)).toBeInTheDocument();
+    });
+
+    it('verlangt nach abgelehntem Token erneut den Key, statt am alten Token festzuhaengen', async () => {
+      hoisted.getJob.mockRejectedValueOnce(Object.assign(new Error('forbidden'), { status: 403 }));
+      renderDetail({ jobId: 'd-reload', currentPublicKey: SIGNER });
+      await screen.findByTestId('job-unlock');
+      fireEvent.change(unlockInput(), { target: { value: SECRET } });
+      fireEvent.click(openButton());
+      expect(await screen.findByText(/Bitte den Secret Key erneut eingeben/)).toBeInTheDocument();
+      expect(screen.getByTestId('job-unlock')).toBeInTheDocument();
+    });
+
+    it('nennt im Dialog, wenn das Konto kein Signer des Jobs ist', async () => {
+      hoisted.challenge.mockRejectedValue(Object.assign(new Error('forbidden'), { status: 403 }));
+      renderDetail({ jobId: 'd-reload', currentPublicKey: SIGNER });
+      await screen.findByTestId('job-unlock');
+      fireEvent.change(unlockInput(), { target: { value: SECRET } });
+      fireEvent.click(openButton());
+      expect(await screen.findByText('Dieses Konto ist kein aktiver Signer dieses Auftrags.')).toBeInTheDocument();
       expect(hoisted.getJob).not.toHaveBeenCalled();
     });
 

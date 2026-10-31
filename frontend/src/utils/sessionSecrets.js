@@ -259,9 +259,16 @@ export function getSessionSecretAccountCount() {
 // inactivity timeout below and by the explicit lock button in the top bar -
 // both mean "this session must not be able to sign anything anymore", for any
 // account, not just the one that happens to be active.
+// Wird bei jedem Sperren gesendet (Schloss, Inaktivitaets-Timeout), auch wenn nichts gespeichert
+// war: Ansichten, die einen eingegebenen Key nur im Speicher halten, verwerfen ihn dann.
+export const SESSION_LOCKED_EVENT = 'skm:session-locked';
+
 export function clearAllSessionSecrets() {
   // Gesperrt heisst auch: kein Zahlungsentwurf kommt nach dem naechsten Einhaengen zurueck.
   clearSendPaymentDraft();
+  try {
+    if (typeof window !== 'undefined') window.dispatchEvent(new CustomEvent(SESSION_LOCKED_EVENT));
+  } catch { /* noop */ }
   try {
     const keysToRemove = [];
     for (let i = 0; i < sessionStorage.length; i += 1) {
