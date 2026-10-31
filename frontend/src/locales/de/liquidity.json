@@ -117,7 +117,9 @@
     "noteLabel": "Hinweis",
     "depositHint": "Die Preisgrenzen beziehen sich auf den aktuellen Kurs. Bewegt sich der Kurs bis zur letzten Signatur darüber hinaus, scheitert die Transaktion (op_bad_price) und der Job muss neu erstellt werden.",
     "withdrawHint": "Die Mindestbeträge beziehen sich auf den aktuellen Kurs. Bewegt sich der Kurs bis zur letzten Signatur so, dass sie unterschritten werden, scheitert die Transaktion (op_under_minimum) und der Job muss neu erstellt werden.",
-    "removeTrustHint": "Die Pool-Trustline wird nur entfernt, wenn bei der Ausführung genau dieser Share-Bestand vorliegt. Ändert sich der Share-Bestand bis dahin, scheitert die gesamte Transaktion."
+    "removeTrustHint": "Die Pool-Trustline wird nur entfernt, wenn bei der Ausführung genau dieser Share-Bestand vorliegt. Ändert sich der Share-Bestand bis dahin, scheitert die gesamte Transaktion.",
+    "maxFee": "Maximale Fee",
+    "maxFeeHint": "Für Multisig-Jobs bietet SKM eine höhere Fee (mindestens das Zehnfache der Basisgebühr je Operation), weil die Netzlast beim späteren Einreichen nicht absehbar ist. Die Fee ist ein Höchstgebot."
   },
   "deposit": {
     "title": "Liquidität einzahlen",

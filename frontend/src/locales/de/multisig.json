@@ -212,7 +212,7 @@
         "body": "Die Signaturen wurden erfolgreich mit diesem Multisig-Job gemergt. Aktueller Status: {{status}}."
       },
       "blockedIntegrityHint": "Import gesperrt, weil die Transaktion die Prüfung oben nicht bestanden hat.",
-      "blockedHint": "Zuerst die Warnungen bei den Transaktionsoperationen oben bestätigen."
+      "blockedHint": "Zuerst die Warnungen oben bestätigen (Transaktion und Operationen)."
     },
     "secretPrompt": {
       "title": "Secret eingeben, um zu signieren",
@@ -365,6 +365,55 @@
       "networkMismatch": "Der Horizon-Server gehört nicht zum Netzwerk dieses Jobs. Es wurde nichts signiert oder gesendet.",
       "noThresholds": "Die Thresholds des Kontos konnten nicht gelesen werden, ein Widerruf ist nicht möglich.",
       "ambiguous": "Das Ergebnis ist unklar (Netzwerkfehler). Bitte prüfe die Transaktion {{hash}} im Explorer, bevor du es erneut versuchst."
+    },
+    "tx": {
+      "title": "Transaktion",
+      "labels": {
+        "source": "Quellkonto",
+        "sourceBase": "Basiskonto",
+        "sequence": "Sequence",
+        "memoType": "Memo Typ",
+        "memo": "Memo",
+        "memoHex": "Memo (Hex)",
+        "fee": "Maximale Fee",
+        "feePerOp": "Maximale Fee je Operation",
+        "feeBumpSource": "Fee-Bump: zahlendes Konto",
+        "feeBumpFee": "Fee-Bump: maximale Fee",
+        "validFrom": "Gültig ab",
+        "minLedger": "Frühestes Ledger",
+        "maxLedger": "Letztes Ledger",
+        "minAccountSequence": "Min. Account Sequence",
+        "minAccountSequenceAge": "Min. Alter der Sequence",
+        "minAccountSequenceLedgerGap": "Min. Ledger-Abstand zur Sequence",
+        "extraSigner": "Extra Signer {{n}}",
+        "extraSignerAccount": "Extra Signer {{n}}: Konto",
+        "extraSignerPayload": "Extra Signer {{n}}: Payload (Hex)"
+      },
+      "memoTypes": {
+        "none": "Kein Memo",
+        "text": "Text",
+        "id": "ID",
+        "hash": "Hash",
+        "return": "Return"
+      },
+      "validFromNow": "sofort",
+      "unbounded": "unbegrenzt",
+      "seconds": "{{value}} Sekunden",
+      "unreadable": "nicht lesbar",
+      "feeHint": "Die Fee ist ein Höchstgebot. Ohne Netzlast wird nur die Basisgebühr berechnet, bei Netzlast bis zu diesem Betrag.",
+      "warnMemoNotUtf8": "Das Text-Memo ist kein gültiges UTF-8 und wird deshalb als Hex angezeigt.",
+      "warnMemoInvisible": "Das Memo enthält unsichtbare oder leicht verwechselbare Zeichen (z. B. Steuer-, Zero-Width- oder Bidi-Zeichen, besondere Leerzeichen). Sie sind als \\u… dargestellt. Prüfe das Memo genau.",
+      "warnMemoWhitespace": "Das Memo beginnt oder endet mit einem Leerzeichen.",
+      "warnHighFee": "Die Fee liegt über dem, was SKM selbst bietet (höchstens {{max}} je Operation). Sie ist ein Höchstgebot: Bei Netzlast kann sie bis zu diesem Betrag kosten.",
+      "warnPreconditions": "Diese Transaktion hat Bedingungen, die SKM selbst nie setzt: {{list}}. Sie bestimmen, ab wann oder unter welchen Umständen die Transaktion gültig ist; ein Extra Signer verlangt zusätzlich die Signatur eines weiteren Schlüssels. Prüfe die gelb markierten Zeilen, bevor du signierst.",
+      "confirmPreconditions": "Ich habe die zusätzlichen Bedingungen geprüft und möchte trotzdem signieren.",
+      "preconditionNames": {
+        "ledgerBounds": "Ledger-Grenzen",
+        "minAccountSequence": "Min. Account Sequence",
+        "minAccountSequenceAge": "Min. Alter der Sequence",
+        "minAccountSequenceLedgerGap": "Min. Ledger-Abstand",
+        "extraSigners": "Extra Signer"
+      }
     }
   },
   "secretModal": {

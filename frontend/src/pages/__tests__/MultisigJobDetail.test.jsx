@@ -1,7 +1,7 @@
 import React from 'react';
 import { act, render, screen, waitFor, fireEvent, within } from '@testing-library/react';
 import { I18nextProvider } from 'react-i18next';
-import { Account, Asset, Keypair, LiquidityPoolAsset, LiquidityPoolFeeV18, MuxedAccount, Networks, Operation, TransactionBuilder } from '@stellar/stellar-sdk';
+import { Account, Asset, Keypair, LiquidityPoolAsset, LiquidityPoolFeeV18, Memo, MuxedAccount, Networks, Operation, TransactionBuilder } from '@stellar/stellar-sdk';
 import i18n from '../../i18n.js';
 import MultisigJobDetail from '../MultisigJobDetail.jsx';
 import { txHashHex } from '../../utils/stellar/txHash.js';
@@ -863,5 +863,176 @@ describe('Liquidity-Pool-Jobs im Job-Detail (Stufe 2b)', () => {
     expect(await screen.findByText(/op_underfunded/)).toBeInTheDocument();
     expect(screen.queryByTestId('job-submit-liquidity-error')).toBeNull();
     expect(hoisted.poolMock).not.toHaveBeenCalled();
+  });
+});
+
+describe('Memo, Fee und Preconditions im Job-Detail (H1)', () => {
+  const jobFor = (tx, overrides = {}) => makeJob({ txXdr: tx.toXDR(), txHash: txHashHex(tx), ...overrides });
+  const txWith = ({ fee = '1000', memo, opSource, ...opts } = {}) => {
+    const b = new TransactionBuilder(new Account(SOURCE, '100'), { fee, networkPassphrase: Networks.TESTNET, ...opts })
+      .addOperation(Operation.payment({ destination: SIGNER_B.publicKey, asset: Asset.native(), amount: '1', source: opSource }));
+    if (memo) b.addMemo(memo);
+    if (!opts.timebounds) b.setTimeout(86400);
+    return b.build();
+  };
+  const withExtraSigner = (o = {}) => txWith({ timebounds: { minTime: 0, maxTime: Math.floor(Date.now() / 1000) + 86400 }, extraSigners: [SIGNER_B.publicKey], ...o });
+  const signButton = () => screen.getAllByRole('button', { name: 'Jetzt signieren' })[0];
+  const PRECOND = /zusätzlichen Bedingungen geprüft/;
+  const FOREIGN = /fremden Quellkonten geprüft/;
+  const importInput = () => screen.getByPlaceholderText('Signiertes XDR');
+  const importButton = () => screen.getByRole('button', { name: 'Signiertes XDR mergen' });
+  const pageFor = (jobId) => (
+    <I18nextProvider i18n={i18n}>
+      <MultisigJobDetail jobId={jobId} accessToken="tok" currentPublicKey={SIGNER_A.publicKey} onBack={() => {}} />
+    </I18nextProvider>
+  );
+
+  it('zeigt Memo mit Typ, maximale Fee und Zeitfenster vor den Operationen', async () => {
+    hoisted.getJobMock.mockImplementation(async () => jobFor(txWith({ memo: Memo.id('18446744073709551615') })));
+    renderPage();
+    const details = await screen.findByTestId('job-tx-details');
+    expect(screen.getByTestId('job-tx-row-memoType')).toHaveTextContent('Memo TypID');
+    expect(screen.getByTestId('job-tx-row-memo')).toHaveTextContent('18446744073709551615');
+    expect(screen.getByTestId('job-tx-row-fee')).toHaveTextContent('Maximale Fee0,0001 XLM');
+    expect(screen.getByTestId('job-tx-row-source')).toHaveTextContent(SOURCE);
+    expect(details).toHaveTextContent('Gültig ab');
+    expect(details).toHaveTextContent('Gültig bis');
+    expect(screen.getByText(/Die Fee ist ein Höchstgebot/)).toBeInTheDocument();
+    expect(details.compareDocumentPosition(screen.getByTestId('operation-blocks')) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(screen.queryByTestId('job-tx-warnings')).toBeNull();
+    expect(screen.queryByTestId('job-tx-preconditions')).toBeNull();
+  });
+
+  it('zeigt "kein Memo" ausdruecklich und ein Text-Memo mit sichtbaren Steuerzeichen', async () => {
+    hoisted.getJobMock.mockImplementation(async () => jobFor(txWith({ memo: Memo.text('12​34 ') })));
+    renderPage();
+    expect(await screen.findByTestId('job-tx-row-memo')).toHaveTextContent('"12\\u200B34 "');
+    expect(screen.getByTestId('job-tx-warnings')).toHaveTextContent('unsichtbare oder leicht verwechselbare Zeichen');
+  });
+
+  it('hebt eine hohe Fee hervor, ohne das Signieren zu sperren', async () => {
+    hoisted.getJobMock.mockImplementation(async () => jobFor(txWith({ fee: '2500000000' })));
+    hoisted.sessionSecretMock.mockResolvedValue(SIGNER_A.secret);
+    renderPage();
+    expect(await screen.findByTestId('job-tx-row-fee')).toHaveAttribute('data-warn', 'true');
+    expect(screen.getByTestId('job-tx-row-fee')).toHaveTextContent('250,0 XLM');
+    expect(screen.getByTestId('job-tx-warnings')).toHaveTextContent('über dem, was SKM selbst bietet');
+    expect(signButton()).toBeEnabled();
+  });
+
+  it('sperrt Signieren und Import bei Extra Signer bis zur Bestaetigung', async () => {
+    hoisted.getJobMock.mockImplementation(async () => jobFor(withExtraSigner()));
+    hoisted.sessionSecretMock.mockResolvedValue(SIGNER_A.secret);
+    renderPage();
+    const box = await screen.findByTestId('job-tx-preconditions');
+    expect(box).toHaveTextContent('Extra Signer');
+    expect(screen.getByTestId('job-tx-row-extraSigner1')).toHaveTextContent(SIGNER_B.publicKey);
+    expect(signButton()).toBeDisabled();
+    fireEvent.change(importInput(), { target: { value: 'AAAA-signiert' } });
+    expect(importButton()).toBeDisabled();
+    expect(screen.getByTestId('job-import-blocked')).toHaveTextContent('Transaktion und Operationen');
+    fireEvent.click(screen.getByRole('checkbox', { name: PRECOND }));
+    expect(importButton()).toBeEnabled();
+    expect(signButton()).toBeEnabled();
+    fireEvent.click(signButton());
+    await waitFor(() => expect(hoisted.mergeMock).toHaveBeenCalledTimes(1));
+  });
+
+  it('zeigt minTime, verlangt dafuer aber keine Bestaetigung', async () => {
+    const future = Math.floor(Date.now() / 1000) + 3600;
+    hoisted.getJobMock.mockImplementation(async () => jobFor(txWith({ timebounds: { minTime: future, maxTime: future + 86400 } })));
+    hoisted.sessionSecretMock.mockResolvedValue(SIGNER_A.secret);
+    renderPage();
+    expect(await screen.findByTestId('job-tx-row-validFrom')).not.toHaveTextContent('sofort');
+    expect(screen.queryByTestId('job-tx-preconditions')).toBeNull();
+    expect(signButton()).toBeEnabled();
+  });
+
+  it('sperrt die Secret-Eingabe wieder, wenn die Precondition-Bestaetigung zurueckgenommen wird', async () => {
+    hoisted.getJobMock.mockImplementation(async () => jobFor(withExtraSigner()));
+    renderPage();
+    fireEvent.click(await screen.findByRole('checkbox', { name: PRECOND }));
+    fireEvent.click(signButton());
+    await waitFor(() => expect(document.querySelector('input[type="password"]')).not.toBeNull());
+    fireEvent.change(document.querySelector('input[type="password"]'), { target: { value: SIGNER_A.secret } });
+    const promptButton = () => screen.getAllByRole('button', { name: 'Jetzt signieren' })[1];
+    expect(promptButton()).toBeEnabled();
+    fireEvent.click(screen.getByRole('checkbox', { name: PRECOND }));
+    expect(promptButton()).toBeDisabled();
+    fireEvent.click(promptButton());
+    expect(hoisted.mergeMock).not.toHaveBeenCalled();
+  });
+
+  it('Fee-Bump: Preconditions der inneren Transaktion verlangen die Bestaetigung', async () => {
+    const inner = withExtraSigner();
+    inner.sign(Keypair.fromSecret(SIGNER_A.secret));
+    const bump = TransactionBuilder.buildFeeBumpTransaction(Keypair.fromSecret(SIGNER_B.secret), '2000', inner, Networks.TESTNET);
+    hoisted.getJobMock.mockImplementation(async () => makeJob({ txXdr: bump.toXDR(), txHash: txHashHex(bump) }));
+    hoisted.sessionSecretMock.mockResolvedValue(SIGNER_A.secret);
+    renderPage();
+    expect(await screen.findByTestId('job-tx-preconditions')).toHaveTextContent('Extra Signer');
+    expect(screen.getByTestId('job-tx-row-feeBumpSource')).toHaveTextContent(SIGNER_B.publicKey);
+    expect(signButton()).toBeDisabled();
+    fireEvent.click(screen.getByRole('checkbox', { name: PRECOND }));
+    expect(signButton()).toBeEnabled();
+  });
+
+  it('verlangt bei Precondition und fremdem Quellkonto beide Bestaetigungen', async () => {
+    hoisted.getJobMock.mockImplementation(async () => jobFor(withExtraSigner({ opSource: SIGNER_A.publicKey })));
+    hoisted.sessionSecretMock.mockResolvedValue(SIGNER_A.secret);
+    renderPage();
+    const precond = await screen.findByRole('checkbox', { name: PRECOND });
+    const foreign = screen.getByRole('checkbox', { name: FOREIGN });
+    fireEvent.click(precond);
+    expect(signButton()).toBeDisabled();
+    fireEvent.click(foreign);
+    expect(signButton()).toBeEnabled();
+    fireEvent.click(precond);
+    expect(signButton()).toBeDisabled();
+  });
+
+  it('bindet die Bestaetigung an Job und Hash', async () => {
+    const tx = withExtraSigner();
+    hoisted.getJobMock.mockImplementation(async () => jobFor(tx));
+    const view = render(pageFor('job-1'));
+    fireEvent.click(await screen.findByRole('checkbox', { name: PRECOND }));
+    fireEvent.click(screen.getByRole('button', { name: 'Neu laden' }));
+    await waitFor(() => expect(hoisted.getJobMock).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Neu laden' })).toBeEnabled());
+    expect(screen.getByRole('checkbox', { name: PRECOND })).toBeChecked();
+
+    // Neues XDR im selben Job
+    const other = withExtraSigner({ fee: '2000' });
+    hoisted.getJobMock.mockImplementation(async () => jobFor(other));
+    fireEvent.click(screen.getByRole('button', { name: 'Neu laden' }));
+    await waitFor(() => expect(screen.getByRole('checkbox', { name: PRECOND })).not.toBeChecked());
+
+    // Gleiches XDR in einem anderen Job
+    fireEvent.click(screen.getByRole('checkbox', { name: PRECOND }));
+    view.rerender(pageFor('job-2'));
+    await waitFor(() => expect(hoisted.getJobMock).toHaveBeenCalledWith('job-2', 'tok'));
+    await waitFor(() => expect(screen.getByRole('checkbox', { name: PRECOND })).not.toBeChecked());
+    expect(signButton()).toBeDisabled();
+  });
+
+  it('bietet im Endzustand und bei Integritaetsfehler keine Bestaetigung an', async () => {
+    hoisted.getJobMock.mockImplementation(async () => jobFor(withExtraSigner(), { status: 'expired' }));
+    const view = render(pageFor('job-1'));
+    await screen.findByTestId('job-tx-preconditions');
+    expect(screen.queryByRole('checkbox', { name: PRECOND })).toBeNull();
+    view.unmount();
+
+    hoisted.getJobMock.mockImplementation(async () => jobFor(withExtraSigner(), { txHash: 'f'.repeat(64) }));
+    renderPage();
+    await screen.findByTestId('job-tx-preconditions');
+    expect(screen.queryByRole('checkbox', { name: PRECOND })).toBeNull();
+    expect(signButton()).toBeDisabled();
+  });
+
+  it('laesst den Abschnitt bei nicht dekodierbarem XDR weg', async () => {
+    hoisted.getJobMock.mockImplementation(async () => makeJob({ txXdr: 'kein-xdr' }));
+    renderPage();
+    await screen.findByText(/Keine Operationen erkennbar/);
+    expect(screen.queryByTestId('job-tx-details')).toBeNull();
   });
 });

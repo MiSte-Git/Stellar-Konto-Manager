@@ -596,6 +596,9 @@ describe('Multisig-Konten: Optionsdialog (Job, lokal, XDR)', () => {
     expect(summary).toHaveTextContent(/Erwartete Pool SharesRichtwert, kann bei Kursbewegung innerhalb der Slippage niedriger ausfallen[\d.,]+ Pool Shares/);
     expect(summary).toHaveTextContent(/Zulässiger Preis9,95 bis 10,05 XLM je USD:/);
     expect(summary).toHaveTextContent('Hinweis: Die Preisgrenzen beziehen sich auf den aktuellen Kurs.');
+    // S12: Fee des Jobs (10x Basisgebuehr je Operation, 2 Operationen), nicht die Vorschau-Fee
+    expect(tx.fee).toBe('2000');
+    expect(summary).toHaveTextContent(/Maximale FeeFür Multisig-Jobs bietet SKM eine höhere Fee.*0,0002 XLM/);
     // jobCreated-Sperre: kein weiterer Job, kein direkter Weg
     expect(screen.getByRole('button', { name: 'Signieren und senden' })).toBeDisabled();
     expect(hoisted.submit).not.toHaveBeenCalled();
@@ -780,6 +783,7 @@ describe('Multisig-Konten: Optionsdialog (Job, lokal, XDR)', () => {
     expect(summary).toHaveTextContent('wird nach dem Abheben entfernt');
     expect(summary).toHaveTextContent('Abzuhebende Pool Shares30,0 Pool Shares');
     expect(summary).toHaveTextContent(/Mindestens XLMUntergrenze nach Slippage; darunter scheitert die Abhebung \(op_under_minimum\)99,5 XLM/);
+    expect(summary).toHaveTextContent(/Maximale Fee.*0,0002 XLM/);
   });
 
   it('Abheben, Option lokal: SecretKeyModal im Kontext local und Senden', async () => {

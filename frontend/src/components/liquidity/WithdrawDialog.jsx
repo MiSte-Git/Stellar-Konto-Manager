@@ -162,6 +162,8 @@ export default function WithdrawDialog({ poolId, publicKey, network, onClose, on
         { label: t('liquidity:withdraw.minimum', { asset: codeB }), hint: t('liquidity:withdraw.minimumHint'), value: formatAmountWithUnit(c.quote.minAmountB, labelB, locale) },
         { label: t('liquidity:job.slippage'), value: `${formatSlippage(c.quote.slippageBps, locale)} %` },
         { label: t('liquidity:job.poolTrust'), value: t(c.removePoolTrust ? 'liquidity:job.poolTrustRemove' : 'liquidity:job.poolTrustKeep') },
+        // Fee des Jobs (deferred, mindestens 10x Basisgebuehr), nicht die Fee aus der Vorschau.
+        { label: t('liquidity:job.maxFee'), hint: t('liquidity:job.maxFeeHint'), value: formatAmountWithUnit(BigInt(tx.fee), 'XLM', locale) },
         { label: t('liquidity:job.noteLabel'), value: [t('liquidity:job.withdrawHint'), c.removePoolTrust ? t('liquidity:job.removeTrustHint') : ''].filter(Boolean).join(' '), note: true },
       ],
     };

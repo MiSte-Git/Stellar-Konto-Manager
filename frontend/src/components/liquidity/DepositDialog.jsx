@@ -197,6 +197,8 @@ export default function DepositDialog({ poolId, firstAsset, publicKey, network, 
         { label: t('liquidity:deposit.priceBounds'), value: priceRange(c.quote) },
         { label: t('liquidity:job.slippage'), value: `${formatSlippage(c.quote.slippageBps, locale)} %` },
         { label: t('liquidity:job.poolTrust'), value: t(v.freshCheck.needPoolTrust ? 'liquidity:job.poolTrustCreate' : 'liquidity:job.poolTrustExists') },
+        // Fee des Jobs (deferred, mindestens 10x Basisgebuehr), nicht die Fee aus der Vorschau.
+        { label: t('liquidity:job.maxFee'), hint: t('liquidity:job.maxFeeHint'), value: formatAmountWithUnit(BigInt(tx.fee), 'XLM', locale) },
         { label: t('liquidity:job.noteLabel'), value: t('liquidity:job.depositHint'), note: true },
       ],
     };

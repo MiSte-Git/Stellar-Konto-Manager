@@ -8,7 +8,8 @@ import { getSessionSecret } from '../utils/sessionSecrets.js';
 import { takeMultisigJobToken } from '../components/multisig/multisigNavigation.js';
 import { describeOperations, findOperationWarnings, formatAsset } from '../utils/multisig/describeOperations.js';
 import OperationBlocks from '../components/multisig/OperationBlocks.jsx';
-import { formatValidUntil } from '../utils/multisig/formatValidUntil.js';
+import TransactionFacts from '../components/multisig/TransactionFacts.jsx';
+import { describeTransaction } from '../utils/multisig/describeTransaction.js';
 import SecretKeyModal from '../components/SecretKeyModal.jsx';
 import { getHorizonServer } from '../utils/stellar/stellarUtils.js';
 import { resolveFeePerOp } from '../utils/stellar/fees.js';
@@ -177,6 +178,13 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
     () => (decodedTx ? findOperationWarnings((decodedTx.innerTransaction || decodedTx).operations, txSourceAccountId) : { unknownTypes: [], pathPaymentToOther: false, foreignOpSources: [] }),
     [decodedTx, txSourceAccountId]
   );
+  // Memo, Fee, Zeitfenster und weitere Preconditions (H1), nur Anzeige plus Bestaetigungspflicht
+  // fuer Preconditions, die SKM selbst nie setzt.
+  const txDetails = useMemo(
+    () => (decodedTx ? describeTransaction(decodedTx, t, { locale: i18n.language }) : null),
+    [decodedTx, t, i18n.language]
+  );
+  const unusualPreconditions = txDetails?.unusualPreconditions || [];
   // Unbekannte Operationen und fremde Quellkonten: Signieren erst nach ausdruecklicher
   // Bestaetigung. Bewusst zwei getrennte Bestaetigungen: Sie gelten verschiedenen Risiken
   // (nicht lesbare Wirkung gegen Autorisierung fuer ein anderes Konto), keine deckt die andere ab.
@@ -195,6 +203,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
   const setConfirmed = (kind, checked) => setConfirmedFor((prev) => ({ ...prev, [kind]: checked ? confirmationKey : null }));
   const unknownOpsConfirmed = !!confirmationKey && confirmedFor.unknownOps === confirmationKey;
   const foreignSourcesConfirmed = !!confirmationKey && confirmedFor.foreignSources === confirmationKey;
+  const preconditionsConfirmed = !!confirmationKey && confirmedFor.preconditions === confirmationKey;
   // Passt die Transaktion nicht zum Job, gibt es bewusst keine Bestaetigung: Das ist kein
   // abwaegbares Risiko, sondern die Aussage des Servers ist falsch.
   const integrityBlocked = !!job && !isFinalState && !jobCheck.ok;
@@ -202,14 +211,10 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
   const visibleIssues = isFinalState ? jobCheck.issues.filter((i) => i.code !== 'undecodable') : jobCheck.issues;
   const signingBlocked = integrityBlocked
     || (operationWarnings.unknownTypes.length > 0 && !unknownOpsConfirmed)
-    || (operationWarnings.foreignOpSources.length > 0 && !foreignSourcesConfirmed);
+    || (operationWarnings.foreignOpSources.length > 0 && !foreignSourcesConfirmed)
+    || (unusualPreconditions.length > 0 && !preconditionsConfirmed);
   // Importierte Signaturen zaehlen wie eigene: der Merge kann den Job einreichen.
   const importBlocked = signingBlocked && !isFinalState;
-
-  const validUntilLabel = useMemo(
-    () => formatValidUntil(decodedTx?.timeBounds?.maxTime, i18n.language, t),
-    [decodedTx, i18n.language, t]
-  );
 
   // Deliberately NOT a new lifecycle computation (G5 stage 1's
   // computeMultisigLifecycleStatus() already runs server-side on every GET -
@@ -634,6 +639,38 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
 
           <div className="border rounded-sm p-3 space-y-2 text-sm">
             <div className="font-semibold">{t('multisig:detail.transparency.title', 'Transaktionsdetails')}</div>
+            {txDetails && (
+              <div>
+                <div className="text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">
+                  {t('multisig:detail.tx.title', 'Transaktion')}
+                </div>
+                <TransactionFacts details={txDetails} title={t('multisig:detail.tx.title', 'Transaktion')} />
+                <p className="mt-1 text-xs text-gray-600 dark:text-gray-300">
+                  {t('multisig:detail.tx.feeHint', 'Die Fee ist ein Höchstgebot. Ohne Netzlast wird nur die Basisgebühr berechnet, bei Netzlast bis zu diesem Betrag.')}
+                </p>
+                {txDetails.warnings.length > 0 && (
+                  <ul role="alert" className="mt-2 list-disc space-y-0.5 rounded-sm bg-amber-50 p-2 pl-6 text-xs font-medium text-amber-900 dark:bg-amber-900/30 dark:text-amber-100" data-testid="job-tx-warnings">
+                    {txDetails.warnings.map((w) => <li key={w}>{w}</li>)}
+                  </ul>
+                )}
+                {unusualPreconditions.length > 0 && (
+                  <div role="alert" className="mt-2 space-y-1 rounded-sm border border-red-300 bg-red-50 p-2 text-xs text-red-900 dark:border-red-700 dark:bg-red-900/30 dark:text-red-100" data-testid="job-tx-preconditions">
+                    <p className="font-medium">
+                      {t('multisig:detail.tx.warnPreconditions', {
+                        list: unusualPreconditions.map((key) => t(`multisig:detail.tx.preconditionNames.${key}`, { defaultValue: key })).join(', '),
+                        defaultValue: 'Diese Transaktion hat Bedingungen, die SKM selbst nie setzt: {{list}}. Sie bestimmen, ab wann oder unter welchen Umständen die Transaktion gültig ist; ein Extra Signer verlangt zusätzlich die Signatur eines weiteren Schlüssels. Prüfe die gelb markierten Zeilen, bevor du signierst.',
+                      })}
+                    </p>
+                    {!isFinalState && !integrityBlocked && (
+                      <label className="flex items-center gap-2">
+                        <input type="checkbox" checked={preconditionsConfirmed} onChange={(e) => setConfirmed('preconditions', e.target.checked)} />
+                        {t('multisig:detail.tx.confirmPreconditions', 'Ich habe die zusätzlichen Bedingungen geprüft und möchte trotzdem signieren.')}
+                      </label>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
             <div>
               <div className="text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">
                 {t('multisig:detail.operations.title', 'Transaktionsoperationen')}
@@ -689,10 +726,6 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
               )}
             </div>
             <div className="flex flex-wrap gap-x-6 gap-y-1">
-              <div>
-                <span className="text-gray-600 dark:text-gray-300">{t('multisig:detail.validUntil.label', 'Gültig bis')}: </span>
-                <span className="font-medium text-gray-900 dark:text-gray-100">{validUntilLabel}</span>
-              </div>
               <div>
                 <span className="text-gray-600 dark:text-gray-300">{t('multisig:detail.sequenceStatus.label', 'Sequenz-Status')}: </span>
                 <span className={`font-medium ${sequenceLooksAlive ? 'text-green-700 dark:text-green-400' : 'text-red-700 dark:text-red-400'}`}>
