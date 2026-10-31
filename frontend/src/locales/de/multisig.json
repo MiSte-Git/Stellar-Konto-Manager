@@ -516,7 +516,8 @@
     "deleteNotFinal": "nicht abgeschlossen",
     "hide": "Ausblenden",
     "unhide": "Einblenden",
-    "showHidden": "Ausgeblendete anzeigen ({{n}})"
+    "showHidden": "Ausgeblendete anzeigen ({{n}})",
+    "deleteRateLimited": "Der Server hat zu viele Anfragen gemeldet. {{n}} Jobs wurden nicht mehr versucht, bitte in ein paar Minuten erneut löschen."
   },
   "actions": {
     "createMultisigJob": "Multisig-Job erstellen"

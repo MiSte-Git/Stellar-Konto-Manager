@@ -98,7 +98,11 @@ const del = async (url, token) => {
   const r = await fetch(url, { method: 'DELETE', headers: token ? { 'x-job-token': token } : {} });
   return { status: r.status, body: await r.json().catch(() => ({})) };
 };
-const signChallenge = (kp, challenge) => Buffer.from(kp.sign(Buffer.from(challenge, 'base64'))).toString('base64');
+const signChallenge = (kp, challenge, purpose = 'decline') => {
+  const nonce = Buffer.from(challenge, 'base64');
+  const data = purpose ? Buffer.concat([Buffer.from(`skm:${purpose}:`), nonce]) : nonce;
+  return Buffer.from(kp.sign(data)).toString('base64');
+};
 
 test('Ablehnen ohne Challenge -> 400, mit falscher Signatur -> 403', async () => {
   const signer = Keypair.random();
@@ -119,6 +123,27 @@ test('Ablehnen: Signatur gueltig, aber kein Signer des Kontos -> 403, Job unvera
   assert.equal(res.body.error, 'forbidden');
   const stored = JSON.parse(fs.readFileSync(dbPath, 'utf8')).items.find((j) => j.id === 'offen');
   assert.equal(stored.declinedSigners, undefined);
+});
+
+test('Ablehnen: eine Token-Signatur (ohne Zweck) gilt nicht als Ablehnung', async () => {
+  const signer = Keypair.random();
+  const { body: ch } = await post(`${BASE}/offen/challenge`, { signer: signer.publicKey() });
+  const res = await post(`${BASE}/offen/decline`, { signer: signer.publicKey(), signature: signChallenge(signer, ch.challenge, '') });
+  assert.equal(res.status, 403);
+  assert.equal(res.body.error, 'invalid_signature');
+});
+
+test('Ablehnen: Challenge ist einmalig und an den Job gebunden', async () => {
+  const signer = Keypair.random();
+  const { body: ch } = await post(`${BASE}/offen/challenge`, { signer: signer.publicKey() });
+  const sig = signChallenge(signer, ch.challenge);
+  await post(`${BASE}/offen/decline`, { signer: signer.publicKey(), signature: sig });
+  const again = await post(`${BASE}/offen/decline`, { signer: signer.publicKey(), signature: sig });
+  assert.equal(again.status, 400);
+  assert.equal(again.body.error, 'challenge_missing_or_expired');
+  const { body: other } = await post(`${BASE}/offen/challenge`, { signer: signer.publicKey() });
+  const elsewhere = await post(`${BASE}/alt/decline`, { signer: signer.publicKey(), signature: signChallenge(signer, other.challenge) });
+  assert.equal(elsewhere.status, 400);
 });
 
 test('Ablehnen: Eingaben ohne String -> 400', async () => {

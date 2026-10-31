@@ -139,9 +139,9 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
   // Challenge holen, lokal signieren, gegen das Token tauschen. Mit Zeitlimit, damit ein
   // haengender Server die Ansicht nicht dauerhaft blockiert.
   // Challenge holen und lokal signieren: Besitznachweis fuer Token und Ablehnen.
-  const signFreshChallenge = useCallback(async (secret) => {
+  const signFreshChallenge = useCallback(async (secret, purpose = '') => {
     const { challenge } = await withTimeout(getMultisigJobChallenge(jobId, currentPublicKey));
-    return signMultisigJobChallenge(secret, challenge);
+    return signMultisigJobChallenge(secret, challenge, purpose);
   }, [jobId, currentPublicKey]);
   const requestToken = useCallback(async (secret) => (
     withTimeout(getMultisigJobAccessToken(jobId, currentPublicKey, await signFreshChallenge(secret)))
@@ -696,6 +696,8 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
   const [declineNeedsKey, setDeclineNeedsKey] = useState(false);
   const [declining, setDeclining] = useState(false);
   const [declineError, setDeclineError] = useState('');
+  // Sofortige Sperre gegen Doppelklick: der State greift erst nach dem naechsten Render.
+  const declineInFlightRef = useRef(false);
   useEffect(() => {
     setShowDecline(false);
     setDeclineInput('');
@@ -711,8 +713,18 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
     setShowDecline(true);
   }, [job, currentPublicKey]);
 
-  const handleDecline = useCallback(async () => {
-    if (declining || !canDecline) return;
+  // Bewusst ohne useCallback: liest bei jedem Klick den aktuellen Stand (Key-Eingabe, Job).
+  const handleDecline = async () => {
+    if (declineInFlightRef.current || declining || !canDecline) return;
+    declineInFlightRef.current = true;
+    try {
+      await runDecline();
+    } finally {
+      declineInFlightRef.current = false;
+    }
+  };
+
+  const runDecline = async () => {
     setDeclineError('');
     const stored = await getSessionSecret(job?.accountId || '', currentPublicKey);
     const secret = stored || unlockedKeypairRef.current?.secret() || declineInput.trim();
@@ -730,7 +742,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
     const scope = scopeRef.current;
     setDeclining(true);
     try {
-      const signature = await signFreshChallenge(kp.secret());
+      const signature = await signFreshChallenge(kp.secret(), 'decline');
       const result = await withTimeout(declineMultisigJob(jobId, currentPublicKey, signature));
       if (scope !== scopeRef.current) return;
       if (!stored) forgetUnlockedKey();
@@ -747,7 +759,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
     } finally {
       if (scope === scopeRef.current) setDeclining(false);
     }
-  }, [declining, canDecline, job, currentPublicKey, declineInput, jobId, signFreshChallenge, forgetUnlockedKey, fetchJob, accessErrorText, t]);
+  };
 
   if (!jobId) return null;
 

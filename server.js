@@ -20,6 +20,7 @@ const { isLoopbackAddress } = require('./services/network.js');
 const stellarNetworks = require('./services/stellarNetworks.js');
 const { computeMultisigLifecycleStatus, extractMaxTimeUnix, mapSubmitResultCodeToLifecycleStatus, isMultisigTimeboundWithinCap, MULTISIG_JOB_MAX_TIMEBOUND_SECONDS } = require('./services/multisigLifecycle.js');
 const { applyDecline, dropDeclinesOfCollected } = require('./services/multisigDecline.js');
+const { withMultisigJobLock } = require('./services/multisigJobLock.js');
 const { expireStalePendingJobs } = require('./services/multisigJobsGuard.js');
 
 // Lightweight .env loader (root .env and backend/.env) without extra deps
@@ -263,14 +264,18 @@ async function loadMultisigDb() {
     // first run – no file yet
   }
 }
+// Gibt zurueck, ob gespeichert wurde. Aeltere Aufrufer ignorieren das Ergebnis.
 async function saveMultisigDb() {
   try {
     await ensureDbDir();
     await writeJsonFileLocked(MULTISIG_DB_PATH, multisigDb);
+    return true;
   } catch (e) {
     console.error('multisigdb.save.failed', e?.message || e);
+    return false;
   }
 }
+
 void loadBugDb();
 void loadMultisigDb();
 
@@ -872,7 +877,7 @@ app.post('/api/multisig/jobs/:id/token', async (req, res) => {
 // das Job-Token allein sagt nicht, welcher Signer es ist. Signer und Gewichte kommen live
 // aus dem Konto. Reicht das Gewicht der uebrigen Signer nicht mehr, wird der Job abgelehnt
 // (rejected, Endzustand). Wer schon signiert hat, kann nicht mehr ablehnen.
-app.post('/api/multisig/jobs/:id/decline', async (req, res) => {
+app.post('/api/multisig/jobs/:id/decline', (req, res) => withMultisigJobLock(req.params.id, async () => {
   try {
     const { id } = req.params;
     const job = findMultisigJob(id);
@@ -885,7 +890,7 @@ app.post('/api/multisig/jobs/:id/decline', async (req, res) => {
 
     const pending = consumeChallenge(id, signerPk);
     if (!pending) return res.status(400).json({ ok: false, error: 'challenge_missing_or_expired' });
-    if (!verifyChallengeSignature(pending.nonce, signature, signerPk)) {
+    if (!verifyChallengeSignature(pending.nonce, signature, signerPk, 'decline')) {
       return res.status(403).json({ ok: false, error: 'invalid_signature' });
     }
 
@@ -904,21 +909,31 @@ app.post('/api/multisig/jobs/:id/decline', async (req, res) => {
       return res.status(409).json({ ok: false, error: 'already_signed' });
     }
 
-    const result = applyDecline(job, signerPk, signerMeta.signers, new Date().toISOString());
-    const updated = { ...job, declinedSigners: result.declinedSigners, status: result.status };
+    // Noetiges Gewicht aus den aktuellen Thresholds, nicht aus dem Stand beim Anlegen: Wurde
+    // ein Threshold inzwischen gesenkt, darf der Job nicht faelschlich abgelehnt werden.
+    const tx = parseJobTx(job);
+    const requiredWeight = tx
+      ? requiredWeightForOperations((tx.innerTransaction || tx).operations, signerMeta.thresholds)
+      : Number(job.requiredWeight || 0);
+    const result = applyDecline({ ...job, requiredWeight }, signerPk, signerMeta.signers, new Date().toISOString());
+    const updated = { ...job, requiredWeight, declinedSigners: result.declinedSigners, status: result.status };
     multisigDb.items = multisigDb.items.map((j) => (j.id === job.id ? updated : j));
-    await saveMultisigDb();
+    if (!(await saveMultisigDb())) {
+      // Nur diesen Job zuruecksetzen, Aenderungen an anderen Jobs bleiben.
+      multisigDb.items = multisigDb.items.map((j) => (j.id === job.id ? job : j));
+      return res.status(500).json({ ok: false, error: 'multisig.jobs.decline_failed' });
+    }
     res.json({ ok: true, status: result.status, declinedSigners: result.declinedSigners });
   } catch (e) {
     console.error('multisig.jobs.decline.failed', e);
     res.status(500).json({ ok: false, error: 'multisig.jobs.decline_failed' });
   }
-});
+}));
 
 // Einzelnen Job loeschen: nur mit Job-Token (also nur Signer) und nur im Endzustand. Ein
 // offener Job wuerde durch Loeschen nicht unwirksam, signiertes XDR kann anderswo liegen;
 // dafuer gibt es Ablehnen und Widerruf.
-app.delete('/api/multisig/jobs/:id', async (req, res) => {
+app.delete('/api/multisig/jobs/:id', (req, res) => withMultisigJobLock(req.params.id, async () => {
   try {
     const { id } = req.params;
     const job = findMultisigJob(id);
@@ -927,15 +942,19 @@ app.delete('/api/multisig/jobs/:id', async (req, res) => {
     const [current] = await annotateJobsLifecycleStatus([job]);
     if (!multisigFinalStatus.has(current.status)) return res.status(409).json({ ok: false, error: 'not_final', status: current.status });
     multisigDb.items = multisigDb.items.filter((j) => j.id !== id);
-    await saveMultisigDb();
+    if (!(await saveMultisigDb())) {
+      // Nur diesen Job wiederherstellen, Aenderungen an anderen Jobs bleiben.
+      if (!multisigDb.items.some((j) => j.id === id)) multisigDb.items = [...multisigDb.items, job];
+      return res.status(500).json({ ok: false, error: 'multisig.jobs.delete_failed' });
+    }
     res.json({ ok: true });
   } catch (e) {
     console.error('multisig.jobs.delete_one.failed', e);
     res.status(500).json({ ok: false, error: 'multisig.jobs.delete_failed' });
   }
-});
+}));
 
-app.post('/api/multisig/jobs/:id/merge-signed-xdr', async (req, res) => {
+app.post('/api/multisig/jobs/:id/merge-signed-xdr', (req, res) => withMultisigJobLock(req.params.id, async () => {
   try {
     const { id } = req.params;
     const { signedXdr } = req.body || {};
@@ -1096,7 +1115,7 @@ app.post('/api/multisig/jobs/:id/merge-signed-xdr', async (req, res) => {
     console.error('multisig.jobs.merge.failed', e);
     res.status(500).json({ ok: false, error: 'multisig.jobs.merge_failed' });
   }
-});
+}));
 
 app.get('/trustlines', async (req, res) => {
   const { publicKey } = req.query;

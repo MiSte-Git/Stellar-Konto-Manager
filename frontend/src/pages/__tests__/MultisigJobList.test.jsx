@@ -100,6 +100,7 @@ describe('MultisigJobList: Filter', () => {
 
   describe('Ausblenden und Loeschen', () => {
     beforeEach(() => {
+      Object.values(hoisted).forEach((fn) => fn.mockReset());
       hoisted.challenge.mockResolvedValue({ challenge: 'AAAA' });
       hoisted.token.mockImplementation(async (id) => `tok-${id}`);
       hoisted.del.mockResolvedValue({ ok: true });
@@ -161,6 +162,23 @@ describe('MultisigJobList: Filter', () => {
       expect(result).toHaveTextContent('kein Signer');
       expect(hoisted.del.mock.calls.map((c) => c[0]).sort()).toEqual(['eigen-abgelaufen', 'eigen-abgelehnt']);
       expect(hoisted.del).toHaveBeenCalledWith('eigen-abgelaufen', 'tok-eigen-abgelaufen');
+    });
+    it('bricht bei 429 ab, meldet die nicht versuchten Jobs und loest bei Doppelklick nur einen Lauf aus', async () => {
+      hoisted.sessionSecret.mockResolvedValue(ME_SECRET);
+      hoisted.del.mockImplementationOnce(async () => ({ ok: true }));
+      hoisted.del.mockImplementationOnce(async () => { throw Object.assign(new Error('too_many'), { status: 429 }); });
+      renderList();
+      await waitFor(() => expect(screen.getAllByTestId('job-row')).toHaveLength(4));
+      fireEvent.click(screen.getByRole('checkbox', { name: 'Alle abgeschlossenen auswählen' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Auswahl löschen (3)' }));
+      await screen.findByTestId('job-delete-panel');
+      const button = screen.getByRole('button', { name: 'Löschen' });
+      fireEvent.click(button);
+      fireEvent.click(button);
+      const result = await screen.findByTestId('job-delete-result');
+      expect(result).toHaveTextContent('1 Jobs gelöscht.');
+      expect(result).toHaveTextContent('zu viele Anfragen gemeldet. 2 Jobs');
+      expect(hoisted.del).toHaveBeenCalledTimes(2);
     });
   });
 });

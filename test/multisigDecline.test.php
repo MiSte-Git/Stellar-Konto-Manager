@@ -63,10 +63,15 @@ function request(string $method, string $url, array $headers = [], ?array $body 
     return ['status' => (int)curl_getinfo($ch, CURLINFO_HTTP_CODE), 'body' => json_decode((string)$raw, true) ?? []];
 }
 
+function challengeFor(string $jobId, KeyPair $kp): string {
+    $ch = request('POST', BASE_URL . "/{$jobId}/challenge", [], ['signer' => $kp->getAccountId()]);
+    return base64_decode((string)($ch['body']['challenge'] ?? ''), true) ?: '';
+}
+
 function decline(string $jobId, KeyPair $kp, ?KeyPair $signWith = null): array {
     $ch = request('POST', BASE_URL . "/{$jobId}/challenge", [], ['signer' => $kp->getAccountId()]);
     $nonce = base64_decode((string)($ch['body']['challenge'] ?? ''), true);
-    $signature = base64_encode(($signWith ?? $kp)->sign($nonce));
+    $signature = base64_encode(($signWith ?? $kp)->sign('skm:decline:' . $nonce));
     return request('POST', BASE_URL . "/{$jobId}/decline", [], ['signer' => $kp->getAccountId(), 'signature' => $signature]);
 }
 
@@ -83,7 +88,9 @@ function paymentTx(KeyPair $owner, int $now): \Soneso\StellarSDK\Transaction {
         ->build();
 }
 
+$lowOwner = KeyPair::random();
 $openTx = paymentTx($owner, $now);
+$lowTx = paymentTx($lowOwner, $now);
 $signedTx = paymentTx($owner, $now);
 $signedTx->sign($b, Network::testnet());
 
@@ -104,6 +111,8 @@ symlink(realpath(__DIR__ . '/../api/vendor'), $apiDir . '/vendor');
 file_put_contents($apiDir . '/data/multisig_jobs.json', json_encode(['items' => [
     jobRow('offen', 'tok-offen', $owner, $openTx, $now),
     jobRow('signiert', 'tok-signiert', $owner, $signedTx, $now),
+    // Gespeichertes requiredWeight 2, der Threshold wurde inzwischen auf 1 gesenkt.
+    jobRow('gesenkt', 'tok-gesenkt', $lowOwner, $lowTx, $now),
 ]]));
 $liveSigners = [
     ['publicKey' => $owner->getAccountId(), 'weight' => 1],
@@ -114,6 +123,14 @@ $liveSigners = [
 file_put_contents($apiDir . '/data/signers_cache.json', json_encode([
     'testnet:' . $owner->getAccountId() => [
         'data' => ['ok' => true, 'signers' => $liveSigners, 'thresholds' => ['low' => 1, 'med' => 2, 'high' => 2], 'sequence' => '100'],
+        'fetchedAt' => time() + 3600,
+    ],
+    'testnet:' . $lowOwner->getAccountId() => [
+        'data' => ['ok' => true, 'signers' => [
+            ['publicKey' => $lowOwner->getAccountId(), 'weight' => 1],
+            ['publicKey' => $b->getAccountId(), 'weight' => 1],
+            ['publicKey' => $c->getAccountId(), 'weight' => 1],
+        ], 'thresholds' => ['low' => 1, 'med' => 1, 'high' => 1], 'sequence' => '100'],
         'fetchedAt' => time() + 3600,
     ],
 ]));
@@ -142,6 +159,14 @@ try {
     $res = decline('offen', $stranger);
     check('Ablehnen durch Nicht-Signer -> 403 forbidden', $res['status'] === 403 && ($res['body']['error'] ?? '') === 'forbidden');
 
+    $nonce = challengeFor('offen', $b);
+    $res = request('POST', BASE_URL . '/offen/decline', [], ['signer' => $b->getAccountId(), 'signature' => base64_encode($b->sign($nonce))]);
+    check('Token-Signatur (ohne Zweck) gilt nicht als Ablehnung -> 403', $res['status'] === 403 && ($res['body']['error'] ?? '') === 'invalid_signature');
+    $nonce = challengeFor('offen', $b);
+    $sig = base64_encode($b->sign('skm:decline:' . $nonce));
+    $res = request('POST', BASE_URL . '/signiert/decline', [], ['signer' => $b->getAccountId(), 'signature' => $sig]);
+    check('Challenge eines anderen Jobs gilt nicht -> 400', $res['status'] === 400);
+
     $res = decline('offen', $b);
     check('Ablehnen durch B -> 200, Job bleibt offen (A und C erreichen 2)', $res['status'] === 200 && ($res['body']['status'] ?? '') === 'pending_signatures');
     check('Ablehnung von B vermerkt', ($res['body']['declinedSigners'][0]['publicKey'] ?? '') === $b->getAccountId());
@@ -156,6 +181,13 @@ try {
     $openTx->sign($owner, Network::testnet());
     $res = request('POST', BASE_URL . '/offen/merge-signed-xdr', ['x-job-token: tok-offen'], ['signedXdr' => $openTx->toEnvelopeXdrBase64()]);
     check('Abgelehnter Job nimmt keine Signatur mehr an -> 409', $res['status'] === 409 && ($res['body']['error'] ?? '') === 'rejected');
+
+    $res = decline('offen', $c);
+    check('Challenge ist einmalig: abgelehnter Job meldet 409 statt erneuter Wirkung', $res['status'] === 409);
+
+    decline('gesenkt', $b);
+    $res = decline('gesenkt', $c);
+    check('Gesenkter Threshold: Gewicht neu berechnet, Job bleibt offen', $res['status'] === 200 && ($res['body']['status'] ?? '') === 'pending_signatures');
 
     $res = decline('signiert', $b);
     check('Wer schon signiert hat, kann nicht ablehnen -> 409 already_signed', $res['status'] === 409 && ($res['body']['error'] ?? '') === 'already_signed');

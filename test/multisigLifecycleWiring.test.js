@@ -70,7 +70,7 @@ test('F4: the create route responds with the post-guard job object, not the pre-
 // --- GET /jobs (list) and GET /jobs/:id: read-time lifecycle overlay --------
 
 const detailRouteIndex = serverSource.indexOf("app.get('/api/multisig/jobs/:id', async");
-const mergeRouteIndex = serverSource.indexOf("app.post('/api/multisig/jobs/:id/merge-signed-xdr', async");
+const mergeRouteIndex = serverSource.indexOf("app.post('/api/multisig/jobs/:id/merge-signed-xdr', (req, res) => withMultisigJobLock(req.params.id, async");
 test('sanity: list, detail and merge routes exist in that order', () => {
   assert.ok(listRouteIndex > -1);
   assert.ok(detailRouteIndex > listRouteIndex);

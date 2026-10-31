@@ -67,10 +67,19 @@ function consumeChallenge(jobId, signerPublicKey) {
  * `signerPublicKey` over the raw bytes of `nonceB64`. Never throws - any
  * malformed base64/signature/public key is treated as an invalid signature.
  */
-function verifyChallengeSignature(nonceB64, signatureB64, signerPublicKey) {
+// purpose bindet die Signatur an eine Aktion: signiert wird dann `skm:<purpose>:` plus
+// Nonce statt nur der Nonce. Ohne purpose wie bisher (Token). So kann eine Signatur fuer
+// das Token nie als Ablehnung gelten und umgekehrt. Gleich in api/challengeStore.php.
+function challengeMessage(nonceB64, purpose = '') {
+  const nonce = Buffer.from(String(nonceB64 || ''), 'base64');
+  if (!nonce.length) return nonce;
+  return purpose ? Buffer.concat([Buffer.from(`skm:${purpose}:`, 'utf8'), nonce]) : nonce;
+}
+
+function verifyChallengeSignature(nonceB64, signatureB64, signerPublicKey, purpose = '') {
   try {
     const keypair = Keypair.fromPublicKey(signerPublicKey);
-    const data = Buffer.from(String(nonceB64 || ''), 'base64');
+    const data = challengeMessage(nonceB64, purpose);
     const signature = Buffer.from(String(signatureB64 || ''), 'base64');
     if (!data.length || !signature.length) return false;
     return keypair.verify(data, signature);
@@ -79,4 +88,4 @@ function verifyChallengeSignature(nonceB64, signatureB64, signerPublicKey) {
   }
 }
 
-module.exports = { createChallenge, consumeChallenge, verifyChallengeSignature };
+module.exports = { createChallenge, consumeChallenge, verifyChallengeSignature, challengeMessage };

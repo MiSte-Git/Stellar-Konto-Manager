@@ -54,10 +54,14 @@ export async function getMultisigJobChallenge(jobId, signerPublicKey) {
 // Stellar transaction - there is no XDR/network/sequence number involved,
 // just a possession proof over server-issued random bytes). Returns the
 // signature as base64, ready for getMultisigJobAccessToken().
-export function signMultisigJobChallenge(secret, challengeB64) {
+// purpose bindet die Signatur an eine Aktion (z. B. 'decline'): signiert wird dann
+// `skm:<purpose>:` plus Nonce. Ohne purpose die Nonce allein (Token). Gleich wie
+// challengeMessage in services/challengeStore.js und api/challengeStore.php.
+export function signMultisigJobChallenge(secret, challengeB64, purpose = '') {
   const keypair = Keypair.fromSecret(secret);
   const nonceBytes = Buffer.from(String(challengeB64 || ''), 'base64');
-  const signature = keypair.sign(nonceBytes);
+  const data = purpose ? Buffer.concat([Buffer.from(`skm:${purpose}:`, 'utf8'), nonceBytes]) : nonceBytes;
+  const signature = keypair.sign(data);
   return Buffer.from(signature).toString('base64');
 }
 

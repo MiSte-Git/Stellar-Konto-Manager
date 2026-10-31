@@ -117,11 +117,15 @@ function consumeChallenge(string $jobId, string $signerPublicKey): ?array {
  * $signerPublicKey over the raw bytes of $nonceB64. Never throws - any
  * malformed base64/signature/public key is treated as an invalid signature.
  */
-function verifyChallengeSignature(string $nonceB64, string $signatureB64, string $signerPublicKey): bool {
+// $purpose bindet die Signatur an eine Aktion: signiert wird dann "skm:<purpose>:" plus
+// Nonce statt nur der Nonce. Ohne $purpose wie bisher (Token). So kann eine Signatur fuer
+// das Token nie als Ablehnung gelten und umgekehrt. Gleich in services/challengeStore.js.
+function verifyChallengeSignature(string $nonceB64, string $signatureB64, string $signerPublicKey, string $purpose = ''): bool {
     try {
-        $data = base64_decode($nonceB64, true);
+        $nonce = base64_decode($nonceB64, true);
         $signature = base64_decode($signatureB64, true);
-        if ($data === false || $signature === false || $data === '' || $signature === '') return false;
+        if ($nonce === false || $signature === false || $nonce === '' || $signature === '') return false;
+        $data = $purpose !== '' ? 'skm:' . $purpose . ':' . $nonce : $nonce;
         $kp = KeyPair::fromAccountId($signerPublicKey);
         return $kp->verifySignature($signature, $data);
     } catch (\Throwable $e) {

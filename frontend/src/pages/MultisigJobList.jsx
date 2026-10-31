@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import React, { useEffect, useState, useCallback, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Keypair } from '@stellar/stellar-sdk';
 import { apiUrl } from '../utils/apiBase.js';
@@ -22,7 +22,9 @@ function MultisigJobList({ onBack, publicKey, onOpenDetail, refreshKey = 0 }) {
   const [deleteInput, setDeleteInput] = useState('');
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState('');
-  const [deleteResult, setDeleteResult] = useState(null); // { deleted, failed: [{ id, reason }] }
+  const [deleteResult, setDeleteResult] = useState(null); // { deleted, failed: [{ id, reason }], stopped }
+  // Sofortige Sperre gegen Doppelklick: der State greift erst nach dem naechsten Render.
+  const deleteInFlightRef = useRef(false);
 
   const netLabel = (() => {
     try { return (typeof window !== 'undefined' && window.localStorage?.getItem('SKM_NETWORK') === 'TESTNET') ? 'testnet' : 'public'; } catch { return 'public'; }
@@ -120,7 +122,15 @@ function MultisigJobList({ onBack, publicKey, onOpenDetail, refreshKey = 0 }) {
     setDeletePanel({ needsKey: !stored });
   };
   const deleteSelected = async () => {
-    if (deleting || !selectedShown.length) return;
+    if (deleteInFlightRef.current || deleting || !selectedShown.length) return;
+    deleteInFlightRef.current = true;
+    try {
+      await runDelete();
+    } finally {
+      deleteInFlightRef.current = false;
+    }
+  };
+  const runDelete = async () => {
     setDeleteError('');
     const stored = await getSessionSecret(accountId, accountId);
     let kp;
@@ -137,13 +147,19 @@ function MultisigJobList({ onBack, publicKey, onOpenDetail, refreshKey = 0 }) {
     setDeleting(true);
     let deleted = 0;
     const failed = [];
-    for (const job of selectedShown) {
+    let stopped = 0;
+    for (const [index, job] of selectedShown.entries()) {
       try {
         const { challenge } = await getMultisigJobChallenge(job.id, accountId);
         const token = await getMultisigJobAccessToken(job.id, accountId, signMultisigJobChallenge(kp.secret(), challenge));
         await deleteMultisigJob(job.id, token);
         deleted += 1;
       } catch (e) {
+        // Zu viele Anfragen: abbrechen statt jeden weiteren Job scheitern zu lassen.
+        if (e?.status === 429) {
+          stopped = selectedShown.length - index;
+          break;
+        }
         const reason = e?.status === 403
           ? t('multisig:list.deleteNotSigner', 'kein Signer')
           : e?.message === 'not_final'
@@ -156,7 +172,7 @@ function MultisigJobList({ onBack, publicKey, onOpenDetail, refreshKey = 0 }) {
     setDeleteInput('');
     setDeletePanel(null);
     setSelected(new Set());
-    setDeleteResult({ deleted, failed });
+    setDeleteResult({ deleted, failed, stopped });
     await loadJobs();
   };
 
@@ -316,6 +332,12 @@ function MultisigJobList({ onBack, publicKey, onOpenDetail, refreshKey = 0 }) {
       {deleteResult && (
         <div className="text-sm" role="status" data-testid="job-delete-result">
           {t('multisig:list.deleteDone', { n: deleteResult.deleted, defaultValue: '{{n}} Jobs gelöscht.' })}
+          {deleteResult.stopped > 0 && (
+            <span className="text-amber-700 dark:text-amber-300">
+              {' '}
+              {t('multisig:list.deleteRateLimited', { n: deleteResult.stopped, defaultValue: 'Der Server hat zu viele Anfragen gemeldet. {{n}} Jobs wurden nicht mehr versucht, bitte in ein paar Minuten erneut löschen.' })}
+            </span>
+          )}
           {deleteResult.failed.length > 0 && (
             <span className="text-red-700 dark:text-red-300">
               {' '}

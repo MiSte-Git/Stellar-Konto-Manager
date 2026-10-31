@@ -734,7 +734,7 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/declin
         return sendError('server_error', null, 500);
     }
     if ($pending === null) return sendJson(['ok' => false, 'error' => 'challenge_missing_or_expired'], 400);
-    if (!verifyChallengeSignature($pending['nonce'], $signature, $signerPk)) {
+    if (!verifyChallengeSignature($pending['nonce'], $signature, $signerPk, 'decline')) {
         return sendJson(['ok' => false, 'error' => 'invalid_signature'], 403);
     }
 
@@ -752,7 +752,8 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/declin
     try {
         $result = null;
         $conflict = null;
-        withJobsLock($jobFile, function (array $items) use ($id, $signerPk, $liveSigners, &$result, &$conflict) {
+        $liveThresholds = $meta['thresholds'] ?? [];
+        withJobsLock($jobFile, function (array $items) use ($id, $signerPk, $liveSigners, $liveThresholds, &$result, &$conflict) {
             foreach ($items as $i => $j) {
                 if (($j['id'] ?? '') !== $id) continue;
                 $current = summarizeJob($j);
@@ -767,7 +768,14 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/declin
                         return $items;
                     }
                 }
-                $j['requiredWeight'] = $current['requiredWeight'] ?? ($j['requiredWeight'] ?? 0);
+                // Noetiges Gewicht aus den aktuellen Thresholds, nicht aus dem Stand beim
+                // Anlegen: Wurde ein Threshold inzwischen gesenkt, darf der Job nicht
+                // faelschlich abgelehnt werden.
+                $parseErr = null;
+                $tx = parseTx((string)($j['txXdrCurrent'] ?? ($j['txXdrOriginal'] ?? '')), $j['network'] ?? 'public', $parseErr);
+                if ($tx && $liveThresholds) {
+                    $j['requiredWeight'] = requiredWeightForOperations($tx, $liveThresholds);
+                }
                 $decision = applyDecline($j, $signerPk, $liveSigners, gmdate('c'));
                 $j['declinedSigners'] = $decision['declinedSigners'];
                 $j['status'] = $decision['status'];
