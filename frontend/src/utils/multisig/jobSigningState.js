@@ -26,3 +26,14 @@ export function computeJobSigningState({ accountSigners = [], requiredWeight = 0
   const missingSigners = signers.filter((s) => !collectedKeys.has(s.publicKey));
   return { required: Math.max(0, Number(requiredWeight) || 0), collected, missingSigners };
 }
+
+// Fehlt die Signatur dieses Kontos noch? Selbst berechnet aus signers und collectedSigners,
+// weil nur das PHP-Backend missingSigners liefert (Node nicht). Nur Jobs, die noch auf
+// Signaturen warten; in Endzustaenden und bei ready_to_submit muss niemand mehr signieren.
+export function needsSignatureFrom(job, accountId) {
+  if (!job || !accountId) return false;
+  if (String(job.status || '') !== 'pending_signatures') return false;
+  const isSigner = (job.signers || []).some((s) => (s?.publicKey || '') === accountId && Number(s?.weight || 0) > 0);
+  if (!isSigner) return false;
+  return !(job.collectedSigners || []).some((s) => (s?.publicKey || '') === accountId);
+}

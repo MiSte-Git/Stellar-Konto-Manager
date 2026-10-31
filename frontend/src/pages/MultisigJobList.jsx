@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { apiUrl } from '../utils/apiBase.js';
+import { needsSignatureFrom } from '../utils/multisig/jobSigningState.js';
 
 function MultisigJobList({ onBack, publicKey, onOpenDetail }) {
   const { t } = useTranslation(['multisig', 'common']);
@@ -34,7 +35,9 @@ function MultisigJobList({ onBack, publicKey, onOpenDetail }) {
       const queries = [
         apiUrl(`multisig/jobs?network=${encodeURIComponent(netLabel)}&accountId=${encodeURIComponent(accountId)}`)
       ];
-      if (includeSignerJobs) {
+      // "Nur Auftraege, die ich noch signieren muss" schliesst fremde Konten mit ein, bei denen
+      // ich Signer bin: genau dort fehlt meine Signatur meistens.
+      if (includeSignerJobs || onlyPendingForMe) {
         queries.push(apiUrl(`multisig/jobs?network=${encodeURIComponent(netLabel)}&signer=${encodeURIComponent(accountId)}`));
       }
       const results = await Promise.all(queries.map(async (url) => {
@@ -57,7 +60,7 @@ function MultisigJobList({ onBack, publicKey, onOpenDetail }) {
     } finally {
       setLoading(false);
     }
-  }, [netLabel, accountId, includeSignerJobs]);
+  }, [netLabel, accountId, includeSignerJobs, onlyPendingForMe]);
 
   useEffect(() => { void loadJobs(); }, [loadJobs]);
 
@@ -65,7 +68,7 @@ function MultisigJobList({ onBack, publicKey, onOpenDetail }) {
 
   const jobsToShow = useMemo(() => {
     if (!onlyPendingForMe || !accountId) return jobs;
-    return jobs.filter((j) => Array.isArray(j?.missingSigners) && j.missingSigners.some((s) => (s.publicKey || '') === accountId));
+    return jobs.filter((j) => needsSignatureFrom(j, accountId));
   }, [jobs, onlyPendingForMe, accountId]);
 
   const handleExport = () => {
@@ -169,7 +172,8 @@ function MultisigJobList({ onBack, publicKey, onOpenDetail }) {
             <label className="flex items-center gap-2 text-xs text-gray-700 dark:text-gray-200">
               <input
                 type="checkbox"
-                checked={includeSignerJobs}
+                checked={includeSignerJobs || onlyPendingForMe}
+                disabled={onlyPendingForMe}
                 onChange={(e) => setIncludeSignerJobs(!!e.target.checked)}
               />
               {t('multisig:list.filter.assigned', 'Auch Aufträge, bei denen ich Signer bin')}
