@@ -109,4 +109,16 @@ describe('AppLayout / Sidebar', () => {
     fireEvent.click(within(screen.getByRole('dialog')).getByRole('button', { name: 'Token-Käufe' }));
     expect(screen.queryByRole('dialog')).toBeNull();
   });
+  it('kombiniert in der Titelleiste hidden nie mit einer festen Anzeige-Klasse (Handy-Breite)', () => {
+    renderLayout();
+    const header = document.querySelector('header');
+    // In Tailwind v4 gewinnt z. B. inline-flex gegen hidden: das Element waere auf dem Handy sichtbar.
+    const DISPLAY = ['block', 'inline-block', 'inline', 'flex', 'inline-flex', 'grid', 'inline-grid', 'table'];
+    const conflicts = [...header.querySelectorAll('[class]')].filter((el) => {
+      const classes = String(el.getAttribute('class')).split(/\s+/);
+      return classes.includes('hidden') && classes.some((c) => DISPLAY.includes(c));
+    });
+    expect(conflicts.map((el) => el.getAttribute('class'))).toEqual([]);
+    expect(header.querySelector('[data-testid="xlm-price-ticker"]')?.parentElement.className).toBe('hidden lg:block');
+  });
 });

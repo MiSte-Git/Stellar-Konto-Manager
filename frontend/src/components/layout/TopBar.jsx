@@ -90,7 +90,12 @@ export default function TopBar({ onOpenMenu, menuOpen, menuButtonRef, price }) {
 
         <div className="ml-auto flex items-center gap-2">
           <SigningStatus />
-          <XlmPriceTicker price={price} className="hidden lg:inline-flex" />
+          {/* Eigener Wrapper fuer die Sichtbarkeit: XlmPriceTicker setzt selbst inline-flex, und
+              inline-flex gewinnt in Tailwind v4 gegen hidden. Unter lg stehen die Kurse in der
+              Kursleiste (AppLayout), hier doppelt machten sie die Seite auf dem Handy zu breit. */}
+          <div className="hidden lg:block">
+            <XlmPriceTicker price={price} />
+          </div>
           <PriceCurrencyMenu price={price} className="hidden lg:block" />
           <LanguageMenu />
           <button
