@@ -10,7 +10,7 @@ export default function MultisigJobStatusBadge({ status }) {
   if (normalized === 'pending_signatures' || normalized === 'pending') cls = 'bg-amber-200 text-amber-900 dark:bg-amber-800 dark:text-amber-100';
   if (normalized === 'ready_to_submit' || normalized === 'partiallysigned' || normalized === 'partially_signed') cls = 'bg-blue-200 text-blue-900 dark:bg-blue-800 dark:text-blue-100';
   if (normalized === 'submitted_success' || normalized === 'submitted' || normalized === 'ready') cls = 'bg-green-200 text-green-900 dark:bg-green-800 dark:text-green-100';
-  if (normalized === 'submitted_failed' || normalized === 'failed' || normalized === 'expired' || normalized === 'obsolete_seq') cls = 'bg-red-200 text-red-900 dark:bg-red-800 dark:text-red-100';
+  if (normalized === 'submitted_failed' || normalized === 'failed' || normalized === 'expired' || normalized === 'obsolete_seq' || normalized === 'rejected') cls = 'bg-red-200 text-red-900 dark:bg-red-800 dark:text-red-100';
 
   const entry = { label, cls };
   return <span className={`inline-flex items-center px-2 py-1 rounded-sm text-xs font-semibold ${entry.cls}`}>{entry.label}</span>;

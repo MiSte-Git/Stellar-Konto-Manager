@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback, useMemo, useRef } from 'react';
 import { horizonUrlFor, passphraseFor } from '../config/networks.js';
 import { useTranslation } from 'react-i18next';
-import { getPendingMultisigJob, mergeSignedXdr, getMultisigJobChallenge, signMultisigJobChallenge, getMultisigJobAccessToken } from '../utils/multisigApi.js';
+import { getPendingMultisigJob, mergeSignedXdr, getMultisigJobChallenge, signMultisigJobChallenge, getMultisigJobAccessToken, declineMultisigJob } from '../utils/multisigApi.js';
 import MultisigJobStatusBadge from '../components/MultisigJobStatusBadge.jsx';
 import { Keypair, extractBaseAddress } from '@stellar/stellar-sdk';
 import { SESSION_LOCKED_EVENT, getSessionSecret, rememberSessionSecrets } from '../utils/sessionSecrets.js';
@@ -24,6 +24,12 @@ import { jobSubmitResultCodes, liquidityErrorKeyFromResultCodes } from '../utils
 import { formatPoolAmount, formatPrice } from '../components/liquidity/formatPoolAmount.js';
 
 const FAILED_PREFIX = 'submitTransaction.failed:';
+
+// Zeitlimit fuer Challenge, Token und Ablehnen: ein haengender Server soll die Ansicht
+// nicht dauerhaft blockieren.
+function withTimeout(promise, ms = 20000) {
+  return Promise.race([promise, new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), ms))]);
+}
 
 // Sperren den Widerruf. account_mismatch fehlt bewusst: Der Widerruf wirkt immer auf die Quelle
 // laut XDR, also auf das Konto, gegen das die Transaktion wirklich laeuft.
@@ -122,20 +128,24 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
     if (e?.status === 404 || code === 'not_found') return t('multisig:detail.access.notFound', 'Diesen Job gibt es nicht mehr. Abgeschlossene Jobs werden nach 30 Tagen gelöscht.');
     if (code === 'challenge_missing_or_expired') return t('multisig:detail.access.challengeExpired', 'Die Anmeldung am Job ist abgelaufen oder wurde schon verwendet. Bitte erneut versuchen.');
     if (code === 'invalid_signature') return t('multisig:detail.access.invalidSignature', 'Die Signatur der Anmeldung wurde abgelehnt. Bitte erneut versuchen.');
+    if (code === 'already_signed') return t('multisig:detail.decline.alreadySigned', 'Du hast bereits signiert und kannst nicht mehr ablehnen.');
+    if (['rejected', 'submitted_success', 'submitted_failed', 'expired', 'obsolete_seq'].includes(code)) {
+      return t('multisig:detail.access.finalState', { status: t(`multisig:list.status.${code}`, code), defaultValue: 'Der Job ist bereits abgeschlossen ({{status}}).' });
+    }
     if (code === 'timeout') return t('multisig:detail.access.timeout', 'Der Server antwortet nicht. Bitte später erneut versuchen.');
     return t('multisig:detail.access.failed', { code: code || '-', defaultValue: 'Der Job konnte nicht geladen werden ({{code}}). Bitte Verbindung prüfen und erneut versuchen.' });
   }, [t]);
 
   // Challenge holen, lokal signieren, gegen das Token tauschen. Mit Zeitlimit, damit ein
   // haengender Server die Ansicht nicht dauerhaft blockiert.
-  const requestToken = useCallback(async (secret) => {
-    const withTimeout = (promise) => Promise.race([
-      promise,
-      new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 20000)),
-    ]);
+  // Challenge holen und lokal signieren: Besitznachweis fuer Token und Ablehnen.
+  const signFreshChallenge = useCallback(async (secret) => {
     const { challenge } = await withTimeout(getMultisigJobChallenge(jobId, currentPublicKey));
-    return withTimeout(getMultisigJobAccessToken(jobId, currentPublicKey, signMultisigJobChallenge(secret, challenge)));
+    return signMultisigJobChallenge(secret, challenge);
   }, [jobId, currentPublicKey]);
+  const requestToken = useCallback(async (secret) => (
+    withTimeout(getMultisigJobAccessToken(jobId, currentPublicKey, await signFreshChallenge(secret)))
+  ), [jobId, currentPublicKey, signFreshChallenge]);
 
   // Token aus Prop, URL/Speicher, schon geholt oder per Challenge mit gemerktem Secret.
   const resolveToken = useCallback(async () => {
@@ -270,8 +280,13 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
   const submitResultCodes = jobSubmitResultCodes(job?.submittedResult);
   const isFinalState = useMemo(() => {
     const s = String(job?.status || '').toLowerCase();
-    return ['submitted_success', 'submitted_failed', 'expired', 'obsolete_seq'].includes(s);
+    return ['submitted_success', 'submitted_failed', 'expired', 'obsolete_seq', 'rejected'].includes(s);
   }, [job]);
+  const declinedSet = useMemo(() => new Set((job?.declinedSigners || []).map((d) => d?.publicKey).filter(Boolean)), [job]);
+  const declinedByMe = !!currentPublicKey && declinedSet.has(currentPublicKey);
+  // Ablehnen ist immer gefahrlos (es signiert nichts) und deshalb auch bei Warnungen und
+  // Sperren moeglich, nur nicht nach der eigenen Signatur oder im Endzustand.
+  const canDecline = canCurrentSign && !isFinalState && !collectedSet.has(currentPublicKey) && !declinedByMe;
 
   // G5 stage 2: decoded client-side purely for display, so a signer can see
   // what they're actually being asked to sign (operations, validity window)
@@ -674,6 +689,66 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
     }
   }, [job, canCurrentSign, currentPublicKey, signingBlocked, t, signWithSecret, forgetUnlockedKey]);
 
+  // Ablehnen: Besitznachweis per signierter Challenge, Key aus der Session, aus dem Oeffnen
+  // (nur im Speicher) oder hier eingegeben. Signiert keine Transaktion.
+  const [showDecline, setShowDecline] = useState(false);
+  const [declineInput, setDeclineInput] = useState('');
+  const [declineNeedsKey, setDeclineNeedsKey] = useState(false);
+  const [declining, setDeclining] = useState(false);
+  const [declineError, setDeclineError] = useState('');
+  useEffect(() => {
+    setShowDecline(false);
+    setDeclineInput('');
+    setDeclineError('');
+    setDeclining(false);
+  }, [jobId, currentPublicKey]);
+
+  const openDecline = useCallback(async () => {
+    setDeclineError('');
+    setDeclineInput('');
+    const stored = await getSessionSecret(job?.accountId || '', currentPublicKey);
+    setDeclineNeedsKey(!stored && !unlockedKeypairRef.current);
+    setShowDecline(true);
+  }, [job, currentPublicKey]);
+
+  const handleDecline = useCallback(async () => {
+    if (declining || !canDecline) return;
+    setDeclineError('');
+    const stored = await getSessionSecret(job?.accountId || '', currentPublicKey);
+    const secret = stored || unlockedKeypairRef.current?.secret() || declineInput.trim();
+    let kp;
+    try {
+      kp = Keypair.fromSecret(secret);
+    } catch {
+      setDeclineError(t('multisig:detail.unlock.invalid', 'Ungültiger Secret Key.'));
+      return;
+    }
+    if (kp.publicKey() !== currentPublicKey) {
+      setDeclineError(t('multisig:detail.unlock.wrongKey', { account: currentPublicKey, defaultValue: 'Dieser Secret Key gehört nicht zum geladenen Konto {{account}}.' }));
+      return;
+    }
+    const scope = scopeRef.current;
+    setDeclining(true);
+    try {
+      const signature = await signFreshChallenge(kp.secret());
+      const result = await withTimeout(declineMultisigJob(jobId, currentPublicKey, signature));
+      if (scope !== scopeRef.current) return;
+      if (!stored) forgetUnlockedKey();
+      setShowDecline(false);
+      setDeclineInput('');
+      await fetchJob();
+      if (scope === scopeRef.current) {
+        setInfo(result?.status === 'rejected'
+          ? t('multisig:detail.decline.doneRejected', 'Abgelehnt. Ohne dich reicht das Gewicht nicht mehr, der Job ist damit abgelehnt und nimmt keine Signaturen mehr an.')
+          : t('multisig:detail.decline.done', 'Abgelehnt. Die anderen Signer sehen deine Ablehnung.'));
+      }
+    } catch (e) {
+      if (scope === scopeRef.current) setDeclineError(accessErrorText(e));
+    } finally {
+      if (scope === scopeRef.current) setDeclining(false);
+    }
+  }, [declining, canDecline, job, currentPublicKey, declineInput, jobId, signFreshChallenge, forgetUnlockedKey, fetchJob, accessErrorText, t]);
+
   if (!jobId) return null;
 
   return (
@@ -812,15 +887,26 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
                 {(job?.signers || []).map((s) => {
                   const pk = s.publicKey || '';
                   const signed = collectedSet.has(pk);
+                  const declined = !signed && declinedSet.has(pk);
+                  const tone = signed
+                    ? 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-200'
+                    : declined
+                      ? 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-200'
+                      : 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-100';
                   return (
                     <span
                       key={pk || Math.random()}
-                      className={`px-2 py-0.5 rounded-sm text-xs ${signed ? 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-200' : 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-100'}`}
+                      className={`px-2 py-0.5 rounded-sm text-xs ${tone}`}
                       title={pk}
+                      data-testid={declined ? 'job-signer-declined' : undefined}
                     >
                       {shortPk(pk)}
                       {' '}
-                      {signed ? t('multisig:detail.signatures.signed', 'unterzeichnet') : t('multisig:detail.signatures.missing', 'fehlt')}
+                      {signed
+                        ? t('multisig:detail.signatures.signed', 'unterzeichnet')
+                        : declined
+                          ? t('multisig:detail.signatures.declined', 'abgelehnt')
+                          : t('multisig:detail.signatures.missing', 'fehlt')}
                     </span>
                   );
                 })}
@@ -1020,6 +1106,66 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
                 </button>
               </div>
             </div>
+          )}
+          {canCurrentSign && !isFinalState && declinedByMe && (
+            <div className="border border-red-300 dark:border-red-700 rounded-sm p-3 text-sm text-red-800 dark:text-red-200" data-testid="job-declined-by-me">
+              {t('multisig:detail.decline.declinedByMe', 'Du hast diesen Job abgelehnt. Signierst du doch noch, wird die Ablehnung entfernt.')}
+            </div>
+          )}
+          {canDecline && !showDecline && (
+            <div className="flex items-center justify-between gap-3 border rounded-sm p-3">
+              <div className="text-sm">{t('multisig:detail.decline.prompt', 'Diesen Job nicht signieren?')}</div>
+              <button
+                type="button"
+                className="text-xs px-3 py-1 rounded-sm border border-red-300 text-red-700 dark:text-red-200 dark:border-red-700 hover:bg-red-50 dark:hover:bg-red-900"
+                onClick={() => { void openDecline(); }}
+                disabled={loading}
+              >
+                {t('multisig:detail.decline.button', 'Ablehnen')}
+              </button>
+            </div>
+          )}
+          {canDecline && showDecline && (
+            <form
+              className="border border-red-300 dark:border-red-700 rounded-sm p-3 space-y-2 bg-red-50 dark:bg-red-900/30"
+              data-testid="job-decline"
+              onSubmit={(e) => { e.preventDefault(); void handleDecline(); }}
+            >
+              <div className="text-sm font-semibold text-red-900 dark:text-red-100">{t('multisig:detail.decline.title', 'Job ablehnen')}</div>
+              <p className="text-xs text-gray-700 dark:text-gray-300">
+                {t('multisig:detail.decline.hint', 'Die anderen Signer sehen deine Ablehnung. Reicht das Gewicht ohne dich nicht mehr, wird der Job abgelehnt und nimmt keine Signaturen mehr an. Auf dem Netz wird die Transaktion dadurch nicht ungültig: Wer sie bereits woanders signiert hat, könnte sie mit genug Signaturen trotzdem einreichen. Endgültig stoppt sie nur ein Widerruf (unten).')}
+              </p>
+              {declineNeedsKey && (
+                <input
+                  type="password"
+                  value={declineInput}
+                  onChange={(e) => setDeclineInput(e.target.value)}
+                  aria-label={t('multisig:detail.decline.keyLabel', 'Secret Key zum Ablehnen')}
+                  className="w-full border-2 border-red-400 rounded-sm px-3 py-2 text-sm bg-white dark:bg-gray-800"
+                  placeholder={t('secretKey:placeholder', 'Secret Key eingeben')}
+                  autoComplete="off"
+                  spellCheck="false"
+                />
+              )}
+              {declineError && <div className="text-xs text-red-700 dark:text-red-300" role="alert">{declineError}</div>}
+              <div className="flex justify-end gap-2">
+                <button
+                  type="button"
+                  className="px-3 py-1 rounded-sm border text-sm"
+                  onClick={() => { setShowDecline(false); setDeclineInput(''); setDeclineError(''); }}
+                  disabled={declining}
+                >
+                  {t('common:option.cancel', 'Abbrechen')}
+                </button>
+                <button
+                  type="submit"
+                  className="px-3 py-1 rounded-sm bg-red-600 text-white text-sm disabled:opacity-50"
+                  disabled={declining || (declineNeedsKey && !declineInput.trim())}
+                >
+                  {declining ? t('common:common.loading') : t('multisig:detail.decline.confirm', 'Job ablehnen')}
+                </button>
+              </div>
+            </form>
           )}
           {canCurrentSign && !isFinalState && sequenceLooksAlive && !revokedHash && decodedTx && (
             <div className="border border-red-300 dark:border-red-700 rounded-sm p-3 space-y-2">

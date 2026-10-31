@@ -30,6 +30,7 @@ const hoisted = vi.hoisted(() => ({
   poolMock: vi.fn(),
   challengeMock: vi.fn(),
   tokenMock: vi.fn(),
+  declineMock: vi.fn(),
 }));
 
 vi.mock('../../utils/multisigApi.js', async (importOriginal) => ({
@@ -39,6 +40,7 @@ vi.mock('../../utils/multisigApi.js', async (importOriginal) => ({
   getMultisigJobChallenge: hoisted.challengeMock,
   getMultisigJobAccessToken: hoisted.tokenMock,
   signMultisigJobChallenge: () => 'signature',
+  declineMultisigJob: hoisted.declineMock,
 }));
 
 vi.mock('../../utils/sessionSecrets.js', async (importOriginal) => ({
@@ -1169,5 +1171,84 @@ describe('Job ohne Token oeffnen und signieren', () => {
     expect(hoisted.getJobMock).not.toHaveBeenCalledWith('job-2', 'tok-alt');
     expect(hoisted.getJobMock).not.toHaveBeenCalledWith('job-1', 'tok-alt');
     expect(screen.queryByTestId('job-key-ready')).toBeNull();
+  });
+});
+
+describe('Job ablehnen', () => {
+  beforeEach(() => {
+    hoisted.challengeMock.mockResolvedValue({ challenge: 'AAAA' });
+    hoisted.declineMock.mockResolvedValue({ ok: true, status: 'pending_signatures', declinedSigners: [{ publicKey: SIGNER_A.publicKey }] });
+  });
+  const openDecline = async () => {
+    fireEvent.click(await screen.findByRole('button', { name: 'Ablehnen' }));
+    await screen.findByTestId('job-decline');
+  };
+  const confirm = () => fireEvent.click(screen.getByRole('button', { name: 'Job ablehnen' }));
+
+  it('lehnt mit dem gemerkten Key ab, ohne Abfrage, und laedt den Job neu', async () => {
+    hoisted.sessionSecretMock.mockResolvedValue(SIGNER_A.secret);
+    renderPage();
+    await openDecline();
+    const form = await screen.findByTestId('job-decline');
+    expect(within(form).queryByLabelText('Secret Key zum Ablehnen')).toBeNull();
+    expect(form).toHaveTextContent('Endgültig stoppt sie nur ein Widerruf');
+    confirm();
+    await waitFor(() => expect(hoisted.declineMock).toHaveBeenCalledWith('job-1', SIGNER_A.publicKey, 'signature'));
+    expect(hoisted.challengeMock).toHaveBeenCalledWith('job-1', SIGNER_A.publicKey);
+    expect(await screen.findByText('Abgelehnt. Die anderen Signer sehen deine Ablehnung.')).toBeInTheDocument();
+    expect(hoisted.getJobMock.mock.calls.length).toBeGreaterThanOrEqual(2);
+    expect(hoisted.mergeMock).not.toHaveBeenCalled();
+  });
+
+  it('fragt ohne gemerkten Key nach dem Key und lehnt einen fremden ab', async () => {
+    renderPage();
+    await openDecline();
+    const input = await screen.findByLabelText('Secret Key zum Ablehnen');
+    fireEvent.change(input, { target: { value: SIGNER_B.secret } });
+    confirm();
+    expect(await screen.findByText(/gehört nicht zum geladenen Konto/)).toBeInTheDocument();
+    expect(hoisted.declineMock).not.toHaveBeenCalled();
+    fireEvent.change(input, { target: { value: SIGNER_A.secret } });
+    confirm();
+    await waitFor(() => expect(hoisted.declineMock).toHaveBeenCalledTimes(1));
+  });
+
+  it('meldet, wenn der Job damit abgelehnt ist, und zeigt Serverfehler lesbar', async () => {
+    hoisted.sessionSecretMock.mockResolvedValue(SIGNER_A.secret);
+    hoisted.declineMock.mockResolvedValueOnce({ ok: true, status: 'rejected', declinedSigners: [] });
+    renderPage();
+    await openDecline();
+    confirm();
+    expect(await screen.findByText(/der Job ist damit abgelehnt/)).toBeInTheDocument();
+
+    hoisted.declineMock.mockRejectedValueOnce(Object.assign(new Error('already_signed'), { status: 409 }));
+    await openDecline();
+    confirm();
+    expect(await screen.findByText('Du hast bereits signiert und kannst nicht mehr ablehnen.')).toBeInTheDocument();
+  });
+
+  it('bietet kein Ablehnen nach der eigenen Signatur und im Endzustand an', async () => {
+    hoisted.getJobMock.mockImplementation(async () => makeJob({ collectedSigners: [{ publicKey: SIGNER_A.publicKey, weight: 1 }], collectedWeight: 1 }));
+    const view = renderPage();
+    await screen.findByTestId('job-tx-details');
+    expect(screen.queryByRole('button', { name: 'Ablehnen' })).toBeNull();
+    view.unmount();
+    hoisted.getJobMock.mockImplementation(async () => makeJob({ status: 'rejected' }));
+    renderPage();
+    await screen.findByText(/Status: Abgelehnt/);
+    expect(screen.queryByRole('button', { name: 'Ablehnen' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Jetzt signieren' })).toBeNull();
+  });
+
+  it('zeigt Ablehnungen anderer und die eigene', async () => {
+    hoisted.getJobMock.mockImplementation(async () => makeJob({ declinedSigners: [{ publicKey: SIGNER_B.publicKey }] }));
+    const view = renderPage();
+    expect(await screen.findByTestId('job-signer-declined')).toHaveTextContent('abgelehnt');
+    expect(screen.getByRole('button', { name: 'Ablehnen' })).toBeInTheDocument();
+    view.unmount();
+    hoisted.getJobMock.mockImplementation(async () => makeJob({ declinedSigners: [{ publicKey: SIGNER_A.publicKey }] }));
+    renderPage();
+    expect(await screen.findByTestId('job-declined-by-me')).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Ablehnen' })).toBeNull();
   });
 });

@@ -142,3 +142,37 @@ export async function createMultisigJobFromXdr({ network, accountId, txXdr }) {
     accessToken: data?.accessToken || '',
   };
 }
+
+async function jobRequest(url, options, fallbackError) {
+  try {
+    const r = await fetch(url, options);
+    const data = await r.json().catch(() => ({}));
+    if (!r.ok) {
+      const err = new Error(data?.error || fallbackError);
+      err.status = r.status;
+      throw err;
+    }
+    return data;
+  } catch (e) {
+    if (e?.status) throw e;
+    throw new Error(e?.message || fallbackError);
+  }
+}
+
+// Ablehnen: signature ist die mit dem Signer-Key signierte Challenge (wie beim Token),
+// damit das Backend weiss, welcher Signer ablehnt. Antwort: { ok, status, declinedSigners }.
+export async function declineMultisigJob(jobId, signerPublicKey, signature) {
+  return jobRequest(apiUrl(`multisig/jobs/${encodeURIComponent(jobId)}/decline`), {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ signer: signerPublicKey || '', signature: signature || '' }),
+  }, 'multisig.jobs.decline_failed');
+}
+
+// Einzelnen Job im Endzustand loeschen, nur mit Job-Token.
+export async function deleteMultisigJob(jobId, accessToken) {
+  return jobRequest(apiUrl(`multisig/jobs/${encodeURIComponent(jobId)}`), {
+    method: 'DELETE',
+    headers: accessToken ? { 'x-job-token': accessToken } : {},
+  }, 'multisig.jobs.delete_failed');
+}
