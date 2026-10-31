@@ -977,6 +977,22 @@ describe('Memo, Fee und Preconditions im Job-Detail (H1)', () => {
     expect(signButton()).toBeEnabled();
   });
 
+  it('F1: minSeqNum 0 mit hoher Sequence verlangt die Bestaetigung und warnt', async () => {
+    const tx = new TransactionBuilder(new Account(SOURCE, '9223372036854775806'), { fee: '1000', networkPassphrase: Networks.TESTNET, minAccountSequence: '0' })
+      .addOperation(Operation.payment({ destination: SIGNER_B.publicKey, asset: Asset.native(), amount: '1' }))
+      .setTimeout(86400)
+      .build();
+    hoisted.getJobMock.mockImplementation(async () => jobFor(tx));
+    hoisted.sessionSecretMock.mockResolvedValue(SIGNER_A.secret);
+    renderPage();
+    expect(await screen.findByTestId('job-tx-preconditions')).toHaveTextContent('Min. Account Sequence');
+    expect(screen.getByTestId('job-tx-row-sequence')).toHaveAttribute('data-warn', 'true');
+    expect(screen.getByTestId('job-tx-warnings')).toHaveTextContent('springt das Konto auf diese Sequence');
+    expect(signButton()).toBeDisabled();
+    fireEvent.click(screen.getByRole('checkbox', { name: PRECOND }));
+    expect(signButton()).toBeEnabled();
+  });
+
   it('verlangt bei Precondition und fremdem Quellkonto beide Bestaetigungen', async () => {
     hoisted.getJobMock.mockImplementation(async () => jobFor(withExtraSigner({ opSource: SIGNER_A.publicKey })));
     hoisted.sessionSecretMock.mockResolvedValue(SIGNER_A.secret);

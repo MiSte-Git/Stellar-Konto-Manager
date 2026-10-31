@@ -121,6 +121,25 @@ describe('describeTransaction', () => {
     expect(d.rows.filter((row) => row.warn).length).toBeGreaterThanOrEqual(8);
   });
 
+  it('erkennt minSeqNum 0, den der SDK-Getter verschluckt, und warnt vor dem Sequence-Sprung', () => {
+    const builder = new TransactionBuilder(new Account(SOURCE, '9223372036854775806'), { fee: '100', networkPassphrase: Networks.TESTNET, minAccountSequence: '0' })
+      .addOperation(Operation.payment({ destination: DEST.publicKey(), asset: Asset.native(), amount: '1' }))
+      .setTimeout(0);
+    const tx = TransactionBuilder.fromXDR(builder.build().toXDR(), Networks.TESTNET);
+    expect(tx.minAccountSequence).toBeUndefined();
+    const d = describeTransaction(tx, t);
+    expect(d.unusualPreconditions).toEqual(['minAccountSequence']);
+    expect(rowsOf(d).minAccountSequence.value).toBe('0');
+    expect(rowsOf(d).sequence.warn).toBe(true);
+    expect(d.warnings.join(' ')).toContain('springt das Konto auf diese Sequence');
+    expect(d.warnings.join(' ')).toContain('9223372036854775807');
+  });
+
+  it('maskiert die restlichen Default-Ignorable-Zeichen', () => {
+    const d = describeTransaction(build({ memo: Memo.text('a͏b឴c឵') }), t);
+    expect(rowsOf(d).memo.value).toBe('"a\\u034Fb\\u17B4c\\u17B5"');
+  });
+
   it('ignoriert Preconditions mit Wert 0, minTime allein verlangt keine Bestaetigung', () => {
     const d = describeTransaction(build({ timebounds: { minTime: 1700000000, maxTime: 0 }, minAccountSequenceAge: 0, ledgerbounds: { minLedger: 0, maxLedger: 0 } }), t);
     expect(d.unusualPreconditions).toEqual([]);

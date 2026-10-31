@@ -413,7 +413,8 @@
         "minAccountSequenceAge": "Min. Alter der Sequence",
         "minAccountSequenceLedgerGap": "Min. Ledger-Abstand",
         "extraSigners": "Extra Signer"
-      }
+      },
+      "warnSequenceJump": "Mit Min. Account Sequence ist die Transaktion auch gültig, wenn die Sequence des Kontos weit unter ihrer eigenen liegt ({{sequence}}). Wird sie ausgeführt, springt das Konto auf diese Sequence. Liegt sie sehr hoch, kann das Konto danach keine weiteren Transaktionen mehr senden, und andere vorbereitete Transaktionen und der Widerruf werden ungültig."
     }
   },
   "secretModal": {

@@ -20,8 +20,9 @@ export const UNUSUAL_PRECONDITIONS = ['ledgerBounds', 'minAccountSequence', 'min
 // Unsichtbare oder irrefuehrende Zeichen im Memo-Text: Steuerzeichen, Format-Zeichen
 // (Zero-Width, Bidi, BOM), Zeilen-/Absatztrenner, private und nicht zugewiesene Codepoints,
 // alle Leerzeichen ausser U+0020 (NBSP, U+3000 ...), Hangul-Filler, Braille-Blank und
-// Variation Selectors. Homoglyphen (z. B. kyrillisches a) sind sichtbar und bleiben, wie sie sind.
-const INVISIBLE_RE = /[\p{Cc}\p{Cf}\p{Zl}\p{Zp}\p{Co}\p{Cn}\u00A0\u1680\u2000-\u200A\u202F\u205F\u3000\u115F\u1160\u3164\uFFA0\u2800\p{Variation_Selector}]/gu;
+// Variation Selectors und alle uebrigen Default-Ignorable-Zeichen (z. B. U+034F, U+17B4).
+// Homoglyphen (z. B. kyrillisches a) sind sichtbar und bleiben, wie sie sind.
+const INVISIBLE_RE = /[\p{Cc}\p{Cf}\p{Zl}\p{Zp}\p{Co}\p{Cn}\p{Default_Ignorable_Code_Point}\u00A0\u1680\u2000-\u200A\u202F\u205F\u3000\u115F\u1160\u3164\uFFA0\u2800\p{Variation_Selector}]/gu;
 
 function toHex(bytes) {
   return Array.from(bytes || [], (b) => b.toString(16).padStart(2, '0')).join('');
@@ -74,6 +75,22 @@ function describeSignedPayload(strkey) {
   } catch {
     return null;
   }
+}
+
+// minSeqNum direkt aus dem Envelope: Der SDK-Getter minAccountSequence verschluckt den Wert 0
+// (`if (minSeq)` bei 0n). Gerade 0 ist gefaehrlich: Die Transaktion gilt dann bei jeder
+// Konto-Sequence unter ihrer eigenen und setzt das Konto auf ihre Sequence. null = nicht gesetzt.
+function rawMinSeqNum(tx) {
+  try {
+    const cond = tx?.tx?.cond;
+    if (cond?.type === 'precondV2') {
+      const value = cond.value?.minSeqNum;
+      if (value !== null && value !== undefined) return String(value);
+      return null;
+    }
+  } catch { /* unten ueber den Getter */ }
+  const viaGetter = tx?.minAccountSequence;
+  return viaGetter === undefined || viaGetter === null ? null : String(viaGetter);
 }
 
 function encodeExtraSigner(signerKey) {
@@ -197,9 +214,16 @@ export function describeTransaction(tx, t, options = {}) {
     rows.push({ key: 'minLedger', label: label('minLedger', 'Frühestes Ledger'), value: Number(lb.minLedger) > 0 ? String(lb.minLedger) : '-', warn: true });
     rows.push({ key: 'maxLedger', label: label('maxLedger', 'Letztes Ledger'), value: Number(lb.maxLedger) > 0 ? String(lb.maxLedger) : text('unbounded', 'unbegrenzt'), warn: true });
   }
-  if (inner?.minAccountSequence !== undefined && inner?.minAccountSequence !== null) {
+  const minSeqNum = rawMinSeqNum(inner);
+  if (minSeqNum !== null) {
     unusual.push('minAccountSequence');
-    rows.push({ key: 'minAccountSequence', label: label('minAccountSequence', 'Min. Account Sequence'), value: String(inner.minAccountSequence), wrap: true, warn: true });
+    rows.push({ key: 'minAccountSequence', label: label('minAccountSequence', 'Min. Account Sequence'), value: minSeqNum, wrap: true, warn: true });
+    rows.filter((r) => r.key === 'sequence').forEach((r) => { r.warn = true; });
+    warnings.push(text(
+      'warnSequenceJump',
+      'Mit Min. Account Sequence ist die Transaktion auch gültig, wenn die Sequence des Kontos weit unter ihrer eigenen liegt ({{sequence}}). Wird sie ausgeführt, springt das Konto auf diese Sequence. Liegt sie sehr hoch, kann das Konto danach keine weiteren Transaktionen mehr senden, und andere vorbereitete Transaktionen und der Widerruf werden ungültig.',
+      { sequence: String(inner?.sequence ?? '-') },
+    ));
   }
   const seqAge = toBigInt(inner?.minAccountSequenceAge);
   if (seqAge !== null && seqAge > 0n) {
