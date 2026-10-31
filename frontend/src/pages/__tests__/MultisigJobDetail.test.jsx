@@ -17,6 +17,8 @@ const SIGNER_B = {
   publicKey: 'GD5KJP276E7CZT43PAI5KAEXCUDZMFFMV4X5AGFKBR7Q7IAZZ5BXZVKM',
 };
 const SOURCE = Keypair.random().publicKey();
+// Fremdes Quellkonto einer Operation, das nicht das aktuelle Konto (SIGNER_A) ist.
+const OTHER_SOURCE = Keypair.random().publicKey();
 
 const hoisted = vi.hoisted(() => ({
   getJobMock: vi.fn(),
@@ -450,16 +452,16 @@ describe('Fremdes Quellkonto einer Operation', () => {
     .build();
 
   it('listet ein fremdes Konto wie die anderen Warnungen und markiert den Block', async () => {
-    hoisted.getJobMock.mockImplementation(async () => jobFor(paymentTx(SIGNER_A.publicKey)));
+    hoisted.getJobMock.mockImplementation(async () => jobFor(paymentTx(OTHER_SOURCE)));
     renderPage();
     const warning = await screen.findByTestId('job-foreign-sources');
     expect(warning).toHaveAttribute('role', 'alert');
     expect(warning).toHaveClass('border-red-300');
     expect(warning).toHaveTextContent('hat ein anderes Quellkonto als die Transaktion');
     expect(warning).toHaveTextContent('die angezeigte Signaturanzahl berücksichtigt das nicht');
-    expect(warning).toHaveTextContent(SIGNER_A.publicKey);
+    expect(warning).toHaveTextContent(OTHER_SOURCE);
     const block = screen.getByTestId('operation-block');
-    expect(block).toHaveTextContent(`Quellkonto${SIGNER_A.publicKey}`);
+    expect(block).toHaveTextContent(`Quellkonto${OTHER_SOURCE}`);
     expect(block).toHaveTextContent('Diese Operation wird von einem anderen Konto ausgeführt.');
   });
 
@@ -480,7 +482,7 @@ describe('Fremdes Quellkonto einer Operation', () => {
   const importButton = () => screen.getByRole('button', { name: 'Signiertes XDR mergen' });
 
   it('sperrt das Signieren bis zur Bestaetigung und gibt es danach frei', async () => {
-    hoisted.getJobMock.mockImplementation(async () => jobFor(paymentTx(SIGNER_A.publicKey)));
+    hoisted.getJobMock.mockImplementation(async () => jobFor(paymentTx(OTHER_SOURCE)));
     hoisted.sessionSecretMock.mockResolvedValue(SIGNER_A.secret);
     renderPage();
     await screen.findByTestId('job-foreign-sources');
@@ -494,7 +496,7 @@ describe('Fremdes Quellkonto einer Operation', () => {
   });
 
   it('sperrt die Secret-Eingabe wieder, wenn die Bestaetigung zurueckgenommen wird', async () => {
-    hoisted.getJobMock.mockImplementation(async () => jobFor(paymentTx(SIGNER_A.publicKey)));
+    hoisted.getJobMock.mockImplementation(async () => jobFor(paymentTx(OTHER_SOURCE)));
     renderPage();
     fireEvent.click(await screen.findByRole('checkbox', { name: FOREIGN }));
     fireEvent.click(signButton());
@@ -509,7 +511,7 @@ describe('Fremdes Quellkonto einer Operation', () => {
   });
 
   it('sperrt auch den XDR-Import, mit Hinweis, und gibt ihn nach Bestaetigung frei', async () => {
-    hoisted.getJobMock.mockImplementation(async () => jobFor(paymentTx(SIGNER_A.publicKey)));
+    hoisted.getJobMock.mockImplementation(async () => jobFor(paymentTx(OTHER_SOURCE)));
     renderPage();
     await screen.findByTestId('job-foreign-sources');
     fireEvent.change(importInput(), { target: { value: SIGNED_XDR } });
@@ -537,7 +539,7 @@ describe('Fremdes Quellkonto einer Operation', () => {
   });
 
   it('bietet die Bestaetigung auch ohne eigenen Signer-Key an, sonst bliebe der Import gesperrt', async () => {
-    hoisted.getJobMock.mockImplementation(async () => jobFor(paymentTx(SIGNER_A.publicKey)));
+    hoisted.getJobMock.mockImplementation(async () => jobFor(paymentTx(OTHER_SOURCE)));
     render(
       <I18nextProvider i18n={i18n}>
         <MultisigJobDetail jobId="job-1" accessToken="tok" currentPublicKey={SOURCE} onBack={() => {}} />
@@ -549,7 +551,7 @@ describe('Fremdes Quellkonto einer Operation', () => {
 
   it('verlangt bei beiden Warnungen beide Bestaetigungen, keine deckt die andere ab', async () => {
     const tx = new TransactionBuilder(new Account(SOURCE, '100'), { fee: '1000', networkPassphrase: Networks.TESTNET })
-      .addOperation(Operation.manageData({ name: 'x', value: 'y', source: SIGNER_A.publicKey }))
+      .addOperation(Operation.manageData({ name: 'x', value: 'y', source: OTHER_SOURCE }))
       .setTimeout(86400)
       .build();
     hoisted.getJobMock.mockImplementation(async () => jobFor(tx));
@@ -566,7 +568,7 @@ describe('Fremdes Quellkonto einer Operation', () => {
   });
 
   it('setzt die Bestaetigung bei einem neuen Job zurueck', async () => {
-    hoisted.getJobMock.mockImplementation(async () => jobFor(paymentTx(SIGNER_A.publicKey)));
+    hoisted.getJobMock.mockImplementation(async () => jobFor(paymentTx(OTHER_SOURCE)));
     const page = (jobId) => (
       <I18nextProvider i18n={i18n}>
         <MultisigJobDetail jobId={jobId} accessToken="tok" currentPublicKey={SIGNER_A.publicKey} onBack={() => {}} />
@@ -604,7 +606,7 @@ describe('Fremdes Quellkonto einer Operation', () => {
     await waitFor(() => expect(resolveJob).toBeDefined());
     // Innerhalb von act reiht React nur ein, beide Updates landen in einem Commit.
     await act(async () => {
-      resolveJob(jobFor(paymentTx(SIGNER_A.publicKey)));
+      resolveJob(jobFor(paymentTx(OTHER_SOURCE)));
       await new Promise((r) => setTimeout(r, 0));
       commitWithJob();
     });
@@ -613,9 +615,9 @@ describe('Fremdes Quellkonto einer Operation', () => {
   });
 
   it('setzt die Bestaetigung bei neuem XDR im selben Job zurueck', async () => {
-    const first = paymentTx(SIGNER_A.publicKey);
+    const first = paymentTx(OTHER_SOURCE);
     const second = new TransactionBuilder(new Account(SOURCE, '200'), { fee: '1000', networkPassphrase: Networks.TESTNET })
-      .addOperation(Operation.payment({ destination: SIGNER_B.publicKey, asset: Asset.native(), amount: '1', source: SIGNER_A.publicKey }))
+      .addOperation(Operation.payment({ destination: SIGNER_B.publicKey, asset: Asset.native(), amount: '1', source: OTHER_SOURCE }))
       .setTimeout(86400)
       .build();
     hoisted.getJobMock.mockImplementation(async () => jobFor(first));
@@ -630,7 +632,7 @@ describe('Fremdes Quellkonto einer Operation', () => {
   });
 
   it('behaelt die Bestaetigung, wenn derselbe Job mit gleichem Hash neu geladen wird', async () => {
-    const tx = paymentTx(SIGNER_A.publicKey);
+    const tx = paymentTx(OTHER_SOURCE);
     hoisted.getJobMock.mockImplementation(async () => jobFor(tx));
     renderPage();
     fireEvent.click(await screen.findByRole('checkbox', { name: FOREIGN }));
@@ -642,7 +644,7 @@ describe('Fremdes Quellkonto einer Operation', () => {
   });
 
   it('gilt fuer gleiches XDR in einem anderen Job nicht', async () => {
-    const tx = paymentTx(SIGNER_A.publicKey);
+    const tx = paymentTx(OTHER_SOURCE);
     hoisted.getJobMock.mockImplementation(async () => jobFor(tx));
     const page = (jobId) => (
       <I18nextProvider i18n={i18n}>
@@ -658,7 +660,7 @@ describe('Fremdes Quellkonto einer Operation', () => {
   });
 
   it('sperrt in einem abgeschlossenen Job den Import nicht zusaetzlich und fragt nichts ab', async () => {
-    hoisted.getJobMock.mockImplementation(async () => ({ ...jobFor(paymentTx(SIGNER_A.publicKey)), status: 'expired' }));
+    hoisted.getJobMock.mockImplementation(async () => ({ ...jobFor(paymentTx(OTHER_SOURCE)), status: 'expired' }));
     renderPage();
     await screen.findByTestId('job-foreign-sources');
     expect(screen.queryByRole('checkbox', { name: FOREIGN })).toBeNull();
@@ -994,7 +996,7 @@ describe('Memo, Fee und Preconditions im Job-Detail (H1)', () => {
   });
 
   it('verlangt bei Precondition und fremdem Quellkonto beide Bestaetigungen', async () => {
-    hoisted.getJobMock.mockImplementation(async () => jobFor(withExtraSigner({ opSource: SIGNER_A.publicKey })));
+    hoisted.getJobMock.mockImplementation(async () => jobFor(withExtraSigner({ opSource: OTHER_SOURCE })));
     hoisted.sessionSecretMock.mockResolvedValue(SIGNER_A.secret);
     renderPage();
     const precond = await screen.findByRole('checkbox', { name: PRECOND });
@@ -1050,5 +1052,62 @@ describe('Memo, Fee und Preconditions im Job-Detail (H1)', () => {
     renderPage();
     await screen.findByText(/Keine Operationen erkennbar/);
     expect(screen.queryByTestId('job-tx-details')).toBeNull();
+  });
+});
+
+describe('F2: eigenes Konto als Quelle einer Operation', () => {
+  const signButton = () => screen.getAllByRole('button', { name: 'Jetzt signieren' })[0];
+  const FOREIGN = /fremden Quellkonten geprüft/;
+  const txWithOpSource = (opSource) => new TransactionBuilder(new Account(SOURCE, '100'), { fee: '1000', networkPassphrase: Networks.TESTNET })
+    .addOperation(Operation.payment({ destination: SIGNER_B.publicKey, asset: Asset.native(), amount: '9000', source: opSource }))
+    .setTimeout(86400)
+    .build();
+  const jobFor = (tx, o = {}) => makeJob({ txXdr: tx.toXDR(), txHash: txHashHex(tx), ...o });
+
+  it('sperrt hart, ohne Checkbox, und benennt das eigene Konto', async () => {
+    hoisted.getJobMock.mockImplementation(async () => jobFor(txWithOpSource(SIGNER_A.publicKey)));
+    hoisted.sessionSecretMock.mockResolvedValue(SIGNER_A.secret);
+    renderPage();
+    expect(await screen.findByTestId('job-own-account-source')).toHaveTextContent(`deinem aktuellen Konto ${SIGNER_A.publicKey}`);
+    expect(screen.getByTestId('job-foreign-sources')).toHaveTextContent('(dein aktuelles Konto)');
+    expect(screen.queryByRole('checkbox', { name: FOREIGN })).toBeNull();
+    expect(signButton()).toBeDisabled();
+    fireEvent.change(screen.getByPlaceholderText('Signiertes XDR'), { target: { value: 'AAAA-signiert' } });
+    expect(screen.getByRole('button', { name: 'Signiertes XDR mergen' })).toBeDisabled();
+    expect(screen.getByTestId('job-import-blocked')).toHaveTextContent('von deinem aktuellen Konto');
+    fireEvent.click(signButton());
+    expect(hoisted.mergeMock).not.toHaveBeenCalled();
+  });
+
+  it('gilt auch fuer eine M-Adresse des eigenen Kontos', async () => {
+    const m = new MuxedAccount(new Account(SIGNER_A.publicKey, '0'), '5').accountId();
+    hoisted.getJobMock.mockImplementation(async () => jobFor(txWithOpSource(m)));
+    renderPage();
+    await screen.findByTestId('job-own-account-source');
+    expect(screen.queryByRole('checkbox', { name: FOREIGN })).toBeNull();
+    expect(signButton()).toBeDisabled();
+  });
+
+  it('signiert nicht, wenn der eingegebene Key zu einem fremden Quellkonto gehoert', async () => {
+    // Fremde Quelle ist SIGNER_B, aktuelles Konto SIGNER_A: Checkbox moeglich, aber der Key von B wird abgewiesen.
+    hoisted.getJobMock.mockImplementation(async () => jobFor(txWithOpSource(SIGNER_B.publicKey)));
+    renderPage();
+    fireEvent.click(await screen.findByRole('checkbox', { name: FOREIGN }));
+    fireEvent.click(signButton());
+    await waitFor(() => expect(document.querySelector('input[type="password"]')).not.toBeNull());
+    fireEvent.change(document.querySelector('input[type="password"]'), { target: { value: SIGNER_B.secret } });
+    fireEvent.click(screen.getAllByRole('button', { name: 'Jetzt signieren' })[1]);
+    expect(await screen.findByText(/Der eingegebene Key gehört zum Konto/)).toHaveTextContent(SIGNER_B.publicKey);
+    expect(hoisted.mergeMock).not.toHaveBeenCalled();
+  });
+
+  it('fremde Quelle, die nicht das eigene Konto ist, bleibt mit Bestaetigung signierbar', async () => {
+    hoisted.getJobMock.mockImplementation(async () => jobFor(txWithOpSource(OTHER_SOURCE)));
+    hoisted.sessionSecretMock.mockResolvedValue(SIGNER_A.secret);
+    renderPage();
+    fireEvent.click(await screen.findByRole('checkbox', { name: FOREIGN }));
+    expect(screen.queryByTestId('job-own-account-source')).toBeNull();
+    fireEvent.click(signButton());
+    await waitFor(() => expect(hoisted.mergeMock).toHaveBeenCalledTimes(1));
   });
 });

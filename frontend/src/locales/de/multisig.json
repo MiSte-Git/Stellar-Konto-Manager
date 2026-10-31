@@ -212,7 +212,8 @@
         "body": "Die Signaturen wurden erfolgreich mit diesem Multisig-Job gemergt. Aktueller Status: {{status}}."
       },
       "blockedIntegrityHint": "Import gesperrt, weil die Transaktion die Prüfung oben nicht bestanden hat.",
-      "blockedHint": "Zuerst die Warnungen oben bestätigen (Transaktion und Operationen)."
+      "blockedHint": "Zuerst die Warnungen oben bestätigen (Transaktion und Operationen).",
+      "blockedOwnAccountHint": "Import gesperrt, weil eine Operation von deinem aktuellen Konto ausgeführt wird."
     },
     "secretPrompt": {
       "title": "Secret eingeben, um zu signieren",
@@ -331,7 +332,10 @@
       "warnUnknownOperation": "SKM kann diese Operation nicht im Klartext anzeigen.",
       "warnForeignSources": "Achtung: Mindestens eine Operation hat ein anderes Quellkonto als die Transaktion. Für sie zählen die Signer und Thresholds des jeweiligen Kontos, nicht nur die des Job-Kontos; die angezeigte Signaturanzahl berücksichtigt das nicht. Gehört einer deiner Keys zu diesem Konto, autorisiert deine Signatur auch diese Operation. Prüfe die Adressen, bevor du signierst:",
       "confirmForeignSources": "Ich habe die fremden Quellkonten geprüft und möchte trotzdem signieren.",
-      "warnUnknownSigner": "Signer-Typ nicht erkannt."
+      "warnUnknownSigner": "Signer-Typ nicht erkannt.",
+      "ownAccountMarker": "dein aktuelles Konto",
+      "ownAccountAsSource": "Gesperrt: Eine Operation wird von deinem aktuellen Konto {{account}} ausgeführt, nicht vom Job-Konto. Deine Signatur würde sie für dein Konto autorisieren, zum Beispiel eine Zahlung aus deinem Guthaben. SKM baut solche Jobs nie selbst, darum sind Signieren und Import hier gesperrt.",
+      "keyIsOpSource": "Nicht signiert: Der eingegebene Key gehört zum Konto {{account}}, das in diesem Job selbst eine Operation ausführt. Deine Signatur würde diese Operation für dieses Konto autorisieren."
     },
     "validUntil": {
       "label": "Gültig bis",

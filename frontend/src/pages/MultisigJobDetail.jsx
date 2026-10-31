@@ -3,7 +3,7 @@ import { horizonUrlFor, passphraseFor } from '../config/networks.js';
 import { useTranslation } from 'react-i18next';
 import { getPendingMultisigJob, mergeSignedXdr, getMultisigJobChallenge, signMultisigJobChallenge, getMultisigJobAccessToken } from '../utils/multisigApi.js';
 import MultisigJobStatusBadge from '../components/MultisigJobStatusBadge.jsx';
-import { Keypair } from '@stellar/stellar-sdk';
+import { Keypair, extractBaseAddress } from '@stellar/stellar-sdk';
 import { getSessionSecret } from '../utils/sessionSecrets.js';
 import { takeMultisigJobToken } from '../components/multisig/multisigNavigation.js';
 import { describeOperations, findOperationWarnings, formatAsset } from '../utils/multisig/describeOperations.js';
@@ -209,7 +209,18 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
   const integrityBlocked = !!job && !isFinalState && !jobCheck.ok;
   const revokeAccountMismatch = jobCheck.issues.find((i) => i.code === 'account_mismatch');
   const visibleIssues = isFinalState ? jobCheck.issues.filter((i) => i.code !== 'undecodable') : jobCheck.issues;
+  // F2: Fuehrt eine Operation das aktuelle Konto aus, wuerde die Signatur genau diese Operation
+  // fuer das eigene Konto autorisieren (K1 ueber op.source). SKM baut solche Jobs nie, darum
+  // hart gesperrt, ohne Bestaetigung.
+  const ownAccountAsOpSource = useMemo(() => {
+    if (!currentPublicKey) return '';
+    let base = currentPublicKey;
+    try { base = extractBaseAddress(currentPublicKey); } catch { /* bleibt wie angegeben */ }
+    return operationWarnings.foreignOpSources.includes(base) ? base : '';
+  }, [currentPublicKey, operationWarnings]);
+  const ownAccountBlocked = !!job && !isFinalState && !!ownAccountAsOpSource;
   const signingBlocked = integrityBlocked
+    || ownAccountBlocked
     || (operationWarnings.unknownTypes.length > 0 && !unknownOpsConfirmed)
     || (operationWarnings.foreignOpSources.length > 0 && !foreignSourcesConfirmed)
     || (unusualPreconditions.length > 0 && !preconditionsConfirmed);
@@ -460,6 +471,17 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
         return;
       }
       const kp = Keypair.fromSecret(secret);
+      // F2 auch fuer jeden anderen eingegebenen Key: Gehoert er zu einem Konto, das eine
+      // Operation ausfuehrt, wuerde die Signatur diese Operation autorisieren.
+      const txSource = verifyJobTransaction(job, tx).sourceAccountId;
+      const opSources = findOperationWarnings((tx.innerTransaction || tx).operations, txSource).foreignOpSources;
+      if (opSources.includes(kp.publicKey())) {
+        setError(t('multisig:detail.operations.keyIsOpSource', {
+          account: kp.publicKey(),
+          defaultValue: 'Nicht signiert: Der eingegebene Key gehört zum Konto {{account}}, das in diesem Job selbst eine Operation ausführt. Deine Signatur würde diese Operation für dieses Konto autorisieren.',
+        }));
+        return;
+      }
       tx.sign(kp);
       const signerMeta = (job.signers || []).map((s) => ({
         publicKey: s.publicKey,
@@ -703,9 +725,22 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
                 <div role="alert" className="mt-2 space-y-1 rounded-sm border border-red-300 bg-red-50 p-2 text-xs text-red-900 dark:border-red-700 dark:bg-red-900/30 dark:text-red-100" data-testid="job-foreign-sources">
                   <p className="font-medium">{t('multisig:detail.operations.warnForeignSources', 'Achtung: Mindestens eine Operation hat ein anderes Quellkonto als die Transaktion. Für sie zählen die Signer und Thresholds des jeweiligen Kontos, nicht nur die des Job-Kontos; die angezeigte Signaturanzahl berücksichtigt das nicht. Gehört einer deiner Keys zu diesem Konto, autorisiert deine Signatur auch diese Operation. Prüfe die Adressen, bevor du signierst:')}</p>
                   <ul className="list-disc pl-4 font-mono">
-                    {operationWarnings.foreignOpSources.map((account) => <li key={account} className="break-all">{account}</li>)}
+                    {operationWarnings.foreignOpSources.map((account) => (
+                      <li key={account} className="break-all">
+                        {account}
+                        {account === ownAccountAsOpSource && <span className="font-sans font-semibold"> ({t('multisig:detail.operations.ownAccountMarker', 'dein aktuelles Konto')})</span>}
+                      </li>
+                    ))}
                   </ul>
-                  {!isFinalState && !integrityBlocked && (
+                  {ownAccountAsOpSource && (
+                    <p className="font-semibold" data-testid="job-own-account-source">
+                      {t('multisig:detail.operations.ownAccountAsSource', {
+                        account: ownAccountAsOpSource,
+                        defaultValue: 'Gesperrt: Eine Operation wird von deinem aktuellen Konto {{account}} ausgeführt, nicht vom Job-Konto. Deine Signatur würde sie für dein Konto autorisieren, zum Beispiel eine Zahlung aus deinem Guthaben. SKM baut solche Jobs nie selbst, darum sind Signieren und Import hier gesperrt.',
+                      })}
+                    </p>
+                  )}
+                  {!isFinalState && !integrityBlocked && !ownAccountAsOpSource && (
                     <label className="flex items-center gap-2">
                       <input type="checkbox" checked={foreignSourcesConfirmed} onChange={(e) => setConfirmed('foreignSources', e.target.checked)} />
                       {t('multisig:detail.operations.confirmForeignSources', 'Ich habe die fremden Quellkonten geprüft und möchte trotzdem signieren.')}
@@ -937,6 +972,8 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
               <p className="text-xs text-red-800 dark:text-red-200" data-testid="job-import-blocked">
                 {integrityBlocked
                   ? t('multisig:detail.signedXdr.blockedIntegrityHint')
+                  : ownAccountBlocked
+                  ? t('multisig:detail.signedXdr.blockedOwnAccountHint', 'Import gesperrt, weil eine Operation von deinem aktuellen Konto ausgeführt wird.')
                   : t('multisig:detail.signedXdr.blockedHint', 'Zuerst die Warnungen bei den Transaktionsoperationen oben bestätigen.')}
               </p>
             )}
