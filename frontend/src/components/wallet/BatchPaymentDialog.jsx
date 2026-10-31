@@ -475,7 +475,13 @@ export default function BatchPaymentDialog({ onClose }) {
             setResult(row.id, { status: 'success', hash, message: savedMain && savedRoute ? '' : errorText('logNotUpdated') });
           } catch (err) {
             if (err instanceof AmbiguousSubmitResultError) {
-              setResult(row.id, { status: 'ambiguous', hash: err.hash || hash });
+              // Ursache anzeigen (HTTP-Status oder Netzfehler), damit nachvollziehbar ist,
+              // warum der Ausgang offen blieb. Enthaelt keine Secrets.
+              const cause = err.cause;
+              const causeText = cause?.response?.status
+                ? `HTTP ${cause.response.status}${cause.response.statusText ? ` ${cause.response.statusText}` : ''}`
+                : String(cause?.message || cause || '').slice(0, 200);
+              setResult(row.id, { status: 'ambiguous', hash: err.hash || hash, message: causeText });
               stopReason = 'stoppedAmbiguous';
             } else {
               // Eindeutig fehlgeschlagen: vorherigen Stand wiederherstellen, aber nur, wo
@@ -524,7 +530,9 @@ export default function BatchPaymentDialog({ onClose }) {
     if (!r) return '';
     if (r.status === 'success') return r.message ? `${t('batchPayment:status.success')} (${r.message})` : t('batchPayment:status.success');
     if (r.status === 'failed') return `${t('batchPayment:status.failed')}: ${r.message}`;
-    if (r.status === 'ambiguous') return t('batchPayment:status.ambiguous');
+    if (r.status === 'ambiguous') {
+      return r.message ? `${t('batchPayment:status.ambiguous')} (${t('batchPayment:status.cause')}: ${r.message})` : t('batchPayment:status.ambiguous');
+    }
     if (r.status === 'skipped') return `${t('batchPayment:status.skipped')} (${r.message})`;
     if (r.status === 'sending') return t('batchPayment:status.sending');
     return t('batchPayment:status.pending');

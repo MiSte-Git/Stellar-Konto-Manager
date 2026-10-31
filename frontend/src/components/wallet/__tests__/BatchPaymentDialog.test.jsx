@@ -193,6 +193,7 @@ describe('BatchPaymentDialog', () => {
     fireEvent.click(screen.getByRole('button', { name: '2 Zahlungen senden' }));
 
     await waitFor(() => expect(screen.getByText(/gestoppt wegen unklarem Status/)).toBeInTheDocument());
+    expect(screen.getByText(/Ursache: timeout/)).toBeInTheDocument();
     expect(entryDuringSubmit).toMatchObject({ status: 'ambiguous' });
     expect(hoisted.submitMock).toHaveBeenCalledTimes(1);
     expect(readSentEntry('PUBLIC', fpOf(a, DEST_A)).status).toBe('ambiguous');

@@ -66,7 +66,8 @@
     "ambiguous": "Status unklar – nicht erneut senden, erst im Explorer prüfen",
     "skipped": "Nicht gesendet",
     "running": "Zahlungen werden gesendet …",
-    "waitingForLock": "Wartet auf eine andere Sammelzahlung, die in einem anderen Tab gerade sendet …"
+    "waitingForLock": "Wartet auf eine andere Sammelzahlung, die in einem anderen Tab gerade sendet …",
+    "cause": "Ursache"
   },
   "done": {
     "summary": "{{sent}} von {{total}} Zahlungen gesendet",
