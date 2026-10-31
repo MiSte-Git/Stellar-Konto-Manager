@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { csvEscape } from '../csvEscape.js';
+import { csvEscape, csvLine } from '../csvEscape.js';
 
 describe('csvEscape (F2 - CSV/spreadsheet formula injection guard)', () => {
   it('leaves plain text untouched', () => {
@@ -60,5 +60,20 @@ describe('csvEscape (F2 - CSV/spreadsheet formula injection guard)', () => {
   it('respects a custom delimiter (e.g. semicolon)', () => {
     expect(csvEscape('a;b', ';')).toBe('"a;b"');
     expect(csvEscape('a,b', ';')).toBe('a,b');
+  });
+});
+
+describe('csvLine', () => {
+  it('schuetzt Text-Zellen und laesst echte Zahlen stehen', () => {
+    expect(csvLine(['=HYPERLINK("x")', -1.5, 0, '12.5000000', null], ';')).toBe('"\'=HYPERLINK(""x"")";-1.5;0;12.5000000;');
+  });
+
+  it('setzt Zellen mit dem Trennzeichen in Anfuehrungszeichen', () => {
+    expect(csvLine(['a;b', 'c,d'], ';')).toBe('"a;b";c,d');
+    expect(csvLine(['a;b', 'c,d'], ',')).toBe('a;b,"c,d"');
+  });
+
+  it('behandelt ein Memo als Text, auch wenn es wie eine negative Zahl aussieht', () => {
+    expect(csvLine(['-5', '@cmd'], ';')).toBe("'-5;'@cmd");
   });
 });

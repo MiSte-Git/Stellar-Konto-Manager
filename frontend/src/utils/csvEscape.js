@@ -13,3 +13,12 @@ export function csvEscape(value, delimiter = ',') {
   }
   return s;
 }
+
+// Eine CSV-Zeile aus Zellen. Echte JS-Zahlen bleiben unveraendert (auch negative): Sie
+// koennen keine Formel enthalten, ein ' davor wuerde sie in der Tabelle zu Text machen.
+// Alles andere laeuft durch csvEscape, also auch Memos und andere fremde Texte.
+export function csvLine(cells, delimiter = ',') {
+  return cells
+    .map((cell) => (typeof cell === 'number' && Number.isFinite(cell) ? String(cell) : csvEscape(cell, delimiter)))
+    .join(delimiter);
+}

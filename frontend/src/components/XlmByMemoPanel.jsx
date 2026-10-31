@@ -6,6 +6,7 @@ import { getHorizonServer } from "../utils/stellar/stellarUtils";
 import ProgressBar from "../components/ProgressBar.jsx";
 import { formatLocalDateTime, formatElapsedMmSs } from '../utils/datetime';
 import { buildDefaultFilename } from '../utils/filename';
+import { csvLine } from '../utils/csvEscape.js';
 import { sumIncomingXLMByMemoNoCacheExact_Hybrid as sumIncomingXLMByMemoNoCacheExact, withRetry } from "../utils/stellar/queryUtils";
 import { getNewestCreatedAt } from '../utils/db/indexedDbClient';
 import { memoLooksLikeUrl, sanitizeMemo } from '../utils/stellar/activity.js';
@@ -333,14 +334,9 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = NETWORKS.PUBLIC
     const headers = (headersOpt && headersOpt.length)
       ? headersOpt
       : ['created_at','tx_hash','from','to','amount','asset_type','memo'];
-    const esc = (v) => {
-      const s = v == null ? '' : String(v);
-      const q = s.includes(';') || s.includes('"') || s.includes('\n');
-      const d = s.replace(/"/g, '""');
-      return q ? `"${d}"` : d;
-    };
-    const lines = [headers.join(';')];
-    for (const r of rows) lines.push(headers.map(h => esc(r[h])).join(';'));
+    // Memos bestimmt der Absender: csvLine schuetzt gegen Formeln (=, +, -, @) und kaputte Zellen.
+    const lines = [csvLine(headers, ';')];
+    for (const r of rows) lines.push(csvLine(headers.map((h) => r[h]), ';'));
     return '\uFEFF' + lines.join('\n'); // BOM für Excel
   }
   function downloadCsv(filename, text) {

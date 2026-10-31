@@ -4,6 +4,7 @@ import { fetchAccountCreatedAt, fetchGroupfundByMemo, fetchInvestedPerToken } fr
 import ProgressBar from './ProgressBar';
 import { useSettings } from '../utils/useSettings';
 import { buildDefaultFilename } from '../utils/filename';
+import { csvLine } from '../utils/csvEscape.js';
 import { getHorizonServer } from '../utils/stellar/stellarUtils';
 import { useTrustedWallets } from '../utils/useTrustedWallets.js';
 
@@ -487,14 +488,8 @@ export default function InvestedTokensPanel({ publicKey }) {
   }
 
   function downloadCsv(dataRows) {
-    const escape = (val) => {
-      const s = String(val ?? '');
-      if (s.includes('"') || s.includes(',') || s.includes('\n')) {
-        return '"' + s.replace(/"/g, '""') + '"';
-      }
-      return s;
-    };
-    const csv = dataRows.map((r) => r.map(escape).join(',')).join('\n');
+    // Labels, Memos und Token-Codes koennen von Dritten stammen: Schutz gegen Formeln.
+    const csv = dataRows.map((r) => csvLine(r, ',')).join('\n');
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');

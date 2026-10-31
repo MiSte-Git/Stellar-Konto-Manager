@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { csvLine } from '../utils/csvEscape.js';
 
 function ResultModal({ deletedTrustlines, isSimulation = false, onClose }) {
   const { t } = useTranslation(['trustline', 'TX', 'common']);
@@ -24,13 +25,15 @@ function ResultModal({ deletedTrustlines, isSimulation = false, onClose }) {
         ? ['Asset Code', 'Asset Issuer']
         : ['Asset Code', 'Asset Issuer', 'Transaction ID'];
 
+    // csvLine: Schutz gegen Formeln und kaputte Zellen wie bei allen CSV-Exporten.
     const csvContent = [
-        header.join(','),
-        ...deletedTrustlines.map(tl =>
+        csvLine(header, ','),
+        ...deletedTrustlines.map(tl => csvLine(
         isSimulation
-            ? `${tl.assetCode},${tl.assetIssuer}`
-            : `${tl.assetCode},${tl.assetIssuer},${tl.txId || ''}`
-        )
+            ? [tl.assetCode, tl.assetIssuer]
+            : [tl.assetCode, tl.assetIssuer, tl.txId || ''],
+        ','
+        ))
     ].join('\n');
 
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
