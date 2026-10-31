@@ -934,6 +934,8 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
                 </div>
               )}
             </div>
+            {/* Nach dem Einreichen ist die Sequence verbraucht, der Status oben sagt dann alles. */}
+            {!String(job.status || '').startsWith('submitted_') && (
             <div className="flex flex-wrap gap-x-6 gap-y-1">
               <div>
                 <span className="text-gray-600 dark:text-gray-300">{t('multisig:detail.sequenceStatus.label', 'Sequenz-Status')}: </span>
@@ -944,6 +946,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
                 </span>
               </div>
             </div>
+            )}
           </div>
 
           {Array.isArray(job.changes) && job.changes.length > 0 && (

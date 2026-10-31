@@ -10,8 +10,6 @@ function MultisigJobList({ onBack, publicKey, onOpenDetail, refreshKey = 0 }) {
   const [error, setError] = useState('');
   const [onlyPendingForMe, setOnlyPendingForMe] = useState(false);
   const [includeSignerJobs, setIncludeSignerJobs] = useState(true);
-  const [showDeletePanel, setShowDeletePanel] = useState(false);
-  const [deleteConfirm, setDeleteConfirm] = useState('');
 
   const netLabel = (() => {
     try { return (typeof window !== 'undefined' && window.localStorage?.getItem('SKM_NETWORK') === 'TESTNET') ? 'testnet' : 'public'; } catch { return 'public'; }
@@ -87,25 +85,6 @@ function MultisigJobList({ onBack, publicKey, onOpenDetail, refreshKey = 0 }) {
       URL.revokeObjectURL(url);
     } catch (e) {
       console.error('export failed', e);
-    }
-  };
-
-  const handleDeleteTestnet = async () => {
-    if (netLabel !== 'testnet') return;
-    setLoading(true);
-    setError('');
-    try {
-      const url = apiUrl(`multisig/jobs?network=${encodeURIComponent(netLabel)}&confirm=${encodeURIComponent('DELETE TESTNET JOBS')}`);
-      const r = await fetch(url, { method: 'DELETE' });
-      const data = await r.json().catch(() => ({}));
-      if (!r.ok) throw new Error(data?.error || 'delete_failed');
-      await loadJobs();
-      setDeleteConfirm('');
-      setShowDeletePanel(false);
-    } catch (e) {
-      setError(e?.message || 'delete_failed');
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -185,53 +164,8 @@ function MultisigJobList({ onBack, publicKey, onOpenDetail, refreshKey = 0 }) {
           <button className="px-3 py-1 rounded-sm border" onClick={handleExport} disabled={!jobsToShow || jobsToShow.length === 0 || loading}>
             {t('multisig:list.export', 'Exportieren')}
           </button>
-          {netLabel === 'testnet' && (
-            <button
-              className="px-3 py-1 rounded-sm border border-red-400 text-red-700"
-              onClick={() => setShowDeletePanel((v) => !v)}
-              disabled={loading}
-            >
-              {t('multisig:list.deleteTestnet', 'Testnet-Jobs löschen')}
-            </button>
-          )}
         </div>
       </div>
-      {showDeletePanel && netLabel === 'testnet' && (
-        <div className="border border-red-400 bg-red-50 dark:bg-red-900/30 rounded-sm p-3 space-y-2">
-          <div className="text-sm font-semibold text-red-800 dark:text-red-200">
-            {t('multisig:list.deleteTestnetTitle', 'Alle Testnet-Jobs löschen')}
-          </div>
-          <div className="text-xs text-red-700 dark:text-red-300">
-            {t('multisig:list.deleteTestnetHint', 'Dies entfernt alle Multisig-Jobs im Testnet. Zum Bestätigen bitte "DELETE TESTNET JOBS" eintippen.')}
-          </div>
-          <input
-            type="text"
-            value={deleteConfirm}
-            onChange={(e) => setDeleteConfirm(e.target.value)}
-            className="w-full border rounded-sm px-2 py-1 text-sm"
-            placeholder="DELETE TESTNET JOBS"
-            autoComplete="off"
-          />
-          <div className="flex justify-end gap-2">
-            <button
-              type="button"
-              className="px-3 py-1 rounded-sm border"
-              onClick={() => { setShowDeletePanel(false); setDeleteConfirm(''); }}
-              disabled={loading}
-            >
-              {t('common:option.cancel', 'Abbrechen')}
-            </button>
-            <button
-              type="button"
-              className="px-3 py-1 rounded-sm bg-red-600 text-white disabled:opacity-50"
-              onClick={handleDeleteTestnet}
-              disabled={loading || deleteConfirm !== 'DELETE TESTNET JOBS'}
-            >
-              {t('multisig:list.deleteTestnetConfirm', 'Testnet-Jobs löschen')}
-            </button>
-          </div>
-        </div>
-      )}
       {error && <div className="text-sm text-red-600">{error}</div>}
       {loading && <div className="text-sm text-gray-600">{t('common:common.loading')}</div>}
       {(!jobsToShow || jobsToShow.length === 0) && !loading && (

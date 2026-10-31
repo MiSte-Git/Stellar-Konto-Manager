@@ -71,4 +71,10 @@ describe('MultisigJobList: Filter', () => {
     expect(assigned).toBeChecked();
     expect(assigned).toBeDisabled();
   });
+
+  it('bietet kein Loeschen aller Testnet-Jobs mehr an', async () => {
+    renderList();
+    await waitFor(() => expect(screen.getByText(/eigen-abgel/)).toBeInTheDocument());
+    expect(screen.queryByRole('button', { name: /Testnet-Jobs löschen/ })).toBeNull();
+  });
 });
