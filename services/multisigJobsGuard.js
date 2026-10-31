@@ -20,7 +20,7 @@
 // unbounded transactions or jobs stored before maxTimeUnix existed.
 const PENDING_JOB_EXPIRY_DAYS = 7;
 
-const FINAL_STATES = new Set(['submitted_success', 'submitted_failed', 'expired', 'obsolete_seq']);
+const FINAL_STATES = new Set(['submitted_success', 'submitted_failed', 'expired', 'obsolete_seq', 'rejected']);
 
 /**
  * @param {object[]} items

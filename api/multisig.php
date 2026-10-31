@@ -28,6 +28,7 @@ require_once __DIR__ . '/stellarNetworks.php';
 require __DIR__ . '/txSignatures.php';
 require __DIR__ . '/multisigJobsGuard.php';
 require __DIR__ . '/multisigLifecycle.php';
+require __DIR__ . '/multisigDecline.php';
 
 use Soneso\StellarSDK\StellarSDK;
 use Soneso\StellarSDK\AbstractTransaction;
@@ -150,7 +151,7 @@ function saveJobs(string $jobFile, array $items): void {
 // Drops old, already-final jobs so the job file does not grow forever.
 // Active jobs (pending/ready) are always kept, regardless of age.
 function pruneOldJobs(array $items, int $maxAgeDays = JOB_RETENTION_DAYS): array {
-    $finalStates = ['submitted_success', 'submitted_failed', 'expired', 'obsolete_seq'];
+    $finalStates = ['submitted_success', 'submitted_failed', 'expired', 'obsolete_seq', 'rejected'];
     $cutoff = time() - ($maxAgeDays * 86400);
     return array_values(array_filter($items, function ($job) use ($finalStates, $cutoff) {
         $status = $job['status'] ?? '';
@@ -377,7 +378,7 @@ function summarizeJob(array $job): array {
     $accountId = $job['accountId'] ?? '';
     $txXdr = $job['txXdrCurrent'] ?? ($job['txXdrOriginal'] ?? ($job['txXdr'] ?? ''));
 
-    $finalStates = ['submitted_success', 'submitted_failed', 'expired', 'obsolete_seq'];
+    $finalStates = ['submitted_success', 'submitted_failed', 'expired', 'obsolete_seq', 'rejected'];
     $isFinal = in_array($job['status'] ?? '', $finalStates, true);
     $signers = $job['signers'] ?? [];
     $signersEmpty = !$signers || count($signers) === 0;
@@ -710,6 +711,116 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/token'
     return sendJson(['accessToken' => $job['accessToken'] ?? '']);
 }
 
+// POST /api/multisig/jobs/:id/decline - Ablehnen. Der Signer beweist wie beim Token den
+// Besitz seines Keys (signierte Challenge), das Job-Token allein sagt nicht, welcher Signer
+// es ist. Signer und Gewichte kommen live aus dem Konto. Reicht das Gewicht der uebrigen
+// Signer nicht mehr, wird der Job abgelehnt (rejected, Endzustand). Wer schon signiert hat,
+// kann nicht mehr ablehnen. Gleiche Reihenfolge der Pruefungen wie in server.js.
+if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/decline'))) {
+    $id = $m['id'] ?? '';
+    $job = findJobById($jobFile, $id);
+    if (!$job) return sendJson(['ok' => false, 'error' => 'not_found'], 404);
+
+    $body = jsonBody();
+    $signerPk = parseSignerPublicKey(is_string($body['signer'] ?? null) ? $body['signer'] : '');
+    if ($signerPk === null) return sendJson(['ok' => false, 'error' => 'invalid_signer'], 400);
+    $signature = is_string($body['signature'] ?? null) ? trim($body['signature']) : '';
+    if ($signature === '') return sendJson(['ok' => false, 'error' => 'missing_signature'], 400);
+
+    try {
+        $pending = consumeChallenge($id, $signerPk);
+    } catch (\Throwable $e) {
+        error_log('[multisig] jobs.decline challenge lookup failed: ' . $e->getMessage());
+        return sendError('server_error', null, 500);
+    }
+    if ($pending === null) return sendJson(['ok' => false, 'error' => 'challenge_missing_or_expired'], 400);
+    if (!verifyChallengeSignature($pending['nonce'], $signature, $signerPk)) {
+        return sendJson(['ok' => false, 'error' => 'invalid_signature'], 403);
+    }
+
+    $meta = fetchAccountSignersCached($job['accountId'] ?? '', $job['network'] ?? 'public');
+    $liveSigners = $meta['signers'] ?? [];
+    $isActiveSigner = false;
+    foreach ($liveSigners as $s) {
+        if (($s['publicKey'] ?? '') === $signerPk && (int)($s['weight'] ?? 0) > 0) {
+            $isActiveSigner = true;
+            break;
+        }
+    }
+    if (!$isActiveSigner) return sendJson(['ok' => false, 'error' => 'forbidden'], 403);
+
+    try {
+        $result = null;
+        $conflict = null;
+        withJobsLock($jobFile, function (array $items) use ($id, $signerPk, $liveSigners, &$result, &$conflict) {
+            foreach ($items as $i => $j) {
+                if (($j['id'] ?? '') !== $id) continue;
+                $current = summarizeJob($j);
+                $finalStates = ['submitted_success', 'submitted_failed', 'expired', 'obsolete_seq', 'rejected'];
+                if (in_array($current['status'] ?? '', $finalStates, true)) {
+                    $conflict = $current['status'];
+                    return $items;
+                }
+                foreach ($current['collectedSigners'] ?? [] as $c) {
+                    if (($c['publicKey'] ?? '') === $signerPk) {
+                        $conflict = 'already_signed';
+                        return $items;
+                    }
+                }
+                $j['requiredWeight'] = $current['requiredWeight'] ?? ($j['requiredWeight'] ?? 0);
+                $decision = applyDecline($j, $signerPk, $liveSigners, gmdate('c'));
+                $j['declinedSigners'] = $decision['declinedSigners'];
+                $j['status'] = $decision['status'];
+                $items[$i] = $j;
+                $result = ['ok' => true, 'status' => $decision['status'], 'declinedSigners' => $decision['declinedSigners']];
+                return $items;
+            }
+            return $items;
+        });
+    } catch (\Throwable $e) {
+        error_log('[multisig] jobs.decline failed: ' . $e->getMessage());
+        return sendError('server_error', null, 500);
+    }
+    if ($conflict !== null) return sendJson(['ok' => false, 'error' => $conflict], 409);
+    if ($result === null) return sendJson(['ok' => false, 'error' => 'not_found'], 404);
+    return sendJson($result);
+}
+
+// DELETE /api/multisig/jobs/:id - einzelnen Job loeschen: nur mit Job-Token (also nur
+// Signer) und nur im Endzustand. Ein offener Job wuerde durch Loeschen nicht unwirksam,
+// signiertes XDR kann anderswo liegen; dafuer gibt es Ablehnen und Widerruf.
+if ($method === 'DELETE' && ($m = matchRoute($path, '/api/multisig/jobs/:id'))) {
+    $id = $m['id'] ?? '';
+    $job = findJobById($jobFile, $id);
+    if (!$job) return sendJson(['ok' => false, 'error' => 'not_found'], 404);
+    if (!hasValidJobToken($job)) return sendJson(['ok' => false, 'error' => 'forbidden'], 403);
+    try {
+        $conflict = null;
+        $deleted = false;
+        withJobsLock($jobFile, function (array $items) use ($id, &$conflict, &$deleted) {
+            foreach ($items as $i => $j) {
+                if (($j['id'] ?? '') !== $id) continue;
+                $current = summarizeJob($j);
+                $finalStates = ['submitted_success', 'submitted_failed', 'expired', 'obsolete_seq', 'rejected'];
+                if (!in_array($current['status'] ?? '', $finalStates, true)) {
+                    $conflict = $current['status'] ?? '';
+                    return $items;
+                }
+                unset($items[$i]);
+                $deleted = true;
+                return array_values($items);
+            }
+            return $items;
+        });
+    } catch (\Throwable $e) {
+        error_log('[multisig] jobs.delete_one failed: ' . $e->getMessage());
+        return sendError('server_error', null, 500);
+    }
+    if ($conflict !== null) return sendJson(['ok' => false, 'error' => 'not_final', 'status' => $conflict], 409);
+    if (!$deleted) return sendJson(['ok' => false, 'error' => 'not_found'], 404);
+    return sendJson(['ok' => true]);
+}
+
 // POST /api/multisig/jobs/:id/merge-signed-xdr
 if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/merge-signed-xdr'))) {
     try {
@@ -764,7 +875,7 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/merge-
                 // a stale resubmission attempt would recompute the now-spent
                 // sequence as obsolete_seq and clobber the true
                 // submitted_success.
-                $finalStates = ['submitted_success', 'submitted_failed', 'expired', 'obsolete_seq'];
+                $finalStates = ['submitted_success', 'submitted_failed', 'expired', 'obsolete_seq', 'rejected'];
                 $existingStatus = $j['status'] ?? '';
                 if (in_array($existingStatus, $finalStates, true)) {
                     $lifecycleRejected = $existingStatus;
@@ -849,6 +960,7 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/merge-
                 $j['txXdrCurrent'] = $merged->toEnvelopeXdrBase64();
                 $j['collectedSigners'] = $collected;
                 $j['collectedWeight'] = $collectedWeight;
+                $j['declinedSigners'] = dropDeclinesOfCollected(is_array($j['declinedSigners'] ?? null) ? $j['declinedSigners'] : [], $collected);
                 $j['status'] = $status;
                 $j['submittedResult'] = $submittedResult;
                 $j['submittedAt'] = $submittedResult ? gmdate('c') : null;

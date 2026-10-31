@@ -19,6 +19,7 @@ const { filterValidSignatures, requiredWeightForOperations, signatureKey, txSour
 const { isLoopbackAddress } = require('./services/network.js');
 const stellarNetworks = require('./services/stellarNetworks.js');
 const { computeMultisigLifecycleStatus, extractMaxTimeUnix, mapSubmitResultCodeToLifecycleStatus, isMultisigTimeboundWithinCap, MULTISIG_JOB_MAX_TIMEBOUND_SECONDS } = require('./services/multisigLifecycle.js');
+const { applyDecline, dropDeclinesOfCollected } = require('./services/multisigDecline.js');
 const { expireStalePendingJobs } = require('./services/multisigJobsGuard.js');
 
 // Lightweight .env loader (root .env and backend/.env) without extra deps
@@ -278,8 +279,8 @@ const allowedPriority = new Set(['low', 'normal', 'high', 'urgent']);
 const allowedCategory = new Set(['bug', 'idea', 'improve', 'other']);
 const allowedPage = new Set(['start','trustlines','trustlineCompare','balance','xlmByMemo','sendPayment','investedTokens','createAccount','multisigEdit','settings','feedback','other']);
 const ADMIN_SECRET = process.env.BUGTRACKER_ADMIN_SECRET || '';
-const multisigStatus = new Set(['pending_signatures', 'ready_to_submit', 'submitted_success', 'submitted_failed', 'expired', 'obsolete_seq']);
-const multisigFinalStatus = new Set(['submitted_success', 'submitted_failed', 'expired', 'obsolete_seq']);
+const multisigStatus = new Set(['pending_signatures', 'ready_to_submit', 'submitted_success', 'submitted_failed', 'expired', 'obsolete_seq', 'rejected']);
+const multisigFinalStatus = new Set(['submitted_success', 'submitted_failed', 'expired', 'obsolete_seq', 'rejected']);
 
 // Bugtracker admin session auth (finding A2): replaces the client-side secret
 // comparison (VITE_BUGTRACKER_ADMIN_SECRET baked into the JS bundle) with a
@@ -867,6 +868,73 @@ app.post('/api/multisig/jobs/:id/token', async (req, res) => {
   }
 });
 
+// Ablehnen: Der Signer beweist wie beim Token den Besitz seines Keys (signierte Challenge),
+// das Job-Token allein sagt nicht, welcher Signer es ist. Signer und Gewichte kommen live
+// aus dem Konto. Reicht das Gewicht der uebrigen Signer nicht mehr, wird der Job abgelehnt
+// (rejected, Endzustand). Wer schon signiert hat, kann nicht mehr ablehnen.
+app.post('/api/multisig/jobs/:id/decline', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const job = findMultisigJob(id);
+    if (!job) return res.status(404).json({ ok: false, error: 'not_found' });
+
+    const signerPk = parseSignerPublicKey(req.body?.signer);
+    if (!signerPk) return res.status(400).json({ ok: false, error: 'invalid_signer' });
+    const signature = typeof req.body?.signature === 'string' ? req.body.signature.trim() : '';
+    if (!signature) return res.status(400).json({ ok: false, error: 'missing_signature' });
+
+    const pending = consumeChallenge(id, signerPk);
+    if (!pending) return res.status(400).json({ ok: false, error: 'challenge_missing_or_expired' });
+    if (!verifyChallengeSignature(pending.nonce, signature, signerPk)) {
+      return res.status(403).json({ ok: false, error: 'invalid_signature' });
+    }
+
+    let signerMeta;
+    try {
+      signerMeta = extractSignerMeta(await loadAccount(horizonServerForNet(job.network), job.accountId));
+    } catch {
+      return res.status(403).json({ ok: false, error: 'forbidden' });
+    }
+    const isActiveSigner = (signerMeta.signers || []).some((s) => s.publicKey === signerPk && Number(s.weight || 0) > 0);
+    if (!isActiveSigner) return res.status(403).json({ ok: false, error: 'forbidden' });
+
+    const [current] = await annotateJobsLifecycleStatus([job]);
+    if (multisigFinalStatus.has(current.status)) return res.status(409).json({ ok: false, error: current.status });
+    if ((job.collectedSigners || []).some((c) => c.publicKey === signerPk)) {
+      return res.status(409).json({ ok: false, error: 'already_signed' });
+    }
+
+    const result = applyDecline(job, signerPk, signerMeta.signers, new Date().toISOString());
+    const updated = { ...job, declinedSigners: result.declinedSigners, status: result.status };
+    multisigDb.items = multisigDb.items.map((j) => (j.id === job.id ? updated : j));
+    await saveMultisigDb();
+    res.json({ ok: true, status: result.status, declinedSigners: result.declinedSigners });
+  } catch (e) {
+    console.error('multisig.jobs.decline.failed', e);
+    res.status(500).json({ ok: false, error: 'multisig.jobs.decline_failed' });
+  }
+});
+
+// Einzelnen Job loeschen: nur mit Job-Token (also nur Signer) und nur im Endzustand. Ein
+// offener Job wuerde durch Loeschen nicht unwirksam, signiertes XDR kann anderswo liegen;
+// dafuer gibt es Ablehnen und Widerruf.
+app.delete('/api/multisig/jobs/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const job = findMultisigJob(id);
+    if (!job) return res.status(404).json({ ok: false, error: 'not_found' });
+    if (!hasValidJobToken(job, req)) return res.status(403).json({ ok: false, error: 'forbidden' });
+    const [current] = await annotateJobsLifecycleStatus([job]);
+    if (!multisigFinalStatus.has(current.status)) return res.status(409).json({ ok: false, error: 'not_final', status: current.status });
+    multisigDb.items = multisigDb.items.filter((j) => j.id !== id);
+    await saveMultisigDb();
+    res.json({ ok: true });
+  } catch (e) {
+    console.error('multisig.jobs.delete_one.failed', e);
+    res.status(500).json({ ok: false, error: 'multisig.jobs.delete_failed' });
+  }
+});
+
 app.post('/api/multisig/jobs/:id/merge-signed-xdr', async (req, res) => {
   try {
     const { id } = req.params;
@@ -992,6 +1060,7 @@ app.post('/api/multisig/jobs/:id/merge-signed-xdr', async (req, res) => {
       txXdrCurrent: newXdr,
       collectedSigners: collected,
       collectedWeight,
+      declinedSigners: dropDeclinesOfCollected(job.declinedSigners, collected),
     };
 
     // Auto-submit when threshold reached

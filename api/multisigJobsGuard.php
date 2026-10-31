@@ -94,7 +94,7 @@ function multisigJobRateLimitCheckAndRecord(string $ip): int {
 const PENDING_JOB_EXPIRY_DAYS = 7;
 
 function expireStalePendingJobs(array $items, int $maxAgeDays = PENDING_JOB_EXPIRY_DAYS): array {
-    $finalStates = ['submitted_success', 'submitted_failed', 'expired', 'obsolete_seq'];
+    $finalStates = ['submitted_success', 'submitted_failed', 'expired', 'obsolete_seq', 'rejected'];
     $cutoff = time() - ($maxAgeDays * 86400);
     $now = time();
     foreach ($items as &$job) {
