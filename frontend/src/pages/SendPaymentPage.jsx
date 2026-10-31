@@ -380,6 +380,10 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   const [, setSentVersion] = useState(0);
   const sentPaymentKey = { network: netLabel, account: publicKey, dest, amount, assetKey, memoType, memoVal };
   const sentBefore = findSentPayment(sentPaymentKey);
+  // Eingaben des letzten Renders: Beim Klick auf Bestaetigen sind das genau die Werte, aus
+  // denen submitPayment (gleicher Render) die Transaktion baut.
+  const sentPaymentKeyRef = useRef(sentPaymentKey);
+  sentPaymentKeyRef.current = sentPaymentKey;
   const markSent = useCallback((key, info) => {
     if (!key) return;
     recordSentPayment(key, info);
@@ -387,7 +391,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   }, []);
   const renderSentBefore = (spacing) => {
     if (!sentBefore) return null;
-    const time = new Date(sentBefore.at).toLocaleString();
+    const time = new Date(sentBefore.at).toLocaleString(i18n.language || undefined);
     const ambiguous = sentBefore.status === 'ambiguous';
     return (
       <div role="alert" data-testid="send-sent-before" className={`text-xs ${spacing} ${ambiguous ? 'text-red-700 dark:text-red-400' : 'text-amber-700 dark:text-amber-400'}`}>
@@ -1520,8 +1524,6 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
           activationNotice: !!(preflightResult?.activationRequired && assetKey === 'XLM' && preflightResult?.willBump),
           compromised: recipientCompromised,
           deactivated: recipientDeactivated,
-          // Eingaben zum Zeitpunkt der Pruefung, fuer den Vermerk "gesendet".
-          sentKey: { network: netLabel, account: publicKey, dest, amount, assetKey, memoType, memoVal },
         },
       });
       setReviewError('');
@@ -1529,7 +1531,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     } catch (e) {
       setError(e?.message || t('errors:unknown', 'Unbekannter Fehler'));
     }
-  }, [amount, amountFmt, assetKey, buildMemoObject, dest, memoType, memoVal, netLabel, normalizeAmountValue, publicKey, recipientCompromised, recipientDeactivated, recipientFederationDisplay, recipientLabel, t, walletInfoMap]);
+  }, [amountFmt, assetKey, buildMemoObject, dest, netLabel, normalizeAmountValue, publicKey, recipientCompromised, recipientDeactivated, recipientFederationDisplay, recipientLabel, t, walletInfoMap]);
 
   const openSentResultDialog = useCallback((result) => {
     if (!result) return;
@@ -1566,6 +1568,9 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       setReviewError(t('secretKey:errorMissing', 'Secret Key fehlt für den Versand.'));
       return;
     }
+    // Vermerk "gesendet" mit den Werten, die submitPayment aus diesem Render verwendet,
+    // nicht mit denen beim Oeffnen der Pruefung (ein spaetes Federation-Memo koennte abweichen).
+    const sentKey = sentPaymentKeyRef.current;
     const proceed = async () => {
       try {
         setReviewProcessing(true);
@@ -1579,7 +1584,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
           recipientFederation: reviewSnapshot.recipientFederation,
           recipientLabel: reviewSnapshot.recipientLabel,
         };
-        markSent(reviewSnapshot.sentKey, { hash: result.hash, status: 'success' });
+        markSent(sentKey, { hash: result.hash, status: 'success' });
         applySendResult(resultWithWalletInfo);
         openSentResultDialog(resultWithWalletInfo);
         closeReviewDialog();
@@ -1587,7 +1592,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
         refreshBalancesAfterSend();
       } catch (err) {
         if (err instanceof AmbiguousSubmitResultError) {
-          markSent(reviewDialog.snapshot?.sentKey, { hash: err.hash || '', status: 'ambiguous' });
+          markSent(sentKey, { hash: err.hash || '', status: 'ambiguous' });
           setAmbiguousSubmission({ hash: err.hash });
           closeReviewDialog();
           // Outcome unknown - current balances help the user judge whether it went through.
