@@ -80,18 +80,16 @@ function sendError(string $error, ?string $detail = null, int $status = 500): vo
 }
 
 // Per-job access token (B3): required to view a job's full details or merge a
-// signature into it. Accepted via the x-job-token header (what the frontend
-// sends for both backends) or a ?token= query parameter (fallback for direct
-// links), never trusted from anywhere else.
+// signature into it. Accepted only via the x-job-token header, like server.js:
+// a ?token= query parameter would end up in access logs and browser history,
+// and the frontend never sends one (#8, parity with Node).
 function newAccessToken(): string {
     return bin2hex(random_bytes(32));
 }
 
 function getRequestToken(): string {
     $header = $_SERVER['HTTP_X_JOB_TOKEN'] ?? '';
-    if (is_string($header) && $header !== '') return trim($header);
-    $query = $_GET['token'] ?? '';
-    return is_string($query) ? trim($query) : '';
+    return is_string($header) ? trim($header) : '';
 }
 
 function hasValidJobToken(array $job): bool {
