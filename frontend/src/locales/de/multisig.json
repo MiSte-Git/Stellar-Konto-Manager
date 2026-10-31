@@ -172,7 +172,8 @@
       "signed": "unterzeichnet",
       "missing": "fehlt",
       "noSessionSecret": "Kein Secret Key im Browser gespeichert. Bitte Secret eingeben oder signiertes XDR importieren.",
-      "signedLocalStatus": "Signatur gespeichert. Aktueller Status: {{status}}"
+      "signedLocalStatus": "Signatur gespeichert. Aktueller Status: {{status}}",
+      "declined": "abgelehnt"
     },
     "changes": {
       "title": "Geplante Änderungen",
@@ -437,7 +438,20 @@
       "invalidSignature": "Die Signatur der Anmeldung wurde abgelehnt. Bitte erneut versuchen.",
       "timeout": "Der Server antwortet nicht. Bitte später erneut versuchen.",
       "failed": "Der Job konnte nicht geladen werden ({{code}}). Bitte Verbindung prüfen und erneut versuchen.",
-      "tokenRejected": "Der Zugriff wurde abgelehnt. Bitte den Secret Key erneut eingeben."
+      "tokenRejected": "Der Zugriff wurde abgelehnt. Bitte den Secret Key erneut eingeben.",
+      "finalState": "Der Job ist bereits abgeschlossen ({{status}})."
+    },
+    "decline": {
+      "prompt": "Diesen Job nicht signieren?",
+      "button": "Ablehnen",
+      "title": "Job ablehnen",
+      "hint": "Die anderen Signer sehen deine Ablehnung. Reicht das Gewicht ohne dich nicht mehr, wird der Job abgelehnt und nimmt keine Signaturen mehr an. Auf dem Netz wird die Transaktion dadurch nicht ungültig: Wer sie bereits woanders signiert hat, könnte sie mit genug Signaturen trotzdem einreichen. Endgültig stoppt sie nur ein Widerruf (unten).",
+      "keyLabel": "Secret Key zum Ablehnen",
+      "confirm": "Job ablehnen",
+      "done": "Abgelehnt. Die anderen Signer sehen deine Ablehnung.",
+      "doneRejected": "Abgelehnt. Ohne dich reicht das Gewicht nicht mehr, der Job ist damit abgelehnt und nimmt keine Signaturen mehr an.",
+      "declinedByMe": "Du hast diesen Job abgelehnt. Signierst du doch noch, wird die Ablehnung entfernt.",
+      "alreadySigned": "Du hast bereits signiert und kannst nicht mehr ablehnen."
     }
   },
   "secretModal": {
@@ -476,7 +490,8 @@
     "signer": {
       "signed": "✓",
       "missing": "fehlt",
-      "unknown": "Signer"
+      "unknown": "Signer",
+      "declined": "abgelehnt"
     },
     "status": {
       "pending_signatures": "Wartet auf Signaturen",
@@ -484,12 +499,24 @@
       "submitted_success": "Gesendet",
       "submitted_failed": "Senden fehlgeschlagen",
       "expired": "Abgelaufen",
-      "obsolete_seq": "Veraltete Sequence"
+      "obsolete_seq": "Veraltete Sequence",
+      "rejected": "Abgelehnt"
     },
-    "deleteTestnet": "Testnet-Jobs löschen",
-    "deleteTestnetTitle": "Alle Testnet-Jobs löschen",
-    "deleteTestnetHint": "Dies entfernt alle Multisig-Jobs im Testnet. Zum Bestätigen bitte \"DELETE TESTNET JOBS\" eintippen.",
-    "deleteTestnetConfirm": "Testnet-Jobs löschen"
+    "select": "Job {{id}} auswählen",
+    "selectAllFinal": "Alle abgeschlossenen auswählen",
+    "notDeletable": "Nur abgeschlossene Jobs können gelöscht werden. Offene Jobs ablehnen oder widerrufen.",
+    "deleteSelected": "Auswahl löschen ({{n}})",
+    "deleteTitle": "{{n}} abgeschlossene Jobs löschen",
+    "deleteHint": "Gelöscht werden die Jobs für alle Signer. Erlaubt ist das nur für abgeschlossene Jobs (gesendet, fehlgeschlagen, abgelaufen, veraltet, abgelehnt). SKM meldet sich dafür je Job mit dem Secret Key von {{account}} an; der Key verlässt den Browser nicht.",
+    "deleteKeyLabel": "Secret Key zum Löschen",
+    "deleteConfirm": "Löschen",
+    "deleteDone": "{{n}} Jobs gelöscht.",
+    "deleteFailed": "Nicht gelöscht: {{list}}",
+    "deleteNotSigner": "kein Signer",
+    "deleteNotFinal": "nicht abgeschlossen",
+    "hide": "Ausblenden",
+    "unhide": "Einblenden",
+    "showHidden": "Ausgeblendete anzeigen ({{n}})"
   },
   "actions": {
     "createMultisigJob": "Multisig-Job erstellen"
@@ -521,7 +548,8 @@
       "submitted_failed": "Beim Senden ist ein Fehler aufgetreten.",
       "expired": "Der Auftrag ist abgelaufen.",
       "obsolete_seq": "Die Sequence ist veraltet.",
-      "unknown": "Status unbekannt."
+      "unknown": "Status unbekannt.",
+      "rejected": "Der Auftrag wurde abgelehnt: Ohne die ablehnenden Signer reicht das Gewicht nicht mehr. Er nimmt keine Signaturen mehr an. Auf dem Netz ist die Transaktion damit nicht ungültig, das geht nur mit einem Widerruf."
     }
   }
 }

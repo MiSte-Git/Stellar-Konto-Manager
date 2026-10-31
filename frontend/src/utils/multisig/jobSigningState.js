@@ -30,10 +30,16 @@ export function computeJobSigningState({ accountSigners = [], requiredWeight = 0
 // Fehlt die Signatur dieses Kontos noch? Selbst berechnet aus signers und collectedSigners,
 // weil nur das PHP-Backend missingSigners liefert (Node nicht). Nur Jobs, die noch auf
 // Signaturen warten; in Endzustaenden und bei ready_to_submit muss niemand mehr signieren.
+// Wer den Job abgelehnt hat, ebenfalls nicht.
 export function needsSignatureFrom(job, accountId) {
   if (!job || !accountId) return false;
   if (String(job.status || '') !== 'pending_signatures') return false;
   const isSigner = (job.signers || []).some((s) => (s?.publicKey || '') === accountId && Number(s?.weight || 0) > 0);
   if (!isSigner) return false;
+  // Wer abgelehnt hat, muss nicht mehr signieren.
+  if ((job.declinedSigners || []).some((d) => (d?.publicKey || '') === accountId)) return false;
   return !(job.collectedSigners || []).some((s) => (s?.publicKey || '') === accountId);
 }
+
+// Endzustaende eines Jobs: nur diese koennen geloescht werden.
+export const FINAL_JOB_STATUSES = new Set(['submitted_success', 'submitted_failed', 'expired', 'obsolete_seq', 'rejected']);

@@ -5,6 +5,25 @@ import i18n from '../../i18n.js';
 import MultisigJobList from '../MultisigJobList.jsx';
 import { needsSignatureFrom } from '../../utils/multisig/jobSigningState.js';
 
+const ME_SECRET = 'SDAIDSY2LAXR5HPEJ2CKWQ3QV67VPYLXB6C2ATBY3J7VRKT6YD7SYV6Y';
+const hoisted = vi.hoisted(() => ({
+  challenge: vi.fn(),
+  token: vi.fn(),
+  del: vi.fn(),
+  sessionSecret: vi.fn(),
+}));
+vi.mock('../../utils/multisigApi.js', async (importOriginal) => ({
+  ...(await importOriginal()),
+  getMultisigJobChallenge: hoisted.challenge,
+  getMultisigJobAccessToken: hoisted.token,
+  signMultisigJobChallenge: () => 'signature',
+  deleteMultisigJob: hoisted.del,
+}));
+vi.mock('../../utils/sessionSecrets.js', async (importOriginal) => ({
+  ...(await importOriginal()),
+  getSessionSecret: hoisted.sessionSecret,
+}));
+
 const ME = 'GATHPDLDMA5UAHHUUBFAQNW7B3573IUMEGPZGXMT25CNUPY4BOYFAV7F';
 const OTHER = 'GD5KJP276E7CZT43PAI5KAEXCUDZMFFMV4X5AGFKBR7Q7IAZZ5BXZVKM';
 const FOREIGN_ACCOUNT = 'GCZLMFGOQMVLH352AAUEBUBATMKM7OB6GUTJQ47DOXJDYUYKXDJEZQ7B';
@@ -29,6 +48,7 @@ describe('needsSignatureFrom', () => {
     expect(needsSignatureFrom(job('a', { signers: [{ publicKey: ME, weight: 0 }] }), ME)).toBe(false);
     expect(needsSignatureFrom(job('a', { signers: [{ publicKey: OTHER, weight: 1 }] }), ME)).toBe(false);
     expect(needsSignatureFrom(job('a'), '')).toBe(false);
+    expect(needsSignatureFrom(job('a', { declinedSigners: [{ publicKey: ME }] }), ME)).toBe(false);
   });
 });
 
@@ -76,5 +96,71 @@ describe('MultisigJobList: Filter', () => {
     renderList();
     await waitFor(() => expect(screen.getByText(/eigen-abgel/)).toBeInTheDocument());
     expect(screen.queryByRole('button', { name: /Testnet-Jobs löschen/ })).toBeNull();
+  });
+
+  describe('Ausblenden und Loeschen', () => {
+    beforeEach(() => {
+      hoisted.challenge.mockResolvedValue({ challenge: 'AAAA' });
+      hoisted.token.mockImplementation(async (id) => `tok-${id}`);
+      hoisted.del.mockResolvedValue({ ok: true });
+      hoisted.sessionSecret.mockResolvedValue('');
+      window.fetch.mockImplementation(async (url) => {
+        urls.push(String(url));
+        const list = String(url).includes('signer=')
+          ? [job('fremd-offen', { declinedSigners: [{ publicKey: OTHER }] }), job('fremd-gesendet', { status: 'submitted_success' })]
+          : [job('eigen-abgelaufen', { accountId: ME, status: 'expired' }), job('eigen-abgelehnt', { accountId: ME, status: 'rejected' })];
+        return { ok: true, json: async () => list };
+      });
+    });
+
+    it('blendet nur lokal aus und wieder ein', async () => {
+      const view = renderList();
+      await waitFor(() => expect(screen.getAllByTestId('job-row')).toHaveLength(4));
+      fireEvent.click(screen.getAllByRole('button', { name: 'Ausblenden' })[0]);
+      expect(screen.getAllByTestId('job-row')).toHaveLength(3);
+      view.unmount();
+      renderList();
+      await waitFor(() => expect(screen.getAllByTestId('job-row')).toHaveLength(3));
+      fireEvent.click(screen.getByRole('checkbox', { name: /Ausgeblendete anzeigen \(1\)/ }));
+      expect(screen.getAllByTestId('job-row')).toHaveLength(4);
+      fireEvent.click(screen.getByRole('button', { name: 'Einblenden' }));
+      expect(screen.queryByRole('checkbox', { name: /Ausgeblendete anzeigen/ })).toBeNull();
+      expect(screen.getAllByTestId('job-row')).toHaveLength(4);
+    });
+
+    it('waehlt nur abgeschlossene Jobs und loescht sie mit dem eingegebenen Key', async () => {
+      renderList();
+      await waitFor(() => expect(screen.getAllByTestId('job-row')).toHaveLength(4));
+      expect(screen.getByRole('checkbox', { name: 'Job fremd-offen auswählen' })).toBeDisabled();
+      expect(screen.getAllByText(/abgelehnt/).length).toBeGreaterThan(0);
+      fireEvent.click(screen.getByRole('checkbox', { name: 'Alle abgeschlossenen auswählen' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Auswahl löschen (3)' }));
+      const panel = await screen.findByTestId('job-delete-panel');
+      fireEvent.change(screen.getByLabelText('Secret Key zum Löschen'), { target: { value: 'SKAPUTT' } });
+      fireEvent.click(screen.getByRole('button', { name: 'Löschen' }));
+      expect(await screen.findByText('Ungültiger Secret Key.')).toBeInTheDocument();
+      expect(hoisted.del).not.toHaveBeenCalled();
+      expect(panel).toBeInTheDocument();
+    });
+
+    it('loescht mit gemerktem Key ohne Abfrage und meldet Fehler je Job', async () => {
+      hoisted.sessionSecret.mockResolvedValue(ME_SECRET);
+      hoisted.token.mockImplementation(async (id) => {
+        if (id === 'fremd-gesendet') throw Object.assign(new Error('forbidden'), { status: 403 });
+        return `tok-${id}`;
+      });
+      renderList();
+      await waitFor(() => expect(screen.getAllByTestId('job-row')).toHaveLength(4));
+      fireEvent.click(screen.getByRole('checkbox', { name: 'Alle abgeschlossenen auswählen' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Auswahl löschen (3)' }));
+      await screen.findByTestId('job-delete-panel');
+      expect(screen.queryByLabelText('Secret Key zum Löschen')).toBeNull();
+      fireEvent.click(screen.getByRole('button', { name: 'Löschen' }));
+      const result = await screen.findByTestId('job-delete-result');
+      expect(result).toHaveTextContent('2 Jobs gelöscht.');
+      expect(result).toHaveTextContent('kein Signer');
+      expect(hoisted.del.mock.calls.map((c) => c[0]).sort()).toEqual(['eigen-abgelaufen', 'eigen-abgelehnt']);
+      expect(hoisted.del).toHaveBeenCalledWith('eigen-abgelaufen', 'tok-eigen-abgelaufen');
+    });
   });
 });
