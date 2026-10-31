@@ -18,6 +18,8 @@
 // JS) and, via the inactivity timeout below, shortens how long a forgotten,
 // unattended tab keeps a usable secret around at all.
 
+import { clearSendPaymentDraft } from './sendPaymentDraft.js';
+
 const MAP_PREFIX = 'stm.session.secrets.';
 const LEGACY_PREFIX = 'stm.session.secret.';
 const ENC_PREFIX = 'enc1:';
@@ -258,6 +260,8 @@ export function getSessionSecretAccountCount() {
 // both mean "this session must not be able to sign anything anymore", for any
 // account, not just the one that happens to be active.
 export function clearAllSessionSecrets() {
+  // Gesperrt heisst auch: kein Zahlungsentwurf kommt nach dem naechsten Einhaengen zurueck.
+  clearSendPaymentDraft();
   try {
     const keysToRemove = [];
     for (let i = 0; i < sessionStorage.length; i += 1) {

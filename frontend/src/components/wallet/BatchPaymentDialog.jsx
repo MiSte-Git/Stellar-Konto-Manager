@@ -47,8 +47,28 @@ function AddressCompare({ address }) {
   );
 }
 
-function memoDisplay(row) {
-  return row.memoType === 'none' || !String(row.memoVal || '').trim() ? '' : String(row.memoVal).trim();
+// Memo mit Typ, z.B. "12345 (ID)". Ohne Typ waeren Text-Memo und Memo ID nicht zu
+// unterscheiden; Boersen verlangen oft ausdruecklich eine Memo ID.
+function memoDisplay(row, t) {
+  if (row.memoType === 'none' || !String(row.memoVal || '').trim()) return '';
+  return `${String(row.memoVal).trim()} (${t(`batchPayment:memoTypes.${row.memoType}`)})`;
+}
+
+// Markierungen aus der eigenen Vertrauensliste. Geprueft werden Eingabe (auch
+// Federation-Adresse), aufgeloeste Adresse und bei M-Adressen das Basis-G-Konto.
+function flagsFor(map, addresses) {
+  const infos = addresses.map((a) => findWalletInfo(map, a)).filter(Boolean);
+  return { compromised: infos.some((i) => i.compromised), deactivated: infos.some((i) => i.deactivated) };
+}
+
+function FlagWarnings({ flags, t }) {
+  if (!flags?.compromised && !flags?.deactivated) return null;
+  return (
+    <>
+      {flags.compromised && <div className="text-red-600 dark:text-red-400 font-semibold" role="alert">{t('batchPayment:flags.compromised')}</div>}
+      {flags.deactivated && <div className="text-amber-700 dark:text-amber-300 font-medium">{t('batchPayment:flags.deactivated')}</div>}
+    </>
+  );
 }
 
 function PaymentDetails({ item, t, labelOf }) {
@@ -64,12 +84,13 @@ function PaymentDetails({ item, t, labelOf }) {
         {item.federation && <span className="font-medium">{item.federation} </span>}
         {!item.federation && labelOf(item.destination || item.row.dest) && <span className="font-medium">{labelOf(item.destination || item.row.dest)} </span>}
         <AddressCompare address={item.destination || item.row.dest.trim()} />
+        <FlagWarnings flags={item.flags} t={t} />
       </div>
       <div>
         <span className="text-gray-600 dark:text-gray-400">{t('batchPayment:fields.amount')}:</span>{' '}
         <span className="font-semibold">{normalizeAmount(item.row.amount)} {assetDisplay(item.row.assetKey)}</span>
         <span className="ml-3 text-gray-600 dark:text-gray-400">{t('batchPayment:fields.memo')}:</span>{' '}
-        <span className="break-all">{memoDisplay(item.row) || '–'}</span>
+        <span className="break-all">{memoDisplay(item.row, t) || '–'}</span>
       </div>
     </div>
   );
@@ -108,6 +129,7 @@ export default function BatchPaymentDialog({ onClose }) {
   const { explorers } = useSettings();
   const walletInfoMap = useMemo(() => createWalletInfoMap(wallets), [wallets]);
   const labelOf = useCallback((addr) => findWalletInfo(walletInfoMap, addr)?.label || '', [walletInfoMap]);
+  const editFlagsOf = useCallback((addr) => flagsFor(walletInfoMap, [addr]), [walletInfoMap]);
   const addressOptions = useMemo(
     () => recentWalletOptions.filter((o) => (network === 'TESTNET') === !!o.isTestnet),
     [recentWalletOptions, network]
@@ -290,9 +312,12 @@ export default function BatchPaymentDialog({ onClose }) {
             }
           }
         }
+        // Kompromittierte oder deaktivierte Empfaenger nicht vorwaehlen, nur bewusst auswaehlbar.
+        const flags = flagsFor(walletInfoMap, [row.dest, check.destination, check.accountId]);
+        const flagged = flags.compromised || flags.deactivated;
         // Routing-Dublette nur gegen Zeilen, die tatsaechlich zum Senden vorgewaehlt sind.
         const routeForSeen = !check.code ? routingFingerprint({ network, row, destination: check.destination }) : null;
-        if (routeForSeen && !recent && !similar) seenRoutes.add(routeForSeen);
+        if (routeForSeen && !recent && !similar && !flagged) seenRoutes.add(routeForSeen);
         items.push({
           row,
           code: check.code,
@@ -302,7 +327,8 @@ export default function BatchPaymentDialog({ onClose }) {
           fp,
           recent,
           similar,
-          include: !check.code && !recent && !similar,
+          flags,
+          include: !check.code && !recent && !similar && !flagged,
         });
       }
       if (!mountedRef.current) return;
@@ -569,8 +595,10 @@ export default function BatchPaymentDialog({ onClose }) {
     return [
       `${t('batchPayment:fields.source')}: ${i.row.source}${labelOf(i.row.source) ? ` (${labelOf(i.row.source)})` : ''}`,
       `${t('batchPayment:fields.dest')}: ${i.destination}${i.federation ? ` (${i.federation})` : ''}`,
+      i.flags?.compromised ? t('batchPayment:flags.compromised') : '',
+      i.flags?.deactivated ? t('batchPayment:flags.deactivated') : '',
       `${t('batchPayment:fields.amount')}: ${normalizeAmount(i.row.amount)} ${i.row.assetKey === 'XLM' ? 'XLM' : i.row.assetKey}`,
-      `${t('batchPayment:fields.memo')}: ${memoDisplay(i.row) || '-'}`,
+      `${t('batchPayment:fields.memo')}: ${memoDisplay(i.row, t) || '-'}`,
       `${t('batchPayment:review.status')}: ${statusText(r)}`,
       r?.hash ? `TX: ${r.hash}` : '',
     ].filter(Boolean).join('\n');
@@ -639,6 +667,7 @@ export default function BatchPaymentDialog({ onClose }) {
                         inputProps={{ 'aria-label': t('batchPayment:fields.dest') }}
                       />
                       {labelOf(row.dest) && <div className="text-xs text-gray-500 mt-0.5">{labelOf(row.dest)}</div>}
+                      <div className="text-xs mt-0.5"><FlagWarnings flags={editFlagsOf(row.dest)} t={t} /></div>
                     </div>
                   </div>
                   <div className="grid grid-cols-2 md:grid-cols-12 gap-2">
@@ -725,7 +754,10 @@ export default function BatchPaymentDialog({ onClose }) {
                             <HashLinks hash={item.similar.hash} links={explorerLinks(item.similar.hash)} />
                           </>
                         )}
-                        {phase === 'review' && !item.code && !item.recent && !item.similar && <span className="text-green-700 dark:text-green-400">{t('batchPayment:review.ready')}</span>}
+                        {phase === 'review' && !item.code && (item.flags?.compromised || item.flags?.deactivated) && (
+                          <div className="text-amber-700 dark:text-amber-300">{t('batchPayment:review.flaggedNotPreselected')}</div>
+                        )}
+                        {phase === 'review' && !item.code && !item.recent && !item.similar && !item.flags?.compromised && !item.flags?.deactivated && <span className="text-green-700 dark:text-green-400">{t('batchPayment:review.ready')}</span>}
                         {phase === 'sending' && <span className={statusCls(res)}>{statusText(res)}</span>}
                       </div>
                     </div>

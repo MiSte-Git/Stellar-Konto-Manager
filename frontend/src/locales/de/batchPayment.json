@@ -56,7 +56,8 @@
     "signHint": "Vor der ersten Zahlung wird der Secret Key jedes Senders einmal abgefragt, falls er nicht in dieser Session gespeichert ist. Ist „In Session merken“ aktiv, bleibt der Key verschlüsselt in dieser Browser-Session gespeichert. Die Zahlungen werden danach nacheinander gesendet.",
     "assetTotalIssuer": "{{needed}} {{code}} (Aussteller)",
     "similarSent": "Achtung: Dieselbe Zahlung an dieses Konto mit gleicher ID (M-Adresse oder Memo ID) wurde bereits gesendet ({{time}}). Nur bei Absicht auswählen.",
-    "similarAmbiguous": "Gesperrt: Dieselbe Zahlung an dieses Konto mit gleicher ID (M-Adresse oder Memo ID) hat einen unklaren Status. Bitte im Explorer prüfen, beim nächsten Prüfen fragt SKM Horizon erneut ab."
+    "similarAmbiguous": "Gesperrt: Dieselbe Zahlung an dieses Konto mit gleicher ID (M-Adresse oder Memo ID) hat einen unklaren Status. Bitte im Explorer prüfen, beim nächsten Prüfen fragt SKM Horizon erneut ab.",
+    "flaggedNotPreselected": "Wegen dieser Markierung nicht vorgewählt. Nur bei Absicht auswählen."
   },
   "status": {
     "pending": "Wartet",
@@ -112,5 +113,9 @@
     "duplicateRouteInList": "Diese Zahlung steht schon weiter oben in der Liste, dort als M-Adresse bzw. als G-Adresse mit gleicher Memo ID.",
     "lockLost": "Sendevorgang gestoppt, weil ein anderer Tab übernommen hat (z.B. nach Ruhezustand)",
     "containsSecret": "In dieser Zeile steht etwas, das wie ein Secret Key aussieht. Bitte entfernen, die Zeile wird nicht geprüft."
+  },
+  "flags": {
+    "compromised": "Warnung: Dieser Empfänger ist in der Vertrauensliste als kompromittiert markiert.",
+    "deactivated": "Hinweis: Dieser Empfänger ist in der Vertrauensliste als deaktiviert markiert."
   }
 }

@@ -40,7 +40,7 @@ import QrScanDialog from '../components/wallet/QrScanDialog.jsx';
 import { networkMismatch, parsePaymentInput } from '../utils/stellar/sep7.js';
 import { CONTRACT_ADDRESS_ERROR, isContractAddress } from '../utils/stellar/addressType.js';
 import { txHashHex } from '../utils/stellar/txHash.js';
-import { readSendPaymentDraft, writeSendPaymentDraft } from '../utils/sendPaymentDraft.js';
+import { draftGeneration, findSentPayment, readSendPaymentDraft, recordSentPayment, writeSendPaymentDraft } from '../utils/sendPaymentDraft.js';
 import BatchPaymentDialog from '../components/wallet/BatchPaymentDialog.jsx';
 
 // Immediate local submits (single-sig send, or a multisig job collected and
@@ -229,8 +229,14 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   // Entwurf vom letzten Einhaengen (z.B. vor einem Kontowechsel) uebernehmen. Ein neues
   // `initial` (Spende, Prefill) hat Vorrang; dasselbe `initial` wie im Entwurf nicht,
   // sonst wuerde es die seither gemachten Eingaben ueberschreiben.
+  // Der Entwurf gilt nur im Netz, in dem er entstanden ist. Nach dem Sperren schreibt
+  // diese Instanz nicht mehr (Generation beim Einhaengen).
+  const [mountNetwork] = useState(() => {
+    try { return readStoredNetworkId(); } catch { return 'PUBLIC'; }
+  });
+  const [draftGen] = useState(() => draftGeneration());
   const [restoredDraft] = useState(() => {
-    const d = readSendPaymentDraft();
+    const d = readSendPaymentDraft(mountNetwork);
     return d && (!initial || d.initial === initial) ? d : null;
   });
   const [dest, setDest] = useState(restoredDraft ? restoredDraft.dest : (initial?.recipient || ''));
@@ -252,6 +258,9 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   // Merkt sich, welches `initial` schon angewendet wurde (siehe Effekt weiter unten).
   const appliedInitialRef = useRef(restoredDraft ? restoredDraft.initial : undefined);
 
+  // Netz, zu dem die aktuellen Eingaben gehoeren (siehe Reset beim Netzwechsel).
+  const fieldsNetworkRef = useRef(mountNetwork);
+
   // Formular-Entwurf bei jeder Aenderung festhalten, damit er ein Aus- und Einhaengen
   // der Seite (Kontowechsel) uebersteht.
   useEffect(() => {
@@ -259,7 +268,8 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       dest, amount, assetKey, memoType, memoVal,
       autoFilledMemo: autoFilledMemoRef.current,
       initial: appliedInitialRef.current,
-    });
+      network: fieldsNetworkRef.current,
+    }, draftGen);
   });
   const [showSecretModal, setShowSecretModal] = useState(false);
   const [secretModalPrefill, setSecretModalPrefill] = useState([]);
@@ -352,6 +362,41 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     const url = horizonUrlFor(netLabel);
     return getHorizonServer(url);
   }, [netLabel]);
+
+  // Netzwechsel bei eingehaengter Seite: Eingaben gehoeren zum alten Netz, leeren.
+  useEffect(() => {
+    if (netLabel === fieldsNetworkRef.current) return;
+    fieldsNetworkRef.current = netLabel;
+    autoFilledMemoRef.current = '';
+    setDest('');
+    setAmount('');
+    setAssetKey('XLM');
+    setMemoType('text');
+    setMemoVal('');
+  }, [netLabel]);
+
+  // Gleiche Zahlung (gleiche Eingaben) von diesem Konto in diesem Netz schon gesendet?
+  // Nur Hinweis, der Entwurf bleibt fuer das naechste Konto stehen.
+  const [, setSentVersion] = useState(0);
+  const sentPaymentKey = { network: netLabel, account: publicKey, dest, amount, assetKey, memoType, memoVal };
+  const sentBefore = findSentPayment(sentPaymentKey);
+  const markSent = useCallback((key, info) => {
+    if (!key) return;
+    recordSentPayment(key, info);
+    setSentVersion((v) => v + 1);
+  }, []);
+  const renderSentBefore = (spacing) => {
+    if (!sentBefore) return null;
+    const time = new Date(sentBefore.at).toLocaleString();
+    const ambiguous = sentBefore.status === 'ambiguous';
+    return (
+      <div role="alert" data-testid="send-sent-before" className={`text-xs ${spacing} ${ambiguous ? 'text-red-700 dark:text-red-400' : 'text-amber-700 dark:text-amber-400'}`}>
+        {ambiguous
+          ? t('common:payment.send.sentBeforeAmbiguous', { time, defaultValue: 'A payment with the same data from this account has an unclear status ({{time}}). Please check the explorer first.' })
+          : t('common:payment.send.sentBefore', { time, defaultValue: 'This payment with the same data was already sent from this account ({{time}}). Only send again on purpose.' })}
+      </div>
+    );
+  };
   const popupRef = useRef(null);
 
   const normalizeAmountValue = useCallback(() => {
@@ -1475,6 +1520,8 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
           activationNotice: !!(preflightResult?.activationRequired && assetKey === 'XLM' && preflightResult?.willBump),
           compromised: recipientCompromised,
           deactivated: recipientDeactivated,
+          // Eingaben zum Zeitpunkt der Pruefung, fuer den Vermerk "gesendet".
+          sentKey: { network: netLabel, account: publicKey, dest, amount, assetKey, memoType, memoVal },
         },
       });
       setReviewError('');
@@ -1482,7 +1529,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     } catch (e) {
       setError(e?.message || t('errors:unknown', 'Unbekannter Fehler'));
     }
-  }, [amountFmt, assetKey, buildMemoObject, dest, netLabel, normalizeAmountValue, publicKey, recipientCompromised, recipientDeactivated, recipientFederationDisplay, recipientLabel, t, walletInfoMap]);
+  }, [amount, amountFmt, assetKey, buildMemoObject, dest, memoType, memoVal, netLabel, normalizeAmountValue, publicKey, recipientCompromised, recipientDeactivated, recipientFederationDisplay, recipientLabel, t, walletInfoMap]);
 
   const openSentResultDialog = useCallback((result) => {
     if (!result) return;
@@ -1532,6 +1579,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
           recipientFederation: reviewSnapshot.recipientFederation,
           recipientLabel: reviewSnapshot.recipientLabel,
         };
+        markSent(reviewSnapshot.sentKey, { hash: result.hash, status: 'success' });
         applySendResult(resultWithWalletInfo);
         openSentResultDialog(resultWithWalletInfo);
         closeReviewDialog();
@@ -1539,6 +1587,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
         refreshBalancesAfterSend();
       } catch (err) {
         if (err instanceof AmbiguousSubmitResultError) {
+          markSent(reviewDialog.snapshot?.sentKey, { hash: err.hash || '', status: 'ambiguous' });
           setAmbiguousSubmission({ hash: err.hash });
           closeReviewDialog();
           // Outcome unknown - current balances help the user judge whether it went through.
@@ -1564,7 +1613,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     } finally {
       setReviewProcessing(false);
     }
-  }, [applySendResult, runPreSubmitChecks, closeReviewDialog, handlePaymentError, openSentResultDialog, refreshBalancesAfterSend, reviewDialog, submitPayment, t]);
+  }, [applySendResult, runPreSubmitChecks, closeReviewDialog, handlePaymentError, markSent, openSentResultDialog, refreshBalancesAfterSend, reviewDialog, submitPayment, t]);
 
   const handleSendClick = useCallback(async () => {
     clearSuccess();
@@ -2138,6 +2187,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
             </div>
           </div>
 
+          {renderSentBefore('mt-2')}
           <button
             className="mt-3 px-4 py-2 rounded-sm bg-blue-600 text-white disabled:opacity-50"
             disabled={!dest || !amount || (Number(amount) || 0) <= 0 || !!ambiguousSubmission}
@@ -2304,6 +2354,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                   {t('wallet:flag.deactivated', 'Note: This recipient is marked as deactivated in your trusted list.')}
                 </div>
               )}
+              {renderSentBefore('mt-1')}
             </div>
 
             {reviewDialog.preflight?.activationRequired && reviewDialog.snapshot?.assetLabel === 'XLM' && reviewDialog.preflight?.desired != null && (

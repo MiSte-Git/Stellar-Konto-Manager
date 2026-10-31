@@ -5,6 +5,7 @@ import { Account, Keypair, MuxedAccount } from '@stellar/stellar-sdk';
 import i18n from '../../i18n.js';
 import SendPaymentPage from '../SendPaymentPage.jsx';
 import { clearSendPaymentDraft } from '../../utils/sendPaymentDraft.js';
+import { clearAllSessionSecrets } from '../../utils/sessionSecrets.js';
 
 // Covers three fixes to the federation-memo-autofill flow (fix 1):
 // - K1: a recipient change must not leave a stale auto-filled memo behind, and must
@@ -1175,6 +1176,65 @@ describe('form draft survives an account switch', () => {
     renderFor(OTHER_SENDER, initial);
     await new Promise((r) => setTimeout(r, 0));
     expect(amountInput().value).toBe('8');
+  });
+
+  it('does not restore the draft in another network', async () => {
+    const first = renderFor(SENDER.publicKey);
+    fireEvent.change(destInput(), { target: { value: DEST_PK } });
+    fireEvent.change(amountInput(), { target: { value: '12' } });
+    first.unmount();
+
+    window.localStorage.setItem('SKM_NETWORK', 'TESTNET');
+    renderFor(OTHER_SENDER);
+    expect(destInput().value).toBe('');
+    expect(amountInput().value).toBe('');
+  });
+
+  it('clears the inputs when the network changes while the page is mounted', async () => {
+    renderFor(SENDER.publicKey);
+    fireEvent.change(destInput(), { target: { value: DEST_PK } });
+    fireEvent.change(amountInput(), { target: { value: '12' } });
+    act(() => { window.dispatchEvent(new CustomEvent('stm-network-changed', { detail: 'TESTNET' })); });
+    await waitFor(() => expect(amountInput().value).toBe(''));
+    expect(destInput().value).toBe('');
+  });
+
+  it('does not restore the draft after the session was locked', async () => {
+    const first = renderFor(SENDER.publicKey);
+    fireEvent.change(amountInput(), { target: { value: '12' } });
+    act(() => { clearAllSessionSecrets(); });
+    // Weitere Eingaben dieser Instanz landen nicht mehr im Entwurf.
+    fireEvent.change(amountInput(), { target: { value: '13' } });
+    first.unmount();
+
+    renderFor(OTHER_SENDER);
+    expect(amountInput().value).toBe('');
+  });
+
+  it('warns after a successful send when the same payment is about to go out from the same account again', async () => {
+    const first = renderFor(SENDER.publicKey);
+    fireEvent.change(amountInput(), { target: { value: '10' } });
+    fireEvent.change(destInput(), { target: { value: DEST_PK } });
+    fireEvent.change(memoInput(), { target: { value: 'Runde 7' } });
+    expect(screen.queryByTestId('send-sent-before')).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Senden' }));
+    await screen.findByText('Transaktion bestätigen');
+    fireEvent.click(screen.getByRole('button', { name: 'Bist du sicher?' }));
+    await waitFor(() => expect(hoisted.submitTransactionSafelyMock).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(screen.getByTestId('send-sent-before')).toHaveTextContent('bereits gesendet'));
+    first.unmount();
+
+    // Anderes Konto: Eingaben bleiben, kein Hinweis.
+    const second = renderFor(OTHER_SENDER);
+    expect(amountInput().value).toBe('10');
+    expect(screen.queryByTestId('send-sent-before')).not.toBeInTheDocument();
+    second.unmount();
+
+    // Zurueck zum ersten Konto: Hinweis wieder da, bei geaendertem Betrag weg.
+    renderFor(SENDER.publicKey);
+    expect(screen.getByTestId('send-sent-before')).toBeInTheDocument();
+    fireEvent.change(amountInput(), { target: { value: '11' } });
+    expect(screen.queryByTestId('send-sent-before')).not.toBeInTheDocument();
   });
 
   it('applies a new initial prefill over an older draft', async () => {

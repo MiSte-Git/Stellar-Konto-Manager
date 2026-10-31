@@ -611,4 +611,45 @@ describe('BatchPaymentDialog', () => {
     expect(hoisted.submitMock).not.toHaveBeenCalled();
     expect(readSentEntry('PUBLIC', fpOf(rowA(), DEST_A))).toBeNull();
   });
+
+  it('warns about a compromised or deactivated recipient and does not preselect the row', async () => {
+    const m = new MuxedAccount(new Account(DEST_B, '0'), '7').accountId();
+    window.localStorage.setItem('stm_trusted_wallets', JSON.stringify({ wallets: [
+      { address: DEST_A, label: 'Alt', compromised: true },
+      { address: DEST_B, label: 'Weg', deactivated: true },
+    ] }));
+    saveBatchRows('PUBLIC', [rowA(), rowB({ dest: m, memoType: 'none', memoVal: '' })]);
+    renderDialog();
+    expect(screen.getByText(/als kompromittiert markiert/)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Prüfen' }));
+    await waitFor(() => expect(screen.getAllByText(/nicht vorgewählt/)).toHaveLength(2));
+    expect(screen.getByText(/als kompromittiert markiert/)).toBeInTheDocument();
+    // M-Adresse: Markierung des Basis-G-Kontos greift.
+    expect(screen.getByText(/als deaktiviert markiert/)).toBeInTheDocument();
+    expect(screen.queryByText('Bereit')).not.toBeInTheDocument();
+    const boxes = screen.getAllByRole('checkbox', { name: 'Senden' });
+    expect(boxes.map((b) => b.checked)).toEqual([false, false]);
+    expect(boxes.every((b) => !b.disabled)).toBe(true);
+    fireEvent.click(boxes[0]);
+    fireEvent.click(screen.getByRole('button', { name: '1 Zahlung senden' }));
+    await waitFor(() => expect(hoisted.submitMock).toHaveBeenCalledTimes(1));
+    expect(memoOf(hoisted.submitMock.mock.calls[0][1])).toBe('a');
+  });
+
+  it('shows the memo type in the review and in the copied details', async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(window.navigator, 'clipboard', { value: { writeText }, configurable: true });
+    saveBatchRows('PUBLIC', [rowA({ memoType: 'id', memoVal: '12345' }), rowB({ memoVal: '12345' })]);
+    renderDialog();
+    await checkAndWait(2);
+    expect(screen.getByText('12345 (ID)')).toBeInTheDocument();
+    expect(screen.getByText('12345 (Text)')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: '2 Zahlungen senden' }));
+    await waitFor(() => expect(screen.getByTestId('batch-summary')).toBeInTheDocument());
+    fireEvent.click(screen.getByRole('button', { name: 'Details kopieren' }));
+    await waitFor(() => expect(writeText).toHaveBeenCalled());
+    const text = writeText.mock.calls[0][0];
+    expect(text).toContain('Memo: 12345 (ID)');
+    expect(text).toContain('Memo: 12345 (Text)');
+  });
 });

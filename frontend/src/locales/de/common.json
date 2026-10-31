@@ -489,7 +489,9 @@
         "body": "Die Transaktion konnte serverseitig nicht eindeutig bestätigt werden (Zeitüberschreitung oder Serverfehler). Bitte prüfen Sie den Transaktions-Hash im Explorer, bevor Sie es erneut versuchen.",
         "acknowledge": "Status geprüft – Senden wieder freigeben"
       },
-      "reviewTitle": "Transaktion bestätigen"
+      "reviewTitle": "Transaktion bestätigen",
+      "sentBefore": "Diese Zahlung wurde mit denselben Daten von diesem Konto bereits gesendet ({{time}}). Nur bei Absicht erneut senden.",
+      "sentBeforeAmbiguous": "Eine Zahlung mit denselben Daten von diesem Konto hat einen unklaren Status ({{time}}). Bitte zuerst im Explorer prüfen."
     }
   },
   "activation": {
