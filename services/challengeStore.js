@@ -16,8 +16,15 @@ const crypto = require('crypto');
 const { Keypair } = require('@stellar/stellar-sdk');
 
 const DEFAULT_TTL_MS = 60_000;
+// Obergrenzen, damit die Map mit zufaelligen Keys nicht beliebig waechst (C2).
+// Gleich in api/challengeStore.php.
+const MAX_CHALLENGES_TOTAL = 2000;
+const MAX_CHALLENGES_PER_JOB = 20;
+// Budget fuer POST /challenge je IP, gleich wie in api/challengeStore.php.
+const CHALLENGE_RATE_LIMIT_MAX = 20;
+const CHALLENGE_RATE_LIMIT_WINDOW_MS = 60_000;
 
-/** @type {Map<string, { nonce: string, expiresAt: number }>} */
+/** @type {Map<string, { jobId: string, nonce: string, expiresAt: number }>} */
 const challenges = new Map();
 
 function challengeKey(jobId, signerPublicKey) {
@@ -42,8 +49,23 @@ function createChallenge(jobId, signerPublicKey, ttlMs = DEFAULT_TTL_MS) {
   pruneExpired(now);
   const nonce = crypto.randomBytes(32).toString('base64');
   const expiresAt = now + ttlMs;
-  challenges.set(challengeKey(jobId, signerPublicKey), { nonce, expiresAt });
+  const key = challengeKey(jobId, signerPublicKey);
+  // Neu einfuegen statt ueberschreiben: die Reihenfolge der Map ist das Alter.
+  challenges.delete(key);
+  capChallenges(jobId);
+  challenges.set(key, { jobId, nonce, expiresAt });
   return { challenge: nonce, expiresAt };
+}
+
+// Macht Platz fuer eine neue Challenge von jobId: zuerst je Job, dann gesamt die
+// aeltesten Eintraege entfernen. Abgelaufene hat pruneExpired() schon entfernt.
+function capChallenges(jobId) {
+  const ofJob = [...challenges].filter(([, entry]) => entry.jobId === jobId).map(([key]) => key);
+  for (let i = 0; i <= ofJob.length - MAX_CHALLENGES_PER_JOB; i += 1) challenges.delete(ofJob[i]);
+  for (const key of challenges.keys()) {
+    if (challenges.size < MAX_CHALLENGES_TOTAL) break;
+    challenges.delete(key);
+  }
 }
 
 /**
@@ -92,4 +114,13 @@ function verifyChallengeSignature(nonceB64, signatureB64, signerPublicKey, purpo
   }
 }
 
-module.exports = { createChallenge, consumeChallenge, verifyChallengeSignature, challengeMessage };
+module.exports = {
+  createChallenge,
+  consumeChallenge,
+  verifyChallengeSignature,
+  challengeMessage,
+  MAX_CHALLENGES_TOTAL,
+  MAX_CHALLENGES_PER_JOB,
+  CHALLENGE_RATE_LIMIT_MAX,
+  CHALLENGE_RATE_LIMIT_WINDOW_MS,
+};

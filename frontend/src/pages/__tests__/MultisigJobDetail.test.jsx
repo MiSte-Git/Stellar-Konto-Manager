@@ -1227,6 +1227,16 @@ describe('Job ablehnen', () => {
     expect(await screen.findByText('Du hast bereits signiert und kannst nicht mehr ablehnen.')).toBeInTheDocument();
   });
 
+  it('meldet 429 von /challenge beim Ablehnen lesbar und lehnt nicht ab', async () => {
+    hoisted.sessionSecretMock.mockResolvedValue(SIGNER_A.secret);
+    hoisted.challengeMock.mockRejectedValue(Object.assign(new Error('too_many_requests'), { status: 429, retryAfter: 30 }));
+    renderPage();
+    await openDecline();
+    confirm();
+    expect(await screen.findByText('Der Server meldet zu viele Anfragen. Bitte in 30 Sekunden erneut versuchen.')).toBeInTheDocument();
+    expect(hoisted.declineMock).not.toHaveBeenCalled();
+  });
+
   it('bietet kein Ablehnen nach der eigenen Signatur und im Endzustand an', async () => {
     hoisted.getJobMock.mockImplementation(async () => makeJob({ collectedSigners: [{ publicKey: SIGNER_A.publicKey, weight: 1 }], collectedWeight: 1 }));
     const view = renderPage();

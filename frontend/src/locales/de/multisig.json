@@ -439,7 +439,9 @@
       "timeout": "Der Server antwortet nicht. Bitte später erneut versuchen.",
       "failed": "Der Job konnte nicht geladen werden ({{code}}). Bitte Verbindung prüfen und erneut versuchen.",
       "tokenRejected": "Der Zugriff wurde abgelehnt. Bitte den Secret Key erneut eingeben.",
-      "finalState": "Der Job ist bereits abgeschlossen ({{status}})."
+      "finalState": "Der Job ist bereits abgeschlossen ({{status}}).",
+      "tooManyRequests": "Der Server meldet zu viele Anfragen. Bitte etwas warten und erneut versuchen.",
+      "tooManyRequestsWait": "Der Server meldet zu viele Anfragen. Bitte in {{seconds}} Sekunden erneut versuchen."
     },
     "decline": {
       "prompt": "Diesen Job nicht signieren?",

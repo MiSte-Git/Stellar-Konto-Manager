@@ -125,6 +125,11 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
   const accessErrorText = useCallback((e) => {
     const code = String(e?.message || '');
     if (e?.status === 403 || code === 'forbidden') return t('multisig:detail.notASigner', 'Dieses Konto ist kein aktiver Signer dieses Auftrags.');
+    if (e?.status === 429 || code === 'too_many_requests') {
+      return e?.retryAfter > 0
+        ? t('multisig:detail.access.tooManyRequestsWait', { seconds: e.retryAfter, defaultValue: 'Der Server meldet zu viele Anfragen. Bitte in {{seconds}} Sekunden erneut versuchen.' })
+        : t('multisig:detail.access.tooManyRequests', 'Der Server meldet zu viele Anfragen. Bitte etwas warten und erneut versuchen.');
+    }
     if (e?.status === 404 || code === 'not_found') return t('multisig:detail.access.notFound', 'Diesen Job gibt es nicht mehr. Abgeschlossene Jobs werden nach 30 Tagen gelöscht.');
     if (code === 'challenge_missing_or_expired') return t('multisig:detail.access.challengeExpired', 'Die Anmeldung am Job ist abgelaufen oder wurde schon verwendet. Bitte erneut versuchen.');
     if (code === 'invalid_signature') return t('multisig:detail.access.invalidSignature', 'Die Signatur der Anmeldung wurde abgelehnt. Bitte erneut versuchen.');

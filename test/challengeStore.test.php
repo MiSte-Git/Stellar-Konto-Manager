@@ -156,6 +156,41 @@ check(
     consumeChallenge($jobId8, $kp8->getAccountId()) === null
 );
 
+// --- Obergrenzen (C2) -----------------------------------------------------
+$capSigners = array_map(fn($i) => "GCAPJOB{$i}", range(0, CHALLENGE_MAX_PER_JOB));
+foreach ($capSigners as $pk) createChallenge('cap-job', $pk);
+check('je Job hoechstens CHALLENGE_MAX_PER_JOB, die aelteste fliegt raus', consumeChallenge('cap-job', $capSigners[0]) === null);
+$restOk = true;
+foreach (array_slice($capSigners, 1) as $pk) if (consumeChallenge('cap-job', $pk) === null) $restOk = false;
+check('die uebrigen Challenges des Jobs bleiben offen', $restOk);
+
+$reSigners = array_map(fn($i) => "GREJOB{$i}", range(0, CHALLENGE_MAX_PER_JOB - 1));
+foreach ($reSigners as $pk) createChallenge('re-job', $pk);
+createChallenge('re-job', $reSigners[0]);
+createChallenge('re-job', 'GREJOBNEU');
+check(
+    'erneute Challenge fuer dasselbe Paar zaehlt als neueste',
+    consumeChallenge('re-job', $reSigners[1]) === null && consumeChallenge('re-job', $reSigners[0]) !== null
+);
+
+// Gesamt: Datei bis zur Obergrenze vorbelegen (schneller als 2000 Einzelaufrufe),
+// davor ein abgelaufener Eintrag. Er faellt zuerst weg, dann die aelteste gueltige.
+$full = ['expired:GEXPIRED' => ['nonce' => base64_encode(random_bytes(32)), 'expiresAt' => time() - 1]];
+for ($i = 0; $i < CHALLENGE_MAX_TOTAL; $i++) {
+    $full["total-{$i}:GTOTAL"] = ['nonce' => base64_encode(random_bytes(32)), 'expiresAt' => time() + 60];
+}
+file_put_contents(challengesFilePath(), json_encode($full));
+$kpFresh = KeyPair::random();
+$cFresh = createChallenge('fresh-job', $kpFresh->getAccountId());
+$stored = json_decode((string)file_get_contents(challengesFilePath()), true);
+check('gesamt hoechstens CHALLENGE_MAX_TOTAL Eintraege', count($stored) === CHALLENGE_MAX_TOTAL);
+check('abgelaufene und dann die aelteste wurden verdraengt', !isset($stored['expired:GEXPIRED']) && !isset($stored['total-0:GTOTAL']) && isset($stored['total-1:GTOTAL']));
+$pendingFresh = consumeChallenge('fresh-job', $kpFresh->getAccountId());
+check(
+    'nach der Verdraengung funktioniert eine frische Challenge mit Signatur weiter',
+    $pendingFresh !== null && verifyChallengeSignature($pendingFresh['nonce'], signNonce($kpFresh, $cFresh['challenge']), $kpFresh->getAccountId(), 'token') === true
+);
+
 // --- cleanup ---------------------------------------------------------------
 array_map('unlink', glob($tmpDir . '/*') ?: []);
 @rmdir($tmpDir);

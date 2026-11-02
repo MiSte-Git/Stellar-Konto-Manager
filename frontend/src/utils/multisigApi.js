@@ -41,6 +41,8 @@ export async function getMultisigJobChallenge(jobId, signerPublicKey) {
     if (!r.ok) {
       const err = new Error(data?.error || 'multisig.jobs.challenge_failed');
       err.status = r.status;
+      // 429 too_many_requests (C2): Wartezeit fuer die Meldung im Job-Detail.
+      if (Number.isFinite(data?.retryAfter)) err.retryAfter = data.retryAfter;
       throw err;
     }
     return data; // { challenge, expiresAt }

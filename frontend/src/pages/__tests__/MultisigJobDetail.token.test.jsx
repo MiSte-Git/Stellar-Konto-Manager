@@ -157,6 +157,24 @@ describe('MultisigJobDetail: Zugriffstoken', () => {
       expect(await screen.findByText(/Die Anmeldung am Job ist abgelaufen/)).toBeInTheDocument();
     });
 
+    it('meldet 429 von /challenge beim Unlock mit Wartezeit', async () => {
+      hoisted.challenge.mockRejectedValue(Object.assign(new Error('too_many_requests'), { status: 429, retryAfter: 42 }));
+      renderDetail({ jobId: 'd-reload', currentPublicKey: SIGNER });
+      await screen.findByTestId('job-unlock');
+      fireEvent.change(unlockInput(), { target: { value: SECRET } });
+      fireEvent.click(openButton());
+      expect(await screen.findByText('Der Server meldet zu viele Anfragen. Bitte in 42 Sekunden erneut versuchen.')).toBeInTheDocument();
+      expect(hoisted.accessToken).not.toHaveBeenCalled();
+    });
+
+    it('meldet 429 von /challenge beim Oeffnen mit gemerktem Secret', async () => {
+      hoisted.sessionSecret.mockResolvedValue(SECRET);
+      hoisted.challenge.mockRejectedValue(Object.assign(new Error('too_many_requests'), { status: 429 }));
+      renderDetail({ jobId: 'd-reload', currentPublicKey: SIGNER });
+      expect(await screen.findByText('Der Server meldet zu viele Anfragen. Bitte etwas warten und erneut versuchen.')).toBeInTheDocument();
+      expect(hoisted.getJob).not.toHaveBeenCalled();
+    });
+
     it('verlangt nach abgelehntem Token erneut den Key, statt am alten Token festzuhaengen', async () => {
       hoisted.getJob.mockRejectedValueOnce(Object.assign(new Error('forbidden'), { status: 403 }));
       renderDetail({ jobId: 'd-reload', currentPublicKey: SIGNER });

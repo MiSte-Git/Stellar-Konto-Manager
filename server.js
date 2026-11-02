@@ -15,6 +15,7 @@ const { createApiSecurityHeadersMiddleware } = require('./services/securityHeade
 const { handleFederationRequest, HOP_HEADER: FEDERATION_HOP_HEADER } = require('./services/federationService.js');
 const { writeJsonFileLocked } = require('./services/jsonFileStore.js');
 const { createChallenge, consumeChallenge, verifyChallengeSignature } = require('./services/challengeStore.js');
+const { createChallengeLimiter } = require('./services/challengeRateLimit.js');
 const { filterValidSignatures, requiredWeightForOperations, signatureKey, txSourceBaseAccount } = require('./services/txSignatures.js');
 const { isLoopbackAddress } = require('./services/network.js');
 const stellarNetworks = require('./services/stellarNetworks.js');
@@ -809,8 +810,10 @@ function parseSignerPublicKey(raw) {
 // Issues a short-lived, single-use nonce for (jobId, signerPublicKey) - the
 // first half of the possession proof required by the /token endpoint below
 // (H1 fix): naming a public key is not enough, the caller must additionally
-// sign this nonce with the matching private key.
-app.post('/api/multisig/jobs/:id/challenge', (req, res) => {
+// sign this nonce with the matching private key. Eigenes Rate-Limit je IP (C2), gleich
+// wie in api/multisig.php; der globale Limiter gilt zusaetzlich.
+const challengeLimiter = createChallengeLimiter();
+app.post('/api/multisig/jobs/:id/challenge', challengeLimiter, (req, res) => {
   try {
     const { id } = req.params;
     const job = findMultisigJob(id);

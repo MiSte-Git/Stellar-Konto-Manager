@@ -183,3 +183,18 @@ test('Loeschen: ohne Token 403, offener Job 409 not_final, Endzustand mit Token 
   assert.equal(r.status, 404);
   assert.equal((await del(`${BASE}/alt`, 'tok-alt')).status, 404);
 });
+
+// C2: server.js haengt den eigenen Limiter an /challenge. Am Ende der Datei, weil das
+// Budget danach verbraucht ist; die Tests davor haben schon einige Challenges geholt.
+test('Challenge: spaetestens nach 20 Anfragen je Minute 429 too_many_requests mit retryAfter', async () => {
+  const signer = Keypair.random().publicKey();
+  let res;
+  for (let i = 0; i <= 20; i += 1) {
+    res = await post(`${BASE}/offen/challenge`, { signer });
+    if (res.status === 429) break;
+    assert.equal(res.status, 200);
+  }
+  assert.equal(res.status, 429);
+  assert.equal(res.body.error, 'too_many_requests');
+  assert.ok(res.body.retryAfter >= 1);
+});

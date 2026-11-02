@@ -1,7 +1,13 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { Keypair } = require('@stellar/stellar-sdk');
-const { createChallenge, consumeChallenge, verifyChallengeSignature } = require('../services/challengeStore.js');
+const {
+  createChallenge,
+  consumeChallenge,
+  verifyChallengeSignature,
+  MAX_CHALLENGES_TOTAL,
+  MAX_CHALLENGES_PER_JOB,
+} = require('../services/challengeStore.js');
 
 // Signiert wie das Frontend: `skm:<purpose>:` plus Nonce. purpose null signiert die
 // rohe Nonce (altes Format, muss abgelehnt werden).
@@ -118,4 +124,43 @@ test('end-to-end handshake: create -> sign -> consume -> verify succeeds exactly
   // Replaying the same (jobId, signer) after consumption must fail closed:
   // no challenge left to redeem, even though the signature itself is still valid.
   assert.equal(consumeChallenge(jobId, keypair.publicKey()), null);
+});
+
+// --- Obergrenzen (C2) --------------------------------------------------------
+// Am Ende der Datei: die Tests fuellen die Map und raeumen danach wieder auf.
+
+test('je Job hoechstens MAX_CHALLENGES_PER_JOB offene Challenges, die aelteste fliegt raus', () => {
+  const signers = Array.from({ length: MAX_CHALLENGES_PER_JOB + 1 }, (_, i) => `GCAPJOB${i}`);
+  signers.forEach((pk) => createChallenge('cap-job', pk));
+  assert.equal(consumeChallenge('cap-job', signers[0]), null, 'die aelteste wurde verdraengt');
+  for (const pk of signers.slice(1)) assert.ok(consumeChallenge('cap-job', pk), `${pk} ist noch offen`);
+});
+
+test('erneute Challenge fuer dasselbe Paar zaehlt als neueste und verdraengt sie nicht', () => {
+  const signers = Array.from({ length: MAX_CHALLENGES_PER_JOB }, (_, i) => `GREJOB${i}`);
+  signers.forEach((pk) => createChallenge('re-job', pk));
+  createChallenge('re-job', signers[0]);
+  createChallenge('re-job', 'GREJOBNEU');
+  assert.equal(consumeChallenge('re-job', signers[1]), null, 'jetzt ist signers[1] die aelteste');
+  assert.ok(consumeChallenge('re-job', signers[0]));
+  assert.ok(consumeChallenge('re-job', 'GREJOBNEU'));
+  signers.slice(2).forEach((pk) => consumeChallenge('re-job', pk));
+});
+
+test('gesamt hoechstens MAX_CHALLENGES_TOTAL, die aeltesten fallen zuerst raus', () => {
+  // Eine mehr als die Obergrenze: Reste frueherer Tests und total-0 fallen raus.
+  createChallenge('total-expired', 'GEXPIRED', -1);
+  for (let i = 0; i <= MAX_CHALLENGES_TOTAL; i += 1) createChallenge(`total-${i}`, 'GTOTAL');
+  assert.equal(consumeChallenge('total-0', 'GTOTAL'), null, 'die aelteste wurde verdraengt');
+  assert.ok(consumeChallenge('total-1', 'GTOTAL'));
+  assert.ok(consumeChallenge(`total-${MAX_CHALLENGES_TOTAL}`, 'GTOTAL'));
+});
+
+test('nach der Verdraengung funktioniert eine frische Challenge mit Signatur weiter', () => {
+  const keypair = Keypair.random();
+  const { challenge } = createChallenge('fresh-job', keypair.publicKey());
+  const pending = consumeChallenge('fresh-job', keypair.publicKey());
+  assert.ok(pending);
+  assert.equal(verifyChallengeSignature(pending.nonce, sign(keypair, challenge), keypair.publicKey(), 'token'), true);
+  for (let i = 0; i <= MAX_CHALLENGES_TOTAL; i += 1) consumeChallenge(`total-${i}`, 'GTOTAL');
 });

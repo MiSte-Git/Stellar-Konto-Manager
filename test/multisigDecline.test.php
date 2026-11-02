@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/../api/vendor/autoload.php';
 require __DIR__ . '/../api/multisigDecline.php';
+require __DIR__ . '/../api/challengeStore.php';
 
 use Soneso\StellarSDK\Account;
 use Soneso\StellarSDK\Asset;
@@ -135,6 +136,18 @@ file_put_contents($apiDir . '/data/signers_cache.json', json_encode([
     ],
 ]));
 
+// C2: Challenge-Datei vorbelegen, voll bis zur Obergrenze, 'offen' mit
+// CHALLENGE_MAX_PER_JOB offenen Challenges fremder Signer. Neue Challenges muessen alte
+// verdraengen, Token und Ablehnen funktionieren trotzdem.
+$prefilled = [];
+for ($i = 0; $i < CHALLENGE_MAX_PER_JOB; $i++) {
+    $prefilled['offen:' . KeyPair::random()->getAccountId()] = ['nonce' => base64_encode(random_bytes(32)), 'expiresAt' => $now + 3600];
+}
+for ($i = count($prefilled); $i < CHALLENGE_MAX_TOTAL; $i++) {
+    $prefilled["fremd-{$i}:GFREMD"] = ['nonce' => base64_encode(random_bytes(32)), 'expiresAt' => $now + 3600];
+}
+file_put_contents($apiDir . '/data/challenges.json', json_encode($prefilled));
+
 $server = proc_open(
     [PHP_BINARY, '-S', '127.0.0.1:' . TEST_PORT, $apiDir . '/multisig.php'],
     [1 => ['file', '/dev/null', 'w'], 2 => ['file', '/dev/null', 'w']],
@@ -172,7 +185,12 @@ try {
         return request('POST', BASE_URL . '/offen/token', [], ['signer' => $b->getAccountId(), 'signature' => base64_encode($b->sign($prefix . $nonce))]);
     };
     $res = $tokenWith('skm:token:');
-    check('Token mit skm:token: -> 200 und Token', $res['status'] === 200 && ($res['body']['accessToken'] ?? '') === 'tok-offen');
+    check('Token mit skm:token: -> 200 und Token (nach Verdraengung alter Challenges)', $res['status'] === 200 && ($res['body']['accessToken'] ?? '') === 'tok-offen');
+    $stored = json_decode((string)file_get_contents($apiDir . '/data/challenges.json'), true) ?: [];
+    $ofOpen = array_filter(array_keys($stored), fn($k) => str_starts_with((string)$k, 'offen:'));
+    check('Challenge-Datei bleibt bei hoechstens CHALLENGE_MAX_TOTAL Eintraegen', count($stored) <= CHALLENGE_MAX_TOTAL);
+    check('Job offen hat hoechstens CHALLENGE_MAX_PER_JOB offene Challenges', count($ofOpen) <= CHALLENGE_MAX_PER_JOB);
+    check('Vorbelegte Challenges von offen wurden verdraengt', count(array_intersect_key($stored, $prefilled)) < count($prefilled));
     $res = $tokenWith('');
     check('Token mit Rohsignatur der Nonce -> 403 invalid_signature', $res['status'] === 403 && ($res['body']['error'] ?? '') === 'invalid_signature');
     $res = $tokenWith('skm:decline:');
@@ -215,6 +233,16 @@ try {
     check('Loeschen eines abgelehnten Jobs mit Token -> 200', $res['status'] === 200 && ($res['body']['ok'] ?? false) === true);
     $res = request('GET', BASE_URL . '/offen', ['x-job-token: tok-offen']);
     check('Geloeschter Job -> 404', $res['status'] === 404);
+
+    // C2: Rate-Limit am Ende, danach ist das Budget verbraucht. Die Tests davor haben
+    // schon Challenges geholt, spaetestens die 21. Anfrage der Minute ergibt 429.
+    $res = null;
+    for ($i = 0; $i <= MULTISIG_CHALLENGE_RATE_LIMIT_MAX; $i++) {
+        $res = request('POST', BASE_URL . '/offen/challenge', [], ['signer' => $b->getAccountId()]);
+        if ($res['status'] === 429) break;
+    }
+    check('Challenge: spaetestens die 21. Anfrage je Minute -> 429 too_many_requests mit retryAfter',
+        $res['status'] === 429 && ($res['body']['error'] ?? '') === 'too_many_requests' && (int)($res['body']['retryAfter'] ?? 0) >= 1);
 } finally {
     proc_terminate($server);
     proc_close($server);

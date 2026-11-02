@@ -20,6 +20,13 @@ require_once __DIR__ . '/vendor/autoload.php';
 use Soneso\StellarSDK\Crypto\KeyPair;
 
 const CHALLENGE_TTL_SECONDS = 60;
+// Obergrenzen, damit challenges.json mit zufaelligen Keys nicht beliebig waechst (C2).
+// Gleich in services/challengeStore.js.
+const CHALLENGE_MAX_TOTAL = 2000;
+const CHALLENGE_MAX_PER_JOB = 20;
+// Budget fuer POST /challenge je IP (api/rateLimit.php), gleich wie in server.js.
+const MULTISIG_CHALLENGE_RATE_LIMIT_MAX = 20;
+const MULTISIG_CHALLENGE_RATE_LIMIT_WINDOW_SECONDS = 60;
 
 function challengesFilePath(): string {
     // Overridable so tests can point this at a throwaway temp file instead of
@@ -89,9 +96,30 @@ function createChallenge(string $jobId, string $signerPublicKey, int $ttlSeconds
     $nonce = base64_encode(random_bytes(32));
     $expiresAt = time() + $ttlSeconds;
     return withChallengesLock(function (array $data) use ($jobId, $signerPublicKey, $nonce, $expiresAt) {
-        $data[challengeKey($jobId, $signerPublicKey)] = ['nonce' => $nonce, 'expiresAt' => $expiresAt];
+        $key = challengeKey($jobId, $signerPublicKey);
+        // Neu anhaengen statt ueberschreiben: die Reihenfolge der Datei ist das Alter.
+        unset($data[$key]);
+        $data = capChallenges($data, $jobId);
+        $data[$key] = ['nonce' => $nonce, 'expiresAt' => $expiresAt];
         return [$data, ['challenge' => $nonce, 'expiresAt' => $expiresAt]];
     });
+}
+
+// Jobteil eines Schluessels "<jobId>:<signer>"; der Signer-Key enthaelt keinen Doppelpunkt.
+function challengeJobId(string $key): string {
+    $pos = strrpos($key, ':');
+    return $pos === false ? $key : substr($key, 0, $pos);
+}
+
+// Macht Platz fuer eine neue Challenge von $jobId: zuerst je Job, dann gesamt die
+// aeltesten Eintraege entfernen. Abgelaufene hat withChallengesLock() schon entfernt.
+function capChallenges(array $data, string $jobId): array {
+    $ofJob = array_values(array_filter(array_keys($data), fn($k) => challengeJobId((string)$k) === $jobId));
+    for ($i = 0; $i <= count($ofJob) - CHALLENGE_MAX_PER_JOB; $i++) unset($data[$ofJob[$i]]);
+    if (count($data) >= CHALLENGE_MAX_TOTAL) {
+        $data = array_slice($data, count($data) - CHALLENGE_MAX_TOTAL + 1, null, true);
+    }
+    return $data;
 }
 
 /**

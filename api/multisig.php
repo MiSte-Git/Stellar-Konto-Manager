@@ -24,6 +24,7 @@ if (file_exists($autoload)) {
 }
 
 require __DIR__ . '/challengeStore.php';
+require __DIR__ . '/rateLimit.php';
 require_once __DIR__ . '/stellarNetworks.php';
 require __DIR__ . '/txSignatures.php';
 require __DIR__ . '/multisigJobsGuard.php';
@@ -648,8 +649,19 @@ function parseSignerPublicKey(string $raw): ?string {
 // nonce for (jobId, signerPublicKey), the first half of the possession proof
 // required by the /token endpoint below (H1 fix): naming a public key is not
 // enough, the caller must additionally sign this nonce with the matching
-// private key.
+// private key. Rate-Limit je IP (C2): jede Anfrage schreibt unter dem Lock, den auch
+// Token, Ablehnen und Loeschen brauchen. Gezaehlt wird vor allen Pruefungen, wie in Node.
 if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/challenge'))) {
+    $retryAfter = rateLimitCheckAndRecord(
+        rateLimitPath('MULTISIG_CHALLENGE_RATE_LIMIT_PATH', 'multisig_challenge_rate_limit.json'),
+        (string)($_SERVER['REMOTE_ADDR'] ?? 'unknown'),
+        MULTISIG_CHALLENGE_RATE_LIMIT_MAX,
+        MULTISIG_CHALLENGE_RATE_LIMIT_WINDOW_SECONDS
+    );
+    if ($retryAfter > 0) {
+        header('Retry-After: ' . $retryAfter);
+        return sendJson(['ok' => false, 'error' => 'too_many_requests', 'retryAfter' => $retryAfter], 429);
+    }
     $id = $m['id'] ?? '';
     if (!findJobById($jobFile, $id)) return sendJson(['ok' => false, 'error' => 'not_found'], 404);
 
