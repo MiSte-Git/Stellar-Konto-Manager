@@ -39,7 +39,7 @@ vi.mock('../../utils/multisigApi.js', async (importOriginal) => ({
   mergeSignedXdr: hoisted.mergeMock,
   getMultisigJobChallenge: hoisted.challengeMock,
   getMultisigJobAccessToken: hoisted.tokenMock,
-  signMultisigJobChallenge: () => 'signature',
+  signMultisigJobChallenge: (_secret, _challenge, purpose) => `signature:${purpose}`,
   declineMultisigJob: hoisted.declineMock,
 }));
 
@@ -1193,7 +1193,7 @@ describe('Job ablehnen', () => {
     expect(within(form).queryByLabelText('Secret Key zum Ablehnen')).toBeNull();
     expect(form).toHaveTextContent('Endgültig stoppt sie nur ein Widerruf');
     confirm();
-    await waitFor(() => expect(hoisted.declineMock).toHaveBeenCalledWith('job-1', SIGNER_A.publicKey, 'signature'));
+    await waitFor(() => expect(hoisted.declineMock).toHaveBeenCalledWith('job-1', SIGNER_A.publicKey, 'signature:decline'));
     expect(hoisted.challengeMock).toHaveBeenCalledWith('job-1', SIGNER_A.publicKey);
     expect(await screen.findByText('Abgelehnt. Die anderen Signer sehen deine Ablehnung.')).toBeInTheDocument();
     expect(hoisted.getJobMock.mock.calls.length).toBeGreaterThanOrEqual(2);

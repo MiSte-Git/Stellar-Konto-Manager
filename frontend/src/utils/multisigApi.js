@@ -50,17 +50,25 @@ export async function getMultisigJobChallenge(jobId, signerPublicKey) {
   }
 }
 
+// Erlaubte Zwecke einer Challenge-Signatur, muessen zu den Backend-Endpunkten passen.
+export const CHALLENGE_PURPOSES = Object.freeze(['token', 'decline']);
+
 // Signs a base64 challenge nonce with the given secret key, raw ed25519 (not a
 // Stellar transaction - there is no XDR/network/sequence number involved,
 // just a possession proof over server-issued random bytes). Returns the
-// signature as base64, ready for getMultisigJobAccessToken().
-// purpose bindet die Signatur an eine Aktion (z. B. 'decline'): signiert wird dann
-// `skm:<purpose>:` plus Nonce. Ohne purpose die Nonce allein (Token). Gleich wie
-// challengeMessage in services/challengeStore.js und api/challengeStore.php.
-export function signMultisigJobChallenge(secret, challengeB64, purpose = '') {
+// signature as base64, ready for getMultisigJobAccessToken()/declineMultisigJob().
+// purpose ist Pflicht und bindet die Signatur an eine Aktion: signiert wird immer
+// `skm:<purpose>:` plus Nonce, nie die Nonce allein. Eine rohe 32-Byte-Nonce waere gleich
+// lang wie ein Transaktions-Hash, ein manipuliertes Backend koennte sonst einen Tx-Hash
+// als Challenge schicken und so eine gueltige Transaktions-Signatur erhalten.
+// Gleich wie challengeMessage in services/challengeStore.js und api/challengeStore.php.
+export function signMultisigJobChallenge(secret, challengeB64, purpose) {
+  if (!CHALLENGE_PURPOSES.includes(purpose)) {
+    throw new Error(`multisig.jobs.invalid_challenge_purpose: ${purpose || '-'}`);
+  }
   const keypair = Keypair.fromSecret(secret);
   const nonceBytes = Buffer.from(String(challengeB64 || ''), 'base64');
-  const data = purpose ? Buffer.concat([Buffer.from(`skm:${purpose}:`, 'utf8'), nonceBytes]) : nonceBytes;
+  const data = Buffer.concat([Buffer.from(`skm:${purpose}:`, 'utf8'), nonceBytes]);
   const signature = keypair.sign(data);
   return Buffer.from(signature).toString('base64');
 }

@@ -100,7 +100,7 @@ const del = async (url, token) => {
 };
 const signChallenge = (kp, challenge, purpose = 'decline') => {
   const nonce = Buffer.from(challenge, 'base64');
-  const data = purpose ? Buffer.concat([Buffer.from(`skm:${purpose}:`), nonce]) : nonce;
+  const data = purpose === null ? nonce : Buffer.concat([Buffer.from(`skm:${purpose}:`), nonce]);
   return Buffer.from(kp.sign(data)).toString('base64');
 };
 
@@ -125,12 +125,33 @@ test('Ablehnen: Signatur gueltig, aber kein Signer des Kontos -> 403, Job unvera
   assert.equal(stored.declinedSigners, undefined);
 });
 
-test('Ablehnen: eine Token-Signatur (ohne Zweck) gilt nicht als Ablehnung', async () => {
+test('Ablehnen: Token-Signatur und Rohsignatur der Nonce gelten nicht als Ablehnung', async () => {
   const signer = Keypair.random();
-  const { body: ch } = await post(`${BASE}/offen/challenge`, { signer: signer.publicKey() });
-  const res = await post(`${BASE}/offen/decline`, { signer: signer.publicKey(), signature: signChallenge(signer, ch.challenge, '') });
-  assert.equal(res.status, 403);
-  assert.equal(res.body.error, 'invalid_signature');
+  for (const purpose of ['token', null]) {
+    const { body: ch } = await post(`${BASE}/offen/challenge`, { signer: signer.publicKey() });
+    const res = await post(`${BASE}/offen/decline`, { signer: signer.publicKey(), signature: signChallenge(signer, ch.challenge, purpose) });
+    assert.equal(res.status, 403);
+    assert.equal(res.body.error, 'invalid_signature');
+  }
+});
+
+// Token-Endpunkt: Node fragt die Signer live ab, offline endet eine gueltige Signatur bei
+// 403 forbidden. Entscheidend ist, dass sie die Signaturpruefung besteht (nicht
+// invalid_signature), waehrend Rohsignatur und decline-Signatur dort scheitern.
+test('Token: skm:token: besteht die Signaturpruefung, Rohsignatur und decline-Signatur nicht', async () => {
+  const signer = Keypair.random();
+  const token = async (purpose) => {
+    const { body: ch } = await post(`${BASE}/offen/challenge`, { signer: signer.publicKey() });
+    return post(`${BASE}/offen/token`, { signer: signer.publicKey(), signature: signChallenge(signer, ch.challenge, purpose) });
+  };
+  const ok = await token('token');
+  assert.equal(ok.status, 403);
+  assert.equal(ok.body.error, 'forbidden');
+  for (const purpose of [null, 'decline']) {
+    const res = await token(purpose);
+    assert.equal(res.status, 403);
+    assert.equal(res.body.error, 'invalid_signature');
+  }
 });
 
 test('Ablehnen: Challenge ist einmalig und an den Job gebunden', async () => {

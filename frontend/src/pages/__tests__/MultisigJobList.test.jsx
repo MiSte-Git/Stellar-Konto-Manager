@@ -16,7 +16,7 @@ vi.mock('../../utils/multisigApi.js', async (importOriginal) => ({
   ...(await importOriginal()),
   getMultisigJobChallenge: hoisted.challenge,
   getMultisigJobAccessToken: hoisted.token,
-  signMultisigJobChallenge: () => 'signature',
+  signMultisigJobChallenge: (_secret, _challenge, purpose) => `signature:${purpose}`,
   deleteMultisigJob: hoisted.del,
 }));
 vi.mock('../../utils/sessionSecrets.js', async (importOriginal) => ({
@@ -162,6 +162,7 @@ describe('MultisigJobList: Filter', () => {
       expect(result).toHaveTextContent('kein Signer');
       expect(hoisted.del.mock.calls.map((c) => c[0]).sort()).toEqual(['eigen-abgelaufen', 'eigen-abgelehnt']);
       expect(hoisted.del).toHaveBeenCalledWith('eigen-abgelaufen', 'tok-eigen-abgelaufen');
+      expect(hoisted.token).toHaveBeenCalledWith('eigen-abgelaufen', ME, 'signature:token');
     });
     it('bricht bei 429 ab, meldet die nicht versuchten Jobs und loest bei Doppelklick nur einen Lauf aus', async () => {
       hoisted.sessionSecret.mockResolvedValue(ME_SECRET);

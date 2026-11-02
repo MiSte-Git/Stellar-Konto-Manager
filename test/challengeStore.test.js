@@ -3,8 +3,12 @@ const assert = require('node:assert/strict');
 const { Keypair } = require('@stellar/stellar-sdk');
 const { createChallenge, consumeChallenge, verifyChallengeSignature } = require('../services/challengeStore.js');
 
-function sign(keypair, challengeB64) {
-  return Buffer.from(keypair.sign(Buffer.from(challengeB64, 'base64'))).toString('base64');
+// Signiert wie das Frontend: `skm:<purpose>:` plus Nonce. purpose null signiert die
+// rohe Nonce (altes Format, muss abgelehnt werden).
+function sign(keypair, challengeB64, purpose = 'token') {
+  const nonce = Buffer.from(challengeB64, 'base64');
+  const data = purpose === null ? nonce : Buffer.concat([Buffer.from(`skm:${purpose}:`), nonce]);
+  return Buffer.from(keypair.sign(data)).toString('base64');
 }
 
 test('createChallenge returns a base64 nonce with a ~60s expiry', () => {
@@ -49,7 +53,7 @@ test('verifyChallengeSignature accepts a genuine signature from the claimed keyp
   const keypair = Keypair.random();
   const { challenge } = createChallenge('job-5', keypair.publicKey());
   const signature = sign(keypair, challenge);
-  assert.equal(verifyChallengeSignature(challenge, signature, keypair.publicKey()), true);
+  assert.equal(verifyChallengeSignature(challenge, signature, keypair.publicKey(), 'token'), true);
 });
 
 test('verifyChallengeSignature rejects a signature produced by a different keypair', () => {
@@ -57,7 +61,7 @@ test('verifyChallengeSignature rejects a signature produced by a different keypa
   const impostor = Keypair.random();
   const { challenge } = createChallenge('job-6', owner.publicKey());
   const signature = sign(impostor, challenge); // signed with the wrong key
-  assert.equal(verifyChallengeSignature(challenge, signature, owner.publicKey()), false);
+  assert.equal(verifyChallengeSignature(challenge, signature, owner.publicKey(), 'token'), false);
 });
 
 test('verifyChallengeSignature rejects a signature over tampered nonce data', () => {
@@ -65,15 +69,39 @@ test('verifyChallengeSignature rejects a signature over tampered nonce data', ()
   const { challenge } = createChallenge('job-7', keypair.publicKey());
   const signature = sign(keypair, challenge);
   const tamperedChallenge = Buffer.from('completely different 32 byte value!!').toString('base64');
-  assert.equal(verifyChallengeSignature(tamperedChallenge, signature, keypair.publicKey()), false);
+  assert.equal(verifyChallengeSignature(tamperedChallenge, signature, keypair.publicKey(), 'token'), false);
+});
+
+test('verifyChallengeSignature rejects the raw nonce signature (no purpose prefix)', () => {
+  const keypair = Keypair.random();
+  const { challenge } = createChallenge('job-9', keypair.publicKey());
+  const raw = sign(keypair, challenge, null);
+  assert.equal(verifyChallengeSignature(challenge, raw, keypair.publicKey(), 'token'), false);
+  assert.equal(verifyChallengeSignature(challenge, raw, keypair.publicKey(), 'decline'), false);
+});
+
+test('verifyChallengeSignature without purpose is always false, even for a matching signature', () => {
+  const keypair = Keypair.random();
+  const { challenge } = createChallenge('job-10', keypair.publicKey());
+  assert.equal(verifyChallengeSignature(challenge, sign(keypair, challenge, null), keypair.publicKey()), false);
+  assert.equal(verifyChallengeSignature(challenge, sign(keypair, challenge, null), keypair.publicKey(), ''), false);
+  assert.equal(verifyChallengeSignature(challenge, sign(keypair, challenge, ''), keypair.publicKey(), ''), false);
+});
+
+test('verifyChallengeSignature keeps token and decline signatures apart', () => {
+  const keypair = Keypair.random();
+  const { challenge } = createChallenge('job-11', keypair.publicKey());
+  assert.equal(verifyChallengeSignature(challenge, sign(keypair, challenge, 'decline'), keypair.publicKey(), 'token'), false);
+  assert.equal(verifyChallengeSignature(challenge, sign(keypair, challenge, 'token'), keypair.publicKey(), 'decline'), false);
+  assert.equal(verifyChallengeSignature(challenge, sign(keypair, challenge, 'decline'), keypair.publicKey(), 'decline'), true);
 });
 
 test('verifyChallengeSignature never throws on malformed input (garbage base64/pubkey)', () => {
   assert.doesNotThrow(() => {
-    assert.equal(verifyChallengeSignature('not-valid-base64!!', 'also-not-base64!!', 'not-a-real-key'), false);
+    assert.equal(verifyChallengeSignature('not-valid-base64!!', 'also-not-base64!!', 'not-a-real-key', 'token'), false);
   });
   assert.doesNotThrow(() => {
-    assert.equal(verifyChallengeSignature('', '', ''), false);
+    assert.equal(verifyChallengeSignature('', '', '', ''), false);
   });
 });
 
@@ -85,7 +113,7 @@ test('end-to-end handshake: create -> sign -> consume -> verify succeeds exactly
 
   const pending = consumeChallenge(jobId, keypair.publicKey());
   assert.ok(pending, 'challenge should still be pending before redemption');
-  assert.equal(verifyChallengeSignature(pending.nonce, signature, keypair.publicKey()), true);
+  assert.equal(verifyChallengeSignature(pending.nonce, signature, keypair.publicKey(), 'token'), true);
 
   // Replaying the same (jobId, signer) after consumption must fail closed:
   // no challenge left to redeem, even though the signature itself is still valid.

@@ -139,12 +139,12 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
   // Challenge holen, lokal signieren, gegen das Token tauschen. Mit Zeitlimit, damit ein
   // haengender Server die Ansicht nicht dauerhaft blockiert.
   // Challenge holen und lokal signieren: Besitznachweis fuer Token und Ablehnen.
-  const signFreshChallenge = useCallback(async (secret, purpose = '') => {
+  const signFreshChallenge = useCallback(async (secret, purpose) => {
     const { challenge } = await withTimeout(getMultisigJobChallenge(jobId, currentPublicKey));
     return signMultisigJobChallenge(secret, challenge, purpose);
   }, [jobId, currentPublicKey]);
   const requestToken = useCallback(async (secret) => (
-    withTimeout(getMultisigJobAccessToken(jobId, currentPublicKey, await signFreshChallenge(secret)))
+    withTimeout(getMultisigJobAccessToken(jobId, currentPublicKey, await signFreshChallenge(secret, 'token')))
   ), [jobId, currentPublicKey, signFreshChallenge]);
 
   // Token aus Prop, URL/Speicher, schon geholt oder per Challenge mit gemerktem Secret.

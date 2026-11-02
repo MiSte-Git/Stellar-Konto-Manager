@@ -114,18 +114,23 @@ function consumeChallenge(string $jobId, string $signerPublicKey): ?array {
 
 /**
  * Verifies that $signatureB64 is a valid ed25519 signature by
- * $signerPublicKey over the raw bytes of $nonceB64. Never throws - any
- * malformed base64/signature/public key is treated as an invalid signature.
+ * $signerPublicKey over "skm:<purpose>:" plus the raw nonce bytes. Never
+ * throws - any malformed base64/signature/public key is treated as an invalid
+ * signature.
  */
-// $purpose bindet die Signatur an eine Aktion: signiert wird dann "skm:<purpose>:" plus
-// Nonce statt nur der Nonce. Ohne $purpose wie bisher (Token). So kann eine Signatur fuer
-// das Token nie als Ablehnung gelten und umgekehrt. Gleich in services/challengeStore.js.
-function verifyChallengeSignature(string $nonceB64, string $signatureB64, string $signerPublicKey, string $purpose = ''): bool {
+// $purpose bindet die Signatur an eine Aktion (token, decline) und ist Pflicht: Ohne
+// Praefix waere die Nachricht eine rohe 32-Byte-Nonce, gleich lang wie ein Transaktions-
+// Hash. Ein manipuliertes Backend koennte sonst einen Tx-Hash als Challenge schicken und
+// eine gueltige Transaktions-Signatur einsammeln. Ohne $purpose ist keine Nachricht
+// gueltig, eine Signatur fuer das Token gilt nie als Ablehnung und umgekehrt.
+// Gleich in services/challengeStore.js und frontend/src/utils/multisigApi.js.
+function verifyChallengeSignature(string $nonceB64, string $signatureB64, string $signerPublicKey, string $purpose): bool {
     try {
+        if ($purpose === '') return false;
         $nonce = base64_decode($nonceB64, true);
         $signature = base64_decode($signatureB64, true);
         if ($nonce === false || $signature === false || $nonce === '' || $signature === '') return false;
-        $data = $purpose !== '' ? 'skm:' . $purpose . ':' . $nonce : $nonce;
+        $data = 'skm:' . $purpose . ':' . $nonce;
         $kp = KeyPair::fromAccountId($signerPublicKey);
         return $kp->verifySignature($signature, $data);
     } catch (\Throwable $e) {

@@ -667,7 +667,7 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/challe
 
 // POST /api/multisig/jobs/:id/token - issues a job's access token to a caller
 // who proves BOTH that they hold the private key for the claimed signer
-// public key (a valid signature over the nonce obtained from /challenge
+// public key (a valid signature over "skm:token:" plus the nonce from /challenge
 // above, checked first and consumed regardless of outcome so it can never be
 // replayed) AND - via the account's real, live signer list, never the stored
 // job.signers snapshot - that this public key is an active signer (weight > 0)
@@ -693,7 +693,7 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/token'
         return sendError('server_error', null, 500);
     }
     if ($pending === null) return sendJson(['ok' => false, 'error' => 'challenge_missing_or_expired'], 400);
-    if (!verifyChallengeSignature($pending['nonce'], $signature, $signerPk)) {
+    if (!verifyChallengeSignature($pending['nonce'], $signature, $signerPk, 'token')) {
         return sendJson(['ok' => false, 'error' => 'invalid_signature'], 403);
     }
 

@@ -8,14 +8,26 @@ const nonce = Buffer.from('0123456789abcdef0123456789abcdef');
 const challenge = nonce.toString('base64');
 
 describe('signMultisigJobChallenge', () => {
-  it('signiert ohne Zweck die Nonce allein (Token)', () => {
-    const sig = Buffer.from(signMultisigJobChallenge(kp.secret(), challenge), 'base64');
-    expect(kp.verify(nonce, sig)).toBe(true);
+  it('signiert fuer das Token skm:token: plus Nonce, nie die Nonce allein', () => {
+    const sig = Buffer.from(signMultisigJobChallenge(kp.secret(), challenge, 'token'), 'base64');
+    expect(kp.verify(Buffer.concat([Buffer.from('skm:token:'), nonce]), sig)).toBe(true);
+    expect(kp.verify(nonce, sig)).toBe(false);
   });
 
   it('bindet die Signatur mit Zweck an die Aktion', () => {
     const sig = Buffer.from(signMultisigJobChallenge(kp.secret(), challenge, 'decline'), 'base64');
     expect(kp.verify(Buffer.concat([Buffer.from('skm:decline:'), nonce]), sig)).toBe(true);
+    expect(kp.verify(Buffer.concat([Buffer.from('skm:token:'), nonce]), sig)).toBe(false);
     expect(kp.verify(nonce, sig)).toBe(false);
+  });
+
+  it('wirft ohne oder mit leerem Zweck', () => {
+    expect(() => signMultisigJobChallenge(kp.secret(), challenge)).toThrow(/invalid_challenge_purpose/);
+    expect(() => signMultisigJobChallenge(kp.secret(), challenge, '')).toThrow(/invalid_challenge_purpose/);
+  });
+
+  it('wirft bei unbekanntem Zweck', () => {
+    expect(() => signMultisigJobChallenge(kp.secret(), challenge, 'tx')).toThrow(/invalid_challenge_purpose/);
+    expect(() => signMultisigJobChallenge(kp.secret(), challenge, 'Token')).toThrow(/invalid_challenge_purpose/);
   });
 });

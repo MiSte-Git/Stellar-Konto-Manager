@@ -828,9 +828,9 @@ app.post('/api/multisig/jobs/:id/challenge', (req, res) => {
 });
 
 // Issues a job's access token to a caller who proves BOTH that they hold the
-// private key for the claimed signer public key (a valid signature over the
-// nonce obtained from /challenge above, checked first and consumed regardless
-// of outcome so it can never be replayed) AND - via the account's real, live
+// private key for the claimed signer public key (a valid signature over
+// `skm:token:` plus the nonce from /challenge above, checked first and consumed
+// regardless of outcome so it can never be replayed) AND - via the account's real, live
 // signer list, never the client-supplied job.signers snapshot - that this
 // public key is an active signer (weight > 0) of the job's account. This is
 // the only way to obtain a job's token now that the list endpoint no longer
@@ -849,7 +849,7 @@ app.post('/api/multisig/jobs/:id/token', async (req, res) => {
 
     const pending = consumeChallenge(id, signerPk);
     if (!pending) return res.status(400).json({ ok: false, error: 'challenge_missing_or_expired' });
-    if (!verifyChallengeSignature(pending.nonce, signature, signerPk)) {
+    if (!verifyChallengeSignature(pending.nonce, signature, signerPk, 'token')) {
       return res.status(403).json({ ok: false, error: 'invalid_signature' });
     }
 

@@ -32,8 +32,11 @@ function check(string $description, bool $condition): void {
     }
 }
 
-function signNonce(KeyPair $keypair, string $challengeB64): string {
-    return base64_encode($keypair->sign(base64_decode($challengeB64, true)));
+// Signiert wie das Frontend: "skm:<purpose>:" plus Nonce. $purpose null signiert die
+// rohe Nonce (altes Format, muss abgelehnt werden).
+function signNonce(KeyPair $keypair, string $challengeB64, ?string $purpose = 'token'): string {
+    $nonce = base64_decode($challengeB64, true);
+    return base64_encode($keypair->sign($purpose === null ? $nonce : 'skm:' . $purpose . ':' . $nonce));
 }
 
 // --- createChallenge ---------------------------------------------------
@@ -76,7 +79,7 @@ $c5 = createChallenge('job-5', $kp5->getAccountId());
 $sig5 = signNonce($kp5, $c5['challenge']);
 check(
     'verifyChallengeSignature accepts a genuine signature from the claimed keypair',
-    verifyChallengeSignature($c5['challenge'], $sig5, $kp5->getAccountId()) === true
+    verifyChallengeSignature($c5['challenge'], $sig5, $kp5->getAccountId(), 'token') === true
 );
 
 // --- verifyChallengeSignature: wrong signer -------------------------------
@@ -86,7 +89,7 @@ $c6 = createChallenge('job-6', $owner->getAccountId());
 $sig6 = signNonce($impostor, $c6['challenge']); // signed with the wrong key
 check(
     'verifyChallengeSignature rejects a signature produced by a different keypair',
-    verifyChallengeSignature($c6['challenge'], $sig6, $owner->getAccountId()) === false
+    verifyChallengeSignature($c6['challenge'], $sig6, $owner->getAccountId(), 'token') === false
 );
 
 // --- verifyChallengeSignature: tampered nonce -----------------------------
@@ -96,14 +99,42 @@ $sig7 = signNonce($kp7, $c7['challenge']);
 $tamperedChallenge = base64_encode('completely different 32 byte value!!');
 check(
     'verifyChallengeSignature rejects a signature over tampered nonce data',
-    verifyChallengeSignature($tamperedChallenge, $sig7, $kp7->getAccountId()) === false
+    verifyChallengeSignature($tamperedChallenge, $sig7, $kp7->getAccountId(), 'token') === false
 );
+
+// --- Zweckbindung: Rohsignatur, leerer Zweck, token vs. decline ------------
+$kp9 = KeyPair::random();
+$c9 = createChallenge('job-9', $kp9->getAccountId())['challenge'];
+$raw9 = signNonce($kp9, $c9, null);
+check(
+    'verifyChallengeSignature rejects the raw nonce signature (no purpose prefix)',
+    verifyChallengeSignature($c9, $raw9, $kp9->getAccountId(), 'token') === false
+        && verifyChallengeSignature($c9, $raw9, $kp9->getAccountId(), 'decline') === false
+);
+check(
+    'verifyChallengeSignature with empty purpose is always false',
+    verifyChallengeSignature($c9, $raw9, $kp9->getAccountId(), '') === false
+        && verifyChallengeSignature($c9, signNonce($kp9, $c9, ''), $kp9->getAccountId(), '') === false
+);
+check(
+    'verifyChallengeSignature keeps token and decline signatures apart',
+    verifyChallengeSignature($c9, signNonce($kp9, $c9, 'decline'), $kp9->getAccountId(), 'token') === false
+        && verifyChallengeSignature($c9, signNonce($kp9, $c9, 'token'), $kp9->getAccountId(), 'decline') === false
+        && verifyChallengeSignature($c9, signNonce($kp9, $c9, 'decline'), $kp9->getAccountId(), 'decline') === true
+);
+$noPurpose = false;
+try {
+    verifyChallengeSignature($c9, $raw9, $kp9->getAccountId());
+} catch (\ArgumentCountError $e) {
+    $noPurpose = true;
+}
+check('verifyChallengeSignature cannot be called without purpose', $noPurpose);
 
 // --- verifyChallengeSignature: never throws on garbage --------------------
 $garbageOk = true;
 try {
-    if (verifyChallengeSignature('not-valid-base64!!', 'also-not-base64!!', 'not-a-real-key') !== false) $garbageOk = false;
-    if (verifyChallengeSignature('', '', '') !== false) $garbageOk = false;
+    if (verifyChallengeSignature('not-valid-base64!!', 'also-not-base64!!', 'not-a-real-key', 'token') !== false) $garbageOk = false;
+    if (verifyChallengeSignature('', '', '', '') !== false) $garbageOk = false;
 } catch (\Throwable $e) {
     $garbageOk = false;
 }
@@ -118,7 +149,7 @@ $pending8 = consumeChallenge($jobId8, $kp8->getAccountId());
 check('end-to-end: challenge is still pending before redemption', $pending8 !== null);
 check(
     'end-to-end: verifyChallengeSignature succeeds against the consumed nonce',
-    $pending8 !== null && verifyChallengeSignature($pending8['nonce'], $sig8, $kp8->getAccountId()) === true
+    $pending8 !== null && verifyChallengeSignature($pending8['nonce'], $sig8, $kp8->getAccountId(), 'token') === true
 );
 check(
     'end-to-end: replaying the same (jobId, signer) after consumption fails closed',

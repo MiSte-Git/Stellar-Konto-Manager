@@ -161,7 +161,22 @@ try {
 
     $nonce = challengeFor('offen', $b);
     $res = request('POST', BASE_URL . '/offen/decline', [], ['signer' => $b->getAccountId(), 'signature' => base64_encode($b->sign($nonce))]);
-    check('Token-Signatur (ohne Zweck) gilt nicht als Ablehnung -> 403', $res['status'] === 403 && ($res['body']['error'] ?? '') === 'invalid_signature');
+    check('Rohsignatur der Nonce gilt nicht als Ablehnung -> 403', $res['status'] === 403 && ($res['body']['error'] ?? '') === 'invalid_signature');
+    $nonce = challengeFor('offen', $b);
+    $res = request('POST', BASE_URL . '/offen/decline', [], ['signer' => $b->getAccountId(), 'signature' => base64_encode($b->sign('skm:token:' . $nonce))]);
+    check('Token-Signatur gilt nicht als Ablehnung -> 403', $res['status'] === 403 && ($res['body']['error'] ?? '') === 'invalid_signature');
+
+    // Token-Endpunkt: nur "skm:token:" plus Nonce ist gueltig.
+    $tokenWith = function (string $prefix) use ($b): array {
+        $nonce = challengeFor('offen', $b);
+        return request('POST', BASE_URL . '/offen/token', [], ['signer' => $b->getAccountId(), 'signature' => base64_encode($b->sign($prefix . $nonce))]);
+    };
+    $res = $tokenWith('skm:token:');
+    check('Token mit skm:token: -> 200 und Token', $res['status'] === 200 && ($res['body']['accessToken'] ?? '') === 'tok-offen');
+    $res = $tokenWith('');
+    check('Token mit Rohsignatur der Nonce -> 403 invalid_signature', $res['status'] === 403 && ($res['body']['error'] ?? '') === 'invalid_signature');
+    $res = $tokenWith('skm:decline:');
+    check('Token mit decline-Signatur -> 403 invalid_signature', $res['status'] === 403 && ($res['body']['error'] ?? '') === 'invalid_signature');
     $nonce = challengeFor('offen', $b);
     $sig = base64_encode($b->sign('skm:decline:' . $nonce));
     $res = request('POST', BASE_URL . '/signiert/decline', [], ['signer' => $b->getAccountId(), 'signature' => $sig]);

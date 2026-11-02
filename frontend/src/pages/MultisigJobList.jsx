@@ -151,7 +151,7 @@ function MultisigJobList({ onBack, publicKey, onOpenDetail, refreshKey = 0 }) {
     for (const [index, job] of selectedShown.entries()) {
       try {
         const { challenge } = await getMultisigJobChallenge(job.id, accountId);
-        const token = await getMultisigJobAccessToken(job.id, accountId, signMultisigJobChallenge(kp.secret(), challenge));
+        const token = await getMultisigJobAccessToken(job.id, accountId, signMultisigJobChallenge(kp.secret(), challenge, 'token'));
         await deleteMultisigJob(job.id, token);
         deleted += 1;
       } catch (e) {

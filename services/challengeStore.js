@@ -64,19 +64,23 @@ function consumeChallenge(jobId, signerPublicKey) {
 
 /**
  * Verifies that `signatureB64` is a valid ed25519 signature by
- * `signerPublicKey` over the raw bytes of `nonceB64`. Never throws - any
- * malformed base64/signature/public key is treated as an invalid signature.
+ * `signerPublicKey` over `skm:<purpose>:` plus the raw nonce bytes. Never
+ * throws - any malformed base64/signature/public key is treated as an invalid
+ * signature.
  */
-// purpose bindet die Signatur an eine Aktion: signiert wird dann `skm:<purpose>:` plus
-// Nonce statt nur der Nonce. Ohne purpose wie bisher (Token). So kann eine Signatur fuer
-// das Token nie als Ablehnung gelten und umgekehrt. Gleich in api/challengeStore.php.
-function challengeMessage(nonceB64, purpose = '') {
+// purpose bindet die Signatur an eine Aktion (token, decline) und ist Pflicht: Ohne
+// Praefix waere die Nachricht eine rohe 32-Byte-Nonce, gleich lang wie ein Transaktions-
+// Hash. Ein manipuliertes Backend koennte sonst einen Tx-Hash als Challenge schicken und
+// eine gueltige Transaktions-Signatur einsammeln. Ohne purpose ist keine Nachricht
+// gueltig, eine Signatur fuer das Token gilt nie als Ablehnung und umgekehrt.
+// Gleich in api/challengeStore.php und frontend/src/utils/multisigApi.js.
+function challengeMessage(nonceB64, purpose) {
   const nonce = Buffer.from(String(nonceB64 || ''), 'base64');
-  if (!nonce.length) return nonce;
-  return purpose ? Buffer.concat([Buffer.from(`skm:${purpose}:`, 'utf8'), nonce]) : nonce;
+  if (!nonce.length || typeof purpose !== 'string' || !purpose) return Buffer.alloc(0);
+  return Buffer.concat([Buffer.from(`skm:${purpose}:`, 'utf8'), nonce]);
 }
 
-function verifyChallengeSignature(nonceB64, signatureB64, signerPublicKey, purpose = '') {
+function verifyChallengeSignature(nonceB64, signatureB64, signerPublicKey, purpose) {
   try {
     const keypair = Keypair.fromPublicKey(signerPublicKey);
     const data = challengeMessage(nonceB64, purpose);

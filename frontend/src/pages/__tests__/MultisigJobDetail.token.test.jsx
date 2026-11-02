@@ -20,7 +20,7 @@ vi.mock('../../utils/multisigApi.js', async (importOriginal) => ({
   ...(await importOriginal()),
   getPendingMultisigJob: hoisted.getJob,
   getMultisigJobChallenge: hoisted.challenge,
-  signMultisigJobChallenge: () => 'signature',
+  signMultisigJobChallenge: (_secret, _challenge, purpose) => `signature:${purpose}`,
   getMultisigJobAccessToken: hoisted.accessToken,
 }));
 
@@ -80,7 +80,7 @@ describe('MultisigJobDetail: Zugriffstoken', () => {
       renderDetail({ jobId: 'd-reload', currentPublicKey: SIGNER });
       await waitFor(() => expect(hoisted.getJob).toHaveBeenCalledWith('d-reload', 'tok-challenge'));
       expect(hoisted.challenge).toHaveBeenCalledWith('d-reload', SIGNER);
-      expect(hoisted.accessToken).toHaveBeenCalledWith('d-reload', SIGNER, 'signature');
+      expect(hoisted.accessToken).toHaveBeenCalledWith('d-reload', SIGNER, 'signature:token');
     });
 
     const OTHER_SECRET = 'SBFKGXZFIZJ5U2RZTPBZ3EUCKQQGT5APKWAHGTQCJQSLD4CXIIHOVYVO';
@@ -102,7 +102,7 @@ describe('MultisigJobDetail: Zugriffstoken', () => {
       fireEvent.click(openButton());
       await waitFor(() => expect(hoisted.getJob).toHaveBeenCalledWith('d-reload', 'tok-challenge'));
       expect(hoisted.challenge).toHaveBeenCalledWith('d-reload', SIGNER);
-      expect(hoisted.accessToken).toHaveBeenCalledWith('d-reload', SIGNER, 'signature');
+      expect(hoisted.accessToken).toHaveBeenCalledWith('d-reload', SIGNER, 'signature:token');
       expect(hoisted.remember).not.toHaveBeenCalled();
       expect(screen.queryByTestId('job-unlock')).toBeNull();
     });
