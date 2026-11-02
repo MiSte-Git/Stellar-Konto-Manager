@@ -327,7 +327,7 @@ export default function WalletHome({ publicKey, muxedAddress, onAction, onOpenRo
                 </dd>
               </div>
               <div>
-                <dt className="text-xs text-gray-500 dark:text-gray-400" title={t('wallet:home.reservedHint', 'Mindestreserve des Netzwerks (pro Token-Freigabe, Angebot oder Signer) plus XLM in offenen Verkaufsangeboten. Dieser Betrag kann nicht gesendet werden.')}>
+                <dt className="text-xs text-gray-500 dark:text-gray-400" title={t('wallet:home.reservedHint', 'Mindestreserve des Netzwerks (pro Trustline, Angebot oder Signer) plus XLM in offenen Verkaufsangeboten. Dieser Betrag kann nicht gesendet werden.')}>
                   {t('wallet:home.reserved', 'Reserviert')}
                   <span aria-hidden="true" className="ml-1 cursor-help text-gray-400">ⓘ</span>
                 </dt>
@@ -379,7 +379,7 @@ export default function WalletHome({ publicKey, muxedAddress, onAction, onOpenRo
               onClick={() => onAction?.('listAll')}
               className="rounded-md border-0 bg-transparent px-2 py-1 text-xs font-medium text-blue-700 hover:bg-blue-50 hover:text-blue-800 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-blue-300 dark:hover:bg-gray-700 dark:hover:text-blue-200"
             >
-              {t('wallet:home.manageTrustlines', 'Token-Freigaben verwalten')}
+              {t('wallet:home.manageTrustlines', 'Trustlines verwalten')}
             </button>
           </div>
           {!assetsOpen && (
@@ -432,7 +432,7 @@ export default function WalletHome({ publicKey, muxedAddress, onAction, onOpenRo
           </ul>
           {summary.assets.length === 0 && (
             <p className="border-t border-gray-100 px-5 py-3 text-xs text-gray-500 dark:border-gray-700/70 dark:text-gray-400">
-              {t('wallet:home.noTrustlines', 'Noch keine Token-Freigaben. Um andere Token zu halten, brauchst du zuerst eine Freigabe (Trustline).')}
+              {t('wallet:home.noTrustlines', 'Noch keine Trustlines. Um andere Token zu halten, brauchst du zuerst eine Trustline dafür.')}
             </p>
           )}
           <p className="border-t border-gray-100 bg-gray-50 px-5 py-2.5 text-xs text-gray-500 dark:border-gray-700/70 dark:bg-gray-900/40 dark:text-gray-400">

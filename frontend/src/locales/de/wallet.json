@@ -17,7 +17,7 @@
     "refresh": "Aktualisieren",
     "available": "Verfügbar",
     "reserved": "Reserviert",
-    "reservedHint": "Mindestreserve des Netzwerks (pro Token-Freigabe, Angebot oder Signer) plus XLM in offenen Verkaufsangeboten. Dieser Betrag kann nicht gesendet werden.",
+    "reservedHint": "Mindestreserve des Netzwerks (pro Trustline, Angebot oder Signer) plus XLM in offenen Verkaufsangeboten. Dieser Betrag kann nicht gesendet werden.",
     "muxedNote": "Eine M-Adresse hat kein eigenes Guthaben. Eingänge werden über die Muxed-ID dem G-Konto zugeordnet.",
     "loadError": "Kontodaten konnten nicht geladen werden.",
     "actions": {
@@ -31,11 +31,11 @@
       "identityHint": "Senden wechselt zuerst zum Basiskonto. Tauschen läuft direkt über das Basiskonto."
     },
     "assets": "Assets",
-    "manageTrustlines": "Token-Freigaben verwalten",
+    "manageTrustlines": "Trustlines verwalten",
     "poolShares": "Liquiditätspool-Anteile",
     "pool": "Pool",
     "issuer": "Herausgeber",
-    "noTrustlines": "Noch keine Token-Freigaben. Um andere Token zu halten, brauchst du zuerst eine Freigabe (Trustline).",
+    "noTrustlines": "Noch keine Trustlines. Um andere Token zu halten, brauchst du zuerst eine Trustline dafür.",
     "assetsCollapsed": "XLM und {{count}} Token. Zum Anzeigen aufklappen.",
     "tokenNote": "Ein Gegenwert wird nur für XLM angezeigt. SKM bewertet keine Token und trifft keine Aussage darüber, ob ein Token echt ist.",
     "notFound": {
@@ -69,7 +69,7 @@
     "copy": "Adresse kopieren",
     "copied": "Kopiert",
     "hintCompare": "Lass den Absender die ersten und letzten 8 Zeichen der Adresse prüfen, sie sind fett markiert. Betrüger nutzen gezielt Adressen, die am Anfang und Ende ähnlich aussehen.",
-    "hintTrustline": "Andere Token als XLM kannst du erst empfangen, wenn du eine Token-Freigabe (Trustline) dafür hast.",
+    "hintTrustline": "Andere Token als XLM kannst du erst empfangen, wenn du eine Trustline dafür hast.",
     "hintActivate": "Ein neues Konto wird erst mit einer ersten Einzahlung von mindestens 1 XLM aktiviert.",
     "hintMuxed": "Zahlungen an die M-Adresse landen auf deinem Basiskonto und sind mit der Muxed-ID gekennzeichnet. Nicht jede Wallet oder Börse unterstützt M-Adressen.",
     "request": {

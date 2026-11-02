@@ -66,7 +66,7 @@ describe('AppLayout / Sidebar', () => {
   it('folgt der aktiven Main-Ansicht (inkl. Unteransichten)', () => {
     renderLayout();
     act(() => publishActiveMainView('deleteByIssuer'));
-    expect(desktopNav().getByRole('button', { name: 'Meine Token-Freigaben' })).toHaveAttribute('aria-current', 'page');
+    expect(desktopNav().getByRole('button', { name: 'Meine Trustlines' })).toHaveAttribute('aria-current', 'page');
     expect(desktopNav().getByRole('button', { name: 'Wallet' })).not.toHaveAttribute('aria-current');
   });
 

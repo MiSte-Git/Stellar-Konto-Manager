@@ -40,7 +40,7 @@ function renderPage(props) {
   );
 }
 
-const HINT_TEXT = 'Dies ist der Gesamtsaldo des zugrundeliegenden G-Kontos, nicht nur dieser Unteradresse. Unteradressen haben kein eigenes, getrenntes Guthaben.';
+const HINT_TEXT = 'Dies ist der Gesamtsaldo des zugrundeliegenden G-Kontos, nicht nur dieser M-Adresse. M-Adressen haben kein eigenes, getrenntes Guthaben.';
 
 beforeEach(() => {
   vi.clearAllMocks();

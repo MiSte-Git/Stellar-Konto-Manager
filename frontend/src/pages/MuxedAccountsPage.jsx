@@ -190,11 +190,11 @@ export default function MuxedAccountsPage({ publicKey }) {
     }
     try {
       exportMuxedCsv(publicKey, t('common:muxed.export.filename', 'muxed_accounts.csv'), netLabel);
-      setSuccess(t('common:muxed.export.success', 'Unteradressen erfolgreich exportiert.'));
+      setSuccess(t('common:muxed.export.success', 'M-Adressen erfolgreich exportiert.'));
       setError('');
     } catch (e) {
       DBG.error('exportMuxedCsv failed', e);
-      setError(t('common:muxed.export.failed', 'Fehler beim Export der Unteradressen.'));
+      setError(t('common:muxed.export.failed', 'Fehler beim Export der M-Adressen.'));
     }
   }, [publicKey, netLabel, t]);
 

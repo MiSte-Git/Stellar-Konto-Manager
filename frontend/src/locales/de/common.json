@@ -31,7 +31,7 @@
       "settingsHint": "Explorer kannst du in den Einstellungen bearbeiten."
     },
     "identityMode": {
-      "totalBalanceHint": "Dies ist der Gesamtsaldo des zugrundeliegenden G-Kontos, nicht nur dieser Unteradresse. Unteradressen haben kein eigenes, getrenntes Guthaben."
+      "totalBalanceHint": "Dies ist der Gesamtsaldo des zugrundeliegenden G-Kontos, nicht nur dieser M-Adresse. M-Adressen haben kein eigenes, getrenntes Guthaben."
     },
     "noPublicKey": "Bitte gib zuerst einen Public Key ein.",
     "payments": {
@@ -514,23 +514,23 @@
   },
   "muxed": {
     "seo": {
-      "title": "Unteradresse erstellen/verwalten",
+      "title": "M-Adresse erstellen/verwalten",
       "description": "Muxed-Adress-Aliase (M...) für ein Stellar-Konto erstellen und verwalten. IDs generieren, Labels/Notizen hinzufügen, CSV exportieren/importieren."
     },
-    "title": "Unteradresse erstellen/verwalten",
+    "title": "M-Adresse erstellen/verwalten",
     "explainer": "Erzeuge Alias-Adressen (M...) mit eigener Muxed-ID für ein bestehendes Konto. Die Alias-Adresse verweist immer auf dasselbe Konto.",
     "infoButtonLabel": "Info",
     "info": {
-      "title": "Was ist eine Unteradresse?",
-      "intro1": "Eine Unteradresse kombiniert eine normale Konto‑Adresse (G‑Adresse) mit einer zusätzlichen 64‑Bit‑Muxed‑ID.",
+      "title": "Was ist eine M-Adresse (Muxed Account)?",
+      "intro1": "Eine M-Adresse kombiniert eine normale Konto‑Adresse (G‑Adresse) mit einer zusätzlichen 64‑Bit‑Muxed‑ID.",
       "intro2": "Technisch ist sie ein Alias, der immer auf dasselbe Basis‑Konto zeigt, aber durch die ID eindeutig unterscheidbar ist.",
       "purposeTitle": "Zweck und Nutzen",
-      "purposeText": "Unteradressen dienen dazu, viele Zahlungsflüsse unter einer einzigen Stellar‑Adresse eindeutig zuzuordnen – ideal, wenn viele Ein‑/Auszahlungen über ein gemeinsames Hauptkonto laufen, aber jeder Vorgang einer Person, Abteilung oder einem Projekt zugeordnet werden muss.",
-      "examplesTitle": "Beispiele – wofür sind Unteradressen nützlich?",
+      "purposeText": "M-Adressen dienen dazu, viele Zahlungsflüsse unter einer einzigen Stellar‑Adresse eindeutig zuzuordnen – ideal, wenn viele Ein‑/Auszahlungen über ein gemeinsames Hauptkonto laufen, aber jeder Vorgang einer Person, Abteilung oder einem Projekt zugeordnet werden muss.",
+      "examplesTitle": "Beispiele – wofür sind M-Adressen nützlich?",
       "examples": {
         "ex1": "Firmenzahlungen: Jede Mitarbeiterin/jeder Mitarbeiter erhält eine eigene Muxed‑ID, damit Lohnzahlungen eindeutig zugeordnet werden können.",
         "ex2": "Börsen oder Plattformen: Jede/r Benutzer/in erhält eine eigene Muxed‑ID, damit Einzahlungen über ein gemeinsames Wallet automatisch richtig verbucht werden.",
-        "ex3": "Projekte oder Unteradressen: Eine Organisation kann Budgets oder Einnahmen einzelnen Projekten zuordnen.",
+        "ex3": "Projekte oder Kostenstellen: Eine Organisation kann Budgets oder Einnahmen einzelnen Projekten zuordnen.",
         "ex4": "Kundenzuordnung: Eine M‑Adresse pro Kunde; die ID entspricht der Kunden‑ID – Zahlungen sind eindeutig zuordenbar, auch ohne Memo.",
         "ex5": "Dienste ohne Memo: Einzahlungen unterscheiden, wenn der Dienst keine Memos unterstützt.",
         "ex6": "Auszahlungen/Gehaltsläufe: Eine M‑Adresse pro Mitarbeiter/Partner für interne Buchhaltung und Reports.",
@@ -539,18 +539,18 @@
         "ex9": "Multi‑Tenant‑Dienste: Jeder Mandant erhält eine eigene M‑Adresse unter demselben Basiskonto."
       },
       "pageTitle": "Was diese Seite im SKM macht",
-      "pageDesc": "Diese Seite dient zur Verwaltung der Unteradressen deines aktuell gewählten Stellar‑Kontos:",
-      "createTitle": "Neue Unteradressen erstellen",
+      "pageDesc": "Diese Seite dient zur Verwaltung der M-Adressen deines aktuell gewählten Stellar‑Kontos:",
+      "createTitle": "Neue M-Adressen erstellen",
       "createItems": {
         "i1": "Erzeugt neue Muxed‑Adressen (M...) aus deiner Basisadresse (G...).",
         "i2": "Optional mit Label (Name) und Notiz (z. B. Projekt oder Zweck)."
       },
       "importTitle": "Import aus CSV‑Dateien",
       "importItems": {
-        "i1": "Massenanlage von Unteradressen, z. B. aus einer Mitarbeiterliste.",
+        "i1": "Massenanlage von M-Adressen, z. B. aus einer Mitarbeiterliste.",
         "i2": "Liest Spalten muxedId, label, note."
       },
-      "exportTitle": "Export vorhandener Unteradressen",
+      "exportTitle": "Export vorhandener M-Adressen",
       "exportItems": {
         "i1": "Gibt alle gespeicherten Einträge als CSV aus.",
         "i2": "Felder: basePublicKey, muxedId, muxedAddress, label, note, createdAt."
@@ -566,16 +566,16 @@
         "i2": "Auswahl, Löschen sowie Label‑/Notizpflege direkt möglich."
       },
       "shortTitle": "Kurz gesagt",
-      "shortText": "Unteradressen machen dein Stellar‑Konto feingranular und buchbar – ideal für Organisationen, die viele Zahlungen über ein zentrales Konto abwickeln, aber trotzdem jede Transaktion eindeutig zuordnen möchten."
+      "shortText": "M-Adressen machen dein Stellar‑Konto feingranular und buchbar – ideal für Organisationen, die viele Zahlungen über ein zentrales Konto abwickeln, aber trotzdem jede Transaktion eindeutig zuordnen möchten."
     },
     "selectBaseAccount": "Basis-Konto (G-Adresse)",
     "selectPlaceholder": "Bitte Konto auswählen",
     "baseAccountInfo": "Dieses Konto bleibt technisch der Besitzer. Die Muxed-Adresse (M...) zeigt nur auf dieses Konto.",
-    "generateButton": "Unteradresse erstellen",
+    "generateButton": "M-Adresse erstellen",
     "exportButton": "Exportieren",
     "importButton": "Importieren",
-    "listTitle": "Vorhandene Unteradressen",
-    "none": "Keine Unteradressen gespeichert.",
+    "listTitle": "Vorhandene M-Adressen",
+    "none": "Keine M-Adressen gespeichert.",
     "columns": {
       "id": "Muxed-ID",
       "address": "Muxed-Adresse",
@@ -607,8 +607,8 @@
     },
     "export": {
       "filename": "muxed_accounts.csv",
-      "success": "Unteradressen erfolgreich exportiert.",
-      "failed": "Fehler beim Export der Unteradressen."
+      "success": "M-Adressen erfolgreich exportiert.",
+      "failed": "Fehler beim Export der M-Adressen."
     },
     "import": {
       "success": "Importiert: {{imported}} • Übersprungen: {{skipped}} • Fehler: {{errors}}.",
@@ -626,7 +626,7 @@
         "tab": "Tab"
       }
     },
-    "nav": "Unteradressen",
+    "nav": "M-Adressen",
     "error": {
       "noBaseAccount": "Bitte ein bestehendes Konto auswählen.",
       "noId": "Bitte eine Muxed-ID angeben.",
@@ -927,10 +927,10 @@
       "desc": "Eine Föderationsadresse sieht aus wie eine E-Mail. Beispiel: name*domain.com. Diese kurze Adresse zeigt auf eine normale G-Adresse. Das ist einfacher zu merken."
     },
     "addressMuxed": {
-      "title": "Unteradresse",
+      "title": "M-Adresse",
       "original": "Muxed Account",
       "short": "M‑Adresse mit zusätzlicher ID – teilt ein Basiskonto.",
-      "desc": "Eine Unteradresse (M-Adresse, offiziell „Muxed Account\") zeigt auf ein bestehendes Stellar-Konto, hat aber zusätzlich eine eigene Nummer (ID). So kann man z. B. mehrere Personen oder Abteilungen unter derselben G-Adresse unterscheiden. Technisch gehört das Geld weiter dem Hauptkonto."
+      "desc": "Eine M-Adresse (offiziell „Muxed Account\") zeigt auf ein bestehendes Stellar-Konto, hat aber zusätzlich eine eigene Nummer (ID). So kann man z. B. mehrere Personen oder Abteilungen unter derselben G-Adresse unterscheiden. Technisch gehört das Geld weiter dem Hauptkonto."
     },
     "multisig": {
       "title": "Multisig",

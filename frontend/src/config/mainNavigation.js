@@ -101,7 +101,7 @@ export const SIDEBAR_SECTIONS = [
   {
     id: 'trustlines',
     titleKey: 'menu:sections.trustlines',
-    titleFallback: 'Token-Freigaben',
+    titleFallback: 'Trustlines',
     items: [
       { id: 'listAll', kind: 'main', labelKey: 'menu:listAll', icon: 'list', glossaryTerm: 'trustline', activeFor: ['listAll', 'deleteAll', 'deleteByIssuer'] },
       { id: 'compare', kind: 'main', labelKey: 'menu:compareTrustlines', icon: 'compare', glossaryTerm: 'trustline' },

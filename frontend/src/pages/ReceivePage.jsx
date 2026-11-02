@@ -253,7 +253,7 @@ export default function ReceivePage({ publicKey, muxedAddress }) {
           </li>
           <li className="flex gap-2">
             <span aria-hidden="true" className="text-gray-400">•</span>
-            <span>{t('wallet:receive.hintTrustline', 'Andere Token als XLM kannst du erst empfangen, wenn du eine Token-Freigabe (Trustline) dafür hast.')}</span>
+            <span>{t('wallet:receive.hintTrustline', 'Andere Token als XLM kannst du erst empfangen, wenn du eine Trustline dafür hast.')}</span>
           </li>
           <li className="flex gap-2">
             <span aria-hidden="true" className="text-gray-400">•</span>
