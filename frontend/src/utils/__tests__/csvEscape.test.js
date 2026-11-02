@@ -36,7 +36,8 @@ describe('csvEscape (F2 - CSV/spreadsheet formula injection guard)', () => {
   });
 
   it('neutralizes a leading tab and carriage return', () => {
-    expect(csvEscape('\t=1+1', ',')).toBe("'\t=1+1");
+    // Tab im Feld: zusaetzlich gequotet (F1).
+    expect(csvEscape('\t=1+1', ',')).toBe('"\'\t=1+1"');
     expect(csvEscape('\r=1+1', ',')).toBe('"\'\r=1+1"');
   });
 
@@ -57,9 +58,32 @@ describe('csvEscape (F2 - CSV/spreadsheet formula injection guard)', () => {
     expect(csvEscape(undefined, ',')).toBe('');
   });
 
-  it('respects a custom delimiter (e.g. semicolon)', () => {
+  it('quotet Komma, Semikolon und Tab unabhaengig vom Trennzeichen (F1)', () => {
     expect(csvEscape('a;b', ';')).toBe('"a;b"');
-    expect(csvEscape('a,b', ';')).toBe('a,b');
+    expect(csvEscape('a,b', ';')).toBe('"a,b"');
+    expect(csvEscape('a;b', ',')).toBe('"a;b"');
+    expect(csvEscape('a\tb', ',')).toBe('"a\tb"');
+    expect(csvEscape('a\tb', ';')).toBe('"a\tb"');
+  });
+
+  it('quotet eine Formel hinter dem fremden Trennzeichen (F1)', () => {
+    expect(csvEscape('x,=1+1', ';')).toBe('"x,=1+1"');
+    expect(csvEscape('x;=1+1', ',')).toBe('"x;=1+1"');
+  });
+
+  it('erkennt Formeln auch nach fuehrendem Leerraum (V4)', () => {
+    expect(csvEscape(' =1+1', ',')).toBe("' =1+1");
+    expect(csvEscape('  @SUM(1)', ';')).toBe("'  @SUM(1)");
+    expect(csvEscape('\t=1', ';')).toBe('"\'\t=1"');
+    expect(csvEscape(' -3', ',')).toBe("' -3");
+  });
+
+  it('laesst normale Texte und Zahlen unveraendert', () => {
+    expect(csvEscape('Miete Oktober', ';')).toBe('Miete Oktober');
+    expect(csvEscape('12.5000000', ';')).toBe('12.5000000');
+    expect(csvEscape(42, ',')).toBe('42');
+    expect(csvEscape('GABC123', ',')).toBe('GABC123');
+    expect(csvEscape('a = b', ',')).toBe('a = b');
   });
 });
 
@@ -69,8 +93,8 @@ describe('csvLine', () => {
   });
 
   it('setzt Zellen mit dem Trennzeichen in Anfuehrungszeichen', () => {
-    expect(csvLine(['a;b', 'c,d'], ';')).toBe('"a;b";c,d');
-    expect(csvLine(['a;b', 'c,d'], ',')).toBe('a;b,"c,d"');
+    expect(csvLine(['a;b', 'c,d'], ';')).toBe('"a;b";"c,d"');
+    expect(csvLine(['a;b', 'c,d'], ',')).toBe('"a;b","c,d"');
   });
 
   it('behandelt ein Memo als Text, auch wenn es wie eine negative Zahl aussieht', () => {

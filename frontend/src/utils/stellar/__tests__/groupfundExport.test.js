@@ -98,7 +98,7 @@ describe('Groupfund-Export', () => {
     ['+1', "'+1"],
     ['-1', "'-1"],
     ['@SUM(A1)', "'@SUM(A1)"],
-    ['\t=1', "'\t=1"],
+    ['\t=1', `"'\t=1"`],
     ['\r=1', `"'\r=1"`],
     ['a;b', '"a;b"'],
   ])('entschaerft ein Memo %j', (memo, expected) => {
@@ -109,5 +109,10 @@ describe('Groupfund-Export', () => {
   it('laesst nur eigene Betragswerte ungeschuetzt, nicht aehnliche Memos mit Formel', () => {
     expect(groupfundExportToCsv(data({ identifier: { mode: 'memo', memo: '-1.0000000' } }))).toContain('identifier;-1.0000000\n');
     expect(groupfundExportToCsv(data({ identifier: { mode: 'memo', memo: '-1.0000000+1' } }))).toContain("identifier;'-1.0000000+1\n");
+  });
+
+  it('quotet ein Memo mit fremdem Trennzeichen und erkennt Formeln nach Leerraum (F1, V4)', () => {
+    expect(groupfundExportToCsv(data({ identifier: { mode: 'memo', memo: 'x,=1+1' } }))).toContain('identifier;"x,=1+1"\n');
+    expect(groupfundExportToCsv(data({ identifier: { mode: 'memo', memo: ' =1+1' } }))).toContain("identifier;' =1+1\n");
   });
 });

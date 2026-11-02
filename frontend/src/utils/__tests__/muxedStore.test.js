@@ -1,9 +1,10 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   listMuxed,
   addMuxed,
   removeMuxed,
   importMuxedCsvText,
+  exportMuxedCsv,
   getNextMuxedId,
   setNextMuxedId,
 } from '../muxedStore.js';
@@ -83,4 +84,47 @@ describe('persistent next-id counter (Fix a3)', () => {
     expect(getNextMuxedId(BASE_KEY, 'PUBLIC')).toBe('7');
     expect(getNextMuxedId(BASE_KEY, 'TESTNET')).toBe('42');
   });
+});
+
+// F1: Export quotet jetzt jede Zelle mit , ; Tab oder Anfuehrungszeichen, unabhaengig vom
+// Trennzeichen. Der eigene Import muss das unveraendert wieder einlesen.
+describe('CSV Round-Trip Export -> Import (F1)', () => {
+  let exported;
+  beforeEach(() => {
+    exported = null;
+    vi.stubGlobal('Blob', class {
+      constructor(parts) { exported = parts.join(''); }
+    });
+    vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:test');
+    vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {});
+    vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
+  });
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    vi.restoreAllMocks();
+  });
+
+  const entries = [
+    { id: '1', label: 'Miete, Oktober', note: 'Teil A; Teil B' },
+    { id: '2', label: 'Lohn;Bonus', note: 'mit "Zitat", und\tTab' },
+    { id: '3', label: 'Zeile1\nZeile2', note: 'x,=1+1' },
+    { id: '4', label: 'normal', note: '' },
+  ];
+
+  for (const delimiter of [',', ';']) {
+    it(`liest den eigenen Export mit Trennzeichen ${delimiter} unveraendert wieder ein`, () => {
+      // addMuxed baut die Adresse nicht selbst; fuer den Round-Trip zaehlt nur das Feld.
+      for (const e of entries) addMuxed(BASE_KEY, { ...e, address: `addr-${e.id}` }, 'PUBLIC');
+      exportMuxedCsv(BASE_KEY, 'x.csv', 'PUBLIC', delimiter);
+      expect(exported).toContain('"Miete, Oktober"');
+      expect(exported).toContain('"Teil A; Teil B"');
+
+      window.localStorage.clear();
+      window.localStorage.setItem('SKM_NETWORK', 'PUBLIC');
+      const res = importMuxedCsvText(BASE_KEY, exported, 'PUBLIC');
+      expect(res.imported).toBe(entries.length);
+      const rows = listMuxed(BASE_KEY, 'PUBLIC');
+      expect(rows.map(({ id, label, note }) => ({ id, label, note }))).toEqual(entries);
+    });
+  }
 });
