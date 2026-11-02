@@ -127,7 +127,7 @@ try {
     check('Create: abweichende Quelle -> 400 (Szenario K1)', $res['status'] === 400);
     check('Create: gleicher Fehler und Text wie Node', $res['body'] === ['ok' => false, 'error' => 'account_mismatch', 'detail' => 'Transaction source does not match accountId.']);
 
-    $invalid = ['', 'kaputt', 42, paymentTx($victim, 7)->getSourceAccount()->getAccountId(), substr($victim->getAccountId(), 0, -1) . 'A'];
+    $invalid = ['', 'kaputt', 42, paymentTx($victim, 7)->getSourceAccount()->getAccountId(), substr($victim->getAccountId(), 0, -1) . (str_ends_with($victim->getAccountId(), 'A') ? 'B' : 'A')]; // letztes Zeichen garantiert aendern, sonst Flake bei Endung A
     foreach ($invalid as $accountId) {
         $res = post(BASE_URL, ['network' => 'testnet', 'accountId' => $accountId, 'txXdr' => $victimXdr]);
         check('Create: accountId ' . var_export($accountId, true) . ' -> invalid_account', $res['status'] === 400 && ($res['body']['error'] ?? '') === 'invalid_account');

@@ -95,7 +95,10 @@ test('Create: abweichende Quelle wird mit account_mismatch abgelehnt (Szenario K
 
 test('Create: accountId muss eine gueltige G-Adresse sein', async () => {
   const muxed = paymentTx(new MuxedAccount(new Account(victim.publicKey(), '100'), '7'));
-  for (const accountId of ['', 'kaputt', 42, muxed.source, `${victim.publicKey().slice(0, -1)}A`]) {
+  // Letztes Zeichen garantiert aendern, sonst bleibt die Adresse bei Endung A gueltig (Flake).
+  const pk = victim.publicKey();
+  const badChecksum = pk.slice(0, -1) + (pk.endsWith('A') ? 'B' : 'A');
+  for (const accountId of ['', 'kaputt', 42, muxed.source, badChecksum]) {
     const { status, body } = await createJob(accountId, victimTx);
     assert.equal(status, 400, String(accountId));
     assert.equal(body.error, 'invalid_account', String(accountId));
