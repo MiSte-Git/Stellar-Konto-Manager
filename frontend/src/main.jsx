@@ -98,6 +98,7 @@ import DeleteAllTrustlines from './components/DeleteAllTrustlines';
 import DeleteByIssuer from './components/DeleteByIssuer';
 import ConfirmationModal from './components/ConfirmationModal';
 import './index.css'; // Enthält @tailwind + dein echtes Styling
+import { isOpaqueScriptError } from './utils/opaqueScriptError.js';
 import {
   toggleAllTrustlines,
   toggleTrustlineSelection
@@ -710,6 +711,14 @@ function Main() {
   useEffect(() => {
     const previousOnError = window.onerror;
     const handleError = (message, source, lineno, colno, error) => {
+      // Maskierter Fehler eines fremden Skripts (Erweiterung, Blocker): nur loggen, nicht anzeigen.
+      if (isOpaqueScriptError(message, source, lineno, colno, error)) {
+        console.warn('Ignored opaque cross-origin script error', { message });
+        if (typeof previousOnError === 'function') {
+          try { previousOnError(message, source, lineno, colno, error); } catch { /* noop */ }
+        }
+        return true;
+      }
       console.error('Global error:', { message, source, lineno, colno, error });
       setError(`Script error: ${message} at ${source}:${lineno}:${colno}${error ? ' - ' + error.message : ''}`);
       if (typeof previousOnError === 'function') {
