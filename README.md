@@ -94,6 +94,14 @@ Local-first Stellar Wallet & Account Manager: Trustlines, Zahlungen, Muxed Accou
   - Zusätzlich als Fakt laut Horizon (nur Anzeige): aktueller Kurs und ob die Einzahlung damit innerhalb der Preisgrenzen liegt (geprüft wie stellar-core über das tatsächliche Einzahlungsverhältnis, mit den exakten Preisbrüchen aus dem XDR), bzw. bei Abhebungen die aktuell zu erwartenden Beträge gegen die Mindestbeträge.
   - Scheitert der Submit eines Jobs mit LP-Op-Codes (z. B. `op_bad_price`, `op_under_minimum`, `op_trustline_frozen`), zeigt das Job-Detail dieselben Texte wie der direkte Weg (`liquidityErrorKeyFromResultCodes`, `jobSubmitResultCodes` liest die Codes aus beiden Backend-Formen).
 
+### J. Testnet
+SKM funktioniert vollständig im Stellar-Testnet. Damit lässt sich alles gefahrlos mit Test-XLM ausprobieren: Konten anlegen, Zahlungen, Trustlines, Muxed Accounts, Multisig-Konten und -Jobs, Sammelzahlung, Trading und Liquidity Pools.
+- Netz in der App umschalten (Mainnet/Testnet). Multisig-Jobs und Zahlungsentwürfe sind je Netz getrennt.
+- Neue Testnet-Konten werden über Friendbot (Stellar Development Foundation) aktiviert und mit Test-XLM ausgestattet, auch beim Anlegen von Multisig-Konten.
+- Unterschiede zum Mainnet: keine Börsen-Tags (StellarExpert-Abfragen entfallen), Testnet-Daten können von der SDF jederzeit zurückgesetzt werden, Test-XLM haben keinen Wert.
+- Abgrenzung: SKM ist eine Wallet, kein Entwicklerwerkzeug wie Stellar Lab. Beliebige Transaktionen oder XDRs frei zusammenbauen ist nicht vorgesehen.
+- Für Tests und Security-Reviews gilt: Proben nur im Testnet, nie mit Mainnet-Konten (siehe [docs/SECURITY.md](docs/SECURITY.md)).
+
 ## Architekturüberblick
 - Frontend: React + Vite, Ordner `frontend/`.
 - Backend: Node.js/Express, `server.js` im Projekt-Root, lokale Dateiablage.
