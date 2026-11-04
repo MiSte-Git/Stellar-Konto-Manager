@@ -85,7 +85,11 @@
           "submit": "Once enough signatures have been collected, one of the Signers sends the job to the network via SKM (under the “Job ID” menu)."
         },
         "copyJobId": "Copy job ID",
-        "copiedJobId": "Copied"
+        "copiedJobId": "Copied",
+        "signedTitle": "Already signed",
+        "signedItem": "{{signer}} (weight {{weight}}) ✓",
+        "allCollected": "All required signatures have been collected. The job can now be submitted (\"Open job\").",
+        "noNewSignature": "This secret key has already signed the job. A signature from another signer is still missing."
       },
       "sent": {
         "title": "Transaction sent",
@@ -328,7 +332,10 @@
     "deleteTestnet": "Delete testnet jobs",
     "deleteTestnetTitle": "Delete all testnet jobs.",
     "deleteTestnetHint": "This will remove all multisig jobs on the testnet. Please type \"DELETE TESTNET JOBS\" to confirm.",
-    "deleteTestnetConfirm": "Delete testnet jobs"
+    "deleteTestnetConfirm": "Delete testnet jobs",
+    "loadFailed": "The jobs could not be loaded.",
+    "loadFailedNetwork": "No connection to the SKM server. Check your internet connection and reload the page. If an ad or tracking blocker is active, turn it off for this site.",
+    "errorDetail": "Detail: {{detail}}"
   },
   "actions": {
     "createMultisigJob": "Multisig Create a Job"

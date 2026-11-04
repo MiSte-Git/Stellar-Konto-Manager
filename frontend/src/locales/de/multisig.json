@@ -91,7 +91,11 @@
         "progress": "Signaturgewicht: gesammelt {{collected}} von {{required}}.",
         "missingTitle": "Noch fehlende Signer",
         "missingItem": "{{signer}} (Gewicht {{weight}})",
-        "openJob": "Zum Job"
+        "openJob": "Zum Job",
+        "signedTitle": "Bereits signiert",
+        "signedItem": "{{signer}} (Gewicht {{weight}}) ✓",
+        "allCollected": "Alle nötigen Signaturen sind gesammelt. Der Job kann jetzt gesendet werden („Zum Job“).",
+        "noNewSignature": "Dieser Secret Key hat den Job bereits signiert. Es fehlt noch die Signatur eines anderen Signers."
       },
       "sent": {
         "title": "Transaktion gesendet",
@@ -519,7 +523,10 @@
     "hide": "Ausblenden",
     "unhide": "Einblenden",
     "showHidden": "Ausgeblendete anzeigen ({{n}})",
-    "deleteRateLimited": "Der Server hat zu viele Anfragen gemeldet. {{n}} Jobs wurden nicht mehr versucht, bitte in ein paar Minuten erneut löschen."
+    "deleteRateLimited": "Der Server hat zu viele Anfragen gemeldet. {{n}} Jobs wurden nicht mehr versucht, bitte in ein paar Minuten erneut löschen.",
+    "loadFailed": "Die Aufträge konnten nicht geladen werden.",
+    "loadFailedNetwork": "Keine Verbindung zum SKM-Server. Prüfe die Internetverbindung und lade die Seite neu. Falls ein Werbe- oder Tracking-Blocker aktiv ist, für diese Seite ausschalten.",
+    "errorDetail": "Detail: {{detail}}"
   },
   "actions": {
     "createMultisigJob": "Multisig-Job erstellen"

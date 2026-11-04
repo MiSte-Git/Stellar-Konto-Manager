@@ -13,6 +13,14 @@ Options -Indexes
 RewriteEngine On
 RewriteBase __BASE__/
 
+# --- Kanonischer Host ohne www ---
+# Das Frontend ruft die API absolut unter PROD_API_URL (ohne www) auf. Von www.
+# aus waere das ein fremder Origin (CORS blockt, Safari meldet "Load failed"),
+# ausserdem haette www. eigene localStorage-Daten (Netzwerk, Konto, Ausblenden).
+# api/ hat eine eigene .htaccess mit RewriteEngine On, diese Regel gilt dort nicht.
+RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+RewriteRule ^ https://%1%{REQUEST_URI} [R=301,L]
+
 # --- SPA Routing (Vite / React) ---
 # Wenn Datei/Ordner existiert -> direkt ausliefern
 RewriteCond %{REQUEST_FILENAME} -f [OR]

@@ -44,6 +44,7 @@ export default function AssetResultsTable({
   onSelectAsset,
   canAddTrustlineFor,
   onOpenTrustlineModal,
+  trustlineDisabledHint = '',
   trustlineActionLabel,
 }) {
   const { t } = useTranslation(['trading', 'common']);
@@ -159,7 +160,9 @@ export default function AssetResultsTable({
                                 ? 'border-green-300 text-green-800 hover:bg-green-50 dark:border-green-700 dark:text-green-200 dark:hover:bg-green-900'
                                 : 'border-gray-200 text-gray-400 dark:border-gray-800'
                             }`}
-                            title={t('trading:assetSearch.actions.trustlineNext', 'Next step: create trustline from search result')}
+                            title={!canAddTrustlineFor(r) && trustlineDisabledHint
+                              ? trustlineDisabledHint
+                              : t('trading:assetSearch.actions.trustlineNext', 'Next step: create trustline from search result')}
                           >
                             {trustlineActionLabel(r)}
                           </button>

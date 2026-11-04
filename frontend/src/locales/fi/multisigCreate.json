@@ -10,12 +10,12 @@
     "secret": "Säilytä tämä secret key turvallisessa paikassa; älä koskaan jaa sitä kenellekään."
   },
   "generateFirst": "Luo ensin avainpari.",
-  "confirmLowBalance": "XLM:n alkusaldo {bal} on alle suositellun varannon {req} XLM (Signer: {count}). Haluatko jatkaa?",
-  "activated": "Tili on aktivoitu. Siirtoavain: {hash}",
+  "confirmLowBalance": "XLM:n alkusaldo {{bal}} on alle suositellun varannon {{req}} XLM (Signer: {{count}}). Haluatko jatkaa?",
+  "activated": "Tili on aktivoitu. Siirtoavain: {{hash}}",
   "activatedTestnet": "Tili aktivoitiin testnet:na Friendbotin kautta.",
   "alreadyActive": "Tili on jo aktivoitu.",
   "createdNoSigners": "Tili luotu, multisig ei ole määritetty.",
-  "createdAndConfigured": "Tili on luotu ja multisig on määritetty. Hash: {hash}",
+  "createdAndConfigured": "Tili on luotu ja multisig on määritetty. Hash: {{hash}}",
   "info": {
     "more": "Lisätietoja",
     "keysOnPage": {

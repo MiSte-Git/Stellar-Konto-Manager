@@ -377,6 +377,24 @@ export default function AssetSearch() {
     return !!accountId && isSelected && trustlineStatus.state === 'missing' && !trustlineStatus.loading && !isSubmittingTrustline && !pendingAmbiguousSubmission;
   };
 
+  // Trustline-Button in der Ergebnisliste: auch fuer nicht ausgewaehlte Zeilen aktiv. Ein Klick
+  // waehlt das Asset aus, wartet die Trustline-Pruefung ab und oeffnet dann direkt die Bestaetigung
+  // (nur wenn die Trustline fehlt). Ohne geladenes Konto bleibt der Button gesperrt.
+  const canRequestTrustlineFor = (asset) => {
+    if (!accountId || isSubmittingTrustline || pendingAmbiguousSubmission) return false;
+    const isSelected = selectedAsset?.assetCode === asset.assetCode && selectedAsset?.assetIssuer === asset.assetIssuer;
+    return isSelected ? canAddTrustlineFor(asset) : true;
+  };
+  const trustlineIntentRef = useRef(null);
+  const requestTrustlineFromRow = (asset) => {
+    if (canAddTrustlineFor(asset)) {
+      openTrustlineModal(asset);
+      return;
+    }
+    trustlineIntentRef.current = { asset, sawLoading: false };
+    setSelectedAsset(asset);
+  };
+
   const trustlineStatusLabel = () => {
     if (accountStatus.loading) return t('trading:assetSearch.account.loading');
     if (!accountInput) return t('trading:assetSearch.account.missing');
@@ -817,6 +835,19 @@ export default function AssetSearch() {
     return submitTransactionSafely(server, signTransactionWithCollectedSigners(tx, signers));
   };
 
+  useEffect(() => {
+    const intent = trustlineIntentRef.current;
+    if (!intent) return;
+    const same = selectedAsset?.assetCode === intent.asset.assetCode && selectedAsset?.assetIssuer === intent.asset.assetIssuer;
+    if (!same) { trustlineIntentRef.current = null; return; }
+    // Erst nach einer frischen Pruefung entscheiden, nicht auf dem Status des vorher gewaehlten Assets.
+    if (trustlineStatus.loading) { intent.sawLoading = true; return; }
+    if (!intent.sawLoading) return;
+    trustlineIntentRef.current = null;
+    if (trustlineStatus.state === 'missing') openTrustlineModal(selectedAsset);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedAsset, trustlineStatus]);
+
   const openTrustlineModal = (asset) => {
     setSelectedAsset(asset);
     setModalError('');
@@ -1166,8 +1197,9 @@ export default function AssetSearch() {
         sortIndicator={sortIndicator}
         formatTrustlineCount={formatTrustlineCount}
         onSelectAsset={setSelectedAsset}
-        canAddTrustlineFor={canAddTrustlineFor}
-        onOpenTrustlineModal={openTrustlineModal}
+        canAddTrustlineFor={canRequestTrustlineFor}
+        onOpenTrustlineModal={requestTrustlineFromRow}
+        trustlineDisabledHint={!accountId ? t('trading:assetSearch.account.missing') : ''}
         trustlineActionLabel={trustlineActionLabel}
       />
 
@@ -1491,6 +1523,7 @@ export default function AssetSearch() {
           isProcessing={isSubmittingTrustline || isSubmittingSwap || isSubmittingOffer}
           thresholds={accountInfo?.thresholds || null}
           signers={accountInfo?.signers || []}
+          accountId={accountId}
           operationType={modalOperationType}
           requiredThreshold={requiredThreshold}
           account={accountInfo}

@@ -10,12 +10,12 @@
     "secret": "Bewaar deze secret key op een veilige plek; deel hem nooit met anderen."
   },
   "generateFirst": "Genereer alstublieft eerst een sleutelpaar.",
-  "confirmLowBalance": "Het beginsaldo {bal} XLM ligt onder de aanbevolen reserve {req} XLM (Signer: {count}). Wilt u doorgaan?",
-  "activated": "Account is geactiveerd. Hash: {hash}",
+  "confirmLowBalance": "Het beginsaldo {{bal}} XLM ligt onder de aanbevolen reserve {{req}} XLM (Signer: {{count}}). Wilt u doorgaan?",
+  "activated": "Account is geactiveerd. Hash: {{hash}}",
   "activatedTestnet": "Account werd geactiveerd op het testnet via Friendbot.",
   "alreadyActive": "Account is al geactiveerd.",
   "createdNoSigners": "Account aangemaakt, multisig niet geconfigureerd.",
-  "createdAndConfigured": "Account aangemaakt en multisig geconfigureerd. Hash: {hash}",
+  "createdAndConfigured": "Account aangemaakt en multisig geconfigureerd. Hash: {{hash}}",
   "info": {
     "more": "Meer info",
     "keysOnPage": {

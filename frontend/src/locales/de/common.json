@@ -497,7 +497,7 @@
   "activation": {
     "notFound": {
       "title": "Zielkonto nicht aktiv",
-      "message": "Das Zielkonto existiert noch nicht ({address}). Es muss mit mindestens 1 XLM aktiviert werden. Möchtest du das Konto jetzt aktivieren?"
+      "message": "Das Zielkonto existiert noch nicht ({{address}}). Es muss mit mindestens 1 XLM aktiviert werden. Möchtest du das Konto jetzt aktivieren?"
     },
     "actions": {
       "yes": "Ja – Konto aktivieren",
@@ -801,13 +801,13 @@
       "safetyTitle": "Sicherheitswarnungen",
       "highSingleSigner": "Nur ein Signer erreicht die High-Schwelle. Empfehlung: mindestens zwei unabhängige Signer.",
       "medSingleSigner": "Med-Schwelle > 0, aber nur ein Signer vorhanden. Empfehlung: zweiten Signer hinzufügen.",
-    "singleSignerReachesHigh": "Ein einzelner Signer erreicht allein die High-Schwelle und kann das Konto ohne weitere Signaturen verwalten. Empfehlung: High-Schwelle über das grösste Einzelgewicht setzen."
-  },
-  "risk": {
-    "title": "Achtung: Mögliche Selbstaussperrung",
-    "masterDisabled": "Das Master-Gewicht wird auf 0 gesetzt. Der Secret Key dieses Kontos kann danach nichts mehr signieren - das Konto ist nur noch über die zusätzlichen Signer verwaltbar.",
-    "noRedundancy": "Geht ein einzelner Schlüssel verloren, ist die High-Schwelle nicht mehr erreichbar und das Konto kann nicht mehr verwaltet werden (z. B. Signer ändern). Empfehlung: Gewichte/Signer so wählen, dass der Ausfall eines Schlüssels verkraftbar ist.",
-    "acknowledge": "Ich habe das Risiko verstanden und möchte trotzdem speichern."
+      "singleSignerReachesHigh": "Ein einzelner Signer erreicht allein die High-Schwelle und kann das Konto ohne weitere Signaturen verwalten. Empfehlung: High-Schwelle über das grösste Einzelgewicht setzen."
+    },
+    "risk": {
+      "title": "Achtung: Mögliche Selbstaussperrung",
+      "masterDisabled": "Das Master-Gewicht wird auf 0 gesetzt. Der Secret Key dieses Kontos kann danach nichts mehr signieren - das Konto ist nur noch über die zusätzlichen Signer verwaltbar.",
+      "noRedundancy": "Geht ein einzelner Schlüssel verloren, ist die High-Schwelle nicht mehr erreichbar und das Konto kann nicht mehr verwaltet werden (z. B. Signer ändern). Empfehlung: Gewichte/Signer so wählen, dass der Ausfall eines Schlüssels verkraftbar ist.",
+      "acknowledge": "Ich habe das Risiko verstanden und möchte trotzdem speichern."
     },
     "securityGuarantee": {
       "title": "🔒 SKM Sicherheitsgarantie (Multisig)",
@@ -824,7 +824,7 @@
     "signerTypeLink": "lab.stellar.org",
     "reload": "Neu laden",
     "save": "Änderungen speichern",
-  "saveIntro": "Zum Speichern wird eine SetOptions-Transaktion erzeugt, die mit den Secret Keys der Signer signiert werden muss. Wähle, wie signiert wird:",
+    "saveIntro": "Zum Speichern wird eine SetOptions-Transaktion erzeugt, die mit den Secret Keys der Signer signiert werden muss. Wähle, wie signiert wird:",
     "saved": "Änderungen gespeichert. TX: {{hash}}",
     "signers": "Signer (ed25519)",
     "weight": "Gewichtung",

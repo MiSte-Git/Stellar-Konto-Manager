@@ -92,6 +92,14 @@ describe('MultisigJobList: Filter', () => {
     expect(assigned).toBeDisabled();
   });
 
+  it('Netzwerkfehler (Safari: Load failed) zeigt eine verstaendliche Meldung statt des rohen Texts', async () => {
+    window.fetch.mockImplementation(async () => { throw new TypeError('Load failed'); });
+    renderList();
+    const box = await screen.findByTestId('job-list-error');
+    expect(box).toHaveTextContent(i18n.t('multisig:list.loadFailedNetwork'));
+    expect(box).toHaveTextContent('Load failed');
+  });
+
   it('bietet kein Loeschen aller Testnet-Jobs mehr an', async () => {
     renderList();
     await waitFor(() => expect(screen.getByText(/eigen-abgel/)).toBeInTheDocument());

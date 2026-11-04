@@ -7,6 +7,18 @@ import { readHiddenJobIds, writeHiddenJobIds } from '../utils/multisig/hiddenJob
 import { deleteMultisigJob, getMultisigJobAccessToken, getMultisigJobChallenge, signMultisigJobChallenge } from '../utils/multisigApi.js';
 import { getSessionSecret } from '../utils/sessionSecrets.js';
 
+// Eigene Button-Klassen: ohne bg-/px-Klassen greift der globale button-Stil aus index.css
+// (dunkler Hintergrund, grosses Padding) und die Buttons passen nicht zum Rest der App.
+const BTN = 'rounded-sm border border-gray-300 bg-white px-3 py-1 text-sm text-gray-800 hover:bg-gray-50 disabled:opacity-50 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800';
+const BTN_DANGER = 'rounded-sm border border-red-300 bg-white px-3 py-1 text-sm text-red-700 hover:bg-red-50 disabled:opacity-50 dark:border-red-800 dark:bg-gray-900 dark:text-red-200 dark:hover:bg-red-950';
+const BTN_ROW_PRIMARY = 'rounded-sm border border-blue-600 bg-blue-600 px-3 py-1 text-xs font-semibold text-white hover:bg-blue-700 whitespace-nowrap';
+const BTN_ROW_LINK = 'rounded-sm border-0 bg-transparent px-1 py-0.5 text-xs text-gray-600 hover:underline dark:bg-transparent dark:text-gray-300 whitespace-nowrap';
+
+// Netzwerkfehler von fetch: Chrome 'Failed to fetch', Safari/WebKit 'Load failed', Firefox 'NetworkError ...'.
+function isNetworkError(message) {
+  return /failed to fetch|load failed|networkerror|network request failed/i.test(String(message || ''));
+}
+
 function MultisigJobList({ onBack, publicKey, onOpenDetail, refreshKey = 0 }) {
   const { t } = useTranslation(['multisig', 'common']);
   const [jobs, setJobs] = useState([]);
@@ -240,7 +252,7 @@ function MultisigJobList({ onBack, publicKey, onOpenDetail, refreshKey = 0 }) {
         <div className="flex items-center justify-between">
           <h1 className="text-xl font-semibold">{t('multisig:list.title')}</h1>
           <div className="flex gap-2">
-            <button className="px-3 py-1 rounded-sm border" onClick={onBack}>{t('common:option.back', 'Zurück')}</button>
+            <button className={BTN} onClick={onBack}>{t('common:option.back', 'Zurück')}</button>
           </div>
         </div>
         <div className="text-sm text-gray-700 dark:text-gray-200">
@@ -252,9 +264,9 @@ function MultisigJobList({ onBack, publicKey, onOpenDetail, refreshKey = 0 }) {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-          <h1 className="text-xl font-semibold">{t('multisig:list.title')}</h1>
-        <div className="flex gap-2">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h1 className="text-xl font-semibold">{t('multisig:list.title')}</h1>
+        <div className="flex flex-wrap items-center gap-2">
           {accountId && (
             <label className="flex items-center gap-2 text-xs text-gray-700 dark:text-gray-200">
               <input
@@ -276,13 +288,13 @@ function MultisigJobList({ onBack, publicKey, onOpenDetail, refreshKey = 0 }) {
               {t('multisig:list.filter.assigned', 'Auch Aufträge, bei denen ich Signer bin')}
             </label>
           )}
-          <button className="px-3 py-1 rounded-sm border" onClick={onBack}>{t('common:option.back', 'Zurück')}</button>
-          <button className="px-3 py-1 rounded-sm border" onClick={loadJobs} disabled={loading}>{t('common:refresh', 'Refresh')}</button>
-          <button className="px-3 py-1 rounded-sm border" onClick={handleExport} disabled={!jobsToShow || jobsToShow.length === 0 || loading}>
+          <button className={BTN} onClick={onBack}>{t('common:option.back', 'Zurück')}</button>
+          <button className={BTN} onClick={loadJobs} disabled={loading}>{t('common:refresh', 'Refresh')}</button>
+          <button className={BTN} onClick={handleExport} disabled={!jobsToShow || jobsToShow.length === 0 || loading}>
             {t('multisig:list.export', 'Exportieren')}
           </button>
           <button
-            className="px-3 py-1 rounded-sm border border-red-300 text-red-700 dark:text-red-200 disabled:opacity-50"
+            className={BTN_DANGER}
             onClick={() => { void openDeletePanel(); }}
             disabled={!selectedShown.length || loading || deleting}
           >
@@ -349,7 +361,14 @@ function MultisigJobList({ onBack, publicKey, onOpenDetail, refreshKey = 0 }) {
           )}
         </div>
       )}
-      {error && <div className="text-sm text-red-600">{error}</div>}
+      {error && (
+        <div className="text-sm text-red-600 dark:text-red-400" role="alert" data-testid="job-list-error">
+          <div>{isNetworkError(error) ? t('multisig:list.loadFailedNetwork') : t('multisig:list.loadFailed')}</div>
+          {error !== 'multisig.jobs.list_failed' && (
+            <div className="text-xs opacity-80">{t('multisig:list.errorDetail', { detail: error })}</div>
+          )}
+        </div>
+      )}
       {loading && <div className="text-sm text-gray-600">{t('common:common.loading')}</div>}
       {(!jobsToShow || jobsToShow.length === 0) && !loading && (
         <div className="text-sm text-gray-600">{t('multisig:list.empty')}</div>
@@ -403,18 +422,20 @@ function MultisigJobList({ onBack, publicKey, onOpenDetail, refreshKey = 0 }) {
                   </td>
                   <td className="px-2 py-1">{j.createdAt}</td>
                   <td className="px-2 py-1 text-right">
+                    <div className="flex flex-col items-end gap-1">
                     <button
-                      className="text-blue-700 dark:text-blue-200 hover:underline"
+                      className={BTN_ROW_PRIMARY}
                       onClick={() => onOpenDetail(j.id)}
                     >
                       {t('multisig:list.details', 'Details anzeigen')}
                     </button>
                     <button
-                      className="ml-2 text-xs text-gray-600 dark:text-gray-300 hover:underline"
+                      className={BTN_ROW_LINK}
                       onClick={() => toggleHidden(j.id)}
                     >
                       {hiddenIds.has(j.id) ? t('multisig:list.unhide', 'Einblenden') : t('multisig:list.hide', 'Ausblenden')}
                     </button>
+                    </div>
                   </td>
                 </tr>
               ))}

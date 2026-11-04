@@ -19,12 +19,12 @@
   "progress": {
     "title": "Napredak u učenju",
     "saved": "Napredak spremljen.",
-    "starsLabel": "{count} ★",
+    "starsLabel": "{{count}} ★",
     "error": "Napredak nije mogao biti sačuvan.",
     "clearAll": "Izbriši napredak",
     "cleared": "Napredak izbrisan",
     "setStarsGroup": "Dodijeli zvjezdice",
-    "setStars": "Postavite {count} zvjezdica",
+    "setStars": "Postavite {{count}} zvjezdica",
     "completed": "Dovršeno",
     "markComplete": "Označi kao dovršeno",
     "export": "Izvoz",
@@ -54,7 +54,7 @@
   },
   "import": {
     "title": "Uvoz napredak",
-    "summary": "Sažetak: {lessons} lekcija, ukupno {stars} zvjezdica. Metapodaci vježbe: {meta}",
+    "summary": "Sažetak: {{lessons}} lekcija, ukupno {{stars}} zvjezdica. Metapodaci vježbe: {{meta}}",
     "metaYes": "da",
     "metaNo": "ne",
     "createdAt": "Datoteka je stvorena",

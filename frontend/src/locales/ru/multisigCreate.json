@@ -10,12 +10,12 @@
     "secret": "Храните этот secret key в надежном месте; никому его не показывайте."
   },
   "generateFirst": "Пожалуйста, сначала создайте пару ключей.",
-  "confirmLowBalance": "Начальный баланс {bal} XLM ниже рекомендуемого резерва {req} XLM (Signer: {count}). Продолжить?",
-  "activated": "Учетная запись активирована. Хэш: {hash}",
+  "confirmLowBalance": "Начальный баланс {{bal}} XLM ниже рекомендуемого резерва {{req}} XLM (Signer: {{count}}). Продолжить?",
+  "activated": "Учетная запись активирована. Хэш: {{hash}}",
   "activatedTestnet": "Аккаунт был активирован testnet через Friendbot.",
   "alreadyActive": "Аккаунт уже активирован.",
   "createdNoSigners": "Учётная запись создана, multisig не настроен.",
-  "createdAndConfigured": "Учётная запись создана, параметр multisig настроен. Хеш: {hash}",
+  "createdAndConfigured": "Учётная запись создана, параметр multisig настроен. Хеш: {{hash}}",
   "info": {
     "more": "Подробнее",
     "keysOnPage": {

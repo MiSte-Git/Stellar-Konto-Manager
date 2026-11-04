@@ -29,7 +29,36 @@ import { apiUrl } from '../utils/apiBase.js';
 import { resolveFeePerOp } from '../utils/stellar/fees.js';
 import { getMultisigTxTimeout } from '../utils/getMultisigTxTimeout.js';
 import { txHashHex } from '../utils/stellar/txHash.js';
+import { isMultisigAccount } from '../utils/stellar/isMultisigAccount.js';
 // import { refreshSinceCursor } from '../utils/stellar/syncUtils';
+
+// Auswahl fuer Multisig: alle Signaturen lokal sammeln und senden oder nur einen Job anlegen.
+function SignModeChoice({ t, onDirect, onPrepare }) {
+  return (
+    <div className="grid gap-3">
+      <div className="border rounded-sm p-3">
+        <div className="font-semibold mb-1">{t('multisig:confirm.testModeTitle')}</div>
+        <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">{t('multisig:confirm.testModeDescription')}</p>
+        <button
+          onClick={onDirect}
+          className="w-full px-4 py-2 bg-red-600 text-white rounded-sm hover:bg-red-700"
+        >
+          {t('multisig:confirm.testModeButton')}
+        </button>
+      </div>
+      <div className="border rounded-sm p-3">
+        <div className="font-semibold mb-1">{t('multisig:confirm.prepareTitle')}</div>
+        <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">{t('multisig:confirm.prepareDescription')}</p>
+        <button
+          onClick={onPrepare}
+          className="w-full px-4 py-2 rounded-sm border border-blue-200 text-blue-700 dark:text-blue-200 dark:border-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900"
+        >
+          {t('multisig:confirm.prepareButton')}
+        </button>
+      </div>
+    </div>
+  );
+}
 
 function ListTrustlines({
   trustlines,
@@ -74,6 +103,8 @@ function ListTrustlines({
   const [pendingAdd, setPendingAdd] = useState(null);
   const [pendingAction, setPendingAction] = useState(null); // 'delete' | 'add'
   const [preparedTx, setPreparedTx] = useState(null);
+  // Multisig-Konto: vor dem Anlegen waehlen, ob lokal signiert oder ein Job angelegt wird.
+  const [showAddChoice, setShowAddChoice] = useState(false);
   const [accountInfo, setAccountInfo] = useState(null);
   const thresholdsForModal = useMemo(() => accountInfo?.thresholds || null, [accountInfo]);
   const signersForModal = useMemo(() => accountInfo?.signers || [], [accountInfo]);
@@ -234,18 +265,25 @@ function ListTrustlines({
       if (e.key === 'Escape') {
         if (showOverviewModal) setShowOverviewModal(false);
         if (showSecretModal) setShowSecretModal(false);
+        if (showAddChoice) { setShowAddChoice(false); setPendingAdd(null); setPendingAction(null); }
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [showOverviewModal, showSecretModal]);
+  }, [showOverviewModal, showSecretModal, showAddChoice]);
 
-  const handlePrepareMultisig = async () => {
+  // kind 'delete': ausgewaehlte Trustlines loeschen; 'add': Trustline aus pendingAdd anlegen.
+  const handlePrepareMultisig = async (kind = 'delete') => {
+    const isAdd = kind === 'add';
     try {
-      if (deletableOverview.length === 0) {
+      if (isAdd && !pendingAdd) return;
+      if (!isAdd && deletableOverview.length === 0) {
         setErrorMessage(t('common:trustlines.deleteConfirm', 'Ausgewählte Trustlines löschen?'));
         return;
       }
+      const addCode = isAdd ? String(pendingAdd.code ?? '').trim() : '';
+      const addIssuer = isAdd ? String(pendingAdd.issuer ?? '').trim() : '';
+      const addLimit = isAdd ? String(pendingAdd.limit ?? '').trim() : '';
       const net = readStoredNetworkId();
       const server = getHorizonServer(horizonUrlFor(net));
       const account = await server.loadAccount(publicKey);
@@ -255,12 +293,19 @@ function ListTrustlines({
         fee,
         networkPassphrase: passphraseFor(net),
       });
-      deletableOverview.forEach((tl) => {
+      if (isAdd) {
         txb.addOperation(Operation.changeTrust({
-          asset: new Asset(tl.assetCode, tl.assetIssuer),
-          limit: '0',
+          asset: new Asset(addCode, addIssuer),
+          ...(addLimit ? { limit: addLimit } : {}),
         }));
-      });
+      } else {
+        deletableOverview.forEach((tl) => {
+          txb.addOperation(Operation.changeTrust({
+            asset: new Asset(tl.assetCode, tl.assetIssuer),
+            limit: '0',
+          }));
+        });
+      }
       // Multisig-Job: muss so lange gueltig bleiben, bis die anderen Signer signiert haben
       // (Einstellung Multisig-Timeout), nicht nur 60 Sekunden wie beim Direktversand.
       const txTimeout = getMultisigTxTimeout({
@@ -307,13 +352,17 @@ function ListTrustlines({
           subtitle: t('multisig:prepare.subtitle'),
           items: [
             { label: t('publicKey:source', 'Quelle'), value: publicKey },
-            { label: t('trustline:delete'), value: `${deletableOverview.length}` },
+            isAdd
+              ? { label: t('trustline:add.title'), value: `${addCode}:${addIssuer}` }
+              : { label: t('trustline:delete'), value: `${deletableOverview.length}` },
             { label: t('common:networkLabel', 'Netzwerk'), value: net },
             jobId ? { label: t('multisig:detail.idLabel', 'Job-ID'), value: jobId } : null,
           ].filter(Boolean),
         },
       });
       setShowOverviewModal(false);
+      setShowAddChoice(false);
+      if (isAdd) { setPendingAdd(null); setPendingAction(null); }
     } catch (e) {
       setErrorMessage(formatErrorForUi(t, e));
     }
@@ -684,8 +733,8 @@ function ListTrustlines({
       )}
 
       {showOverviewModal && (
-        <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg w-full max-w-3xl max-h-[80vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg w-full max-w-3xl max-h-[80vh] overflow-y-auto overflow-x-hidden">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-semibold text-black dark:text-white">
                 {t('common:option.confirm.action.title', 'Confirm action')}
@@ -695,7 +744,7 @@ function ListTrustlines({
               {t('common:trustlines.deleteConfirm', 'Ausgewählte Trustlines löschen?')}
             </p>
 
-            <table className="min-w-full text-sm mb-4">
+            <table className="w-full text-sm mb-4">
               <thead>
                 <tr>
                   <th className="px-2 py-1 cursor-pointer" onClick={() => handleSortOverview('assetCode')}>
@@ -715,7 +764,7 @@ function ListTrustlines({
                   <tr key={idx}>
                     <td className="px-2 py-1">{tl.assetCode}</td>
                     <td className="px-2 py-1">{balanceFmt.format(Number(tl.assetBalance || 0))}</td>
-                    <td className="px-2 py-1">{tl.assetIssuer}</td>
+                    <td className="px-2 py-1 font-mono text-xs break-all">{tl.assetIssuer}</td>
                     <td className="px-2 py-1">
                       <button
                         className="text-red-600 hover:underline"
@@ -740,32 +789,15 @@ function ListTrustlines({
                   {t('common:option.cancel', 'Abbrechen')}
                 </button>
               </div>
-              <div className="grid gap-3">
-                <div className="border rounded-sm p-3">
-                  <div className="font-semibold mb-1">{t('multisig:confirm.testModeTitle')}</div>
-                  <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">{t('multisig:confirm.testModeDescription')}</p>
-                  <button
-                    onClick={() => {
-                      setShowOverviewModal(false);
-                      setPendingAction('delete');
-                      setShowSecretModal(true);
-                    }}
-                    className="w-full px-4 py-2 bg-red-600 text-white rounded-sm hover:bg-red-700"
-                  >
-                    {t('multisig:confirm.testModeButton')}
-                  </button>
-                </div>
-                <div className="border rounded-sm p-3">
-                  <div className="font-semibold mb-1">{t('multisig:confirm.prepareTitle')}</div>
-                  <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">{t('multisig:confirm.prepareDescription')}</p>
-                  <button
-                    onClick={handlePrepareMultisig}
-                    className="w-full px-4 py-2 rounded-sm border border-blue-200 text-blue-700 dark:text-blue-200 dark:border-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900"
-                  >
-                    {t('multisig:confirm.prepareButton')}
-                  </button>
-                </div>
-              </div>
+              <SignModeChoice
+                t={t}
+                onDirect={() => {
+                  setShowOverviewModal(false);
+                  setPendingAction('delete');
+                  setShowSecretModal(true);
+                }}
+                onPrepare={() => handlePrepareMultisig('delete')}
+              />
             </div>
           </div>
         </div>
@@ -779,10 +811,43 @@ function ListTrustlines({
             setPendingAdd(payload);
             setPendingAction('add');
             setShowAddModal(false);
-            setShowSecretModal(true);
+            if (isMultisigAccount(accountInfo)) setShowAddChoice(true);
+            else setShowSecretModal(true);
           }}
           onCancel={() => { setShowAddModal(false); setPendingAdd(null); setPendingAction(null); }}
         />
+      )}
+
+      {showAddChoice && pendingAdd && (
+        <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg w-full max-w-xl max-h-[80vh] overflow-y-auto">
+            <h2 className="text-xl font-semibold text-black dark:text-white mb-2">
+              {t('trustline:add.title')}
+            </h2>
+            <p className="mb-4 text-sm text-gray-700 dark:text-gray-300 break-all">
+              <span className="font-semibold">{String(pendingAdd.code ?? '').trim()}</span>
+              {' '}
+              <span className="font-mono text-xs">{String(pendingAdd.issuer ?? '').trim()}</span>
+            </p>
+            <div className="flex justify-end mb-3">
+              <button
+                onClick={() => { setShowAddChoice(false); setPendingAdd(null); setPendingAction(null); }}
+                className="px-4 py-2 bg-gray-400 text-black rounded-sm hover:bg-gray-500"
+              >
+                {t('common:option.cancel', 'Abbrechen')}
+              </button>
+            </div>
+            <SignModeChoice
+              t={t}
+              onDirect={() => {
+                setShowAddChoice(false);
+                setPendingAction('add');
+                setShowSecretModal(true);
+              }}
+              onPrepare={() => handlePrepareMultisig('add')}
+            />
+          </div>
+        </div>
       )}
 
       {showSecretModal && (

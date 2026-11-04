@@ -17,12 +17,12 @@
     "secret": "Očuvajte ovu secret key sigurnom; nikada je ne dijelite."
   },
   "generateFirst": "Molimo, prvo generirajte par ključeva.",
-  "confirmLowBalance": "Početni saldo {bal} XLM je ispod preporučene rezerve {req} XLM (Signer: {count}). Nastaviti?",
-  "activated": "Račun je aktiviran. Hash: {hash}",
+  "confirmLowBalance": "Početni saldo {{bal}} XLM je ispod preporučene rezerve {{req}} XLM (Signer: {{count}}). Nastaviti?",
+  "activated": "Račun je aktiviran. Hash: {{hash}}",
   "activatedTestnet": "Račun je aktiviran na testnet putem Friendbota.",
   "alreadyActive": "Korisnički račun je već aktiviran.",
   "createdNoSigners": "Račun je kreiran, multisig nije konfigurisan.",
-  "createdAndConfigured": "Račun je kreiran i multisig je konfigurisan. Hash: {hash}",
+  "createdAndConfigured": "Račun je kreiran i multisig je konfigurisan. Hash: {{hash}}",
   "info": {
     "more": "Više informacija",
     "keysOnPage": {

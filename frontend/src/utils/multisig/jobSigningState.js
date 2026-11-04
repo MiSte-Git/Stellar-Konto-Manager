@@ -24,7 +24,8 @@ export function computeJobSigningState({ accountSigners = [], requiredWeight = 0
     .map((s) => ({ publicKey: signerKey(s), weight: Number(s.weight) }));
   const collected = signers.filter((s) => collectedKeys.has(s.publicKey)).reduce((sum, s) => sum + s.weight, 0);
   const missingSigners = signers.filter((s) => !collectedKeys.has(s.publicKey));
-  return { required: Math.max(0, Number(requiredWeight) || 0), collected, missingSigners };
+  const signedSigners = signers.filter((s) => collectedKeys.has(s.publicKey));
+  return { required: Math.max(0, Number(requiredWeight) || 0), collected, missingSigners, signedSigners };
 }
 
 // Fehlt die Signatur dieses Kontos noch? Selbst berechnet aus signers und collectedSigners,

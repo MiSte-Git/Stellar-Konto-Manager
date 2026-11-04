@@ -19,12 +19,12 @@
   "progress": {
     "title": "Learning progress",
     "saved": "Progress saved.",
-    "starsLabel": "{count} ★",
+    "starsLabel": "{{count}} ★",
     "error": "Progress could not be saved.",
     "clearAll": "Delete progress",
     "cleared": "Progress deleted",
     "setStarsGroup": "Award stars",
-    "setStars": "Set {count} stars",
+    "setStars": "Set {{count}} stars",
     "completed": "Completed",
     "markComplete": "Mark as complete",
     "export": "Export",
@@ -54,7 +54,7 @@
   },
   "import": {
     "title": "Import progress",
-    "summary": "Summary: {lessons} lessons, {stars} stars total. Practice metadata: {meta}",
+    "summary": "Summary: {{lessons}} lessons, {{stars}} stars total. Practice metadata: {{meta}}",
     "metaYes": "yes",
     "metaNo": "no",
     "createdAt": "File created",

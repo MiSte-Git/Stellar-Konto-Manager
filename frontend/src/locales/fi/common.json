@@ -482,7 +482,7 @@
   "activation": {
     "notFound": {
       "title": "Tavoitetili ei ole aktiivinen.",
-      "message": "Kohdetiliä ei ole vielä olemassa ({address}). Se täytyy aktivoida vähintään 1 XLM:llä. Haluatko aktivoida tilin nyt?"
+      "message": "Kohdetiliä ei ole vielä olemassa ({{address}}). Se täytyy aktivoida vähintään 1 XLM:llä. Haluatko aktivoida tilin nyt?"
     },
     "actions": {
       "yes": "Kyllä – Aktivoi tili",

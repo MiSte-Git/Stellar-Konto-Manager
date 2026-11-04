@@ -29,7 +29,8 @@ const VITE_BUILD_DATE = new Date().toISOString();
 const BACKEND_PORT = process.env.BACKEND_PORT || process.env.PORT || '3000';
 const FRONTEND_PORT = process.env.FRONTEND_PORT || '5173';
 const PROD_API_URL = (process.env.PROD_API_URL || '').trim();
-const DEFAULT_PROD_API_URL = process.env.DEFAULT_PROD_API_URL || 'https://www.skm.steei.de';
+// Ohne www: www.skm.steei.de leitet das Frontend per 301 auf skm.steei.de um.
+const DEFAULT_PROD_API_URL = process.env.DEFAULT_PROD_API_URL || 'https://skm.steei.de';
 const I18N_AUTO_SYNC = process.env.I18N_AUTO_SYNC || '0';
 const I18N_PY_SYNC = process.env.I18N_PY_SYNC || '';
 const BASE_REF = process.env.BASE_REF || 'origin/main';

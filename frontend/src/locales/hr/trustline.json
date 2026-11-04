@@ -11,15 +11,15 @@
   },
   "deleted": {
     "resultTitle": "Izbriši rezultat",
-    "resultText": "{count} trustlines obrađeno je u načinu {mode}.",
+    "resultText": "{{count}} trustlines obrađeno je u načinu {{mode}}.",
     "mode": {
       "simulation": "Simulacija",
       "real": "Živa operacija",
       "realWarning": "Pažnja! Ovo će trajno izbrisati trustlines s blockchaina."
     },
     "notFound": "Nije pronađen nijedan odgovarajući trustlines za brisanje.",
-    "simulated": "Simulacija: {count} trustlines bi bio izbrisan.",
-    "success": "Uspješno uklonjen {count} trustlines."
+    "simulated": "Simulacija: {{count}} trustlines bi bio izbrisan.",
+    "success": "Uspješno uklonjen {{count}} trustlines."
   },
   "noDuplicates": "Nije pronađen duplicirani trustlines.",
   "showSecret": "Prikaži Secret Key",

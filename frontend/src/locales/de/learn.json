@@ -19,12 +19,12 @@
   "progress": {
     "title": "Lernfortschritt",
     "saved": "Fortschritt gespeichert",
-    "starsLabel": "{count} ★",
+    "starsLabel": "{{count}} ★",
     "error": "Fortschritt konnte nicht gespeichert werden",
     "clearAll": "Fortschritt löschen",
     "cleared": "Fortschritt gelöscht",
     "setStarsGroup": "Sterne vergeben",
-    "setStars": "{count} Sterne setzen",
+    "setStars": "{{count}} Sterne setzen",
     "completed": "Abgeschlossen",
     "markComplete": "Als abgeschlossen markieren",
     "export": "Exportieren",
@@ -54,7 +54,7 @@
   },
   "import": {
     "title": "Fortschritt importieren",
-    "summary": "Zusammenfassung: {lessons} Lektionen, {stars} Sterne gesamt. Praxis-Metadaten: {meta}",
+    "summary": "Zusammenfassung: {{lessons}} Lektionen, {{stars}} Sterne gesamt. Praxis-Metadaten: {{meta}}",
     "metaYes": "ja",
     "metaNo": "nein",
     "createdAt": "Datei erstellt",

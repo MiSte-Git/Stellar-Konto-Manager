@@ -89,3 +89,22 @@ describe('SecretKeyModal handleConfirm (A4 - signer validation)', () => {
     expect(onConfirm).not.toHaveBeenCalled();
   });
 });
+
+describe('SecretKeyModal: Konto, fuer das signiert wird', () => {
+  beforeAll(async () => { await i18n.changeLanguage('de'); });
+
+  it('zeigt das Konto aus accountId an', () => {
+    renderModal({ accountId: SIGNER_A.publicKey });
+    expect(screen.getByTestId('secret-modal-account')).toHaveTextContent(SIGNER_A.publicKey);
+  });
+
+  it('nimmt sonst die id des Horizon-Kontos', () => {
+    renderModal({ account: { id: SIGNER_A.publicKey, signers: [{ key: SIGNER_A.publicKey, weight: 1 }], thresholds: {} } });
+    expect(screen.getByTestId('secret-modal-account')).toHaveTextContent(SIGNER_A.publicKey);
+  });
+
+  it('zeigt keinen zweiten Kontohinweis, wenn ein subtitle gesetzt ist', () => {
+    renderModal({ accountId: SIGNER_A.publicKey, subtitle: 'Secret Key fuer Sender' });
+    expect(screen.queryByTestId('secret-modal-account')).toBeNull();
+  });
+});

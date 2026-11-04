@@ -19,12 +19,12 @@
   "progress": {
     "title": "Oppimistuloset",
     "saved": "Edistyminen tallennettu.",
-    "starsLabel": "{count} ★",
+    "starsLabel": "{{count}} ★",
     "error": "Edistymistä ei voitu tallentaa.",
     "clearAll": "Poista edistyminen",
     "cleared": "Edistys poistettu",
     "setStarsGroup": "Myöntää tähtiä",
-    "setStars": "Aseta {count} tähteä",
+    "setStars": "Aseta {{count}} tähteä",
     "completed": "Valmis",
     "markComplete": "Merkitse valmiiksi",
     "export": "Vienti",
@@ -54,7 +54,7 @@
   },
   "import": {
     "title": "Tuo edistyminen",
-    "summary": "Yhteenveto: {lessons} oppituntia, yhteensä {stars} tähteä. Harjoituksen metatiedot: {meta}",
+    "summary": "Yhteenveto: {{lessons}} oppituntia, yhteensä {{stars}} tähteä. Harjoituksen metatiedot: {{meta}}",
     "metaYes": "kyllä",
     "metaNo": "ei",
     "createdAt": "Tiedosto luotu",

@@ -106,4 +106,32 @@ describe('MultisigResultDialog', () => {
     expect(onBack).toHaveBeenCalled();
     expect(screen.queryByRole('button', { name: 'Abbrechen' })).toBeNull();
   });
+
+  it('Job: zeigt bereits signierte Signer und den Hinweis nach einer Runde ohne neue Signatur', () => {
+    renderDialog({
+      type: 'job',
+      jobId: 'job-3',
+      signing: { required: 2, collected: 1, missingSigners: [{ publicKey: SIGNER, weight: 1 }], signedSigners: [{ publicKey: 'GSIGNED' + 'A'.repeat(49), weight: 1 }] },
+      onSignNow: vi.fn(),
+      signNotice: 'Dieser Secret Key hat den Job bereits signiert.',
+    });
+    expect(screen.getByTestId('multisig-result-signed')).toHaveTextContent('Bereits signiert');
+    expect(screen.getByTestId('multisig-result-sign-notice')).toHaveTextContent('bereits signiert');
+    expect(screen.getByTestId('multisig-result-sign-now')).not.toBeDisabled();
+  });
+
+  it('Job: Jetzt signieren ist gesperrt, wenn das noetige Gewicht erreicht ist', () => {
+    const onSignNow = vi.fn();
+    renderDialog({
+      type: 'job',
+      jobId: 'job-4',
+      signing: { required: 2, collected: 2, missingSigners: [], signedSigners: [{ publicKey: SIGNER, weight: 2 }] },
+      onSignNow,
+    });
+    const btn = screen.getByTestId('multisig-result-sign-now');
+    expect(btn).toBeDisabled();
+    fireEvent.click(btn);
+    expect(onSignNow).not.toHaveBeenCalled();
+    expect(screen.getByTestId('multisig-result-complete')).toBeInTheDocument();
+  });
 });

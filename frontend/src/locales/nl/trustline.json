@@ -11,15 +11,15 @@
   },
   "deleted": {
     "resultTitle": "Resultaat verwijderen",
-    "resultText": "{count} trustlines werden verwerkt in {mode} modus.",
+    "resultText": "{{count}} trustlines werden verwerkt in {{mode}} modus.",
     "mode": {
       "simulation": "Simulatie",
       "real": "Live operatie",
       "realWarning": "Let op! Dit verwijdert permanent trustlines op de blockchain."
     },
     "notFound": "Geen overeenkomende trustlines gevonden om te verwijderen.",
-    "simulated": "Simulatie: {count} trustlines zouden worden verwijderd.",
-    "success": "{count} trustlines is succesvol verwijderd."
+    "simulated": "Simulatie: {{count}} trustlines zouden worden verwijderd.",
+    "success": "{{count}} trustlines is succesvol verwijderd."
   },
   "noDuplicates": "Er is geen duplicaat van trustlines gevonden.",
   "showSecret": "Weergave Secret Key",

@@ -482,7 +482,7 @@
   "activation": {
     "notFound": {
       "title": "Target account not active",
-      "message": "The destination account does not exist yet ({address}). It needs to be activated with at least 1 XLM. Would you like to activate the account now?"
+      "message": "The destination account does not exist yet ({{address}}). It needs to be activated with at least 1 XLM. Would you like to activate the account now?"
     },
     "actions": {
       "yes": "Yes – Activate account",

@@ -19,12 +19,12 @@
   "progress": {
     "title": "Прогресс в обучении",
     "saved": "Прогресс сохранён.",
-    "starsLabel": "{count} ★",
+    "starsLabel": "{{count}} ★",
     "error": "Прогресс не удалось сохранить.",
     "clearAll": "Удалить прогресс",
     "cleared": "Прогресс удален",
     "setStarsGroup": "Присвоить звезды",
-    "setStars": "Установите {count} звёзд.",
+    "setStars": "Установите {{count}} звёзд.",
     "completed": "Завершено",
     "markComplete": "Отметить как завершено",
     "export": "Экспорт",
@@ -54,7 +54,7 @@
   },
   "import": {
     "title": "Прогресс импорта",
-    "summary": "Резюме: {lessons} уроков, всего {stars} звезд. Метаданные практики: {meta}",
+    "summary": "Резюме: {{lessons}} уроков, всего {{stars}} звезд. Метаданные практики: {{meta}}",
     "metaYes": "да",
     "metaNo": "нет",
     "createdAt": "Файл создан",

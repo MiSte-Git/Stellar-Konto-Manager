@@ -29,7 +29,8 @@ async function copyText(text, onDone) {
  *   type: 'job'|'xdr'|'sent',
  *   jobId?: string, hash?: string, xdr?: string,
  *   validUntil?: string|number,          // tx.timeBounds.maxTime (job/xdr), als Frist angezeigt
- *   signing?: { required: number, collected: number, missingSigners: {publicKey:string, weight:number}[] } | null,
+ *   signing?: { required: number, collected: number, missingSigners: {publicKey:string, weight:number}[], signedSigners?: {publicKey:string, weight:number}[] } | null,
+ *   signNotice?: React.ReactNode,        // Hinweis nach "Jetzt signieren", z. B. Key hatte schon signiert
  *   summaryItems?: {label:string, value:string}[],   // Zusammenfassung als Liste
  *   children?: React.ReactNode,          // eigene Zusammenfassung (z. B. Liquidity Pools)
  *   notice?: React.ReactNode,            // Zusatzhinweis direkt unter dem Status
@@ -54,6 +55,7 @@ export default function MultisigResultDialog({
   onBack,
   onSignNow,
   onOpenJob,
+  signNotice = null,
 }) {
   const { t, i18n } = useTranslation(['multisig', 'common']);
   const [copiedXdr, setCopiedXdr] = useState(false);
@@ -62,6 +64,11 @@ export default function MultisigResultDialog({
   const [showJobInfo, setShowJobInfo] = useState(false);
   const hasDeadline = (type === 'job' || type === 'xdr') && validUntil !== undefined && validUntil !== null;
   const unbounded = hasDeadline && (!validUntil || String(validUntil) === '0');
+  // Genug Gewicht gesammelt: weiteres Signieren aendert nichts mehr.
+  const signingComplete = !!signing && (
+    (signing.required > 0 && signing.collected >= signing.required)
+    || (Array.isArray(signing.missingSigners) && signing.missingSigners.length === 0 && (signing.signedSigners || []).length > 0)
+  );
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-55 overflow-y-auto p-4" role="dialog" aria-modal="true" data-testid="multisig-result-dialog">
@@ -161,6 +168,19 @@ export default function MultisigResultDialog({
           </p>
         )}
 
+        {type === 'job' && signing && (signing.signedSigners || []).length > 0 && (
+          <div className="border rounded-sm p-3 mb-3 text-sm" data-testid="multisig-result-signed">
+            <div className="font-semibold mb-1">{t('multisig:confirm.result.job.signedTitle')}</div>
+            <ul className="list-disc ml-5 space-y-0.5 text-green-700 dark:text-green-300">
+              {signing.signedSigners.map((s) => (
+                <li key={s.publicKey}>
+                  <span title={s.publicKey}>{t('multisig:confirm.result.job.signedItem', { signer: shortKey(s.publicKey), weight: s.weight })}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
         {type === 'job' && signing && signing.missingSigners.length > 0 && (
           <div className="border rounded-sm p-3 mb-3 text-sm" data-testid="multisig-result-missing">
             <div className="font-semibold mb-1">{t('multisig:confirm.result.job.missingTitle')}</div>
@@ -210,7 +230,14 @@ export default function MultisigResultDialog({
         {type === 'job' && (onSignNow || (onOpenJob && jobId)) && (
           <div className="flex flex-wrap gap-2 mb-3">
             {onSignNow && (
-              <button type="button" className={BTN_OUTLINE} onClick={onSignNow}>
+              <button
+                type="button"
+                className={`${BTN_OUTLINE} disabled:opacity-50 disabled:cursor-not-allowed`}
+                onClick={onSignNow}
+                disabled={signingComplete}
+                title={signingComplete ? t('multisig:confirm.result.job.allCollected') : undefined}
+                data-testid="multisig-result-sign-now"
+              >
                 {t('multisig:detail.secretPrompt.signNow', 'Jetzt signieren')}
               </button>
             )}
@@ -220,6 +247,13 @@ export default function MultisigResultDialog({
               </button>
             )}
           </div>
+        )}
+
+        {type === 'job' && signNotice && (
+          <div className="mb-3 text-sm text-amber-700 dark:text-amber-300" data-testid="multisig-result-sign-notice">{signNotice}</div>
+        )}
+        {type === 'job' && onSignNow && signingComplete && (
+          <div className="mb-3 text-sm text-green-700 dark:text-green-300" data-testid="multisig-result-complete">{t('multisig:confirm.result.job.allCollected')}</div>
         )}
 
         {type === 'xdr' && xdr && (

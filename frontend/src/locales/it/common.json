@@ -482,7 +482,7 @@
   "activation": {
     "notFound": {
       "title": "Account di destinazione non attivo",
-      "message": "L'account di destinazione non esiste ancora ({address}). Deve essere attivato con almeno 1 XLM. Vuoi attivare l'account ora?"
+      "message": "L'account di destinazione non esiste ancora ({{address}}). Deve essere attivato con almeno 1 XLM. Vuoi attivare l'account ora?"
     },
     "actions": {
       "yes": "Sì – Attiva account",

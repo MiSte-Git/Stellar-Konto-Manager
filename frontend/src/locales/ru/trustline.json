@@ -11,15 +11,15 @@
   },
   "deleted": {
     "resultTitle": "Удалить результат",
-    "resultText": "{count} trustlines были обработаны в режиме {mode}.",
+    "resultText": "{{count}} trustlines были обработаны в режиме {{mode}}.",
     "mode": {
       "simulation": "Симуляция",
       "real": "Живая операция",
       "realWarning": "Внимание! Это приведет к окончательному удалению trustlines из блокчейна."
     },
     "notFound": "Не найдено ни одного совпадения с trustlines для удаления.",
-    "simulated": "Моделирование: {count} trustlines будет удалено.",
-    "success": "{count} trustlines успешно удалено."
+    "simulated": "Моделирование: {{count}} trustlines будет удалено.",
+    "success": "{{count}} trustlines успешно удалено."
   },
   "noDuplicates": "Дубликат trustlines не найден.",
   "showSecret": "Отобразить Secret Key",

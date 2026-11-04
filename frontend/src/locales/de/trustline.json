@@ -11,15 +11,15 @@
   },
   "deleted": {
     "resultTitle": "Lösch-Ergebnis",
-    "resultText": "{count} Trustlines wurden im Modus {mode} verarbeitet.",
+    "resultText": "{{count}} Trustlines wurden im Modus {{mode}} verarbeitet.",
     "mode": {
       "simulation": "Simulation",
       "real": "Echtbetrieb",
       "realWarning": "Achtung! Dies löscht Trustlines endgültig auf der Blockchain."
     },
     "notFound": "Keine passenden Trustlines zum Löschen gefunden.",
-    "simulated": "Simulation: {count} Trustlines würden gelöscht werden.",
-    "success": "Erfolgreich: {count} Trustlines gelöscht."
+    "simulated": "Simulation: {{count}} Trustlines würden gelöscht werden.",
+    "success": "Erfolgreich: {{count}} Trustlines gelöscht."
   },
   "noDuplicates": "Keine doppelten Trustlines gefunden.",
   "showSecret": "Secret Key anzeigen",

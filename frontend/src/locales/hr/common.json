@@ -482,7 +482,7 @@
   "activation": {
     "notFound": {
       "title": "Ciljani račun nije aktivan.",
-      "message": "Odredišni račun još ne postoji ({address}). Treba ga aktivirati s najmanje 1 XLM. Želite li sada aktivirati račun?"
+      "message": "Odredišni račun još ne postoji ({{address}}). Treba ga aktivirati s najmanje 1 XLM. Želite li sada aktivirati račun?"
     },
     "actions": {
       "yes": "Da – Aktiviraj račun",

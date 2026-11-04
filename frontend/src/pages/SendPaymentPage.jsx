@@ -2503,6 +2503,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
           copyDetailsText={resultDialog.type === 'sent' ? sentDetailsText(resultDialog) : undefined}
           onClose={closeResultDialog}
           onBack={isMultisig === true ? () => reopenSelection(resultDialog.type === 'sent' ? 'local' : resultDialog.type) : undefined}
+          signNotice={resultDialog.type === 'job' && resultDialog.noNewSignature ? t('multisig:confirm.result.job.noNewSignature') : null}
           onSignNow={resultDialog.type === 'job' ? () => {
             setLastResultDialog(resultDialog);
             setResultDialog(null);
@@ -2614,6 +2615,10 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                     signers: signerMeta,
                   });
                   const status = merged?.status || 'pending_signatures';
+                  const keyOf = (x) => x?.publicKey || x?.public_key || x?.key || '';
+                  const beforeKeys = new Set((jobToSign.collectedSigners || []).map(keyOf).filter(Boolean));
+                  const afterSigners = Array.isArray(merged?.collectedSigners) ? merged.collectedSigners : (jobToSign.collectedSigners || []);
+                  const noNewSignature = afterSigners.map(keyOf).filter(Boolean).every((k) => beforeKeys.has(k));
                   const hash = merged?.txHash || jobToSign.hash || '';
                   const summary = merged?.summary || jobToSign.summary || null;
                   setResultDialog({
@@ -2624,9 +2629,10 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                     summary,
                     status,
                     requiredWeight: Number(merged?.requiredWeight || jobToSign.requiredWeight || 0) || null,
-                    collectedSigners: Array.isArray(merged?.collectedSigners) ? merged.collectedSigners : (jobToSign.collectedSigners || []),
+                    collectedSigners: afterSigners,
                     accessToken: jobToSign.accessToken || '',
                     expectedJob: jobToSign.expectedJob,
+                    noNewSignature,
                   });
                   setSecretError('');
                   closeSecretModal();

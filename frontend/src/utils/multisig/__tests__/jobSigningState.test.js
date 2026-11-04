@@ -17,6 +17,7 @@ describe('computeJobSigningState', () => {
       required: 2,
       collected: 0,
       missingSigners: [{ publicKey: A, weight: 1 }, { publicKey: B, weight: 2 }],
+      signedSigners: [],
     });
   });
 
@@ -24,6 +25,7 @@ describe('computeJobSigningState', () => {
     const state = computeJobSigningState({ accountSigners, requiredWeight: 3, collectedSigners: [{ publicKey: B, weight: 99 }] });
     expect(state.collected).toBe(2);
     expect(state.missingSigners).toEqual([{ publicKey: A, weight: 1 }]);
+    expect(state.signedSigners).toEqual([{ publicKey: B, weight: 2 }]);
     expect(computeJobSigningState({ accountSigners, requiredWeight: 3, collectedSigners: [A, B] }).missingSigners).toEqual([]);
   });
 

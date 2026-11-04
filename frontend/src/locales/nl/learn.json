@@ -19,12 +19,12 @@
   "progress": {
     "title": "Leerproces voortgang",
     "saved": "Voortgang opgeslagen.",
-    "starsLabel": "{count} ★",
+    "starsLabel": "{{count}} ★",
     "error": "Voortgang kon niet worden opgeslagen.",
     "clearAll": "Voortgang verwijderen",
     "cleared": "Voortgang verwijderd",
     "setStarsGroup": "Sterren toekennen",
-    "setStars": "Stel {count} sterren in",
+    "setStars": "Stel {{count}} sterren in",
     "completed": "Voltooid",
     "markComplete": "Markeren als voltooid",
     "export": "Exporteren",
@@ -54,7 +54,7 @@
   },
   "import": {
     "title": "Importvoortgang",
-    "summary": "Samenvatting: {lessons} lessen, {stars} sterren in totaal. Oefenmateriaal metadata: {meta}",
+    "summary": "Samenvatting: {{lessons}} lessen, {{stars}} sterren in totaal. Oefenmateriaal metadata: {{meta}}",
     "metaYes": "ja",
     "metaNo": "nee",
     "createdAt": "Bestand gemaakt",

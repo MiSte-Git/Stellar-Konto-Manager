@@ -11,15 +11,15 @@
   },
   "deleted": {
     "resultTitle": "Eliminar resultado",
-    "resultText": "Se han procesado {count} trustlines en el modo {mode}.",
+    "resultText": "Se han procesado {{count}} trustlines en el modo {{mode}}.",
     "mode": {
       "simulation": "Simulación",
       "real": "Operación en vivo",
       "realWarning": "¡Atención! Esto eliminará de forma permanente trustlines de la cadena de bloques."
     },
     "notFound": "No se ha encontrado ningún elemento que coincida con trustlines para eliminar.",
-    "simulated": "Simulación: {count} trustlines se eliminaría.",
-    "success": "Se ha eliminado correctamente {count} trustlines."
+    "simulated": "Simulación: {{count}} trustlines se eliminaría.",
+    "success": "Se ha eliminado correctamente {{count}} trustlines."
   },
   "noDuplicates": "No se ha encontrado ningún duplicado de trustlines.",
   "showSecret": "Mostrar Secret Key",

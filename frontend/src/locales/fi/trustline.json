@@ -11,15 +11,15 @@
   },
   "deleted": {
     "resultTitle": "Poista tulos",
-    "resultText": "{count} trustlines:tä käsiteltiin {mode} -tilassa.",
+    "resultText": "{{count}} trustlines:tä käsiteltiin {{mode}} -tilassa.",
     "mode": {
       "simulation": "Simulaatio",
       "real": "Live-operaatio",
       "realWarning": "Huomio! Tämä poistaa trustlines:n pysyvästi lohkoketjusta."
     },
     "notFound": "Poistettavaa vastaavaa trustlines-merkintää ei löytynyt.",
-    "simulated": "Simulointi: {count} trustlines poistettaisiin.",
-    "success": "{count} trustlines on poistettu onnistuneesti."
+    "simulated": "Simulointi: {{count}} trustlines poistettaisiin.",
+    "success": "{{count}} trustlines on poistettu onnistuneesti."
   },
   "noDuplicates": "Kaksoiskappaletta trustlines ei löytynyt.",
   "showSecret": "Näytä Secret Key",

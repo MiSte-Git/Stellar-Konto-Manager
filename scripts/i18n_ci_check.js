@@ -73,6 +73,24 @@ function findPlaceholderMismatches(refFlat, curFlat) {
   return out;
 }
 
+// Einfache Klammern ({count}) ersetzt i18next nicht, der Text erscheint dann woertlich in der UI.
+// Ausnahmen: Werte, in denen {name} bewusst woertlich steht und vom Code selbst ersetzt wird.
+const SINGLE_BRACE_RE = /(?<!\{)\{([A-Za-z_][A-Za-z0-9_]*)\}(?!\})/g;
+const SINGLE_BRACE_ALLOWED = new Set([
+  'common.multisigEdit.securityGuarantee.text', // {link}: MultisigEditPage teilt den Text selbst auf
+  'settings.explorer.testnetUrlPlaceholder', // {address}: Teil der Explorer-URL-Vorlage
+]);
+
+function findSingleBracePlaceholders(flat) {
+  const out = [];
+  for (const [key, value] of Object.entries(flat)) {
+    if (typeof value !== 'string' || SINGLE_BRACE_ALLOWED.has(key)) continue;
+    const names = [...value.matchAll(SINGLE_BRACE_RE)].map((m) => m[1]);
+    if (names.length) out.push({ key, names });
+  }
+  return out;
+}
+
 const fmtSet = (set) => (set.length ? set.map((p) => `{{${p}}}`).join(' ') : '(keine)');
 
 // Locale directories are plain two-letter language codes (de, en, es, ...).
@@ -110,6 +128,14 @@ function main() {
 
     const langs = listLangDirs().filter((l) => l !== 'de');
     let ok = true;
+
+    for (const lang of ['de', ...langs]) {
+      const flat = lang === 'de' ? refFlat : flatten(readNamespacedLocale(path.join(LOCALES, lang)));
+      for (const m of findSingleBracePlaceholders(flat)) {
+        console.error(`[CI:i18n] Einfache Klammern: ${lang} ${m.key} – ${m.names.map((n) => `{${n}}`).join(' ')} statt {{...}}`);
+        ok = false;
+      }
+    }
 
     for (const lang of langs) {
       const dir = path.join(LOCALES, lang);
@@ -158,4 +184,4 @@ function main() {
 
 if (require.main === module) main();
 
-module.exports = { placeholderSet, findPlaceholderMismatches };
+module.exports = { placeholderSet, findPlaceholderMismatches, findSingleBracePlaceholders };

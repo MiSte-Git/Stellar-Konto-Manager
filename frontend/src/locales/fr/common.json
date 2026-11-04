@@ -482,7 +482,7 @@
   "activation": {
     "notFound": {
       "title": "Compte cible non actif",
-      "message": "Le compte de destination n'existe pas encore ({adresse}). Il doit être activé avec au moins 1 XLM. Souhaitez-vous activer le compte maintenant ?"
+      "message": "Le compte de destination n'existe pas encore ({{adresse}}). Il doit être activé avec au moins 1 XLM. Souhaitez-vous activer le compte maintenant ?"
     },
     "actions": {
       "yes": "Oui – Activer le compte",

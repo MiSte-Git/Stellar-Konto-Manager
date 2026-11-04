@@ -482,7 +482,7 @@
   "activation": {
     "notFound": {
       "title": "Doelaccount niet actief",
-      "message": "De bestemmingsaccount bestaat nog niet ({address}). Deze moet worden geactiveerd met ten minste 1 XLM. Wilt u de account nu activeren?"
+      "message": "De bestemmingsaccount bestaat nog niet ({{address}}). Deze moet worden geactiveerd met ten minste 1 XLM. Wilt u de account nu activeren?"
     },
     "actions": {
       "yes": "Ja – Account activeren",

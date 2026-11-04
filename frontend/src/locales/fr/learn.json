@@ -19,12 +19,12 @@
   "progress": {
     "title": "Progrès d'apprentissage",
     "saved": "Progrès enregistré.",
-    "starsLabel": "{count} ★",
+    "starsLabel": "{{count}} ★",
     "error": "Les progrès n'ont pas pu être enregistrés.",
     "clearAll": "Supprimer les progrès",
     "cleared": "Progrès supprimé.",
     "setStarsGroup": "Attribuer des étoiles",
-    "setStars": "Définir {count} étoiles",
+    "setStars": "Définir {{count}} étoiles",
     "completed": "Terminé",
     "markComplete": "Marquer comme terminé",
     "export": "Exportation",
@@ -54,7 +54,7 @@
   },
   "import": {
     "title": "Progrès d'importation",
-    "summary": "Résumé : {lessons} leçons, {stars} étoiles au total. Métadonnées de pratique : {meta}",
+    "summary": "Résumé : {{lessons}} leçons, {{stars}} étoiles au total. Métadonnées de pratique : {{meta}}",
     "metaYes": "oui",
     "metaNo": "non",
     "createdAt": "Fichier créé",

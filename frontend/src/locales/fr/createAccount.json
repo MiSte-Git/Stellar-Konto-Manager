@@ -17,12 +17,12 @@
     "secret": "Conservez ce secret key en lieu sûr ; ne le communiquez jamais à personne."
   },
   "generateFirst": "Veuillez d'abord générer une paire de clés.",
-  "confirmLowBalance": "Le solde initial {bal} en XLM est inférieur à la réserve recommandée {req} en XLM (Signer : {count}). Voulez-vous continuer ?",
-  "activated": "Le compte a été activé. Hash : {hash}",
+  "confirmLowBalance": "Le solde initial {{bal}} en XLM est inférieur à la réserve recommandée {{req}} en XLM (Signer : {{count}}). Voulez-vous continuer ?",
+  "activated": "Le compte a été activé. Hash : {{hash}}",
   "activatedTestnet": "Le compte a été activé sur le testnet via Friendbot.",
   "alreadyActive": "Le compte est déjà activé.",
   "createdNoSigners": "Compte créé, multisig non configuré.",
-  "createdAndConfigured": "Compte créé et multisig configuré. Hachage : {hash}",
+  "createdAndConfigured": "Compte créé et multisig configuré. Hachage : {{hash}}",
   "info": {
     "more": "Plus d'informations",
     "keysOnPage": {
