@@ -1,5 +1,7 @@
 # Projektanweisungen
 
+Allgemeine Regeln, Aufbau und Befehle stehen in [AGENTS.md](AGENTS.md). Die gelten auch hier.
+
 ## README.md aktuell halten
 
 README.md ist die primäre Setup-/Architektur-Dokumentation für dieses Projekt.

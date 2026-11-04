@@ -15,6 +15,7 @@ ChatGPT - Stellar Trustline Manager_files/
 !CLAUDE.md
 # Projektdokumentation versionieren (Analyse-/Review-Dateien im Root bleiben lokal)
 !/README.md
+!/AGENTS.md
 !/docs/**/*.md
 # Aeltere Content-Doku, noch nicht geprueft, vorerst lokal
 /docs/CONTRIBUTING_CONTENT*.md
