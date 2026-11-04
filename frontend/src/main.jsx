@@ -98,7 +98,7 @@ import DeleteAllTrustlines from './components/DeleteAllTrustlines';
 import DeleteByIssuer from './components/DeleteByIssuer';
 import ConfirmationModal from './components/ConfirmationModal';
 import './index.css'; // Enthält @tailwind + dein echtes Styling
-import { isOpaqueScriptError } from './utils/opaqueScriptError.js';
+import { isForeignScriptError } from './utils/opaqueScriptError.js';
 import {
   toggleAllTrustlines,
   toggleTrustlineSelection
@@ -711,9 +711,10 @@ function Main() {
   useEffect(() => {
     const previousOnError = window.onerror;
     const handleError = (message, source, lineno, colno, error) => {
-      // Maskierter Fehler eines fremden Skripts (Erweiterung, Blocker): nur loggen, nicht anzeigen.
-      if (isOpaqueScriptError(message, source, lineno, colno, error)) {
-        console.warn('Ignored opaque cross-origin script error', { message });
+      // Fehler fremder Skripte (Erweiterung, Blocker, eingebaute Wallet): nur loggen, nicht anzeigen.
+      const assetPrefix = new URL(`${import.meta.env.BASE_URL || '/'}assets/`, window.location.origin).href;
+      if (isForeignScriptError({ message, source, lineno, colno, error, assetPrefix, dev: !!import.meta.env.DEV })) {
+        console.warn('Ignored script error from outside SKM', { message, source, lineno, colno });
         if (typeof previousOnError === 'function') {
           try { previousOnError(message, source, lineno, colno, error); } catch { /* noop */ }
         }
