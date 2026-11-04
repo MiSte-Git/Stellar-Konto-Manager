@@ -162,6 +162,8 @@ Local-first Stellar Wallet & Account Manager: Trustlines, Zahlungen, Muxed Accou
   Die Federation-Fälle liegen gemeinsam in `test/assets/federationCases.json` und laufen gegen Node und PHP.
 
 ## i18n-System
+Ausführliche Beschreibung mit Begründungen, Ablauf und Schutzmechanismen: [docs/i18n-pipeline.md](docs/i18n-pipeline.md).
+
 - Namespaced JSON unter `frontend/src/locales/<lang>/*.json`, DE als Referenzsprache.
 - Autoload aller Namespaces, keine Hardcoded-Texte.
 - Automatisches Übersetzungsskript: `UpdateSprachdateienBasierendAufDE.py` (bzw. Sync-Skripte im Repo).
@@ -175,6 +177,8 @@ Local-first Stellar Wallet & Account Manager: Trustlines, Zahlungen, Muxed Accou
 - CI-Prüfung `node scripts/i18n_ci_check.js` (Workflow `i18n-and-lint.yml`): alle Sprachen müssen den DE-Key-Baum haben, und je Key muss die Menge der `{{...}}`-Platzhalter exakt der deutschen entsprechen (Reihenfolge egal). Abweichungen brechen den Lauf mit Datei, Key, erwartet und gefunden ab.
 
 ## Sicherheitshinweise
+Sicherheitsmodell, Vertrauensgrenzen, bewusste Entscheidungen und Hinweise für Reviewer: [docs/SECURITY.md](docs/SECURITY.md).
+
 - Geheimnisse bleiben lokal; keine Secret-Übertragung an Server.
 - Strikte Content-Security-Policy in Produktion: nur eigene Scripts und Styles, `connect-src` nur zu eigener API, Horizon (Mainnet/Testnet), Friendbot und CoinGecko. Neue direkte Verbindungen aus dem Frontend müssen in `services/securityHeaders.js` ergänzt werden (der Test `frontend/src/test/cspSourceGuards.test.js` meldet sie). Eine eigene Horizon-URL per `localStorage` (`SKM_HORIZON_URL`) gilt nur im Dev-Modus.
 - Multisig-XDR-Signaturen können vollständig lokal gehandhabt werden.

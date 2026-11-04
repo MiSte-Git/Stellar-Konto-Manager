@@ -13,6 +13,11 @@ ChatGPT - Stellar Trustline Manager_files/
 *.ods
 *.md
 !CLAUDE.md
+# Projektdokumentation versionieren (Analyse-/Review-Dateien im Root bleiben lokal)
+!/README.md
+!/docs/**/*.md
+# Aeltere Content-Doku, noch nicht geprueft, vorerst lokal
+/docs/CONTRIBUTING_CONTENT*.md
 dist/
 # Ignoriere sensible Umgebungsdateien
 .env

@@ -1,3 +1,5 @@
+> **Historisch (Juli 2025).** Beschreibt die damalige Migration mit OpenAI. Der aktuelle Stand der Pipeline steht in [docs/i18n-pipeline.md](docs/i18n-pipeline.md).
+
 # 🌍 Migrations-Dokumentation: Internationalisierung (i18n)
 
 ## ✅ Ziel der Migration
