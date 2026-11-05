@@ -933,15 +933,40 @@ app.post('/api/multisig/jobs/:id/decline', (req, res) => withMultisigJobLock(req
   }
 }));
 
-// Einzelnen Job loeschen: nur mit Job-Token (also nur Signer) und nur im Endzustand. Ein
-// offener Job wuerde durch Loeschen nicht unwirksam, signiertes XDR kann anderswo liegen;
-// dafuer gibt es Ablehnen und Widerruf.
-app.delete('/api/multisig/jobs/:id', (req, res) => withMultisigJobLock(req.params.id, async () => {
+// Einzelnen Job loeschen (C1): nur aktuelle Signer des Job-Kontos und nur im Endzustand.
+// Der Signer beweist den Besitz seines Keys wie beim Ablehnen per signierter Challenge, hier
+// mit eigenem Zweck `delete`; eine token- oder decline-Signatur gilt nicht. Das Job-Token
+// reicht nicht: Es hat auch, wer den Job angelegt hat (Anlegen ist offen), und es bleibt
+// gueltig, wenn der Signer spaeter aus dem Konto entfernt wird. Signer und Gewicht kommen
+// deshalb live aus dem Konto. Ein offener Job wuerde durch Loeschen nicht unwirksam,
+// signiertes XDR kann anderswo liegen; dafuer gibt es Ablehnen und Widerruf.
+// Gleiche Reihenfolge der Pruefungen wie in api/multisig.php.
+app.post('/api/multisig/jobs/:id/delete', (req, res) => withMultisigJobLock(req.params.id, async () => {
   try {
     const { id } = req.params;
     const job = findMultisigJob(id);
     if (!job) return res.status(404).json({ ok: false, error: 'not_found' });
-    if (!hasValidJobToken(job, req)) return res.status(403).json({ ok: false, error: 'forbidden' });
+
+    const signerPk = parseSignerPublicKey(req.body?.signer);
+    if (!signerPk) return res.status(400).json({ ok: false, error: 'invalid_signer' });
+    const signature = typeof req.body?.signature === 'string' ? req.body.signature.trim() : '';
+    if (!signature) return res.status(400).json({ ok: false, error: 'missing_signature' });
+
+    const pending = consumeChallenge(id, signerPk);
+    if (!pending) return res.status(400).json({ ok: false, error: 'challenge_missing_or_expired' });
+    if (!verifyChallengeSignature(pending.nonce, signature, signerPk, 'delete')) {
+      return res.status(403).json({ ok: false, error: 'invalid_signature' });
+    }
+
+    let signerMeta;
+    try {
+      signerMeta = extractSignerMeta(await loadAccount(horizonServerForNet(job.network), job.accountId));
+    } catch {
+      return res.status(403).json({ ok: false, error: 'forbidden' });
+    }
+    const isActiveSigner = (signerMeta.signers || []).some((s) => s.publicKey === signerPk && Number(s.weight || 0) > 0);
+    if (!isActiveSigner) return res.status(403).json({ ok: false, error: 'forbidden' });
+
     const [current] = await annotateJobsLifecycleStatus([job]);
     if (!multisigFinalStatus.has(current.status)) return res.status(409).json({ ok: false, error: 'not_final', status: current.status });
     multisigDb.items = multisigDb.items.filter((j) => j.id !== id);

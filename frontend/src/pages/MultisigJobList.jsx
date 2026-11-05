@@ -4,7 +4,7 @@ import { Keypair } from '@stellar/stellar-sdk';
 import { apiUrl } from '../utils/apiBase.js';
 import { FINAL_JOB_STATUSES, needsSignatureFrom } from '../utils/multisig/jobSigningState.js';
 import { readHiddenJobIds, writeHiddenJobIds } from '../utils/multisig/hiddenJobs.js';
-import { deleteMultisigJob, getMultisigJobAccessToken, getMultisigJobChallenge, signMultisigJobChallenge } from '../utils/multisigApi.js';
+import { deleteMultisigJob, getMultisigJobChallenge, signMultisigJobChallenge } from '../utils/multisigApi.js';
 import { getSessionSecret } from '../utils/sessionSecrets.js';
 
 // Eigene Button-Klassen: ohne bg-/px-Klassen greift der globale button-Stil aus index.css
@@ -127,8 +127,9 @@ function MultisigJobList({ onBack, publicKey, onOpenDetail, refreshKey = 0 }) {
   const allSelected = deletableShown.length > 0 && selectedShown.length === deletableShown.length;
   const toggleAll = () => setSelected(allSelected ? new Set() : new Set(deletableShown.map((j) => j.id)));
 
-  // Loeschen: je Job Challenge mit dem Key des geladenen Kontos signieren, Token holen,
-  // loeschen. Das Backend loescht nur Jobs im Endzustand und nur fuer Signer.
+  // Loeschen: je Job eine Challenge holen, mit dem Key des geladenen Kontos und Zweck
+  // `delete` signieren und loeschen. Das Backend loescht nur Jobs im Endzustand und nur fuer
+  // aktuelle Signer des Job-Kontos (live geprueft); ein Job-Token wird dafuer nicht gebraucht.
   const openDeletePanel = async () => {
     setDeleteError('');
     setDeleteInput('');
@@ -166,8 +167,7 @@ function MultisigJobList({ onBack, publicKey, onOpenDetail, refreshKey = 0 }) {
     for (const [index, job] of selectedShown.entries()) {
       try {
         const { challenge } = await getMultisigJobChallenge(job.id, accountId);
-        const token = await getMultisigJobAccessToken(job.id, accountId, signMultisigJobChallenge(kp.secret(), challenge, 'token'));
-        await deleteMultisigJob(job.id, token);
+        await deleteMultisigJob(job.id, accountId, signMultisigJobChallenge(kp.secret(), challenge, 'delete'));
         deleted += 1;
       } catch (e) {
         // Zu viele Anfragen: abbrechen statt jeden weiteren Job scheitern zu lassen.

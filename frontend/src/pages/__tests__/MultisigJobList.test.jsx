@@ -168,9 +168,10 @@ describe('MultisigJobList: Filter', () => {
 
     it('loescht mit gemerktem Key ohne Abfrage und meldet Fehler je Job', async () => {
       hoisted.sessionSecret.mockResolvedValue(ME_SECRET);
-      hoisted.token.mockImplementation(async (id) => {
+      hoisted.del.mockImplementation(async (id) => {
         if (id === 'fremd-gesendet') throw Object.assign(new Error('forbidden'), { status: 403 });
-        return `tok-${id}`;
+        if (id === 'eigen-abgelehnt') throw Object.assign(new Error('not_final'), { status: 409 });
+        return { ok: true };
       });
       renderList();
       await waitFor(() => expect(screen.getAllByTestId('job-row')).toHaveLength(4));
@@ -180,11 +181,14 @@ describe('MultisigJobList: Filter', () => {
       expect(screen.queryByLabelText('Secret Key zum Löschen')).toBeNull();
       fireEvent.click(screen.getByRole('button', { name: 'Löschen' }));
       const result = await screen.findByTestId('job-delete-result');
-      expect(result).toHaveTextContent('2 Jobs gelöscht.');
+      expect(result).toHaveTextContent('1 Jobs gelöscht.');
       expect(result).toHaveTextContent('kein Signer');
-      expect(hoisted.del.mock.calls.map((c) => c[0]).sort()).toEqual(['eigen-abgelaufen', 'eigen-abgelehnt']);
-      expect(hoisted.del).toHaveBeenCalledWith('eigen-abgelaufen', 'tok-eigen-abgelaufen');
-      expect(hoisted.token).toHaveBeenCalledWith('eigen-abgelaufen', ME, 'signature:token');
+      expect(result).toHaveTextContent('nicht abgeschlossen');
+      expect(hoisted.del.mock.calls.map((c) => c[0]).sort()).toEqual(['eigen-abgelaufen', 'eigen-abgelehnt', 'fremd-gesendet']);
+      // C1: Signatur mit Zweck delete direkt an den Loesch-Endpunkt, kein Token mehr.
+      expect(hoisted.del).toHaveBeenCalledWith('eigen-abgelaufen', ME, 'signature:delete');
+      expect(hoisted.challenge).toHaveBeenCalledWith('eigen-abgelaufen', ME);
+      expect(hoisted.token).not.toHaveBeenCalled();
     });
     it('bricht bei 429 ab, meldet die nicht versuchten Jobs und loest bei Doppelklick nur einen Lauf aus', async () => {
       hoisted.sessionSecret.mockResolvedValue(ME_SECRET);

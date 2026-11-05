@@ -13,7 +13,7 @@ etwas sieht. Mit gemerktem Key wäre das beim bloßen Öffnen eines Jobs passier
 
 ## Entscheidung
 
-Signiert wird nie die rohe Nonce, sondern `skm:<zweck>:` plus Nonce. Zwecke: `token`, `decline`. Der Zweck ist
+Signiert wird nie die rohe Nonce, sondern `skm:<zweck>:` plus Nonce. Zwecke: `token`, `decline`, `delete`. Der Zweck ist
 Pflicht, leere Zwecke werden abgelehnt. Beide Backends prüfen mit demselben Zweck.
 
 ## Begründung
@@ -27,4 +27,6 @@ Pflicht, leere Zwecke werden abgelehnt. Beide Backends prüfen mit demselben Zwe
 
 - Code: `services/challengeStore.js`, `api/challengeStore.php`, `frontend/src/utils/multisigApi.js`.
 - Ältere offene Tabs bekommen nach dem Update 403, bis sie neu geladen werden. Gewollt.
-- Neue Aktionen mit Challenge bekommen einen eigenen Zweck (z. B. `delete`).
+- Neue Aktionen mit Challenge bekommen einen eigenen Zweck.
+- `delete` ist umgesetzt (Befund C1): Löschen eines Jobs im Endzustand über `POST /api/multisig/jobs/:id/delete`
+  nur noch für aktuelle Signer per Challenge mit Zweck `delete`, nicht mehr mit dem Job-Token.

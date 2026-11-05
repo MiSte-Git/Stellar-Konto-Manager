@@ -21,6 +21,14 @@ describe('signMultisigJobChallenge', () => {
     expect(kp.verify(nonce, sig)).toBe(false);
   });
 
+  it('signiert fuer das Loeschen mit eigenem Zweck delete', () => {
+    const sig = Buffer.from(signMultisigJobChallenge(kp.secret(), challenge, 'delete'), 'base64');
+    expect(kp.verify(Buffer.concat([Buffer.from('skm:delete:'), nonce]), sig)).toBe(true);
+    expect(kp.verify(Buffer.concat([Buffer.from('skm:token:'), nonce]), sig)).toBe(false);
+    expect(kp.verify(Buffer.concat([Buffer.from('skm:decline:'), nonce]), sig)).toBe(false);
+    expect(kp.verify(nonce, sig)).toBe(false);
+  });
+
   it('wirft ohne oder mit leerem Zweck', () => {
     expect(() => signMultisigJobChallenge(kp.secret(), challenge)).toThrow(/invalid_challenge_purpose/);
     expect(() => signMultisigJobChallenge(kp.secret(), challenge, '')).toThrow(/invalid_challenge_purpose/);

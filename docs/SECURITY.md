@@ -85,14 +85,19 @@ Ein Job ist eine unsignierte oder teilsignierte Transaktion, die mehrere Signer 
   Token beim Anlegen oder über eine **Challenge**: Der Server erzeugt eine Nonce je Job und Signer (60 s gültig,
   einmalig), der Client signiert sie lokal, der Server prüft die Signatur und ob der Key aktuell Signer des Kontos
   ist.
-- **Zweckbindung:** Signiert wird nie die rohe Nonce, sondern `skm:<zweck>:` plus Nonce (`token`, `decline`). Grund:
-  Eine Stellar-Transaktionssignatur ist eine Ed25519-Signatur über 32 Bytes (Hash). Würde der Client rohe 32 Bytes
+- **Zweckbindung:** Signiert wird nie die rohe Nonce, sondern `skm:<zweck>:` plus Nonce (`token`, `decline`,
+  `delete`). Grund: Eine Stellar-Transaktionssignatur ist eine Ed25519-Signatur über 32 Bytes (Hash). Würde der Client rohe 32 Bytes
   signieren, könnte ein bösartiges Backend einen Transaktions-Hash als „Challenge“ schicken und bekäme eine gültige
   Transaktionssignatur. Mit Präfix ist keine signierte Nachricht 32 Bytes lang, und eine Signatur für einen Zweck
   gilt nicht für einen anderen. Code: `services/challengeStore.js`, `api/challengeStore.php`,
   `frontend/src/utils/multisigApi.js`.
 - **Ablehnen:** nur aktuelle Signer, nicht nach eigener Signatur, nicht im Endzustand. Gewicht und Threshold kommen
   live.
+- **Löschen** (`POST /api/multisig/jobs/:id/delete`): nur aktuelle Signer des Job-Kontos (live geprüft, Gewicht > 0),
+  Besitznachweis per Challenge mit Zweck `delete`, nur im Endzustand (sonst 409 `not_final`). Das Job-Token reicht
+  nicht: Es hat auch, wer den Job angelegt hat, und es bleibt gültig, wenn ein Signer später entfernt wird
+  (Review Runde 2, Befund C1). Das Löschen aller Jobs eines Netzes bleibt dem Admin-Endpunkt mit
+  `MULTISIG_ADMIN_TOKEN` vorbehalten.
 - **Nebenläufigkeit:** Node serialisiert Merge, Ablehnen und Löschen je Job (`services/multisigJobLock.js`), PHP
   arbeitet unter Dateilock. Endzustände werden im Lock geprüft.
 - **Anzeige vor dem Signieren** (`frontend/src/utils/multisig/describeTransaction.js`,

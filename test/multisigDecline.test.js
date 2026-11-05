@@ -1,4 +1,4 @@
-// Feature 31.10.: Ablehnen und Loeschen einzelner Multisig-Jobs (Node).
+// Feature 31.10.: Ablehnen einzelner Multisig-Jobs (Node). Loeschen: test/multisigDelete.test.js.
 // Pendant: test/multisigDecline.test.php (dort auch der volle Ablauf mit vorbelegtem
 // Signer-Cache; Node fragt die Signer live ab, das geht offline nicht).
 const test = require('node:test');
@@ -94,10 +94,6 @@ const post = async (url, body) => {
   const r = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
   return { status: r.status, body: await r.json().catch(() => ({})) };
 };
-const del = async (url, token) => {
-  const r = await fetch(url, { method: 'DELETE', headers: token ? { 'x-job-token': token } : {} });
-  return { status: r.status, body: await r.json().catch(() => ({})) };
-};
 const signChallenge = (kp, challenge, purpose = 'decline') => {
   const nonce = Buffer.from(challenge, 'base64');
   const data = purpose === null ? nonce : Buffer.concat([Buffer.from(`skm:${purpose}:`), nonce]);
@@ -172,17 +168,7 @@ test('Ablehnen: Eingaben ohne String -> 400', async () => {
   assert.equal(res.status, 400);
 });
 
-test('Loeschen: ohne Token 403, offener Job 409 not_final, Endzustand mit Token geloescht', async () => {
-  assert.equal((await del(`${BASE}/alt`)).status, 403);
-  const open = await del(`${BASE}/offen`, 'tok-offen');
-  assert.equal(open.status, 409);
-  assert.equal(open.body.error, 'not_final');
-  const done = await del(`${BASE}/alt`, 'tok-alt');
-  assert.equal(done.status, 200);
-  const r = await fetch(`${BASE}/alt`, { headers: { 'x-job-token': 'tok-alt' } });
-  assert.equal(r.status, 404);
-  assert.equal((await del(`${BASE}/alt`, 'tok-alt')).status, 404);
-});
+// Loeschen einzelner Jobs (C1, signierte Challenge mit Zweck delete): test/multisigDelete.test.js.
 
 // C2: server.js haengt den eigenen Limiter an /challenge. Am Ende der Datei, weil das
 // Budget danach verbraucht ist; die Tests davor haben schon einige Challenges geholt.

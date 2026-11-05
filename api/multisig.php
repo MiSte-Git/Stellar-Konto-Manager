@@ -806,14 +806,47 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/declin
     return sendJson($result);
 }
 
-// DELETE /api/multisig/jobs/:id - einzelnen Job loeschen: nur mit Job-Token (also nur
-// Signer) und nur im Endzustand. Ein offener Job wuerde durch Loeschen nicht unwirksam,
-// signiertes XDR kann anderswo liegen; dafuer gibt es Ablehnen und Widerruf.
-if ($method === 'DELETE' && ($m = matchRoute($path, '/api/multisig/jobs/:id'))) {
+// POST /api/multisig/jobs/:id/delete - einzelnen Job loeschen (C1): nur aktuelle Signer des
+// Job-Kontos und nur im Endzustand. Der Signer beweist den Besitz seines Keys wie beim
+// Ablehnen per signierter Challenge, hier mit eigenem Zweck "delete"; eine token- oder
+// decline-Signatur gilt nicht. Das Job-Token reicht nicht: Es hat auch, wer den Job angelegt
+// hat (Anlegen ist offen), und es bleibt gueltig, wenn der Signer spaeter aus dem Konto
+// entfernt wird. Signer und Gewicht kommen deshalb live aus dem Konto (Signer-Cache bis
+// 30 s). Ein offener Job wuerde durch Loeschen nicht unwirksam, signiertes XDR kann anderswo
+// liegen; dafuer gibt es Ablehnen und Widerruf. Gleiche Reihenfolge der Pruefungen wie in
+// server.js.
+if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/delete'))) {
     $id = $m['id'] ?? '';
     $job = findJobById($jobFile, $id);
     if (!$job) return sendJson(['ok' => false, 'error' => 'not_found'], 404);
-    if (!hasValidJobToken($job)) return sendJson(['ok' => false, 'error' => 'forbidden'], 403);
+
+    $body = jsonBody();
+    $signerPk = parseSignerPublicKey(is_string($body['signer'] ?? null) ? $body['signer'] : '');
+    if ($signerPk === null) return sendJson(['ok' => false, 'error' => 'invalid_signer'], 400);
+    $signature = is_string($body['signature'] ?? null) ? trim($body['signature']) : '';
+    if ($signature === '') return sendJson(['ok' => false, 'error' => 'missing_signature'], 400);
+
+    try {
+        $pending = consumeChallenge($id, $signerPk);
+    } catch (\Throwable $e) {
+        error_log('[multisig] jobs.delete_one challenge lookup failed: ' . $e->getMessage());
+        return sendError('server_error', null, 500);
+    }
+    if ($pending === null) return sendJson(['ok' => false, 'error' => 'challenge_missing_or_expired'], 400);
+    if (!verifyChallengeSignature($pending['nonce'], $signature, $signerPk, 'delete')) {
+        return sendJson(['ok' => false, 'error' => 'invalid_signature'], 403);
+    }
+
+    $meta = fetchAccountSignersCached($job['accountId'] ?? '', $job['network'] ?? 'public');
+    $isActiveSigner = false;
+    foreach ($meta['signers'] ?? [] as $s) {
+        if (($s['publicKey'] ?? '') === $signerPk && (int)($s['weight'] ?? 0) > 0) {
+            $isActiveSigner = true;
+            break;
+        }
+    }
+    if (!$isActiveSigner) return sendJson(['ok' => false, 'error' => 'forbidden'], 403);
+
     try {
         $conflict = null;
         $deleted = false;

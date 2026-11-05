@@ -1,5 +1,5 @@
 <?php
-// Feature 31.10.: Ablehnen und Loeschen einzelner Multisig-Jobs (PHP), echter HTTP-Test gegen
+// Feature 31.10.: Ablehnen einzelner Multisig-Jobs (PHP; Loeschen: test/multisigDelete.test.php), echter HTTP-Test gegen
 // api/multisig.php wie test/multisigJobToken.test.php. Die Konto-Signer kommen aus einem
 // vorbelegten signers_cache.json, damit der volle Ablauf ohne Horizon laeuft.
 // Pendant: test/multisigDecline.test.js.
@@ -225,14 +225,7 @@ try {
     $res = decline('signiert', $b);
     check('Wer schon signiert hat, kann nicht ablehnen -> 409 already_signed', $res['status'] === 409 && ($res['body']['error'] ?? '') === 'already_signed');
 
-    $res = request('DELETE', BASE_URL . '/offen');
-    check('Loeschen ohne Token -> 403', $res['status'] === 403);
-    $res = request('DELETE', BASE_URL . '/signiert', ['x-job-token: tok-signiert']);
-    check('Loeschen eines offenen Jobs -> 409 not_final', $res['status'] === 409 && ($res['body']['error'] ?? '') === 'not_final');
-    $res = request('DELETE', BASE_URL . '/offen', ['x-job-token: tok-offen']);
-    check('Loeschen eines abgelehnten Jobs mit Token -> 200', $res['status'] === 200 && ($res['body']['ok'] ?? false) === true);
-    $res = request('GET', BASE_URL . '/offen', ['x-job-token: tok-offen']);
-    check('Geloeschter Job -> 404', $res['status'] === 404);
+    // Loeschen einzelner Jobs (C1, signierte Challenge mit Zweck delete): test/multisigDelete.test.php.
 
     // C2: Rate-Limit am Ende, danach ist das Budget verbraucht. Die Tests davor haben
     // schon Challenges geholt, spaetestens die 21. Anfrage der Minute ergibt 429.

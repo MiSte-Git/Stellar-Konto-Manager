@@ -53,12 +53,13 @@ export async function getMultisigJobChallenge(jobId, signerPublicKey) {
 }
 
 // Erlaubte Zwecke einer Challenge-Signatur, muessen zu den Backend-Endpunkten passen.
-export const CHALLENGE_PURPOSES = Object.freeze(['token', 'decline']);
+export const CHALLENGE_PURPOSES = Object.freeze(['token', 'decline', 'delete']);
 
 // Signs a base64 challenge nonce with the given secret key, raw ed25519 (not a
 // Stellar transaction - there is no XDR/network/sequence number involved,
 // just a possession proof over server-issued random bytes). Returns the
-// signature as base64, ready for getMultisigJobAccessToken()/declineMultisigJob().
+// signature as base64, ready for getMultisigJobAccessToken()/declineMultisigJob()/
+// deleteMultisigJob().
 // purpose ist Pflicht und bindet die Signatur an eine Aktion: signiert wird immer
 // `skm:<purpose>:` plus Nonce, nie die Nonce allein. Eine rohe 32-Byte-Nonce waere gleich
 // lang wie ein Transaktions-Hash, ein manipuliertes Backend koennte sonst einen Tx-Hash
@@ -183,10 +184,13 @@ export async function declineMultisigJob(jobId, signerPublicKey, signature) {
   }, 'multisig.jobs.decline_failed');
 }
 
-// Einzelnen Job im Endzustand loeschen, nur mit Job-Token.
-export async function deleteMultisigJob(jobId, accessToken) {
-  return jobRequest(apiUrl(`multisig/jobs/${encodeURIComponent(jobId)}`), {
-    method: 'DELETE',
-    headers: accessToken ? { 'x-job-token': accessToken } : {},
+// Einzelnen Job im Endzustand loeschen (C1): signature ist die mit dem Signer-Key und Zweck
+// `delete` signierte Challenge, wie beim Ablehnen. Das Backend loescht nur fuer aktuelle
+// Signer des Job-Kontos (live geprueft), das Job-Token reicht dafuer nicht.
+export async function deleteMultisigJob(jobId, signerPublicKey, signature) {
+  return jobRequest(apiUrl(`multisig/jobs/${encodeURIComponent(jobId)}/delete`), {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ signer: signerPublicKey || '', signature: signature || '' }),
   }, 'multisig.jobs.delete_failed');
 }

@@ -90,7 +90,7 @@ function consumeChallenge(jobId, signerPublicKey) {
  * throws - any malformed base64/signature/public key is treated as an invalid
  * signature.
  */
-// purpose bindet die Signatur an eine Aktion (token, decline) und ist Pflicht: Ohne
+// purpose bindet die Signatur an eine Aktion (token, decline, delete) und ist Pflicht: Ohne
 // Praefix waere die Nachricht eine rohe 32-Byte-Nonce, gleich lang wie ein Transaktions-
 // Hash. Ein manipuliertes Backend koennte sonst einen Tx-Hash als Challenge schicken und
 // eine gueltige Transaktions-Signatur einsammeln. Ohne purpose ist keine Nachricht
