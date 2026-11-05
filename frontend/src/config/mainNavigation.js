@@ -28,6 +28,13 @@ export const MAIN_MENU_NAV = [
   { id: 'compare', labelKey: 'menu:compareTrustlines', group: 4, glossaryTerm: 'trustline' },
 ];
 
+/**
+ * Ansichten (menuSelection) ohne Bezug zum geladenen Konto: Dort blendet main.jsx
+ * den Wallet-Kopf (Kontowahl, Testnet-Checkbox, Saldo, Zeile "Quelle") aus. Das
+ * geladene Konto bleibt im Hintergrund erhalten.
+ */
+export const ACCOUNT_FREE_PAGES = Object.freeze(['createAccount', 'feedback']);
+
 /** @type {MainNavItem[]} */
 export const MAINPAGE_EXTRA_NAV = [
   { id: 'beginnerQuiz', labelKey: 'quiz:entry.beginnerQuizTitle' },

@@ -1,7 +1,7 @@
 // import trustlineLogo from './assets/Trustline-Logo.jpg';
 import './i18n'; // Initialisiert die Sprachunterstützung
 import { useTranslation } from 'react-i18next';
-import { NETWORKS, horizonUrlFor, readStoredNetworkId } from './config/networks.js';
+import { horizonUrlFor, readStoredNetworkId } from './config/networks.js';
 import React, { useState, useEffect, useCallback, useMemo, useRef, lazy, Suspense } from 'react';
 import ReactDOM from 'react-dom/client';
 import { Link } from 'react-router-dom';
@@ -85,7 +85,8 @@ import App from './App.jsx';
 import { confirmAutoClear } from './utils/confirmAutoClear.js';
 import ActivateAccountPrompt from './components/ActivateAccountPrompt.jsx';
 import AccountGate from './components/AccountGate.jsx';
-import { MAIN_MENU_NAV } from './config/mainNavigation.js';
+import { ACCOUNT_FREE_PAGES, MAIN_MENU_NAV } from './config/mainNavigation.js';
+import { networkFromEvent, setGlobalNetwork } from './utils/globalNetwork.js';
 import { emitAccountSelected } from './utils/accountBus.js';
 
 import { takeMultisigJobToken } from './components/multisig/multisigNavigation.js';
@@ -311,10 +312,7 @@ function Main() {
   const headerDeactivated = !!headerWalletInfo?.deactivated;
   useEffect(() => {
     // Do not force network again here; App.jsx listens and shows banner
-    try {
-      const v = window.localStorage?.getItem('SKM_NETWORK') || 'PUBLIC';
-      setDevTestnet(v === 'TESTNET');
-    } catch { /* noop */ }
+    setDevTestnet(readStoredNetworkId() === 'TESTNET');
   }, []);
 
   // App-Shell: aktives Konto fuer den Signier-Status in der Titelleiste melden
@@ -573,8 +571,8 @@ function Main() {
   // Keep header checkbox (devTestnet) in sync with global network changes
   useEffect(() => {
     const handler = (e) => {
-      const v = (typeof e?.detail === 'string') ? e.detail : (window.localStorage?.getItem('SKM_NETWORK') || 'PUBLIC');
-      setDevTestnet(v === 'TESTNET');
+      // Gleiche Auswertung wie useGlobalNetwork (Netz-Anzeige, Neues Konto erstellen)
+      setDevTestnet(networkFromEvent(e) === 'TESTNET');
       setInfoMessage('');
       // Fehler des vorherigen Netzes (z. B. Konto nicht gefunden) gilt nach dem Wechsel nicht mehr
       setError('');
@@ -586,7 +584,7 @@ function Main() {
     };
     window.addEventListener('stm-network-changed', handler);
     // Initialize once from storage without emitting
-    try { const v = window.localStorage?.getItem('SKM_NETWORK') || 'PUBLIC'; setDevTestnet(v === 'TESTNET'); } catch { /* noop */ }
+    setDevTestnet(readStoredNetworkId() === 'TESTNET');
     return () => window.removeEventListener('stm-network-changed', handler);
   }, [revalidateActiveWallet]);
 
@@ -826,6 +824,8 @@ function Main() {
   else if (sourcePublicKey) headerBalanceText = xlmBalance != null ? `${xlmBalance}` : t('wallet:unfunded', 'Unfunded');
 
   const showAccountGate = accountGateActive && !(isLoading && !sourcePublicKey);
+  // Seiten ohne Kontobezug (z. B. Neues Konto erstellen): kein Wallet-Kopf
+  const hideWalletHeader = ACCOUNT_FREE_PAGES.includes(menuSelection);
   // Auf der Groupfund-Seite sagt der Hinweis alles: keine zweite und dritte Meldung dazu.
   const notFoundOnlyInGate = showAccountGate && notFound && menuSelection === 'groupfund';
   const accountGateTitle = React.useMemo(() => {
@@ -866,6 +866,8 @@ function Main() {
   return (
     <Suspense fallback={<div className="flex items-center justify-center min-h-[200px] text-gray-400 text-sm"><span className="animate-pulse">...</span></div>}>
      <>
+      {/* Wallet-Kopf nur auf Seiten mit Kontobezug; das Konto bleibt im State erhalten */}
+      {!hideWalletHeader && (
       <div className="max-w-4xl mx-auto px-4 pt-4 text-center mt-4-500" style={{ paddingBottom: 'max(1rem, calc(2rem + env(safe-area-inset-bottom)))' }}>
         {/* 🌍 Global: Titel & Info */}
         <div className="relative mb-2">
@@ -899,7 +901,7 @@ function Main() {
                 <input
                   type="checkbox"
                   checked={devTestnet}
-                  onChange={(e)=>{ const next = !!e.target.checked; setDevTestnet(next); if (typeof window !== 'undefined' && window.localStorage) { if (next) { window.localStorage.setItem('SKM_NETWORK', 'TESTNET'); window.localStorage.setItem('SKM_HORIZON_URL', NETWORKS.TESTNET.horizonUrl); } else { window.localStorage.setItem('SKM_NETWORK', 'PUBLIC'); window.localStorage.removeItem('SKM_HORIZON_URL'); } window.dispatchEvent(new CustomEvent('stm-network-changed', { detail: next ? 'TESTNET' : 'PUBLIC' })); } }}
+                  onChange={(e)=>{ const next = !!e.target.checked; setDevTestnet(next); setGlobalNetwork(next ? 'TESTNET' : 'PUBLIC'); }}
                 />
                 {t('menu:devTestnet', 'Testnet (für Entwickler)')}
               </label>
@@ -1022,6 +1024,7 @@ function Main() {
 
         {error && !notFoundOnlyInGate && <p className="text-red-500 mt-4">{errorDisplay}</p>}
       </div>
+      )}
 
       {showAccountGate && (
         <AccountGate

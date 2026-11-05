@@ -7,7 +7,8 @@
 // Futurenet ist vorbereitet, aber deaktiviert (enabled: false). Zum Aktivieren:
 //   1. enabled auf true setzen (hier, in services/stellarNetworks.js und api/stellarNetworks.php)
 //   2. Futurenet-Hosts in BASE_CONNECT_SRC (services/securityHeaders.js) aufnehmen
-//   3. Netzwahl-UI (main.jsx Dev-Schalter, MultisigEditPage NetworkSelector) erweitern
+//   3. Netzwahl-UI erweitern (utils/globalNetwork.js; main.jsx Dev-Schalter,
+//      MultisigCreatePage und MultisigEditPage NetworkSelector)
 //   4. Stellen mit binaerer isTestnet-Logik pruefen (Labels, Explorer-Links)
 //   5. i18n-Texte fuer das Netz ergaenzen
 // Quelle der Werte: https://developers.stellar.org/docs/networks

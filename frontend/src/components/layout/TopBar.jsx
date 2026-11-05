@@ -2,33 +2,18 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { openMainView } from '../../utils/appNavigation.js';
+import { useGlobalNetwork } from '../../utils/globalNetwork.js';
 import LanguageMenu from './LanguageMenu.jsx';
 import NavIcon from './NavIcon.jsx';
 import PriceCurrencyMenu from './PriceCurrencyMenu.jsx';
 import SigningStatus from './SigningStatus.jsx';
 import XlmPriceTicker from './XlmPriceTicker.jsx';
 
-function readNetwork() {
-  try {
-    return window.localStorage?.getItem('SKM_NETWORK') === 'TESTNET' ? 'TESTNET' : 'PUBLIC';
-  } catch {
-    return 'PUBLIC';
-  }
-}
-
+// Gleiche Quelle wie der Netzschalter auf "Neues Konto erstellen" (utils/globalNetwork.js),
+// damit Anzeige und Schalter nie verschieden sind.
 function NetworkBadge() {
   const { t } = useTranslation(['network']);
-  const [network, setNetwork] = React.useState(readNetwork);
-
-  React.useEffect(() => {
-    const handler = (e) => setNetwork(typeof e?.detail === 'string' && e.detail === 'TESTNET' ? 'TESTNET' : readNetwork());
-    window.addEventListener('stm-network-changed', handler);
-    window.addEventListener('storage', handler);
-    return () => {
-      window.removeEventListener('stm-network-changed', handler);
-      window.removeEventListener('storage', handler);
-    };
-  }, []);
+  const [network] = useGlobalNetwork();
 
   const isTest = network === 'TESTNET';
   return (

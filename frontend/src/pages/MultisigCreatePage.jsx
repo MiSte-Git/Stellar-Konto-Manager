@@ -1,5 +1,6 @@
-import React, { useMemo, useState, useEffect } from 'react';
-import { friendbotUrlFor, horizonUrlFor, passphraseFor, readStoredNetworkId } from '../config/networks.js';
+import React, { useMemo, useState, useEffect, useRef } from 'react';
+import { friendbotUrlFor, horizonUrlFor, passphraseFor } from '../config/networks.js';
+import { useGlobalNetwork } from '../utils/globalNetwork.js';
 import { useTranslation } from 'react-i18next';
 import SecretKeyModal from '../components/SecretKeyModal.jsx';
 import MultiSigHelpDialog from '../components/multisig/MultiSigHelpDialog.jsx';
@@ -48,13 +49,9 @@ function NetworkSelector({ value, onChange }) {
 export default function MultisigCreatePage() {
   const { t } = useTranslation(['multisigCreate', 'multisigConfig', 'network', 'common']);
 
-  const [network, setNetwork] = useState(() => {
-    try {
-      return readStoredNetworkId();
-    } catch {
-      return 'PUBLIC';
-    }
-  });
+  // Der Schalter der Seite ist der globale Netzschalter (wie die Testnet-Checkbox
+  // im Wallet-Kopf, der hier ausgeblendet ist) und folgt jedem Wechsel von anderer Stelle.
+  const [network, setNetwork] = useGlobalNetwork();
   const [generated, setGenerated] = useState(null); // { pub, sec }
   const [signers, setSigners] = useState(['']);
   const [signerCount, setSignerCount] = useState(1);
@@ -148,17 +145,33 @@ export default function MultisigCreatePage() {
   }, [enableMultisig, generated?.pub, highT, lowT, masterWeight, medT, plannedSigners, t]);
   const hasSafetyErrors = enableMultisig && safetyCheck.errors.length > 0;
 
-  // Sync with global network changes
+  // Nach einem Netzwechsel (egal von wo) Reserve des neuen Netzes laden und das
+  // Startguthaben vorschlagen. Vorher lief das nur beim Klick auf den Schalter der
+  // Seite, und zwar noch gegen den Server des alten Netzes. Beim Oeffnen der Seite
+  // bleibt es wie bisher (Startguthaben 1, Reserve-Fallback).
+  const planRef = useRef({ enableMultisig: false, signerCount: 1 });
+  planRef.current = { enableMultisig, signerCount };
+  const lastNetworkRef = useRef(network);
   useEffect(() => {
-    const handler = (e) => {
-      try {
-        const v = (typeof e?.detail === 'string') ? e.detail : (window.localStorage?.getItem('SKM_NETWORK') || 'PUBLIC');
-        setNetwork(v === 'TESTNET' ? 'TESTNET' : 'PUBLIC');
-      } catch { /* noop */ }
-    };
-    window.addEventListener('stm-network-changed', handler);
-    return () => window.removeEventListener('stm-network-changed', handler);
-  }, []);
+    if (lastNetworkRef.current === network) return undefined;
+    lastNetworkRef.current = network;
+    let cancelled = false;
+    (async () => {
+      const r = await fetchBaseReserveXLM();
+      if (cancelled) return;
+      setBaseReserve(r);
+      if (network === 'PUBLIC') {
+        const { enableMultisig: ms, signerCount: n } = planRef.current;
+        const planned = ms ? Math.max(0, Number(n) || 0) : 0;
+        setStartingBalance(Math.max(r * (2 + planned) + 0.5, 1).toFixed(7));
+      } else {
+        setStartingBalance('1');
+      }
+    })();
+    return () => { cancelled = true; };
+    // fetchBaseReserveXLM liest server, der sich nur mit network aendert
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [network]);
 
   // Sync signers length with selected count (and weights too)
   useEffect(() => {
@@ -452,23 +465,7 @@ export default function MultisigCreatePage() {
 
       <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">{t('multisigCreate:hint')}</p>
 
-      <NetworkSelector value={network} onChange={async (net) => {
-        setNetwork(net);
-        // Sync global state
-        try {
-          if (typeof window !== 'undefined' && window.localStorage) {
-            window.localStorage.setItem('SKM_NETWORK', net);
-            window.dispatchEvent(new CustomEvent('stm-network-changed', { detail: net }));
-          }
-        } catch { /* noop */ }
-        const r = await fetchBaseReserveXLM();
-        setBaseReserve(r);
-        if (net === 'PUBLIC') {
-          setStartingBalance(recommended.toFixed(7));
-        } else {
-          setStartingBalance('1');
-        }
-      }} />
+      <NetworkSelector value={network} onChange={setNetwork} />
 
       <div className="bg-white dark:bg-gray-800 rounded-sm border p-4 mb-4">
         <div className="flex flex-wrap items-center gap-3 mb-2">
