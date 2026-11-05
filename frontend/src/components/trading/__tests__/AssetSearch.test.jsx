@@ -371,3 +371,56 @@ describe('AssetSearch - Market-Swap ausführen', () => {
     expect(hoisted.submitTransactionMock).not.toHaveBeenCalled();
   });
 });
+
+// Ergebnisliste: nur Details. Der Weg zur Trustline fuehrt immer ueber die Detailansicht
+// mit den Token-Fakten (ADR 0002), nie direkt aus einer Zeile in die Bestaetigung.
+describe('AssetSearch - Ergebnisliste nur mit Details', () => {
+  beforeEach(() => {
+    hoisted.loadTrustlinesMock.mockReset().mockImplementation(async () => []);
+  });
+
+  async function search() {
+    fireEvent.change(screen.getByPlaceholderText('USDC, G... oder USDC:G...'), { target: { value: ASSET_CODE } });
+    fireEvent.click(screen.getByRole('button', { name: 'Suchen' }));
+    return screen.findByRole('button', { name: 'Details' });
+  }
+
+  it('die Liste hat je Zeile nur den Button Details', async () => {
+    renderPage();
+    await search();
+    const table = screen.getByRole('table');
+    const rows = within(table).getAllByRole('row').slice(1);
+    expect(rows).toHaveLength(1);
+    expect(within(rows[0]).getAllByRole('button').map((b) => b.textContent)).toEqual(['Details']);
+  });
+
+  it('Details oeffnet die Detailansicht, dort oeffnet Trustline hinzufuegen die Bestaetigung', async () => {
+    renderPage();
+    fireEvent.click(await search());
+    // Detailansicht mit Trustline-Abschnitt, Bestaetigung noch nicht offen
+    await screen.findByText('Trustline vorbereiten');
+    expect(screen.getAllByText('Trustline fehlt').length).toBeGreaterThan(0);
+    expect(screen.queryByText('Trustline bestätigen')).toBeNull();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Trustline hinzufügen' }));
+    expect(await screen.findByText('Trustline bestätigen')).toBeInTheDocument();
+    expect(hoisted.submitTransactionMock).not.toHaveBeenCalled();
+  });
+
+  it('aus der Liste gibt es keinen direkten Weg in die Bestaetigung', async () => {
+    renderPage();
+    await search();
+    const table = screen.getByRole('table');
+    // Jeder Zeilen-Button fuehrt hoechstens in die Detailansicht. Details zuletzt: Ein
+    // anderer Button (frueher Trustline) wuerde sonst nach der Auswahl gesperrt und nie geprueft.
+    const row = within(table).getAllByRole('row')[1];
+    const buttons = within(row).getAllByRole('button');
+    const ordered = [...buttons.filter((b) => b.textContent !== 'Details'), ...buttons.filter((b) => b.textContent === 'Details')];
+    for (const button of ordered) fireEvent.click(button);
+    await screen.findByText('Trustline vorbereiten');
+    // Auch nach abgeschlossener Trustline-Pruefung kein automatisches Nachschieben des Dialogs
+    await waitFor(() => expect(hoisted.loadTrustlinesMock).toHaveBeenCalled());
+    await act(async () => { await new Promise((r) => setTimeout(r, 0)); });
+    expect(screen.queryByText('Trustline bestätigen')).toBeNull();
+  });
+});

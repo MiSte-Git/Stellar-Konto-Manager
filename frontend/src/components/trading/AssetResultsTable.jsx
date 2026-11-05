@@ -26,10 +26,10 @@ function FactMark({ checked, loading, label }) {
 
 /**
  * Asset search results table: sortable columns, per-row domain/TOML
- * checkmarks, and the details/trustline/swap row actions. Extracted from
- * AssetSearch.jsx (step 3 of the file-split) without any behavior change -
- * pure presentation, all state/handlers stay in the container and are
- * passed in as props.
+ * checkmarks and one row action, Details. Trustline and swap are only
+ * reachable from the detail view, after the token facts (ADR 0002: the
+ * user decides with the facts in front of them, never straight from a list
+ * row). Pure presentation, all state/handlers stay in the container.
  */
 export default function AssetResultsTable({
   assetResults,
@@ -42,10 +42,6 @@ export default function AssetResultsTable({
   sortIndicator,
   formatTrustlineCount,
   onSelectAsset,
-  canAddTrustlineFor,
-  onOpenTrustlineModal,
-  trustlineDisabledHint = '',
-  trustlineActionLabel,
 }) {
   const { t } = useTranslation(['trading', 'common']);
   // Asset codes are case-sensitive on Stellar and, on their own, prove
@@ -86,9 +82,9 @@ export default function AssetResultsTable({
             <table className="min-w-full text-sm">
               <thead>
                 <tr className="text-left">
-                  <th className="py-2 pr-3">{t('trading:assetSearch.result.columns.code')}</th>
+                  <th className="py-2 pl-3 pr-3">{t('trading:assetSearch.result.columns.code')}</th>
                   <th className="py-2 pr-3">{t('trading:assetSearch.result.columns.issuer')}</th>
-                  <th className="py-2 pr-3" title={t('trading:assetSearch.result.columnHelp.numAccounts')}>
+                  <th className="py-2 pr-3 whitespace-nowrap" title={t('trading:assetSearch.result.columnHelp.numAccounts')}>
                     <button
                       type="button"
                       onClick={() => toggleAssetSort('trustlines')}
@@ -100,7 +96,8 @@ export default function AssetResultsTable({
                   </th>
                   <th className="py-2 pr-3">{t('trading:assetSearch.result.columns.domain')}</th>
                   <th className="py-2 pr-3">{t('trading:assetSearch.result.columns.toml')}</th>
-                  <th className="py-2 pr-3">{t('trading:assetSearch.result.columns.actions', 'Actions')}</th>
+                  {/* Nur noch ein Button: schmal halten, damit Code und Issuer Platz haben */}
+                  <th className="w-px py-2 pr-3 whitespace-nowrap">{t('trading:assetSearch.result.columns.actions', 'Actions')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -124,10 +121,10 @@ export default function AssetResultsTable({
                           the code: on Stellar the code alone never proves authenticity,
                           only the issuer does - de-emphasizing it here would repeat the
                           exact confusion this table is meant to prevent. */}
-                      <td className="py-2 pr-3 font-mono font-semibold" title={r.assetIssuer || ''}>
+                      <td className="py-2 pr-3 font-mono font-semibold whitespace-nowrap" title={r.assetIssuer || ''}>
                         {shortenKey(r.assetIssuer || '') || '—'}
                       </td>
-                      <td className="py-2 pr-3">{formatTrustlineCount(r)}</td>
+                      <td className="py-2 pr-3 whitespace-nowrap">{formatTrustlineCount(r)}</td>
                       <td className="py-2 pr-3">
                         <FactMark
                           checked={rowFacts.homeDomain}
@@ -142,39 +139,14 @@ export default function AssetResultsTable({
                           label={t('trading:assetSearch.result.factLabels.toml')}
                         />
                       </td>
-                      <td className="py-2 pr-3">
-                        <div className="flex flex-wrap gap-2">
-                          <button
-                            type="button"
-                            onClick={() => onSelectAsset(r)}
-                            className="rounded-sm border border-gray-300 px-2 py-1 text-xs hover:bg-gray-100 dark:border-gray-700 dark:hover:bg-gray-800"
-                          >
-                            {t('trading:assetSearch.actions.details', 'Details')}
-                          </button>
-                          <button
-                            type="button"
-                            disabled={!canAddTrustlineFor(r)}
-                            onClick={() => onOpenTrustlineModal(r)}
-                            className={`rounded-sm border px-2 py-1 text-xs ${
-                              canAddTrustlineFor(r)
-                                ? 'border-green-300 text-green-800 hover:bg-green-50 dark:border-green-700 dark:text-green-200 dark:hover:bg-green-900'
-                                : 'border-gray-200 text-gray-400 dark:border-gray-800'
-                            }`}
-                            title={!canAddTrustlineFor(r) && trustlineDisabledHint
-                              ? trustlineDisabledHint
-                              : t('trading:assetSearch.actions.trustlineNext', 'Next step: create trustline from search result')}
-                          >
-                            {trustlineActionLabel(r)}
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => onSelectAsset(r)}
-                            className="rounded-sm border border-blue-300 px-2 py-1 text-xs text-blue-800 hover:bg-blue-50 dark:border-blue-700 dark:text-blue-200 dark:hover:bg-blue-900"
-                            title={t('trading:assetSearch.actions.swapNext', 'Select asset and open swap preview')}
-                          >
-                            {t('trading:assetSearch.actions.swap', 'Swap')}
-                          </button>
-                        </div>
+                      <td className="w-px py-2 pr-3 whitespace-nowrap">
+                        <button
+                          type="button"
+                          onClick={() => onSelectAsset(r)}
+                          className="rounded-sm border border-gray-300 px-2 py-1 text-xs hover:bg-gray-100 dark:border-gray-700 dark:hover:bg-gray-800"
+                        >
+                          {t('trading:assetSearch.actions.details', 'Details')}
+                        </button>
                       </td>
                     </tr>
                   );

@@ -1,6 +1,6 @@
 import React from 'react';
 import { describe, expect, it } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import { I18nextProvider } from 'react-i18next';
 import i18n from '../../../i18n.js';
 import AssetResultsTable from '../AssetResultsTable.jsx';
@@ -24,9 +24,6 @@ function baseProps(overrides = {}) {
     sortIndicator: () => '',
     formatTrustlineCount: () => '—',
     onSelectAsset: noop,
-    canAddTrustlineFor: () => true,
-    onOpenTrustlineModal: noop,
-    trustlineActionLabel: () => 'Trustline',
     ...overrides,
   };
 }
@@ -84,5 +81,33 @@ describe('AssetResultsTable', () => {
     const issuerCell = screen.getByTitle(ISSUER_A);
     expect(codeCell.className).toContain('font-semibold');
     expect(issuerCell.className).toContain('font-semibold');
+  });
+
+  it('zeigt je Zeile nur den Button Details, kein Trustline und kein Swap', () => {
+    renderTable(baseProps({
+      assetResults: [
+        { assetCode: 'FOO', assetIssuer: ISSUER_A },
+        { assetCode: 'BAR', assetIssuer: ISSUER_B },
+      ],
+    }));
+    const rows = screen.getAllByRole('row').slice(1); // ohne Kopfzeile
+    expect(rows).toHaveLength(2);
+    rows.forEach((row) => {
+      const buttons = within(row).getAllByRole('button');
+      expect(buttons.map((b) => b.textContent)).toEqual(['Details']);
+    });
+    // Der Sortierknopf der Spalte "Trustlines" bleibt, aber kein Zeilen-Button dafuer
+    expect(screen.queryByRole('button', { name: 'Trustline' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Trustline hinzufügen' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Swap' })).toBeNull();
+  });
+
+  it('Details waehlt genau dieses Asset aus', () => {
+    const onSelectAsset = vi.fn();
+    const bar = { assetCode: 'BAR', assetIssuer: ISSUER_B };
+    renderTable(baseProps({ assetResults: [{ assetCode: 'FOO', assetIssuer: ISSUER_A }, bar], onSelectAsset }));
+    fireEvent.click(within(screen.getAllByRole('row')[2]).getByRole('button', { name: 'Details' }));
+    expect(onSelectAsset).toHaveBeenCalledTimes(1);
+    expect(onSelectAsset).toHaveBeenCalledWith(bar);
   });
 });
