@@ -42,6 +42,7 @@ import { CONTRACT_ADDRESS_ERROR, isContractAddress } from '../utils/stellar/addr
 import { txHashHex } from '../utils/stellar/txHash.js';
 import { draftGeneration, findSentPayment, readSendPaymentDraft, recordSentPayment, writeSendPaymentDraft } from '../utils/sendPaymentDraft.js';
 import BatchPaymentDialog from '../components/wallet/BatchPaymentDialog.jsx';
+import { requestHeaderBalanceRefresh } from '../utils/balanceRefresh.js';
 
 // Immediate local submits (single-sig send, or a multisig job collected and
 // submitted right away) expect a near-term Horizon confirmation, unlike a
@@ -1561,6 +1562,8 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       console.warn('[SKM] post-send source balance refresh failed', e);
     });
     setDestBalanceRefreshKey((prev) => prev + 1);
+    // Saldo oben in der Kopfzeile ebenfalls aktualisieren
+    requestHeaderBalanceRefresh();
   }, [loadSourceAccount]);
 
   const handleReviewConfirm = useCallback(async () => {
@@ -2504,6 +2507,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
           onClose={closeResultDialog}
           onBack={isMultisig === true ? () => reopenSelection(resultDialog.type === 'sent' ? 'local' : resultDialog.type) : undefined}
           signNotice={resultDialog.type === 'job' && resultDialog.noNewSignature ? t('multisig:confirm.result.job.noNewSignature') : null}
+          activeSignerId={publicKey}
           onSignNow={resultDialog.type === 'job' ? () => {
             setLastResultDialog(resultDialog);
             setResultDialog(null);

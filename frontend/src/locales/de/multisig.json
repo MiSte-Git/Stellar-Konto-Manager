@@ -95,7 +95,8 @@
         "signedTitle": "Bereits signiert",
         "signedItem": "{{signer}} (Gewicht {{weight}}) ✓",
         "allCollected": "Alle nötigen Signaturen sind gesammelt. Der Job kann jetzt gesendet werden („Zum Job“).",
-        "noNewSignature": "Dieser Secret Key hat den Job bereits signiert. Es fehlt noch die Signatur eines anderen Signers."
+        "noNewSignature": "Dieser Secret Key hat den Job bereits signiert. Es fehlt noch die Signatur eines anderen Signers.",
+        "activeSigned": "Dieses Konto ({{signer}}) hat bereits signiert. Die übrigen Signer signieren über „Zum Job“ oder in ihrem eigenen SKM mit der Job-ID."
       },
       "sent": {
         "title": "Transaktion gesendet",

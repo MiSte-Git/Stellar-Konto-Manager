@@ -99,6 +99,7 @@ import DeleteByIssuer from './components/DeleteByIssuer';
 import ConfirmationModal from './components/ConfirmationModal';
 import './index.css'; // Enthält @tailwind + dein echtes Styling
 import { isForeignScriptError } from './utils/opaqueScriptError.js';
+import { BALANCE_REFRESH_EVENT } from './utils/balanceRefresh.js';
 import {
   toggleAllTrustlines,
   toggleTrustlineSelection
@@ -547,6 +548,25 @@ function Main() {
     window.addEventListener('stm-trigger-recheck', handler);
     return () => window.removeEventListener('stm-trigger-recheck', handler);
   }, [revalidateActiveWallet]);
+
+  // Nur den XLM-Saldo in der Kopfzeile neu lesen, z. B. nach einer gesendeten Zahlung.
+  // Bewusst ohne refreshToken/isLoading: die offene Seite (Ergebnisdialog) darf nicht neu
+  // gemountet werden. Ein Fehler hier aendert nichts an der Anzeige.
+  useEffect(() => {
+    const handler = async (e) => {
+      const accountId = e?.detail?.accountId || '';
+      if (!sourcePublicKey || (accountId && accountId !== sourcePublicKey)) return;
+      try {
+        const net = readStoredNetworkId();
+        const { publicKey, summary } = await submitSourceInput(sourcePublicKey, t, net, { includeTrustlines: false });
+        if (publicKey === sourcePublicKey && summary?.xlmBalance != null) setXlmBalance(summary.xlmBalance);
+      } catch (err) {
+        console.warn('[SKM] header balance refresh failed', err);
+      }
+    };
+    window.addEventListener(BALANCE_REFRESH_EVENT, handler);
+    return () => window.removeEventListener(BALANCE_REFRESH_EVENT, handler);
+  }, [sourcePublicKey, t]);
 
   // Keep header checkbox (devTestnet) in sync with global network changes
   useEffect(() => {

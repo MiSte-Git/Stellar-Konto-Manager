@@ -134,4 +134,31 @@ describe('MultisigResultDialog', () => {
     expect(onSignNow).not.toHaveBeenCalled();
     expect(screen.getByTestId('multisig-result-complete')).toBeInTheDocument();
   });
+
+  it('Job: Jetzt signieren ist gesperrt, wenn das aktive Konto schon signiert hat, auch wenn noch Signer fehlen', () => {
+    const ACTIVE = 'GATHPDLDMA5UAHHUUBFAQNW7B3573IUMEGPZGXMT25CNUPY4BOYFAV7F';
+    const onSignNow = vi.fn();
+    renderDialog({
+      type: 'job',
+      jobId: 'job-5',
+      signing: { required: 3, collected: 1, missingSigners: [{ publicKey: SIGNER, weight: 1 }], signedSigners: [{ publicKey: ACTIVE, weight: 1 }] },
+      onSignNow,
+      onOpenJob: vi.fn(),
+      activeSignerId: ACTIVE,
+    });
+    expect(screen.getByTestId('multisig-result-sign-now')).toBeDisabled();
+    expect(screen.getByTestId('multisig-result-active-signed')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Zum Job' })).not.toBeDisabled();
+  });
+
+  it('Job: aktives Konto hat noch nicht signiert, Jetzt signieren bleibt aktiv', () => {
+    renderDialog({
+      type: 'job',
+      jobId: 'job-6',
+      signing: { required: 2, collected: 1, missingSigners: [{ publicKey: SIGNER, weight: 1 }], signedSigners: [{ publicKey: 'GOTHER' + 'A'.repeat(50), weight: 1 }] },
+      onSignNow: vi.fn(),
+      activeSignerId: SIGNER,
+    });
+    expect(screen.getByTestId('multisig-result-sign-now')).not.toBeDisabled();
+  });
 });

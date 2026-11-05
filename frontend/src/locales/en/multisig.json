@@ -89,7 +89,8 @@
         "signedTitle": "Already signed",
         "signedItem": "{{signer}} (weight {{weight}}) ✓",
         "allCollected": "All required signatures have been collected. The job can now be submitted (\"Open job\").",
-        "noNewSignature": "This secret key has already signed the job. A signature from another signer is still missing."
+        "noNewSignature": "This secret key has already signed the job. A signature from another signer is still missing.",
+        "activeSigned": "This account ({{signer}}) has already signed. The other signers sign via \"Open job\" or in their own SKM using the job ID."
       },
       "sent": {
         "title": "Transaction sent",

@@ -31,6 +31,7 @@ async function copyText(text, onDone) {
  *   validUntil?: string|number,          // tx.timeBounds.maxTime (job/xdr), als Frist angezeigt
  *   signing?: { required: number, collected: number, missingSigners: {publicKey:string, weight:number}[], signedSigners?: {publicKey:string, weight:number}[] } | null,
  *   signNotice?: React.ReactNode,        // Hinweis nach "Jetzt signieren", z. B. Key hatte schon signiert
+ *   activeSignerId?: string,             // aktives Konto: hat es schon signiert, ist "Jetzt signieren" gesperrt
  *   summaryItems?: {label:string, value:string}[],   // Zusammenfassung als Liste
  *   children?: React.ReactNode,          // eigene Zusammenfassung (z. B. Liquidity Pools)
  *   notice?: React.ReactNode,            // Zusatzhinweis direkt unter dem Status
@@ -56,6 +57,7 @@ export default function MultisigResultDialog({
   onSignNow,
   onOpenJob,
   signNotice = null,
+  activeSignerId = '',
 }) {
   const { t, i18n } = useTranslation(['multisig', 'common']);
   const [copiedXdr, setCopiedXdr] = useState(false);
@@ -69,6 +71,11 @@ export default function MultisigResultDialog({
     (signing.required > 0 && signing.collected >= signing.required)
     || (Array.isArray(signing.missingSigners) && signing.missingSigners.length === 0 && (signing.signedSigners || []).length > 0)
   );
+  // Das aktive Konto hat schon signiert: "Jetzt signieren" wuerde nur dieselbe Signatur
+  // wiederholen. Die uebrigen Signer signieren ueber den Job (Zum Job / eigene SKM-Instanz).
+  const activeAlreadySigned = !!signing && !!activeSignerId
+    && (signing.signedSigners || []).some((s) => s.publicKey === activeSignerId);
+  const signNowDisabled = signingComplete || activeAlreadySigned;
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-55 overflow-y-auto p-4" role="dialog" aria-modal="true" data-testid="multisig-result-dialog">
@@ -234,8 +241,10 @@ export default function MultisigResultDialog({
                 type="button"
                 className={`${BTN_OUTLINE} disabled:opacity-50 disabled:cursor-not-allowed`}
                 onClick={onSignNow}
-                disabled={signingComplete}
-                title={signingComplete ? t('multisig:confirm.result.job.allCollected') : undefined}
+                disabled={signNowDisabled}
+                title={signingComplete
+                  ? t('multisig:confirm.result.job.allCollected')
+                  : activeAlreadySigned ? t('multisig:confirm.result.job.activeSigned', { signer: shortKey(activeSignerId) }) : undefined}
                 data-testid="multisig-result-sign-now"
               >
                 {t('multisig:detail.secretPrompt.signNow', 'Jetzt signieren')}
@@ -254,6 +263,11 @@ export default function MultisigResultDialog({
         )}
         {type === 'job' && onSignNow && signingComplete && (
           <div className="mb-3 text-sm text-green-700 dark:text-green-300" data-testid="multisig-result-complete">{t('multisig:confirm.result.job.allCollected')}</div>
+        )}
+        {type === 'job' && onSignNow && !signingComplete && activeAlreadySigned && (
+          <div className="mb-3 text-sm text-gray-700 dark:text-gray-300" data-testid="multisig-result-active-signed">
+            {t('multisig:confirm.result.job.activeSigned', { signer: shortKey(activeSignerId) })}
+          </div>
         )}
 
         {type === 'xdr' && xdr && (
