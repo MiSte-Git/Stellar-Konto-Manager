@@ -56,6 +56,11 @@ export default defineConfig(({ mode }) => {
       }),
     },
     server: {
+      // Fester Port: Die Backends erlauben nur http://localhost:5173 als Dev-Origin (G3).
+      // Ist 5173 belegt, bricht Vite ab, statt still auf 5174 auszuweichen und dann
+      // fuer jeden API-Aufruf 403 forbidden_origin zu bekommen.
+      port: 5173,
+      strictPort: true,
       proxy: {
         '/horizon': {
           target: 'https://horizon.stellar.org',
