@@ -459,6 +459,12 @@
       "doneRejected": "Abgelehnt. Ohne dich reicht das Gewicht nicht mehr, der Job ist damit abgelehnt und nimmt keine Signaturen mehr an.",
       "declinedByMe": "Du hast diesen Job abgelehnt. Signierst du doch noch, wird die Ablehnung entfernt.",
       "alreadySigned": "Du hast bereits signiert und kannst nicht mehr ablehnen."
+    },
+    "dead": {
+      "obsolete_seq": "Dieser Job kann nicht mehr signiert oder gesendet werden: Das Konto hat seit dem Anlegen eine andere Transaktion gesendet, dadurch passt die Sequence-Nummer nicht mehr. Eine Stellar-Transaktion gilt nur für genau eine Sequence-Nummer. Lege den Auftrag bei Bedarf neu an.",
+      "expired": "Dieser Job kann nicht mehr signiert oder gesendet werden: Sein Gültigkeitszeitraum ist abgelaufen. Lege den Auftrag bei Bedarf neu an.",
+      "skipUnlock": "Du musst dafür keinen Secret Key eingeben.",
+      "showAnyway": "Details trotzdem ansehen (Secret Key nötig)"
     }
   },
   "secretModal": {
@@ -527,7 +533,9 @@
     "deleteRateLimited": "Der Server hat zu viele Anfragen gemeldet. {{n}} Jobs wurden nicht mehr versucht, bitte in ein paar Minuten erneut löschen.",
     "loadFailed": "Die Aufträge konnten nicht geladen werden.",
     "loadFailedNetwork": "Keine Verbindung zum SKM-Server. Prüfe die Internetverbindung und lade die Seite neu. Falls ein Werbe- oder Tracking-Blocker aktiv ist, für diese Seite ausschalten.",
-    "errorDetail": "Detail: {{detail}}"
+    "errorDetail": "Detail: {{detail}}",
+    "detailsOnly": "Details",
+    "deadHint": "Kann nicht mehr signiert werden"
   },
   "actions": {
     "createMultisigJob": "Multisig-Job erstellen"

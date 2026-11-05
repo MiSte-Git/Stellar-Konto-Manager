@@ -12,6 +12,9 @@ import { getSessionSecret } from '../utils/sessionSecrets.js';
 const BTN = 'rounded-sm border border-gray-300 bg-white px-3 py-1 text-sm text-gray-800 hover:bg-gray-50 disabled:opacity-50 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800';
 const BTN_DANGER = 'rounded-sm border border-red-300 bg-white px-3 py-1 text-sm text-red-700 hover:bg-red-50 disabled:opacity-50 dark:border-red-800 dark:bg-gray-900 dark:text-red-200 dark:hover:bg-red-950';
 const BTN_ROW_PRIMARY = 'rounded-sm border border-blue-600 bg-blue-600 px-3 py-1 text-xs font-semibold text-white hover:bg-blue-700 whitespace-nowrap';
+const BTN_ROW_SECONDARY = 'rounded-sm border border-gray-300 bg-white px-3 py-1 text-xs text-gray-800 hover:bg-gray-50 whitespace-nowrap dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800';
+// Jobs, die nie mehr gueltig werden koennen: kein Signieren mehr anbieten.
+const DEAD_JOB_STATUSES = new Set(['obsolete_seq', 'expired']);
 const BTN_ROW_LINK = 'rounded-sm border-0 bg-transparent px-1 py-0.5 text-xs text-gray-600 hover:underline dark:bg-transparent dark:text-gray-300 whitespace-nowrap';
 
 // Netzwerkfehler von fetch: Chrome 'Failed to fetch', Safari/WebKit 'Load failed', Firefox 'NetworkError ...'.
@@ -410,7 +413,14 @@ function MultisigJobList({ onBack, publicKey, onOpenDetail, refreshKey = 0 }) {
                   </td>
                   <td className="px-2 py-1 font-mono break-all">{j.accountId}</td>
                   <td className="px-2 py-1 font-mono break-all">{(j.txHash || '').slice(0, 12)}…</td>
-                  <td className="px-2 py-1">{renderStatus(j.status)}</td>
+                  <td className="px-2 py-1">
+                    {DEAD_JOB_STATUSES.has(String(j.status || '')) ? (
+                      <div>
+                        <span className="font-semibold text-red-700 dark:text-red-300">{renderStatus(j.status)}</span>
+                        <div className="text-xs text-red-700 dark:text-red-300" data-testid="job-dead-hint">{t('multisig:list.deadHint')}</div>
+                      </div>
+                    ) : renderStatus(j.status)}
+                  </td>
                   <td className="px-2 py-1">
                     <div className="text-xs text-gray-700 dark:text-gray-300">
                       {t('multisig:list.signaturesProgress', {
@@ -424,10 +434,12 @@ function MultisigJobList({ onBack, publicKey, onOpenDetail, refreshKey = 0 }) {
                   <td className="px-2 py-1 text-right">
                     <div className="flex flex-col items-end gap-1">
                     <button
-                      className={BTN_ROW_PRIMARY}
-                      onClick={() => onOpenDetail(j.id)}
+                      className={FINAL_JOB_STATUSES.has(String(j.status || '')) ? BTN_ROW_SECONDARY : BTN_ROW_PRIMARY}
+                      onClick={() => onOpenDetail(j.id, String(j.status || ''))}
                     >
-                      {t('multisig:list.details', 'Details anzeigen')}
+                      {FINAL_JOB_STATUSES.has(String(j.status || ''))
+                        ? t('multisig:list.detailsOnly', 'Details')
+                        : t('multisig:list.details', 'Details anzeigen')}
                     </button>
                     <button
                       className={BTN_ROW_LINK}

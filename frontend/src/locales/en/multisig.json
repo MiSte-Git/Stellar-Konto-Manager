@@ -282,6 +282,12 @@
       "networkMismatch": "The Horizon server is not part of this job's network. Nothing was signed or sent.",
       "noThresholds": "The account's Thresholds could not be read; revocation is not possible.",
       "missingJobData": "This job is missing a hash or account. Revocation is disabled for security reasons."
+    },
+    "dead": {
+      "obsolete_seq": "This job can no longer be signed or submitted: the account has sent another transaction since it was created, so the sequence number no longer matches. A Stellar transaction is valid for exactly one sequence number. Create the job again if needed.",
+      "expired": "This job can no longer be signed or submitted: its validity period has ended. Create the job again if needed.",
+      "skipUnlock": "You do not need to enter a secret key for this.",
+      "showAnyway": "View details anyway (secret key required)"
     }
   },
   "secretModal": {
@@ -336,7 +342,9 @@
     "deleteTestnetConfirm": "Delete testnet jobs",
     "loadFailed": "The jobs could not be loaded.",
     "loadFailedNetwork": "No connection to the SKM server. Check your internet connection and reload the page. If an ad or tracking blocker is active, turn it off for this site.",
-    "errorDetail": "Detail: {{detail}}"
+    "errorDetail": "Detail: {{detail}}",
+    "detailsOnly": "Details",
+    "deadHint": "Can no longer be signed"
   },
   "actions": {
     "createMultisigJob": "Multisig Create a Job"

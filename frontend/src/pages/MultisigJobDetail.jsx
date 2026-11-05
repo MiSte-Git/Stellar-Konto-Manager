@@ -56,7 +56,7 @@ function submitReasonText(submittedResult) {
   return String(err.title || err.detail || err.message || 'submit_failed');
 }
 
-function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
+function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listStatus = '' }) {
   const { t, i18n } = useTranslation(['multisig', 'common']);
   const [job, setJob] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -94,6 +94,8 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
   // erneut fragt. Verworfen nach jedem Signierversuch, bei Sperre (Integritaet, eigenes Konto),
   // beim Sperren der Session, bei Job- oder Kontowechsel und beim Aushaengen.
   const [needsUnlock, setNeedsUnlock] = useState(false);
+  // Toter Job laut Liste: Secret-Key-Abfrage erst auf ausdruecklichen Wunsch zeigen.
+  const [showUnlockAnyway, setShowUnlockAnyway] = useState(false);
   const [unlockInput, setUnlockInput] = useState('');
   const [unlockRemember, setUnlockRemember] = useState(false);
   const [unlockError, setUnlockError] = useState('');
@@ -768,12 +770,17 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
 
   if (!jobId) return null;
 
+  const deadStatus = ['obsolete_seq', 'expired'].includes(String(job?.status || ''))
+    ? String(job.status)
+    : (!job && ['obsolete_seq', 'expired'].includes(String(listStatus || '')) ? String(listStatus) : '');
+  const hideUnlockForDeadJob = !!deadStatus && !job && !showUnlockAnyway;
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <h1 className="text-xl font-semibold">{t('multisig:detail.title', 'Pending Multisig Job')}</h1>
-          {job?.status && <MultisigJobStatusBadge status={job.status} />}
+          {(job?.status || deadStatus) && <MultisigJobStatusBadge status={job?.status || deadStatus} />}
         </div>
         <div className="flex items-center gap-2">
           {onBack && (
@@ -802,7 +809,24 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
       </div>
 
       {error && <div className="text-sm text-red-600">{error}</div>}
-      {needsUnlock && !job && (
+      {deadStatus && (
+        <div role="alert" className="rounded-sm border border-red-400 bg-red-50 p-3 text-sm text-red-900 dark:border-red-700 dark:bg-red-900/30 dark:text-red-100 space-y-2" data-testid="job-dead">
+          <p>{t(`multisig:detail.dead.${deadStatus}`)}</p>
+          {needsUnlock && !job && (
+            <p className="text-xs">{t('multisig:detail.dead.skipUnlock')}</p>
+          )}
+          {needsUnlock && !job && !showUnlockAnyway && (
+            <button
+              type="button"
+              className="rounded-sm border border-red-300 bg-white px-3 py-1 text-xs text-red-800 hover:bg-red-100 dark:border-red-800 dark:bg-gray-900 dark:text-red-200"
+              onClick={() => setShowUnlockAnyway(true)}
+            >
+              {t('multisig:detail.dead.showAnyway')}
+            </button>
+          )}
+        </div>
+      )}
+      {needsUnlock && !job && !hideUnlockForDeadJob && (
         <div className="border border-amber-500 rounded-sm p-3 space-y-3 bg-amber-50 dark:bg-amber-900/40 shadow-xs" data-testid="job-unlock">
           <div className="text-sm font-semibold text-amber-900 dark:text-amber-100">
             {t('multisig:detail.unlock.title', 'Secret Key eingeben, um den Job zu öffnen')}
@@ -1296,35 +1320,38 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
             <textarea className="w-full h-32 text-xs font-mono bg-gray-50 dark:bg-gray-900 border rounded-sm px-2 py-1" readOnly value={job.txXdrCurrent || job.txXdr || ''} />
           </div>
 
-          <div className="border rounded-sm p-3 space-y-2">
-            <div>
-              <h3 className="font-semibold text-sm">{t('multisig:detail.signedXdr.title')}</h3>
-              <p className="text-xs text-gray-700 dark:text-gray-300">{t('multisig:detail.signedXdr.hint')}</p>
+          {/* Abgeschlossene Jobs (auch veraltete/abgelaufene) nehmen keine Signaturen mehr an. */}
+          {!isFinalState && (
+            <div className="border rounded-sm p-3 space-y-2">
+              <div>
+                <h3 className="font-semibold text-sm">{t('multisig:detail.signedXdr.title')}</h3>
+                <p className="text-xs text-gray-700 dark:text-gray-300">{t('multisig:detail.signedXdr.hint')}</p>
+              </div>
+              <textarea
+                className="w-full h-24 text-xs font-mono bg-gray-50 dark:bg-gray-900 border rounded-sm px-2 py-1"
+                placeholder={t('multisig:detail.signedXdr.label')}
+                value={importXdr}
+                onChange={(e) => setImportXdr(e.target.value)}
+              />
+              <button
+                type="button"
+                className="px-4 py-2 rounded-sm bg-blue-600 text-white disabled:opacity-50"
+                onClick={handleMerge}
+                disabled={importing || !importXdr.trim() || importBlocked}
+              >
+                {importing ? t('common:common.loading') : t('multisig:detail.signedXdr.submit')}
+              </button>
+              {importBlocked && (
+                <p className="text-xs text-red-800 dark:text-red-200" data-testid="job-import-blocked">
+                  {integrityBlocked
+                    ? t('multisig:detail.signedXdr.blockedIntegrityHint')
+                    : ownAccountBlocked
+                    ? t('multisig:detail.signedXdr.blockedOwnAccountHint', 'Import gesperrt, weil eine Operation von deinem aktuellen Konto ausgeführt wird.')
+                    : t('multisig:detail.signedXdr.blockedHint', 'Zuerst die Warnungen bei den Transaktionsoperationen oben bestätigen.')}
+                </p>
+              )}
             </div>
-            <textarea
-              className="w-full h-24 text-xs font-mono bg-gray-50 dark:bg-gray-900 border rounded-sm px-2 py-1"
-              placeholder={t('multisig:detail.signedXdr.label')}
-              value={importXdr}
-              onChange={(e) => setImportXdr(e.target.value)}
-            />
-            <button
-              type="button"
-              className="px-4 py-2 rounded-sm bg-blue-600 text-white disabled:opacity-50"
-              onClick={handleMerge}
-              disabled={importing || !importXdr.trim() || importBlocked}
-            >
-              {importing ? t('common:common.loading') : t('multisig:detail.signedXdr.submit')}
-            </button>
-            {importBlocked && (
-              <p className="text-xs text-red-800 dark:text-red-200" data-testid="job-import-blocked">
-                {integrityBlocked
-                  ? t('multisig:detail.signedXdr.blockedIntegrityHint')
-                  : ownAccountBlocked
-                  ? t('multisig:detail.signedXdr.blockedOwnAccountHint', 'Import gesperrt, weil eine Operation von deinem aktuellen Konto ausgeführt wird.')
-                  : t('multisig:detail.signedXdr.blockedHint', 'Zuerst die Warnungen bei den Transaktionsoperationen oben bestätigen.')}
-              </p>
-            )}
-          </div>
+          )}
         </div>
       )}
     </div>

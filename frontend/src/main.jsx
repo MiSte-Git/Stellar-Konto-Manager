@@ -243,6 +243,8 @@ function Main() {
   const [showSecretInfo, setShowSecretInfo] = useState(false);
   const [activeJobId, setActiveJobId] = useState(() => readMenuStateFromUrl().activeJobId);
   const [activeJobToken, setActiveJobToken] = useState(() => readMenuStateFromUrl().activeJobToken);
+  // Status des Jobs laut Liste (z. B. obsolete_seq), bevor die Detailansicht ihn selbst geladen hat.
+  const [activeJobListStatus, setActiveJobListStatus] = useState('');
   // Erhoeht beim Schliessen eines Jobs, damit die Jobliste den neuen Status laedt.
   const [jobListRefresh, setJobListRefresh] = useState(0);
   // Dev/Testnet toggle state synced with localStorage
@@ -1242,7 +1244,7 @@ function Main() {
             refreshKey={jobListRefresh}
             publicKey={sourcePublicKey}
             onBack={() => setMenuSelection(null)}
-            onOpenDetail={(id) => { setActiveJobId(id); setActiveJobToken(null); }}
+            onOpenDetail={(id, status) => { setActiveJobId(id); setActiveJobToken(null); setActiveJobListStatus(status || ''); }}
           />
         </div>
       )}
@@ -1343,13 +1345,13 @@ function Main() {
               <button
                 type="button"
                 className="text-sm px-3 py-1 rounded-sm border hover:bg-gray-100 dark:hover:bg-gray-800"
-                onClick={() => { setActiveJobId(null); setActiveJobToken(null); setJobListRefresh((n) => n + 1); }}
+                onClick={() => { setActiveJobId(null); setActiveJobToken(null); setActiveJobListStatus(''); setJobListRefresh((n) => n + 1); }}
               >
                 {t('common:close', 'Schliessen')}
               </button>
             </div>
             <div className="p-4">
-              <MultisigJobDetail jobId={activeJobId} accessToken={activeJobToken} currentPublicKey={sourcePublicKey} />
+              <MultisigJobDetail jobId={activeJobId} accessToken={activeJobToken} currentPublicKey={sourcePublicKey} listStatus={activeJobListStatus} />
             </div>
           </div>
         </div>

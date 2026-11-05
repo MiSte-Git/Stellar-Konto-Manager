@@ -666,13 +666,13 @@ describe('Fremdes Quellkonto einer Operation', () => {
     expect(signButton()).toBeDisabled();
   });
 
-  it('sperrt in einem abgeschlossenen Job den Import nicht zusaetzlich und fragt nichts ab', async () => {
+  it('abgeschlossener Job: fragt nichts ab und bietet keinen Import signierter XDR mehr an', async () => {
     hoisted.getJobMock.mockImplementation(async () => ({ ...jobFor(paymentTx(OTHER_SOURCE)), status: 'expired' }));
     renderPage();
     await screen.findByTestId('job-foreign-sources');
     expect(screen.queryByRole('checkbox', { name: FOREIGN })).toBeNull();
-    fireEvent.change(importInput(), { target: { value: SIGNED_XDR } });
-    expect(importButton()).toBeEnabled();
+    expect(screen.queryByText(i18n.t('multisig:detail.signedXdr.title'))).toBeNull();
+    expect(screen.getByTestId('job-dead')).toBeInTheDocument();
   });
 
   it('Fee-Bump mit fremder op.source in der inneren Transaktion: Warnung und Sperre', async () => {

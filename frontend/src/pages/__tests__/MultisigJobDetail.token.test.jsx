@@ -95,6 +95,14 @@ describe('MultisigJobDetail: Zugriffstoken', () => {
       expect(openButton()).toBeDisabled();
     });
 
+    it('veralteter Job laut Liste: Erklaerung statt Secret-Key-Abfrage, Abfrage nur auf Wunsch', async () => {
+      renderDetail({ jobId: 'd-reload', currentPublicKey: SIGNER, listStatus: 'obsolete_seq' });
+      expect(await screen.findByTestId('job-dead')).toHaveTextContent('Sequence-Nummer');
+      expect(screen.queryByTestId('job-unlock')).toBeNull();
+      fireEvent.click(screen.getByRole('button', { name: i18n.t('multisig:detail.dead.showAnyway') }));
+      expect(screen.getByTestId('job-unlock')).toBeInTheDocument();
+    });
+
     it('oeffnet den Job mit dem eingegebenen Key ueber die Challenge, ohne ihn zu merken', async () => {
       renderDetail({ jobId: 'd-reload', currentPublicKey: SIGNER });
       await screen.findByTestId('job-unlock');

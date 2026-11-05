@@ -100,6 +100,20 @@ describe('MultisigJobList: Filter', () => {
     expect(box).toHaveTextContent('Load failed');
   });
 
+  it('markiert veraltete Jobs und bietet dort kein Signieren an', async () => {
+    const onOpenDetail = vi.fn();
+    window.fetch.mockImplementation(async () => ({ ok: true, json: async () => [job('tot', { accountId: ME, status: 'obsolete_seq' })] }));
+    render(
+      <I18nextProvider i18n={i18n}>
+        <MultisigJobList publicKey={ME} onBack={() => {}} onOpenDetail={onOpenDetail} />
+      </I18nextProvider>
+    );
+    expect(await screen.findByTestId('job-dead-hint')).toHaveTextContent(i18n.t('multisig:list.deadHint'));
+    expect(screen.queryByRole('button', { name: i18n.t('multisig:list.details') })).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: i18n.t('multisig:list.detailsOnly') }));
+    expect(onOpenDetail).toHaveBeenCalledWith('tot', 'obsolete_seq');
+  });
+
   it('bietet kein Loeschen aller Testnet-Jobs mehr an', async () => {
     renderList();
     await waitFor(() => expect(screen.getByText(/eigen-abgel/)).toBeInTheDocument());
