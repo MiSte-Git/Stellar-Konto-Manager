@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { describe, expect, it } from 'vitest';
-import { isMultisigAccount } from '../isMultisigAccount.js';
+import { isMultisigAccount, singleSignerSuffices, needsMultipleSignatures } from '../isMultisigAccount.js';
 
 describe('isMultisigAccount', () => {
   it('is false for a missing account or one without signers/thresholds', () => {
@@ -36,5 +36,27 @@ describe('isMultisigAccount', () => {
   it('filters out falsy entries in the signers array before counting', () => {
     const account = { signers: [{ key: 'G1', weight: 1 }, null, undefined], thresholds: { high: 1 } };
     expect(isMultisigAccount(account)).toBe(false);
+  });
+});
+
+describe('singleSignerSuffices / needsMultipleSignatures', () => {
+  const account = {
+    signers: [{ key: 'GA', weight: 1, type: 'ed25519_public_key' }, { key: 'GB', weight: 1, type: 'ed25519_public_key' }],
+    thresholds: { low_threshold: 1, med_threshold: 2, high_threshold: 2 },
+  };
+
+  it('Low-Operation mit Schwelle 1: ein Signer reicht, keine Multisig-Auswahl', () => {
+    expect(singleSignerSuffices(account, 1)).toBe(true);
+    expect(needsMultipleSignatures(account, 1)).toBe(false);
+  });
+
+  it('Medium-Operation mit Schwelle 2: mehrere Signaturen noetig', () => {
+    expect(singleSignerSuffices(account, 2)).toBe(false);
+    expect(needsMultipleSignatures(account, 2)).toBe(true);
+  });
+
+  it('Hash-/Pre-Auth-Signer zaehlen nicht als Einzelsigner', () => {
+    const withHash = { ...account, signers: [...account.signers, { key: 'X', weight: 5, type: 'sha256_hash' }] };
+    expect(singleSignerSuffices(withHash, 2)).toBe(false);
   });
 });

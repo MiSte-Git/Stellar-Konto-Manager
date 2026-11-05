@@ -184,6 +184,15 @@ describe('ClaimableBalancesPanel (P1.5)', () => {
     expect(screen.queryByRole('button', { name: /Batch-Convert/ })).not.toBeInTheDocument();
   });
 
+  it('Multisig-Konto mit low=1: ein Signer reicht fuers Einloesen, deshalb kein Job-Button', async () => {
+    const lowOne = makeAccount({ multisig: true });
+    lowOne.thresholds = { low_threshold: 1, med_threshold: 2, high_threshold: 2 };
+    renderPanel({ account: lowOne });
+    await screen.findByText('Claimable Balances');
+    expect(within(itemById(1)).queryByRole('button', { name: 'Als Multisig-Job vorbereiten' })).toBeNull();
+    expect(within(itemById(1)).getByRole('button', { name: 'Einlösen' })).toBeInTheDocument();
+  });
+
   it('bietet bei Einzelsignatur-Konten keinen Job an', async () => {
     renderPanel();
     await screen.findByText('Claimable Balances');

@@ -7,7 +7,7 @@ import MultisigPrepareDialog from '../MultisigPrepareDialog.jsx';
 import BatchConvertDialog from './BatchConvertDialog.jsx';
 import { createMultisigJobFromXdr } from '../../utils/multisigApi.js';
 import { assetLabel } from '../../utils/stellar/batchConvert.js';
-import { isMultisigAccount } from '../../utils/stellar/isMultisigAccount.js';
+import { isMultisigAccount, needsMultipleSignatures } from '../../utils/stellar/isMultisigAccount.js';
 import { useSettings } from '../../utils/useSettings.js';
 import { getHorizonServer } from '../../utils/stellar/stellarUtils.js';
 import { shortenAddress } from '../../utils/stellar/walletSummary.js';
@@ -266,8 +266,16 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
 
   if (!publicKey) return null;
 
+  // Noetige Schwelle fuer genau diese Balance: Einloesen ist Low, mit neuer Trustline Medium.
+  const requiredFor = (item) => Math.max(
+    getRequiredThreshold('claimClaimableBalance', account?.thresholds),
+    needsTrustline(item) ? getRequiredThreshold('changeTrust', account?.thresholds) : 0
+  );
+
   const renderItem = (item) => {
     const hidden = hiddenIds.includes(item.id);
+    // Job nur anbieten, wenn kein einzelner Signer die Schwelle allein erreicht.
+    const offerJob = needsMultipleSignatures(account, requiredFor(item));
     return (
       <li key={item.id} className="flex flex-wrap items-center gap-3 px-5 py-3" data-testid="claimable-item" data-claimable-id={item.id}>
         <div className="min-w-0 flex-1">
@@ -295,7 +303,7 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
           <button type="button" className={linkBtnCls} onClick={() => toggleHidden(item.id)}>
             {hidden ? t('wallet:claimable.unhide') : t('wallet:claimable.hide')}
           </button>
-          {multisig && (
+          {offerJob && (
             <button
               type="button"
               onClick={() => { void prepareJob(item); }}

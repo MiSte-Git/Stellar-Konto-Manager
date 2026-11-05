@@ -29,7 +29,7 @@ import { apiUrl } from '../utils/apiBase.js';
 import { resolveFeePerOp } from '../utils/stellar/fees.js';
 import { getMultisigTxTimeout } from '../utils/getMultisigTxTimeout.js';
 import { txHashHex } from '../utils/stellar/txHash.js';
-import { isMultisigAccount } from '../utils/stellar/isMultisigAccount.js';
+import { needsMultipleSignatures } from '../utils/stellar/isMultisigAccount.js';
 // import { refreshSinceCursor } from '../utils/stellar/syncUtils';
 
 // Auswahl fuer Multisig: alle Signaturen lokal sammeln und senden oder nur einen Job anlegen.
@@ -811,7 +811,8 @@ function ListTrustlines({
             setPendingAdd(payload);
             setPendingAction('add');
             setShowAddModal(false);
-            if (isMultisigAccount(accountInfo)) setShowAddChoice(true);
+            // Auswahl nur, wenn kein einzelner Signer die changeTrust-Schwelle allein erreicht.
+            if (needsMultipleSignatures(accountInfo, requiredThreshold)) setShowAddChoice(true);
             else setShowSecretModal(true);
           }}
           onCancel={() => { setShowAddModal(false); setPendingAdd(null); setPendingAction(null); }}
