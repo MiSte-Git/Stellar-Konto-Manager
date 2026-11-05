@@ -3,8 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { Keypair, StrKey } from '@stellar/stellar-sdk';
 import AddressDropdown from '../AddressDropdown.jsx';
 import SecretKeyModal from '../SecretKeyModal.jsx';
-import { horizonUrlFor, passphraseFor, readStoredNetworkId } from '../../config/networks.js';
-import { getHorizonServer } from '../../utils/stellar/stellarUtils.js';
+import { passphraseFor, readStoredNetworkId } from '../../config/networks.js';
+import { getHorizonServerForNetwork } from '../../utils/stellar/stellarUtils.js';
+import { NETWORK_CHANGED_EVENT, networkFromEvent } from '../../utils/globalNetwork.js';
 import { resolveFeePerOp } from '../../utils/stellar/fees.js';
 import { submitTransactionSafely, AmbiguousSubmitResultError } from '../../utils/stellar/submitTransactionSafely.js';
 import { txHashHex } from '../../utils/stellar/txHash.js';
@@ -120,10 +121,11 @@ function HashLinks({ hash, links }) {
  * - Secret Keys werden vor der ersten Zahlung fuer alle Sender eingesammelt, nur fuer
  *   diesen Lauf im Speicher gehalten und danach verworfen.
  */
-export default function BatchPaymentDialog({ onClose }) {
+export default function BatchPaymentDialog({ onClose, onNetworkChangeClose }) {
   const { t } = useTranslation(['batchPayment', 'common']);
   const [network] = useState(() => readStoredNetworkId());
-  const server = useMemo(() => getHorizonServer(horizonUrlFor(network)), [network]);
+  // Explizites Netz: getHorizonServer(Mainnet-URL) liest das Netz sonst erneut aus localStorage.
+  const server = useMemo(() => getHorizonServerForNetwork(network), [network]);
   const { recentWalletOptions } = useRecentWalletOptions();
   const { wallets } = useTrustedWallets();
   const { explorers } = useSettings();
@@ -158,6 +160,38 @@ export default function BatchPaymentDialog({ onClose }) {
   useEffect(() => { saveBatchRows(network, rows); }, [network, rows]);
 
   const [phase, setPhase] = useState('edit'); // edit | checking | review | sending | done
+  const phaseRef = useRef(phase);
+  phaseRef.current = phase;
+
+  // Netzwechsel (eigener Tab oder anderer Tab, beides als stm-network-changed): Der Dialog
+  // gehoert fest zu dem Netz, mit dem er geoeffnet wurde. Ohne aktiven Lauf schliessen
+  // (Elternseite zeigt den Hinweis). Mit aktivem Lauf die laufende Zahlung zu Ende gehen
+  // lassen und danach ueber stopReason stoppen; keine weitere Zahlung. Die gespeicherte
+  // Liste dieses Netzes bleibt erhalten.
+  const networkChangedRef = useRef(false);
+  const [networkStopped, setNetworkStopped] = useState(false);
+  const onNetworkChangeCloseRef = useRef(onNetworkChangeClose);
+  onNetworkChangeCloseRef.current = onNetworkChangeClose;
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
+  useEffect(() => {
+    const handler = (e) => {
+      if (networkFromEvent(e) === network) return;
+      if (phaseRef.current === 'sending') {
+        networkChangedRef.current = true;
+        setNetworkStopped(true);
+        // Offene Key-Abfrage oder Warten auf einen anderen Lauf beenden: noch nichts gesendet.
+        const resolve = secretResolveRef.current;
+        secretResolveRef.current = null;
+        if (resolve) { setSecretPrompt(null); resolve(null); }
+        lockAbortRef.current?.abort();
+        return;
+      }
+      (onNetworkChangeCloseRef.current || onCloseRef.current)?.();
+    };
+    window.addEventListener(NETWORK_CHANGED_EVENT, handler);
+    return () => window.removeEventListener(NETWORK_CHANGED_EVENT, handler);
+  }, [network]);
   const [inputErrors, setInputErrors] = useState({});
   const [review, setReview] = useState(null);
   const [results, setResults] = useState({});
@@ -371,6 +405,9 @@ export default function BatchPaymentDialog({ onClose }) {
       }
     } catch { /* dann per Dialog */ }
     if (!mountedRef.current) return null;
+    // Netz gewechselt, waehrend die Session-Secrets gelesen wurden: Lauf ist gestoppt,
+    // also nicht mehr nach einem Secret Key fragen.
+    if (networkChangedRef.current) return null;
     setSecretError('');
     return new Promise((resolve) => {
       const once = (value) => { secretResolveRef.current = null; resolve(value); };
@@ -419,7 +456,8 @@ export default function BatchPaymentDialog({ onClose }) {
       // 1. Alle Keys vor der ersten Zahlung, damit ein Abbruch nichts halb sendet.
       for (const source of new Set(items.map((i) => i.row.source.trim()))) {
         const kp = await obtainKeypair(source, review.accounts.get(source));
-        if (!kp) { stopReason = mountedRef.current ? 'cancelled' : 'aborted'; break; }
+        if (!kp) { stopReason = networkChangedRef.current ? 'networkChanged' : (mountedRef.current ? 'cancelled' : 'aborted'); break; }
+        if (networkChangedRef.current) { stopReason = 'networkChanged'; break; }
         keys.set(source, kp);
       }
       const keysOk = !stopReason;
@@ -432,6 +470,8 @@ export default function BatchPaymentDialog({ onClose }) {
         for (const item of items) {
           const { row } = item;
           if (!stopReason && !mountedRef.current) stopReason = 'aborted';
+          // Netz gewechselt: keine weitere Zahlung (die laufende ist schon fertig).
+          if (!stopReason && networkChangedRef.current) stopReason = 'networkChanged';
           // Lock vor jeder Zahlung erneuern; ging er verloren (Tab gedrosselt oder
           // eingefroren, anderer Tab hat uebernommen), sofort stoppen.
           if (!stopReason && !lock.touch()) stopReason = 'lockLost';
@@ -475,6 +515,13 @@ export default function BatchPaymentDialog({ onClose }) {
             }
             const lateBlock = blockReason();
             if (lateBlock) { setResult(row.id, { status: 'skipped', message: errorText(lateBlock) }); continue; }
+            // Wechsel waehrend Konto laden/Bauen: diese Zahlung ist noch nicht gesendet, also
+            // auch sie nicht mehr senden.
+            if (networkChangedRef.current) {
+              stopReason = 'networkChanged';
+              setResult(row.id, { status: 'skipped', message: errorText(stopReason) });
+              continue;
+            }
             // Vor dem Submit als unklar vermerken (Haupt- und Routing-Eintrag) und
             // zuruecklesen: Bricht der Tab jetzt ab, bleibt die Zahlung gesperrt, bis
             // Horizon den Ausgang zeigt. Steht danach ein fremder Hash dort, sendet gerade
@@ -529,7 +576,7 @@ export default function BatchPaymentDialog({ onClose }) {
           });
         } catch (err) {
           if (err?.name !== 'AbortError') throw err;
-          const reason = mountedRef.current ? 'lockCancelled' : 'aborted';
+          const reason = networkChangedRef.current ? 'networkChanged' : (mountedRef.current ? 'lockCancelled' : 'aborted');
           items.forEach((i) => setResult(i.row.id, { status: 'skipped', message: errorText(reason) }));
         } finally {
           lockAbortRef.current = null;
@@ -620,6 +667,11 @@ export default function BatchPaymentDialog({ onClose }) {
           </button>
         </div>
 
+        {networkStopped && (
+          <div className="text-sm text-amber-800 dark:text-amber-200 border border-amber-300 bg-amber-50 dark:bg-amber-900/30 rounded-sm p-2" role="alert" data-testid="batch-network-stopped">
+            {t('batchPayment:networkChanged.stopped')}
+          </div>
+        )}
         {generalError && <div className="text-sm text-red-600" role="alert">{generalError}</div>}
 
         {(phase === 'edit' || phase === 'checking') && (

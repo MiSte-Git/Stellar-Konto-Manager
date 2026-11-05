@@ -133,6 +133,11 @@ function resolveHorizonUrl(url) {
     }
   } catch { /* noop */ }
 
+  return finalizeHorizonUrl(base);
+}
+
+// Dev-Proxy und relative Basis-URL; aendert das Netz nicht.
+function finalizeHorizonUrl(base) {
   const isDev = typeof window !== 'undefined' && window.location && /^http:\/\/(localhost|127\.0\.1|127\.0\.0\.1)/.test(window.location.origin);
   // Wenn wir im Dev auf localhost laufen und Standard-Horizon verwenden, über den Vite-Proxy gehen
   if (isDev && (base === NETWORKS.PUBLIC.horizonUrl || base === `${NETWORKS.PUBLIC.horizonUrl}/`)) {
@@ -160,6 +165,19 @@ const RESOLVED_URL = resolveHorizonUrl(HORIZON_URL);
  */
 export function getHorizonServer(url = HORIZON_URL) {
   const resolved = resolveHorizonUrl(url);
+  return new Horizon.Server(resolved, { allowHttp: allowHttpFor(resolved) });
+}
+
+/**
+ * Horizon-Instanz fuer genau dieses Netz. Anders als getHorizonServer(url) liest sie
+ * SKM_NETWORK nicht: Die Mainnet-URL ist zugleich VITE_HORIZON_URL und gilt dort als
+ * "Default", dann gewinnt das gespeicherte Netz. Fuer Ablaeufe, bei denen Konto,
+ * Sequence und Passphrase sicher aus demselben Netz stammen muessen.
+ * @param {string} network - Netz-ID (PUBLIC, TESTNET, ...)
+ * @returns {Server}
+ */
+export function getHorizonServerForNetwork(network) {
+  const resolved = finalizeHorizonUrl(horizonUrlFor(network));
   return new Horizon.Server(resolved, { allowHttp: allowHttpFor(resolved) });
 }
 

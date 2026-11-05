@@ -24,15 +24,18 @@ const hoisted = vi.hoisted(() => ({
   getSessionSecretMock: vi.fn(),
   submitMock: vi.fn(),
   txLookupMock: vi.fn(),
+  serverNetworkMock: vi.fn(),
 }));
 
+const fakeServer = () => ({
+  loadAccount: hoisted.loadAccountMock,
+  ledgers: () => ({ order: () => ({ limit: () => ({ call: async () => ({ records: [{ base_reserve_in_stroops: 5000000, closed_at: hoisted.ledgerClosedAt.value }] }) }) }) }),
+  transactions: () => ({ transaction: (hash) => ({ call: () => hoisted.txLookupMock(hash) }) }),
+});
 vi.mock('../../../utils/stellar/stellarUtils.js', async (importOriginal) => ({
   ...(await importOriginal()),
-  getHorizonServer: () => ({
-    loadAccount: hoisted.loadAccountMock,
-    ledgers: () => ({ order: () => ({ limit: () => ({ call: async () => ({ records: [{ base_reserve_in_stroops: 5000000, closed_at: hoisted.ledgerClosedAt.value }] }) }) }) }),
-    transactions: () => ({ transaction: (hash) => ({ call: () => hoisted.txLookupMock(hash) }) }),
-  }),
+  getHorizonServer: () => fakeServer(),
+  getHorizonServerForNetwork: (network) => { hoisted.serverNetworkMock(network); return fakeServer(); },
   resolveOrValidateAccount: vi.fn(async (input) => {
     if (input === 'friend*example.com') return { accountId: DEST_A, muxedAddress: null };
     const { MuxedAccount: Mx, StrKey: SK } = await import('@stellar/stellar-sdk');
@@ -651,5 +654,114 @@ describe('BatchPaymentDialog', () => {
     const text = writeText.mock.calls[0][0];
     expect(text).toContain('Memo: 12345 (ID)');
     expect(text).toContain('Memo: 12345 (Text)');
+  });
+});
+
+describe('BatchPaymentDialog: Netzwechsel', () => {
+  const renderWith = (props) => render(
+    <I18nextProvider i18n={i18n}>
+      <BatchPaymentDialog onClose={() => {}} {...props} />
+    </I18nextProvider>
+  );
+  const switchTo = async (net) => {
+    window.localStorage.setItem('SKM_NETWORK', net);
+    await act(async () => { window.dispatchEvent(new CustomEvent('stm-network-changed', { detail: net })); });
+  };
+
+  it('schliesst ohne aktiven Lauf und behaelt die gespeicherte Liste', async () => {
+    const a = rowA();
+    saveBatchRows('PUBLIC', [a]);
+    const onNetworkChangeClose = vi.fn();
+    const onClose = vi.fn();
+    renderWith({ onClose, onNetworkChangeClose });
+    await checkAndWait(1); // Pruefung fertig, Lauf nicht gestartet
+    await switchTo('TESTNET');
+    expect(onNetworkChangeClose).toHaveBeenCalledTimes(1);
+    expect(onClose).not.toHaveBeenCalled();
+    expect(hoisted.submitMock).not.toHaveBeenCalled();
+    expect(window.localStorage.getItem(BATCH_PAYMENT_STORAGE_KEY)).toContain(DEST_A);
+  });
+
+  it('ohne eigenen Callback fuer den Netzwechsel schliesst er ueber onClose', async () => {
+    const onClose = vi.fn();
+    renderWith({ onClose });
+    await switchTo('TESTNET');
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it('ein Event fuer dasselbe Netz schliesst nicht', async () => {
+    const onClose = vi.fn();
+    renderWith({ onClose });
+    await switchTo('PUBLIC');
+    expect(onClose).not.toHaveBeenCalled();
+  });
+
+  it('mit aktivem Lauf: laufende Zahlung endet, keine weitere Zahlung, Hinweis, Liste bleibt', async () => {
+    const a = rowA(); const b = rowB();
+    let release;
+    hoisted.submitMock.mockImplementationOnce((_s, tx) => new Promise((resolve) => { release = () => resolve({ hash: hashOf(tx) }); }));
+    saveBatchRows('PUBLIC', [a, b]);
+    const onNetworkChangeClose = vi.fn();
+    renderWith({ onNetworkChangeClose });
+    await checkAndWait(2);
+    fireEvent.click(screen.getByRole('button', { name: '2 Zahlungen senden' }));
+    await waitFor(() => expect(hoisted.submitMock).toHaveBeenCalledTimes(1));
+
+    await switchTo('TESTNET');
+    expect(onNetworkChangeClose).not.toHaveBeenCalled();
+    expect(screen.getByTestId('batch-network-stopped').textContent).toBe(i18n.t('batchPayment:networkChanged.stopped'));
+    await act(async () => { release(); await new Promise((r) => setTimeout(r, 0)); });
+
+    await waitFor(() => expect(screen.getByTestId('batch-summary')).toBeInTheDocument());
+    expect(hoisted.submitMock).toHaveBeenCalledTimes(1);
+    expect(readSentEntry('PUBLIC', fpOf(a, DEST_A)).status).toBe('success');
+    expect(readSentEntry('PUBLIC', fpOf(b, DEST_B))).toBeNull();
+    expect(screen.getByText(new RegExp(i18n.t('batchPayment:errors.networkChanged')))).toBeInTheDocument();
+    expect(window.localStorage.getItem(BATCH_PAYMENT_STORAGE_KEY)).toContain(DEST_B);
+  });
+
+  it('Wechsel waehrend der Key-Abfrage: nichts gesendet', async () => {
+    hoisted.getSessionSecretMock.mockImplementation(async () => '');
+    saveBatchRows('PUBLIC', [rowA()]);
+    renderWith({});
+    await checkAndWait(1);
+    fireEvent.click(screen.getByRole('button', { name: '1 Zahlung senden' }));
+    await waitFor(() => expect(document.querySelector('input[type="password"], input[placeholder="z.B."]')).not.toBeNull());
+    await switchTo('TESTNET');
+    await waitFor(() => expect(screen.getByTestId('batch-summary')).toBeInTheDocument());
+    expect(hoisted.submitMock).not.toHaveBeenCalled();
+    expect(screen.getByText(new RegExp(i18n.t('batchPayment:errors.networkChanged')))).toBeInTheDocument();
+  });
+});
+
+
+describe('BatchPaymentDialog: Server und Key-Abfrage beim Netzwechsel (N2, N3)', () => {
+  const switchTo = async (net) => {
+    window.localStorage.setItem('SKM_NETWORK', net);
+    await act(async () => { window.dispatchEvent(new CustomEvent('stm-network-changed', { detail: net })); });
+  };
+
+  it('erzeugt den Server mit dem Netz des Dialogs (N2)', () => {
+    renderDialog();
+    expect(hoisted.serverNetworkMock).toHaveBeenCalledWith('PUBLIC');
+    expect(hoisted.serverNetworkMock).not.toHaveBeenCalledWith('TESTNET');
+  });
+
+  it('Netzwechsel waehrend die Session-Secrets gelesen werden: keine Key-Abfrage (N3)', async () => {
+    let releaseSecret;
+    hoisted.getSessionSecretMock.mockImplementation(() => new Promise((r) => { releaseSecret = () => r(''); }));
+    saveBatchRows('PUBLIC', [rowA()]);
+    renderDialog();
+    await checkAndWait(1);
+    fireEvent.click(screen.getByRole('button', { name: '1 Zahlung senden' }));
+    await waitFor(() => expect(releaseSecret).toBeTypeOf('function'));
+
+    await switchTo('TESTNET');
+    await act(async () => { releaseSecret(); await new Promise((r) => setTimeout(r, 0)); });
+
+    await waitFor(() => expect(screen.getByTestId('batch-summary')).toBeInTheDocument());
+    expect(document.querySelector('input[placeholder="z.B."]')).toBeNull();
+    expect(hoisted.submitMock).not.toHaveBeenCalled();
+    expect(screen.getByText(new RegExp(i18n.t('batchPayment:errors.networkChanged')))).toBeInTheDocument();
   });
 });

@@ -492,7 +492,12 @@
       },
       "reviewTitle": "Transaktion bestätigen",
       "sentBefore": "Diese Zahlung wurde mit denselben Daten von diesem Konto bereits gesendet ({{time}}). Nur bei Absicht erneut senden.",
-      "sentBeforeAmbiguous": "Eine Zahlung mit denselben Daten von diesem Konto hat einen unklaren Status ({{time}}). Bitte zuerst im Explorer prüfen."
+      "sentBeforeAmbiguous": "Eine Zahlung mit denselben Daten von diesem Konto hat einen unklaren Status ({{time}}). Bitte zuerst im Explorer prüfen.",
+      "networkChanged": {
+        "reset": "Netz gewechselt: Die Eingaben gehörten zum vorigen Netz und wurden geleert. Bitte die Zahlung neu eingeben.",
+        "aborted": "Abgebrochen: Das Netz wurde gewechselt, seit die Zahlung vorbereitet wurde. Es wurde nichts gesendet.",
+        "jobOtherNetwork": "Dieser Multisig-Job gehört zu einem anderen Netz als dem aktuell gewählten. Signieren ist hier gesperrt; bitte im passenden Netz über die Job-Liste signieren."
+      }
     }
   },
   "activation": {

@@ -49,24 +49,36 @@ const hoisted = vi.hoisted(() => ({
   reverseFederationLookupMock: vi.fn(),
   getSessionSecretMock: vi.fn(),
   submitTransactionSafelyMock: vi.fn(),
+  serverNetworkMock: vi.fn(),
+  rememberImpl: { fn: null },
 }));
 
-vi.mock('../../utils/stellar/stellarUtils.js', async (importOriginal) => ({
-  ...(await importOriginal()),
-  getHorizonServer: () => ({
+vi.mock('../../utils/stellar/stellarUtils.js', async (importOriginal) => {
+  const fakeServer = () => ({
     loadAccount: hoisted.loadAccountMock,
     feeStats: vi.fn(async () => ({ fee_charged: { mode: '100' } })),
     offers: () => ({ forAccount: () => ({ limit: () => ({ call: async () => ({ records: [] }) }) }) }),
     ledgers: () => ({ order: () => ({ limit: () => ({ call: async () => ({ records: [] }) }) }) }),
-  }),
-  resolveOrValidateAccount: hoisted.resolveOrValidateAccountMock,
-  reverseFederationLookup: hoisted.reverseFederationLookupMock,
-}));
+  });
+  return {
+    ...(await importOriginal()),
+    getHorizonServer: fakeServer,
+    // Merkt, fuer welches Netz die Seite ihren Server erzeugt (N2).
+    getHorizonServerForNetwork: (network) => { hoisted.serverNetworkMock(network); return fakeServer(); },
+    resolveOrValidateAccount: hoisted.resolveOrValidateAccountMock,
+    reverseFederationLookup: hoisted.reverseFederationLookupMock,
+  };
+});
 
-vi.mock('../../utils/sessionSecrets.js', async (importOriginal) => ({
-  ...(await importOriginal()),
-  getSessionSecret: hoisted.getSessionSecretMock,
-}));
+vi.mock('../../utils/sessionSecrets.js', async (importOriginal) => {
+  const orig = await importOriginal();
+  return {
+    ...orig,
+    getSessionSecret: hoisted.getSessionSecretMock,
+    // Standard: echtes Verhalten; einzelne Tests koennen es verzoegern (N4).
+    rememberSessionSecrets: (...args) => (hoisted.rememberImpl.fn ? hoisted.rememberImpl.fn(...args) : orig.rememberSessionSecrets(...args)),
+  };
+});
 
 vi.mock('../../utils/stellar/submitTransactionSafely.js', async (importOriginal) => ({
   ...(await importOriginal()),
@@ -122,6 +134,7 @@ const SENDER_FOO_BALANCE = { asset_type: 'credit_alphanum4', asset_code: ASSET_C
 
 beforeEach(() => {
   vi.clearAllMocks();
+  hoisted.rememberImpl.fn = null;
   window.localStorage.clear();
   clearSendPaymentDraft();
   hoisted.loadAccountMock.mockImplementation(async (pk) => (
@@ -1276,5 +1289,327 @@ describe('form draft survives an account switch', () => {
     renderFor(SENDER.publicKey, { recipient: DEST_PK, amount: 5, memoText: 'Spende' });
     await waitFor(() => expect(amountInput().value).toBe('5'));
     expect(destInput().value).toBe(DEST_PK);
+  });
+});
+
+describe('Netzwechsel bei offener Seite', () => {
+  const OTHER_SENDER = Keypair.random().publicKey();
+  const renderFor = (publicKey) => render(
+    <I18nextProvider i18n={i18n}>
+      <SendPaymentPage publicKey={publicKey} />
+    </I18nextProvider>
+  );
+  const fillForm = () => {
+    fireEvent.change(destInput(), { target: { value: DEST_PK } });
+    fireEvent.change(amountInput(), { target: { value: '12' } });
+    fireEvent.change(memoInput(), { target: { value: 'Runde 7' } });
+  };
+  const switchTo = async (net) => {
+    window.localStorage.setItem('SKM_NETWORK', net);
+    await act(async () => { window.dispatchEvent(new CustomEvent('stm-network-changed', { detail: net })); });
+  };
+  const openReview = async () => {
+    fireEvent.click(screen.getByRole('button', { name: 'Senden' }));
+    await screen.findByText('Transaktion bestätigen');
+  };
+
+  it('leert das Formular, schliesst die offene Pruefung und zeigt einen Hinweis', async () => {
+    window.localStorage.setItem('SKM_NETWORK', 'PUBLIC');
+    renderFor(SENDER.publicKey);
+    fillForm();
+    await openReview();
+
+    await switchTo('TESTNET');
+    expect(screen.queryByText('Transaktion bestätigen')).toBeNull();
+    expect(destInput().value).toBe('');
+    expect(amountInput().value).toBe('');
+    expect(memoInput().value).toBe('');
+    expect(screen.getByTestId('send-network-notice').textContent).toBe(i18n.t('common:payment.send.networkChanged.reset'));
+    expect(hoisted.submitTransactionSafelyMock).not.toHaveBeenCalled();
+
+    // Neue Eingabe blendet den Hinweis aus
+    fireEvent.change(amountInput(), { target: { value: '1' } });
+    expect(screen.queryByTestId('send-network-notice')).toBeNull();
+  });
+
+  it('laedt den Entwurf des alten Netzes beim Zurueckwechseln nicht wieder (ein Entwurf, vom neuen Netz ueberschrieben)', async () => {
+    window.localStorage.setItem('SKM_NETWORK', 'PUBLIC');
+    const view = renderFor(SENDER.publicKey);
+    fillForm();
+    await switchTo('TESTNET');
+    await switchTo('PUBLIC');
+    expect(destInput().value).toBe('');
+    view.unmount();
+    renderFor(SENDER.publicKey);
+    expect(destInput().value).toBe('');
+    expect(amountInput().value).toBe('');
+  });
+
+  it('bricht vor dem Signieren ab, wenn das Netz zwischen Bestaetigen und Signieren wechselt', async () => {
+    window.localStorage.setItem('SKM_NETWORK', 'PUBLIC');
+    renderFor(SENDER.publicKey);
+    fillForm();
+    await openReview();
+    // Wechsel in einem anderen Tab, waehrend der Bau der Transaktion das Ziel laedt:
+    // localStorage ist schon neu, das Event ist hier noch nicht angekommen.
+    const base = hoisted.loadAccountMock.getMockImplementation();
+    let switched = false;
+    hoisted.loadAccountMock.mockImplementation(async (pk) => {
+      if (pk === DEST_PK && !switched) { switched = true; window.localStorage.setItem('SKM_NETWORK', 'TESTNET'); }
+      return base(pk);
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Bist du sicher?' }));
+    await waitFor(() => expect(switched).toBe(true));
+    expect((await screen.findAllByText(new RegExp(i18n.t('common:payment.send.networkChanged.aborted')))).length).toBeGreaterThan(0);
+    expect(hoisted.submitTransactionSafelyMock).not.toHaveBeenCalled();
+  });
+
+  it('bricht ab, wenn das gespeicherte Netz schon beim Bestaetigen ein anderes ist', async () => {
+    window.localStorage.setItem('SKM_NETWORK', 'PUBLIC');
+    renderFor(SENDER.publicKey);
+    fillForm();
+    await openReview();
+    window.localStorage.setItem('SKM_NETWORK', 'TESTNET');
+    fireEvent.click(screen.getByRole('button', { name: 'Bist du sicher?' }));
+    expect((await screen.findAllByText(new RegExp(i18n.t('common:payment.send.networkChanged.aborted')))).length).toBeGreaterThan(0);
+    expect(hoisted.submitTransactionSafelyMock).not.toHaveBeenCalled();
+  });
+
+  it('Kontowechsel bei offener Seite leert das Formular weiterhin nicht', async () => {
+    window.localStorage.setItem('SKM_NETWORK', 'PUBLIC');
+    const view = renderFor(SENDER.publicKey);
+    fillForm();
+    view.rerender(
+      <I18nextProvider i18n={i18n}>
+        <SendPaymentPage publicKey={OTHER_SENDER} />
+      </I18nextProvider>
+    );
+    await act(async () => { await new Promise((r) => setTimeout(r, 0)); });
+    expect(destInput().value).toBe(DEST_PK);
+    expect(amountInput().value).toBe('12');
+    expect(memoInput().value).toBe('Runde 7');
+    expect(screen.queryByTestId('send-network-notice')).toBeNull();
+  });
+
+  it('Sammelzahlung ohne Lauf: Dialog schliesst beim Netzwechsel, die Seite zeigt den Hinweis', async () => {
+    window.localStorage.setItem('SKM_NETWORK', 'PUBLIC');
+    renderFor(SENDER.publicKey);
+    fireEvent.click(screen.getByRole('button', { name: i18n.t('batchPayment:openButton') }));
+    expect(await screen.findByTestId('batch-payment-dialog')).toBeInTheDocument();
+    await switchTo('TESTNET');
+    expect(screen.queryByTestId('batch-payment-dialog')).toBeNull();
+    expect(screen.getByTestId('batch-network-notice').textContent).toContain(i18n.t('batchPayment:networkChanged.closed'));
+    // Erneutes Oeffnen blendet den Hinweis aus
+    fireEvent.click(screen.getByRole('button', { name: i18n.t('batchPayment:openButton') }));
+    expect(screen.queryByTestId('batch-network-notice')).toBeNull();
+  });
+
+  it('laufendes Senden wird nicht abgebrochen, das Ergebnis gehoert zum alten Netz', async () => {
+    window.localStorage.setItem('SKM_NETWORK', 'PUBLIC');
+    let release;
+    hoisted.submitTransactionSafelyMock.mockImplementationOnce(() => new Promise((resolve) => { release = () => resolve({ hash: 'abc123' }); }));
+    renderFor(SENDER.publicKey);
+    fillForm();
+    await openReview();
+    fireEvent.click(screen.getByRole('button', { name: 'Bist du sicher?' }));
+    await waitFor(() => expect(hoisted.submitTransactionSafelyMock).toHaveBeenCalledTimes(1));
+
+    await switchTo('TESTNET');
+    expect(destInput().value).toBe('');
+    await act(async () => { release(); await new Promise((r) => setTimeout(r, 0)); });
+
+    await waitFor(() => expect(screen.getByTestId('send-success-network').textContent).toContain('Mainnet'));
+    expect(hoisted.submitTransactionSafelyMock).toHaveBeenCalledTimes(1);
+    // Formular bleibt leer, das Ergebnis fuellt es nicht wieder
+    expect(destInput().value).toBe('');
+  });
+});
+
+
+// Review Netzwechsel N1: Die Key-Abfrage signiert einen bestehenden Job nur, wenn sie fuer
+// genau diesen Job aus dem Ergebnisdialog geoeffnet wurde.
+describe('Multisig-Job: Jetzt signieren und Netzwechsel (N1)', () => {
+  let jobCounter;
+  let createCalls;
+  let mergeCalls;
+  let createGate;
+
+  beforeEach(() => {
+    jobCounter = 0;
+    createCalls = [];
+    mergeCalls = [];
+    createGate = null;
+    window.localStorage.setItem('SKM_NETWORK', 'PUBLIC');
+    hoisted.loadAccountMock.mockImplementation(async (pk) => (
+      pk === SENDER.publicKey ? makeTwoOfTwo(makeFundedAccount(pk)) : makeFundedAccount(pk)
+    ));
+    vi.stubGlobal('fetch', vi.fn(async (url, init = {}) => {
+      const u = String(url);
+      if (u.includes('/merge-signed-xdr')) {
+        mergeCalls.push(u);
+        return { ok: true, json: async () => ({ status: 'pending_signatures', collectedSigners: [] }) };
+      }
+      if (u.includes('multisig/jobs') && init.method === 'POST') {
+        const body = JSON.parse(init.body);
+        createCalls.push(body);
+        if (createGate) await createGate;
+        jobCounter += 1;
+        return {
+          ok: true,
+          json: async () => ({ id: `job-${jobCounter}`, txXdrCurrent: body.txXdr, accessToken: 'tok', collectedSigners: [] }),
+        };
+      }
+      return { ok: false, json: async () => ({}) };
+    }));
+  });
+  afterEach(() => vi.unstubAllGlobals());
+
+  const switchTo = async (net) => {
+    window.localStorage.setItem('SKM_NETWORK', net);
+    await act(async () => { window.dispatchEvent(new CustomEvent('stm-network-changed', { detail: net })); });
+  };
+  const fillAndChooseJob = async () => {
+    await waitFor(() => expect(hoisted.loadAccountMock).toHaveBeenCalledWith(SENDER.publicKey));
+    fireEvent.change(destInput(), { target: { value: DEST_PK } });
+    fireEvent.change(amountInput(), { target: { value: '3' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Senden' }));
+    fireEvent.click(await screen.findByRole('radio', { name: /Multisig-Job erstellen/ }));
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Weiter' })).not.toBeDisabled());
+    fireEvent.click(screen.getByRole('button', { name: 'Weiter' }));
+  };
+  const enterSecretAndSubmit = async () => {
+    const heading = await screen.findByText('Geben Sie den Quell-Secret-Key (S-Key) ein');
+    const modal = heading.parentElement;
+    fireEvent.change(within(modal).getAllByPlaceholderText('z.B.')[0], { target: { value: SENDER.secret } });
+    fireEvent.click(within(modal).getByRole('button', { name: 'Senden' }));
+  };
+  const createFirstJobAndOpenSignNow = async () => {
+    renderPage();
+    await fillAndChooseJob();
+    await screen.findByText('Multisig-Job wurde erstellt. Die Transaktion wurde noch nicht gesendet.');
+    expect(createCalls).toHaveLength(1);
+    fireEvent.click(screen.getByTestId('multisig-result-sign-now'));
+    await screen.findByText('Geben Sie den Quell-Secret-Key (S-Key) ein');
+  };
+
+  it('Jetzt signieren, Netzwechsel, neue Zahlung mit Job-Weg: neuer Job, alter Job nicht signiert', async () => {
+    await createFirstJobAndOpenSignNow();
+    await switchTo('TESTNET');
+    expect(screen.queryByText('Geben Sie den Quell-Secret-Key (S-Key) ein')).toBeNull();
+
+    // Im neuen Netz kein gemerkter Key: der Job-Weg legt den Job ohne lokale Signatur an.
+    hoisted.getSessionSecretMock.mockResolvedValue('');
+    await fillAndChooseJob();
+
+    await waitFor(() => expect(createCalls).toHaveLength(2));
+    expect(createCalls[1].network).toBe('testnet');
+    await screen.findByText('Multisig-Job wurde erstellt. Die Transaktion wurde noch nicht gesendet.');
+    expect(mergeCalls).toHaveLength(0);
+  });
+
+  it('ohne Netzwechsel: Jetzt signieren, Abbrechen, neue Zahlung mit Job-Weg legt einen neuen Job an', async () => {
+    await createFirstJobAndOpenSignNow();
+    fireEvent.click(screen.getByRole('button', { name: 'Abbrechen' }));
+    expect(screen.queryByText('Geben Sie den Quell-Secret-Key (S-Key) ein')).toBeNull();
+
+    hoisted.getSessionSecretMock.mockResolvedValue('');
+    await fillAndChooseJob();
+
+    await waitFor(() => expect(createCalls).toHaveLength(2));
+    await screen.findByText('Multisig-Job wurde erstellt. Die Transaktion wurde noch nicht gesendet.');
+    expect(mergeCalls).toHaveLength(0);
+  });
+
+  it('Jetzt signieren ist gesperrt, wenn der Job zu einem anderen Netz gehoert', async () => {
+    let release;
+    createGate = new Promise((r) => { release = r; });
+    renderPage();
+    await fillAndChooseJob();
+    await waitFor(() => expect(createCalls).toHaveLength(1));
+    // Wechsel, waehrend das Backend den Job anlegt; der Job existiert danach im alten Netz.
+    await switchTo('TESTNET');
+    await act(async () => { release(); await new Promise((r) => setTimeout(r, 0)); });
+
+    await screen.findByText('Multisig-Job wurde erstellt. Die Transaktion wurde noch nicht gesendet.');
+    expect(screen.queryByTestId('multisig-result-sign-now')).toBeNull();
+    expect(screen.getByTestId('multisig-result-sign-notice').textContent)
+      .toBe(i18n.t('common:payment.send.networkChanged.jobOtherNetwork'));
+    expect(mergeCalls).toHaveLength(0);
+  });
+
+  it('Jetzt signieren im selben Netz signiert weiterhin den angezeigten Job', async () => {
+    await createFirstJobAndOpenSignNow();
+    await enterSecretAndSubmit();
+    await waitFor(() => expect(mergeCalls).toHaveLength(1));
+    expect(mergeCalls[0]).toContain('/job-1/');
+    expect(createCalls).toHaveLength(1);
+  });
+});
+
+// Review Netzwechsel N2: Der Server der Seite wird mit dem Formularnetz erzeugt, nicht
+// ueber den Default-Pfad, der das Netz aus localStorage liest.
+describe('Horizon-Server mit explizitem Netz (N2)', () => {
+  it('erzeugt den Server mit dem Netz der Seite, auch wenn localStorage ein anderes zeigt', async () => {
+    window.localStorage.setItem('SKM_NETWORK', 'TESTNET');
+    renderPage();
+    expect(hoisted.serverNetworkMock).toHaveBeenLastCalledWith('TESTNET');
+    // Event meldet PUBLIC, localStorage steht schon wieder auf TESTNET (schneller Doppelwechsel
+    // in einem anderen Tab): Der Server gehoert trotzdem zu PUBLIC wie netLabel.
+    await act(async () => { window.dispatchEvent(new CustomEvent('stm-network-changed', { detail: 'PUBLIC' })); });
+    expect(hoisted.serverNetworkMock).toHaveBeenLastCalledWith('PUBLIC');
+  });
+});
+
+// Review Netzwechsel N4: Ablaeufe, die nach einem Netzwechsel aus einem await zurueckkommen,
+// oeffnen keinen Pruefdialog mehr.
+describe('spaete Ablaeufe nach dem Netzwechsel (N4)', () => {
+  const switchTo = async (net) => {
+    window.localStorage.setItem('SKM_NETWORK', net);
+    await act(async () => { window.dispatchEvent(new CustomEvent('stm-network-changed', { detail: net })); });
+  };
+  const fill = () => {
+    fireEvent.change(destInput(), { target: { value: DEST_PK } });
+    fireEvent.change(amountInput(), { target: { value: '4' } });
+  };
+
+  beforeEach(() => { window.localStorage.setItem('SKM_NETWORK', 'PUBLIC'); });
+
+  it('Senden-Klick: Key wird erst nach dem Wechsel gelesen, kein Pruefdialog', async () => {
+    let releaseSecret;
+    hoisted.getSessionSecretMock.mockImplementation(() => new Promise((r) => { releaseSecret = () => r(SENDER.secret); }));
+    renderPage();
+    fill();
+    fireEvent.click(screen.getByRole('button', { name: 'Senden' }));
+    await waitFor(() => expect(releaseSecret).toBeTypeOf('function'));
+    await switchTo('TESTNET');
+    await act(async () => { releaseSecret(); await new Promise((r) => setTimeout(r, 0)); });
+    expect(screen.queryByText('Transaktion bestätigen')).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Bist du sicher?' })).toBeNull();
+  });
+
+  it('Key-Abfrage: Merken laeuft noch beim Wechsel, danach kein Pruefdialog und keine Keypairs', async () => {
+    hoisted.getSessionSecretMock.mockResolvedValue('');
+    let releaseRemember;
+    hoisted.rememberImpl.fn = () => new Promise((r) => { releaseRemember = r; });
+    renderPage();
+    fill();
+    fireEvent.click(screen.getByRole('button', { name: 'Senden' }));
+    const heading = await screen.findByText('Geben Sie den Quell-Secret-Key (S-Key) ein');
+    const modal = heading.parentElement;
+    fireEvent.change(within(modal).getAllByPlaceholderText('z.B.')[0], { target: { value: SENDER.secret } });
+    fireEvent.click(within(modal).getByRole('button', { name: 'Senden' }));
+    await waitFor(() => expect(releaseRemember).toBeTypeOf('function'));
+
+    await switchTo('TESTNET');
+    await act(async () => { releaseRemember(); await new Promise((r) => setTimeout(r, 0)); });
+    expect(screen.queryByText('Transaktion bestätigen')).toBeNull();
+
+    // Keine Keypairs im State: ein spaeterer Klick kann nichts mit ihnen senden.
+    fill();
+    hoisted.getSessionSecretMock.mockResolvedValue('');
+    fireEvent.click(screen.getByRole('button', { name: 'Senden' }));
+    await screen.findByText('Geben Sie den Quell-Secret-Key (S-Key) ein');
+    expect(screen.queryByText('Transaktion bestätigen')).toBeNull();
+    expect(hoisted.submitTransactionSafelyMock).not.toHaveBeenCalled();
   });
 });

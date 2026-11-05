@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState, useRef, useCallback } from 'react';
-import { getNetworkConfig, horizonUrlFor, isNetworkEnabled, normalizeNetworkId, passphraseFor, readStoredNetworkId } from '../config/networks.js';
+import { getNetworkConfig, isNetworkEnabled, normalizeNetworkId, passphraseFor, readStoredNetworkId } from '../config/networks.js';
 import { useTranslation } from 'react-i18next';
-import { getHorizonServer, resolveOrValidateAccount, isValidAccountId, extractBasePublicKeyFromMuxed, reverseFederationLookup } from '../utils/stellar/stellarUtils';
+import { getHorizonServerForNetwork, resolveOrValidateAccount, isValidAccountId, extractBasePublicKeyFromMuxed, reverseFederationLookup } from '../utils/stellar/stellarUtils';
 import { Asset, Keypair, Operation, TransactionBuilder, Memo, StrKey } from '@stellar/stellar-sdk';
 import { Buffer } from 'buffer';
 import SecretKeyModal from '../components/SecretKeyModal';
@@ -261,6 +261,12 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
 
   // Netz, zu dem die aktuellen Eingaben gehoeren (siehe Reset beim Netzwechsel).
   const fieldsNetworkRef = useRef(mountNetwork);
+  // Zaehlt Netzwechsel. Asynchrone Ablaeufe (Klick auf Senden, Key-Abfrage, Preflight,
+  // Export) merken ihn beim Start und verwerfen ihr Ergebnis, wenn er sich geaendert hat:
+  // sonst oeffnet z. B. eine vor dem Wechsel begonnene Key-Abfrage danach noch den
+  // Pruefdialog mit Keypairs und Daten des alten Netzes.
+  const networkEpochRef = useRef(0);
+  const isCurrentEpoch = useCallback((epoch) => epoch === networkEpochRef.current, []);
 
   // Formular-Entwurf bei jeder Aenderung festhalten, damit er ein Aus- und Einhaengen
   // der Seite (Kontowechsel) uebersteht.
@@ -290,16 +296,24 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   const [secretReturnTo, setSecretReturnTo] = useState(''); // where to go back after secret modal
   const [secretContext, setSecretContext] = useState(''); // 'job' | 'local' | 'send' | ''
   const [lastResultDialog, setLastResultDialog] = useState(null);
+  // Job, fuer den die Key-Abfrage ausdruecklich aus dem Ergebnisdialog ("Jetzt signieren")
+  // geoeffnet wurde. Nur dann signiert die Abfrage einen bestehenden Job; secretContext
+  // 'job' allein (neuer Job ueber handlePrepareMultisig) reicht nicht.
+  const [secretJobId, setSecretJobId] = useState('');
 
-  const openSecretModal = useCallback((forceLocal = false, context = 'local', forceCount = null, returnTo = '') => {
+  const openSecretModal = useCallback((forceLocal = false, context = 'local', forceCount = null, returnTo = '', jobId = '') => {
     setForceLocalFlow(!!forceLocal);
     setForceSignerCount(forceCount);
     setSecretContext(context || '');
     setSecretError('');
     setSecretReturnTo(returnTo || '');
+    setSecretJobId(jobId || '');
     setShowSecretModal(true);
   }, []);
 
+  // Schliesst die Key-Abfrage und vergisst den Job, fuer den sie geoeffnet war. Wer zum
+  // Ergebnisdialog zurueckkehrt (onBackToSelection), stellt ihn vorher aus seiner Closure
+  // wieder her. So kann ein spaeterer neuer Job nie den alten Ergebnisdialog uebernehmen.
   const closeSecretModal = useCallback(() => {
     setShowSecretModal(false);
     setSecretError('');
@@ -307,6 +321,8 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     setForceLocalFlow(false);
     setForceSignerCount(null);
     setSecretReturnTo('');
+    setSecretJobId('');
+    setLastResultDialog(null);
   }, []);
 
   // Pre-fills the secret modal's inputs with any secret(s) already remembered
@@ -359,22 +375,15 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   const [netLabel, setNetLabel] = useState(() => {
     try { return readStoredNetworkId(); } catch { return 'PUBLIC'; }
   });
-  const server = useMemo(() => {
-    const url = horizonUrlFor(netLabel);
-    return getHorizonServer(url);
-  }, [netLabel]);
-
-  // Netzwechsel bei eingehaengter Seite: Eingaben gehoeren zum alten Netz, leeren.
-  useEffect(() => {
-    if (netLabel === fieldsNetworkRef.current) return;
-    fieldsNetworkRef.current = netLabel;
-    autoFilledMemoRef.current = '';
-    setDest('');
-    setAmount('');
-    setAssetKey('XLM');
-    setMemoType('text');
-    setMemoVal('');
-  }, [netLabel]);
+  // Server immer mit explizitem Netz: getHorizonServer(Mainnet-URL) wuerde das Netz
+  // erneut aus localStorage lesen (Default-Pfad), das kann ein anderes sein als netLabel.
+  const server = useMemo(() => getHorizonServerForNetwork(netLabel), [netLabel]);
+  // Aktuelles Netz der Seite fuer Ablaeufe, die ueber einen Netzwechsel hinaus laufen
+  // (ein Senden, das vor dem Wechsel begonnen hat).
+  const currentNetworkRef = useRef(netLabel);
+  currentNetworkRef.current = netLabel;
+  // Hinweis nach einem Netzwechsel (Formular geleert, siehe Effekt weiter unten).
+  const [networkNotice, setNetworkNotice] = useState('');
 
   // Gleiche Zahlung (gleiche Eingaben) von diesem Konto in diesem Netz schon gesendet?
   // Nur Hinweis, der Entwurf bleibt fuer das naechste Konto stehen.
@@ -485,6 +494,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     setStatus(payload.hash);
     setSentInfo({
       account: publicKey,
+      network: payload.network || '',
       sourceFederation: payload.sourceFederation || '',
       sourceLabel: payload.sourceLabel || '',
       recipient: payload.recipient,
@@ -500,6 +510,9 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   }, [publicKey]);
 
   const runPreflight = useCallback(async () => {
+    // Ergebnis nach einem Netzwechsel nicht mehr in den State schreiben (gehoert zum alten Netz).
+    const epoch = networkEpochRef.current;
+    const setPreflightIfCurrent = (state) => { if (isCurrentEpoch(epoch)) setPreflight(state); };
     let nextState = {
       loading: true,
       err: '',
@@ -512,11 +525,11 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       resolvedDest: ''
     };
     try {
-      setPreflight(nextState);
+      setPreflightIfCurrent(nextState);
       const v = (dest || '').trim();
       if (!v) {
         nextState = { ...nextState, loading: false, err: t('publicKey:destination.error') };
-        setPreflight(nextState);
+        setPreflightIfCurrent(nextState);
         return nextState;
       }
       let resolvedDest;
@@ -528,7 +541,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       } catch (resolveError) {
         const err = resolveError?.message === CONTRACT_ADDRESS_ERROR ? t(CONTRACT_ADDRESS_ERROR) : t('publicKey:destination.error');
         nextState = { ...nextState, loading: false, err };
-        setPreflight(nextState);
+        setPreflightIfCurrent(nextState);
         return nextState;
       }
       let desiredNum = 0;
@@ -536,7 +549,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
         desiredNum = Number(normalizeAmountValue());
       } catch (e) {
         nextState = { ...nextState, loading: false, err: e?.message || t('common:payment.send.amountInvalid') };
-        setPreflight(nextState);
+        setPreflightIfCurrent(nextState);
         return nextState;
       }
       const minReserve = (baseReserve || 0.5) * 2;
@@ -559,7 +572,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
             willBump: false,
             resolvedDest
           };
-          setPreflight(nextState);
+          setPreflightIfCurrent(nextState);
           return nextState;
         }
         const adjusted = Math.max(desiredNum, minReserve);
@@ -574,7 +587,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
           willBump: adjusted > desiredNum,
           resolvedDest
         };
-        setPreflight(nextState);
+        setPreflightIfCurrent(nextState);
         return nextState;
       }
       nextState = {
@@ -588,14 +601,14 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
         willBump: false,
         resolvedDest
       };
-      setPreflight(nextState);
+      setPreflightIfCurrent(nextState);
       return nextState;
     } catch (e) {
       nextState = { ...nextState, loading: false, err: e?.message || 'unknown' };
-      setPreflight(nextState);
+      setPreflightIfCurrent(nextState);
       return nextState;
     }
-  }, [assetKey, baseReserve, dest, normalizeAmountValue, server, t]);
+  }, [assetKey, baseReserve, dest, isCurrentEpoch, normalizeAmountValue, server, t]);
 
   const formatNetworkLabel = useCallback((net) => {
     const v = String(net || '').toUpperCase();
@@ -674,6 +687,17 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     setSecretReturnTo('');
   }, []);
 
+  // Ein Job darf nur im Netz signiert werden, in dem er angelegt wurde (expectedJob,
+  // lokal bekannt). Faellt ein Ergebnis nach einem Netzwechsel noch an, bleibt es
+  // sichtbar, "Jetzt signieren" aber gesperrt.
+  const jobMatchesCurrentNetwork = useCallback((dialog) => {
+    const jobNetwork = dialog?.expectedJob?.network;
+    const current = currentNetworkRef.current;
+    return !!jobNetwork
+      && jobNetwork === getNetworkConfig(current).backendId
+      && readStoredNetworkId() === current;
+  }, []);
+
   const closeReviewDialog = useCallback(() => {
     setReviewDialog({ open: false, signers: [], preflight: null, snapshot: null });
     setReviewError('');
@@ -712,7 +736,22 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     return Number(master?.weight || 0);
   }, [signersForModal, publicKey]);
 
-  const buildPaymentTx = useCallback(async ({ signers, signTx = false, requireSigners = false, immediateSubmit = false } = {}) => {
+  // Formular, Konto (server) und Passphrase muessen zum selben Netz gehoeren: zum Netz,
+  // mit dem das Formular geladen wurde (netLabel/fieldsNetworkRef), zum gespeicherten
+  // globalen Netz (anderer Tab, Event noch nicht da) und, falls bestaetigt, zum Netz der
+  // Pruefung. Sonst nichts bauen oder signieren.
+  const assertFormNetwork = useCallback((formNetwork, expectedNetwork) => {
+    if (
+      readStoredNetworkId() !== formNetwork
+      || fieldsNetworkRef.current !== formNetwork
+      || currentNetworkRef.current !== formNetwork
+      || (expectedNetwork && expectedNetwork !== formNetwork)
+    ) {
+      throw new Error(t('common:payment.send.networkChanged.aborted'));
+    }
+  }, [t]);
+
+  const buildPaymentTx = useCallback(async ({ signers, signTx = false, requireSigners = false, immediateSubmit = false, expectedNetwork = '' } = {}) => {
     const signerList = Array.isArray(signers) ? signers.filter(Boolean) : [];
     const primary = signerList[0];
     if (requireSigners && !primary) throw new Error('submitTransaction.failed:' + 'multisig.noKeysProvided');
@@ -720,7 +759,12 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       const sec = primary.secret?.();
       if (sec) Keypair.fromSecret(sec); // validate
     }
-    const net = passphraseFor(readStoredNetworkId());
+    // Passphrase aus dem Netz der Seite (wie server), nicht neu aus localStorage: sonst
+    // koennten Konto und Transaktion nach einem Wechsel in einem anderen Tab aus
+    // verschiedenen Netzen stammen.
+    const formNetwork = netLabel;
+    assertFormNetwork(formNetwork, expectedNetwork);
+    const net = passphraseFor(formNetwork);
     const account = await server.loadAccount(publicKey);
     const fee = await resolveFeePerOp(server, { deferred: !immediateSubmit });
     const { memo, display: memoDisplay } = buildMemoObject();
@@ -789,6 +833,10 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
         .build();
     }
 
+    // Nach allen Horizon-Aufrufen und unmittelbar vor dem Signieren erneut: zwischen
+    // Bestaetigen und hier kann das Netz gewechselt haben. Gilt auch ohne Signatur
+    // (Export, Job ohne lokalen Key), damit kein Ergebnis des alten Netzes herauskommt.
+    assertFormNetwork(formNetwork, expectedNetwork);
     if (signTx && signerList.length) {
       const signFailures = [];
       signerList.forEach((kpItem) => {
@@ -825,7 +873,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
         muxedActivationCapture,
       },
     };
-  }, [assetKey, baseReserve, buildMemoObject, dest, multisigTimeoutSeconds, normalizeAmountValue, publicKey, requiredThreshold, server, signersForModal, t]);
+  }, [assertFormNetwork, assetKey, baseReserve, buildMemoObject, dest, multisigTimeoutSeconds, netLabel, normalizeAmountValue, publicKey, requiredThreshold, server, signersForModal, t]);
 
   // Send-time guard against sending without a memo a federation server expects (SEP-2).
   // Re-resolves `dest` fresh (same call buildPaymentTx itself makes) rather than trusting
@@ -1018,9 +1066,9 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     return true;
   }, [checkRecipientTrustlineStatus, checkRecipientMemoRequired, checkFederationMemoMismatch, t]);
 
-  const submitPayment = useCallback(async (signerKeypairs) => {
+  const submitPayment = useCallback(async (signerKeypairs, expectedNetwork = '') => {
     const signerList = Array.isArray(signerKeypairs) ? signerKeypairs : [signerKeypairs];
-    const { tx, meta } = await buildPaymentTx({ signers: signerList, signTx: true, requireSigners: true, immediateSubmit: true });
+    const { tx, meta } = await buildPaymentTx({ signers: signerList, signTx: true, requireSigners: true, immediateSubmit: true, expectedNetwork });
     const txHash = txHashHex(tx);
     const res = await submitTransactionSafely(server, tx);
     return {
@@ -1089,7 +1137,11 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     const handler = (e) => {
       try {
         const v = (typeof e?.detail === 'string') ? e.detail : (window.localStorage?.getItem('SKM_NETWORK') || 'PUBLIC');
-        setNetLabel(isNetworkEnabled(v) ? normalizeNetworkId(v) : 'PUBLIC');
+        const next = isNetworkEnabled(v) ? normalizeNetworkId(v) : 'PUBLIC';
+        // Sofort beim Event, nicht erst im Reset-Effekt nach dem Render: Ablaeufe, die
+        // dazwischen aus einem await zurueckkommen, sehen den Wechsel schon.
+        if (next !== currentNetworkRef.current) networkEpochRef.current += 1;
+        setNetLabel(next);
       } catch { /* noop */ }
     };
     window.addEventListener('stm-network-changed', handler);
@@ -1157,12 +1209,15 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   const lpTrusts = useMemo(() => (balances || []).filter(b => b.asset_type === 'liquidity_pool_shares'), [balances]);
 
   const handlePrepareMultisig = useCallback(async (initialSigners = [], opts = {}) => {
+    const epoch = networkEpochRef.current;
     try {
       if (preflight.loading || preflight.err) {
         setError(preflight.err || t('errors:unknown', 'Unbekannter Fehler'));
         return;
       }
       const saved = await getSessionSecret(publicKey, publicKey);
+      // Netz gewechselt, waehrend der Key gelesen wurde: nichts mehr oeffnen oder bauen.
+      if (!isCurrentEpoch(epoch)) return;
       let storedSigner = null;
       try {
         storedSigner = saved ? Keypair.fromSecret(saved) : null;
@@ -1286,7 +1341,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       showErrorMessage(detail || '');
       closeConfirmDialogs();
     }
-  }, [accountInfo, buildPaymentTx, runPreSubmitChecks, closeConfirmDialogs, handlePaymentError, masterWeight, netLabel, openSecretModal, preflight, publicKey, requiredThreshold, showErrorMessage, t]);
+  }, [accountInfo, buildPaymentTx, runPreSubmitChecks, closeConfirmDialogs, handlePaymentError, isCurrentEpoch, masterWeight, netLabel, openSecretModal, preflight, publicKey, requiredThreshold, showErrorMessage, t]);
 
   const handleConfirmProceed = useCallback(async () => {
     if (confirmChoice === 'local') {
@@ -1493,7 +1548,10 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     });
   }, [i18n.language, decimalsMode]);
 
-  const openReviewDialog = useCallback((signers, preflightResult) => {
+  // epoch: Stand von networkEpochRef beim Start des Ablaufs, der hier ankommt. Hat das
+  // Netz inzwischen gewechselt, keinen Pruefdialog (und keine Keypairs im State) mehr.
+  const openReviewDialog = useCallback((signers, preflightResult, epoch) => {
+    if (!isCurrentEpoch(epoch)) return false;
     try {
       const { display: memoDisplay } = buildMemoObject();
       const assetLabel = assetKey === 'XLM' ? 'XLM' : (assetKey.split(':')[0] || 'XLM');
@@ -1531,10 +1589,12 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       });
       setReviewError('');
       setReviewProcessing(false);
+      return true;
     } catch (e) {
       setError(e?.message || t('errors:unknown', 'Unbekannter Fehler'));
+      return false;
     }
-  }, [amountFmt, assetKey, buildMemoObject, dest, netLabel, normalizeAmountValue, publicKey, recipientCompromised, recipientDeactivated, recipientFederationDisplay, recipientLabel, t, walletInfoMap]);
+  }, [amountFmt, assetKey, buildMemoObject, dest, isCurrentEpoch, netLabel, normalizeAmountValue, publicKey, recipientCompromised, recipientDeactivated, recipientFederationDisplay, recipientLabel, t, walletInfoMap]);
 
   const openSentResultDialog = useCallback((result) => {
     if (!result) return;
@@ -1576,11 +1636,17 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     // Vermerk "gesendet" mit den Werten, die submitPayment aus diesem Render verwendet,
     // nicht mit denen beim Oeffnen der Pruefung (ein spaetes Federation-Memo koennte abweichen).
     const sentKey = sentPaymentKeyRef.current;
+    // Netz, in dem bestaetigt wurde. Ein Senden, das schon laeuft, wird bei einem
+    // Netzwechsel nicht abgebrochen; Ergebnis und Saldo gehoeren aber zu diesem Netz.
+    const sendNetwork = reviewDialog.snapshot?.network || netLabel;
+    const refreshIfSameNetwork = () => {
+      if (currentNetworkRef.current === sendNetwork) refreshBalancesAfterSend();
+    };
     const proceed = async () => {
       try {
         setReviewProcessing(true);
         setIsProcessing(true);
-        const result = await submitPayment(reviewDialog.signers);
+        const result = await submitPayment(reviewDialog.signers, sendNetwork);
         const reviewSnapshot = reviewDialog.snapshot || {};
         const resultWithWalletInfo = {
           ...result,
@@ -1594,14 +1660,14 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
         openSentResultDialog(resultWithWalletInfo);
         closeReviewDialog();
         setSecretError('');
-        refreshBalancesAfterSend();
+        refreshIfSameNetwork();
       } catch (err) {
         if (err instanceof AmbiguousSubmitResultError) {
           markSent(sentKey, { hash: err.hash || '', status: 'ambiguous' });
-          setAmbiguousSubmission({ hash: err.hash });
+          setAmbiguousSubmission({ hash: err.hash, network: sendNetwork });
           closeReviewDialog();
           // Outcome unknown - current balances help the user judge whether it went through.
-          refreshBalancesAfterSend();
+          refreshIfSameNetwork();
         } else {
           const detail = handlePaymentError(err);
           setReviewError(detail);
@@ -1623,11 +1689,13 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     } finally {
       setReviewProcessing(false);
     }
-  }, [applySendResult, runPreSubmitChecks, closeReviewDialog, handlePaymentError, markSent, openSentResultDialog, refreshBalancesAfterSend, reviewDialog, submitPayment, t]);
+  }, [applySendResult, runPreSubmitChecks, closeReviewDialog, handlePaymentError, markSent, netLabel, openSentResultDialog, refreshBalancesAfterSend, reviewDialog, submitPayment, t]);
 
   const handleSendClick = useCallback(async () => {
+    const epoch = networkEpochRef.current;
     clearSuccess();
     setError('');
+    setNetworkNotice('');
     try {
       window.dispatchEvent(new Event('stm-transaction-start'));
     } catch (dispatchError) {
@@ -1642,6 +1710,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     }
 
     const preflightResult = await runPreflight();
+    if (!isCurrentEpoch(epoch)) return;
     if (preflightResult?.err) {
       setError(preflightResult.err);
       return;
@@ -1654,9 +1723,10 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       return;
     }
     const saved = await getSessionSecret(publicKey, publicKey);
+    if (!isCurrentEpoch(epoch)) return;
     if (saved) {
       try {
-        openReviewDialog([Keypair.fromSecret(saved)], preflightResult);
+        openReviewDialog([Keypair.fromSecret(saved)], preflightResult, epoch);
         return;
       } catch (err) {
         setError(err?.message || t('errors:unknown', 'Unbekannter Fehler'));
@@ -1664,7 +1734,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       }
     }
     openSecretModal(false, 'send');
-  }, [buildMemoObject, clearSuccess, isMultisig, openReviewDialog, openSecretModal, publicKey, runPreflight, setError, setShowConfirmModal, t]);
+  }, [buildMemoObject, clearSuccess, isCurrentEpoch, isMultisig, openReviewDialog, openSecretModal, publicKey, runPreflight, setError, setShowConfirmModal, t]);
 
   const trustCount = trustlines.length;
   const lpCount = lpTrusts.length;
@@ -1817,6 +1887,51 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   const [showQrScan, setShowQrScan] = useState(false);
   const [showBatchDialog, setShowBatchDialog] = useState(false);
   const [qrInfo, setQrInfo] = useState(null); // { msg, originDomain, hasCallback, assetMissing }
+  const [batchNotice, setBatchNotice] = useState('');
+
+  // Netzwechsel bei eingehaengter Seite (eigener Tab oder anderer Tab, beides kommt als
+  // stm-network-changed): Die Eingaben gehoeren zum alten Netz. Formular leeren, offene
+  // Bestaetigungen schliessen, Hinweis zeigen. Ein Kontowechsel leert dagegen nicht
+  // (gewollt, siehe utils/sendPaymentDraft.js). Ein bereits laufendes Senden wird nicht
+  // abgebrochen; es meldet sein Ergebnis mit dem Netz, in dem es bestaetigt wurde.
+  // Steht nach allen Dialog-States, damit der Effekt sie alle schliessen kann.
+  useEffect(() => {
+    if (netLabel === fieldsNetworkRef.current) return;
+    fieldsNetworkRef.current = netLabel;
+    autoFilledMemoRef.current = '';
+    setDest('');
+    setAmount('');
+    setAssetKey('XLM');
+    setMemoType('text');
+    setMemoVal('');
+    setFederationMemoApplied(false);
+    setShowConfirmModal(false);
+    // Key-Abfrage samt Job-Marker und gemerktem Ergebnisdialog (closeSecretModal),
+    // ein offener Job-Ergebnisdialog gehoert zum alten Netz.
+    closeSecretModal();
+    setResultDialog((d) => (d?.type === 'job' ? null : d));
+    // Pruefdialog mit Snapshot und Keypairs verwerfen.
+    closeReviewDialog();
+    setMemoMismatchDialog(null);
+    pendingMemoActionRef.current = null;
+    setPendingLocalPreflight(null);
+    setPreflight({
+      loading: false, err: '', destExists: true, activationRequired: false,
+      minReserve: 0, desired: 0, adjusted: 0, willBump: false, resolvedDest: '',
+    });
+    setShowQrScan(false);
+    setQrInfo(null);
+    setError('');
+    clearSuccess();
+    setNetworkNotice(t('common:payment.send.networkChanged.reset'));
+    // Nur auf den Netzwechsel reagieren; die uebrigen Werte sind stabile Setter/Callbacks.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [netLabel]);
+
+  // Neue Eingaben nach dem Wechsel: Hinweis hat seinen Zweck erfuellt.
+  useEffect(() => {
+    if (dest || amount) setNetworkNotice('');
+  }, [dest, amount]);
   const applyScannedPayment = useCallback((text) => {
     const parsed = parsePaymentInput(text);
     if (!parsed.ok) return t(`wallet:qrScan.errors.${parsed.error}`);
@@ -1882,14 +1997,30 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
         <h2 className="text-xl font-semibold">{t('common:payment.send.title')}</h2>
         <button
           type="button"
-          onClick={() => setShowBatchDialog(true)}
+          onClick={() => { setBatchNotice(''); setShowBatchDialog(true); }}
           className="mt-2 rounded-md border border-gray-300 bg-white px-3 py-1 text-sm font-medium text-gray-800 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100"
         >
           {t('batchPayment:openButton')}
         </button>
       </div>
-      {showBatchDialog && <BatchPaymentDialog onClose={() => setShowBatchDialog(false)} />}
+      {showBatchDialog && (
+        <BatchPaymentDialog
+          onClose={() => setShowBatchDialog(false)}
+          onNetworkChangeClose={() => { setShowBatchDialog(false); setBatchNotice(t('batchPayment:networkChanged.closed')); }}
+        />
+      )}
+      {batchNotice && (
+        <div role="status" data-testid="batch-network-notice" className="text-sm bg-amber-50 dark:bg-amber-900/30 border border-amber-300/60 text-amber-800 dark:text-amber-200 rounded-sm p-3 max-w-4xl mx-auto">
+          {batchNotice}
+          <button type="button" className="ml-2 underline text-xs" onClick={() => setBatchNotice('')}>{t('common:close', 'Schliessen')}</button>
+        </div>
+      )}
 
+      {networkNotice && (
+        <div role="status" data-testid="send-network-notice" className="text-sm bg-amber-50 dark:bg-amber-900/30 border border-amber-300/60 text-amber-800 dark:text-amber-200 rounded-sm p-3 max-w-4xl mx-auto">
+          {networkNotice}
+        </div>
+      )}
       {error && <div className="text-red-600 text-sm text-center">{error}</div>}
       {ambiguousSubmission && (
         <div className="text-sm bg-amber-100 dark:bg-amber-900/30 border border-amber-300/60 text-amber-800 dark:text-amber-200 rounded-sm p-3 max-w-4xl mx-auto">
@@ -1897,6 +2028,9 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
           <div>{t('common:payment.send.ambiguousResult.body', 'Die Transaktion konnte serverseitig nicht eindeutig bestätigt werden (Zeitüberschreitung oder Serverfehler). Bitte prüfen Sie den Transaktions-Hash im Explorer, bevor Sie es erneut versuchen.')}</div>
           {ambiguousSubmission.hash && (
             <div className="mt-1 font-mono break-all text-xs">{ambiguousSubmission.hash}</div>
+          )}
+          {ambiguousSubmission.network && (
+            <div className="mt-1 text-xs" data-testid="send-ambiguous-network">{t('common:networkLabel', 'Netzwerk')}: {formatNetworkLabel(ambiguousSubmission.network)}</div>
           )}
           <button
             type="button"
@@ -1927,6 +2061,9 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
             )}
             <div><span className="text-gray-600 dark:text-gray-400">{t('common:payment.send.amount')}:</span> {sentAmountText || '0'} {sentInfo.asset}</div>
             <div><span className="text-gray-600 dark:text-gray-400">{t('common:payment.send.memo')}:</span> {sentInfo.memo || '-'}</div>
+            {sentInfo.network && (
+              <div data-testid="send-success-network"><span className="text-gray-600 dark:text-gray-400">{t('common:networkLabel', 'Netzwerk')}:</span> {formatNetworkLabel(sentInfo.network)}</div>
+            )}
             {sentInfo.activated && (
               <div className="text-green-800 dark:text-green-200 font-medium">{t('common:payment.send.activated', 'The destination account was activated.')}</div>
             )}
@@ -2508,12 +2645,14 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
           copyDetailsText={resultDialog.type === 'sent' ? sentDetailsText(resultDialog) : undefined}
           onClose={closeResultDialog}
           onBack={isMultisig === true ? () => reopenSelection(resultDialog.type === 'sent' ? 'local' : resultDialog.type) : undefined}
-          signNotice={resultDialog.type === 'job' && resultDialog.noNewSignature ? t('multisig:confirm.result.job.noNewSignature') : null}
+          signNotice={resultDialog.type === 'job' && !jobMatchesCurrentNetwork(resultDialog)
+            ? t('common:payment.send.networkChanged.jobOtherNetwork')
+            : (resultDialog.type === 'job' && resultDialog.noNewSignature ? t('multisig:confirm.result.job.noNewSignature') : null)}
           activeSignerId={publicKey}
-          onSignNow={resultDialog.type === 'job' ? () => {
+          onSignNow={resultDialog.type === 'job' && resultDialog.jobId && jobMatchesCurrentNetwork(resultDialog) ? () => {
             setLastResultDialog(resultDialog);
             setResultDialog(null);
-            openSecretModal(false, 'job', 1, 'result');
+            openSecretModal(false, 'job', 1, 'result', resultDialog.jobId);
           } : undefined}
           onOpenJob={resultDialog.type === 'job' && resultDialog.jobId ? () => {
             closeResultDialog();
@@ -2548,6 +2687,8 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
             setShowConfirmModal(true);
           }) : null}
           onConfirm={async (collected, remember, options = {}) => {
+            // Netzwechsel waehrend der Awaits unten: Ergebnis verwerfen (siehe networkEpochRef).
+            const epoch = networkEpochRef.current;
             try {
               setError('');
               setStatus('');
@@ -2597,11 +2738,17 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                 }
               }
 
-              const jobToSign = secretContext === 'job'
-                ? (resultDialog?.jobId && resultDialog?.xdr ? resultDialog : lastResultDialog)
-                : null;
-              // If we are signing an existing job from the result dialog, sign and merge, then exit.
-              if (jobToSign?.jobId && jobToSign?.xdr) {
+              // Einen bestehenden Job nur signieren, wenn die Abfrage ausdruecklich fuer genau
+              // diesen Job geoeffnet wurde (secretJobId aus "Jetzt signieren"). Ein neuer Job
+              // (handlePrepareMultisig) uebernimmt nie einen gemerkten Ergebnisdialog.
+              if (secretContext === 'job' && secretJobId) {
+                const jobToSign = [resultDialog, lastResultDialog]
+                  .find((d) => d?.jobId === secretJobId && d?.xdr) || null;
+                if (!jobToSign || !jobMatchesCurrentNetwork(jobToSign) || !isCurrentEpoch(epoch)) {
+                  closeSecretModal();
+                  showErrorMessage(t('common:payment.send.networkChanged.jobOtherNetwork'));
+                  return;
+                }
                 try {
                   const clientCollected = collected.map((s) => {
                     const pk = s?.keypair?.publicKey?.() || '';
@@ -2668,14 +2815,17 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                 }
               }
               const collectLocally = !!options.collectAllSignaturesLocally;
+              // Waehrend rememberSessionSecrets das Netz gewechselt: nichts mehr oeffnen.
+              if (!isCurrentEpoch(epoch)) return;
               if (!isMultisig) {
                 const preflightResult = pendingLocalPreflight || await runPreflight();
+                if (!isCurrentEpoch(epoch)) return;
                 if (preflightResult?.err) {
                   setSecretError(preflightResult.err);
                   return;
                 }
                 setPendingLocalPreflight(preflightResult);
-                openReviewDialog(collected.map((s) => s.keypair), preflightResult);
+                openReviewDialog(collected.map((s) => s.keypair), preflightResult, epoch);
                 setSecretError('');
                 closeSecretModal();
                 return;
@@ -2699,13 +2849,13 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                 setSecretError(preflight.err || t('errors:unknown', 'Unbekannter Fehler'));
                 return;
               }
-              openReviewDialog(collected.map((s) => s.keypair), preflight);
+              openReviewDialog(collected.map((s) => s.keypair), preflight, epoch);
               setSecretError('');
               closeSecretModal();
               return;
             } catch (e) {
               if (e instanceof AmbiguousSubmitResultError) {
-                setAmbiguousSubmission({ hash: e.hash });
+                setAmbiguousSubmission({ hash: e.hash, network: netLabel });
                 closeSecretModal();
               } else {
                 const detail = handlePaymentError(e);

@@ -112,10 +112,15 @@
     "lockCancelled": "Warten auf andere Sammelzahlung abgebrochen",
     "duplicateRouteInList": "Diese Zahlung steht schon weiter oben in der Liste, dort als M-Adresse bzw. als G-Adresse mit gleicher Memo ID.",
     "lockLost": "Sendevorgang gestoppt, weil ein anderer Tab übernommen hat (z.B. nach Ruhezustand)",
-    "containsSecret": "In dieser Zeile steht etwas, das wie ein Secret Key aussieht. Bitte entfernen, die Zeile wird nicht geprüft."
+    "containsSecret": "In dieser Zeile steht etwas, das wie ein Secret Key aussieht. Bitte entfernen, die Zeile wird nicht geprüft.",
+    "networkChanged": "Netz gewechselt, nicht gesendet"
   },
   "flags": {
     "compromised": "Warnung: Dieser Empfänger ist in der Vertrauensliste als kompromittiert markiert.",
     "deactivated": "Hinweis: Dieser Empfänger ist in der Vertrauensliste als deaktiviert markiert."
+  },
+  "networkChanged": {
+    "closed": "Netz gewechselt: Die Sammelzahlung wurde geschlossen. Die Liste für das vorige Netz bleibt gespeichert.",
+    "stopped": "Netz gewechselt: Der Lauf wurde nach der laufenden Zahlung gestoppt. Weitere Zahlungen werden nicht gesendet. Die Liste bleibt gespeichert."
   }
 }
