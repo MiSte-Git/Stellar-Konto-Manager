@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/admin_session.php';
 require __DIR__ . '/cors.php';
+require __DIR__ . '/requestGuard.php';
 
 // CORS: session cookies require a specific origin (not '*') plus the
 // credentials flag - shared allowlist in cors.php (finding #9).
@@ -118,6 +119,11 @@ $path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '/';
 $method = strtoupper((string)($_SERVER['REQUEST_METHOD'] ?? 'GET'));
 
 if ($method === 'POST' && $path === '/api/admin/login') {
+    // G4: Origin und Content-Type vor dem Rate-Limit pruefen, damit ein
+    // fremder Request keinen Login-Versuch verbraucht.
+    require_allowed_origin();
+    require_json_content_type();
+
     $ip = clientIp();
     $retryAfter = loginRateLimitCheck($ip);
     if ($retryAfter > 0) {
@@ -150,6 +156,8 @@ if ($method === 'GET' && $path === '/api/admin/check') {
 }
 
 if ($method === 'POST' && $path === '/api/admin/logout') {
+    // G4: kein Body, darum nur die Origin-Pruefung.
+    require_allowed_origin();
     $_SESSION = [];
     if (ini_get('session.use_cookies')) {
         $params = session_get_cookie_params();

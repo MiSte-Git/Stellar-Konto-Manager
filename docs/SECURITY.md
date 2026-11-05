@@ -110,6 +110,13 @@ Ein Job ist eine unsignierte oder teilsignierte Transaktion, die mehrere Signer 
 - SSRF-Schutz für serverseitige Abrufe (TOML, Federation): Auflösung und Prüfung der Ziel-IP, Größenlimits
   (`api/ssrfGuard.php`, Node über eigene Lookup-Funktion).
 - CORS-Allowlist (`services/corsConfig.js`, `api/cors.php`).
+- Admin-Requests mit Origin- und Content-Type-Prüfung (Review Runde 2, Befund G4): Login, Logout und
+  Bugreport-Update nur, wenn `Origin` vorhanden ist und exakt in der CORS-Allowlist steht (sonst 403
+  `forbidden_origin`); Login und Update zusätzlich nur mit `Content-Type: application/json` (sonst 415
+  `unsupported_media_type`). Grund: `SameSite=Lax` hilft nicht gegen eine Seite derselben Site (andere Subdomain),
+  und PHP las JSON auch aus einem `text/plain`-Formular ohne Preflight. Geprüft wird vor Login-Rate-Limit und
+  Admin-Prüfung, ein abgewiesener Request verbraucht also keinen Login-Versuch und berührt die DB nicht.
+  Code: `services/requestGuard.js`, `api/requestGuard.php`. Das öffentliche Anlegen von Bugreports bleibt offen.
 - Security-Header aus einer Quelle (`services/securityHeaders.js`, PHP-Zwilling `api/securityHeaders.php`): strikte
   CSP, `connect-src` nur zu bekannten Zielen.
 - Datenordner auf dem Server per `.htaccess` gesperrt, Dateirechte eng.

@@ -11,6 +11,7 @@ declare(strict_types=1);
 require __DIR__ . '/admin_session.php';
 require __DIR__ . '/cors.php';
 require __DIR__ . '/bugreportGuard.php';
+require __DIR__ . '/requestGuard.php';
 
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
@@ -95,8 +96,10 @@ try {
     // PDO always raises as an exception, even outside ERRMODE_EXCEPTION - goes
     // through the same generic-error handling instead of leaking a raw
     // PDOException (with DB user/host) to the client.
+    // Die DB-Verbindung entsteht erst nach den Zugriffspruefungen der
+    // einzelnen Zweige, damit abgewiesene Requests (G4, require_admin) die DB
+    // gar nicht erst beruehren.
     $cfg = require_config();
-    $pdo = get_pdo($cfg);
     $table = (string)($cfg['DB_TABLE_BUGREPORTS'] ?? 'bugreports');
 
     if ($method === 'GET') {
@@ -104,6 +107,7 @@ try {
         // unprotected before the A2 fix, since the admin UI's client-side
         // secret check was the only prior gate).
         require_admin();
+        $pdo = get_pdo($cfg);
 
         $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 20;
         $offset = isset($_GET['offset']) ? (int)$_GET['offset'] : 0;
@@ -194,7 +198,15 @@ try {
         $action = isset($data['action']) ? (string)$data['action'] : '';
 
         if ($action === 'update') {
+            // G4: Content-Type und Origin vor require_admin pruefen. Ob ein
+            // Request ein Update ist, steht erst im Body; zwischen Parsen und
+            // Pruefung passiert nichts, ein text/plain-Formular mit gueltigem
+            // JSON wird also ohne Seiteneffekt abgewiesen. Das oeffentliche
+            // Anlegen (ohne action=update) bleibt unveraendert.
+            require_json_content_type();
+            require_allowed_origin();
             require_admin();
+            $pdo = get_pdo($cfg);
 
             $id = isset($data['id']) ? (int)$data['id'] : 0;
             if ($id <= 0) json_out(['ok' => false, 'error' => 'invalid_id'], 400);
@@ -253,6 +265,8 @@ try {
 
             json_out(['ok' => true], 200);
         }
+
+        $pdo = get_pdo($cfg);
 
         // Create new bugreport (public, unauthenticated) - N3 rate limit
         // applies only here, not to the admin-only GET/update actions above.

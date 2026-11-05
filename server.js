@@ -11,6 +11,7 @@ const fsSync = require('fs');
 const crypto = require('crypto');
 const { searchAssets, fetchAssetFacts, fetchExpertDirectoryEntry } = require('./services/tradeService.js');
 const { createCorsMiddleware } = require('./services/corsConfig.js');
+const { requireAllowedOrigin, requireJsonContentType } = require('./services/requestGuard.js');
 const { createApiSecurityHeadersMiddleware } = require('./services/securityHeaders.js');
 const { handleFederationRequest, HOP_HEADER: FEDERATION_HOP_HEADER } = require('./services/federationService.js');
 const { writeJsonFileLocked } = require('./services/jsonFileStore.js');
@@ -293,7 +294,9 @@ const multisigFinalStatus = new Set(['submitted_success', 'submitted_failed', 'e
 // real server-side login that sets a session cookie. Same endpoint paths and
 // JSON contracts as the PHP variant (api/admin.php) so the frontend needs no
 // backend-specific branching.
-app.post('/api/admin/login', (req, res) => {
+// G4: Origin und Content-Type werden als Route-Middleware vor dem Handler
+// geprueft (services/requestGuard.js), gleich wie in api/admin.php.
+app.post('/api/admin/login', requireAllowedOrigin, requireJsonContentType, (req, res) => {
   const provided = sanitizeHeader(String(req.body?.secret || ''));
   if (!ADMIN_SECRET || !timingSafeEqualStrings(provided, ADMIN_SECRET)) {
     return res.status(401).json({ ok: false, error: 'forbidden' });
@@ -309,7 +312,8 @@ app.get('/api/admin/check', (req, res) => {
   res.json({ authenticated: !!req.session?.bugtrackerAdmin });
 });
 
-app.post('/api/admin/logout', (req, res) => {
+// G4: kein Body, darum nur die Origin-Pruefung.
+app.post('/api/admin/logout', requireAllowedOrigin, (req, res) => {
   req.session.destroy(() => {
     res.json({ ok: true });
   });
@@ -447,7 +451,8 @@ app.get('/api/bugreport', async (req, res) => {
   }
 });
 
-app.patch('/api/bugreport/:id', async (req, res) => {
+// G4: Origin und Content-Type vor der Admin-Pruefung (services/requestGuard.js).
+app.patch('/api/bugreport/:id', requireAllowedOrigin, requireJsonContentType, async (req, res) => {
   try {
     if (!requireAdminSession(req, res)) return;
     const id = parseInt(String(req.params.id), 10);
