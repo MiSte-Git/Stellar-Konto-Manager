@@ -4,9 +4,13 @@ import { I18nextProvider } from 'react-i18next';
 import i18n from '../../../i18n.js';
 
 const call = vi.fn();
+const opsCall = vi.fn(async () => ({ records: [] }));
+const effectsCall = vi.fn(async () => ({ records: [] }));
 vi.mock('../../../utils/stellar/stellarUtils.js', () => {
   const chain = { forAccount: () => chain, order: () => chain, limit: () => chain, join: () => chain, call: (...a) => call(...a) };
-  return { getHorizonServer: () => ({ payments: () => chain }) };
+  const ops = { forAccount: () => ops, order: () => ops, limit: () => ops, join: () => ops, call: (...a) => opsCall(...a) };
+  const fx = { forOperation: () => fx, limit: () => fx, call: (...a) => effectsCall(...a) };
+  return { getHorizonServer: () => ({ payments: () => chain, operations: () => ops, effects: () => fx }) };
 });
 
 const settings = { explorers: [], defaultExplorerKey: '' };
@@ -88,5 +92,21 @@ describe('RecentActivity', () => {
     expect(links).toHaveLength(2);
     expect(links[0]).toHaveAttribute('href', `https://stellar.expert/explorer/public/tx/${H('b')}`);
     expect(links[0]).toHaveAttribute('rel', 'noopener noreferrer');
+  });
+
+  it('zeigt eingeloeste Claimable Balances als Eingang', async () => {
+    opsCall.mockResolvedValueOnce({ records: [{
+      id: '999', paging_token: '999', type: 'claim_claimable_balance', source_account: ME, claimant: ME,
+      created_at: '2026-10-15T10:00:00Z', transaction_hash: H('d'), transaction_successful: true, balance_id: '00',
+    }] });
+    effectsCall.mockResolvedValueOnce({ records: [
+      { type: 'claimable_balance_claimed', asset: 'native', amount: '75.0000000' },
+      { type: 'claimable_balance_sponsorship_removed', former_sponsor: FRIEND },
+    ] });
+    renderIt();
+    expect(await screen.findByText('Claimable Balance eingelöst')).toBeInTheDocument();
+    const first = screen.getAllByTestId('activity-item')[0];
+    expect(first).toHaveTextContent('Claimable Balance eingelöst');
+    expect(first).toHaveTextContent('75');
   });
 });

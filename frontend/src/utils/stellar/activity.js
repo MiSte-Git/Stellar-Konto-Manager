@@ -121,7 +121,20 @@ export function normalizeActivity(record, publicKey) {
         counterparty: String(incoming ? record.funder || '' : record.account || ''),
       };
     }
-    case 'account_merge': {
+    // Pseudo-Datensaetze aus claimableActivity.js (Format wie /payments)
+    case 'create_claimable_balance':
+    case 'claim_claimable_balance': {
+      const created = record.type === 'create_claimable_balance';
+      return {
+        ...base,
+        kind: created ? 'claimableCreated' : 'claimableClaimed',
+        direction: created ? 'out' : 'in',
+        amount: num(record.amount),
+        asset: assetOf(record),
+        counterparty: String(created ? record.to || '' : record.from || ''),
+      };
+    }
+        case 'account_merge': {
       const incoming = record.into === publicKey;
       return {
         ...base,

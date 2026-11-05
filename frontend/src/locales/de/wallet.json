@@ -118,7 +118,9 @@
       "accountCreated": "Konto aktiviert",
       "createdAccount": "Konto erstellt",
       "mergeIn": "Konto zusammengeführt",
-      "mergeOut": "Konto aufgelöst"
+      "mergeOut": "Konto aufgelöst",
+      "claimableCreated": "Claimable Balance angelegt",
+      "claimableClaimed": "Claimable Balance eingelöst"
     },
     "dustHidden_one": "{{count}} Kleinstzahlung ausgeblendet (oft Spam).",
     "dustHidden_other": "{{count}} Kleinstzahlungen ausgeblendet (oft Spam).",

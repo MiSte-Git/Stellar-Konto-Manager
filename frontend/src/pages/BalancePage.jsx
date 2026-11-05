@@ -15,6 +15,7 @@ import {
 } from '../utils/stellar/activity.js';
 import { readHideDust, writeHideDust } from '../utils/stellar/dustPreference.js';
 import { ActivityNotices, DustBadge, FakeNativeBadge, LookalikeBadge, UrlBadge } from '../components/wallet/ActivityWarnings.jsx';
+import { loadClaimableActivity, mergeActivityRecords } from '../utils/stellar/claimableActivity.js';
 
 
 export default function BalancePage({ publicKey, muxedAddress }) {
@@ -161,9 +162,17 @@ const muxedId = useMemo(() => {
         page = await page.next();
         if (!page || !page.records || page.records.length === 0) break;
         }
+        // Claimable Balances (Anlegen/Einloesen) stehen nicht in /payments, sie werden einsortiert.
+        let claimable = [];
+        try {
+          claimable = await loadClaimableActivity(server, publicKey, { limit: 200 });
+        } catch (claimErr) {
+          console.warn('[SKM] claimable activity could not be loaded', claimErr);
+        }
         if (!cancelled) {
           setBalances(account.balances || []);
-          setPayments(max === Infinity ? all : all.slice(0, max));
+          const limited = max === Infinity ? all : all.slice(0, max);
+          setPayments(mergeActivityRecords(limited, claimable));
         }
       } catch (e) {
       if (!cancelled) {

@@ -113,7 +113,9 @@
       "accountCreated": "Account Activated",
       "createdAccount": "Account created",
       "mergeIn": "Account Merged",
-      "mergeOut": "Account Closed"
+      "mergeOut": "Account Closed",
+      "claimableCreated": "Claimable balance created",
+      "claimableClaimed": "Claimable balance claimed"
     },
     "dustHidden_one": "{{count}} small payments hidden (often spam).",
     "dustHidden_other": "{{count}} small payments hidden (often spam).",

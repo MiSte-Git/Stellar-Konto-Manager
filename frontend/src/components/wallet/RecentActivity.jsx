@@ -19,6 +19,7 @@ import { shortenAddress } from '../../utils/stellar/walletSummary.js';
 import { readHideDust, writeHideDust } from '../../utils/stellar/dustPreference.js';
 import { ActivityNotices, DustBadge, FakeNativeBadge, LookalikeBadge, UrlBadge } from './ActivityWarnings.jsx';
 import { useSettings } from '../../utils/useSettings.js';
+import { loadClaimableActivity, mergeActivityRecords } from '../../utils/stellar/claimableActivity.js';
 
 const FETCH_LIMIT = 30;
 const SHOW_LIMIT = 8;
@@ -33,6 +34,12 @@ function useRecentPayments(publicKey, network, reloadToken) {
     let cancelled = false;
     setState((prev) => ({ ...prev, loading: true, error: '' }));
     const server = getHorizonServer(horizonUrlFor(network));
+    // Claimable Balances (Anlegen/Einloesen) kommen nicht ueber /payments, sondern separat.
+    // Scheitert nur dieser Teil, bleiben die Zahlungen sichtbar.
+    const claimable = loadClaimableActivity(server, publicKey, { limit: FETCH_LIMIT }).catch((err) => {
+      console.warn('[SKM] claimable activity could not be loaded', err);
+      return [];
+    });
     server
       .payments()
       .forAccount(publicKey)
@@ -40,8 +47,9 @@ function useRecentPayments(publicKey, network, reloadToken) {
       .limit(FETCH_LIMIT)
       .join('transactions')
       .call()
-      .then((page) => {
-        if (!cancelled) setState({ loading: false, error: '', records: page?.records || [] });
+      .then(async (page) => {
+        const extra = await claimable;
+        if (!cancelled) setState({ loading: false, error: '', records: mergeActivityRecords(page?.records || [], extra) });
       })
       .catch((err) => {
         if (cancelled) return;
@@ -113,6 +121,8 @@ export default function RecentActivity({ publicKey, muxedAddress, network, reloa
         ? t('wallet:activity.kind.mergeIn', 'Konto zusammengeführt')
         : t('wallet:activity.kind.mergeOut', 'Konto aufgelöst');
     }
+    if (item.kind === 'claimableCreated') return t('wallet:activity.kind.claimableCreated', 'Claimable Balance angelegt');
+    if (item.kind === 'claimableClaimed') return t('wallet:activity.kind.claimableClaimed', 'Claimable Balance eingelöst');
     if (item.direction === 'self') return t('wallet:activity.kind.self', 'An dich selbst');
     if (item.kind === 'pathPayment') {
       return item.direction === 'in'
