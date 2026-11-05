@@ -4,6 +4,7 @@ import { I18nextProvider } from 'react-i18next';
 import { Account } from '@stellar/stellar-sdk';
 import i18n from '../../../i18n.js';
 import AssetSearch from '../AssetSearch.jsx';
+import { resetServerNetworkCalls, serverNetworkCalls } from '../../../test/horizonMock.js';
 
 // Same well-known testnet-style keypairs used in tradingTransactions.test.js, so a
 // human scanning both files recognizes the same fixture accounts.
@@ -27,7 +28,7 @@ const hoisted = vi.hoisted(() => ({
   pathRecords: { value: [] },
 }));
 
-vi.mock('../../../utils/stellar/stellarUtils.js', async (importOriginal) => ({
+vi.mock('../../../utils/stellar/stellarUtils.js', async (importOriginal) => (await import('../../../test/horizonMock.js')).withNetworkServer({
   // SecretKeyModal also imports validateSecretKey from this module, so keep
   // every real export and only override the network-facing functions below.
   ...(await importOriginal()),
@@ -172,6 +173,31 @@ describe('AssetSearch - Limit-Order erstellen (manageSellOffer)', () => {
     expect(op.amount).toBe('50.0000000');
     expect(op.price).toBe('0.75');
     expect(op.selling.code).toBe(ASSET_CODE);
+  });
+
+  it('signiert mit dem Server des Ablaufnetzes und bricht nach einem Wechsel in einem anderen Tab ab', async () => {
+    renderPage();
+    await searchAndSelectAsset();
+    const limitSection = screen.getByText('Limit-Orders').closest('section');
+    const [amountInput, priceInput] = within(limitSection).getAllByRole('textbox');
+    fireEvent.change(amountInput, { target: { value: '50' } });
+    fireEvent.change(priceInput, { target: { value: '0.75' } });
+    fireEvent.click(within(limitSection).getByRole('button', { name: 'Limit-Order platzieren' }));
+    await screen.findByText('Limit-Order bestätigen');
+    fireEvent.click(screen.getByRole('button', { name: 'Weiter zur Signatur' }));
+    typeSecret(ACCOUNT.secret);
+
+    resetServerNetworkCalls();
+    // Waehrend der Ablauf das Konto laedt, wechselt ein anderer Tab das Netz.
+    hoisted.loadAccountMock.mockImplementation(async () => {
+      window.localStorage.setItem('SKM_NETWORK', 'TESTNET');
+      return makeFundedAccount(ACCOUNT.publicKey);
+    });
+    submitSecretModal();
+
+    expect((await screen.findAllByText(i18n.t('createAccount:networkChanged.funderAborted'))).length).toBeGreaterThan(0);
+    expect(hoisted.submitTransactionMock).not.toHaveBeenCalled();
+    expect(serverNetworkCalls).toEqual(['PUBLIC']);
   });
 
   it('rejects an invalid price without ever contacting the network', async () => {

@@ -1,6 +1,7 @@
 // src/components/ListTrustlines.jsx
 import React, { useState, useEffect, useMemo, useRef } from 'react';
-import { horizonUrlFor, passphraseFor, readStoredNetworkId } from '../config/networks.js';
+import { normalizeNetworkId, passphraseFor, readStoredNetworkId } from '../config/networks.js';
+import { assertFlowNetwork } from '../utils/globalNetwork.js';
 import { useTranslation } from 'react-i18next';
 import { 
   validateSecretKey, 
@@ -20,7 +21,7 @@ import { formatElapsedMmSs } from '../utils/datetime';
 import { useSettings } from '../utils/useSettings';
 import { formatErrorForUi } from '../utils/formatErrorForUi.js';
 import { getRequiredThreshold } from '../utils/getRequiredThreshold.js';
-import { getHorizonServer } from '../utils/stellar/stellarUtils.js';
+import { getHorizonServerForNetwork } from '../utils/stellar/stellarUtils.js';
 import AddTrustlineModal from './AddTrustlineModal.jsx';
 import { consumePendingTrustlineAsset } from '../utils/appNavigation.js';
 import { TransactionBuilder, Operation, Asset } from '@stellar/stellar-sdk';
@@ -84,8 +85,13 @@ function ListTrustlines({
   setIsProcessing,
   setDeleteProgress,
   setInfoMessage,
+  network,
 }) {
   const { t, i18n } = useTranslation(['common', 'trustline', 'errors', 'multisig']);
+  // Netz eines Ablaufs: das von main.jsx heruntergereichte, sonst (aeltere Aufrufer) das
+  // gespeicherte. Wird einmal am Anfang jedes Ablaufs festgelegt; Server, Konto und
+  // Passphrase stammen dann alle daraus.
+  const viewNetwork = normalizeNetworkId(network) || readStoredNetworkId();
   const { decimalsMode, multisigTimeoutSeconds } = useSettings();
   const [paginated, setPaginated] = useState([]);
   const [showOverviewModal, setShowOverviewModal] = useState(false);
@@ -144,8 +150,7 @@ function ListTrustlines({
     async function loadAccountInfo() {
       if (!publicKey) return;
       try {
-        const net = readStoredNetworkId();
-        const server = getHorizonServer(horizonUrlFor(net));
+        const server = getHorizonServerForNetwork(viewNetwork);
         const acct = await server.loadAccount(publicKey);
         if (!cancelled) setAccountInfo(acct);
       } catch {
@@ -154,7 +159,8 @@ function ListTrustlines({
     }
     loadAccountInfo();
     return () => { cancelled = true; };
-  }, [publicKey]);
+    // Bei Netzwechsel neu laden: Signer und Thresholds gehoeren zum Netz.
+  }, [publicKey, viewNetwork]);
 
   const reloadTrustlinesForCurrentAccount = async () => {
     const refreshed = await loadTrustlines(publicKey, undefined, { includeOps: true, ttlMs: 0 });
@@ -162,8 +168,8 @@ function ListTrustlines({
   };
 
   const submitChangeTrustTx = async ({ asset, limit, collectedSigners }) => {
-    const net = readStoredNetworkId();
-    const server = getHorizonServer(horizonUrlFor(net));
+    const net = viewNetwork;
+    const server = getHorizonServerForNetwork(net);
     const account = await server.loadAccount(publicKey);
     const thresholds = account?.thresholds || {};
     const required = getRequiredThreshold('changeTrust', thresholds);
@@ -188,6 +194,8 @@ function ListTrustlines({
     });
     txb.addOperation(Operation.changeTrust({ asset, limit }));
     const tx = txb.setTimeout(60).build();
+    // Nach den Horizon-Aufrufen: gilt das Netz des Ablaufs noch?
+    assertFlowNetwork(net);
     (Array.isArray(collectedSigners) ? collectedSigners : []).forEach((s) => {
       try { tx.sign(s.keypair); } catch (e) { console.debug?.('sign failed', e); }
     });
@@ -284,8 +292,8 @@ function ListTrustlines({
       const addCode = isAdd ? String(pendingAdd.code ?? '').trim() : '';
       const addIssuer = isAdd ? String(pendingAdd.issuer ?? '').trim() : '';
       const addLimit = isAdd ? String(pendingAdd.limit ?? '').trim() : '';
-      const net = readStoredNetworkId();
-      const server = getHorizonServer(horizonUrlFor(net));
+      const net = viewNetwork;
+      const server = getHorizonServerForNetwork(net);
       const account = await server.loadAccount(publicKey);
       // Multisig-Job: wird erst spaeter eingereicht
       const fee = await resolveFeePerOp(server, { deferred: true });
@@ -316,6 +324,8 @@ function ListTrustlines({
       const tx = txb.setTimeout(txTimeout).build();
       const hashHex = txHashHex(tx);
       const xdr = tx.toXDR();
+      // Kein Job mit einer Transaktion aus einem inzwischen verlassenen Netz.
+      assertFlowNetwork(net);
       let job = null;
       try {
         const r = await fetch(apiUrl('multisig/jobs'), {
@@ -453,6 +463,8 @@ function ListTrustlines({
         trustlines: deletableTrustlines,
         onProgress,
         accountPublicKey: publicKey,
+        network: viewNetwork,
+        server: getHorizonServerForNetwork(viewNetwork),
       });
       await reloadTrustlinesForCurrentAccount();
 

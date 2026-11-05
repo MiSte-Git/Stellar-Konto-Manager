@@ -4,6 +4,7 @@ import { I18nextProvider } from 'react-i18next';
 import { Account, Keypair, Networks, TransactionBuilder } from '@stellar/stellar-sdk';
 import { AmbiguousSubmitResultError } from '../../../utils/stellar/submitTransactionSafely.js';
 import i18n from '../../../i18n.js';
+import { resetServerNetworkCalls, serverNetworkCalls } from '../../../test/horizonMock.js';
 import ClaimableBalancesPanel from '../ClaimableBalancesPanel.jsx';
 
 const ME = {
@@ -16,7 +17,7 @@ const id = (n) => `00000000${String(n).padStart(64, '0')}`;
 
 const hoisted = vi.hoisted(() => ({ recordsMock: vi.fn(), loadAccountMock: vi.fn(), submitMock: vi.fn(), rememberMock: vi.fn(async () => {}) }));
 
-vi.mock('../../../utils/stellar/stellarUtils.js', async (importOriginal) => ({
+vi.mock('../../../utils/stellar/stellarUtils.js', async (importOriginal) => (await import('../../../test/horizonMock.js')).withNetworkServer({
   ...(await importOriginal()),
   getHorizonServer: () => ({
     claimableBalances: () => ({ claimant: () => ({ limit: () => ({ call: hoisted.recordsMock }) }) }),
@@ -89,6 +90,8 @@ async function claim(n) {
 beforeEach(() => {
   vi.clearAllMocks();
   window.localStorage.clear();
+  // Wie in der App: gespeichertes globales Netz = Netz des Panels (Pruefung vor dem Signieren).
+  window.localStorage.setItem('SKM_NETWORK', 'TESTNET');
   hoisted.recordsMock.mockResolvedValue({ records: RECORDS });
   hoisted.loadAccountMock.mockImplementation(async () => makeAccount());
   hoisted.submitMock.mockResolvedValue({ hash: 'claimhash' });
@@ -139,6 +142,21 @@ describe('ClaimableBalancesPanel (P1.5)', () => {
     expect(tx.signatures).toHaveLength(1);
     await screen.findByText(/eingelöst\. Transaktion claimhash/);
     expect(onClaimed).toHaveBeenCalled();
+  });
+
+  it('Server mit dem Netz des Panels; Wechsel in einem anderen Tab beim Laden des Kontos: nichts signiert', async () => {
+    resetServerNetworkCalls();
+    renderPanel();
+    await screen.findByText('Claimable Balances');
+    hoisted.loadAccountMock.mockImplementation(async () => {
+      window.localStorage.setItem('SKM_NETWORK', 'PUBLIC');
+      return makeAccount();
+    });
+    await claim(1);
+    await screen.findByText(i18n.t('createAccount:networkChanged.funderAborted'));
+    expect(hoisted.submitMock).not.toHaveBeenCalled();
+    expect(serverNetworkCalls.length).toBeGreaterThan(0);
+    expect(serverNetworkCalls.every((n) => n === 'TESTNET')).toBe(true);
   });
 
   it('legt beim Einloesen ohne Trustline die Trustline in derselben Transaktion an', async () => {

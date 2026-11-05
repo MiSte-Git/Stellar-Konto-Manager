@@ -28,6 +28,29 @@ export function setGlobalNetwork(raw) {
   return id;
 }
 
+export const NETWORK_CHANGED_CODE = 'network_changed';
+
+/**
+ * Gilt das Netz, mit dem ein Ablauf begonnen hat, noch als gespeichertes globales Netz?
+ * Liest SKM_NETWORK nur zum Vergleich, nie als Quelle fuer Server oder Passphrase. Nach
+ * einem Wechsel in einem anderen Tab ist localStorage schon neu, bevor das Event ankommt.
+ */
+export function isFlowNetworkCurrent(flowNetwork) {
+  const id = normalizeNetworkId(flowNetwork);
+  return !!id && id === readStoredNetworkId();
+}
+
+/**
+ * Vor dem Signieren aufrufen. Wirft mit code NETWORK_CHANGED_CODE, wenn das globale Netz
+ * nicht mehr das des Ablaufs ist. message: i18n-Key oder fertiger Text, je nachdem, wie die
+ * Stelle Fehler anzeigt. Standard: "Abgebrochen ... Es wurde nichts gesendet."
+ */
+export function assertFlowNetwork(flowNetwork, message = 'createAccount:networkChanged.funderAborted') {
+  if (!isFlowNetworkCurrent(flowNetwork)) {
+    throw Object.assign(new Error(message), { code: NETWORK_CHANGED_CODE });
+  }
+}
+
 /** Netz aus einem stm-network-changed-Event, sonst aus SKM_NETWORK. */
 export function networkFromEvent(e) {
   const detail = typeof e?.detail === 'string' ? e.detail : '';

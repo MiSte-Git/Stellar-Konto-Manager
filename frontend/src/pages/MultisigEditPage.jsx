@@ -1,12 +1,12 @@
 import React, { useEffect, useMemo, useState, useCallback, useRef } from 'react';
-import { horizonUrlFor, passphraseFor, readStoredNetworkId } from '../config/networks.js';
-import { useGlobalNetwork } from '../utils/globalNetwork.js';
+import { passphraseFor, readStoredNetworkId } from '../config/networks.js';
+import { assertFlowNetwork, useGlobalNetwork } from '../utils/globalNetwork.js';
 import { useTranslation } from 'react-i18next';
 import SecretKeyModal from '../components/SecretKeyModal.jsx';
 import MultiSigHelpDialog from '../components/multisig/MultiSigHelpDialog.jsx';
 import MultisigPrepareDialog from '../components/MultisigPrepareDialog.jsx';
 import MultisigConfigForm from '../components/multisig/MultisigConfigForm.jsx';
-import { getHorizonServer } from '../utils/stellar/stellarUtils.js';
+import { getHorizonServerForNetwork } from '../utils/stellar/stellarUtils.js';
 import { getRequiredThreshold } from '../utils/getRequiredThreshold.js';
 import { getMultisigTxTimeout } from '../utils/getMultisigTxTimeout.js';
 import { validateMultisigConfig } from '../utils/validateMultisigConfig.js';
@@ -62,7 +62,9 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
   const { multisigTimeoutSeconds } = useSettings();
 
   const [network] = useGlobalNetwork();
-  const server = useMemo(() => getHorizonServer(horizonUrlFor(network)), [network]);
+  // Server, Konto und Passphrase aus demselben Netz (getHorizonServer(Mainnet-URL) wuerde
+  // das Netz erneut aus localStorage lesen).
+  const server = useMemo(() => getHorizonServerForNetwork(network), [network]);
   const passphrase = passphraseFor(network);
 
   // use global wallet (defaultPublicKey) from header; no local input
@@ -318,6 +320,9 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
       multisigTimeoutSeconds,
     });
     const tx = txb.setTimeout(txTimeout).build();
+    // Nach den Horizon-Aufrufen und vor dem Signieren erneut: gilt das Netz noch? Auch ohne
+    // Signatur (Job), damit kein Ergebnis des alten Netzes herauskommt.
+    assertFlowNetwork(network, t('createAccount:networkChanged.funderAborted'));
     if (signTx && Array.isArray(collectedSigners)) {
       collectedSigners.forEach((s) => {
         try { tx.sign(s.keypair); } catch (e) { console.debug?.('sign failed', e); }
@@ -420,6 +425,8 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
       const pk = (defaultPublicKey || '').trim();
       const initialCollected = [];
       const sessionSecret = await getSessionSecretForAccount(pk);
+      // Zwischen Bau und hier lag ein await: Netz noch das des Ablaufs?
+      assertFlowNetwork(network, t('createAccount:networkChanged.funderAborted'));
       if (sessionSecret) {
         try {
           const kp = Keypair.fromSecret(sessionSecret);

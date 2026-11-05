@@ -2,7 +2,8 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { horizonUrlFor, passphraseFor } from '../../config/networks.js';
 import { useTranslation } from 'react-i18next';
 import { Asset } from '@stellar/stellar-sdk';
-import { getHorizonServer, loadTrustlines } from '../../utils/stellar/stellarUtils.js';
+import { getHorizonServer, getHorizonServerForNetwork, loadTrustlines } from '../../utils/stellar/stellarUtils.js';
+import { assertFlowNetwork } from '../../utils/globalNetwork.js';
 import SecretKeyModal from '../SecretKeyModal.jsx';
 import { getRequiredThreshold } from '../../utils/getRequiredThreshold.js';
 import { formatErrorForUi } from '../../utils/formatErrorForUi.js';
@@ -646,7 +647,7 @@ export default function AssetSearch() {
 
   const submitChangeTrustTx = async ({ asset, limit, collectedSigners }) => {
     if (!accountId) throw new Error('submitTransaction.failed:trustlines.invalidInput');
-    const server = getHorizonServer(horizonUrlFor(network));
+    const server = getHorizonServerForNetwork(network);
     const accountPromise = server.loadAccount(accountId);
     const feePromise = resolveFeePerOp(server);
     const account = await accountPromise;
@@ -666,6 +667,8 @@ export default function AssetSearch() {
       fee,
       networkPassphrase: passphraseFor(network),
     });
+    // Nach den Horizon-Aufrufen: gilt das Netz des Ablaufs noch?
+    assertFlowNetwork(network);
     return submitTransactionSafely(server, signTransactionWithCollectedSigners(tx, signers));
   };
 
@@ -680,7 +683,7 @@ export default function AssetSearch() {
     const pairError = validateSwapPair();
     if (pairError) throw new Error(pairError);
 
-    const server = getHorizonServer(horizonUrlFor(network));
+    const server = getHorizonServerForNetwork(network);
     const feePromise = resolveFeePerOp(server);
     const account = await server.loadAccount(accountId);
     const thresholds = account?.thresholds || {};
@@ -731,6 +734,8 @@ export default function AssetSearch() {
       fee,
       networkPassphrase: passphraseFor(network),
     });
+    // Nach den Horizon-Aufrufen: gilt das Netz des Ablaufs noch?
+    assertFlowNetwork(network);
     return submitTransactionSafely(server, signTransactionWithCollectedSigners(tx, signers));
   };
 
@@ -748,7 +753,7 @@ export default function AssetSearch() {
       throw new Error(t('trading:assetSearch.swapPreview.invalidSlippage'));
     }
 
-    const server = getHorizonServer(horizonUrlFor(network));
+    const server = getHorizonServerForNetwork(network);
     const feePromise = resolveFeePerOp(server);
     const account = await server.loadAccount(accountId);
     const thresholds = account?.thresholds || {};
@@ -805,12 +810,14 @@ export default function AssetSearch() {
       fee,
       networkPassphrase: passphraseFor(network),
     });
+    // Nach den Horizon-Aufrufen: gilt das Netz des Ablaufs noch?
+    assertFlowNetwork(network);
     return submitTransactionSafely(server, signTransactionWithCollectedSigners(tx, signers));
   };
 
   const submitManageSellOfferTx = async ({ selling, buying, amount, price, offerId = '0', collectedSigners }) => {
     if (!accountId || !selling || !buying) throw new Error('submitTransaction.failed:trustlines.invalidInput');
-    const server = getHorizonServer(horizonUrlFor(network));
+    const server = getHorizonServerForNetwork(network);
     const feePromise = resolveFeePerOp(server);
     const account = await server.loadAccount(accountId);
     const thresholds = account?.thresholds || {};
@@ -832,6 +839,8 @@ export default function AssetSearch() {
       fee,
       networkPassphrase: passphraseFor(network),
     });
+    // Nach den Horizon-Aufrufen: gilt das Netz des Ablaufs noch?
+    assertFlowNetwork(network);
     return submitTransactionSafely(server, signTransactionWithCollectedSigners(tx, signers));
   };
 

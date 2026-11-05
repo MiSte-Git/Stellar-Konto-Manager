@@ -1,6 +1,7 @@
 import { resolveFeePerOp } from './fees.js';
 import { NETWORKS, horizonUrlFor, normalizeNetworkId, passphraseFor, readStoredNetworkId } from '../../config/networks.js';
 import { apiUrl } from '../apiBase.js';
+import { isFlowNetworkCurrent, NETWORK_CHANGED_CODE } from '../globalNetwork.js';
 import { CONTRACT_ADDRESS_ERROR, isContractAddress } from './addressType.js';
 import {
   Horizon,
@@ -576,14 +577,17 @@ export async function deleteTrustlinesInChunks({
   onProgress,
   validateLiveEvery = 3, // <-- NEU: nur jede n-te Runde live prüfen (1 = immer)
   accountPublicKey,
+  network, // Netz des Ablaufs; ohne Angabe einmal zu Beginn das gespeicherte
+  server: serverOverride, // optional: Server desselben Netzes (Aufrufer, Tests)
 }) {
   const signerList = Array.isArray(signerKeypairs) ? signerKeypairs : [signerKeypairs];
   const primary = signerList[0];
   if (!primary) throw new Error('submitTransaction.failed:' + 'multisig.noKeysProvided');
   const targetAccount = accountPublicKey || primary.publicKey();
   if (!targetAccount) throw new Error('submitTransaction.failed:' + 'multisig.noKeysProvided');
-  const net = readStoredNetworkId();
-  const server = getHorizonServer(horizonUrlFor(net));
+  // Einmal festlegen: Server, Konto und Passphrase stammen alle aus diesem Netz.
+  const net = normalizeNetworkId(network) || readStoredNetworkId();
+  const server = serverOverride || getHorizonServerForNetwork(net);
   const chunks = chunkArray(trustlines, 100);
   const allDeleted = [];
   let processed = 0;
@@ -630,6 +634,14 @@ export async function deleteTrustlinesInChunks({
     });
 
     const tx = txb.setTimeout(60).build();
+    // Vor jedem Signieren: gilt das Netz des Ablaufs noch? Nach einem gesendeten Block
+    // mit dem Hinweis, dass Gesendetes bestehen bleibt.
+    if (!isFlowNetworkCurrent(net)) {
+      throw Object.assign(
+        new Error(allDeleted.length ? 'createAccount:networkChanged.stoppedAfterPartial' : 'createAccount:networkChanged.funderAborted'),
+        { code: NETWORK_CHANGED_CODE },
+      );
+    }
     const signFailures = [];
     signerList.forEach((kp) => {
       try { tx.sign(kp); } catch (e) { signFailures.push(e); }

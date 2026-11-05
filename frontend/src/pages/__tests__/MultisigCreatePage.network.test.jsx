@@ -4,10 +4,11 @@ import { I18nextProvider } from 'react-i18next';
 import i18n from '../../i18n.js';
 import MultisigCreatePage from '../MultisigCreatePage.jsx';
 import { setGlobalNetwork } from '../../utils/globalNetwork.js';
+import { resetServerNetworkCalls, serverNetworkCalls } from '../../test/horizonMock.js';
 
 // Kein echter Horizon-Aufruf: Reserve des neuen Netzes kommt aus dem Stub.
 const hoisted = vi.hoisted(() => ({ urls: [], submitted: 0, loadedFunder: 0, funderSecret: '' }));
-vi.mock('../../utils/stellar/stellarUtils.js', async (importOriginal) => ({
+vi.mock('../../utils/stellar/stellarUtils.js', async (importOriginal) => (await import('../../test/horizonMock.js')).withNetworkServer({
   ...(await importOriginal()),
   getHorizonServer: (url) => {
     hoisted.urls.push(url);
@@ -15,7 +16,11 @@ vi.mock('../../utils/stellar/stellarUtils.js', async (importOriginal) => ({
       ledgers: () => ({ order: () => ({ limit: () => ({ call: async () => ({ records: [{ base_reserve_in_stroops: 5000000 }] }) }) }) }),
       // Neues Konto existiert noch nicht; ein Laden des Funders zaehlt als Versuch
       loadAccount: async (pk) => {
-        if (pk && pk === hoisted.funderPub) hoisted.loadedFunder += 1;
+        if (pk && pk === hoisted.funderPub) {
+          hoisted.loadedFunder += 1;
+          // Optional: Funder existiert (Test fuer einen Wechsel waehrend des Ladens)
+          if (hoisted.funderLoad) return hoisted.funderLoad(pk);
+        }
         throw new Error('not found');
       },
       submitTransaction: async () => { hoisted.submitted += 1; return { hash: 'h' }; },
@@ -63,6 +68,8 @@ describe('MultisigCreatePage: Netzschalter ist der globale Netzschalter', () => 
     hoisted.submitted = 0;
     hoisted.loadedFunder = 0;
     hoisted.funderPub = '';
+    hoisted.funderLoad = null;
+    resetServerNetworkCalls();
   });
 
   it.each(['TESTNET', 'PUBLIC'])('startet mit dem globalen Netz %s', (network) => {
@@ -124,6 +131,26 @@ describe('MultisigCreatePage: Netzschalter ist der globale Netzschalter', () => 
     const { queryByTestId } = renderPage();
     await act(async () => { setGlobalNetwork('PUBLIC'); });
     expect(queryByTestId('create-network-notice')).toBeNull();
+  });
+
+  it('Funder: Server mit dem Netz der Seite; Wechsel waehrend das Funder-Konto laedt: nichts signiert', async () => {
+    window.localStorage.setItem('SKM_NETWORK', 'PUBLIC');
+    const { Account } = await import('@stellar/stellar-sdk');
+    hoisted.funderLoad = (pk) => {
+      // Anderer Tab wechselt, waehrend Horizon antwortet; Event noch nicht hier.
+      window.localStorage.setItem('SKM_NETWORK', 'TESTNET');
+      return new Account(pk, '1');
+    };
+    const { getByText, findByTestId, container } = renderPage();
+    await act(async () => { fireEvent.click(getByText(i18n.t('multisigCreate:generateKeys'))); });
+    await act(async () => { fireEvent.click(getByText(i18n.t('multisigCreate:activateOnly'))); });
+    const confirm = await findByTestId('funder-confirm');
+    await act(async () => { fireEvent.click(confirm); });
+    await waitFor(() => expect(container.textContent).toContain(i18n.t('createAccount:networkChanged.funderAborted')));
+    expect(hoisted.loadedFunder).toBe(1);
+    expect(hoisted.submitted).toBe(0);
+    expect(serverNetworkCalls.length).toBeGreaterThan(0);
+    expect(serverNetworkCalls.every((n) => n === 'PUBLIC')).toBe(true);
   });
 
   it('Funder-Dialog: bricht ab, wenn das Netz seit dem Oeffnen gewechselt hat', async () => {

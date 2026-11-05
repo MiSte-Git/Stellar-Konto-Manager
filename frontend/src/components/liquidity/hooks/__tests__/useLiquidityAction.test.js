@@ -1,10 +1,11 @@
 import { act, renderHook } from '@testing-library/react';
 import { Account, Keypair, Networks, Operation, TransactionBuilder } from '@stellar/stellar-sdk';
 import useLiquidityAction from '../useLiquidityAction.js';
+import { resetServerNetworkCalls, serverNetworkCalls } from '../../../../test/horizonMock.js';
 
 const hoisted = vi.hoisted(() => ({ submit: vi.fn() }));
 
-vi.mock('../../../../utils/stellar/stellarUtils.js', async (importOriginal) => ({
+vi.mock('../../../../utils/stellar/stellarUtils.js', async (importOriginal) => (await import('../../../../test/horizonMock.js')).withNetworkServer({
   ...(await importOriginal()),
   getHorizonServer: () => ({
     loadAccount: async () => { throw new Error('offline'); },
@@ -75,5 +76,47 @@ describe('useLiquidityAction send', () => {
     await act(async () => { await result.current.modalProps.onConfirm([{ keypair: owner }]); });
     expect(hoisted.submit).toHaveBeenCalledTimes(2);
     expect(result.current.result).toEqual({ hash: 'first' });
+  });
+});
+
+describe('useLiquidityAction: Netz des Ablaufs', () => {
+  beforeEach(() => {
+    hoisted.submit.mockReset();
+    hoisted.submit.mockResolvedValue({ hash: 'h' });
+    resetServerNetworkCalls();
+    window.localStorage.setItem('SKM_NETWORK', 'PUBLIC');
+  });
+  afterEach(() => window.localStorage.removeItem('SKM_NETWORK'));
+
+  it('erzeugt den Server mit dem Netz des Dialogs und signiert nicht nach einem Wechsel in einem anderen Tab', async () => {
+    const { result } = renderHook(() => useLiquidityAction(hookProps));
+    const tx = buildTx();
+    act(() => {
+      result.current.begin({}, async (server, collected, alive, send) => {
+        // work() laedt frisch; waehrenddessen wechselt ein anderer Tab das Netz.
+        window.localStorage.setItem('SKM_NETWORK', 'TESTNET');
+        const res = await send(tx);
+        return { hash: res.hash };
+      });
+    });
+    await act(async () => { await result.current.modalProps.onConfirm([{ keypair: owner }]); });
+
+    expect(serverNetworkCalls.length).toBeGreaterThan(0);
+    expect(serverNetworkCalls.every((n) => n === 'PUBLIC')).toBe(true);
+    expect(hoisted.submit).not.toHaveBeenCalled();
+    expect(tx.signatures).toHaveLength(0);
+    expect(result.current.modalProps.errorMessage).toBe('createAccount:networkChanged.funderAborted');
+  });
+
+  it('legt nach einem Wechsel in einem anderen Tab keinen Job an', async () => {
+    const { result } = renderHook(() => useLiquidityAction(hookProps));
+    await act(async () => {
+      await result.current.prepareJob(async () => {
+        window.localStorage.setItem('SKM_NETWORK', 'TESTNET');
+        return { tx: buildTx(), items: [] };
+      });
+    });
+    expect(result.current.jobCreated).toBe(false);
+    expect(result.current.jobError).toBe('createAccount:networkChanged.funderAborted');
   });
 });

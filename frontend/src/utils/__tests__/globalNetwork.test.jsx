@@ -1,6 +1,6 @@
 import React from 'react';
 import { act, render } from '@testing-library/react';
-import { installCrossTabNetworkSync, setGlobalNetwork, useGlobalNetwork, networkFromEvent } from '../globalNetwork.js';
+import { assertFlowNetwork, installCrossTabNetworkSync, isFlowNetworkCurrent, NETWORK_CHANGED_CODE, setGlobalNetwork, useGlobalNetwork, networkFromEvent } from '../globalNetwork.js';
 
 function Probe() {
   const [network] = useGlobalNetwork();
@@ -75,5 +75,24 @@ describe('globalNetwork', () => {
       uninstall();
       window.removeEventListener('stm-network-changed', listener);
     }
+  });
+});
+
+describe('Netz eines Ablaufs (isFlowNetworkCurrent, assertFlowNetwork)', () => {
+  beforeEach(() => window.localStorage.clear());
+
+  it('vergleicht mit dem gespeicherten Netz, Schreibweise egal', () => {
+    window.localStorage.setItem('SKM_NETWORK', 'TESTNET');
+    expect(isFlowNetworkCurrent('TESTNET')).toBe(true);
+    expect(isFlowNetworkCurrent('testnet')).toBe(true);
+    expect(isFlowNetworkCurrent('PUBLIC')).toBe(false);
+    expect(isFlowNetworkCurrent('')).toBe(false);
+  });
+
+  it('wirft mit eigenem Code und dem uebergebenen Text, wenn das Netz gewechselt hat', () => {
+    window.localStorage.setItem('SKM_NETWORK', 'PUBLIC');
+    expect(() => assertFlowNetwork('PUBLIC')).not.toThrow();
+    expect(() => assertFlowNetwork('TESTNET', 'eigener Text')).toThrow(expect.objectContaining({ code: NETWORK_CHANGED_CODE, message: 'eigener Text' }));
+    expect(() => assertFlowNetwork('TESTNET')).toThrow('createAccount:networkChanged.funderAborted');
   });
 });

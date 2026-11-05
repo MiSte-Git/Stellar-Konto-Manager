@@ -36,7 +36,7 @@ vi.mock('../../components/SecretKeyModal.jsx', () => ({
   ),
 }));
 
-vi.mock('../../utils/stellar/stellarUtils.js', async (importOriginal) => ({
+vi.mock('../../utils/stellar/stellarUtils.js', async (importOriginal) => (await import('../../test/horizonMock.js')).withNetworkServer({
   ...(await importOriginal()),
   getHorizonServer: () => ({
     loadAccount: (id) => hoisted.loadAccount(id),

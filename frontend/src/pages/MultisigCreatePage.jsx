@@ -1,11 +1,11 @@
 import React, { useMemo, useState, useEffect, useRef } from 'react';
-import { friendbotUrlFor, horizonUrlFor, passphraseFor, readStoredNetworkId } from '../config/networks.js';
-import { useGlobalNetwork } from '../utils/globalNetwork.js';
+import { friendbotUrlFor, passphraseFor, readStoredNetworkId } from '../config/networks.js';
+import { assertFlowNetwork, useGlobalNetwork } from '../utils/globalNetwork.js';
 import { useTranslation } from 'react-i18next';
 import SecretKeyModal from '../components/SecretKeyModal.jsx';
 import MultiSigHelpDialog from '../components/multisig/MultiSigHelpDialog.jsx';
 import MultisigConfigForm from '../components/multisig/MultisigConfigForm.jsx';
-import { getHorizonServer } from '../utils/stellar/stellarUtils.js';
+import { getHorizonServerForNetwork } from '../utils/stellar/stellarUtils.js';
 import { getRequiredThreshold } from '../utils/getRequiredThreshold.js';
 import { getMultisigSafetyCheck } from '../utils/getMultisigSafetyCheck.js';
 import { useRecentWalletOptions } from '../utils/useRecentWalletOptions.js';
@@ -70,7 +70,9 @@ export default function MultisigCreatePage() {
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const { recentWalletOptions, removeRecentWalletOption, clearRecentWalletOptions } = useRecentWalletOptions();
 
-  const server = useMemo(() => getHorizonServer(horizonUrlFor(network)), [network]);
+  // Server, Konto und Passphrase aus demselben Netz (getHorizonServer(Mainnet-URL) wuerde
+  // das Netz erneut aus localStorage lesen).
+  const server = useMemo(() => getHorizonServerForNetwork(network), [network]);
   const passphrase = passphraseFor(network);
 
   // Weights & thresholds
@@ -280,12 +282,16 @@ export default function MultisigCreatePage() {
       )
       .setTimeout(60)
       .build();
+    // Zwischen Bestaetigen und hier liegen Horizon-Aufrufe: Netz noch das des Ablaufs?
+    assertFlowNetwork(network, t('createAccount:networkChanged.funderAborted'));
     tx.sign(funder);
     const res = await server.submitTransaction(tx);
     return res?.hash || res?.id || '';
   }
 
-  async function setMultisigOnNewAccount(newSecret) {
+  // abortMessage: Text, falls das Netz vor dem Signieren gewechselt hat (nach einer schon
+  // erfolgten Aktivierung ein anderer als ohne).
+  async function setMultisigOnNewAccount(newSecret, { abortMessage = t('createAccount:networkChanged.funderAborted') } = {}) {
     const newKp = Keypair.fromSecret(newSecret);
     const newPub = newKp.publicKey();
 
@@ -323,6 +329,7 @@ export default function MultisigCreatePage() {
     });
 
     const tx = txb.setTimeout(60).build();
+    assertFlowNetwork(network, abortMessage);
     tx.sign(newKp);
     const res = await server.submitTransaction(tx);
     return { hash: res?.hash || res?.id || '' };
@@ -353,7 +360,7 @@ export default function MultisigCreatePage() {
         // 1) Aktivieren
         await activateWithFunderSecret(funderSecret, destPub, startingBalance || '1');
         // 2) Multisig setzen
-        const setRes = await setMultisigOnNewAccount(generated.sec);
+        const setRes = await setMultisigOnNewAccount(generated.sec, { abortMessage: t('createAccount:networkChanged.stoppedAfterPartial') });
         setResultMsg(
           t('multisigCreate:createdAndConfigured', { hash: setRes.hash || '' })
         );
@@ -410,7 +417,9 @@ export default function MultisigCreatePage() {
       }
 
       // 2) Multisig setzen (falls Signer vorhanden)
-      const setRes = await setMultisigOnNewAccount(generated.sec);
+      const setRes = await setMultisigOnNewAccount(generated.sec, activateNow
+        ? { abortMessage: t('createAccount:networkChanged.stoppedAfterPartial') }
+        : undefined);
       if (setRes.skipped) {
         setResultMsg(t('multisigCreate:createdNoSigners'));
       } else {

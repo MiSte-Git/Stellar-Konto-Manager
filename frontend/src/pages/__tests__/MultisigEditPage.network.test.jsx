@@ -5,6 +5,7 @@ import { Account, Keypair, Networks, Transaction } from '@stellar/stellar-sdk';
 import i18n from '../../i18n.js';
 import MultisigEditPage from '../MultisigEditPage.jsx';
 import { setGlobalNetwork } from '../../utils/globalNetwork.js';
+import { resetServerNetworkCalls, serverNetworkCalls } from '../../test/horizonMock.js';
 
 const PK = Keypair.random().publicKey();
 const TESTNET_SIGNER = Keypair.random().publicKey();
@@ -12,7 +13,7 @@ const TESTNET_SIGNER = Keypair.random().publicKey();
 // Je Netz ein anderes Konto: Testnet mit einem Zusatz-Signer und Thresholds 1/1/1,
 // Mainnet ohne Zusatz-Signer mit 0/0/0 (oder gar nicht vorhanden).
 const hoisted = vi.hoisted(() => ({ loads: [], publicMissing: false, delayTestnet: null }));
-vi.mock('../../utils/stellar/stellarUtils.js', async (importOriginal) => ({
+vi.mock('../../utils/stellar/stellarUtils.js', async (importOriginal) => (await import('../../test/horizonMock.js')).withNetworkServer({
   ...(await importOriginal()),
   getHorizonServer: (url) => ({
     loadAccount: async (pk) => {
@@ -108,6 +109,26 @@ describe('MultisigEditPage: Netz kommt aus dem globalen Netz', () => {
     expect(body.network).toBe('testnet');
     expect(toHex(new Transaction(body.txXdr, Networks.TESTNET).hash())).toBe(hash);
     expect(toHex(new Transaction(body.txXdr, Networks.PUBLIC).hash())).not.toBe(hash);
+  });
+
+  it('Server mit dem Netz der Seite; Wechsel in einem anderen Tab waehrend des Baus: kein Job', async () => {
+    resetServerNetworkCalls();
+    window.localStorage.setItem('SKM_NETWORK', 'TESTNET');
+    const { container } = renderPage();
+    await screen.findByText(loadedText(1));
+    await act(async () => { fireEvent.change(thresholdInput(container, 'multisigConfig:thresholdLow'), { target: { value: '0' } }); });
+    await act(async () => { fireEvent.click(screen.getByRole('button', { name: i18n.t('common:multisigEdit.save') })); });
+    let release;
+    hoisted.delayTestnet = new Promise((r) => { release = r; });
+    await act(async () => { fireEvent.click(screen.getByRole('button', { name: i18n.t('multisig:actions.createMultisigJob') })); });
+    // Anderer Tab wechselt, das Event ist hier noch nicht angekommen.
+    window.localStorage.setItem('SKM_NETWORK', 'PUBLIC');
+    await act(async () => { release(); await new Promise((r) => setTimeout(r, 0)); });
+
+    await screen.findByText(i18n.t('createAccount:networkChanged.funderAborted'));
+    expect(globalThis.fetch).not.toHaveBeenCalled();
+    expect(serverNetworkCalls.length).toBeGreaterThan(0);
+    expect(serverNetworkCalls.every((n) => n === 'TESTNET')).toBe(true);
   });
 
   it('globaler Wechsel bei offener Seite: Eingaben verworfen, Konto aus dem neuen Netz geladen', async () => {

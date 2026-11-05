@@ -24,7 +24,7 @@ vi.mock('../../../utils/multisigApi.js', async (importOriginal) => ({
   createMultisigJobFromXdr: (...args) => hoisted.createJob(...args),
 }));
 
-vi.mock('../../../utils/stellar/stellarUtils.js', async (importOriginal) => ({
+vi.mock('../../../utils/stellar/stellarUtils.js', async (importOriginal) => (await import('../../../test/horizonMock.js')).withNetworkServer({
   ...(await importOriginal()),
   getHorizonServer: () => ({
     loadAccount: (id) => hoisted.loadAccount(id),
@@ -94,6 +94,9 @@ function wrap(node) {
   return render(<I18nextProvider i18n={i18n}>{node}</I18nextProvider>);
 }
 
+// Einzelne Tests setzen das gespeicherte Netz passend zum Dialog; danach wieder Standard.
+afterEach(() => window.localStorage.removeItem('SKM_NETWORK'));
+
 const renderDeposit = (props = {}) => wrap(
   <DepositDialog poolId={POOL_ID} firstAsset={null} publicKey={owner.publicKey()} network="PUBLIC" onClose={vi.fn()} onDone={vi.fn()} {...props} />
 );
@@ -152,6 +155,7 @@ describe('DepositDialog', () => {
     ['TESTNET', 'https://stellar.expert/explorer/testnet/tx/abc123', 'https://testnet.stellarchain.io/transactions/abc123'],
   ])('verlinkt den Hash nach dem Senden im Netz %s auf beide Explorer', async (network, expert, stellarchain) => {
     hoisted.passphrase = Networks[network];
+    window.localStorage.setItem('SKM_NETWORK', network);
     hoisted.submit.mockResolvedValue({ hash: 'abc123' });
     renderDeposit({ network });
     await enterDeposit('10');
@@ -439,6 +443,7 @@ describe('WithdrawDialog', () => {
 
   it('verlinkt den Hash auch nach dem Abheben, im Netz des Dialogs', async () => {
     hoisted.passphrase = Networks.TESTNET;
+    window.localStorage.setItem('SKM_NETWORK', 'TESTNET');
     renderWithdraw({ network: 'TESTNET' });
     await pickPercent('50');
     fireEvent.click(screen.getByRole('button', { name: 'Operationen prüfen' }));

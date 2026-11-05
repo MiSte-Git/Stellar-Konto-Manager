@@ -72,6 +72,7 @@
   "muxedActivationInfo": "Muxed-Adressen sind Alias-Adressen. Sie müssen nicht separat aktiviert werden.",
   "networkChanged": {
     "reset": "Netz gewechselt: Die erzeugten Schlüssel und deine Eingaben wurden verworfen. Erzeuge neue Schlüssel für dieses Netz.",
-    "funderAborted": "Abgebrochen: Das Netz wurde gewechselt, seit du den Vorgang gestartet hast. Es wurde nichts gesendet."
+    "funderAborted": "Abgebrochen: Das Netz wurde gewechselt, seit du den Vorgang gestartet hast. Es wurde nichts gesendet.",
+    "stoppedAfterPartial": "Abgebrochen: Das Netz wurde gewechselt. Bereits gesendete Transaktionen bleiben bestehen, weitere wurden nicht gesendet."
   }
 }

@@ -6,6 +6,7 @@ import i18n from '../../i18n.js';
 import MultisigJobDetail from '../MultisigJobDetail.jsx';
 import { txHashHex } from '../../utils/stellar/txHash.js';
 import { poolIdFor } from '../../utils/stellar/liquidityPools.js';
+import { resetServerNetworkCalls, serverNetworkCalls } from '../../test/horizonMock.js';
 
 // P2.3: Multisig-Job per bumpSequence widerrufen.
 const SIGNER_A = {
@@ -48,7 +49,7 @@ vi.mock('../../utils/sessionSecrets.js', async (importOriginal) => ({
   getSessionSecret: hoisted.sessionSecretMock,
 }));
 
-vi.mock('../../utils/stellar/stellarUtils.js', async (importOriginal) => ({
+vi.mock('../../utils/stellar/stellarUtils.js', async (importOriginal) => (await import('../../test/horizonMock.js')).withNetworkServer({
   ...(await importOriginal()),
   getHorizonServer: () => ({
     loadAccount: hoisted.loadAccountMock,
@@ -160,6 +161,25 @@ describe('Multisig-Job widerrufen (P2.3)', () => {
     expect(tx.signatures).toHaveLength(1);
     await screen.findByText(/Job widerrufen\. Transaktion revokehash/);
     expect(screen.queryByRole('button', { name: 'Job widerrufen' })).not.toBeInTheDocument();
+  });
+
+  it('Sequence und Widerruf nutzen das Netz des Jobs, auch wenn das globale Netz ein anderes ist', async () => {
+    resetServerNetworkCalls();
+    // Job im Testnet, global ist Mainnet gewaehlt.
+    window.localStorage.setItem('SKM_NETWORK', 'PUBLIC');
+    try {
+      await openSecretModal();
+      typeSecrets(SIGNER_A.secret);
+      submitSecretModal();
+      await waitFor(() => expect(hoisted.submitMock).toHaveBeenCalledTimes(1));
+      // startRevoke (Sequence) und executeRevoke (Widerruf): beide mit dem Netz des Jobs
+      expect(serverNetworkCalls).toEqual(['testnet', 'testnet']);
+      const tx = hoisted.submitMock.mock.calls[0][1];
+      expect(tx.networkPassphrase).toBe(Networks.TESTNET);
+      expect(tx.operations[0].type).toBe('bumpSequence');
+    } finally {
+      window.localStorage.removeItem('SKM_NETWORK');
+    }
   });
 
   it('sendet nicht, wenn die Signer den Low-Threshold nicht erreichen', async () => {

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { getNetworkConfig, horizonUrlFor, passphraseFor } from '../../../config/networks.js';
-import { getHorizonServer } from '../../../utils/stellar/stellarUtils.js';
+import { getNetworkConfig, passphraseFor } from '../../../config/networks.js';
+import { getHorizonServerForNetwork } from '../../../utils/stellar/stellarUtils.js';
+import { assertFlowNetwork } from '../../../utils/globalNetwork.js';
 import { resolveFeePerOp } from '../../../utils/stellar/fees.js';
 import { AmbiguousSubmitResultError } from '../../../utils/stellar/submitTransactionSafely.js';
 import { assertHorizonNetwork } from '../../../utils/multisig/jobRevocation.js';
@@ -73,7 +74,8 @@ export default function useLiquidityAction({ publicKey, network, poolId, operati
   const reload = useCallback(async () => {
     setData((d) => ({ ...d, loading: true, error: '' }));
     try {
-      const server = getHorizonServer(horizonUrlFor(network));
+      // Server mit explizitem Netz, wie die Passphrase (passphraseFor(network)).
+      const server = getHorizonServerForNetwork(network);
       const [fresh, feePerOp] = await Promise.all([loadFreshState(server, publicKey, poolId), resolveFeePerOp(server)]);
       if (!mountedRef.current) return;
       setData({ loading: false, error: '', account: fresh.account, pool: fresh.pool, feePerOp });
@@ -103,10 +105,12 @@ export default function useLiquidityAction({ publicKey, network, poolId, operati
         if (sent) onBackgroundResultRef.current?.({ ...res, network, publicKey });
       };
       try {
-        const server = getHorizonServer(horizonUrlFor(network));
+        const server = getHorizonServerForNetwork(network);
         await assertHorizonNetwork(server, passphraseFor(network));
         const send = (tx) => {
           if (sent) throw new Error('submitTransaction.failed:liquidity.alreadySent');
+          // work() hat frisch geladen (await): gilt das Netz des Ablaufs noch?
+          assertFlowNetwork(network);
           sent = true;
           return signAndSubmit(server, tx, collected);
         };
@@ -153,7 +157,7 @@ export default function useLiquidityAction({ publicKey, network, poolId, operati
     setJobError('');
     setNotice('');
     try {
-      const server = getHorizonServer(horizonUrlFor(network));
+      const server = getHorizonServerForNetwork(network);
       await assertHorizonNetwork(server, passphraseFor(network));
       const outcome = await work(server, alive);
       if (!outcome || !mountedRef.current) return;
@@ -162,6 +166,8 @@ export default function useLiquidityAction({ publicKey, network, poolId, operati
         setNotice(outcome.changed);
         return;
       }
+      // Kein Job und kein Export mit einer Transaktion aus einem inzwischen verlassenen Netz.
+      assertFlowNetwork(network);
       if (mode === 'xdr') {
         setExportedXdr({
           hash: txHashHex(outcome.tx),

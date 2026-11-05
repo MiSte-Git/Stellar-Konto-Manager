@@ -1053,6 +1053,7 @@ function Main() {
             {error && <p className="text-sm text-gray-400">{errorDisplay}</p>}
             <ListTrustlines
               key={refreshToken}
+              network={devTestnet ? 'TESTNET' : 'PUBLIC'}
               trustlines={trustlines}
               itemsPerPage={ITEMS_PER_PAGE}
               currentPage={currentPage}

@@ -9,7 +9,8 @@ import { createMultisigJobFromXdr } from '../../utils/multisigApi.js';
 import { assetLabel } from '../../utils/stellar/batchConvert.js';
 import { isMultisigAccount, needsMultipleSignatures } from '../../utils/stellar/isMultisigAccount.js';
 import { useSettings } from '../../utils/useSettings.js';
-import { getHorizonServer } from '../../utils/stellar/stellarUtils.js';
+import { getHorizonServer, getHorizonServerForNetwork } from '../../utils/stellar/stellarUtils.js';
+import { assertFlowNetwork, NETWORK_CHANGED_CODE } from '../../utils/globalNetwork.js';
 import { shortenAddress } from '../../utils/stellar/walletSummary.js';
 import { isDustAmount, looksLikeNativeCode } from '../../utils/stellar/activity.js';
 import { DustBadge, FakeNativeBadge } from './ActivityWarnings.jsx';
@@ -156,7 +157,8 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
     inFlightRef.current = true;
     try {
       setClaiming(true);
-      const server = getHorizonServer(horizonUrl);
+      // Explizites Netz wie die Passphrase (Default-Pfad wuerde localStorage lesen).
+      const server = getHorizonServerForNetwork(network);
       await assertHorizonNetwork(server, networkPassphrase);
       const fresh = await server.loadAccount(publicKey);
       const [current] = classifyClaimableBalances(records.filter((r) => r.id === item.id), fresh);
@@ -167,6 +169,7 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
       // Wird erst spaeter eingereicht: Gebuehrenstufe Schnell (siehe fees.js)
       const fee = await resolveFeePerOp(server, { deferred: true });
       const tx = buildClaimTx({ account: fresh, item: current, fee, networkPassphrase, timeoutSeconds });
+      assertFlowNetwork(network);
       const job = await createMultisigJobFromXdr({
         network: getNetworkConfig(network).backendId,
         accountId: publicKey,
@@ -200,6 +203,7 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
   const describeError = (e) => {
     if (e instanceof AmbiguousSubmitResultError) return t('wallet:claimable.ambiguous', { hash: e.hash });
     if (e?.code === 'network_mismatch') return t('wallet:claimable.networkMismatch');
+    if (e?.code === NETWORK_CHANGED_CODE) return t(e.message);
     const codes = e?.response?.data?.extras?.result_codes;
     if (codes) return t('wallet:claimable.failed', { reason: JSON.stringify(codes) });
     return t('wallet:claimable.failed', { reason: formatErrorForUi(t, e) });
@@ -211,7 +215,8 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
     try {
       setClaiming(true);
       setClaimError('');
-      const server = getHorizonServer(horizonUrl);
+      // Explizites Netz wie die Passphrase (Default-Pfad wuerde localStorage lesen).
+      const server = getHorizonServerForNetwork(network);
       await assertHorizonNetwork(server, networkPassphrase);
       // Frisch laden: Signer, Thresholds und Trustlines koennen sich geaendert haben.
       const fresh = await server.loadAccount(publicKey);
@@ -235,6 +240,8 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
       }
       const fee = await resolveFeePerOp(server);
       const tx = buildClaimTx({ account: fresh, item, fee, networkPassphrase });
+      // Nach den Horizon-Aufrufen: gilt das Netz des Ablaufs noch?
+      assertFlowNetwork(network);
       signers.forEach((s) => tx.sign(s.keypair));
       const res = await submitTransactionSafely(server, tx);
       const hash = res?.hash || res?.id || txHashHex(tx);

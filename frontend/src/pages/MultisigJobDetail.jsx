@@ -11,7 +11,7 @@ import OperationBlocks from '../components/multisig/OperationBlocks.jsx';
 import TransactionFacts from '../components/multisig/TransactionFacts.jsx';
 import { describeTransaction } from '../utils/multisig/describeTransaction.js';
 import SecretKeyModal from '../components/SecretKeyModal.jsx';
-import { getHorizonServer } from '../utils/stellar/stellarUtils.js';
+import { getHorizonServer, getHorizonServerForNetwork } from '../utils/stellar/stellarUtils.js';
 import { resolveFeePerOp } from '../utils/stellar/fees.js';
 import { submitTransactionSafely, AmbiguousSubmitResultError } from '../utils/stellar/submitTransactionSafely.js';
 import { getRequiredThreshold } from '../utils/getRequiredThreshold.js';
@@ -481,11 +481,12 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
       return;
     }
     const seqInfo = getJobSequenceInfo(decodedTx);
+    // Alles aus dem Netz des Jobs, nie aus dem globalen Netz: Server mit explizitem Netz
+    // (getHorizonServer(Mainnet-URL) wuerde das Netz aus localStorage nehmen).
     const networkPassphrase = passphraseFor(jobNetwork);
-    const horizonUrl = horizonUrlFor(jobNetwork);
     try {
       setRevoking(true);
-      const account = await getHorizonServer(horizonUrl).loadAccount(seqInfo.sourceAccountId);
+      const account = await getHorizonServerForNetwork(jobNetwork).loadAccount(seqInfo.sourceAccountId);
       const seqCheck = checkRevocationSequence(accountSequenceOf(account), seqInfo.sequence);
       if (seqCheck === 'consumed') {
         setInfo(t('multisig:detail.revoke.alreadyDead'));
@@ -506,7 +507,6 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
         account,
         network: jobNetwork,
         networkPassphrase,
-        horizonUrl,
         jobHash: job?.txHash || null,
         requiredThreshold: getRequiredThreshold('bumpSequence', thresholds),
       });
@@ -526,7 +526,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
     try {
       setRevoking(true);
       setRevokeError('');
-      const server = getHorizonServer(revokePrep.horizonUrl);
+      const server = getHorizonServerForNetwork(revokePrep.network);
       await assertHorizonNetwork(server, revokePrep.networkPassphrase);
       // Frisch laden: Sequence und Signer koennen sich seit der Bestaetigung geaendert haben.
       const account = await server.loadAccount(revokePrep.sourceAccountId);

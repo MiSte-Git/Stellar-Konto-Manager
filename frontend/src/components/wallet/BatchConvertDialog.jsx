@@ -1,10 +1,11 @@
 import React from 'react';
-import { getNetworkConfig, horizonUrlFor, passphraseFor } from '../../config/networks.js';
+import { getNetworkConfig, passphraseFor } from '../../config/networks.js';
 import { useTranslation } from 'react-i18next';
 
 import SecretKeyModal from '../SecretKeyModal.jsx';
 import MultisigPrepareDialog from '../MultisigPrepareDialog.jsx';
-import { getHorizonServer } from '../../utils/stellar/stellarUtils.js';
+import { getHorizonServerForNetwork } from '../../utils/stellar/stellarUtils.js';
+import { assertFlowNetwork } from '../../utils/globalNetwork.js';
 import { shortenAddress } from '../../utils/stellar/walletSummary.js';
 import { resolveFeePerOp } from '../../utils/stellar/fees.js';
 import { submitTransactionSafely, AmbiguousSubmitResultError } from '../../utils/stellar/submitTransactionSafely.js';
@@ -44,7 +45,6 @@ const btnSecondary = 'rounded-lg border border-gray-300 bg-white px-4 py-2 text-
 export default function BatchConvertDialog({ publicKey, account, network, available, items, multisig, multisigTimeoutSeconds, fmt, onClose, onDone }) {
   const { t } = useTranslation(['wallet', 'common', 'multisig', 'secretKey']);
   const isTestnet = network === 'TESTNET';
-  const horizonUrl = horizonUrlFor(network);
   const networkPassphrase = passphraseFor(network);
   const f = (v) => (fmt ? fmt(Number(v || 0), { min: 0, max: 7 }) : String(v));
 
@@ -143,7 +143,7 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
     }
     setPhase('quoting');
     try {
-      const server = getHorizonServer(horizonUrl);
+      const server = getHorizonServerForNetwork(network);
       if (tStatus === 'missing') {
         const issuer = await server.loadAccount(target.issuer);
         if (issuer?.flags?.auth_required) {
@@ -222,7 +222,7 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
     const out = [];
     let started = false;
     try {
-      const server = getHorizonServer(horizonUrl);
+      const server = getHorizonServerForNetwork(network);
       await assertHorizonNetwork(server, networkPassphrase);
       const check = await verifyFresh(server, selectedQuotes);
       if (check.problem) {
@@ -247,6 +247,9 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
         const count = chunks[i].length;
         try {
           if (i > 0) acct = await server.loadAccount(publicKey);
+          // Vor jedem Signieren: gilt das Netz des Ablaufs noch? Nach der ersten gesendeten
+          // Transaktion mit dem Hinweis, dass Gesendetes bestehen bleibt.
+          assertFlowNetwork(network, i > 0 ? 'createAccount:networkChanged.stoppedAfterPartial' : 'createAccount:networkChanged.funderAborted');
           const tx = buildBatchTx({
             account: acct,
             accountId: publicKey,
@@ -304,7 +307,7 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
         return;
       }
       const timeoutSeconds = Math.min(...windows);
-      const server = getHorizonServer(horizonUrl);
+      const server = getHorizonServerForNetwork(network);
       await assertHorizonNetwork(server, networkPassphrase);
       const check = await verifyFresh(server, chunk);
       if (check.problem) {
@@ -321,6 +324,7 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
         networkPassphrase,
         timeoutSeconds,
       });
+      assertFlowNetwork(network);
       const job = await createMultisigJobFromXdr({ network: getNetworkConfig(network).backendId, accountId: publicKey, txXdr: tx.toXDR() });
       setJobCreated(true);
       const chunkMin = chunk.reduce((acc, q) => acc + Number(q.destMin || 0), 0);

@@ -5,6 +5,7 @@ import { Account, Keypair, Networks, TransactionBuilder } from '@stellar/stellar
 import { AmbiguousSubmitResultError } from '../../../utils/stellar/submitTransactionSafely.js';
 import i18n from '../../../i18n.js';
 import BatchConvertDialog from '../BatchConvertDialog.jsx';
+import { resetServerNetworkCalls, serverNetworkCalls } from '../../../test/horizonMock.js';
 
 const ME = {
   secret: 'SDAIDSY2LAXR5HPEJ2CKWQ3QV67VPYLXB6C2ATBY3J7VRKT6YD7SYV6Y',
@@ -16,7 +17,7 @@ const id = (n) => `00000000${String(n).padStart(64, '0')}`;
 
 const hoisted = vi.hoisted(() => ({ loadAccountMock: vi.fn(), submitMock: vi.fn(), pathsMock: vi.fn(), recordsMock: vi.fn(), rememberMock: vi.fn(async () => {}) }));
 
-vi.mock('../../../utils/stellar/stellarUtils.js', async (importOriginal) => ({
+vi.mock('../../../utils/stellar/stellarUtils.js', async (importOriginal) => (await import('../../../test/horizonMock.js')).withNetworkServer({
   ...(await importOriginal()),
   getHorizonServer: () => ({
     loadAccount: hoisted.loadAccountMock,
@@ -104,6 +105,8 @@ async function startAndSign() {
 }
 
 beforeEach(() => {
+  // Wie in der App: gespeichertes globales Netz = Netz des Dialogs (Pruefung vor dem Signieren).
+  window.localStorage.setItem('SKM_NETWORK', 'TESTNET');
   vi.clearAllMocks();
   hoisted.loadAccountMock.mockImplementation(async (pk) => (pk === ME.publicKey ? makeAccount() : { flags: {} }));
   hoisted.pathsMock.mockImplementation(async (src) => ({ records: src.code === 'NOMKT' ? [] : [{ destination_amount: '1.5', path: [] }] }));
@@ -143,6 +146,24 @@ describe('BatchConvertDialog', () => {
     await waitFor(() => expect(hoisted.submitMock).toHaveBeenCalledTimes(2));
     expect(hoisted.submitMock.mock.calls[0][1].operations).toHaveLength(100);
     expect(hoisted.submitMock.mock.calls[1][1].operations).toHaveLength(20);
+  });
+
+  it('Server mit dem Netz des Dialogs; nach einem Wechsel in einem anderen Tab keine weitere Transaktion', async () => {
+    resetServerNetworkCalls();
+    // Nach der ersten gesendeten Transaktion wechselt ein anderer Tab das Netz.
+    hoisted.submitMock.mockImplementationOnce(async () => {
+      window.localStorage.setItem('SKM_NETWORK', 'PUBLIC');
+      return { hash: 'first' };
+    });
+    const errSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    renderDialog({ items: Array.from({ length: 30 }, (_, i) => tokenItem(i + 1, `T${i}`)) });
+    await loadPreview();
+    await startAndSign();
+    await screen.findByText(new RegExp(i18n.t('createAccount:networkChanged.stoppedAfterPartial').slice(0, 40)));
+    expect(hoisted.submitMock).toHaveBeenCalledTimes(1);
+    expect(serverNetworkCalls.length).toBeGreaterThan(0);
+    expect(serverNetworkCalls.every((n) => n === 'TESTNET')).toBe(true);
+    errSpy.mockRestore();
   });
 
   it('bricht nach einer fehlgeschlagenen Transaktion ab', async () => {
