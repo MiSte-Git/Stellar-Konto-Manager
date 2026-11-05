@@ -16,6 +16,9 @@ bedient Hilfsfunktionen, kann aber nie selbst signieren.
 | Setup, Befehle, Funktionen, Endpunkte | [README.md](README.md) |
 | Sicherheitsmodell, bewusste Entscheidungen, Hinweise für Reviews | [docs/SECURITY.md](docs/SECURITY.md) |
 | Übersetzungen und Pipeline | [docs/i18n-pipeline.md](docs/i18n-pipeline.md) |
+| Aufbau, Abläufe, wo was liegt | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) |
+| Entscheidungen mit Begründung | [docs/adr/](docs/adr/README.md) |
+| Vorlage für Reviews | [docs/review-briefing.md](docs/review-briefing.md) |
 
 Vor einem Security-Review ist `docs/SECURITY.md` Pflicht. Dort steht, was gewollt ist und was keine Lücke ist.
 

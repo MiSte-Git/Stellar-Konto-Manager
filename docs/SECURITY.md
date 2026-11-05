@@ -6,6 +6,9 @@ Ein Review, das nur den Code liest, sieht nicht, was gewollt ist. Dieses Dokumen
 Vertrauensgrenzen und die Entscheidungen, die **bewusst** so getroffen wurden. Ein Befund, der einer dieser
 Entscheidungen widerspricht, ist nur dann ein Befund, wenn er einen Weg zeigt, den die Begründung nicht abdeckt.
 
+Begründungen der wichtigsten Entscheidungen: [docs/adr/](adr/README.md). Vorlage für Reviews:
+[docs/review-briefing.md](review-briefing.md).
+
 ## Sicherheitslücke melden
 
 Bitte nicht als öffentliches Issue. Meldungen über GitHub, Reiter „Security“ → „Report a vulnerability“
