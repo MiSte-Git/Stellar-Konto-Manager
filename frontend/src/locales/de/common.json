@@ -264,7 +264,8 @@
     "title": "Stellar Konto Manager"
   },
   "badges": {
-    "testnet": "TESTNET"
+    "testnet": "TESTNET",
+    "mainnet": "MAINNET"
   },
   "noIssuerTrustlinesFound": "Keine Trustlines für Emittent {{issuer}} gefunden.",
   "option": {
@@ -833,7 +834,9 @@
     "validation": {
       "signerKeyHint": "Hinweis: Signer müssen mit \"G\" beginnen (ed25519 Public Key).",
       "signerKeyInvalid": "Ungültige Signer-Adresse. Erwartet wird eine G…-Adresse (ed25519)."
-    }
+    },
+    "networkHint": "Das Netz wechselst du im Wallet-Kopf (Testnet-Checkbox).",
+    "networkChanged": "Netz gewechselt: Deine Eingaben wurden verworfen und das Konto aus dem neuen Netz geladen."
   },
   "navigation": {
     "back": "Zurück",

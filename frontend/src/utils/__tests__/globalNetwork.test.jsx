@@ -1,6 +1,6 @@
 import React from 'react';
 import { act, render } from '@testing-library/react';
-import { setGlobalNetwork, useGlobalNetwork, networkFromEvent } from '../globalNetwork.js';
+import { installCrossTabNetworkSync, setGlobalNetwork, useGlobalNetwork, networkFromEvent } from '../globalNetwork.js';
 
 function Probe() {
   const [network] = useGlobalNetwork();
@@ -37,14 +37,43 @@ describe('globalNetwork', () => {
     expect(networkFromEvent({})).toBe('TESTNET');
   });
 
-  it('useGlobalNetwork folgt Wechseln per Event und aus anderen Tabs', async () => {
+  it('useGlobalNetwork folgt Wechseln per Event', async () => {
     window.localStorage.setItem('SKM_NETWORK', 'TESTNET');
     const { getByTestId } = render(<Probe />);
     expect(getByTestId('net').textContent).toBe('TESTNET');
     await act(async () => { setGlobalNetwork('PUBLIC'); });
     expect(getByTestId('net').textContent).toBe('PUBLIC');
+  });
+
+  it('Wechsel aus anderem Tab: ohne Bruecke kein Event, mit Bruecke ein normales stm-network-changed', async () => {
+    window.localStorage.setItem('SKM_NETWORK', 'PUBLIC');
+    const { getByTestId } = render(<Probe />);
+    const events = [];
+    const listener = (e) => events.push(e.detail);
+    window.addEventListener('stm-network-changed', listener);
+
+    // Ohne installierte Bruecke reagiert der Hook nicht selbst auf storage
     window.localStorage.setItem('SKM_NETWORK', 'TESTNET');
     await act(async () => { window.dispatchEvent(new StorageEvent('storage', { key: 'SKM_NETWORK' })); });
-    expect(getByTestId('net').textContent).toBe('TESTNET');
+    expect(events).toEqual([]);
+    expect(getByTestId('net').textContent).toBe('PUBLIC');
+
+    const uninstall = installCrossTabNetworkSync();
+    expect(installCrossTabNetworkSync()).toBe(uninstall); // nur einmal
+    try {
+      await act(async () => { window.dispatchEvent(new StorageEvent('storage', { key: 'SKM_NETWORK' })); });
+      expect(events).toEqual(['TESTNET']);
+      expect(getByTestId('net').textContent).toBe('TESTNET');
+      // Andere Schluessel loesen nichts aus
+      await act(async () => { window.dispatchEvent(new StorageEvent('storage', { key: 'recentWallets' })); });
+      expect(events).toEqual(['TESTNET']);
+      // localStorage.clear() im anderen Tab (key null): Standardnetz
+      window.localStorage.clear();
+      await act(async () => { window.dispatchEvent(new StorageEvent('storage', { key: null })); });
+      expect(events).toEqual(['TESTNET', 'PUBLIC']);
+    } finally {
+      uninstall();
+      window.removeEventListener('stm-network-changed', listener);
+    }
   });
 });

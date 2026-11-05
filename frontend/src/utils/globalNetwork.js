@@ -3,7 +3,8 @@
 // Setzen: setGlobalNetwork() schreibt SKM_NETWORK und SKM_HORIZON_URL und meldet
 // den Wechsel per Event stm-network-changed. Genutzt von der Testnet-Checkbox im
 // Wallet-Kopf (main.jsx) und vom Netzschalter auf "Neues Konto erstellen".
-// Lesen: useGlobalNetwork() folgt jedem Wechsel, egal von wo (Event, anderer Tab).
+// Lesen: useGlobalNetwork() folgt jedem Wechsel per Event; Wechsel aus anderen
+// Tabs macht installCrossTabNetworkSync() zu einem solchen Event.
 // Die Netz-Anzeige in der Kopfleiste nutzt denselben Hook, damit Anzeige und
 // Schalter einer Seite nie verschieden sind.
 import { useCallback, useEffect, useState } from 'react';
@@ -33,23 +34,41 @@ export function networkFromEvent(e) {
   return isNetworkEnabled(detail) ? normalizeNetworkId(detail) : readStoredNetworkId();
 }
 
+/**
+ * Wechsel aus einem anderen Tab: localStorage ist zwischen Tabs geteilt, also
+ * liest readStoredNetworkId() sofort das neue Netz, auch wenn dieser Tab nichts
+ * davon mitbekommt. Damit Anzeige, geladenes Konto und offene Formulare nicht
+ * auseinanderlaufen, wird der Wechsel hier als normales stm-network-changed
+ * gemeldet. Dann greifen dieselben Regeln wie beim Wechsel im eigenen Tab
+ * (Konto neu pruefen, Seiten setzen Eingaben zurueck). Einmal beim Start
+ * installieren (main.jsx); weitere Aufrufe tun nichts. Gibt eine
+ * Aufraeumfunktion zurueck (fuer Tests).
+ */
+let crossTabInstalled = null;
+export function installCrossTabNetworkSync() {
+  if (typeof window === 'undefined') return () => {};
+  if (crossTabInstalled) return crossTabInstalled;
+  const onStorage = (e) => {
+    if (e && e.key !== null && e.key !== undefined && e.key !== 'SKM_NETWORK') return;
+    window.dispatchEvent(new CustomEvent(NETWORK_CHANGED_EVENT, { detail: readStoredNetworkId() }));
+  };
+  window.addEventListener('storage', onStorage);
+  crossTabInstalled = () => {
+    window.removeEventListener('storage', onStorage);
+    crossTabInstalled = null;
+  };
+  return crossTabInstalled;
+}
+
 /** Aktuelles globales Netz plus Setter (setGlobalNetwork). */
 export function useGlobalNetwork() {
   const [network, setNetwork] = useState(() => readStoredNetworkId());
   useEffect(() => {
     const onChange = (e) => setNetwork(networkFromEvent(e));
-    const onStorage = (e) => {
-      if (e && e.key !== null && e.key !== undefined && e.key !== 'SKM_NETWORK') return;
-      setNetwork(readStoredNetworkId());
-    };
     window.addEventListener(NETWORK_CHANGED_EVENT, onChange);
-    window.addEventListener('storage', onStorage);
     // Wechsel zwischen erstem Render und Effekt nicht verpassen
     setNetwork(readStoredNetworkId());
-    return () => {
-      window.removeEventListener(NETWORK_CHANGED_EVENT, onChange);
-      window.removeEventListener('storage', onStorage);
-    };
+    return () => window.removeEventListener(NETWORK_CHANGED_EVENT, onChange);
   }, []);
   const change = useCallback((raw) => { setNetwork(setGlobalNetwork(raw)); }, []);
   return [network, change];

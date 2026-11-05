@@ -86,7 +86,7 @@ import { confirmAutoClear } from './utils/confirmAutoClear.js';
 import ActivateAccountPrompt from './components/ActivateAccountPrompt.jsx';
 import AccountGate from './components/AccountGate.jsx';
 import { ACCOUNT_FREE_PAGES, MAIN_MENU_NAV } from './config/mainNavigation.js';
-import { networkFromEvent, setGlobalNetwork } from './utils/globalNetwork.js';
+import { installCrossTabNetworkSync, networkFromEvent, setGlobalNetwork } from './utils/globalNetwork.js';
 import { emitAccountSelected } from './utils/accountBus.js';
 
 import { takeMultisigJobToken } from './components/multisig/multisigNavigation.js';
@@ -131,6 +131,8 @@ const LiquidityPoolsPage = lazy(() => import('./pages/LiquidityPoolsPage.jsx'));
 
 migrateLegacyStorageKeys();
 confirmAutoClear();
+// Netzwechsel aus anderen Tabs wie einen Wechsel in diesem Tab behandeln
+installCrossTabNetworkSync();
 
 if (typeof window !== 'undefined') {
   window.stmSelectAccount = (address, opts) => emitAccountSelected(address, { forceReload: !!(opts && opts.force) });
@@ -1024,6 +1026,12 @@ function Main() {
 
         {error && !notFoundOnlyInGate && <p className="text-red-500 mt-4">{errorDisplay}</p>}
       </div>
+      )}
+      {/* Ohne Wallet-Kopf dieselbe Fehlerzeile (auch Script-Fehler aus window.onerror) allein anzeigen */}
+      {hideWalletHeader && error && (
+        <div className="max-w-4xl mx-auto px-4 pt-4 text-center">
+          <p className="text-red-500 mt-4" data-testid="main-error">{errorDisplay}</p>
+        </div>
       )}
 
       {showAccountGate && (

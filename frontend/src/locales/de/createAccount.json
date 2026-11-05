@@ -69,5 +69,9 @@
   "muxedInfo": "Mit der Muxed-ID wird eine M-Adresse (M...) erstellt. Sie zeigt auf dasselbe Konto wie die reguläre Adresse (G...).",
   "muxedIdInvalid": "Die Muxed-ID muss eine Ganzzahl zwischen 0 und 18'446'744'073'709'551'615 sein.",
   "muxedAddress": "Muxed-Adresse",
-  "muxedActivationInfo": "Muxed-Adressen sind Alias-Adressen. Sie müssen nicht separat aktiviert werden."
+  "muxedActivationInfo": "Muxed-Adressen sind Alias-Adressen. Sie müssen nicht separat aktiviert werden.",
+  "networkChanged": {
+    "reset": "Netz gewechselt: Die erzeugten Schlüssel und deine Eingaben wurden verworfen. Erzeuge neue Schlüssel für dieses Netz.",
+    "funderAborted": "Abgebrochen: Das Netz wurde gewechselt, seit du den Vorgang gestartet hast. Es wurde nichts gesendet."
+  }
 }

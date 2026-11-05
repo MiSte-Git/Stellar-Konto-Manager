@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useEffect, useRef } from 'react';
-import { friendbotUrlFor, horizonUrlFor, passphraseFor } from '../config/networks.js';
+import { friendbotUrlFor, horizonUrlFor, passphraseFor, readStoredNetworkId } from '../config/networks.js';
 import { useGlobalNetwork } from '../utils/globalNetwork.js';
 import { useTranslation } from 'react-i18next';
 import SecretKeyModal from '../components/SecretKeyModal.jsx';
@@ -47,7 +47,7 @@ function NetworkSelector({ value, onChange }) {
 }
 
 export default function MultisigCreatePage() {
-  const { t } = useTranslation(['multisigCreate', 'multisigConfig', 'network', 'common']);
+  const { t } = useTranslation(['multisigCreate', 'multisigConfig', 'network', 'common', 'createAccount']);
 
   // Der Schalter der Seite ist der globale Netzschalter (wie die Testnet-Checkbox
   // im Wallet-Kopf, der hier ausgeblendet ist) und folgt jedem Wechsel von anderer Stelle.
@@ -152,9 +152,32 @@ export default function MultisigCreatePage() {
   const planRef = useRef({ enableMultisig: false, signerCount: 1 });
   planRef.current = { enableMultisig, signerCount };
   const lastNetworkRef = useRef(network);
+  const generatedRef = useRef(generated);
+  generatedRef.current = generated;
+  const [networkNotice, setNetworkNotice] = useState('');
   useEffect(() => {
     if (lastNetworkRef.current === network) return undefined;
     lastNetworkRef.current = network;
+    // Erzeugte, noch nicht aktivierte Schluessel gehoeren zum alten Netz: Sie samt
+    // abhaengiger Eingaben verwerfen, statt sie still im neuen Netz zu aktivieren.
+    if (generatedRef.current) {
+      setGenerated(null);
+      setEnableMultisig(false);
+      setActivateNow(false);
+      setSigners(['']);
+      setSignerCount(1);
+      setSignerWeights([1]);
+      setMasterWeight(1);
+      setLowT(1);
+      setMedT(2);
+      setHighT(2);
+      setShowKeyWarning(false);
+      setShowSecretModal(false);
+      setPendingAction(null);
+      setResultMsg('');
+      setError('');
+      setNetworkNotice(t('createAccount:networkChanged.reset'));
+    }
     let cancelled = false;
     (async () => {
       const r = await fetchBaseReserveXLM();
@@ -207,6 +230,7 @@ export default function MultisigCreatePage() {
   function handleGenerate() {
     const kp = Keypair.random();
     setGenerated({ pub: kp.publicKey(), sec: kp.secret() });
+    setNetworkNotice('');
     setResultMsg('');
     setError('');
   }
@@ -309,8 +333,15 @@ export default function MultisigCreatePage() {
     const funderSecret = collectedSigners?.[0]?.keypair?.secret?.() || '';
     setShowSecretModal(false);
     if (!pendingAction) return;
-    const { type, destPub, startingBalance } = pendingAction;
+    const { type, destPub, startingBalance, network: startedOn } = pendingAction;
     setPendingAction(null);
+    // Netz muss noch dasselbe sein wie beim Oeffnen des Dialogs (auch laut
+    // gespeichertem globalem Netz), sonst nichts senden.
+    if (startedOn !== network || readStoredNetworkId() !== startedOn) {
+      setResultMsg('');
+      setError(t('createAccount:networkChanged.funderAborted'));
+      return;
+    }
 
     try {
       setBusy(true);
@@ -372,7 +403,7 @@ export default function MultisigCreatePage() {
           await friendbotActivate(generated.pub);
         } else {
           // Mainnet → Secret vom Funder anfragen und danach fortsetzen
-          setPendingAction({ type: 'createAll', destPub: generated.pub, startingBalance });
+          setPendingAction({ type: 'createAll', destPub: generated.pub, startingBalance, network });
           setShowSecretModal(true);
           return; // Warten auf Modal
         }
@@ -415,7 +446,7 @@ export default function MultisigCreatePage() {
           const ok = window.confirm(t('multisigCreate:confirmLowBalance', { bal: bal.toFixed(7), req: requiredReserve.toFixed(7), count: Math.max(0, Number(signerCount)||0) }));
           if (!ok) { setBusy(false); return; }
         }
-        setPendingAction({ type: 'activate', destPub: generated.pub, startingBalance });
+        setPendingAction({ type: 'activate', destPub: generated.pub, startingBalance, network });
         setShowSecretModal(true);
       }
     } catch (e) {
@@ -466,6 +497,11 @@ export default function MultisigCreatePage() {
       <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">{t('multisigCreate:hint')}</p>
 
       <NetworkSelector value={network} onChange={setNetwork} />
+      {networkNotice && (
+        <p data-testid="create-network-notice" className="mb-4 text-sm text-amber-800 dark:text-amber-200 border border-amber-300 bg-amber-50 dark:bg-amber-900/30 rounded-sm p-2">
+          {networkNotice}
+        </p>
+      )}
 
       <div className="bg-white dark:bg-gray-800 rounded-sm border p-4 mb-4">
         <div className="flex flex-wrap items-center gap-3 mb-2">

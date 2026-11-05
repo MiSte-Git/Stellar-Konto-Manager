@@ -111,4 +111,42 @@ describe('Wallet-Kopf auf Seiten ohne Kontobezug', () => {
     await waitFor(() => expect(pageRadio('PUBLIC')).not.toBeNull(), SLOW);
     expect(pageRadio('PUBLIC').checked).toBe(true);
   });
+
+  it('zeigt die Fehlerzeile (Konto-Fehler und Script-Fehler) auch auf createAccount, ausserhalb des Kopfs', async () => {
+    hoisted.submit.mockRejectedValue(new Error('Konto nicht gefunden'));
+    await mountAppWithAccount('TESTNET').catch(() => {});
+    await openView('createAccount');
+    await waitFor(() => expect(pageRadio('PUBLIC')).not.toBeNull(), SLOW);
+    expect(headerInput()).toBeNull();
+    const line = await waitFor(() => {
+      const el = document.querySelector('[data-testid="main-error"]');
+      expect(el).not.toBeNull();
+      return el;
+    }, SLOW);
+    expect(line.textContent).toContain('Konto nicht gefunden');
+
+    await act(async () => { window.onerror('Boom im Test', 'http://localhost/src/x.js', 1, 2, new Error('Boom im Test')); });
+    await waitFor(() => expect(document.querySelector('[data-testid="main-error"]').textContent).toContain('Boom im Test'), SLOW);
+
+    // Auf Seiten mit Kopf steht die Zeile wie bisher im Kopf, nicht doppelt
+    await openView('home');
+    await waitFor(() => expect(headerInput()).not.toBeNull(), SLOW);
+    expect(document.querySelector('[data-testid="main-error"]')).toBeNull();
+  });
+
+  it('Netzwechsel aus anderem Tab wirkt wie ein Wechsel in diesem Tab', async () => {
+    await mountAppWithAccount('PUBLIC');
+    const checkbox = headerInput().form.querySelector('input[type="checkbox"]');
+    expect(checkbox.checked).toBe(false);
+    const calls = hoisted.submit.mock.calls.length;
+
+    // Anderer Tab schreibt SKM_NETWORK; dieser Tab bekommt nur das storage-Event
+    window.localStorage.setItem('SKM_NETWORK', 'TESTNET');
+    await act(async () => { window.dispatchEvent(new StorageEvent('storage', { key: 'SKM_NETWORK', newValue: 'TESTNET' })); });
+    await waitFor(() => expect(checkbox.checked).toBe(true), SLOW);
+    expect(badge().textContent).toContain('Testnet');
+    // Konto wird im neuen Netz neu geprueft, wie beim Wechsel im eigenen Tab
+    await waitFor(() => expect(hoisted.submit.mock.calls.length).toBeGreaterThan(calls), SLOW);
+    expect(hoisted.submit.mock.calls.at(-1)[2]).toBe('TESTNET');
+  });
 });

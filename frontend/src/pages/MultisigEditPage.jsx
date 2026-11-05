@@ -1,5 +1,6 @@
-import React, { useEffect, useMemo, useState, useCallback } from 'react';
-import { NETWORKS, horizonUrlFor, passphraseFor, readStoredNetworkId } from '../config/networks.js';
+import React, { useEffect, useMemo, useState, useCallback, useRef } from 'react';
+import { horizonUrlFor, passphraseFor, readStoredNetworkId } from '../config/networks.js';
+import { useGlobalNetwork } from '../utils/globalNetwork.js';
 import { useTranslation } from 'react-i18next';
 import SecretKeyModal from '../components/SecretKeyModal.jsx';
 import MultiSigHelpDialog from '../components/multisig/MultiSigHelpDialog.jsx';
@@ -33,26 +34,24 @@ function clampByte(n) {
   return Math.max(0, Math.min(255, Math.trunc(v)));
 }
 
-function NetworkSelector({ value, onChange }) {
-  const { t } = useTranslation(['network', 'common', 'publicKey', 'createAccount']);
+// Nur Anzeige: Das Netz dieser Seite ist das globale Netz (Wallet-Kopf), es gibt
+// keinen eigenen Schalter mehr. So stammen Konto und Transaktion immer aus dem
+// Netz, das auch der Wallet-Kopf und die Kopfleiste zeigen.
+function NetworkInfo({ value }) {
+  const { t } = useTranslation(['common']);
   const isTestnet = value === 'TESTNET';
   return (
-    <div className={`flex items-center justify-between gap-4 mb-4 p-2 border rounded-sm relative ${isTestnet ? 'border-yellow-500 ring-1 ring-yellow-400' : ''}`}>
-      <div className="flex items-center gap-4">
-        <label className="flex items-center gap-2">
-        <input type="radio" name="network" value="PUBLIC" checked={value === 'PUBLIC'} onChange={() => { try { window.localStorage.setItem('SKM_NETWORK','PUBLIC'); window.localStorage.removeItem('SKM_HORIZON_URL'); } catch (e) { void e; } window.dispatchEvent(new CustomEvent('stm-network-changed', { detail: 'PUBLIC' })); window.dispatchEvent(new Event('stm-trigger-recheck')); onChange('PUBLIC'); }} />
-          {t('network:mainnet')}
-        </label>
-        <label className="flex items-center gap-2">
-        <input type="radio" name="network" value="TESTNET" checked={value === 'TESTNET'} onChange={() => { try { window.localStorage.setItem('SKM_NETWORK','TESTNET'); window.localStorage.setItem('SKM_HORIZON_URL', NETWORKS.TESTNET.horizonUrl); } catch (e) { void e; } window.dispatchEvent(new CustomEvent('stm-network-changed', { detail: 'TESTNET' })); window.dispatchEvent(new Event('stm-trigger-recheck')); onChange('TESTNET'); }} />
-          {t('network:testnet')}
-        </label>
-      </div>
-      {isTestnet && (
-        <span className="inline-block bg-yellow-500 text-white text-xs font-semibold px-2 py-0.5 rounded-sm">
-          {t('common:badges.testnet')}
-        </span>
-      )}
+    <div
+      data-testid="multisig-edit-network"
+      className={`flex flex-wrap items-center gap-3 mb-4 p-2 border rounded-sm ${isTestnet ? 'border-yellow-500 ring-1 ring-yellow-400' : ''}`}
+    >
+      <span
+        data-testid="multisig-edit-network-badge"
+        className={`inline-block text-white text-xs font-semibold px-2 py-0.5 rounded-sm ${isTestnet ? 'bg-yellow-500' : 'bg-emerald-600'}`}
+      >
+        {isTestnet ? t('common:badges.testnet') : t('common:badges.mainnet')}
+      </span>
+      <span className="text-xs text-gray-600 dark:text-gray-400">{t('common:multisigEdit.networkHint')}</span>
     </div>
   );
 }
@@ -62,9 +61,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
   const { recentWalletOptions, removeRecentWalletOption, clearRecentWalletOptions } = useRecentWalletOptions();
   const { multisigTimeoutSeconds } = useSettings();
 
-  const [network, setNetwork] = useState(() => {
-  try { return readStoredNetworkId(); } catch { return 'PUBLIC'; }
-  });
+  const [network] = useGlobalNetwork();
   const server = useMemo(() => getHorizonServer(horizonUrlFor(network)), [network]);
   const passphrase = passphraseFor(network);
 
@@ -137,16 +134,21 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
   const hasLockoutRisks = safetyCheck.risks.length > 0;
   const saveBlockedByRisk = hasLockoutRisks && !riskAcknowledged;
 
-  // Load account
+  // Load account. Nur das Ergebnis des letzten Aufrufs zaehlt: Nach schnellem
+  // Netzwechsel (A -> B -> A) darf ein spaet eintreffendes Konto aus B nicht die
+  // Werte fuer A ueberschreiben.
+  const loadRequestRef = useRef(0);
   const loadAccount = useCallback(async () => {
     const pk = (defaultPublicKey || '').trim();
     if (!pk) return;
+    const requestId = ++loadRequestRef.current;
     setLoading(true);
     setError('');
     setInfo('');
     setCurrentAccount(null);
     try {
       const acct = await server.loadAccount(pk);
+      if (loadRequestRef.current !== requestId) return;
       setCurrentAccount(acct);
       const ms = (acct.signers || []).find(s => s.key === pk);
       const others = (acct.signers || []).filter(s => s.key !== pk && s.type && s.type.includes('ed25519'));
@@ -158,25 +160,42 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
       setHighT(clampByte(acct.thresholds?.high_threshold ?? 0));
       setInfo(t('common:multisigEdit.loaded', { count: others.length }));
     } catch (e) {
+      if (loadRequestRef.current !== requestId) return;
       setError(String(e?.message || e));
     } finally {
-      setLoading(false);
+      if (loadRequestRef.current === requestId) setLoading(false);
     }
   }, [defaultPublicKey, server, t]);
+
+  // Globaler Netzwechsel bei offener Seite: Eingaben fuer das alte Netz (Signer,
+  // Gewichte, Thresholds) nicht auf das neue Netz anwenden. Seite auf Standard
+  // zuruecksetzen, offene Dialoge schliessen; der Effekt darunter laedt danach das
+  // Konto aus dem neuen Netz. Muss vor dem Lade-Effekt stehen.
+  const [networkNotice, setNetworkNotice] = useState('');
+  const lastNetworkRef = useRef(network);
+  useEffect(() => {
+    if (lastNetworkRef.current === network) return;
+    lastNetworkRef.current = network;
+    loadRequestRef.current += 1; // laufendes Laden aus dem alten Netz verwerfen
+    setCurrentAccount(null);
+    setMasterWeight(1);
+    setSigners([]);
+    setLowT(0);
+    setMedT(0);
+    setHighT(0);
+    setShowConfirmModal(false);
+    setShowSecretModal(false);
+    setPendingAction(null);
+    setRiskAcknowledged(false);
+    setError('');
+    setInfo('');
+    setLoading(false);
+    setNetworkNotice(t('common:multisigEdit.networkChanged'));
+  }, [network, t]);
 
   useEffect(() => {
     if (defaultPublicKey) loadAccount();
   }, [defaultPublicKey, network, loadAccount]);
-
-  // Sync local network radio with global header toggle
-  useEffect(() => {
-    const handler = (e) => {
-      const v = (typeof e?.detail === 'string') ? e.detail : (window.localStorage?.getItem('SKM_NETWORK') || 'PUBLIC');
-      setNetwork(v === 'TESTNET' ? 'TESTNET' : 'PUBLIC');
-    };
-    window.addEventListener('stm-network-changed', handler);
-    return () => window.removeEventListener('stm-network-changed', handler);
-  }, []);
 
   // Editing handlers
   function updateSignerKey(i, val) {
@@ -207,6 +226,11 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
   const buildSetOptionsTx = useCallback(async (collectedSigners, { signTx = false, requireSigners = false, immediateSubmit = false } = {}) => {
     const pk = (defaultPublicKey || '').trim();
     if (!pk) { throw new Error(t('publicKey:invalid')); }
+    // Netz der Seite muss das gespeicherte globale Netz sein (sonst stammten
+    // Eingaben und Konto aus einem anderen Netz als die Transaktion).
+    if (readStoredNetworkId() !== network) {
+      throw new Error(t('common:multisigEdit.networkChanged'));
+    }
     if (hasSafetyErrors) {
       throw new Error('submitTransaction.failed:' + 'multisig.invalidConfig');
     }
@@ -307,7 +331,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
       }
     }
     return { tx, plannedThresholds, plannedMaster, plannedSigners };
-  }, [defaultPublicKey, hasSafetyErrors, highT, lowT, masterWeight, medT, multisigTimeoutSeconds, passphrase, server, signers, t]);
+  }, [defaultPublicKey, hasSafetyErrors, highT, lowT, masterWeight, medT, multisigTimeoutSeconds, network, passphrase, server, signers, t]);
 
   async function submitChanges(collectedSigners) {
     setShowSecretModal(false);
@@ -350,6 +374,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
   }
 
   function handleSave() {
+    setNetworkNotice('');
     const pk = (defaultPublicKey || '').trim();
     if (!StrKey.isValidEd25519PublicKey(pk)) {
       setError(t('publicKey:invalid'));
@@ -525,7 +550,12 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
         </p>
       </details>
 
-      <NetworkSelector value={network} onChange={setNetwork} />
+      <NetworkInfo value={network} />
+      {networkNotice && (
+        <p data-testid="multisig-edit-network-notice" className="mb-3 text-sm text-amber-800 dark:text-amber-200 border border-amber-300 bg-amber-50 dark:bg-amber-900/30 rounded-sm p-2">
+          {networkNotice}
+        </p>
+      )}
 
       <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">{t('common:multisigEdit.noteMaxSigners')}</p>
 
