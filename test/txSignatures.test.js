@@ -126,7 +126,8 @@ test('operationThresholdCategory classifies setOptions and accountMerge as high'
   assert.equal(operationThresholdCategory('accountMerge'), 'high');
 });
 
-test('operationThresholdCategory classifies allowTrust/inflation/bumpSequence/setTrustLineFlags as low', () => {
+test('operationThresholdCategory classifies allowTrust/inflation/bumpSequence/setTrustLineFlags/claimClaimableBalance as low', () => {
+  assert.equal(operationThresholdCategory('claimClaimableBalance'), 'low');
   assert.equal(operationThresholdCategory('allowTrust'), 'low');
   assert.equal(operationThresholdCategory('inflation'), 'low');
   assert.equal(operationThresholdCategory('bumpSequence'), 'low');

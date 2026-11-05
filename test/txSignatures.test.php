@@ -22,6 +22,7 @@ use Soneso\StellarSDK\Account;
 use Soneso\StellarSDK\AbstractTransaction;
 use Soneso\StellarSDK\Asset;
 use Soneso\StellarSDK\BumpSequenceOperationBuilder;
+use Soneso\StellarSDK\ClaimClaimableBalanceOperationBuilder;
 use Soneso\StellarSDK\Crypto\KeyPair;
 use Soneso\StellarSDK\FeeBumpTransactionBuilder;
 use Soneso\StellarSDK\Network;
@@ -213,6 +214,7 @@ check(
 check('operationThresholdCategory classifies a SetOptionsOperation as high', operationThresholdCategory((new SetOptionsOperationBuilder())->setMasterKeyWeight(2)->build()) === 'high');
 check('operationThresholdCategory classifies a PaymentOperation as medium', operationThresholdCategory((new PaymentOperationBuilder(KeyPair::random()->getAccountId(), Asset::native(), '1'))->build()) === 'med');
 check('operationThresholdCategory classifies a BumpSequenceOperation as low', operationThresholdCategory((new BumpSequenceOperationBuilder(new BigInteger('101')))->build()) === 'low');
+check('operationThresholdCategory classifies a ClaimClaimableBalanceOperation as low', operationThresholdCategory((new ClaimClaimableBalanceOperationBuilder(str_repeat('0', 8) . str_repeat('ab', 32)))->build()) === 'low');
 
 function buildTxFor(array $operations): AbstractTransaction {
     $source = KeyPair::random();

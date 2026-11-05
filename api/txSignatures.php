@@ -36,11 +36,12 @@ function txSourceBaseAccount(AbstractTransaction $tx): ?string {
 
 // Stellar's protocol assigns each operation type to a threshold category
 // (low/medium/high) - SetOptions and AccountMerge are High, AllowTrust/
-// Inflation/BumpSequence/SetTrustLineFlags are Low, everything else
+// Inflation/BumpSequence/SetTrustLineFlags/ClaimClaimableBalance are Low, everything else
 // (Payment, CreateAccount, ChangeTrust, ManageData, ...) is Medium. Mirrors
 // the identical categorization in server.js's requiredWeightForOperations().
 const HIGH_THRESHOLD_OP_CLASSES = ['SetOptionsOperation', 'AccountMergeOperation'];
-const LOW_THRESHOLD_OP_CLASSES = ['AllowTrustOperation', 'InflationOperation', 'BumpSequenceOperation', 'SetTrustLineFlagsOperation'];
+// ClaimClaimableBalance ist laut Protokoll Low (developers.stellar.org, List of operations).
+const LOW_THRESHOLD_OP_CLASSES = ['AllowTrustOperation', 'InflationOperation', 'BumpSequenceOperation', 'SetTrustLineFlagsOperation', 'ClaimClaimableBalanceOperation'];
 
 function classBasename(string $class): string {
     $pos = strrpos($class, '\\');

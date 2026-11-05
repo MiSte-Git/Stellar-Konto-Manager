@@ -103,7 +103,8 @@ function filterValidSignatures(tx, signers = []) {
 // (Payment, CreateAccount, ChangeTrust, ManageData, ...) is Medium. Mirrors
 // the identical categorization in api/txSignatures.php's requiredWeightForOperations().
 const HIGH_THRESHOLD_OP_TYPES = new Set(['setOptions', 'accountMerge']);
-const LOW_THRESHOLD_OP_TYPES = new Set(['allowTrust', 'inflation', 'bumpSequence', 'setTrustLineFlags']);
+// claimClaimableBalance ist laut Protokoll Low (developers.stellar.org, List of operations).
+const LOW_THRESHOLD_OP_TYPES = new Set(['allowTrust', 'inflation', 'bumpSequence', 'setTrustLineFlags', 'claimClaimableBalance']);
 
 function operationThresholdCategory(opType) {
   if (HIGH_THRESHOLD_OP_TYPES.has(opType)) return 'high';
