@@ -21,9 +21,17 @@ vi.mock('../../utils/stellar/stellarUtils.js', async (importOriginal) => (await 
           // Optional: Funder existiert (Test fuer einen Wechsel waehrend des Ladens)
           if (hoisted.funderLoad) return hoisted.funderLoad(pk);
         }
-        throw new Error('not found');
+        // Optional: neues Konto existiert (nach der Aktivierung)
+        if (hoisted.otherLoad) return hoisted.otherLoad(pk);
+        // Wie Horizon: unbekanntes Konto ist ein 404
+        throw Object.assign(new Error('not found'), { response: { status: 404 } });
       },
-      submitTransaction: async () => { hoisted.submitted += 1; return { hash: 'h' }; },
+      submitTransaction: async (tx) => {
+        hoisted.submitted += 1;
+        hoisted.submittedTxs.push(tx);
+        if (hoisted.submitImpl) return hoisted.submitImpl(tx);
+        return { hash: 'h' };
+      },
     };
   },
 }));
@@ -56,6 +64,11 @@ function renderPage() {
 }
 
 const radio = (container, value) => container.querySelector(`input[name="network"][value="${value}"]`);
+// Pflicht vor jeder Aktivierung: Secret Key gesichert
+const confirmBackup = async (view) => {
+  await act(async () => { fireEvent.click(view.getByTestId('create-backup-confirm')); });
+};
+const notFound = () => Object.assign(new Error('not found'), { response: { status: 404 } });
 
 describe('MultisigCreatePage: Netzschalter ist der globale Netzschalter', () => {
   beforeAll(async () => {
@@ -69,6 +82,9 @@ describe('MultisigCreatePage: Netzschalter ist der globale Netzschalter', () => 
     hoisted.loadedFunder = 0;
     hoisted.funderPub = '';
     hoisted.funderLoad = null;
+    hoisted.otherLoad = null;
+    hoisted.submitImpl = null;
+    hoisted.submittedTxs = [];
     resetServerNetworkCalls();
   });
 
@@ -109,21 +125,84 @@ describe('MultisigCreatePage: Netzschalter ist der globale Netzschalter', () => 
 
   });
 
-  it('verwirft generierte Schluessel bei einem Netzwechsel und zeigt einen Hinweis', async () => {
+  // Neue Regel: Erzeugte Schluessel verschwinden nur durch eine ausdrueckliche Handlung.
+  it('Netzwechsel ohne Aktivierung: Schluessel bleiben mit ihrem Netz, Aktivieren gesperrt; nach Rueckwechsel wieder moeglich', async () => {
     window.localStorage.setItem('SKM_NETWORK', 'TESTNET');
-    const { container, getByText, queryByTestId } = renderPage();
+    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockImplementation(async () => new Response('{"hash":"fb"}', { status: 200 }));
+    const view = renderPage();
+    const { container, getByText, queryByTestId, getByTestId } = view;
     await act(async () => { fireEvent.click(getByText(i18n.t('multisigCreate:generateKeys'))); });
     const pub = container.textContent.match(/G[A-Z2-7]{55}/)?.[0];
+    const sec = container.textContent.match(/S[A-Z2-7]{55}/)?.[0];
     expect(pub).toBeTruthy();
+    expect(getByTestId('create-keys-network').textContent).toBe(i18n.t('multisigCreate:keys.network', { network: 'Testnet' }));
+    await confirmBackup(view);
     expect(queryByTestId('create-network-notice')).toBeNull();
+    const activateOnly = () => getByText(i18n.t('multisigCreate:activateOnly')).closest('button');
+    const createAll = () => getByText(i18n.t('multisigCreate:createButton')).closest('button');
+
     await act(async () => { setGlobalNetwork('PUBLIC'); });
     expect(radio(container, 'PUBLIC').checked).toBe(true);
+    expect(container.textContent).toContain(pub);
+    expect(container.textContent).toContain(sec);
+    expect(getByTestId('create-keys-network').textContent).toBe(i18n.t('multisigCreate:keys.network', { network: 'Testnet' }));
+    expect(getByTestId('create-network-notice').textContent).toBe(i18n.t('createAccount:networkChanged.keptKeys', { network: 'Testnet', current: 'Mainnet' }));
+    expect(getByTestId('create-keys-locked')).toBeInTheDocument();
+    expect(activateOnly()).toBeDisabled();
+    expect(createAll()).toBeDisabled();
+    // Klick trotz Sperre: weder Friendbot noch Funder-Dialog
+    await act(async () => { fireEvent.click(activateOnly()); });
+    expect(fetchSpy).not.toHaveBeenCalled();
+    expect(queryByTestId('funder-confirm')).toBeNull();
+
+    // Gegenprobe: Rueckwechsel, dann geht es normal weiter
+    await act(async () => { setGlobalNetwork('TESTNET'); });
+    expect(queryByTestId('create-network-notice')).toBeNull();
+    expect(queryByTestId('create-keys-locked')).toBeNull();
+    expect(activateOnly()).not.toBeDisabled();
+    await act(async () => { fireEvent.click(activateOnly()); });
+    await waitFor(() => expect(fetchSpy).toHaveBeenCalledTimes(1));
+    expect(String(fetchSpy.mock.calls[0][0])).toContain(encodeURIComponent(pub));
+    fetchSpy.mockRestore();
+  });
+
+  it('Schluessel verwerfen: Rueckfrage; Abbrechen behaelt sie, Bestaetigen entfernt sie samt Hinweis', async () => {
+    window.localStorage.setItem('SKM_NETWORK', 'TESTNET');
+    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(false);
+    const view = renderPage();
+    const { container, getByText, queryByTestId, getByTestId } = view;
+    await act(async () => { fireEvent.click(getByText(i18n.t('multisigCreate:generateKeys'))); });
+    const pub = container.textContent.match(/G[A-Z2-7]{55}/)[0];
+    await act(async () => { setGlobalNetwork('PUBLIC'); });
+    await act(async () => { fireEvent.click(getByTestId('create-keys-discard')); });
+    expect(confirmSpy).toHaveBeenCalledWith(i18n.t('multisigCreate:keys.discardConfirm'));
+    expect(container.textContent).toContain(pub);
+
+    confirmSpy.mockReturnValue(true);
+    await act(async () => { fireEvent.click(getByTestId('create-keys-discard')); });
     expect(container.textContent).not.toContain(pub);
     expect(container.textContent).not.toMatch(/S[A-Z2-7]{55}/);
-    expect(queryByTestId('create-network-notice').textContent).toBe(i18n.t('createAccount:networkChanged.reset'));
-    // Neue Schluessel fuer das neue Netz blenden den Hinweis aus
-    await act(async () => { fireEvent.click(getByText(i18n.t('multisigCreate:generateKeys'))); });
     expect(queryByTestId('create-network-notice')).toBeNull();
+    expect(queryByTestId('create-keys-discard')).toBeNull();
+    expect(container.textContent).toContain(i18n.t('multisigCreate:keys.discarded'));
+    confirmSpy.mockRestore();
+  });
+
+  it('neue Schluessel ersetzen angezeigte nur nach Rueckfrage', async () => {
+    window.localStorage.setItem('SKM_NETWORK', 'TESTNET');
+    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(false);
+    const { container, getByText } = renderPage();
+    await act(async () => { fireEvent.click(getByText(i18n.t('multisigCreate:generateKeys'))); });
+    const pub = container.textContent.match(/G[A-Z2-7]{55}/)[0];
+    await act(async () => { fireEvent.click(getByText(i18n.t('multisigCreate:generateKeys'))); });
+    expect(confirmSpy).toHaveBeenCalledWith(i18n.t('multisigCreate:keys.replaceConfirm'));
+    expect(container.textContent).toContain(pub);
+    // Gegenprobe: bestaetigt -> neue Schluessel
+    confirmSpy.mockReturnValue(true);
+    await act(async () => { fireEvent.click(getByText(i18n.t('multisigCreate:generateKeys'))); });
+    expect(container.textContent).not.toContain(pub);
+    expect(container.textContent).toMatch(/G[A-Z2-7]{55}/);
+    confirmSpy.mockRestore();
   });
 
   it('ohne erzeugte Schluessel bleibt der Netzwechsel ohne Hinweis', async () => {
@@ -141,8 +220,10 @@ describe('MultisigCreatePage: Netzschalter ist der globale Netzschalter', () => 
       window.localStorage.setItem('SKM_NETWORK', 'TESTNET');
       return new Account(pk, '1');
     };
-    const { getByText, findByTestId, container } = renderPage();
+    const view = renderPage();
+    const { getByText, findByTestId, container } = view;
     await act(async () => { fireEvent.click(getByText(i18n.t('multisigCreate:generateKeys'))); });
+    await confirmBackup(view);
     await act(async () => { fireEvent.click(getByText(i18n.t('multisigCreate:activateOnly'))); });
     const confirm = await findByTestId('funder-confirm');
     await act(async () => { fireEvent.click(confirm); });
@@ -155,8 +236,10 @@ describe('MultisigCreatePage: Netzschalter ist der globale Netzschalter', () => 
 
   it('Funder-Dialog: bricht ab, wenn das Netz seit dem Oeffnen gewechselt hat', async () => {
     window.localStorage.setItem('SKM_NETWORK', 'PUBLIC');
-    const { getByText, findByTestId, queryByTestId, container } = renderPage();
+    const view = renderPage();
+    const { getByText, findByTestId, queryByTestId, container } = view;
     await act(async () => { fireEvent.click(getByText(i18n.t('multisigCreate:generateKeys'))); });
+    await confirmBackup(view);
     await act(async () => { fireEvent.click(getByText(i18n.t('multisigCreate:activateOnly'))); });
     const confirm = await findByTestId('funder-confirm');
     // Wechsel ohne Event in diesem Fenster (z. B. anderer Tab vor der Weiterleitung)
@@ -168,15 +251,150 @@ describe('MultisigCreatePage: Netzschalter ist der globale Netzschalter', () => 
     expect(queryByTestId('funder-confirm')).toBeNull();
   });
 
-  it('Funder-Dialog: Netzwechsel per Event schliesst den Dialog und verwirft die Schluessel', async () => {
+  it('Funder-Dialog: Netzwechsel per Event schliesst den Dialog, Schluessel bleiben gesperrt', async () => {
     window.localStorage.setItem('SKM_NETWORK', 'PUBLIC');
-    const { getByText, findByTestId, queryByTestId } = renderPage();
+    const view = renderPage();
+    const { getByText, findByTestId, queryByTestId, container } = view;
     await act(async () => { fireEvent.click(getByText(i18n.t('multisigCreate:generateKeys'))); });
+    const pub = container.textContent.match(/G[A-Z2-7]{55}/)[0];
+    await confirmBackup(view);
     await act(async () => { fireEvent.click(getByText(i18n.t('multisigCreate:activateOnly'))); });
     await findByTestId('funder-confirm');
     await act(async () => { setGlobalNetwork('TESTNET'); });
     expect(queryByTestId('funder-confirm')).toBeNull();
-    expect(queryByTestId('create-network-notice')).not.toBeNull();
+    expect(container.textContent).toContain(pub);
+    expect(view.getByTestId('create-network-notice').textContent).toBe(i18n.t('createAccount:networkChanged.keptKeys', { network: 'Mainnet', current: 'Testnet' }));
+    expect(hoisted.submitted).toBe(0);
+  });
+});
+
+// Review N2-1: Nach gesendeter Aktivierung (Erfolg oder unklar) gehoeren die Schluessel zu
+// einem womoeglich gefuellten Konto und duerfen beim Netzwechsel nie verworfen werden.
+describe('MultisigCreatePage: Schluessel nach gesendeter Aktivierung', () => {
+  const COSIGNER = 'GD5KJP276E7CZT43PAI5KAEXCUDZMFFMV4X5AGFKBR7Q7IAZZ5BXZVKM';
+  let confirmSpy;
+
+  beforeAll(async () => { await i18n.changeLanguage('de'); });
+  beforeEach(() => {
+    window.localStorage.clear();
+    hoisted.submitted = 0;
+    hoisted.loadedFunder = 0;
+    hoisted.funderPub = '';
+    hoisted.funderLoad = null;
+    hoisted.otherLoad = null;
+    hoisted.submitImpl = null;
+    hoisted.submittedTxs = [];
+    hoisted.activationFailed = false;
+    confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
+  });
+  afterEach(() => confirmSpy.mockRestore());
+
+  // Mainnet: Schluessel erzeugen, Multisig mit einem Signer, sofort aktivieren, Funder bestaetigen.
+  async function startCreateAll(view, { onNewAccountLoad } = {}) {
+    const { getByText, getByLabelText, findByTestId, container } = view;
+    const { Account } = await import('@stellar/stellar-sdk');
+    hoisted.funderLoad = (pk) => new Account(pk, '1');
+    // Neues Konto existiert erst nach der Aktivierung (Live-Pruefung davor: 404)
+    hoisted.otherLoad = (pk) => {
+      if (hoisted.submitted === 0 || hoisted.activationFailed) throw notFound();
+      onNewAccountLoad?.();
+      return new Account(pk, '1');
+    };
+    await act(async () => { fireEvent.click(getByText(i18n.t('multisigCreate:generateKeys'))); });
+    const pub = container.textContent.match(/G[A-Z2-7]{55}/)[0];
+    const sec = container.textContent.match(/S[A-Z2-7]{55}/)[0];
+    await act(async () => { fireEvent.click(getByLabelText(i18n.t('multisigCreate:enableMultisig'))); });
+    const signerInput = Array.from(container.querySelectorAll('input')).find((i) => i.placeholder === 'G...');
+    await act(async () => { fireEvent.change(signerInput, { target: { value: COSIGNER } }); });
+    await act(async () => { fireEvent.click(getByLabelText(new RegExp(i18n.t('multisigCreate:activateNow')))); });
+    await confirmBackup(view);
+    await act(async () => { fireEvent.click(getByText(i18n.t('multisigCreate:createButton'))); });
+    await act(async () => { fireEvent.click(await findByTestId('funder-confirm')); });
+    return { pub, sec };
+  }
+
+  it('Aktivierung gesendet, Netzwechsel vor dem Multisig-Schritt: Schluessel, Adresse und Hash bleiben, Multisig gesperrt; nach Rueckwechsel wieder moeglich', async () => {
+    window.localStorage.setItem('SKM_NETWORK', 'PUBLIC');
+    const view = renderPage();
+    const { getByTestId, queryByTestId, findByTestId, container } = view;
+    let switched = false;
+    // Wechsel genau zwischen Aktivierung und Multisig-Schritt (Laden des neuen Kontos)
+    const { pub, sec } = await startCreateAll(view, {
+      onNewAccountLoad: () => { if (!switched) { switched = true; setGlobalNetwork('TESTNET'); } },
+    });
+    await waitFor(() => expect(container.textContent).toContain(i18n.t('createAccount:networkChanged.stoppedAfterPartial')));
+    expect(hoisted.submitted).toBe(1); // nur die Aktivierung
+
+    // Schluessel, Adresse, Hash mit dem Netz der Aktivierung
+    expect(container.textContent).toContain(pub);
+    expect(container.textContent).toContain(sec);
+    expect(getByTestId('create-activation-pub').textContent).toBe(pub);
+    expect(getByTestId('create-activation-hash').textContent).toBe(`${i18n.t('multisigCreate:activation.hash')}: h`);
+    expect(getByTestId('create-activation').textContent).toContain(i18n.t('multisigCreate:activation.title', { network: 'Mainnet' }));
+    expect(getByTestId('create-activation-backup').textContent).toBe(i18n.t('multisigCreate:activation.backupNow'));
+    expect(getByTestId('create-network-notice').textContent).toBe(i18n.t('createAccount:networkChanged.keptActivated', { network: 'Mainnet' }));
+    // Weitere Schritte gesperrt
+    expect(getByTestId('create-activation-locked')).toBeInTheDocument();
+    expect(queryByTestId('create-activation-set-multisig')).toBeNull();
+    expect(view.getByText(i18n.t('multisigCreate:createButton')).closest('button')).toBeDisabled();
+
+    // Rueckwechsel: Multisig nachholen
+    await act(async () => { setGlobalNetwork('PUBLIC'); });
+    expect(queryByTestId('create-activation-locked')).toBeNull();
+    const setButton = await findByTestId('create-activation-set-multisig');
+    await act(async () => { fireEvent.click(setButton); });
+    await waitFor(() => expect(hoisted.submitted).toBe(2));
+    const setOptions = hoisted.submittedTxs[1];
+    expect(setOptions.source).toBe(pub);
+    expect(setOptions.operations.map((o) => o.type)).toEqual(['setOptions', 'setOptions']);
+    expect(container.textContent).toContain(i18n.t('multisigCreate:createdAndConfigured', { hash: 'h' }));
+    expect(queryByTestId('create-activation-set-multisig')).toBeNull();
+  });
+
+  it('unklarer Ausgang der Aktivierung zaehlt wie gesendet: Schluessel bleiben beim Netzwechsel', async () => {
+    window.localStorage.setItem('SKM_NETWORK', 'PUBLIC');
+    // Keine Antwort von Horizon (Timeout): Konto kann existieren
+    hoisted.submitImpl = async () => { throw new Error('timeout'); };
+    hoisted.activationFailed = true; // im Netz (noch) nicht sichtbar
+    const view = renderPage();
+    const { pub, sec } = await startCreateAll(view);
+    await waitFor(() => expect(view.container.textContent).toContain('timeout'));
+    expect(view.getByTestId('create-activation').textContent).toContain(i18n.t('multisigCreate:activation.statusAmbiguous'));
+
+    await act(async () => { setGlobalNetwork('TESTNET'); });
+    expect(view.container.textContent).toContain(pub);
+    expect(view.container.textContent).toContain(sec);
+    expect(view.getByTestId('create-activation-locked')).toBeInTheDocument();
+    expect(view.getByTestId('create-network-notice').textContent).toBe(i18n.t('createAccount:networkChanged.keptActivated', { network: 'Mainnet' }));
+  });
+
+  it('eindeutig abgelehnte Aktivierung: Vermerk weg, Schluessel bleiben beim Netzwechsel gesperrt', async () => {
+    window.localStorage.setItem('SKM_NETWORK', 'PUBLIC');
+    hoisted.activationFailed = true;
+    hoisted.submitImpl = async () => {
+      throw Object.assign(new Error('rejected'), { response: { status: 400, data: { extras: { result_codes: { transaction: 'tx_failed' } } } } });
+    };
+    const view = renderPage();
+    const { pub } = await startCreateAll(view);
+    await waitFor(() => expect(view.container.textContent).toContain('rejected'));
+    expect(view.queryByTestId('create-activation')).toBeNull();
+    await act(async () => { setGlobalNetwork('TESTNET'); });
+    expect(view.container.textContent).toContain(pub);
+    expect(view.getByTestId('create-keys-locked')).toBeInTheDocument();
+    expect(view.getByTestId('create-network-notice').textContent).toBe(i18n.t('createAccount:networkChanged.keptKeys', { network: 'Mainnet', current: 'Testnet' }));
+  });
+
+  it('ohne Aktivierung bleiben die Schluessel beim Netzwechsel, Multisig-Erstellen gesperrt', async () => {
+    window.localStorage.setItem('SKM_NETWORK', 'PUBLIC');
+    const view = renderPage();
+    await act(async () => { fireEvent.click(view.getByText(i18n.t('multisigCreate:generateKeys'))); });
+    const pub = view.container.textContent.match(/G[A-Z2-7]{55}/)[0];
+    await confirmBackup(view);
+    await act(async () => { setGlobalNetwork('TESTNET'); });
+    expect(view.container.textContent).toContain(pub);
+    expect(view.queryByTestId('create-activation')).toBeNull();
+    expect(view.getByText(i18n.t('multisigCreate:createButton')).closest('button')).toBeDisabled();
+    expect(view.getByTestId('create-network-notice').textContent).toBe(i18n.t('createAccount:networkChanged.keptKeys', { network: 'Mainnet', current: 'Testnet' }));
     expect(hoisted.submitted).toBe(0);
   });
 });

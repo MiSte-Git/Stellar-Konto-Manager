@@ -592,6 +592,9 @@ export async function deleteTrustlinesInChunks({
   const allDeleted = [];
   let processed = 0;
 
+  // Bricht der Ablauf nach einem oder mehreren gesendeten Bloecken ab (Netzwechsel, Fehler),
+  // gehen die schon geloeschten Trustlines nicht im Throw verloren: err.deleted / err.total.
+  try {
   let liveTrustlines = await loadTrustlines(targetAccount, server); // initial einmal
   for (let idx = 0; idx < chunks.length; idx++) {
     const chunk = chunks[idx];
@@ -657,6 +660,13 @@ export async function deleteTrustlinesInChunks({
 
     processed += chunk.length;
     onProgress?.({ phase:'chunkDone', processed, total: trustlines.length });
+  }
+  } catch (err) {
+    if (allDeleted.length && err && typeof err === 'object') {
+      err.deleted = [...allDeleted];
+      err.total = trustlines.length;
+    }
+    throw err;
   }
 
   if (allDeleted.length === 0) {

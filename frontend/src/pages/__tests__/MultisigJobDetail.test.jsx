@@ -758,6 +758,21 @@ describe('Liquidity-Pool-Jobs im Job-Detail (Stufe 2b)', () => {
     expect(hoisted.poolMock).toHaveBeenCalledWith(POOL_ID);
   });
 
+  it('laedt den Pool-Stand mit dem Netz des Jobs, auch wenn das globale Netz ein anderes ist (N2-4)', async () => {
+    window.localStorage.setItem('SKM_NETWORK', 'PUBLIC'); // Job ist im Testnet
+    try {
+      resetServerNetworkCalls();
+      hoisted.getJobMock.mockImplementation(async () => lpJob([withdrawOp()]));
+      hoisted.poolMock.mockResolvedValue(poolRecord('900.0000000', '111.0000000'));
+      renderPage();
+      await screen.findByTestId('job-pool-state');
+      await waitFor(() => expect(hoisted.poolMock).toHaveBeenCalledWith(POOL_ID));
+      expect(serverNetworkCalls).toEqual(['testnet']);
+    } finally {
+      window.localStorage.removeItem('SKM_NETWORK');
+    }
+  });
+
   it('meldet neutral, wenn der aktuelle Kurs ausserhalb der Grenzen liegt', async () => {
     hoisted.getJobMock.mockImplementation(async () => lpJob([poolTrustOp(), depositOp()]));
     hoisted.poolMock.mockResolvedValue(poolRecord('1100.0000000', '90.0000000'));

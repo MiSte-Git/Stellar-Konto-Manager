@@ -12,6 +12,38 @@
   "generateFirst": "Bitte generiere zuerst ein Schlüsselpaar.",
   "confirmLowBalance": "Startguthaben {{bal}} XLM ist unterhalb der empfohlenen Reserve {{req}} XLM (Signer: {{count}}). Fortfahren?",
   "activated": "Konto wurde aktiviert. Hash: {{hash}}",
+  "activation": {
+    "title": "Aktivierung gesendet ({{network}})",
+    "statusSuccess": "Das Konto wurde aktiviert.",
+    "statusAmbiguous": "Die Aktivierung wurde gesendet, der Ausgang ist unklar. Das Konto kann bereits existieren und Guthaben haben. Bitte im Explorer prüfen.",
+    "hash": "Transaktion",
+    "backupNow": "Sichere jetzt den Secret Key dieses Kontos. SKM speichert ihn nicht. Ohne ihn ist der Zugang zum Konto und zum Guthaben verloren.",
+    "otherNetwork": "Das gewählte Netz ist jetzt {{current}}, das Konto wurde im {{network}} aktiviert. Weitere Schritte für dieses Konto (Multisig setzen) sind gesperrt. Wechsle zurück zu {{network}}, dann kannst du sie nachholen.",
+    "setMultisigNow": "Multisig jetzt setzen",
+    "replaceConfirm": "Für die angezeigten Schlüssel wurde bereits eine Aktivierung gesendet. Neue Schlüssel ersetzen sie auf dieser Seite. Hast du den Secret Key gesichert?",
+    "stillUnclear": "Für diese Schlüssel wurde bereits eine Aktivierung gesendet, das Konto ist im Netz aber noch nicht sichtbar. SKM sendet keine zweite Aktivierung. Prüfe die Adresse im Explorer und versuche es später erneut.",
+    "friendbotRejected": "Friendbot hat die Aktivierung abgelehnt (Status {{status}}). Das Konto wurde nicht angelegt.",
+    "friendbotUnclear": "Friendbot hat nicht eindeutig geantwortet (Status {{status}}). Das Konto kann bereits existieren. Bitte im Explorer prüfen.",
+    "leaveHint": "Solange du nicht auf „Fertig, Key gesichert“ klickst, fragt SKM nach, bevor du die Seite verlässt.",
+    "finish": "Fertig, Key gesichert",
+    "finished": "Abgeschlossen. Die Schlüssel wurden von dieser Seite entfernt.",
+    "friendbotTimeout": "Friendbot hat nach {{seconds}} Sekunden nicht geantwortet. Der Ausgang ist unklar, das Konto kann bereits existieren. Bitte im Explorer prüfen."
+  },
+  "backup": {
+    "confirm": "Ich habe den angezeigten Secret Key gesichert (z. B. auf Papier oder in einem Passwort-Manager). Ohne ihn sind Konto und Guthaben verloren.",
+    "required": "Bestätige zuerst, dass du den Secret Key gesichert hast."
+  },
+  "secretKey": {
+    "copy": "Kopieren",
+    "hide": "Verbergen",
+    "show": "Anzeigen",
+    "copied": "Secret Key in die Zwischenablage kopiert. Füge ihn an einem sicheren Ort ein und leere danach die Zwischenablage.",
+    "copyFailed": "Kopieren nicht möglich. Bitte den Secret Key von Hand abschreiben."
+  },
+  "leaveGuard": {
+    "confirm": "Für das angezeigte Konto wurde eine Aktivierung gesendet. Wenn du die Seite verlässt, ist der Secret Key nicht mehr sichtbar. SKM speichert ihn nicht. Ohne Sicherung sind Konto und Guthaben verloren. Trotzdem verlassen?",
+    "confirmKeys": "Auf dieser Seite stehen erzeugte Schlüssel. Wenn du die Seite verlässt, ist der Secret Key nicht mehr sichtbar. SKM speichert ihn nicht. Hat die Adresse schon Guthaben (z. B. durch eine Zahlung von außen), ist es ohne Sicherung verloren. Trotzdem verlassen?"
+  },
   "activatedTestnet": "Konto wurde im Testnet über Friendbot aktiviert.",
   "alreadyActive": "Konto ist bereits aktiviert.",
   "createdNoSigners": "Konto erstellt, Multisig nicht konfiguriert.",
@@ -61,5 +93,14 @@
   "muxedInfo": "Mit der Muxed-ID wird eine M-Adresse (M...) erstellt. Sie zeigt auf dasselbe Konto wie die reguläre Adresse (G...).",
   "muxedIdInvalid": "Die Muxed-ID muss eine Ganzzahl zwischen 0 und 18'446'744'073'709'551'615 sein.",
   "muxedAddress": "Muxed-Adresse",
-  "muxedActivationInfo": "Muxed-Adressen sind Alias-Adressen. Sie müssen nicht separat aktiviert werden."
+  "muxedActivationInfo": "Muxed-Adressen sind Alias-Adressen. Sie müssen nicht separat aktiviert werden.",
+  "keys": {
+    "network": "Erzeugt für: {{network}}",
+    "otherNetwork": "Diese Schlüssel wurden für {{network}} erzeugt, gewählt ist jetzt {{current}}. Aktivieren und Multisig setzen sind gesperrt. Wechsle zurück zu {{network}}, um weiterzumachen, oder verwirf die Schlüssel.",
+    "discard": "Schlüssel verwerfen",
+    "discardConfirm": "Die angezeigten Schlüssel werden von dieser Seite entfernt. SKM speichert sie nicht. Hat die Adresse schon Guthaben, ist es ohne gesicherten Secret Key verloren. Schlüssel wirklich verwerfen?",
+    "discarded": "Die Schlüssel wurden von dieser Seite entfernt.",
+    "replaceConfirm": "Neue Schlüssel ersetzen die angezeigten. SKM speichert sie nicht. Hat die Adresse schon Guthaben, ist es ohne gesicherten Secret Key verloren. Hast du den Secret Key gesichert?",
+    "leaveHint": "Die Schlüssel verschwinden nur mit „Schlüssel verwerfen“ oder „Fertig, Key gesichert“. Vor dem Verlassen der Seite fragt SKM nach."
+  }
 }

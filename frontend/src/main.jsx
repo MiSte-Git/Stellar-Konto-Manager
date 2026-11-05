@@ -19,6 +19,7 @@ import { createWalletInfoMap, findWalletInfo } from './utils/walletInfo.js';
 import AddressDropdown from './components/AddressDropdown.jsx';
 import { isTestnetAccount } from './utils/stellar/accountUtils.js';
 import { requiresGAccount, isIdentityMode } from './utils/accountMode.js';
+import { confirmNavigation } from './utils/navigationGuard.js';
 import {
   INPUT_HISTORY_CHANGED_EVENT,
   RECENT_WALLETS_KEY,
@@ -216,7 +217,20 @@ function Main() {
   const [sortColumn, setSortColumn] = useState('assetCode');
   const [sortDirection, setSortDirection] = useState('asc');
   const [currentPage, setCurrentPage] = useState(0);
-  const ITEMS_PER_PAGE = 333;const [menuSelection, setMenuSelection] = useState(() => readMenuStateFromUrl().menuSelection);
+  const ITEMS_PER_PAGE = 333;const [menuSelection, setMenuSelectionState] = useState(() => readMenuStateFromUrl().menuSelection);
+  // Jeder Wechsel der Ansicht laeuft hierueber: Hat die aktuelle Seite einen
+  // Navigationswaechter angemeldet (z. B. Neues Konto erstellen mit ungesichertem Secret
+  // Key), erst nach Rueckfrage. Bei Abbrechen bleibt die Ansicht samt State.
+  const menuSelectionRef = useRef(menuSelection);
+  menuSelectionRef.current = menuSelection;
+  const setMenuSelection = useCallback((next) => {
+    const prev = menuSelectionRef.current;
+    const value = typeof next === 'function' ? next(prev) : next;
+    if (value === prev) return;
+    if (!confirmNavigation()) return;
+    menuSelectionRef.current = value;
+    setMenuSelectionState(value);
+  }, []);
   const autoRestoredRef = useRef(false);
   // Shared "latest wins" token for the wallet-identity operations below
   // (handleHeaderApply, revalidateActiveWallet, auto-restore),
@@ -251,7 +265,9 @@ function Main() {
   // Erhoeht beim Schliessen eines Jobs, damit die Jobliste den neuen Status laedt.
   const [jobListRefresh, setJobListRefresh] = useState(0);
   // Dev/Testnet toggle state synced with localStorage
-  const [devTestnet, setDevTestnet] = useState(false);
+  // Gleich beim ersten Render aus dem gespeicherten Netz, nicht erst im Effekt: sonst
+  // laden ListTrustlines und andere kurz aus dem Mainnet, obwohl Testnet gewaehlt ist.
+  const [devTestnet, setDevTestnet] = useState(() => readStoredNetworkId() === 'TESTNET');
    // Send Payment initial values (e.g., for donation)
   const [sendInit, setSendInit] = useState(null);
   const [refreshToken, setRefreshToken] = useState(0);
@@ -606,7 +622,7 @@ function Main() {
     };
     window.addEventListener('popstate', applyFromUrl);
     return () => window.removeEventListener('popstate', applyFromUrl);
-  }, []);
+  }, [setMenuSelection]);
 
   // The other direction: mirrors menuSelection/activeJobId changes back into
   // the URL, so deep-linking/bookmarking/back-forward keep working for these

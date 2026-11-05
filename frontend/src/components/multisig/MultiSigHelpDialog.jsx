@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { buildPath } from '../../utils/basePath.js';
+import { navigateToPath } from '../../utils/appNavigation.js';
 
 function MultiSigHelpDialog({ isOpen, onClose }) {
   const { t } = useTranslation('glossary');
@@ -80,6 +81,14 @@ function MultiSigHelpDialog({ isOpen, onClose }) {
           <div className="flex flex-wrap items-center gap-3">
             <a
               href={`${buildPath('glossar')}#g-multisigCorporate`}
+              // In der App als Overlay oeffnen statt die Seite neu zu laden (offene Eingaben
+              // und erzeugte Schluessel der Seite darunter bleiben erhalten)
+              onClick={(e) => {
+                if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+                e.preventDefault();
+                onClose?.();
+                navigateToPath('glossar#g-multisigCorporate');
+              }}
               className="text-sm font-semibold text-blue-700 hover:underline dark:text-blue-300"
             >
               {t('multisig.help.glossaryLinkLabel')}

@@ -53,7 +53,33 @@ describe('deleteTrustlinesInChunks: Netz des Ablaufs', () => {
     const trustlines = lines.map((l) => ({ assetCode: l.asset_code, assetIssuer: issuer, assetType: l.asset_type, assetBalance: '0' }));
     await expect(deleteTrustlinesInChunks({
       signerKeypairs: [kp], trustlines, accountPublicKey: kp.publicKey(), network: 'TESTNET', server, validateLiveEvery: 0,
-    })).rejects.toMatchObject({ code: 'network_changed', message: 'createAccount:networkChanged.stoppedAfterPartial' });
+    })).rejects.toMatchObject({ code: 'network_changed', message: 'createAccount:networkChanged.stoppedAfterPartial', total: 101 });
     expect(submitted).toHaveLength(1);
+  });
+
+  it('gibt bei Abbruch nach dem ersten Block die schon geloeschten Trustlines mit (N2-2)', async () => {
+    const { Account, Keypair } = await import('@stellar/stellar-sdk');
+    const { deleteTrustlinesInChunks } = await import('../stellarUtils.js');
+    const kp = Keypair.random();
+    const issuer = Keypair.random().publicKey();
+    const lines = Array.from({ length: 101 }, (_, i) => ({
+      asset_type: 'credit_alphanum12', asset_code: `U${i}`, asset_issuer: issuer, balance: '0', buying_liabilities: '0', selling_liabilities: '0',
+    }));
+    const server = {
+      serverURL: 'fake://delete-partial',
+      loadAccount: async (pk) => Object.assign(new Account(pk, '1'), { balances: lines }),
+      operations: () => ({ forAccount: () => ({ order: () => ({ limit: () => ({ call: async () => ({ records: [] }) }) }) }) }),
+      feeStats: async () => ({ last_ledger_base_fee: '100', fee_charged: { mode: '100', p95: '100' } }),
+      submitTransaction: async () => { window.localStorage.setItem('SKM_NETWORK', 'PUBLIC'); return { hash: 'h1' }; },
+    };
+    window.localStorage.setItem('SKM_NETWORK', 'TESTNET');
+    const trustlines = lines.map((l) => ({ assetCode: l.asset_code, assetIssuer: issuer, assetType: l.asset_type, assetBalance: '0' }));
+    const err = await deleteTrustlinesInChunks({
+      signerKeypairs: [kp], trustlines, accountPublicKey: kp.publicKey(), network: 'TESTNET', server, validateLiveEvery: 0,
+    }).catch((e) => e);
+    expect(err.code).toBe('network_changed');
+    expect(err.total).toBe(101);
+    expect(err.deleted).toHaveLength(100);
+    expect(err.deleted[0]).toMatchObject({ assetCode: 'U0', assetIssuer: issuer, txId: 'h1' });
   });
 });

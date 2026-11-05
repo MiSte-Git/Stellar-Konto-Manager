@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useMemo, useRef } from 'react';
-import { horizonUrlFor, passphraseFor } from '../config/networks.js';
+import { passphraseFor } from '../config/networks.js';
 import { useTranslation } from 'react-i18next';
 import { getPendingMultisigJob, mergeSignedXdr, getMultisigJobChallenge, signMultisigJobChallenge, getMultisigJobAccessToken, declineMultisigJob } from '../utils/multisigApi.js';
 import MultisigJobStatusBadge from '../components/MultisigJobStatusBadge.jsx';
@@ -11,7 +11,7 @@ import OperationBlocks from '../components/multisig/OperationBlocks.jsx';
 import TransactionFacts from '../components/multisig/TransactionFacts.jsx';
 import { describeTransaction } from '../utils/multisig/describeTransaction.js';
 import SecretKeyModal from '../components/SecretKeyModal.jsx';
-import { getHorizonServer, getHorizonServerForNetwork } from '../utils/stellar/stellarUtils.js';
+import { getHorizonServerForNetwork } from '../utils/stellar/stellarUtils.js';
 import { resolveFeePerOp } from '../utils/stellar/fees.js';
 import { submitTransactionSafely, AmbiguousSubmitResultError } from '../utils/stellar/submitTransactionSafely.js';
 import { getRequiredThreshold } from '../utils/getRequiredThreshold.js';
@@ -404,7 +404,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
       return undefined;
     }
     let cancelled = false;
-    resolveLiquidityPoolInfo({ operations: decodedOpsRef.current, server: getHorizonServer(horizonUrlFor(jobNetwork)) })
+    resolveLiquidityPoolInfo({ operations: decodedOpsRef.current, server: getHorizonServerForNetwork(jobNetwork) })
       .then((info) => { if (!cancelled) setPoolInfo(info); })
       .catch(() => { if (!cancelled) setPoolInfo({}); });
     return () => { cancelled = true; };

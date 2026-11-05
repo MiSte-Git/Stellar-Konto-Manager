@@ -17,10 +17,10 @@ import {
   isQuizRunPath,
   isQuizSettingsPath,
   isScamSimulatorPath,
-  isSettingsBackupPath,
   isStoryPath,
 } from './basePath.js';
 import { SIDEBAR_FOOTER_ITEMS, SIDEBAR_SECTIONS } from '../config/mainNavigation.js';
+import { confirmNavigation, isOverlayPath, keepsMainMounted, runWithoutPopStateGuard } from './navigationGuard.js';
 
 export const MENU_CHANGED_EVENT = 'stm:menuChanged';
 export const ACCOUNT_CHANGED_EVENT = 'stm:activeAccountChanged';
@@ -80,29 +80,37 @@ export function getActiveAccount() {
   return activeAccount;
 }
 
-/** Navigiert per pushState und informiert Router/Listener. */
+/**
+ * Navigiert per pushState und informiert Router/Listener. Mit angemeldetem
+ * Navigationswaechter (utils/navigationGuard.js) erst nach Rueckfrage.
+ * @returns {boolean} false, wenn der Nutzer auf der Seite bleiben wollte
+ */
 export function navigateToPath(subpath, { rememberPrevPath = false } = {}) {
+  let url;
+  try { url = buildPath(subpath || ''); } catch { url = ''; }
+  const current = typeof window !== 'undefined' ? window.location.pathname : '';
+  const changes = !!url && current !== url;
+  // Overlays (Glossar, Backup) liegen ueber Main: Oeffnen und Schliessen (zurueck auf die
+  // Startroute von Main) laesst die aktuelle Ansicht gemountet, nur andere Routen nicht.
+  const keepsMain = keepsMainMounted(current, url);
+  if (changes && !keepsMain && !confirmNavigation()) return false;
   try {
     if (rememberPrevPath && window.sessionStorage) {
       window.sessionStorage.setItem('SKM_PREV_PATH', window.location.pathname);
     }
   } catch { /* noop */ }
   try {
-    const url = buildPath(subpath || '');
-    if (window.location.pathname !== url) {
-      window.history.pushState({}, '', url);
-    }
-    window.dispatchEvent(new PopStateEvent('popstate'));
+    // Schon gefragt: das eigene popstate nicht noch einmal pruefen
+    runWithoutPopStateGuard(() => {
+      if (window.location.pathname !== url) {
+        window.history.pushState({}, '', url);
+      }
+      window.dispatchEvent(new PopStateEvent('popstate'));
+    });
   } catch { /* noop */ }
+  return true;
 }
 
-function isOverlayPath(pathname) {
-  try {
-    return isGlossaryPath(pathname) || isSettingsBackupPath(pathname);
-  } catch {
-    return false;
-  }
-}
 
 /** Oeffnet eine Main-Ansicht (menuSelection) aus der Shell heraus. */
 export function openMainView(id) {

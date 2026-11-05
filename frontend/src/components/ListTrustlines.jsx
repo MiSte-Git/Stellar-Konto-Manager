@@ -1,7 +1,7 @@
 // src/components/ListTrustlines.jsx
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { normalizeNetworkId, passphraseFor, readStoredNetworkId } from '../config/networks.js';
-import { assertFlowNetwork } from '../utils/globalNetwork.js';
+import { assertFlowNetwork, isFlowNetworkCurrent } from '../utils/globalNetwork.js';
 import { useTranslation } from 'react-i18next';
 import { 
   validateSecretKey, 
@@ -163,9 +163,11 @@ function ListTrustlines({
   }, [publicKey, viewNetwork]);
 
   const reloadTrustlinesForCurrentAccount = async () => {
-    const refreshed = await loadTrustlines(publicKey, undefined, { includeOps: true, ttlMs: 0 });
+    // Mit dem Netz der Ansicht, nicht ueber den Default-Pfad (gespeichertes Netz)
+    const refreshed = await loadTrustlines(publicKey, getHorizonServerForNetwork(viewNetwork), { includeOps: true, ttlMs: 0 });
     setTrustlines(refreshed);
   };
+  const sameTrustline = (a, b) => a.assetCode === b.assetCode && a.assetIssuer === b.assetIssuer;
 
   const submitChangeTrustTx = async ({ asset, limit, collectedSigners }) => {
     const net = viewNetwork;
@@ -493,6 +495,27 @@ function ListTrustlines({
       const { formatted, detail } = formatErrorForUi(t, err, { returnParts: true });
 
       console.error('[ERROR]', formatted);
+
+      // Teilerfolg (z. B. Netzwechsel nach dem ersten Block): Geloeschte aus Liste und
+      // Auswahl entfernen und anzeigen, wie viele erledigt und wie viele offen sind.
+      const partialDeleted = Array.isArray(err?.deleted) ? err.deleted : [];
+      if (partialDeleted.length) {
+        const total = Number(err.total) || partialDeleted.length;
+        const isDeleted = (tl) => partialDeleted.some((d) => sameTrustline(d, tl));
+        setTrustlines((prev) => (Array.isArray(prev) ? prev.filter((tl) => !isDeleted(tl)) : prev));
+        setSelectedTrustlines((prev) => prev.filter((tl) => !isDeleted(tl)));
+        setDeleteProgress?.(null);
+        const partialText = t('trustline:deleted.partial', { done: partialDeleted.length, total, open: Math.max(0, total - partialDeleted.length) });
+        setModalError(`${partialText} ${formatted}`);
+        setStatusMessages([partialText, formatted]);
+        setResults([]);
+        // Gleiches Netz: zusaetzlich frisch laden. Nach einem Netzwechsel nicht, die Liste
+        // des neuen Netzes laedt main.jsx selbst.
+        if (isFlowNetworkCurrent(viewNetwork)) {
+          try { await reloadTrustlinesForCurrentAccount(); } catch { /* lokale Bereinigung reicht */ }
+        }
+        return;
+      }
 
       if (rawMsg === 'secretKey.mismatch') {
         setModalError(translatedOriginal);

@@ -18,6 +18,7 @@
       "realWarning": "Achtung! Dies löscht Trustlines endgültig auf der Blockchain."
     },
     "notFound": "Keine passenden Trustlines zum Löschen gefunden.",
+    "partial": "Abgebrochen nach einem Teil: {{done}} von {{total}} Trustlines gelöscht, {{open}} noch offen. Die gelöschten sind aus der Liste entfernt.",
     "simulated": "Simulation: {{count}} Trustlines würden gelöscht werden.",
     "success": "Erfolgreich: {{count}} Trustlines gelöscht."
   },
