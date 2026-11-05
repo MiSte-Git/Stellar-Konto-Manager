@@ -139,9 +139,8 @@ try {
     // Login
     $res = send('POST', BASE . '/admin/login', EVIL_ORIGIN, ['secret' => 'falsch']);
     check('Login: fremde Origin -> 403 forbidden_origin', $res['status'] === 403 && ($res['body']['error'] ?? '') === 'forbidden_origin');
-    // admin_session_start() laeuft vor dem Routing und legt fuer jeden neuen
-    // Besucher eine leere Session an (wie bisher). Entscheidend ist, dass sie
-    // nicht angemeldet ist.
+    // Seit G3 endet eine fremde Origin schon in apply_cors_headers(), vor
+    // admin_session_start(). Entscheidend ist, dass keine angemeldete Session entsteht.
     $res = send('POST', BASE . '/admin/login', EVIL_ORIGIN, ['secret' => SECRET]);
     check('Login: fremde Origin mit richtigem Secret -> 403, Session nicht angemeldet', $res['status'] === 403 && !$isAuthenticated($res['cookie']));
     $res = send('POST', BASE . '/admin/login', null, ['secret' => 'falsch']);
@@ -193,8 +192,12 @@ try {
     $create = ['title' => 'Neu', 'url' => 'https://example.test/neu'];
     $res = send('POST', BASE . '/bugreport.php', null, $create, 'application/json');
     check('Anlegen ohne Origin wird nicht abgewiesen (erreicht die Test-DB -> 500)', $res['status'] === 500 && ($res['body']['error'] ?? '') === 'server_error');
+    // Seit G3 weist apply_cors_headers() eine fremde Origin auf jedem Endpunkt ab,
+    // auch beim oeffentlichen Anlegen (siehe test/corsReject.test.php).
     $res = send('POST', BASE . '/bugreport.php', EVIL_ORIGIN, $create, 'text/plain');
-    check('Anlegen mit fremder Origin und text/plain bleibt unveraendert (erreicht die Test-DB -> 500)', $res['status'] === 500 && ($res['body']['error'] ?? '') === 'server_error');
+    check('Anlegen mit fremder Origin und text/plain -> 403 forbidden_origin (G3), DB nicht beruehrt', $res['status'] === 403 && ($res['body']['error'] ?? '') === 'forbidden_origin');
+    $res = send('POST', BASE . '/bugreport.php', GOOD_ORIGIN, $create, 'text/plain');
+    check('Anlegen von erlaubter Origin mit text/plain bleibt unveraendert (erreicht die Test-DB -> 500)', $res['status'] === 500 && ($res['body']['error'] ?? '') === 'server_error');
 } finally {
     proc_terminate($server);
     proc_close($server);

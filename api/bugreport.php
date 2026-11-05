@@ -198,13 +198,16 @@ try {
         $action = isset($data['action']) ? (string)$data['action'] : '';
 
         if ($action === 'update') {
-            // G4: Content-Type und Origin vor require_admin pruefen. Ob ein
-            // Request ein Update ist, steht erst im Body; zwischen Parsen und
-            // Pruefung passiert nichts, ein text/plain-Formular mit gueltigem
-            // JSON wird also ohne Seiteneffekt abgewiesen. Das oeffentliche
-            // Anlegen (ohne action=update) bleibt unveraendert.
-            require_json_content_type();
+            // G4: Origin und Content-Type vor require_admin pruefen, in
+            // derselben Reihenfolge wie Node (erst Origin, dann Content-Type,
+            // G4-1). Ob ein Request ein Update ist, steht erst im Body;
+            // zwischen Parsen und Pruefung passiert nichts, ein
+            // text/plain-Formular mit gueltigem JSON wird also ohne
+            // Seiteneffekt abgewiesen. Fremde Origins weist schon
+            // apply_cors_headers() ab (G3); hier zaehlt zusaetzlich, dass ein
+            // Update ueberhaupt eine Origin mitbringt.
             require_allowed_origin();
+            require_json_content_type();
             require_admin();
             $pdo = get_pdo($cfg);
 

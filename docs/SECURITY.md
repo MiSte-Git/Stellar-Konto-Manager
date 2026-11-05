@@ -109,7 +109,16 @@ Ein Job ist eine unsignierte oder teilsignierte Transaktion, die mehrere Signer 
 
 - SSRF-Schutz für serverseitige Abrufe (TOML, Federation): Auflösung und Prüfung der Ziel-IP, Größenlimits
   (`api/ssrfGuard.php`, Node über eigene Lookup-Funktion).
-- CORS-Allowlist (`services/corsConfig.js`, `api/cors.php`).
+- CORS-Allowlist (`services/corsConfig.js`, `api/cors.php`). Fremde Origins werden abgewiesen (Review Runde 2,
+  Befund G3): Hat ein Request einen `Origin`-Header außerhalb der Allowlist (auch leer oder `null`), antworten beide
+  Backends sofort mit 403 `forbidden_origin`, auch beim Preflight, bevor Body-Parser, Session oder Handler laufen.
+  Vorher fehlte nur `Access-Control-Allow-Origin`; einfache Cross-Origin-Requests (Formular, `text/plain`) liefen
+  bis in den Handler, und PHP las ihren Body als JSON. Ohne `Origin`-Header bleibt alles erlaubt (gleiche Origin,
+  Skripte, Monitoring), denn ein Browser sendet bei Cross-Origin-Requests und bei jedem POST immer eine Origin.
+  Allowlist in beiden Backends gleich (`localhost:5173`, `127.0.0.1:5173`, `https://skm.steei.de`, `PROD_ORIGIN`
+  normalisiert auf Schema, Host, Port); nur Node nimmt zusätzlich die Origin aus `PROD_API_URL` auf. Kein
+  PHP-Endpunkt ist für fremde Origins gedacht, auch `federation.php` nicht (löst nur für das eigene Frontend auf,
+  SKM ist kein Federation-Server).
 - Admin-Requests mit Origin- und Content-Type-Prüfung (Review Runde 2, Befund G4): Login, Logout und
   Bugreport-Update nur, wenn `Origin` vorhanden ist und exakt in der CORS-Allowlist steht (sonst 403
   `forbidden_origin`); Login und Update zusätzlich nur mit `Content-Type: application/json` (sonst 415

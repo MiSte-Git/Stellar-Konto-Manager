@@ -16,8 +16,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/cors.php';
 
 function request_origin_allowed(?string $origin): bool {
-    if ($origin === null || $origin === '') return false;
-    return in_array($origin, cors_allowed_origins(), true);
+    return cors_origin_allowed($origin);
 }
 
 function is_json_content_type(?string $contentType): bool {

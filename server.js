@@ -73,7 +73,8 @@ app.use(createApiSecurityHeadersMiddleware());
 // Explicit CORS headers for routes restricted to known dev/prod origins
 // (was previously a wildcard '*' — finding B3). Origin allowlist + middleware
 // factory live in services/corsConfig.js (finding #9) so it's a single
-// source of truth shared with no duplicated per-route logic.
+// source of truth shared with no duplicated per-route logic. Every one of
+// these middlewares rejects a foreign Origin with 403 (G3).
 //
 // These path-scoped middlewares are registered BEFORE the global fallback
 // below on purpose: each handles (and short-circuits) its own OPTIONS
@@ -103,8 +104,11 @@ app.use(['/api/admin', '/api/bugreport'], createCorsMiddleware({
 // policy no protection at all for these routes: a state-changing POST like
 // /api/composeMail (see below) would still run server-side when triggered
 // from an arbitrary third-party page, even though that page couldn't read
-// the (CORS-blocked) response. Runs before express.json()/routes, so an origin
-// outside the allowlist never reaches a route handler, preflight included.
+// the (CORS-blocked) response. Runs before express.json()/routes. Like the
+// path-scoped middlewares above, it answers a request whose Origin header is
+// outside the allowlist with 403 forbidden_origin (G3, preflight included), so
+// such a request never reaches express.json() or a route handler. Requests
+// without an Origin header (same-origin GET, scripts) pass through unchanged.
 app.use(createCorsMiddleware({
   methods: ['GET', 'POST', 'OPTIONS'],
   headers: ['Content-Type'],

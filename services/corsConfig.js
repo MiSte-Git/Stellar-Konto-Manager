@@ -1,35 +1,94 @@
 // Shared CORS origin allowlist for server.js (finding #9). Single source of
-// truth for which frontend origins may call cookie-/token-protected routes
-// cross-origin (was previously a wildcard '*' — finding B3), so the two
-// restricted route groups (multisig, admin+bugreport) can't drift apart.
-function deriveOrigin(url) {
-  try { return new URL(url).origin; } catch { return null; }
-}
+// truth for which frontend origins may call the backend cross-origin (was
+// previously a wildcard '*' — finding B3), so the restricted route groups
+// (multisig, admin+bugreport, global fallback) can't drift apart.
+//
+// G3: A request whose Origin header is not on the allowlist is rejected with
+// 403 { ok: false, error: 'forbidden_origin' } (preflights included) instead of
+// merely losing Access-Control-Allow-Origin and continuing to the handler.
+// Requests without an Origin header (same-origin GET, scripts, monitoring) pass
+// unchanged. PHP twin: api/cors.php (same fixed list, same normalization).
 
-const ALLOWED_APP_ORIGINS = new Set([
+// Fest eingetragen, in beiden Backends gleich (api/cors.php).
+const FIXED_APP_ORIGINS = Object.freeze([
   'http://localhost:5173',
   'http://127.0.0.1:5173',
-  process.env.PROD_ORIGIN,
-  deriveOrigin(process.env.PROD_API_URL),
-].filter(Boolean));
+  'https://skm.steei.de',
+]);
+
+// Origin wie ein Browser ihn sendet: schema://host[:port], ohne Pfad, ohne
+// Slash am Ende, Host in Kleinbuchstaben, Standardport weggelassen. Bewusst
+// eigene Regex statt new URL(), damit api/cors.php (cors_normalize_origin)
+// exakt dieselben Werte annimmt und ablehnt (URL wuerde z. B. Unicode-Hosts in
+// Punycode umwandeln oder "https:host" ohne Slashes akzeptieren).
+const ORIGIN_RE = /^(https?):\/\/([^/?#@\s]+)(?:[/?#].*)?$/i;
+const HOST_RE = /^(?:[a-z0-9-]+(?:\.[a-z0-9-]+)*|\[[0-9a-f:.]+\])$/;
+
+function normalizeOrigin(value) {
+  if (typeof value !== 'string') return null;
+  const m = ORIGIN_RE.exec(value.trim());
+  if (!m) return null;
+  const scheme = m[1].toLowerCase();
+  const authority = m[2].toLowerCase();
+  const pm = /^(.*?)(?::(\d{1,5}))?$/.exec(authority);
+  const host = pm[1];
+  if (!HOST_RE.test(host)) return null;
+  let port = '';
+  if (pm[2] !== undefined) {
+    const n = Number(pm[2]);
+    if (n < 1 || n > 65535) return null;
+    const isDefault = (scheme === 'http' && n === 80) || (scheme === 'https' && n === 443);
+    if (!isDefault) port = `:${n}`;
+  }
+  return `${scheme}://${host}${port}`;
+}
+
+// Baut die Allowlist aus festen Eintraegen, PROD_ORIGIN und (nur Node) der
+// Origin aus PROD_API_URL. Ungueltige Werte werden ignoriert und laut geloggt.
+// Die Liste entsteht einmal beim Laden des Moduls, das Log also einmal je Start.
+function buildAllowedOrigins(env = process.env, log = console.error) {
+  const origins = new Set(FIXED_APP_ORIGINS);
+  const addFromEnv = (name) => {
+    const raw = env[name];
+    if (raw === undefined || String(raw).trim() === '') return;
+    const origin = normalizeOrigin(String(raw));
+    if (origin) {
+      origins.add(origin);
+    } else {
+      log(`[cors] ${name} ist keine gueltige Origin und wird ignoriert: ${JSON.stringify(String(raw))}`);
+    }
+  };
+  addFromEnv('PROD_ORIGIN');
+  // Nur Node: PROD_API_URL ist die API-Adresse, gegen die das Frontend gebaut
+  // wird (Frontend und API liegen auf demselben Host). PHP braucht das nicht,
+  // dort steht skm.steei.de fest in der Liste und PROD_API_URL ist auf dem
+  // Hosting nicht gesetzt (siehe api/cors.php).
+  addFromEnv('PROD_API_URL');
+  return origins;
+}
+
+const ALLOWED_APP_ORIGINS = buildAllowedOrigins();
 
 /**
- * Builds an Express middleware that sets Access-Control-Allow-Origin only for
- * allowlisted origins (removing any reflected wildcard from a preceding
- * `cors({ origin: true })`), plus the given methods/headers, and short-
- * circuits OPTIONS preflights with 200.
+ * Builds an Express middleware that rejects requests from origins outside the
+ * allowlist with 403 forbidden_origin (G3), sets Access-Control-Allow-Origin
+ * (+ Vary, and Credentials if configured) for allowlisted origins, plus the
+ * given methods/headers, and short-circuits OPTIONS preflights with 200.
+ * Requests without an Origin header are passed through unchanged.
  */
-function createCorsMiddleware({ methods, headers, credentials = false }) {
+function createCorsMiddleware({ methods, headers, credentials = false, allowedOrigins = ALLOWED_APP_ORIGINS }) {
   const methodsHeader = methods.join(',');
   const headersHeader = headers.join(', ');
   return function corsMiddleware(req, res, next) {
     const origin = req.headers.origin;
-    if (origin && ALLOWED_APP_ORIGINS.has(origin)) {
+    if (origin !== undefined) {
+      if (!allowedOrigins.has(origin)) {
+        res.removeHeader('Access-Control-Allow-Origin');
+        return res.status(403).json({ ok: false, error: 'forbidden_origin' });
+      }
       res.header('Access-Control-Allow-Origin', origin);
       if (credentials) res.header('Access-Control-Allow-Credentials', 'true');
       res.header('Vary', 'Origin');
-    } else {
-      res.removeHeader('Access-Control-Allow-Origin');
     }
     res.header('Access-Control-Allow-Headers', headersHeader);
     res.header('Access-Control-Allow-Methods', methodsHeader);
@@ -38,4 +97,4 @@ function createCorsMiddleware({ methods, headers, credentials = false }) {
   };
 }
 
-module.exports = { ALLOWED_APP_ORIGINS, createCorsMiddleware };
+module.exports = { ALLOWED_APP_ORIGINS, FIXED_APP_ORIGINS, normalizeOrigin, buildAllowedOrigins, createCorsMiddleware };
