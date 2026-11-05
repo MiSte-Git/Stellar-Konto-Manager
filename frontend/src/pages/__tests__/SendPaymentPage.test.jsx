@@ -19,6 +19,17 @@ const SENDER = {
   secret: 'SDAIDSY2LAXR5HPEJ2CKWQ3QV67VPYLXB6C2ATBY3J7VRKT6YD7SYV6Y',
   publicKey: 'GATHPDLDMA5UAHHUUBFAQNW7B3573IUMEGPZGXMT25CNUPY4BOYFAV7F',
 };
+const COSIGNER = Keypair.random();
+// Echtes 2-von-2-Multisig: kein einzelner Signer erreicht die Payment-Schwelle (med 2),
+// nur dann bietet die Seite den Multisig-Ablauf (Job/lokal/XDR) an.
+function makeTwoOfTwo(acct) {
+  acct.thresholds = { low_threshold: 0, med_threshold: 2, high_threshold: 2 };
+  acct.signers = [
+    { key: acct.account_id, weight: 1, type: 'ed25519_public_key' },
+    { key: COSIGNER.publicKey(), weight: 1, type: 'ed25519_public_key' },
+  ];
+  return acct;
+}
 const DEST_PK = Keypair.random().publicKey();
 const ISSUER_PK = Keypair.random().publicKey();
 const ASSET_CODE = 'FOO';
@@ -530,9 +541,8 @@ describe('pre-submit checks also cover the collect-locally multisig path (M1)', 
   // Drives the account into the "collect all signatures locally" branch: pick the "local"
   // option in the multisig confirm modal, submit the secret key modal that follows, and stop
   // once the review dialog opens - this branch no longer submits directly (G-collectlocal-1),
-  // it now goes through the exact same review step as the single-sig path. high_threshold > 1
-  // makes isMultisigAccount() true without a second signer; med_threshold stays at 1 so the
-  // sender's own (already-known) secret alone meets the payment threshold.
+  // it now goes through the exact same review step as the single-sig path. The account is a
+  // real 2-of-2 (makeTwoOfTwo), so both secrets are entered locally.
   async function driveToCollectLocallyReview() {
     renderPage();
     fireEvent.change(amountInput(), { target: { value: '10' } });
@@ -547,7 +557,9 @@ describe('pre-submit checks also cover the collect-locally multisig path (M1)', 
 
     const secretHeading = await screen.findByText('Geben Sie den Quell-Secret-Key (S-Key) ein');
     const modal = secretHeading.parentElement;
-    fireEvent.change(within(modal).getByPlaceholderText('z.B.'), { target: { value: SENDER.secret } });
+    const inputs = within(modal).getAllByPlaceholderText('z.B.');
+    fireEvent.change(inputs[0], { target: { value: SENDER.secret } });
+    if (inputs[1]) fireEvent.change(inputs[1], { target: { value: COSIGNER.secret() } });
     fireEvent.click(within(modal).getByRole('button', { name: 'Senden' }));
     await screen.findByText('Transaktion bestätigen');
   }
@@ -556,7 +568,7 @@ describe('pre-submit checks also cover the collect-locally multisig path (M1)', 
     hoisted.loadAccountMock.mockImplementation(async (pk) => {
       if (pk === SENDER.publicKey) {
         const acct = makeFundedAccount(pk, { extraBalances: [SENDER_FOO_BALANCE] });
-        acct.thresholds = { low_threshold: 0, med_threshold: 1, high_threshold: 2 };
+        makeTwoOfTwo(acct);
         return acct;
       }
       return makeFundedAccount(pk);
@@ -568,11 +580,30 @@ describe('pre-submit checks also cover the collect-locally multisig path (M1)', 
     expect(hoisted.submitTransactionSafelyMock).not.toHaveBeenCalled();
   });
 
+  it('mehrere Signer, aber einer reicht fuer die Payment-Schwelle: kein Multisig-Ablauf, direkt zur Pruefung', async () => {
+    hoisted.loadAccountMock.mockImplementation(async (pk) => {
+      if (pk === SENDER.publicKey) {
+        const acct = makeTwoOfTwo(makeFundedAccount(pk, { extraBalances: [SENDER_FOO_BALANCE] }));
+        acct.thresholds = { low_threshold: 0, med_threshold: 1, high_threshold: 2 };
+        return acct;
+      }
+      return makeFundedAccount(pk);
+    });
+    renderPage();
+    fireEvent.change(amountInput(), { target: { value: '10' } });
+    await selectAsset();
+    fireEvent.change(destInput(), { target: { value: DEST_PK } });
+    fireEvent.click(screen.getByRole('button', { name: 'Senden' }));
+    // Gemerkter Secret Key (Testvorgabe): wie beim Einzelkonto direkt zur Pruefung.
+    await screen.findByText('Transaktion bestätigen');
+    expect(screen.queryByText('Alle Signaturen lokal eingeben')).toBeNull();
+  });
+
   it('confirming the review dialog triggers the actual send', async () => {
     hoisted.loadAccountMock.mockImplementation(async (pk) => {
       if (pk === SENDER.publicKey) {
         const acct = makeFundedAccount(pk, { extraBalances: [SENDER_FOO_BALANCE] });
-        acct.thresholds = { low_threshold: 0, med_threshold: 1, high_threshold: 2 };
+        makeTwoOfTwo(acct);
         return acct;
       }
       if (pk === DEST_PK) return makeFundedAccount(pk, { extraBalances: [{ ...unauthorizedFooBalance, is_authorized: true }] });
@@ -595,7 +626,7 @@ describe('pre-submit checks also cover the collect-locally multisig path (M1)', 
     hoisted.loadAccountMock.mockImplementation(async (pk) => {
       if (pk === SENDER.publicKey) {
         const acct = makeFundedAccount(pk, { extraBalances: [SENDER_FOO_BALANCE] });
-        acct.thresholds = { low_threshold: 0, med_threshold: 1, high_threshold: 2 };
+        makeTwoOfTwo(acct);
         return acct;
       }
       if (pk === DEST_PK) return makeFundedAccount(pk, { extraBalances: [{ ...unauthorizedFooBalance, is_authorized: true }] });
@@ -619,7 +650,7 @@ describe('pre-submit checks also cover the collect-locally multisig path (M1)', 
     hoisted.loadAccountMock.mockImplementation(async (pk) => {
       if (pk === SENDER.publicKey) {
         const acct = makeFundedAccount(pk, { extraBalances: [SENDER_FOO_BALANCE] });
-        acct.thresholds = { low_threshold: 0, med_threshold: 1, high_threshold: 2 };
+        makeTwoOfTwo(acct);
         return acct;
       }
       if (pk === DEST_PK) return makeFundedAccount(pk, { extraBalances: [{ ...unauthorizedFooBalance, is_authorized: true }] });
@@ -634,7 +665,7 @@ describe('pre-submit checks also cover the collect-locally multisig path (M1)', 
     hoisted.loadAccountMock.mockImplementation(async (pk) => {
       if (pk === SENDER.publicKey) {
         const acct = makeFundedAccount(pk, { extraBalances: [SENDER_FOO_BALANCE] });
-        acct.thresholds = { low_threshold: 0, med_threshold: 1, high_threshold: 2 };
+        makeTwoOfTwo(acct);
         return acct;
       }
       if (pk === DEST_PK) return makeFundedAccount(pk, { extraBalances: [{ ...unauthorizedFooBalance, is_authorized: true }] });
@@ -658,7 +689,7 @@ describe('pre-submit checks also cover the collect-locally multisig path (M1)', 
     fireEvent.click(screen.getByRole('button', { name: 'Weiter' }));
     const secretHeading = await screen.findByText('Geben Sie den Quell-Secret-Key (S-Key) ein');
     const modal = secretHeading.parentElement;
-    await waitFor(() => expect(within(modal).getByPlaceholderText('z.B.').value).toBe(SENDER.secret));
+    await waitFor(() => expect(within(modal).getAllByPlaceholderText('z.B.')[0].value).toBe(SENDER.secret));
   });
 });
 
@@ -684,7 +715,7 @@ describe('pre-submit checks also cover the XDR export path (G3)', () => {
     hoisted.loadAccountMock.mockImplementation(async (pk) => {
       if (pk === SENDER.publicKey) {
         const acct = makeFundedAccount(pk, { extraBalances: [SENDER_FOO_BALANCE] });
-        acct.thresholds = { low_threshold: 0, med_threshold: 1, high_threshold: 2 };
+        makeTwoOfTwo(acct);
         return acct;
       }
       return makeFundedAccount(pk);
@@ -718,7 +749,7 @@ describe('pre-submit checks also cover the XDR export path (G3)', () => {
     hoisted.loadAccountMock.mockImplementation(async (pk) => {
       if (pk === SENDER.publicKey) {
         const acct = makeFundedAccount(pk, { extraBalances: [SENDER_FOO_BALANCE] });
-        acct.thresholds = { low_threshold: 0, med_threshold: 1, high_threshold: 2 };
+        makeTwoOfTwo(acct);
         return acct;
       }
       if (pk === DEST_PK) return makeFundedAccount(pk, { extraBalances: [unauthorizedFooBalance] });
@@ -733,7 +764,7 @@ describe('pre-submit checks also cover the XDR export path (G3)', () => {
     hoisted.loadAccountMock.mockImplementation(async (pk) => {
       if (pk === SENDER.publicKey) {
         const acct = makeFundedAccount(pk, { extraBalances: [SENDER_FOO_BALANCE] });
-        acct.thresholds = { low_threshold: 0, med_threshold: 1, high_threshold: 2 };
+        makeTwoOfTwo(acct);
         return acct;
       }
       if (pk === DEST_PK) return makeFundedAccount(pk, { extraBalances: [{ ...unauthorizedFooBalance, is_authorized: true }] });
@@ -753,7 +784,7 @@ describe('pre-submit checks also cover the XDR export path (G3)', () => {
     hoisted.loadAccountMock.mockImplementation(async (pk) => {
       if (pk === SENDER.publicKey) {
         const acct = makeFundedAccount(pk, { extraBalances: [SENDER_FOO_BALANCE] });
-        acct.thresholds = { low_threshold: 0, med_threshold: 1, high_threshold: 2 };
+        makeTwoOfTwo(acct);
         return acct;
       }
       if (pk === DEST_PK) return makeFundedAccount(pk, { extraBalances: [{ ...unauthorizedFooBalance, is_authorized: true }] });
@@ -776,7 +807,7 @@ describe('pre-submit checks also cover the XDR export path (G3)', () => {
     hoisted.loadAccountMock.mockImplementation(async (pk) => {
       if (pk === SENDER.publicKey) {
         const acct = makeFundedAccount(pk, { extraBalances: [SENDER_FOO_BALANCE] });
-        acct.thresholds = { low_threshold: 0, med_threshold: 1, high_threshold: 2 };
+        makeTwoOfTwo(acct);
         return acct;
       }
       if (pk === DEST_PK) return makeFundedAccount(pk, { extraBalances: [{ ...unauthorizedFooBalance, is_authorized: true }] });
@@ -801,7 +832,7 @@ describe('pre-submit checks also cover the XDR export path (G3)', () => {
     hoisted.loadAccountMock.mockImplementation(async (pk) => {
       if (pk === SENDER.publicKey) {
         const acct = makeFundedAccount(pk, { extraBalances: [SENDER_FOO_BALANCE] });
-        acct.thresholds = { low_threshold: 0, med_threshold: 1, high_threshold: 2 };
+        makeTwoOfTwo(acct);
         return acct;
       }
       if (pk === DEST_PK) return makeFundedAccount(pk, { extraBalances: [{ ...unauthorizedFooBalance, is_authorized: true }] });
@@ -877,7 +908,7 @@ describe('muxedActivationCapture hint surfaces on every result path (G4)', () =>
       hoisted.loadAccountMock.mockImplementation(async (pk) => {
         if (pk === SENDER.publicKey) {
           const acct = makeFundedAccount(pk, { extraBalances: [SENDER_FOO_BALANCE] });
-          acct.thresholds = { low_threshold: 0, med_threshold: 1, high_threshold: 2 };
+          makeTwoOfTwo(acct);
           return acct;
         }
         if (pk === DEST_PK) {
@@ -1018,7 +1049,7 @@ describe('SEP-29 memo_required preflight before sending (P1.1)', () => {
     hoisted.loadAccountMock.mockImplementation(async (pk) => {
       if (pk === SENDER.publicKey) {
         const acct = makeFundedAccount(pk, { extraBalances: [SENDER_FOO_BALANCE] });
-        acct.thresholds = { low_threshold: 0, med_threshold: 1, high_threshold: 2 };
+        makeTwoOfTwo(acct);
         return acct;
       }
       return memoRequiredAccount(pk);

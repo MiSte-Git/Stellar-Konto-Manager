@@ -11,7 +11,7 @@ import { openMultisigJob } from '../components/multisig/multisigNavigation.js';
 import ClearInputButton from '../components/ClearInputButton.jsx';
 import { computeJobSigningState } from '../utils/multisig/jobSigningState.js';
 import { getSessionSecrets } from '../utils/sessionSecrets.js';
-import { isMultisigAccount } from '../utils/stellar/isMultisigAccount.js';
+import { needsMultipleSignatures } from '../utils/stellar/isMultisigAccount.js';
 import { apiUrl } from '../utils/apiBase.js';
 import { JOB_INTEGRITY_ERROR, signAndMergeResultJob } from '../utils/multisig/signResultJob.js';
 import { getRequiredThreshold } from '../utils/getRequiredThreshold.js';
@@ -1301,7 +1301,9 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     await handlePrepareMultisig([], { allowUnsigned: true });
   }, [closeConfirmDialogs, confirmChoice, handleExportXdr, handlePrepareMultisig, openSecretModal]);
 
-  const isMultisig = useMemo(() => isMultisigAccount(accountInfo), [accountInfo]);
+  // Multisig-Ablauf (Auswahl Job/lokal/XDR) nur, wenn kein einzelner Signer die Payment-Schwelle
+  // allein erreicht. Sonst wie bei einem Einzelkonto: ein Key, Pruefung, Senden.
+  const isMultisig = useMemo(() => needsMultipleSignatures(accountInfo, requiredThreshold), [accountInfo, requiredThreshold]);
 
   // Resolve recipient helpers
   const [resolvedAccount, setResolvedAccount] = useState('');

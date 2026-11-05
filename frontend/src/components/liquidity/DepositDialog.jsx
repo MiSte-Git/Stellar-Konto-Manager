@@ -3,7 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { getNetworkConfig, horizonUrlFor, passphraseFor } from '../../config/networks.js';
 import { getHorizonServer } from '../../utils/stellar/stellarUtils.js';
 import { resolveFeePerOp } from '../../utils/stellar/fees.js';
-import { isMultisigAccount } from '../../utils/stellar/isMultisigAccount.js';
+import { needsMultipleSignatures } from '../../utils/stellar/isMultisigAccount.js';
+import { getRequiredThreshold } from '../../utils/getRequiredThreshold.js';
 import { openAddTrustline } from '../../utils/appNavigation.js';
 import { getMultisigTxTimeout } from '../../utils/getMultisigTxTimeout.js';
 import { useSettings } from '../../utils/useSettings.js';
@@ -62,7 +63,8 @@ export default function DepositDialog({ poolId, firstAsset, publicKey, network, 
   const action = useLiquidityAction({ publicKey, network, poolId, operationType: 'liquidityPoolDeposit', t, onDone, onBackgroundResult });
   const { data } = action;
   const pool = data.pool;
-  const multisig = isMultisigAccount(data.account);
+  // Optionsauswahl (Job/lokal/XDR) nur, wenn kein einzelner Signer die Schwelle allein erreicht.
+  const multisig = needsMultipleSignatures(data.account, getRequiredThreshold('liquidityPoolDeposit', data.account?.thresholds || {}));
   const [inputIndex, setInputIndex] = useState(0);
   const [amountInput, setAmountInput] = useState('');
   const [slippageInput, setSlippageInput] = useState('0.5');

@@ -2,7 +2,8 @@ import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getNetworkConfig, passphraseFor } from '../../config/networks.js';
 import { resolveFeePerOp } from '../../utils/stellar/fees.js';
-import { isMultisigAccount } from '../../utils/stellar/isMultisigAccount.js';
+import { needsMultipleSignatures } from '../../utils/stellar/isMultisigAccount.js';
+import { getRequiredThreshold } from '../../utils/getRequiredThreshold.js';
 import { getMultisigTxTimeout } from '../../utils/getMultisigTxTimeout.js';
 import { useSettings } from '../../utils/useSettings.js';
 import SecretKeyModal from '../SecretKeyModal.jsx';
@@ -51,7 +52,8 @@ export default function WithdrawDialog({ poolId, publicKey, network, onClose, on
   const action = useLiquidityAction({ publicKey, network, poolId, operationType: 'liquidityPoolWithdraw', t, onDone, onBackgroundResult });
   const { data } = action;
   const pool = data.pool;
-  const multisig = isMultisigAccount(data.account);
+  // Optionsauswahl (Job/lokal/XDR) nur, wenn kein einzelner Signer die Schwelle allein erreicht.
+  const multisig = needsMultipleSignatures(data.account, getRequiredThreshold('liquidityPoolWithdraw', data.account?.thresholds || {}));
   const [mode, setMode] = useState('percent');
   const [percentInput, setPercentInput] = useState('');
   const [sharesInput, setSharesInput] = useState('');
