@@ -1,11 +1,10 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { horizonUrlFor, passphraseFor } from '../../config/networks.js';
+import { getNetworkConfig, passphraseFor } from '../../config/networks.js';
 import { useTranslation } from 'react-i18next';
 import { Asset } from '@stellar/stellar-sdk';
-import { getHorizonServer, getHorizonServerForNetwork, loadTrustlines } from '../../utils/stellar/stellarUtils.js';
-import { assertFlowNetwork } from '../../utils/globalNetwork.js';
+import { getHorizonServerForNetwork, loadTrustlines } from '../../utils/stellar/stellarUtils.js';
+import { assertTxMatchesFlow } from '../../utils/multisig/unsignedTx.js';
 import SecretKeyModal from '../SecretKeyModal.jsx';
-import { getRequiredThreshold } from '../../utils/getRequiredThreshold.js';
 import { formatErrorForUi } from '../../utils/formatErrorForUi.js';
 import { apiUrl } from '../../utils/apiBase.js';
 import {
@@ -25,6 +24,8 @@ import {
   calculateMinimumDestinationAmount,
   normalizeTrustlineLimit,
   formatAssetLabel,
+  getAssetCode,
+  getAssetIssuer,
   formatDetailedAssetPath,
   assetFromPathRecord,
   assetFromOfferSide,
@@ -60,10 +61,12 @@ import useExchangeRate from './hooks/useExchangeRate.js';
 import useAssetSearch from './hooks/useAssetSearch.js';
 import useTradingAccount from './hooks/useTradingAccount.js';
 import useTradingSubmit from './hooks/useTradingSubmit.js';
+import useTradingMultisig, { JOB_DISABLED_TYPES, requiredWeightFor } from './hooks/useTradingMultisig.js';
+import { LiquidityResultDialog, LiquiditySigningOptions } from '../liquidity/jobParts.jsx';
 import { resolveFeePerOp } from '../../utils/stellar/fees.js';
 
 export default function AssetSearch() {
-  const { t, i18n } = useTranslation(['trading', 'common']);
+  const { t, i18n } = useTranslation(['trading', 'common', 'liquidity']);
   const [tokenFactsExpanded, setTokenFactsExpanded] = useState(false);
   const {
     accountInput,
@@ -103,6 +106,19 @@ export default function AssetSearch() {
     setShowSecretModal,
     beginAction,
   } = useTradingSubmit();
+  // Multisig-Ablauf (ADR 0007): Auswahl Job/lokal/XDR nur, wenn kein einzelner Signer reicht
+  const multisig = useTradingMultisig({
+    network,
+    accountId,
+    accountInfo,
+    beginAction,
+    closeSecretModal: () => {
+      setShowSecretModal(false);
+      setPendingAction(null);
+      setModalError('');
+    },
+    t,
+  });
   const [showTrustlineConfirm, setShowTrustlineConfirm] = useState(false);
   const [showTrustlineSwapConfirm, setShowTrustlineSwapConfirm] = useState(false);
   const [showSwapConfirm, setShowSwapConfirm] = useState(false);
@@ -151,25 +167,15 @@ export default function AssetSearch() {
 
   const parsedQuery = useMemo(() => parseAssetSearchQuery(assetQuery), [assetQuery]);
   const parsedSwapTarget = useMemo(() => parseAssetSearchQuery(swapTargetQuery), [swapTargetQuery]);
-  const modalOperationType = pendingAction?.type === 'swap'
-    ? 'payment'
-    : pendingAction?.type === 'trustlineSwap'
-      ? 'payment'
+  // Swap ist pathPaymentStrictSend (Medium), nicht payment (siehe TRADING_OPERATION_TYPES).
+  const modalOperationType = (pendingAction?.type === 'swap' || pendingAction?.type === 'trustlineSwap')
+    ? 'pathPaymentStrictSend'
     : (pendingAction?.type === 'offer' || pendingAction?.type === 'cancelOffer')
-      ? 'manageOffer'
+      ? 'manageSellOffer'
       : 'changeTrust';
   const requiredThreshold = useMemo(
-    () => {
-      if (pendingAction?.type === 'trustlineSwap') {
-        const thresholds = accountInfo?.thresholds || null;
-        return Math.max(
-          getRequiredThreshold('changeTrust', thresholds),
-          getRequiredThreshold('payment', thresholds)
-        );
-      }
-      return getRequiredThreshold(modalOperationType, accountInfo?.thresholds || null);
-    },
-    [accountInfo, pendingAction?.type, modalOperationType]
+    () => requiredWeightFor(pendingAction?.type || 'trustline', accountInfo?.thresholds || null),
+    [accountInfo, pendingAction?.type]
   );
   const selectedStellarAsset = useMemo(
     () => (selectedAsset ? assetFromSearchResult(selectedAsset) : null),
@@ -319,7 +325,7 @@ export default function AssetSearch() {
       setAccountInfo(null);
       return () => { cancelled = true; };
     }
-    const server = getHorizonServer(horizonUrlFor(network));
+    const server = getHorizonServerForNetwork(network);
     server.loadAccount(accountId)
       .then((account) => {
         if (!cancelled) setAccountInfo(account);
@@ -450,9 +456,9 @@ export default function AssetSearch() {
     });
   }, [limitOfferStatus.offers, selectedStellarAsset]);
 
-  const findTrustlineForAsset = async (server, asset, ttlMs = 10000) => {
-    if (!accountId || !asset || asset.isNative?.()) return null;
-    const trustlines = await loadTrustlines(accountId, server, { includeOps: false, ttlMs });
+  const findTrustlineForAsset = async (server, asset, ttlMs = 10000, owner = accountId) => {
+    if (!owner || !asset || asset.isNative?.()) return null;
+    const trustlines = await loadTrustlines(owner, server, { includeOps: false, ttlMs });
     return trustlines.find((tl) =>
       tl.assetCode === asset.code && tl.assetIssuer === asset.issuer
     ) || null;
@@ -493,7 +499,7 @@ export default function AssetSearch() {
 
     setSwapPreview({ loading: true, error: '', path: null, loadedAt: null, refreshComparison: null });
     try {
-      const server = getHorizonServer(horizonUrlFor(network));
+      const server = getHorizonServerForNetwork(network);
       if (accountId && !swapDestinationAsset.isNative()) {
         const destinationTrustline = await findTrustlineForAsset(server, swapDestinationAsset, 10000);
         if (isStale()) return;
@@ -533,7 +539,7 @@ export default function AssetSearch() {
 
     setMarketData({ loading: true, error: '', orderbook: null, liquidityPools: [], loadedAt: null });
     try {
-      const server = getHorizonServer(horizonUrlFor(network));
+      const server = getHorizonServerForNetwork(network);
       const [orderbook, pools] = await Promise.all([
         server.orderbook(swapSourceAsset, swapDestinationAsset).call(),
         server.liquidityPools().forAssets(swapSourceAsset, swapDestinationAsset).call(),
@@ -613,35 +619,34 @@ export default function AssetSearch() {
     setSwapTargetLoading(false);
   };
 
-  const submitChangeTrustTx = async ({ asset, limit, collectedSigners }) => {
-    if (!accountId) throw new Error('submitTransaction.failed:trustlines.invalidInput');
-    const server = getHorizonServerForNetwork(network);
-    const accountPromise = server.loadAccount(accountId);
-    const feePromise = resolveFeePerOp(server);
-    const account = await accountPromise;
-    const thresholds = account?.thresholds || {};
-    const required = getRequiredThreshold('changeTrust', thresholds);
-    const horizonSigners = account?.signers || [];
-    const signers = Array.isArray(collectedSigners) ? collectedSigners : [];
-    const current = getCollectedSignerWeight(signers, horizonSigners);
-    if (current <= 0) throw new Error('submitTransaction.failed:multisig.noKeysProvided');
-    if (current < required) throw new Error('submitTransaction.failed:multisig.insufficientWeight');
+  // Jede Aktion baut ihre Transaktion frisch: Konto und Sequence vom Server des Ablaufnetzes
+  // (server kommt von getHorizonServerForNetwork(network)), Passphrase aus demselben Netz.
+  // flow: { network, accountId } der Bestaetigung (aus der Aktion, nie aus dem aktuellen
+  // Zustand). checkAccount: Gewichtspruefung direkt nach dem Laden des Kontos (nur beim
+  // lokalen Signieren). deferred/timeoutSeconds: Fee und Gueltigkeit fuer Job und XDR.
+  const loadAccountAndFee = async (server, { flow, checkAccount, deferred = false }) => {
+    if (!flow?.accountId || !flow?.network) throw new Error('submitTransaction.failed:trustlines.invalidInput');
+    const feePromise = resolveFeePerOp(server, { deferred });
+    const account = await server.loadAccount(flow.accountId);
+    checkAccount?.(account);
+    return { account, feePromise };
+  };
 
-    const fee = await feePromise;
+  const prepareChangeTrustTx = async ({ server, flow, asset, limit, checkAccount, deferred, timeoutSeconds }) => {
+    const { account, feePromise } = await loadAccountAndFee(server, { flow, checkAccount, deferred });
     const tx = buildChangeTrustTransaction({
       account,
       asset,
       limit,
-      fee,
-      networkPassphrase: passphraseFor(network),
+      fee: await feePromise,
+      networkPassphrase: passphraseFor(flow.network),
+      timeoutSeconds,
     });
-    // Nach den Horizon-Aufrufen: gilt das Netz des Ablaufs noch?
-    assertFlowNetwork(network);
-    return submitTransactionSafely(server, signTransactionWithCollectedSigners(tx, signers));
+    return { account, tx };
   };
 
-  const submitSwapTx = async ({ collectedSigners }) => {
-    if (!accountId || !selectedAsset || !swapPreview.path) throw new Error('submitTransaction.failed:trustlines.invalidInput');
+  const prepareSwapTx = async ({ server, flow, checkAccount, deferred, timeoutSeconds }) => {
+    if (!flow?.accountId || !selectedAsset || !swapPreview.path) throw new Error('submitTransaction.failed:trustlines.invalidInput');
     const sendAmount = normalizeAmount(swapAmount);
     if (!sendAmount) throw new Error(t('trading:assetSearch.swapPreview.invalidAmount', { asset: swapSourceLabel }));
     const slippage = Number(String(swapSlippage || '').replace(',', '.'));
@@ -651,19 +656,10 @@ export default function AssetSearch() {
     const pairError = validateSwapPair();
     if (pairError) throw new Error(pairError);
 
-    const server = getHorizonServerForNetwork(network);
-    const feePromise = resolveFeePerOp(server);
-    const account = await server.loadAccount(accountId);
-    const thresholds = account?.thresholds || {};
-    const required = getRequiredThreshold('payment', thresholds);
-    const horizonSigners = account?.signers || [];
-    const signers = Array.isArray(collectedSigners) ? collectedSigners : [];
-    const current = getCollectedSignerWeight(signers, horizonSigners);
-    if (current <= 0) throw new Error('submitTransaction.failed:multisig.noKeysProvided');
-    if (current < required) throw new Error('submitTransaction.failed:multisig.insufficientWeight');
+    const { account, feePromise } = await loadAccountAndFee(server, { flow, checkAccount, deferred });
 
     if (!swapDestinationAsset.isNative()) {
-      const destinationTrustline = await findTrustlineForAsset(server, swapDestinationAsset, 0);
+      const destinationTrustline = await findTrustlineForAsset(server, swapDestinationAsset, 0, flow.accountId);
       if (!destinationTrustline) throw new Error(t('trading:assetSearch.swapPreview.destinationTrustlineMissing'));
       if (destinationTrustline.isAuthorized === false) throw new Error(t('trading:assetSearch.swapPreview.destinationTrustlineUnauthorized'));
     }
@@ -690,25 +686,23 @@ export default function AssetSearch() {
     setSwapPreview((current) => ({ ...current, loading: false, error: '', path: latestBest, loadedAt: Date.now(), refreshComparison }));
 
     const path = Array.isArray(latestBest.path) ? latestBest.path.map(assetFromPathRecord) : [];
-    const fee = await feePromise;
     const tx = buildPathPaymentStrictSendTransaction({
       account,
       sendAsset: swapSourceAsset,
       sendAmount,
-      destination: accountId,
+      destination: flow.accountId,
       destAsset: swapDestinationAsset,
       destMin: confirmedMinimumDestinationAmount,
       path,
-      fee,
-      networkPassphrase: passphraseFor(network),
+      fee: await feePromise,
+      networkPassphrase: passphraseFor(flow.network),
+      timeoutSeconds,
     });
-    // Nach den Horizon-Aufrufen: gilt das Netz des Ablaufs noch?
-    assertFlowNetwork(network);
-    return submitTransactionSafely(server, signTransactionWithCollectedSigners(tx, signers));
+    return { account, tx };
   };
 
-  const submitTrustlineAndSwapTx = async ({ collectedSigners }) => {
-    if (!accountId || !selectedStellarAsset || !swapPreview.path) throw new Error('submitTransaction.failed:trustlines.invalidInput');
+  const prepareTrustlineAndSwapTx = async ({ server, flow, checkAccount, deferred, timeoutSeconds }) => {
+    if (!flow?.accountId || !selectedStellarAsset || !swapPreview.path) throw new Error('submitTransaction.failed:trustlines.invalidInput');
     if (swapDirection !== 'xlm-to-token') throw new Error(t('trading:assetSearch.trustlineFlow.combinedOnlyXlm'));
     if (assetFacts.loading) throw new Error(t('trading:assetSearch.facts.loading'));
     if (selectedAssetAuthRequired) throw new Error(t('trading:assetSearch.trustlineFlow.authRequiredCombinedBlocked'));
@@ -721,21 +715,9 @@ export default function AssetSearch() {
       throw new Error(t('trading:assetSearch.swapPreview.invalidSlippage'));
     }
 
-    const server = getHorizonServerForNetwork(network);
-    const feePromise = resolveFeePerOp(server);
-    const account = await server.loadAccount(accountId);
-    const thresholds = account?.thresholds || {};
-    const required = Math.max(
-      getRequiredThreshold('changeTrust', thresholds),
-      getRequiredThreshold('payment', thresholds)
-    );
-    const horizonSigners = account?.signers || [];
-    const signers = Array.isArray(collectedSigners) ? collectedSigners : [];
-    const current = getCollectedSignerWeight(signers, horizonSigners);
-    if (current <= 0) throw new Error('submitTransaction.failed:multisig.noKeysProvided');
-    if (current < required) throw new Error('submitTransaction.failed:multisig.insufficientWeight');
+    const { account, feePromise } = await loadAccountAndFee(server, { flow, checkAccount, deferred });
 
-    const existingTrustline = await findTrustlineForAsset(server, selectedStellarAsset, 0);
+    const existingTrustline = await findTrustlineForAsset(server, selectedStellarAsset, 0, flow.accountId);
     if (existingTrustline?.isAuthorized === false) throw new Error(t('trading:assetSearch.swapPreview.destinationTrustlineUnauthorized'));
     if (existingTrustline) throw new Error(t('trading:assetSearch.trustlineFlow.alreadyPresent'));
 
@@ -764,39 +746,26 @@ export default function AssetSearch() {
     setSwapPreview((current) => ({ ...current, loading: false, error: '', path: latestBest, loadedAt: Date.now(), refreshComparison }));
 
     const path = Array.isArray(latestBest.path) ? latestBest.path.map(assetFromPathRecord) : [];
-    const fee = await feePromise;
     const tx = buildChangeTrustAndPathPaymentStrictSendTransaction({
       account,
       trustAsset: selectedStellarAsset,
       trustLimit,
       sendAsset: Asset.native(),
       sendAmount,
-      destination: accountId,
+      destination: flow.accountId,
       destAsset: selectedStellarAsset,
       destMin: confirmedMinimumDestinationAmount,
       path,
-      fee,
-      networkPassphrase: passphraseFor(network),
+      fee: await feePromise,
+      networkPassphrase: passphraseFor(flow.network),
+      timeoutSeconds,
     });
-    // Nach den Horizon-Aufrufen: gilt das Netz des Ablaufs noch?
-    assertFlowNetwork(network);
-    return submitTransactionSafely(server, signTransactionWithCollectedSigners(tx, signers));
+    return { account, tx };
   };
 
-  const submitManageSellOfferTx = async ({ selling, buying, amount, price, offerId = '0', collectedSigners }) => {
-    if (!accountId || !selling || !buying) throw new Error('submitTransaction.failed:trustlines.invalidInput');
-    const server = getHorizonServerForNetwork(network);
-    const feePromise = resolveFeePerOp(server);
-    const account = await server.loadAccount(accountId);
-    const thresholds = account?.thresholds || {};
-    const required = getRequiredThreshold('manageOffer', thresholds);
-    const horizonSigners = account?.signers || [];
-    const signers = Array.isArray(collectedSigners) ? collectedSigners : [];
-    const current = getCollectedSignerWeight(signers, horizonSigners);
-    if (current <= 0) throw new Error('submitTransaction.failed:multisig.noKeysProvided');
-    if (current < required) throw new Error('submitTransaction.failed:multisig.insufficientWeight');
-
-    const fee = await feePromise;
+  const prepareManageSellOfferTx = async ({ server, flow, selling, buying, amount, price, offerId = '0', checkAccount, deferred, timeoutSeconds }) => {
+    if (!flow?.accountId || !selling || !buying) throw new Error('submitTransaction.failed:trustlines.invalidInput');
+    const { account, feePromise } = await loadAccountAndFee(server, { flow, checkAccount, deferred });
     const tx = buildManageSellOfferTransaction({
       account,
       selling,
@@ -804,12 +773,118 @@ export default function AssetSearch() {
       amount,
       price,
       offerId,
-      fee,
-      networkPassphrase: passphraseFor(network),
+      fee: await feePromise,
+      networkPassphrase: passphraseFor(flow.network),
+      timeoutSeconds,
     });
-    // Nach den Horizon-Aufrufen: gilt das Netz des Ablaufs noch?
-    assertFlowNetwork(network);
+    return { account, tx };
+  };
+
+  // Lokal signieren und senden (direkter Weg und "Alle Signaturen lokal"): Gewicht der
+  // gesammelten Keys gegen die Schwelle der Aktion, nach den Horizon-Aufrufen Pruefung von
+  // Quelle, Passphrase und globalem Netz. flow (Netz, Konto) kommt aus der Aktion.
+  const submitSignedTx = async (type, prepare, collectedSigners, flow) => {
+    if (!flow?.network || !flow?.accountId) throw new Error('submitTransaction.failed:trustlines.invalidInput');
+    const server = getHorizonServerForNetwork(flow.network);
+    const signers = Array.isArray(collectedSigners) ? collectedSigners : [];
+    const checkAccount = (account) => {
+      const required = requiredWeightFor(type, account?.thresholds || {});
+      const current = getCollectedSignerWeight(signers, account?.signers || []);
+      if (current <= 0) throw new Error('submitTransaction.failed:multisig.noKeysProvided');
+      if (current < required) {
+        throw Object.assign(new Error('submitTransaction.failed:multisig.insufficientWeight'), { required, current });
+      }
+    };
+    const { tx } = await prepare({ server, flow, checkAccount });
+    // Nach den Horizon-Aufrufen: passt die Transaktion zur Aktion, gilt das Netz noch?
+    assertTxMatchesFlow(tx, flow, 'createAccount:networkChanged.funderAborted');
     return submitTransactionSafely(server, signTransactionWithCollectedSigners(tx, signers));
+  };
+
+  // Zusammenfassung fuer Auswahl und Ergebnis der Multisig-Wege. Jedes Asset mit Code und
+  // vollstaendigem Issuer (wie im Bestaetigungsdialog); Netz und Konto aus der Aktion.
+  const assetWithIssuer = (asset) => {
+    const issuer = getAssetIssuer(asset);
+    return issuer
+      ? t('trading:assetSearch.multisig.assetWithIssuer', { code: getAssetCode(asset), issuer })
+      : formatAssetLabel(asset);
+  };
+  const describeTradingDetails = (type, payload) => {
+    const s = (key) => t(`trading:assetSearch.multisig.summary.${key}`);
+    if (type === 'trustline') {
+      return [
+        { label: s('asset'), value: assetWithIssuer(selectedStellarAsset) },
+        { label: s('limit'), value: normalizeTrustlineLimit(trustlineLimit) || '' },
+      ];
+    }
+    if (type === 'swap' || type === 'trustlineSwap') {
+      const source = type === 'trustlineSwap' ? Asset.native() : swapSourceAsset;
+      const destination = type === 'trustlineSwap' ? selectedStellarAsset : swapDestinationAsset;
+      return [
+        { label: s('sendAsset'), value: assetWithIssuer(source) },
+        { label: s('sendAmount'), value: normalizeAmount(swapAmount) || '' },
+        { label: s('destAsset'), value: assetWithIssuer(destination) },
+        { label: s('destMin'), value: minimumDestinationAmount || '' },
+        ...(type === 'trustlineSwap' ? [{ label: s('limit'), value: normalizeTrustlineLimit(trustlineLimit) || '' }] : []),
+      ];
+    }
+    return [
+      ...(type === 'cancelOffer' ? [{ label: s('offerId'), value: String(payload?.offerId || '') }] : []),
+      { label: s('selling'), value: assetWithIssuer(payload?.selling) },
+      { label: s('buying'), value: assetWithIssuer(payload?.buying) },
+      ...(type === 'cancelOffer' ? [] : [
+        { label: s('amount'), value: String(payload?.amount || '') },
+        { label: s('price'), value: String(payload?.price || '') },
+      ]),
+    ];
+  };
+  const multisigItems = (description, details, type, flow) => (tx) => [
+    { label: t('liquidity:job.source'), value: flow.accountId, wrap: true },
+    { label: t('liquidity:job.network'), value: getNetworkConfig(flow.network).label },
+    { label: t('trading:assetSearch.multisig.action'), value: description, wrap: true },
+    ...details.map((d) => ({ label: d.label, value: d.value, wrap: true })),
+    { label: t('liquidity:job.maxFee'), hint: t('liquidity:job.maxFeeHint'), value: `${amountFormatter.format(Number(tx.fee) / 1e7)} XLM` },
+    // Swap als Job bewusst gesperrt (docs/adr/0011-kein-swap-als-multisig-job.md); beim XDR
+    // der Hinweis, dass der Swap bis zum Senden am Kurs scheitern kann.
+    ...(JOB_DISABLED_TYPES.includes(type)
+      ? [{ label: t('trading:assetSearch.multisig.noteLabel'), value: t('trading:assetSearch.multisig.swapXdrNote'), note: true }]
+      : []),
+  ];
+  const multisigRows = (description, details, flow) => [
+    [t('trading:assetSearch.multisig.action'), description, { wrap: true }],
+    ...details.map((d) => [d.label, d.value, { wrap: true }]),
+    [t('liquidity:job.network'), getNetworkConfig(flow.network).label],
+  ];
+  const describeTradingAction = (type, payload) => {
+    if (type === 'trustline') {
+      return t('trading:assetSearch.multisig.actions.trustline', { asset: formatAssetLabel(selectedStellarAsset), limit: normalizeTrustlineLimit(trustlineLimit) });
+    }
+    if (type === 'swap' || type === 'trustlineSwap') {
+      return t(`trading:assetSearch.multisig.actions.${type}`, {
+        amount: normalizeAmount(swapAmount), source: swapSourceLabel, min: minimumDestinationAmount, destination: swapDestinationLabel,
+      });
+    }
+    if (type === 'cancelOffer') return t('trading:assetSearch.multisig.actions.cancelOffer', { offerId: payload?.offerId || '' });
+    return t('trading:assetSearch.multisig.actions.offer', {
+      amount: payload?.amount, selling: formatAssetLabel(payload?.selling), buying: formatAssetLabel(payload?.buying), price: payload?.price,
+    });
+  };
+  // Netz und Konto der Bestaetigung gehen in die Aktion; alle Wege (direkt, lokal, Job, XDR)
+  // bauen und pruefen nur gegen diese Werte.
+  const startTradingAction = (type, payload, execute, prepare) => {
+    const flow = { network, accountId };
+    const description = describeTradingAction(type, payload);
+    const details = describeTradingDetails(type, payload);
+    multisig.start({
+      type,
+      network: flow.network,
+      accountId: flow.accountId,
+      payload,
+      execute: (collected) => execute(collected, flow),
+      prepare,
+      rows: multisigRows(description, details, flow),
+      items: multisigItems(description, details, type, flow),
+    });
   };
 
   const openTrustlineModal = (asset) => {
@@ -827,7 +902,9 @@ export default function AssetSearch() {
     setModalError('');
     setActionMessage('');
     setShowTrustlineConfirm(false);
-    beginAction('trustline', null, handleCreateTrustline);
+    const asset = selectedAsset ? new Asset(selectedAsset.assetCode, selectedAsset.assetIssuer) : null;
+    const limit = normalizeTrustlineLimit(trustlineLimit);
+    startTradingAction('trustline', null, handleCreateTrustline, (opts) => prepareChangeTrustTx({ ...opts, asset, limit }));
   };
 
   const openTrustlineSwapModal = () => {
@@ -872,7 +949,7 @@ export default function AssetSearch() {
     setModalError('');
     setActionMessage('');
     setShowTrustlineSwapConfirm(false);
-    beginAction('trustlineSwap', null, handleExecuteTrustlineSwap);
+    startTradingAction('trustlineSwap', null, handleExecuteTrustlineSwap, prepareTrustlineAndSwapTx);
   };
 
   const openSwapModal = () => {
@@ -891,7 +968,7 @@ export default function AssetSearch() {
     setModalError('');
     setActionMessage('');
     setShowSwapConfirm(false);
-    beginAction('swap', null, handleExecuteSwap);
+    startTradingAction('swap', null, handleExecuteSwap, prepareSwapTx);
   };
 
   const openCreateOfferModal = () => {
@@ -949,14 +1026,19 @@ export default function AssetSearch() {
     setModalError('');
     setActionMessage('');
     setShowOfferConfirm(false);
-    beginAction(
-      pendingOfferAction?.type === 'cancel' ? 'cancelOffer' : 'offer',
-      pendingOfferAction,
-      handleSubmitOfferAction
+    const offer = pendingOfferAction;
+    startTradingAction(
+      offer?.type === 'cancel' ? 'cancelOffer' : 'offer',
+      offer,
+      handleSubmitOfferAction,
+      (opts) => {
+        if (!offer) throw new Error('submitTransaction.failed:trustlines.invalidInput');
+        return prepareManageSellOfferTx({ ...opts, ...offer });
+      }
     );
   };
 
-  const handleCreateTrustline = async (collectedSigners) => {
+  const handleCreateTrustline = async (collectedSigners, flow) => {
     try {
       if (!selectedAsset) throw new Error('submitTransaction.failed:trustlines.invalidInput');
       setIsSubmittingTrustline(true);
@@ -965,11 +1047,7 @@ export default function AssetSearch() {
       const stellarAsset = new Asset(selectedAsset.assetCode, selectedAsset.assetIssuer);
       const limit = normalizeTrustlineLimit(trustlineLimit);
       if (!limit) throw new Error(t('trading:assetSearch.trustlineFlow.invalidLimit'));
-      await submitChangeTrustTx({
-        asset: stellarAsset,
-        limit,
-        collectedSigners,
-      });
+      await submitSignedTx('trustline', (opts) => prepareChangeTrustTx({ ...opts, asset: stellarAsset, limit }), collectedSigners, flow);
       setActionMessage(t('trading:assetSearch.trustlineStatus.added'));
       setShowSecretModal(false);
       setTrustlineRefreshToken((value) => value + 1);
@@ -988,12 +1066,12 @@ export default function AssetSearch() {
     }
   };
 
-  const handleExecuteSwap = async (collectedSigners) => {
+  const handleExecuteSwap = async (collectedSigners, flow) => {
     try {
       setIsSubmittingSwap(true);
       setModalError('');
       setActionMessage('');
-      const result = await submitSwapTx({ collectedSigners });
+      const result = await submitSignedTx('swap', prepareSwapTx, collectedSigners, flow);
       const hash = result?.hash || result?.id || '';
       setActionMessage(hash
         ? `${t('trading:assetSearch.swapPreview.success')} ${hash}`
@@ -1017,12 +1095,12 @@ export default function AssetSearch() {
     }
   };
 
-  const handleExecuteTrustlineSwap = async (collectedSigners) => {
+  const handleExecuteTrustlineSwap = async (collectedSigners, flow) => {
     try {
       setIsSubmittingSwap(true);
       setModalError('');
       setActionMessage('');
-      const result = await submitTrustlineAndSwapTx({ collectedSigners });
+      const result = await submitSignedTx('trustlineSwap', prepareTrustlineAndSwapTx, collectedSigners, flow);
       const hash = result?.hash || result?.id || '';
       setActionMessage(hash
         ? `${t('trading:assetSearch.trustlineFlow.combinedSuccess')} ${hash}`
@@ -1046,16 +1124,19 @@ export default function AssetSearch() {
     }
   };
 
-  const handleSubmitOfferAction = async (collectedSigners) => {
+  const handleSubmitOfferAction = async (collectedSigners, flow) => {
     try {
       if (!pendingOfferAction) throw new Error('submitTransaction.failed:trustlines.invalidInput');
       setIsSubmittingOffer(true);
       setModalError('');
       setActionMessage('');
-      const result = await submitManageSellOfferTx({
-        ...pendingOfferAction,
+      const offer = pendingOfferAction;
+      const result = await submitSignedTx(
+        offer.type === 'cancel' ? 'cancelOffer' : 'offer',
+        (opts) => prepareManageSellOfferTx({ ...opts, ...offer }),
         collectedSigners,
-      });
+        flow
+      );
       const hash = result?.hash || result?.id || '';
       const successKey = pendingOfferAction.type === 'cancel'
         ? 'trading:assetSearch.limitOffer.cancelSuccess'
@@ -1183,6 +1264,11 @@ export default function AssetSearch() {
                 {t('common:close', 'Close')}
               </button>
             </div>
+          {multisig.error && (
+            <p role="alert" data-testid="trading-job-error" className="mb-2 rounded-sm border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-200">
+              {multisig.error}
+            </p>
+          )}
           <dl className="grid gap-2">
             <div>
               <dt className="font-semibold"><HelpLabel label={t('trading:assetSearch.result.columns.issuer')} helpKey='trading:assetSearch.help.issuer' /></dt>
@@ -1462,6 +1548,31 @@ export default function AssetSearch() {
           pendingOfferAction={pendingOfferAction}
         />
       )}
+      <LiquiditySigningOptions
+        open={!!multisig.options}
+        choice={multisig.choice}
+        onChoiceChange={multisig.setChoice}
+        onProceed={multisig.proceed}
+        onCancel={multisig.cancelOptions}
+        rows={multisig.options?.rows || []}
+        disabledOptions={multisig.jobDisabled ? ['job'] : []}
+        // Swap als Job bewusst gesperrt, siehe docs/adr/0011-kein-swap-als-multisig-job.md.
+        notes={multisig.jobDisabled ? [t('trading:assetSearch.multisig.swapJobDisabled')] : []}
+      />
+      <LiquidityResultDialog
+        type="job"
+        result={multisig.preparedJob}
+        account={accountInfo}
+        operationType="changeTrust"
+        onClose={multisig.clearPreparedJob}
+      />
+      <LiquidityResultDialog
+        type="xdr"
+        result={multisig.exportedXdr}
+        account={accountInfo}
+        operationType="changeTrust"
+        onClose={multisig.clearExportedXdr}
+      />
       {showSecretModal && (
         <SecretKeyModal
           onConfirm={(collected) => {
@@ -1478,6 +1589,7 @@ export default function AssetSearch() {
             setShowSecretModal(false);
             setPendingAction(null);
             setModalError('');
+            multisig.clearLocal();
           }}
           errorMessage={modalError}
           isProcessing={isSubmittingTrustline || isSubmittingSwap || isSubmittingOffer}
@@ -1487,6 +1599,7 @@ export default function AssetSearch() {
           operationType={modalOperationType}
           requiredThreshold={requiredThreshold}
           account={accountInfo}
+          {...multisig.localModalProps}
         />
       )}
     </section>

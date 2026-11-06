@@ -28,7 +28,16 @@ export function formatErrorForUi(t, errorOrMessage, opts = {}) {
     let detailText = detail;
     if (detail) {
       const detailKeyFull = `errors:submitTransaction.failed.${detail}`;
-      const translated = t(detailKeyFull, detailKeyFull);
+      // Werte fuer Platzhalter am Fehler (z. B. insufficientWeight: required, current)
+      const values = {};
+      ['required', 'current'].forEach((name) => {
+        if (errorOrMessage && typeof errorOrMessage === 'object' && errorOrMessage[name] !== undefined) {
+          values[name] = errorOrMessage[name];
+        }
+      });
+      const translated = Object.keys(values).length
+        ? t(detailKeyFull, { defaultValue: detailKeyFull, ...values })
+        : t(detailKeyFull, detailKeyFull);
       if (translated && translated !== detailKeyFull) {
         detailText = translated;
       }

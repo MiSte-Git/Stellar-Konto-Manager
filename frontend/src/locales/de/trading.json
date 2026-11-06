@@ -367,6 +367,34 @@
       "title": "Status unklar – nicht erneut senden",
       "body": "Die letzte Transaktion konnte serverseitig nicht eindeutig bestätigt werden (Zeitüberschreitung oder Serverfehler). Bitte prüfen Sie den Transaktions-Hash im Explorer, bevor Sie es erneut versuchen.",
       "acknowledge": "Status geprüft – Aktionen wieder freigeben"
+    },
+    "multisig": {
+      "action": "Aktion",
+      "actions": {
+        "trustline": "Trustline hinzufügen: {{asset}}, Limit {{limit}}",
+        "swap": "Swap: {{amount}} {{source}} gegen mindestens {{min}} {{destination}}",
+        "trustlineSwap": "Trustline hinzufügen und Swap: {{amount}} {{source}} gegen mindestens {{min}} {{destination}}",
+        "offer": "Limit-Order: {{amount}} {{selling}} verkaufen gegen {{buying}} zum Preis {{price}}",
+        "cancelOffer": "Limit-Order {{offerId}} löschen"
+      },
+      "swapJobDisabled": "Swaps sind als Multisig-Job bewusst nicht möglich: Bis zur letzten Signatur ändert sich der Kurs, und der Job scheitert dann. Nutze „Alle Signaturen lokal eingeben“ oder „XDR exportieren“.",
+      "contextChanged": "Netz oder Konto hat sich geändert, seit du die Aktion bestätigt hast. Es wurde kein Job und kein XDR erstellt und nichts signiert. Bitte starte die Aktion neu.",
+      "assetWithIssuer": "{{code}}, Issuer {{issuer}}",
+      "noteLabel": "Hinweis",
+      "swapXdrNote": "Ein Swap kann bis zum Senden am Kurs scheitern: Ist die erhältliche Menge dann kleiner als die Mindestmenge (destMin), lehnt das Netz die Transaktion ab.",
+      "summary": {
+        "asset": "Asset",
+        "limit": "Limit",
+        "sendAsset": "Quelle",
+        "sendAmount": "Betrag",
+        "destAsset": "Ziel",
+        "destMin": "Mindestmenge (destMin)",
+        "selling": "Verkauf",
+        "buying": "Kauf",
+        "amount": "Menge",
+        "price": "Preis",
+        "offerId": "Offer-ID"
+      }
     }
   },
   "assetPicker": {

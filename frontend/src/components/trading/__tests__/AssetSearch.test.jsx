@@ -1,7 +1,7 @@
 import React from 'react';
 import { act, render, screen, within, waitFor, fireEvent } from '@testing-library/react';
 import { I18nextProvider } from 'react-i18next';
-import { Account } from '@stellar/stellar-sdk';
+import { Account, Keypair, Networks, TransactionBuilder } from '@stellar/stellar-sdk';
 import i18n from '../../../i18n.js';
 import AssetSearch from '../AssetSearch.jsx';
 import { resetServerNetworkCalls, serverNetworkCalls } from '../../../test/horizonMock.js';
@@ -26,6 +26,12 @@ const hoisted = vi.hoisted(() => ({
   resolveOrValidateAccountMock: vi.fn(async (input) => ({ accountId: input, muxedAddress: null })),
   offersRecords: { value: [] },
   pathRecords: { value: [] },
+  createJob: vi.fn(),
+}));
+
+vi.mock('../../../utils/multisigApi.js', async (importOriginal) => ({
+  ...(await importOriginal()),
+  createMultisigJobFromXdr: (...args) => hoisted.createJob(...args),
 }));
 
 vi.mock('../../../utils/stellar/stellarUtils.js', async (importOriginal) => (await import('../../../test/horizonMock.js')).withNetworkServer({
@@ -46,6 +52,7 @@ vi.mock('../../../utils/stellar/stellarUtils.js', async (importOriginal) => (awa
     orderbook: () => ({ call: async () => ({ bids: [], asks: [] }) }),
     liquidityPools: () => ({ forAssets: () => ({ call: async () => ({ records: [] }) }) }),
     strictSendPaths: () => ({ call: async () => ({ records: hoisted.pathRecords.value }) }),
+    root: async () => ({ network_passphrase: Networks.PUBLIC }),
   }),
   loadTrustlines: hoisted.loadTrustlinesMock,
   resolveOrValidateAccount: hoisted.resolveOrValidateAccountMock,
@@ -422,5 +429,244 @@ describe('AssetSearch - Ergebnisliste nur mit Details', () => {
     await waitFor(() => expect(hoisted.loadTrustlinesMock).toHaveBeenCalled());
     await act(async () => { await new Promise((r) => setTimeout(r, 0)); });
     expect(screen.queryByText('Trustline bestätigen')).toBeNull();
+  });
+});
+
+// Multisig im Trading (ADR 0007): Auswahl Job/lokal/XDR nur, wenn kein einzelner Signer reicht.
+describe('AssetSearch - Multisig-Ablauf', () => {
+  const COSIGNER = Keypair.random();
+  // med 2, beide Signer Gewicht 1: kein einzelner Signer erreicht changeTrust/payment/manageOffer
+  function makeTwoOfTwo(acct, med = 2) {
+    acct.thresholds = { low_threshold: 0, med_threshold: med, high_threshold: 2 };
+    acct.signers = [
+      { key: ACCOUNT.publicKey, weight: 1, type: 'ed25519_public_key' },
+      { key: COSIGNER.publicKey(), weight: 1, type: 'ed25519_public_key' },
+    ];
+    return acct;
+  }
+  const decodeJobTx = (call = 0) => TransactionBuilder.fromXDR(hoisted.createJob.mock.calls[call][0].txXdr, Networks.PUBLIC);
+  const OPTIONS_TITLE = 'Option wählen';
+  const LOCAL = 'Alle Signaturen lokal eingeben';
+  const jobRadio = () => document.querySelector('input[name="multisig-flow-choice"][value="job"]');
+  const localRadio = () => document.querySelector('input[name="multisig-flow-choice"][value="local"]');
+
+  beforeEach(() => {
+    hoisted.createJob.mockReset().mockResolvedValue({ id: 'job-7', hash: 'jobhash7', xdr: 'AAAA', requiredWeight: 2, collectedSigners: [] });
+  });
+
+  async function openTrustlineConfirm({ med = 2 } = {}) {
+    hoisted.loadAccountMock.mockImplementation(async () => makeTwoOfTwo(makeFundedAccount(ACCOUNT.publicKey), med));
+    hoisted.loadTrustlinesMock.mockReset().mockImplementation(async () => []);
+    renderPage();
+    await searchAndSelectAsset('Trustline fehlt');
+    // Kontodaten (Signer, Schwellen) muessen geladen sein, bevor entschieden wird
+    await waitFor(() => expect(hoisted.loadAccountMock).toHaveBeenCalled());
+    await act(async () => { await new Promise((r) => setTimeout(r, 0)); });
+    fireEvent.click(screen.getByRole('button', { name: 'Trustline hinzufügen' }));
+    await screen.findByText('Trustline bestätigen');
+    fireEvent.click(screen.getByRole('button', { name: i18n.t('trading:assetSearch.trustlineConfirm.continue') }));
+  }
+
+  it('2-von-2: Trustline zeigt die Auswahl; Job-Weg legt einen Job ohne lokale Signatur an', async () => {
+    await openTrustlineConfirm();
+    expect(await screen.findByText(OPTIONS_TITLE)).toBeInTheDocument();
+    expect(document.querySelector('input[type="password"]')).toBeNull();
+    expect(jobRadio().checked).toBe(true);
+    expect(jobRadio().disabled).toBe(false);
+
+    resetServerNetworkCalls();
+    fireEvent.click(screen.getByRole('button', { name: 'Weiter' }));
+    await waitFor(() => expect(hoisted.createJob).toHaveBeenCalledTimes(1));
+    expect(hoisted.createJob.mock.calls[0][0]).toMatchObject({ network: 'public', accountId: ACCOUNT.publicKey });
+    const tx = decodeJobTx();
+    expect(tx.signatures).toHaveLength(0);
+    expect(tx.operations.map((op) => op.type)).toEqual(['changeTrust']);
+    expect(tx.operations[0].line.code).toBe(ASSET_CODE);
+    // Zeitfenster aus den Einstellungen (Standard 24 h), nicht die 60 s des direkten Wegs
+    expect(Number(tx.timeBounds.maxTime) - Math.floor(Date.now() / 1000)).toBeGreaterThan(3600);
+    // Konto, Sequence und Passphrase aus dem Netz des Ablaufs
+    expect(serverNetworkCalls.every((n) => n === 'PUBLIC')).toBe(true);
+    expect(hoisted.submitTransactionMock).not.toHaveBeenCalled();
+    expect(await screen.findByText(/job-7/)).toBeInTheDocument();
+  });
+
+  it('2-von-2: lokaler Weg verlangt alle Keys und sendet mit beiden Signaturen', async () => {
+    await openTrustlineConfirm();
+    await screen.findByText(OPTIONS_TITLE);
+    fireEvent.click(localRadio());
+    fireEvent.click(screen.getByRole('button', { name: 'Weiter' }));
+
+    const inputs = await waitFor(() => {
+      const found = Array.from(document.querySelectorAll('input[type="password"]'));
+      expect(found.length).toBe(2);
+      return found;
+    });
+    // Nur ein Key reicht nicht
+    fireEvent.change(inputs[0], { target: { value: ACCOUNT.secret } });
+    submitSecretModal();
+    expect(await screen.findByText(/Benötigt: 2, vorhanden: 1/)).toBeInTheDocument();
+    expect(hoisted.submitTransactionMock).not.toHaveBeenCalled();
+
+    fireEvent.change(inputs[1], { target: { value: COSIGNER.secret() } });
+    submitSecretModal();
+    await waitFor(() => expect(hoisted.submitTransactionMock).toHaveBeenCalledTimes(1));
+    const submitted = hoisted.submitTransactionMock.mock.calls[0][0];
+    expect(submitted.signatures).toHaveLength(2);
+    expect(hoisted.createJob).not.toHaveBeenCalled();
+  });
+
+  it('Gegenprobe: mehrere Signer, aber einer reicht: keine Auswahl, direkt der Secret-Key-Dialog', async () => {
+    await openTrustlineConfirm({ med: 1 });
+    await waitFor(() => expect(document.querySelector('input[type="password"]')).not.toBeNull());
+    expect(screen.queryByText(OPTIONS_TITLE)).toBeNull();
+    expect(screen.queryByText(LOCAL)).toBeNull();
+  });
+
+  it('2-von-2: Swap als Job gesperrt, mit Hinweis; lokal vorausgewaehlt', async () => {
+    hoisted.loadAccountMock.mockImplementation(async () => makeTwoOfTwo(makeFundedAccount(ACCOUNT.publicKey)));
+    renderPage();
+    await searchAndSelectAsset();
+    const swapSection = screen.getByText('Swap-Preview').closest('section');
+    const [amountInput] = within(swapSection).getAllByRole('textbox');
+    fireEvent.change(amountInput, { target: { value: '20' } });
+    fireEvent.click(within(swapSection).getByRole('button', { name: 'Preis prüfen' }));
+    await within(swapSection).findByText(/100\.0000000\s*FOO/);
+    fireEvent.click(within(swapSection).getByRole('button', { name: 'Swap ausführen' }));
+    fireEvent.click(await screen.findByRole('button', { name: 'Weiter zur Signatur' }));
+
+    await screen.findByText(OPTIONS_TITLE);
+    expect(jobRadio().disabled).toBe(true);
+    expect(localRadio().checked).toBe(true);
+    expect(screen.getByTestId('signing-options-note')).toHaveTextContent(i18n.t('trading:assetSearch.multisig.swapJobDisabled'));
+    expect(hoisted.createJob).not.toHaveBeenCalled();
+  });
+
+  const xdrRadio = () => document.querySelector('input[name="multisig-flow-choice"][value="xdr"]');
+  const signingSummary = () => screen.getByTestId('liquidity-signing-summary');
+  const contextChangedText = () => i18n.t('trading:assetSearch.multisig.contextChanged');
+
+  async function openSwapOptions() {
+    const swapSection = screen.getByText('Swap-Preview').closest('section');
+    const [amountInput] = within(swapSection).getAllByRole('textbox');
+    fireEvent.change(amountInput, { target: { value: '20' } });
+    fireEvent.click(within(swapSection).getByRole('button', { name: 'Preis prüfen' }));
+    await within(swapSection).findByText(/100\.0000000\s*FOO/);
+    fireEvent.click(within(swapSection).getByRole('button', { name: 'Swap ausführen' }));
+    fireEvent.click(await screen.findByRole('button', { name: 'Weiter zur Signatur' }));
+  }
+
+  it('T-1: Netzwechsel bei offener Auswahl schliesst sie: kein Job, kein XDR, Hinweis', async () => {
+    await openTrustlineConfirm();
+    await screen.findByText(OPTIONS_TITLE);
+    act(() => {
+      window.localStorage.setItem('SKM_NETWORK', 'TESTNET');
+      window.dispatchEvent(new CustomEvent('stm-network-changed', { detail: 'TESTNET' }));
+    });
+    await waitFor(() => expect(screen.queryByText(OPTIONS_TITLE)).toBeNull());
+    expect(screen.getAllByText(contextChangedText()).length).toBeGreaterThan(0);
+    expect(screen.queryByRole('button', { name: 'Weiter' })).toBeNull();
+    expect(hoisted.createJob).not.toHaveBeenCalled();
+    expect(screen.queryByText(/job-7/)).toBeNull();
+    expect(document.querySelector('textarea')).toBeNull();
+  });
+
+  it('T-1: Kontowechsel bei offener Auswahl schliesst sie: kein Job, kein XDR, Hinweis', async () => {
+    await openTrustlineConfirm();
+    await screen.findByText(OPTIONS_TITLE);
+    const other = Keypair.random().publicKey();
+    act(() => {
+      window.dispatchEvent(new CustomEvent('stm:accountSelected', { detail: { address: other } }));
+    });
+    await waitFor(() => expect(screen.queryByText(OPTIONS_TITLE)).toBeNull());
+    expect(screen.getAllByText(contextChangedText()).length).toBeGreaterThan(0);
+    expect(hoisted.createJob).not.toHaveBeenCalled();
+    expect(document.querySelector('textarea')).toBeNull();
+  });
+
+  it('T-2: Auswahl und Job-Ergebnis zeigen Code und vollstaendigen Issuer', async () => {
+    await openTrustlineConfirm();
+    await screen.findByText(OPTIONS_TITLE);
+    expect(signingSummary()).toHaveTextContent(`${ASSET_CODE}, Issuer ${ISSUER_PK}`);
+    fireEvent.click(screen.getByRole('button', { name: 'Weiter' }));
+    await waitFor(() => expect(hoisted.createJob).toHaveBeenCalledTimes(1));
+    expect(await screen.findByTestId('liquidity-job-summary')).toHaveTextContent(`${ASSET_CODE}, Issuer ${ISSUER_PK}`);
+  });
+
+  it('T-2/T-3: Swap als XDR zeigt Quelle, Ziel mit Issuer, Betrag, destMin und den Kurs-Hinweis', async () => {
+    hoisted.loadAccountMock.mockImplementation(async () => makeTwoOfTwo(makeFundedAccount(ACCOUNT.publicKey)));
+    renderPage();
+    await searchAndSelectAsset();
+    await openSwapOptions();
+    await screen.findByText(OPTIONS_TITLE);
+    const summary = signingSummary();
+    expect(summary).toHaveTextContent(i18n.t('trading:assetSearch.multisig.summary.sendAsset'));
+    expect(summary).toHaveTextContent(`${ASSET_CODE}, Issuer ${ISSUER_PK}`);
+    expect(summary).toHaveTextContent(/XLM/);
+    expect(summary).toHaveTextContent(i18n.t('trading:assetSearch.multisig.summary.destMin'));
+    expect(screen.getByTestId('signing-options-note')).toHaveTextContent(i18n.t('trading:assetSearch.multisig.swapJobDisabled'));
+    fireEvent.click(xdrRadio());
+    fireEvent.click(screen.getByRole('button', { name: 'Weiter' }));
+    const result = await screen.findByTestId('liquidity-job-summary');
+    expect(result).toHaveTextContent(`${ASSET_CODE}, Issuer ${ISSUER_PK}`);
+    expect(result).toHaveTextContent('20');
+    expect(result).toHaveTextContent(i18n.t('trading:assetSearch.multisig.swapXdrNote'));
+    expect(hoisted.createJob).not.toHaveBeenCalled();
+    expect(hoisted.submitTransactionMock).not.toHaveBeenCalled();
+  });
+
+  it('T-4: Schwellen low=1 med=0 high=3: Swap ohne Auswahl, direkt der Secret-Key-Dialog', async () => {
+    hoisted.loadAccountMock.mockImplementation(async () => {
+      const acct = makeTwoOfTwo(makeFundedAccount(ACCOUNT.publicKey));
+      acct.thresholds = { low_threshold: 1, med_threshold: 0, high_threshold: 3 };
+      return acct;
+    });
+    renderPage();
+    await searchAndSelectAsset();
+    await waitFor(() => expect(hoisted.loadAccountMock).toHaveBeenCalled());
+    await act(async () => { await new Promise((r) => setTimeout(r, 0)); });
+    await openSwapOptions();
+    await waitFor(() => expect(document.querySelector('input[type="password"]')).not.toBeNull());
+    expect(screen.queryByText(OPTIONS_TITLE)).toBeNull();
+  });
+
+  it('T-5: Ergebnis einer Limit-Order rechnet die Schwelle aus manageSellOffer (ohne requiredWeight vom Backend)', async () => {
+    hoisted.createJob.mockResolvedValue({ id: 'job-8', hash: 'jobhash8', xdr: 'AAAA', requiredWeight: null, collectedSigners: [] });
+    hoisted.loadAccountMock.mockImplementation(async () => makeTwoOfTwo(makeFundedAccount(ACCOUNT.publicKey)));
+    renderPage();
+    await searchAndSelectAsset();
+    const limitSection = screen.getByText('Limit-Orders').closest('section');
+    const [amountInput, priceInput] = within(limitSection).getAllByRole('textbox');
+    fireEvent.change(amountInput, { target: { value: '50' } });
+    fireEvent.change(priceInput, { target: { value: '0.75' } });
+    fireEvent.click(within(limitSection).getByRole('button', { name: 'Limit-Order platzieren' }));
+    fireEvent.click(await screen.findByRole('button', { name: 'Weiter zur Signatur' }));
+    await screen.findByText(OPTIONS_TITLE);
+    expect(signingSummary()).toHaveTextContent(`${ASSET_CODE}, Issuer ${ISSUER_PK}`);
+    fireEvent.click(screen.getByRole('button', { name: 'Weiter' }));
+    await waitFor(() => expect(hoisted.createJob).toHaveBeenCalledTimes(1));
+    expect(await screen.findByText(i18n.t('multisig:confirm.result.job.progress', { collected: 0, required: 2 }))).toBeInTheDocument();
+    expect(screen.getByTestId('liquidity-job-summary')).toHaveTextContent(`${ASSET_CODE}, Issuer ${ISSUER_PK}`);
+  });
+
+  it('2-von-2: Limit-Order als Job ohne lokale Signatur', async () => {
+    hoisted.loadAccountMock.mockImplementation(async () => makeTwoOfTwo(makeFundedAccount(ACCOUNT.publicKey)));
+    renderPage();
+    await searchAndSelectAsset();
+    const limitSection = screen.getByText('Limit-Orders').closest('section');
+    const [amountInput, priceInput] = within(limitSection).getAllByRole('textbox');
+    fireEvent.change(amountInput, { target: { value: '50' } });
+    fireEvent.change(priceInput, { target: { value: '0.75' } });
+    fireEvent.click(within(limitSection).getByRole('button', { name: 'Limit-Order platzieren' }));
+    fireEvent.click(await screen.findByRole('button', { name: 'Weiter zur Signatur' }));
+
+    await screen.findByText(OPTIONS_TITLE);
+    expect(jobRadio().disabled).toBe(false);
+    fireEvent.click(screen.getByRole('button', { name: 'Weiter' }));
+    await waitFor(() => expect(hoisted.createJob).toHaveBeenCalledTimes(1));
+    const tx = decodeJobTx();
+    expect(tx.signatures).toHaveLength(0);
+    expect(tx.operations[0].type).toBe('manageSellOffer');
+    expect(tx.operations[0].amount).toBe('50.0000000');
+    expect(hoisted.submitTransactionMock).not.toHaveBeenCalled();
   });
 });

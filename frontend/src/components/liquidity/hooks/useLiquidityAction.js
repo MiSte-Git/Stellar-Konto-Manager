@@ -1,13 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { getNetworkConfig, passphraseFor } from '../../../config/networks.js';
+import { passphraseFor } from '../../../config/networks.js';
 import { getHorizonServerForNetwork } from '../../../utils/stellar/stellarUtils.js';
 import { assertFlowNetwork } from '../../../utils/globalNetwork.js';
 import { resolveFeePerOp } from '../../../utils/stellar/fees.js';
 import { AmbiguousSubmitResultError } from '../../../utils/stellar/submitTransactionSafely.js';
 import { assertHorizonNetwork } from '../../../utils/multisig/jobRevocation.js';
 import { getRequiredThreshold } from '../../../utils/getRequiredThreshold.js';
-import { createMultisigJobFromXdr } from '../../../utils/multisigApi.js';
-import { txHashHex } from '../../../utils/stellar/txHash.js';
+import { finishUnsignedTx } from '../../../utils/multisig/unsignedTx.js';
 import useTradingSubmit from '../../trading/hooks/useTradingSubmit.js';
 import { describeLiquidityError, loadFreshState, signAndSubmit } from '../liquiditySubmit.js';
 
@@ -166,39 +165,19 @@ export default function useLiquidityAction({ publicKey, network, poolId, operati
         setNotice(outcome.changed);
         return;
       }
-      // Kein Job und kein Export mit einer Transaktion aus einem inzwischen verlassenen Netz.
-      assertFlowNetwork(network);
+      // finishUnsignedTx prueft vorher das Netz des Ablaufs (kein Job aus einem verlassenen Netz).
+      const done = await finishUnsignedTx({ mode, tx: outcome.tx, network, accountId: publicKey, items: outcome.items || [] });
       if (mode === 'xdr') {
-        setExportedXdr({
-          hash: txHashHex(outcome.tx),
-          xdr: outcome.tx.toXDR(),
-          validUntil: outcome.tx.timeBounds?.maxTime,
-          items: outcome.items || [],
-        });
+        setExportedXdr(done);
         return;
       }
-      const job = await createMultisigJobFromXdr({
-        network: getNetworkConfig(network).backendId,
-        accountId: publicKey,
-        txXdr: outcome.tx.toXDR(),
-      });
       jobCreatedRef.current = true;
-      const hash = job.hash || txHashHex(outcome.tx);
       if (!mountedRef.current) {
-        onBackgroundResultRef.current?.({ type: 'jobCreated', jobId: job.id, hash, network, publicKey });
+        onBackgroundResultRef.current?.({ type: 'jobCreated', jobId: done.id, hash: done.hash, network, publicKey });
         return;
       }
       setJobCreated(true);
-      setPreparedJob({
-        id: job.id,
-        hash,
-        xdr: job.xdr,
-        validUntil: outcome.tx.timeBounds?.maxTime,
-        requiredWeight: job.requiredWeight,
-        collectedSigners: job.collectedSigners || [],
-        accessToken: job.accessToken || '',
-        items: outcome.items || [],
-      });
+      setPreparedJob(done);
     } catch (err) {
       if (mountedRef.current) setJobError(describeLiquidityError(t, err));
     } finally {

@@ -16,5 +16,6 @@ alten ersetzt, statt den alten still umzuschreiben.
 | [0008](0008-zwei-stufen-uebersetzung.md) | Übersetzung in zwei Stufen über Englisch | akzeptiert |
 | [0009](0009-fachbegriffe-englisch.md) | Stellar-Fachbegriffe bleiben englisch | akzeptiert |
 | [0010](0010-on-off-ramp-architektur.md) | Architektur für On-/Off-Ramp | akzeptiert, nicht umgesetzt |
+| [0011](0011-kein-swap-als-multisig-job.md) | Kein Swap als Multisig-Job | akzeptiert |
 
 Neue Einträge nach [template.md](template.md), fortlaufend nummeriert.

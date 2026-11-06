@@ -24,10 +24,11 @@ export function buildChangeTrustTransaction({
   limit,
   fee,
   networkPassphrase,
+  timeoutSeconds = 60,
 }) {
   return new TransactionBuilder(account, { fee, networkPassphrase })
     .addOperation(Operation.changeTrust({ asset, limit }))
-    .setTimeout(60)
+    .setTimeout(timeoutSeconds)
     .build();
 }
 
@@ -41,6 +42,7 @@ export function buildPathPaymentStrictSendTransaction({
   path = [],
   fee,
   networkPassphrase,
+  timeoutSeconds = 60,
 }) {
   return new TransactionBuilder(account, { fee, networkPassphrase })
     .addOperation(Operation.pathPaymentStrictSend({
@@ -51,7 +53,7 @@ export function buildPathPaymentStrictSendTransaction({
       destMin,
       path,
     }))
-    .setTimeout(60)
+    .setTimeout(timeoutSeconds)
     .build();
 }
 
@@ -67,6 +69,7 @@ export function buildChangeTrustAndPathPaymentStrictSendTransaction({
   path = [],
   fee,
   networkPassphrase,
+  timeoutSeconds = 60,
 }) {
   return new TransactionBuilder(account, { fee, networkPassphrase })
     .addOperation(Operation.changeTrust({ asset: trustAsset, limit: trustLimit }))
@@ -78,7 +81,7 @@ export function buildChangeTrustAndPathPaymentStrictSendTransaction({
       destMin,
       path,
     }))
-    .setTimeout(60)
+    .setTimeout(timeoutSeconds)
     .build();
 }
 
@@ -91,6 +94,7 @@ export function buildManageSellOfferTransaction({
   offerId = '0',
   fee,
   networkPassphrase,
+  timeoutSeconds = 60,
 }) {
   return new TransactionBuilder(account, { fee, networkPassphrase })
     .addOperation(Operation.manageSellOffer({
@@ -100,7 +104,7 @@ export function buildManageSellOfferTransaction({
       price,
       offerId: String(offerId || '0'),
     }))
-    .setTimeout(60)
+    .setTimeout(timeoutSeconds)
     .build();
 }
 
