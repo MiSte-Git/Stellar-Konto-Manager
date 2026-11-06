@@ -3,13 +3,15 @@ import { useTranslation } from 'react-i18next';
 import { poolSidesInOrder } from '../../utils/stellar/liquidityPools.js';
 import { formatAssetLabelWithIssuer, getAssetCode, getAssetIssuer } from '../trading/assetSearchUtils.js';
 import TokenFactsSummary from '../trading/TokenFactsSummary.jsx';
+import HelpLabel from '../trading/HelpLabel.jsx';
+import usePoolAssetTrustlines from './hooks/usePoolAssetTrustlines.js';
 import useAssetFacts from '../trading/hooks/useAssetFacts.js';
 import { formatAmountWithUnit } from './formatPoolAmount.js';
 import { FactRow } from './LiquidityDialogShell.jsx';
 
 /**
  * Fakten eines Pools: Quelle, Reserven (in Nutzerreihenfolge), Total Shares,
- * Teilnehmer, Fee, Pool-ID zum Kopieren und die bestehende TokenFactsSummary
+ * Trustlines je Token und davon Pool-Share-Trustlines, Fee, Pool-ID zum Kopieren und die bestehende TokenFactsSummary
  * fuer jedes Nicht-XLM-Asset. Keine Bewertung, nur Daten.
  *
  * useAssetFacts stammt aus Trading und kennt "ausgewaehltes Asset" und
@@ -33,6 +35,14 @@ export default function PoolFacts({ pool, firstAsset, network, hasAccount = fals
     targetStellarAsset: secondAsset,
     swapDirection: 'token-to-token',
   });
+
+  const sideAssets = useMemo(() => sides.map((s) => s.asset), [sides]);
+  const assetTrustlines = usePoolAssetTrustlines(sideAssets, network);
+  const formatTrustlines = (entry) => {
+    if (!entry || entry.status === 'loading') return t('liquidity:facts.trustlinesLoading');
+    if (entry.status !== 'loaded' || entry.count == null) return t('liquidity:facts.trustlinesUnavailable');
+    return entry.count.toLocaleString(locale);
+  };
 
   const handleCopy = async () => {
     try {
@@ -61,7 +71,21 @@ export default function PoolFacts({ pool, firstAsset, network, hasAccount = fals
             />
           ))}
           <FactRow label={t('liquidity:facts.totalShares')} value={formatAmountWithUnit(pool.totalShares, t('liquidity:units.shares'), locale)} />
-          <FactRow label={t('liquidity:facts.participants')} value={pool.totalTrustlines.toLocaleString(locale)} />
+          {sides.filter((side) => !side.asset.isNative()).map((side) => {
+            const code = getAssetCode(side.asset);
+            const entry = assetTrustlines[`${code}:${getAssetIssuer(side.asset)}`];
+            return (
+              <FactRow
+                key={`tl-${formatAssetLabelWithIssuer(side.asset)}`}
+                label={<HelpLabel label={t('liquidity:facts.assetTrustlines', { asset: code })} helpText={t('liquidity:facts.assetTrustlinesHelp', { asset: code })} />}
+                value={formatTrustlines(entry)}
+              />
+            );
+          })}
+          <FactRow
+            label={<HelpLabel label={t('liquidity:facts.poolTrustlines')} helpText={t('liquidity:facts.poolTrustlinesHelp')} />}
+            value={pool.totalTrustlines.toLocaleString(locale)}
+          />
           <FactRow
             className="sm:col-span-2"
             wrap

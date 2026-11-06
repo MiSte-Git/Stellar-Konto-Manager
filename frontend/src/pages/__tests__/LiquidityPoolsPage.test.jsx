@@ -11,6 +11,7 @@ const hoisted = vi.hoisted(() => ({
   accountCall: vi.fn(),
   poolByIdCall: vi.fn(),
   forAssetsCall: vi.fn(),
+  assetsCall: vi.fn(),
   submit: vi.fn(),
   createJob: vi.fn(),
   collected: [],
@@ -43,6 +44,7 @@ vi.mock('../../utils/stellar/stellarUtils.js', async (importOriginal) => (await 
     feeStats: async () => ({}),
     root: async () => ({ network_passphrase: Networks.PUBLIC }),
     accounts: () => ({ accountId: (id) => ({ call: () => hoisted.accountCall(id) }) }),
+    assets: () => ({ forCode: (code) => ({ forIssuer: (issuer) => ({ call: () => hoisted.assetsCall(code, issuer) }) }) }),
     liquidityPools: () => ({
       liquidityPoolId: (id) => ({ call: () => hoisted.poolByIdCall(id) }),
       forAssets: (...assets) => ({ call: () => hoisted.forAssetsCall(...assets) }),
@@ -88,6 +90,10 @@ describe('LiquidityPoolsPage', () => {
     hoisted.accountCall.mockReset();
     hoisted.poolByIdCall.mockReset();
     hoisted.forAssetsCall.mockReset();
+    hoisted.assetsCall.mockReset();
+    hoisted.assetsCall.mockImplementation(async (code, issuer) => ({
+      records: [{ asset_code: code, asset_issuer: issuer, accounts: { authorized: 7000, authorized_to_maintain_liabilities: 70, unauthorized: 4 } }],
+    }));
     window.history.replaceState({}, '', '/trading/pools');
     // Token-Fakten (Backend) und Asset-Suche
     globalThis.fetch = vi.fn(async (url) => {
@@ -164,7 +170,19 @@ describe('LiquidityPoolsPage', () => {
     expect(facts).toHaveTextContent(POOL_ID);
     expect(facts).toHaveTextContent('Native Stellar Pool');
     expect(facts).toHaveTextContent('0,30 % (30 bps)');
-    expect(facts).toHaveTextContent('42');
+    expect(facts).toHaveTextContent('davon im Pool (Pool-Shares)?42');
+    expect(hoisted.assetsCall).toHaveBeenCalledWith('USDC', USDC_ISSUER);
+    await waitFor(() => expect(facts).toHaveTextContent('Trustlines auf USDC?7.074'));
+  });
+
+  it('zeigt Nicht verfuegbar, wenn die Token-Trustlines nicht geladen werden koennen', async () => {
+    window.history.replaceState({}, '', `/trading/pools?pool=${POOL_ID}`);
+    hoisted.poolByIdCall.mockResolvedValue(poolRecord());
+    hoisted.assetsCall.mockRejectedValue(new Error('down'));
+    renderPage({ publicKey: '' });
+    const facts = await screen.findByTestId('pool-facts');
+    await waitFor(() => expect(facts).toHaveTextContent('Trustlines auf USDC?Nicht verfügbar'));
+    expect(facts).toHaveTextContent('davon im Pool (Pool-Shares)?42');
   });
 
   it('ignoriert einen ungueltigen Query-Param', () => {

@@ -5,9 +5,10 @@ import { useTranslation } from 'react-i18next';
 // (results table, trustline, swap, market data, limit orders, token facts).
 // Extracted from AssetSearch.jsx's inline renderHelpLabel() (step 2 of the
 // file-split) without any behavior change - same markup, same t(helpKey) lookup.
-export default function HelpLabel({ label, helpKey }) {
+// helpText: bereits uebersetzter Text (z.B. mit Interpolation) statt helpKey.
+export default function HelpLabel({ label, helpKey, helpText }) {
   const { t } = useTranslation(['trading', 'common']);
-  const help = t(helpKey);
+  const help = helpText ?? t(helpKey);
   return (
     <span className="inline-flex items-center gap-1" title={help}>
       <span>{label}</span>
