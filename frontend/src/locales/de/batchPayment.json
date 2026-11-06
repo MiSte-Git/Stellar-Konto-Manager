@@ -40,14 +40,17 @@
     "close": "Schliessen",
     "copyDetails": "Details kopieren",
     "copied": "Kopiert",
-    "cancelWaiting": "Warten abbrechen"
+    "cancelWaiting": "Warten abbrechen",
+    "checkStatusNow": "Status jetzt prüfen",
+    "checkingStatus": "Prüfe Status …",
+    "resend": "Erneut senden"
   },
   "review": {
     "include": "Senden",
     "status": "Status",
     "ready": "Bereit",
     "recentSent": "Mit gleichen Daten bereits gesendet ({{time}}). Nur bei Absicht erneut auswählen.",
-    "recentAmbiguous": "Gesperrt: Der Status des letzten Versands dieser Zahlung ist unklar. Bitte im Explorer prüfen. Beim nächsten Prüfen fragt SKM Horizon erneut ab. Sobald die Transaktion im Ledger ist oder ihre Gültigkeit (3 Minuten) laut Netz abgelaufen ist, ist der Status eindeutig.",
+    "recentAmbiguous": "Gesperrt: Der Status des letzten Versands dieser Zahlung ist unklar. Bitte im Explorer prüfen. Die Transaktion war 3 Minuten gültig. Eindeutig wird der Status, wenn das Netz danach eine weitere Minute (Sicherheitsabstand) Ledger geschlossen hat oder die Transaktion im Ledger steht.",
     "totalsTitle": "Summe pro Sender (inkl. Gebühren)",
     "xlmTotal": "{{needed}} XLM von {{available}} XLM verfügbar",
     "assetTotal": "{{needed}} {{code}} von {{available}} {{code}}",
@@ -56,7 +59,7 @@
     "signHint": "Vor der ersten Zahlung wird der Secret Key jedes Senders einmal abgefragt, falls er nicht in dieser Session gespeichert ist. Ist „In Session merken“ aktiv, bleibt der Key verschlüsselt in dieser Browser-Session gespeichert. Die Zahlungen werden danach nacheinander gesendet.",
     "assetTotalIssuer": "{{needed}} {{code}} (Aussteller)",
     "similarSent": "Achtung: Dieselbe Zahlung an dieses Konto mit gleicher ID (M-Adresse oder Memo ID) wurde bereits gesendet ({{time}}). Nur bei Absicht auswählen.",
-    "similarAmbiguous": "Gesperrt: Dieselbe Zahlung an dieses Konto mit gleicher ID (M-Adresse oder Memo ID) hat einen unklaren Status. Bitte im Explorer prüfen, beim nächsten Prüfen fragt SKM Horizon erneut ab.",
+    "similarAmbiguous": "Gesperrt: Dieselbe Zahlung an dieses Konto mit gleicher ID (M-Adresse oder Memo ID) hat einen unklaren Status. Bitte im Explorer prüfen.",
     "flaggedNotPreselected": "Wegen dieser Markierung nicht vorgewählt. Nur bei Absicht auswählen."
   },
   "status": {
@@ -68,11 +71,15 @@
     "skipped": "Nicht gesendet",
     "running": "Zahlungen werden gesendet …",
     "waitingForLock": "Wartet auf eine andere Sammelzahlung, die in einem anderen Tab gerade sendet …",
-    "cause": "Ursache"
+    "cause": "Ursache",
+    "notSent": "Nicht gesendet",
+    "maybeSent": "Möglicherweise gesendet – nicht erneut senden",
+    "logMissing": "Status unklar – Eintrag im Sende-Protokoll fehlt"
   },
   "done": {
     "summary": "{{sent}} von {{total}} Zahlungen gesendet",
-    "ambiguousHint": "Mindestens eine Transaktion konnte nicht eindeutig bestätigt werden. Die restlichen Zahlungen wurden deshalb nicht gesendet. Bitte den Hash im Explorer prüfen. Die Zahlung bleibt gesperrt, bis der Status beim Prüfen eindeutig ist."
+    "ambiguousHint": "Mindestens eine Transaktion konnte nicht eindeutig bestätigt werden. Die restlichen Zahlungen wurden deshalb nicht gesendet. Bei der unklaren Zahlung steht, ab wann der Status eindeutig ist. Solange dieser Dialog offen ist, prüft SKM dann einmal automatisch, mit „Status jetzt prüfen“ jederzeit. Bis Horizon eindeutig antwortet, bleibt die Zahlung gesperrt.",
+    "maybeSentHint": "Bei mindestens einer Zahlung hat das Netz die Sequence der früheren Transaktion abgelehnt (tx_bad_seq). Sie wurde wahrscheinlich schon ausgeführt. Die restlichen Zahlungen wurden deshalb nicht gesendet. Die Zahlung bleibt gesperrt, bis Horizon den Ausgang eindeutig zeigt."
   },
   "secret": {
     "forAccount": "Secret Key für Sender {{label}}: {{account}}"
@@ -113,7 +120,12 @@
     "duplicateRouteInList": "Diese Zahlung steht schon weiter oben in der Liste, dort als M-Adresse bzw. als G-Adresse mit gleicher Memo ID.",
     "lockLost": "Sendevorgang gestoppt, weil ein anderer Tab übernommen hat (z.B. nach Ruhezustand)",
     "containsSecret": "In dieser Zeile steht etwas, das wie ein Secret Key aussieht. Bitte entfernen, die Zeile wird nicht geprüft.",
-    "networkChanged": "Netz gewechselt, nicht gesendet"
+    "networkChanged": "Netz gewechselt, nicht gesendet",
+    "badSeqMaybeSent": "Das Netz hat die Sequence abgelehnt (tx_bad_seq), die frühere Transaktion wurde wahrscheinlich ausgeführt. Es wird nicht erneut gesendet.",
+    "pinConsumed": "Die Sequence der früheren Transaktion ist inzwischen verbraucht. Nicht gesendet, der Status der früheren Transaktion wird erneut geprüft.",
+    "logMissing": "Der Eintrag im Sende-Protokoll fehlt. Der Ausgang der früheren Transaktion ist offen. Bitte die Liste erneut prüfen, SKM sucht dann bei Horizon nach dieser Zahlung.",
+    "logMissingPending": "Der Eintrag im Sende-Protokoll fehlt, und die frühere Transaktion kann laut Netz noch ankommen. Nicht senden, bitte später erneut prüfen.",
+    "historyCheckFailed": "Der Eintrag im Sende-Protokoll fehlt, und Horizon konnte nicht nach dieser Zahlung (letzte 24 Stunden) durchsucht werden. Nicht senden, bitte später erneut prüfen."
   },
   "flags": {
     "compromised": "Warnung: Dieser Empfänger ist in der Vertrauensliste als kompromittiert markiert.",
@@ -122,5 +134,34 @@
   "networkChanged": {
     "closed": "Netz gewechselt: Die Sammelzahlung wurde geschlossen. Die Liste für das vorige Netz bleibt gespeichert.",
     "stopped": "Netz gewechselt: Der Lauf wurde nach der laufenden Zahlung gestoppt. Weitere Zahlungen werden nicht gesendet. Die Liste bleibt gespeichert."
+  },
+  "ambiguous": {
+    "clearAt": "Eindeutig ab ca. {{time}} (Ende der Gültigkeit plus 1 Minute Sicherheitsabstand, massgeblich ist die Zeit des Netzes).",
+    "clearAtUnknown": "Für diesen Eintrag ist das Ende der Gültigkeit nicht bekannt. Er bleibt gesperrt, bis Horizon die Transaktion zeigt.",
+    "stillPending": "Noch nicht eindeutig: Die Transaktion ist nicht im Ledger, kann laut Netz aber bis ca. {{time}} noch ankommen. Die Zahlung bleibt gesperrt.",
+    "unreachable": "Horizon war nicht erreichbar oder hat nicht eindeutig geantwortet. Der Status ist weiter unklar, die Zahlung bleibt gesperrt. Bitte später erneut prüfen.",
+    "resolvedSent": "laut Horizon nachträglich bestätigt",
+    "resolvedNotSent": "laut Horizon nicht im Ledger und abgelaufen oder fehlgeschlagen",
+    "notSentHint": "Diese Zahlung wurde laut Horizon nicht ausgeführt. Die alte Transaktion ist nicht mehr gültig und kann nicht mehr ankommen. Sie kann erneut gesendet werden (neue Transaktion). Ist die Sequence der alten Transaktion noch frei, nutzt die neue genau diese Sequence, dann kann das Netz höchstens eine der beiden ausführen.",
+    "countdown": "Status unklar. SKM prüft automatisch erneut in {{time}}. Vorher nicht erneut senden, auch nicht als Einzelzahlung.",
+    "checking": "Status unklar. Wird geprüft …",
+    "logMissing": "Der Eintrag im Sende-Protokoll fehlt (z. B. Website-Daten gelöscht). Der Ausgang ist offen, nicht erneut senden. Beim nächsten Prüfen der Liste sucht SKM bei Horizon nach dieser Zahlung.",
+    "unreadable": "Der Eintrag im Sende-Protokoll ist unlesbar. Der Ausgang ist offen, die Zahlung bleibt gesperrt. Bitte im Explorer prüfen, ob sie angekommen ist.",
+    "sentEarlier": "laut Horizon mit der früheren Transaktion bereits gesendet"
+  },
+  "diag": {
+    "title": "Diagnose (ohne Inhalt der Transaktion, ohne XDR und Secret Keys):",
+    "request": "Request: {{method}} {{url}}",
+    "time": "Zeitpunkt: {{at}}, Dauer: {{ms}} ms",
+    "error": "Fehler: {{name}}: {{message}} ({{kind}})",
+    "httpStatus": "HTTP {{status}} {{statusText}}",
+    "noResponse": "keine lesbare Antwort: Netzfehler, CORS oder Blocker",
+    "env": "navigator.onLine: {{online}}, visibilityState: {{visibility}}",
+    "requests": "Horizon-Requests im Lauf: {{run}} (seit Öffnen des Dialogs: {{total}})",
+    "lookups": "Abfragen des Hashes danach: {{count}}",
+    "lookupNotFound": "404 (nicht gefunden)",
+    "lookupFound": "gefunden",
+    "lookupStatus": "HTTP {{status}}",
+    "lookupNetwork": "Netzfehler ({{name}}: {{message}})"
   }
 }

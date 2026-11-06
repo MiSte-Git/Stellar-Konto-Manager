@@ -196,6 +196,58 @@ describe('sent log', () => {
     expect(readSentEntry('PUBLIC', 'amb')).not.toBeNull();
   });
 
+  it('F3: treats maxTime <= 0 as unknown (dropped), keeps a positive maxTime', () => {
+    writeSentEntry('PUBLIC', 'z0', { hash: HASH, at: 1, status: 'ambiguous', maxTime: 0 });
+    writeSentEntry('PUBLIC', 'zneg', { hash: HASH, at: 1, status: 'ambiguous', maxTime: -60 });
+    window.localStorage.setItem(sentEntryKey('PUBLIC', 'zstr'), JSON.stringify({ hash: HASH, at: 1, status: 'ambiguous', maxTime: '0' }));
+    for (const fp of ['z0', 'zneg', 'zstr']) {
+      const e = readSentEntry('PUBLIC', fp);
+      expect(e.status).toBe('ambiguous');
+      expect(e).not.toHaveProperty('maxTime');
+    }
+    // Gegenprobe
+    writeSentEntry('PUBLIC', 'zpos', { hash: HASH, at: 1, status: 'ambiguous', maxTime: 5 });
+    expect(readSentEntry('PUBLIC', 'zpos').maxTime).toBe(5);
+  });
+
+  it('F4: keeps unreadable entries when pruning and reads them as unclear', () => {
+    const now = Date.now();
+    const brokenKey = sentEntryKey('PUBLIC', 'broken');
+    const badHashKey = sentEntryKey('PUBLIC', 'badhash');
+    window.localStorage.setItem(brokenKey, '{not json');
+    window.localStorage.setItem(badHashKey, JSON.stringify({ hash: 'xyz', at: 1, status: 'ambiguous' }));
+    writeSentEntry('PUBLIC', 'old', { hash: HASH, at: now - 8 * 24 * 3600 * 1000, status: 'success' });
+    pruneSentLog(now);
+    expect(window.localStorage.getItem(brokenKey)).toBe('{not json');
+    expect(window.localStorage.getItem(badHashKey)).not.toBeNull();
+    expect(readSentEntry('PUBLIC', 'broken')).toMatchObject({ status: 'ambiguous', unreadable: true });
+    expect(readSentEntry('PUBLIC', 'badhash')).toMatchObject({ status: 'ambiguous', unreadable: true });
+    expect(recentSendOf(readSentEntry('PUBLIC', 'broken'), now)).toBeTruthy(); // sperrt
+    // Gegenprobe: lesbarer, alter Erfolg wird entfernt; kein Eintrag bleibt null
+    expect(readSentEntry('PUBLIC', 'old')).toBeNull();
+    expect(readSentEntry('PUBLIC', 'never')).toBeNull();
+  });
+
+  it('keeps sequence, source and earlier hashes; notApplied does not block, pin needs a sequence', () => {
+    const SRC_KEY = Keypair.random().publicKey();
+    const OLD = 'b'.repeat(64);
+    writeSentEntry('PUBLIC', 'seq', { hash: HASH, at: 1, status: 'ambiguous', maxTime: 9, seq: '101', source: SRC_KEY, prev: [OLD, 'nope', HASH] });
+    expect(readSentEntry('PUBLIC', 'seq')).toEqual({ hash: HASH, at: 1, status: 'ambiguous', maxTime: 9, seq: '101', source: SRC_KEY, prev: [OLD] });
+    // Sequence nur zusammen mit gueltigem Quellkonto
+    writeSentEntry('PUBLIC', 'seq2', { hash: HASH, at: 1, status: 'ambiguous', seq: '101', source: 'G-nope' });
+    expect(readSentEntry('PUBLIC', 'seq2')).not.toHaveProperty('seq');
+    writeSentEntry('PUBLIC', 'na', { hash: HASH, at: 1, status: 'notApplied', seq: '101', source: SRC_KEY, pin: true });
+    expect(readSentEntry('PUBLIC', 'na')).toMatchObject({ status: 'notApplied', pin: true, seq: '101' });
+    expect(recentSendOf(readSentEntry('PUBLIC', 'na'))).toBeNull();
+    // Pin ohne Sequence ist nicht sicher lesbar: wird nicht geschrieben bzw. als unklar gelesen
+    expect(writeSentEntry('PUBLIC', 'na2', { hash: HASH, at: 1, status: 'notApplied', pin: true })).toBe(false);
+    window.localStorage.setItem(sentEntryKey('PUBLIC', 'na3'), JSON.stringify({ hash: HASH, at: 1, status: 'notApplied', pin: true }));
+    expect(readSentEntry('PUBLIC', 'na3')).toMatchObject({ status: 'ambiguous', unreadable: true });
+    // notApplied bleibt beim Aufraeumen stehen
+    pruneSentLog(Date.now() + 30 * 24 * 3600 * 1000);
+    expect(readSentEntry('PUBLIC', 'na')).not.toBeNull();
+  });
+
   it('treats ambiguous as recent forever and success only within the window', () => {
     const now = Date.now();
     expect(recentSendOf({ hash: HASH, at: now - 1000, status: 'success' }, now)).toBeTruthy();

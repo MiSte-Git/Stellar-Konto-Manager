@@ -6,7 +6,7 @@ import { Buffer } from 'buffer';
 import i18n from '../../../i18n.js';
 import BatchPaymentDialog from '../BatchPaymentDialog.jsx';
 import {
-  BATCH_PAYMENT_STORAGE_KEY, createEmptyRow, readSentEntry, saveBatchRows, writeSentEntry,
+  BATCH_PAYMENT_STORAGE_KEY, createEmptyRow, readSentEntry, saveBatchRows, sentEntryKey, writeSentEntry,
 } from '../../../utils/batchPayment/batchPaymentStore.js';
 import { paymentFingerprint, routingFingerprint } from '../../../utils/batchPayment/batchPaymentLogic.js';
 import { RESEND_WINDOW_MS } from '../../../utils/batchPayment/batchPaymentStore.js';
@@ -25,12 +25,28 @@ const hoisted = vi.hoisted(() => ({
   submitMock: vi.fn(),
   txLookupMock: vi.fn(),
   serverNetworkMock: vi.fn(),
+  paymentsMock: vi.fn(),
+  requestInterceptors: [],
 }));
+// Wie der Request-Interceptor des SDK: jeder Horizon-Request ruft die registrierten Handler.
+const countRequest = () => hoisted.requestInterceptors.forEach((fn) => fn?.({}));
 
 const fakeServer = () => ({
+  httpClient: {
+    interceptors: {
+      request: {
+        use: (fn) => hoisted.requestInterceptors.push(fn) - 1,
+        eject: (id) => { hoisted.requestInterceptors[id] = null; },
+      },
+    },
+  },
   loadAccount: hoisted.loadAccountMock,
   ledgers: () => ({ order: () => ({ limit: () => ({ call: async () => ({ records: [{ base_reserve_in_stroops: 5000000, closed_at: hoisted.ledgerClosedAt.value }] }) }) }) }),
   transactions: () => ({ transaction: (hash) => ({ call: () => hoisted.txLookupMock(hash) }) }),
+  payments: () => {
+    const b = { forAccount: () => b, order: () => b, limit: () => b, join: () => b, call: () => hoisted.paymentsMock() };
+    return b;
+  },
 });
 vi.mock('../../../utils/stellar/stellarUtils.js', async (importOriginal) => ({
   ...(await importOriginal()),
@@ -90,11 +106,13 @@ beforeEach(() => {
   vi.clearAllMocks();
   window.localStorage.clear();
   window.localStorage.setItem('SKM_NETWORK', 'PUBLIC');
-  hoisted.loadAccountMock.mockImplementation(async (id) => account(id));
+  hoisted.requestInterceptors.length = 0;
+  hoisted.loadAccountMock.mockImplementation(async (id) => { countRequest(); return account(id); });
   hoisted.getSessionSecretMock.mockImplementation(async (acc) => (acc === SENDER.publicKey() ? SENDER.secret() : acc === SENDER2.publicKey() ? SENDER2.secret() : ''));
   hoisted.submitMock.mockImplementation(async (_server, tx) => ({ hash: hashOf(tx) }));
   hoisted.txLookupMock.mockImplementation(async () => { const e = new Error('nf'); e.response = { status: 404 }; throw e; });
   hoisted.ledgerClosedAt.value = undefined;
+  hoisted.paymentsMock.mockImplementation(async () => ({ records: [] }));
 });
 
 afterEach(() => vi.restoreAllMocks());
@@ -209,8 +227,9 @@ describe('BatchPaymentDialog', () => {
     expect(screen.getAllByRole('checkbox')[0]).toBeDisabled();
     expect(screen.getAllByRole('checkbox')[0].checked).toBe(false);
 
-    // Horizon findet sie jetzt erfolgreich -> wird zu "bereits gesendet".
-    hoisted.txLookupMock.mockResolvedValue({ successful: true });
+    // Horizon findet sie jetzt erfolgreich -> wird zu "bereits gesendet" (Antwort mit
+    // passendem Hash, siehe F5).
+    hoisted.txLookupMock.mockImplementation(async (hash) => ({ hash, successful: true }));
     fireEvent.click(screen.getByRole('button', { name: 'Zurück zur Liste' }));
     fireEvent.click(screen.getByRole('button', { name: 'Prüfen' }));
     await waitFor(() => expect(screen.getByText(/bereits gesendet/)).toBeInTheDocument());
@@ -302,16 +321,18 @@ describe('BatchPaymentDialog', () => {
     expect(readSentEntry('PUBLIC', fpOf(a, m)).status).toBe('success');
   });
 
-  it('releases an unclear payment once Horizon has a ledger after its maxTime', async () => {
+  it('releases an unclear payment once Horizon has a ledger after its maxTime (sequence still free: with pin)', async () => {
     const a = rowA();
     const maxTime = Math.floor(Date.now() / 1000) - 120;
-    writeSentEntry('PUBLIC', fpOf(a, DEST_A), { hash: 'e'.repeat(64), at: Date.now(), status: 'ambiguous', maxTime });
+    // Konto-Sequence 100 (Mock), Transaktion hatte 101: Sequence noch frei.
+    writeSentEntry('PUBLIC', fpOf(a, DEST_A), { hash: 'e'.repeat(64), at: Date.now(), status: 'ambiguous', maxTime, seq: '101', source: SENDER.publicKey() });
     hoisted.ledgerClosedAt.value = new Date((maxTime + 65) * 1000).toISOString();
     saveBatchRows('PUBLIC', [a]);
     renderDialog();
     fireEvent.click(screen.getByRole('button', { name: 'Prüfen' }));
     await waitFor(() => expect(screen.getByText('Bereit')).toBeInTheDocument(), { timeout: 5000 });
-    expect(readSentEntry('PUBLIC', fpOf(a, DEST_A))).toBeNull();
+    // Nicht geloescht, sondern als nicht ausgefuehrt mit Pin vermerkt
+    expect(readSentEntry('PUBLIC', fpOf(a, DEST_A))).toMatchObject({ status: 'notApplied', pin: true, seq: '101', hash: 'e'.repeat(64) });
   });
 
   it('keeps an unclear payment blocked while the ledger has not passed maxTime, whatever the client clock says', async () => {
@@ -763,5 +784,553 @@ describe('BatchPaymentDialog: Server und Key-Abfrage beim Netzwechsel (N2, N3)',
     expect(document.querySelector('input[placeholder="z.B."]')).toBeNull();
     expect(hoisted.submitMock).not.toHaveBeenCalled();
     expect(screen.getByText(new RegExp(i18n.t('batchPayment:errors.networkChanged')))).toBeInTheDocument();
+  });
+
+});
+
+describe('BatchPaymentDialog: unklarer Status: Uhrzeit, Status jetzt pruefen, automatische Pruefung', () => {
+  const nowSec = () => Math.floor(Date.now() / 1000);
+  const isoAt = (sec) => new Date(sec * 1000).toISOString();
+  const clearTimeOf = (maxTime) => {
+    const d = new Date((maxTime + 60) * 1000);
+    return d.toDateString() === new Date().toDateString() ? d.toLocaleTimeString() : d.toLocaleString();
+  };
+  const netError = async () => { throw new TypeError('Failed to fetch'); };
+  const checkNow = () => fireEvent.click(screen.getByRole('button', { name: 'Status jetzt prüfen' }));
+
+  async function blockedReview(entryOverrides = {}) {
+    const a = rowA();
+    const maxTime = nowSec() + 100;
+    // Sequence 101 bei Konto-Sequence 100 (Mock): Sequence noch frei.
+    writeSentEntry('PUBLIC', fpOf(a, DEST_A), {
+      hash: 'e'.repeat(64), at: Date.now(), status: 'ambiguous', maxTime, seq: '101', source: SENDER.publicKey(), ...entryOverrides,
+    });
+    hoisted.ledgerClosedAt.value = isoAt(nowSec()); // Netz: noch innerhalb der Gueltigkeit
+    saveBatchRows('PUBLIC', [a]);
+    renderDialog();
+    fireEvent.click(screen.getByRole('button', { name: 'Prüfen' }));
+    await waitFor(() => expect(screen.getByText(/Gesperrt: Der Status/)).toBeInTheDocument());
+    return { a, maxTime };
+  }
+
+  it('zeigt die Uhrzeit, ab der der Status eindeutig wird (maxTime plus 60 s), ohne maxTime den Hinweis', async () => {
+    const { maxTime } = await blockedReview();
+    const line = screen.getByTestId('batch-ambiguous-clear-at').textContent;
+    expect(line).toContain(`Eindeutig ab ca. ${clearTimeOf(maxTime)}`);
+    // Gegenprobe: nicht maxTime selbst (ohne Puffer)
+    const d = new Date(maxTime * 1000);
+    expect(line).not.toContain(d.toLocaleTimeString());
+    expect(screen.queryByText(/3 Minuten\)/)).toBeNull();
+  });
+
+  it('ohne maxTime keine Uhrzeit, sondern der Hinweis, dass das Ende unbekannt ist', async () => {
+    await blockedReview({ maxTime: undefined });
+    expect(screen.getByTestId('batch-ambiguous-countdown').textContent).toMatch(/Ende der Gültigkeit nicht bekannt/);
+    expect(screen.queryByTestId('batch-ambiguous-clear-at')).toBeNull();
+  });
+
+  it('Status jetzt pruefen vor Ablauf: bleibt gesperrt; nach Ablauf (expired): erneut senden moeglich', async () => {
+    const { a } = await blockedReview();
+    checkNow();
+    await waitFor(() => expect(screen.getByText(/Noch nicht eindeutig/)).toBeInTheDocument());
+    expect(screen.getByRole('checkbox')).toBeDisabled();
+    expect(screen.queryByText(/Horizon war nicht erreichbar/)).toBeNull();
+    expect(readSentEntry('PUBLIC', fpOf(a, DEST_A)).status).toBe('ambiguous');
+    expect(screen.queryByRole('button', { name: 'Erneut senden' })).toBeNull();
+
+    // Netz hat einen Ledger nach maxTime plus Puffer geschlossen, Transaktion nicht da.
+    const entry = readSentEntry('PUBLIC', fpOf(a, DEST_A));
+    hoisted.ledgerClosedAt.value = isoAt(entry.maxTime + 65);
+    checkNow();
+    await waitFor(() => expect(screen.getByTestId('batch-resolved-not-sent')).toBeInTheDocument(), { timeout: 5000 });
+    expect(screen.getByText(/alte Transaktion ist nicht mehr gültig/)).toBeInTheDocument();
+    expect(readSentEntry('PUBLIC', fpOf(a, DEST_A))).toMatchObject({ status: 'notApplied', pin: true });
+    expect(screen.getByRole('checkbox')).not.toBeDisabled();
+    expect(screen.getByRole('checkbox').checked).toBe(false);
+    fireEvent.click(screen.getByRole('button', { name: 'Erneut senden' }));
+    expect(screen.getByRole('checkbox').checked).toBe(true);
+    fireEvent.click(screen.getByRole('button', { name: '1 Zahlung senden' }));
+    await waitFor(() => expect(screen.getByTestId('batch-summary').textContent).toContain('1 von 1'));
+    expect(hoisted.submitMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('success: als gesendet anzeigen, nicht vorgewaehlt; failed: als nicht gesendet', async () => {
+    const { a } = await blockedReview();
+    hoisted.txLookupMock.mockImplementation(async (hash) => ({ hash, successful: true }));
+    checkNow();
+    await waitFor(() => expect(screen.getByText(/nachträglich bestätigt/)).toBeInTheDocument());
+    expect(readSentEntry('PUBLIC', fpOf(a, DEST_A)).status).toBe('success');
+    expect(screen.getByText(/Mit gleichen Daten bereits gesendet/)).toBeInTheDocument();
+    expect(screen.getByRole('checkbox').checked).toBe(false);
+    expect(screen.queryByRole('button', { name: 'Erneut senden' })).toBeNull();
+  });
+
+  it('failed (im Ledger fehlgeschlagen) gilt als nicht gesendet', async () => {
+    const { a } = await blockedReview();
+    hoisted.txLookupMock.mockImplementation(async (hash) => ({ hash, successful: false }));
+    checkNow();
+    await waitFor(() => expect(screen.getByTestId('batch-resolved-not-sent')).toBeInTheDocument());
+    // Sequence von der fehlgeschlagenen Transaktion verbraucht: kein Pin
+    const e = readSentEntry('PUBLIC', fpOf(a, DEST_A));
+    expect(e.status).toBe('notApplied');
+    expect(e.pin).toBeUndefined();
+  });
+
+  it('unknown (Horizon nicht erreichbar): Hinweis statt still gesperrt', async () => {
+    const { a } = await blockedReview();
+    hoisted.txLookupMock.mockImplementation(netError);
+    checkNow();
+    await waitFor(() => expect(screen.getByText(/Horizon war nicht erreichbar/)).toBeInTheDocument());
+    expect(screen.getByRole('checkbox')).toBeDisabled();
+    expect(readSentEntry('PUBLIC', fpOf(a, DEST_A)).status).toBe('ambiguous');
+    expect(screen.queryByText(/Noch nicht eindeutig/)).toBeNull();
+  });
+
+  it('prueft im Ergebnis nach Ablauf einmal automatisch und zeigt dann Erneut senden', async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true, toFake: ['setTimeout', 'clearTimeout'] });
+    try {
+      const a = rowA();
+      let maxTime;
+      hoisted.submitMock.mockImplementationOnce(async (_s, tx) => {
+        maxTime = Number(tx.timeBounds.maxTime);
+        throw new AmbiguousSubmitResultError(hashOf(tx), new TypeError('Failed to fetch'));
+      });
+      saveBatchRows('PUBLIC', [a]);
+      renderDialog();
+      await checkAndWait(1);
+      fireEvent.click(screen.getByRole('button', { name: '1 Zahlung senden' }));
+      await waitFor(() => expect(screen.getByTestId('batch-summary')).toBeInTheDocument());
+      expect(screen.getByTestId('batch-ambiguous-clear-at').textContent).toContain(clearTimeOf(maxTime));
+      hoisted.ledgerClosedAt.value = isoAt(maxTime + 65);
+      const lookupsBefore = hoisted.txLookupMock.mock.calls.length;
+
+      // Gegenprobe: vor Ablauf keine Abfrage
+      await act(async () => { await vi.advanceTimersByTimeAsync(200 * 1000); });
+      expect(hoisted.txLookupMock.mock.calls.length).toBe(lookupsBefore);
+
+      await act(async () => { await vi.advanceTimersByTimeAsync(60 * 1000); });
+      await act(async () => { await vi.advanceTimersByTimeAsync(3000); });
+      await waitFor(() => expect(screen.getByTestId('batch-resolved-not-sent')).toBeInTheDocument());
+      expect(screen.getByText(/Nicht gesendet \(laut Horizon nicht im Ledger/)).toBeInTheDocument();
+      expect(readSentEntry('PUBLIC', fpOf(a, DEST_A))).toMatchObject({ status: 'notApplied', pin: true, seq: '101', source: SENDER.publicKey() });
+      const lookupsAfter = hoisted.txLookupMock.mock.calls.length;
+      expect(lookupsAfter).toBe(lookupsBefore + 2); // Abfrage plus Wiederholung, nur einmal
+      await act(async () => { await vi.advanceTimersByTimeAsync(600 * 1000); });
+      expect(hoisted.txLookupMock.mock.calls.length).toBe(lookupsAfter);
+
+      // Erneut senden fuehrt zur neuen Pruefung, die Zahlung ist wieder bereit
+      fireEvent.click(screen.getByRole('button', { name: 'Erneut senden' }));
+      await waitFor(() => expect(screen.getByText('Bereit')).toBeInTheDocument());
+      expect(screen.getByRole('checkbox').checked).toBe(true);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+});
+
+describe('BatchPaymentDialog: Countdown und Diagnose bei unklarem Status', () => {
+  const nowSec = () => Math.floor(Date.now() / 1000);
+  const isoAt = (sec) => new Date(sec * 1000).toISOString();
+  const countdownSeconds = () => {
+    const m = screen.getByTestId('batch-ambiguous-countdown').textContent.match(/in (\d\d):(\d\d)/);
+    return m ? Number(m[1]) * 60 + Number(m[2]) : null;
+  };
+  // Zeitpunkt der automatischen Pruefung: maxTime + 60 s Puffer + 10 s Marge
+  const dueOf = (maxTime) => (maxTime + 60) * 1000 + 10 * 1000;
+  const fake = () => vi.useFakeTimers({
+    shouldAdvanceTime: true, toFake: ['setTimeout', 'clearTimeout', 'setInterval', 'clearInterval', 'Date'],
+  });
+
+  it('zaehlt herunter, stimmt nach Neuladen und prueft nach Ablauf automatisch', async () => {
+    fake();
+    try {
+      const a = rowA();
+      const maxTime = nowSec() + 100;
+      writeSentEntry('PUBLIC', fpOf(a, DEST_A), { hash: 'e'.repeat(64), at: Date.now(), status: 'ambiguous', maxTime, seq: '101', source: SENDER.publicKey() });
+      hoisted.ledgerClosedAt.value = isoAt(nowSec());
+      saveBatchRows('PUBLIC', [a]);
+      const first = renderDialog();
+      fireEvent.click(screen.getByRole('button', { name: 'Prüfen' }));
+      await waitFor(() => expect(screen.getByTestId('batch-ambiguous-countdown')).toBeInTheDocument());
+      const box = screen.getByTestId('batch-ambiguous-countdown');
+      expect(box.textContent).toMatch(/^Status unklar\. SKM prüft automatisch erneut in \d\d:\d\d\. Vorher nicht erneut senden, auch nicht als Einzelzahlung\.$/);
+      expect(box.className).toContain('bg-amber-50');
+      expect(box.className).not.toMatch(/bg-red/);
+      const expected0 = Math.ceil((dueOf(maxTime) - Date.now()) / 1000);
+      expect(Math.abs(countdownSeconds() - expected0)).toBeLessThanOrEqual(1);
+      expect(screen.getByTestId('batch-ambiguous-clear-at').textContent).toContain('Eindeutig ab ca.');
+
+      await act(async () => { await vi.advanceTimersByTimeAsync(30 * 1000); });
+      const after30 = countdownSeconds();
+      expect(Math.abs(after30 - (expected0 - 30))).toBeLessThanOrEqual(1);
+
+      // Neuladen: Countdown haengt an maxTime, beginnt also nicht von vorn.
+      first.unmount();
+      await act(async () => { await vi.advanceTimersByTimeAsync(30 * 1000); });
+      renderDialog();
+      fireEvent.click(screen.getByRole('button', { name: 'Prüfen' }));
+      await waitFor(() => expect(screen.getByTestId('batch-ambiguous-countdown')).toBeInTheDocument());
+      const afterReload = countdownSeconds();
+      expect(Math.abs(afterReload - (expected0 - 60))).toBeLessThanOrEqual(1);
+      expect(afterReload).toBeLessThan(expected0 - 50); // Gegenprobe: kein Neustart bei vollem Wert
+
+      // Vor Ablauf keine automatische Abfrage
+      const lookupsBefore = hoisted.txLookupMock.mock.calls.length;
+      await act(async () => { await vi.advanceTimersByTimeAsync((afterReload - 5) * 1000); });
+      expect(hoisted.txLookupMock.mock.calls.length).toBe(lookupsBefore);
+
+      // Nach Ablauf: "Wird geprueft ...", dann Ergebnis (abgelaufen -> nicht gesendet)
+      hoisted.ledgerClosedAt.value = isoAt(maxTime + 65);
+      await act(async () => { await vi.advanceTimersByTimeAsync(6 * 1000); });
+      await waitFor(() => expect(screen.getByTestId('batch-ambiguous-countdown').textContent).toBe('Status unklar. Wird geprüft …'));
+      expect(hoisted.txLookupMock.mock.calls.length).toBe(lookupsBefore + 1);
+      await act(async () => { await vi.advanceTimersByTimeAsync(3000); });
+      await waitFor(() => expect(screen.getByTestId('batch-resolved-not-sent')).toBeInTheDocument());
+      expect(readSentEntry('PUBLIC', fpOf(a, DEST_A))).toMatchObject({ status: 'notApplied', pin: true });
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('zeigt nach Ablauf das Ergebnis der Pruefung im Kasten (Horizon nicht erreichbar)', async () => {
+    fake();
+    try {
+      const a = rowA();
+      const maxTime = nowSec() + 5;
+      writeSentEntry('PUBLIC', fpOf(a, DEST_A), { hash: 'e'.repeat(64), at: Date.now(), status: 'ambiguous', maxTime });
+      hoisted.ledgerClosedAt.value = isoAt(nowSec());
+      saveBatchRows('PUBLIC', [a]);
+      renderDialog();
+      fireEvent.click(screen.getByRole('button', { name: 'Prüfen' }));
+      await waitFor(() => expect(screen.getByTestId('batch-ambiguous-countdown').textContent).toMatch(/erneut in/));
+      hoisted.txLookupMock.mockImplementation(async () => { throw new TypeError('Failed to fetch'); });
+      await act(async () => { await vi.advanceTimersByTimeAsync(80 * 1000); });
+      await waitFor(() => expect(screen.getByTestId('batch-ambiguous-countdown').textContent).toMatch(/Horizon war nicht erreichbar/));
+      expect(screen.getByRole('checkbox')).toBeDisabled();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('Details kopieren enthaelt die Diagnosefelder, aber keinen XDR und keine Secrets', async () => {
+    const writeText = vi.fn(async () => {});
+    Object.defineProperty(window.navigator, 'clipboard', { value: { writeText }, configurable: true });
+    const planted = 'A'.repeat(80); // wie ein XDR-Stueck in einer Fehlermeldung
+    let submittedXdr = '';
+    hoisted.submitMock.mockImplementationOnce(async (_s, tx) => {
+      submittedXdr = tx.toXDR();
+      countRequest();
+      throw new AmbiguousSubmitResultError(hashOf(tx), new TypeError('Failed to fetch'), {
+        request: {
+          method: 'POST', url: 'https://horizon.stellar.org/transactions', at: '2026-11-06T09:28:41.123Z', durationMs: 1234,
+          error: { name: 'TypeError', message: `Failed to fetch ${planted} ${SENDER.secret()}`, status: null, statusText: '', readable: false },
+          online: true, visibility: 'visible',
+        },
+        lookups: [
+          { at: '2026-11-06T09:28:41.200Z', result: 'notFound', status: 404 },
+          { at: '2026-11-06T09:28:42.700Z', result: 'network', name: 'TypeError', message: 'Failed to fetch' },
+          { at: '2026-11-06T09:28:44.200Z', result: 'status', status: 503 },
+        ],
+      });
+    });
+    saveBatchRows('PUBLIC', [rowA(), rowB()]);
+    renderDialog();
+    await checkAndWait(2);
+    fireEvent.click(screen.getByRole('button', { name: '2 Zahlungen senden' }));
+    await waitFor(() => expect(screen.getByTestId('batch-summary')).toBeInTheDocument());
+    fireEvent.click(screen.getByRole('button', { name: 'Details kopieren' }));
+    await waitFor(() => expect(writeText).toHaveBeenCalled());
+    const text = writeText.mock.calls[0][0];
+    expect(text).toContain('Diagnose');
+    expect(text).toContain('Request: POST https://horizon.stellar.org/transactions');
+    expect(text).toContain('Zeitpunkt: 2026-11-06T09:28:41.123Z, Dauer: 1234 ms');
+    expect(text).toContain('Fehler: TypeError:');
+    expect(text).toContain('keine lesbare Antwort');
+    expect(text).toContain('navigator.onLine: true, visibilityState: visible');
+    const runCount = Number(text.match(/Horizon-Requests im Lauf: (\d+) \(seit Öffnen des Dialogs: (\d+)\)/)?.[1]);
+    const totalCount = Number(text.match(/seit Öffnen des Dialogs: (\d+)/)?.[1]);
+    expect(runCount).toBe(2); // loadAccount + Submit der ersten Zahlung
+    expect(totalCount).toBeGreaterThan(runCount); // plus Laden und Pruefen der Liste
+    expect(text).toContain('Abfragen des Hashes danach: 3');
+    expect(text).toMatch(/1\. 2026-11-06T09:28:41\.200Z 404 \(nicht gefunden\)/);
+    expect(text).toMatch(/2\. 2026-11-06T09:28:42\.700Z Netzfehler \(TypeError: Failed to fetch\)/);
+    expect(text).toMatch(/3\. 2026-11-06T09:28:44\.200Z HTTP 503/);
+    expect(text).toContain('Eindeutig ab ca.');
+    // keine Secrets, kein XDR (weder der gesendete noch ein Stueck in der Meldung)
+    expect(submittedXdr.length).toBeGreaterThan(50);
+    expect(text).not.toContain(submittedXdr);
+    expect(text).not.toContain(planted);
+    expect(text).not.toContain(SENDER.secret());
+  });
+
+  it('Gegenprobe: ohne unklaren Status keine Diagnose in den Details', async () => {
+    const writeText = vi.fn(async () => {});
+    Object.defineProperty(window.navigator, 'clipboard', { value: { writeText }, configurable: true });
+    saveBatchRows('PUBLIC', [rowA()]);
+    renderDialog();
+    await checkAndWait(1);
+    fireEvent.click(screen.getByRole('button', { name: '1 Zahlung senden' }));
+    await waitFor(() => expect(screen.getByTestId('batch-summary').textContent).toContain('1 von 1'));
+    fireEvent.click(screen.getByRole('button', { name: 'Details kopieren' }));
+    await waitFor(() => expect(writeText).toHaveBeenCalled());
+    expect(writeText.mock.calls[0][0]).not.toContain('Diagnose');
+  });
+});
+
+describe('BatchPaymentDialog: Sequence beim erneuten Senden (F1)', () => {
+  const nowSec = () => Math.floor(Date.now() / 1000);
+  const OLD = 'e'.repeat(64);
+  const pinned = (o = {}) => ({
+    hash: OLD, at: Date.now() - 600000, status: 'notApplied', maxTime: nowSec() - 300, seq: '105', source: SENDER.publicKey(), pin: true, ...o,
+  });
+  const badSeq = () => { const e = new Error('bad'); e.response = { status: 400, data: { extras: { result_codes: { transaction: 'tx_bad_seq' } } } }; return e; };
+
+  it('Erneut senden nutzt die gespeicherte Sequence, wenn die Konto-Sequence noch kleiner ist', async () => {
+    const a = rowA();
+    writeSentEntry('PUBLIC', fpOf(a, DEST_A), pinned());
+    saveBatchRows('PUBLIC', [a]);
+    renderDialog();
+    await checkAndWait(1);
+    fireEvent.click(screen.getByRole('button', { name: '1 Zahlung senden' }));
+    await waitFor(() => expect(screen.getByTestId('batch-summary').textContent).toContain('1 von 1'));
+    const tx = hoisted.submitMock.mock.calls[0][1];
+    expect(tx.sequence).toBe('105'); // Konto steht auf 100, normal waere 101
+    expect(readSentEntry('PUBLIC', fpOf(a, DEST_A))).toMatchObject({ status: 'success', seq: '105', hash: hashOf(tx) });
+  });
+
+  it('Gegenprobe: ohne Pin (Sequence war verbraucht) normale Sequence', async () => {
+    const a = rowA();
+    writeSentEntry('PUBLIC', fpOf(a, DEST_A), pinned({ pin: false }));
+    saveBatchRows('PUBLIC', [a]);
+    renderDialog();
+    await checkAndWait(1);
+    fireEvent.click(screen.getByRole('button', { name: '1 Zahlung senden' }));
+    await waitFor(() => expect(screen.getByTestId('batch-summary').textContent).toContain('1 von 1'));
+    expect(hoisted.submitMock.mock.calls[0][1].sequence).toBe('101');
+  });
+
+  it('vermerkt Sequence, Quellkonto und frueheren Hash im unklaren Eintrag', async () => {
+    const a = rowA();
+    writeSentEntry('PUBLIC', fpOf(a, DEST_A), pinned());
+    hoisted.submitMock.mockImplementationOnce(async (_s, tx) => { throw new AmbiguousSubmitResultError(hashOf(tx), new Error('t')); });
+    saveBatchRows('PUBLIC', [a]);
+    renderDialog();
+    await checkAndWait(1);
+    fireEvent.click(screen.getByRole('button', { name: '1 Zahlung senden' }));
+    await waitFor(() => expect(screen.getByTestId('batch-summary')).toBeInTheDocument());
+    expect(readSentEntry('PUBLIC', fpOf(a, DEST_A))).toMatchObject({ status: 'ambiguous', seq: '105', source: SENDER.publicKey(), prev: [OLD] });
+  });
+
+  it('sendet die Zahlung mit Pin vor anderen Zahlungen desselben Kontos', async () => {
+    const a = rowA(); const b = rowB();
+    writeSentEntry('PUBLIC', fpOf(a, DEST_A), pinned());
+    saveBatchRows('PUBLIC', [b, a]); // in der Liste steht a hinten
+    renderDialog();
+    await checkAndWait(2);
+    fireEvent.click(screen.getByRole('button', { name: '2 Zahlungen senden' }));
+    await waitFor(() => expect(screen.getByTestId('batch-summary').textContent).toContain('2 von 2'));
+    const calls = hoisted.submitMock.mock.calls.map(([, tx]) => [memoOf(tx), tx.sequence]);
+    expect(calls[0]).toEqual(['a', '105']);
+    expect(calls[1][0]).toBe('b');
+  });
+
+  it('Sequence inzwischen erreicht: nicht senden, fruehere Transaktion wieder als unklar fuehren', async () => {
+    const a = rowA();
+    writeSentEntry('PUBLIC', fpOf(a, DEST_A), pinned());
+    saveBatchRows('PUBLIC', [a]);
+    renderDialog();
+    await checkAndWait(1);
+    hoisted.loadAccountMock.mockImplementation(async (id) => { countRequest(); const acc = account(id); return Object.assign(acc, { sequenceNumber: () => '105' }); });
+    fireEvent.click(screen.getByRole('button', { name: '1 Zahlung senden' }));
+    await waitFor(() => expect(screen.getByText(/Sequence der früheren Transaktion ist inzwischen verbraucht/)).toBeInTheDocument());
+    expect(hoisted.submitMock).not.toHaveBeenCalled();
+    expect(readSentEntry('PUBLIC', fpOf(a, DEST_A))).toMatchObject({ status: 'ambiguous', hash: OLD, seq: '105' });
+  });
+
+  it('tx_bad_seq: keine zweite Sendung, moeglicherweise gesendet, Hash gesucht, Hinweis, Rest gestoppt', async () => {
+    const a = rowA(); const b = rowB();
+    writeSentEntry('PUBLIC', fpOf(a, DEST_A), pinned());
+    hoisted.submitMock.mockImplementationOnce(async () => { throw badSeq(); });
+    saveBatchRows('PUBLIC', [a, b]);
+    renderDialog();
+    await checkAndWait(2);
+    fireEvent.click(screen.getByRole('button', { name: '2 Zahlungen senden' }));
+    await waitFor(() => expect(screen.getByTestId('batch-summary')).toBeInTheDocument(), { timeout: 8000 });
+    expect(hoisted.submitMock).toHaveBeenCalledTimes(1);
+    expect(screen.getAllByText(/Möglicherweise gesendet/).length).toBeGreaterThan(0);
+    expect(screen.getByText(/Sequence der früheren Transaktion abgelehnt/)).toBeInTheDocument();
+    expect(hoisted.txLookupMock).toHaveBeenCalledWith(OLD);
+    expect(readSentEntry('PUBLIC', fpOf(a, DEST_A))).toMatchObject({ status: 'ambiguous', hash: OLD, seq: '105' });
+    expect(readSentEntry('PUBLIC', fpOf(b, DEST_B))).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Erneut senden' })).toBeNull();
+  }, 15000);
+
+  it('Gegenprobe tx_bad_seq: fruehere Transaktion gefunden -> gesendet mit deren Hash, Lauf geht weiter', async () => {
+    const a = rowA(); const b = rowB();
+    writeSentEntry('PUBLIC', fpOf(a, DEST_A), pinned());
+    hoisted.submitMock.mockImplementationOnce(async () => { throw badSeq(); });
+    hoisted.txLookupMock.mockImplementation(async (hash) => {
+      if (hash === OLD) return { hash, successful: true };
+      const e = new Error('nf'); e.response = { status: 404 }; throw e;
+    });
+    saveBatchRows('PUBLIC', [a, b]);
+    renderDialog();
+    await checkAndWait(2);
+    fireEvent.click(screen.getByRole('button', { name: '2 Zahlungen senden' }));
+    await waitFor(() => expect(screen.getByTestId('batch-summary').textContent).toContain('2 von 2'));
+    expect(hoisted.submitMock).toHaveBeenCalledTimes(2); // a einmal (abgelehnt), b normal
+    expect(screen.getByText(/mit der früheren Transaktion bereits gesendet/)).toBeInTheDocument();
+    expect(readSentEntry('PUBLIC', fpOf(a, DEST_A))).toMatchObject({ status: 'success', hash: OLD });
+  });
+
+  it('Gegenprobe: tx_bad_seq ohne Pin bleibt ein eindeutiger Fehler (Eintrag zurueckgesetzt)', async () => {
+    const a = rowA();
+    hoisted.submitMock.mockImplementationOnce(async () => { throw badSeq(); });
+    saveBatchRows('PUBLIC', [a]);
+    renderDialog();
+    await checkAndWait(1);
+    fireEvent.click(screen.getByRole('button', { name: '1 Zahlung senden' }));
+    await waitFor(() => expect(screen.getByText(/Fehlgeschlagen: tx_bad_seq/)).toBeInTheDocument());
+    expect(screen.queryByText(/Möglicherweise gesendet/)).toBeNull();
+    expect(readSentEntry('PUBLIC', fpOf(a, DEST_A))).toBeNull();
+  });
+});
+
+describe('BatchPaymentDialog: fehlender Protokolleintrag (F2)', () => {
+  const isoAt = (sec) => new Date(sec * 1000).toISOString();
+  const checkNow = () => fireEvent.click(screen.getByRole('button', { name: 'Status jetzt prüfen' }));
+  const match = (o = {}) => ({
+    type: 'payment', from: SENDER.publicKey(), to: DEST_A, asset_type: 'native', amount: '5.0000000', transaction_successful: true,
+    created_at: new Date(Date.now() - 60000).toISOString(), transaction_hash: 'd'.repeat(64),
+    transaction_attr: { memo_type: 'text', memo: 'a' }, ...o,
+  });
+
+  // Lauf mit unklarem Ergebnis, danach verschwindet der Eintrag (z.B. Website-Daten geloescht).
+  async function ambiguousThenLost() {
+    const a = rowA();
+    let maxTime;
+    hoisted.submitMock.mockImplementationOnce(async (_s, tx) => {
+      maxTime = Number(tx.timeBounds.maxTime);
+      throw new AmbiguousSubmitResultError(hashOf(tx), new TypeError('Failed to fetch'));
+    });
+    saveBatchRows('PUBLIC', [a]);
+    renderDialog();
+    await checkAndWait(1);
+    fireEvent.click(screen.getByRole('button', { name: '1 Zahlung senden' }));
+    await waitFor(() => expect(screen.getByTestId('batch-summary')).toBeInTheDocument());
+    writeSentEntry('PUBLIC', fpOf(a, DEST_A), null);
+    checkNow();
+    await waitFor(() => expect(screen.getByTestId('batch-log-missing')).toBeInTheDocument());
+    return { a, maxTime };
+  }
+
+  it('Ergebnis: kein laut Horizon, kein Erneut senden, Hinweis auf die Suche', async () => {
+    await ambiguousThenLost();
+    expect(screen.getByText('Status unklar – Eintrag im Sende-Protokoll fehlt')).toBeInTheDocument();
+    expect(screen.getByTestId('batch-log-missing').textContent).toMatch(/sucht SKM bei Horizon nach dieser Zahlung/);
+    expect(screen.queryByText(/laut Horizon/)).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Erneut senden' })).toBeNull();
+    expect(screen.queryByTestId('batch-resolved-not-sent')).toBeNull();
+    expect(hoisted.paymentsMock).not.toHaveBeenCalled(); // die Suche laeuft erst vor dem Senden
+  });
+
+  it('Horizon findet die Zahlung: wie bereits gesendet, nicht vorgewaehlt, nur bewusst waehlbar', async () => {
+    const { a, maxTime } = await ambiguousThenLost();
+    hoisted.ledgerClosedAt.value = isoAt(maxTime + 65);
+    hoisted.paymentsMock.mockResolvedValue({ records: [match()] });
+    fireEvent.click(screen.getByRole('button', { name: 'Zurück zur Liste' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Prüfen' }));
+    await waitFor(() => expect(screen.getByText(/bereits gesendet/)).toBeInTheDocument());
+    expect(hoisted.paymentsMock).toHaveBeenCalledTimes(1);
+    const cb = screen.getByRole('checkbox');
+    expect(cb.checked).toBe(false);
+    expect(cb).not.toBeDisabled();
+    expect(readSentEntry('PUBLIC', fpOf(a, DEST_A))).toMatchObject({ status: 'success', hash: 'd'.repeat(64) });
+  });
+
+  it('Gegenprobe: andere Zahlung (anderer Betrag) gefunden -> normale Zahlung, mit Pin der frueheren Sequence', async () => {
+    const { a, maxTime } = await ambiguousThenLost();
+    hoisted.ledgerClosedAt.value = isoAt(maxTime + 65);
+    hoisted.paymentsMock.mockResolvedValue({ records: [match({ amount: '6' })] });
+    fireEvent.click(screen.getByRole('button', { name: 'Zurück zur Liste' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Prüfen' }));
+    await waitFor(() => expect(screen.getByText('Bereit')).toBeInTheDocument());
+    expect(screen.getByRole('checkbox').checked).toBe(true);
+    expect(readSentEntry('PUBLIC', fpOf(a, DEST_A))).toMatchObject({ status: 'notApplied', pin: true, seq: '101' });
+    fireEvent.click(screen.getByRole('button', { name: '1 Zahlung senden' }));
+    await waitFor(() => expect(screen.getByTestId('batch-summary').textContent).toContain('1 von 1'));
+    expect(hoisted.submitMock).toHaveBeenCalledTimes(2);
+    expect(hoisted.submitMock.mock.calls[1][1].sequence).toBe('101');
+  });
+
+  it('Horizon nicht erreichbar: Hinweis, nicht senden', async () => {
+    const { maxTime } = await ambiguousThenLost();
+    hoisted.ledgerClosedAt.value = isoAt(maxTime + 65);
+    hoisted.paymentsMock.mockRejectedValue(new TypeError('Failed to fetch'));
+    fireEvent.click(screen.getByRole('button', { name: 'Zurück zur Liste' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Prüfen' }));
+    await waitFor(() => expect(screen.getByText(/Horizon konnte nicht nach dieser Zahlung/)).toBeInTheDocument());
+    expect(screen.getByRole('checkbox')).toBeDisabled();
+    expect(screen.getByRole('button', { name: '0 Zahlungen senden' })).toBeDisabled();
+    expect(hoisted.submitMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('Gegenprobe: fruehere Transaktion laut Netz noch gueltig -> gesperrt, keine Suche', async () => {
+    const { maxTime } = await ambiguousThenLost();
+    hoisted.ledgerClosedAt.value = isoAt(maxTime - 10);
+    fireEvent.click(screen.getByRole('button', { name: 'Zurück zur Liste' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Prüfen' }));
+    await waitFor(() => expect(screen.getByText(/kann laut Netz noch ankommen/)).toBeInTheDocument());
+    expect(screen.getByRole('checkbox')).toBeDisabled();
+    expect(hoisted.paymentsMock).not.toHaveBeenCalled();
+  });
+
+  it('Gegenprobe: ohne verschwundenen Eintrag keine Suche bei Horizon', async () => {
+    saveBatchRows('PUBLIC', [rowA()]);
+    renderDialog();
+    await checkAndWait(1);
+    expect(hoisted.paymentsMock).not.toHaveBeenCalled();
+  });
+});
+
+describe('BatchPaymentDialog: unlesbarer Eintrag und Details kopieren (F4, F6)', () => {
+  it('F4: unlesbarer Eintrag bleibt stehen und sperrt die Zahlung als unklar', async () => {
+    const a = rowA();
+    const key = sentEntryKey('PUBLIC', fpOf(a, DEST_A));
+    window.localStorage.setItem(key, '{kaputt');
+    saveBatchRows('PUBLIC', [a]);
+    renderDialog();
+    fireEvent.click(screen.getByRole('button', { name: 'Prüfen' }));
+    await waitFor(() => expect(screen.getByTestId('batch-ambiguous-unreadable')).toBeInTheDocument());
+    expect(screen.getByText(/Gesperrt: Der Status/)).toBeInTheDocument();
+    expect(screen.getByRole('checkbox')).toBeDisabled();
+    expect(window.localStorage.getItem(key)).toBe('{kaputt');
+    expect(hoisted.txLookupMock).not.toHaveBeenCalled();
+    // Gegenprobe: ohne Eintrag ist dieselbe Zahlung bereit
+    window.localStorage.removeItem(key);
+    fireEvent.click(screen.getByRole('button', { name: 'Zurück zur Liste' }));
+    await checkAndWait(1);
+  });
+
+  it('F6: Meldung wird vor Details kopieren bereinigt (kein Secret, kein langes Base64)', async () => {
+    const writeText = vi.fn(async () => {});
+    Object.defineProperty(window.navigator, 'clipboard', { value: { writeText }, configurable: true });
+    const planted = 'B'.repeat(80);
+    hoisted.submitMock.mockImplementationOnce(async () => { throw new Error(`boom ${planted} ${SENDER.secret()}`); });
+    hoisted.submitMock.mockImplementationOnce(async () => {
+      const e = new Error('bad'); e.response = { data: { extras: { result_codes: { transaction: 'tx_failed', operations: ['op_underfunded'] } } } }; throw e;
+    });
+    saveBatchRows('PUBLIC', [rowA(), rowB()]);
+    renderDialog();
+    await checkAndWait(2);
+    fireEvent.click(screen.getByRole('button', { name: '2 Zahlungen senden' }));
+    await waitFor(() => expect(screen.getByTestId('batch-summary')).toBeInTheDocument());
+    fireEvent.click(screen.getByRole('button', { name: 'Details kopieren' }));
+    await waitFor(() => expect(writeText).toHaveBeenCalled());
+    const text = writeText.mock.calls[0][0];
+    expect(text).not.toContain(planted);
+    expect(text).not.toContain(SENDER.secret());
+    // Gegenprobe: normale Meldungen bleiben lesbar
+    expect(text).toContain('tx_failed / op_underfunded');
   });
 });

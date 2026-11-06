@@ -90,6 +90,20 @@ describe('findSubmittedTransaction', () => {
     expect(result).toBe(record);
   });
 
+  it('F5: ignores a 200 answer without the searched hash and keeps looking', async () => {
+    const transactionImpl = vi.fn()
+      .mockResolvedValueOnce({})
+      .mockResolvedValueOnce({ hash: 'ffff00', successful: true })
+      .mockResolvedValueOnce({ hash: 'ABC123', successful: true });
+    const server = fakeServer({ transactionImpl });
+    const result = await findSubmittedTransaction(server, 'abc123', { attempts: 5, delayMs: 1 });
+    expect(result).toEqual({ hash: 'ABC123', successful: true });
+    expect(transactionImpl).toHaveBeenCalledTimes(3);
+    // Gegenprobe: nur fremde Antworten -> nichts gefunden
+    const only = fakeServer({ transactionImpl: vi.fn().mockResolvedValue({ hash: 'ffff00', successful: true }) });
+    expect(await findSubmittedTransaction(only, 'abc123', { attempts: 2, delayMs: 1 })).toBeNull();
+  });
+
   it('gives up and returns null after exhausting all attempts', async () => {
     const transactionImpl = vi.fn().mockRejectedValue(httpError(404));
     const server = fakeServer({ transactionImpl });
@@ -170,6 +184,21 @@ describe('fehlgeschlagene Transaktion im Ledger nach mehrdeutigem Submit', () =>
     expect(isAmbiguousSubmitError(err)).toBe(false);
   });
 
+  it('F5: ohne eindeutiges successful kein Erfolg, sondern unklar', async () => {
+    vi.useFakeTimers();
+    try {
+      const server = fakeServer({
+        submitImpl: vi.fn().mockRejectedValue(httpError(504)),
+        transactionImpl: vi.fn().mockResolvedValue({ hash: 'abc123' }),
+      });
+      const p = submitTransactionSafely(server, fakeTx('abc123')).catch((e) => e);
+      await vi.advanceTimersByTimeAsync(1000);
+      expect(await p).toBeInstanceOf(AmbiguousSubmitResultError);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it('meldet weiterhin Erfolg, wenn successful true ist', async () => {
     const record = { hash: 'abc123', successful: true };
     const server = fakeServer({
@@ -189,5 +218,55 @@ describe('txResultCodeFromXdr', () => {
   it('faellt bei unlesbarem XDR auf tx_failed zurueck', () => {
     expect(txResultCodeFromXdr('kaputt')).toBe('tx_failed');
     expect(txResultCodeFromXdr(undefined)).toBe('tx_failed');
+  });
+});
+
+describe('Diagnose bei unklarem Ausgang', () => {
+  it('haengt Request-Daten und das Ergebnis jeder Nachfrage an, ohne Body oder XDR', async () => {
+    vi.useFakeTimers();
+    try {
+      const hash = 'ab'.repeat(32);
+      const results = [httpError(404), new TypeError('Failed to fetch'), httpError(503)];
+      let n = 0;
+      const server = {
+        ...fakeServer({
+          transactionImpl: () => Promise.reject(results[Math.min(n++, results.length - 1)] ?? httpError(404)),
+          submitImpl: vi.fn(() => Promise.reject(new TypeError('Failed to fetch'))),
+        }),
+        serverURL: new URL('https://horizon.stellar.org/?secret=x'),
+      };
+      const promise = submitTransactionSafely(server, { ...fakeTx(hash), toXDR: () => 'AAAAXDR' });
+      const caught = promise.catch((e) => e);
+      await vi.runAllTimersAsync();
+      const err = await caught;
+      expect(err).toBeInstanceOf(AmbiguousSubmitResultError);
+      const { request, lookups } = err.diagnostics;
+      expect(request).toMatchObject({
+        method: 'POST',
+        url: 'https://horizon.stellar.org/transactions',
+        error: { name: 'TypeError', message: 'Failed to fetch', status: null, readable: false },
+      });
+      expect(Number.isNaN(Date.parse(request.at))).toBe(false);
+      expect(request.durationMs).toBeGreaterThanOrEqual(0);
+      expect(lookups).toHaveLength(8);
+      expect(lookups.slice(0, 3).map((l) => l.result)).toEqual(['notFound', 'network', 'status']);
+      expect(lookups[2].status).toBe(503);
+      expect(JSON.stringify(err.diagnostics)).not.toContain('AAAAXDR');
+      expect(JSON.stringify(err.diagnostics)).not.toContain('secret=x');
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('Gegenprobe: gefunden ergibt keinen unklaren Ausgang und das Verhalten bleibt gleich', async () => {
+    const hash = 'cd'.repeat(32);
+    const server = fakeServer({
+      transactionImpl: () => Promise.resolve({ hash, successful: true }),
+      submitImpl: vi.fn(() => Promise.reject(new TypeError('Failed to fetch'))),
+    });
+    await expect(submitTransactionSafely(server, fakeTx(hash))).resolves.toMatchObject({ hash });
+    const lookups = [];
+    await findSubmittedTransaction(server, hash, { lookups, delayMs: 0 });
+    expect(lookups).toEqual([expect.objectContaining({ result: 'found' })]);
   });
 });

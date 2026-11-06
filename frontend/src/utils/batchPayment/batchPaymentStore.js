@@ -2,7 +2,8 @@
 //
 // 1. Die Liste (Zeilen): Sender, Empfaenger, Asset, Betrag, Memo. Nur oeffentliche Daten.
 // 2. Das Sende-Protokoll: pro Zahlung (Fingerprint aus dem tatsaechlichen
-//    Transaktionsinhalt) Hash, Zeitpunkt, Status und maxTime der Transaktion. Es ist von
+//    Transaktionsinhalt) Hash, Zeitpunkt, Status, maxTime, Sequence und Quellkonto der
+//    Transaktion, dazu Hashes frueherer Versuche derselben Zahlung. Es ist von
 //    den Zeilen getrennt, damit Entfernen oder Neueingeben einer Zeile den Schutz gegen
 //    Doppelzahlung nicht aufhebt. Jede Zahlung hat einen eigenen localStorage-Schluessel
 //    (sha256 des Fingerprints, keine Adressen im Klartext), geschrieben mit genau einem
@@ -156,16 +157,58 @@ export function looksLikeThousandsSeparator(raw) {
   return /^\d{1,3}([.,]\d{3})+$/.test(String(raw ?? '').trim()) && /\./.test(String(raw));
 }
 
+// Status eines Eintrags:
+// - 'ambiguous': gesendet, Ausgang offen (sperrt)
+// - 'success': im Ledger erfolgreich (sperrt im Zeitfenster, bewusst wieder waehlbar)
+// - 'notApplied': laut Horizon nicht ausgefuehrt (abgelaufen oder fehlgeschlagen). Sperrt
+//   nicht. Mit pin muss eine neue Transaktion genau die Sequence seq nutzen (dann kann das
+//   Netz hoechstens eine der beiden ausfuehren).
+const SENT_STATUSES = ['ambiguous', 'success', 'notApplied'];
+const MAX_PREV_HASHES = 5;
+const HASH_RE = /^[0-9a-f]{64}$/i;
+
+// Sequence als Dezimal-String (int64 > 0) oder null.
+function cleanSeq(value) {
+  const s = String(value ?? '').trim();
+  if (!/^\d{1,19}$/.test(s)) return null;
+  const n = BigInt(s);
+  return n > 0n && n <= 9223372036854775807n ? n.toString() : null;
+}
+
 function sanitizeSentEntry(raw) {
   if (!raw || typeof raw !== 'object') return null;
   const at = Number(raw.at);
-  const status = raw.status === 'ambiguous' || raw.status === 'success' ? raw.status : null;
+  const status = SENT_STATUSES.includes(raw.status) ? raw.status : null;
   const hash = String(raw.hash || '');
-  if (!status || !Number.isFinite(at) || !/^[0-9a-f]{64}$/i.test(hash)) return null;
+  if (!status || !Number.isFinite(at) || !HASH_RE.test(hash)) return null;
   const entry = { hash: hash.toLowerCase(), at, status };
+  // maxTime 0 hiesse "unbegrenzt gueltig": wie unbekannt behandeln (nie daraus "abgelaufen").
   const maxTime = Number(raw.maxTime);
   if (Number.isInteger(maxTime) && maxTime > 0) entry.maxTime = maxTime;
+  // Sequence und Quellkonto der Transaktion nur gemeinsam.
+  const seq = cleanSeq(raw.seq);
+  const source = String(raw.source || '').trim();
+  if (seq && StrKey.isValidEd25519PublicKey(source)) {
+    entry.seq = seq;
+    entry.source = source;
+  }
+  // Fruehere Transaktionen derselben Zahlung (gleiche Sequence oder vor einem erneuten
+  // Senden): Beim Aufloesen wird auch nach ihnen gesucht.
+  if (Array.isArray(raw.prev)) {
+    const prev = raw.prev.map((h) => String(h || '').toLowerCase()).filter((h) => HASH_RE.test(h) && h !== entry.hash);
+    if (prev.length) entry.prev = [...new Set(prev)].slice(0, MAX_PREV_HASHES);
+  }
+  if (status === 'notApplied' && raw.pin === true) {
+    // Ohne Sequence kein Pin moeglich: dann ist der Eintrag nicht sicher lesbar.
+    if (!entry.seq) return null;
+    entry.pin = true;
+  }
   return entry;
+}
+
+// Platzhalter fuer einen vorhandenen, aber unlesbaren Eintrag: gilt als unklar und sperrt.
+function unreadableEntry() {
+  return { hash: '', at: 0, status: 'ambiguous', unreadable: true };
 }
 
 // localStorage-Schluessel einer Zahlung: Netz plus sha256 des Fingerprints.
@@ -175,12 +218,23 @@ export function sentEntryKey(network, fingerprint) {
   return `${BATCH_SENT_PREFIX}${network}:${hex}`;
 }
 
-/** Eintrag des Sende-Protokolls, immer frisch aus dem Speicher. */
+/**
+ * Eintrag des Sende-Protokolls, immer frisch aus dem Speicher. null nur, wenn kein Eintrag
+ * da ist. Ein vorhandener, aber unlesbarer Eintrag kommt als unklar zurueck
+ * ({ status: 'ambiguous', unreadable: true }) und sperrt die Zahlung.
+ */
 export function readSentEntry(network, fingerprint) {
+  let raw;
   try {
-    return sanitizeSentEntry(JSON.parse(window.localStorage.getItem(sentEntryKey(network, fingerprint)) || 'null'));
+    raw = window.localStorage.getItem(sentEntryKey(network, fingerprint));
   } catch {
     return null;
+  }
+  if (raw === null || raw === undefined) return null;
+  try {
+    return sanitizeSentEntry(JSON.parse(raw)) || unreadableEntry();
+  } catch {
+    return unreadableEntry();
   }
 }
 
@@ -204,7 +258,9 @@ export function writeSentEntry(network, fingerprint, entry) {
   }
 }
 
-// Entfernt erfolgreiche Eintraege nach der Aufbewahrungszeit. Unklare bleiben stehen.
+// Entfernt nur eindeutig lesbare, erfolgreiche Eintraege nach der Aufbewahrungszeit.
+// Unklare, nicht ausgefuehrte und unlesbare Eintraege bleiben stehen (unlesbare sperren
+// die Zahlung als unklar, siehe readSentEntry).
 export function pruneSentLog(now = Date.now()) {
   try {
     const keys = [];
@@ -214,15 +270,16 @@ export function pruneSentLog(now = Date.now()) {
     }
     for (const k of keys) {
       let entry = null;
-      try { entry = sanitizeSentEntry(JSON.parse(window.localStorage.getItem(k) || 'null')); } catch { /* defekt */ }
-      if (!entry || (entry.status === 'success' && now - entry.at > SENT_LOG_RETENTION_MS)) window.localStorage.removeItem(k);
+      try { entry = sanitizeSentEntry(JSON.parse(window.localStorage.getItem(k) || 'null')); } catch { /* unlesbar: bleibt */ }
+      if (entry && entry.status === 'success' && now - entry.at > SENT_LOG_RETENTION_MS) window.localStorage.removeItem(k);
     }
   } catch { /* noop */ }
 }
 
 // Bereits gesendet (innerhalb des Fensters) oder Status unklar? Sonst null.
+// Nicht ausgefuehrte Eintraege sperren nicht.
 export function recentSendOf(entry, now = Date.now()) {
-  if (!entry) return null;
+  if (!entry || entry.status === 'notApplied') return null;
   if (entry.status === 'ambiguous') return entry;
   if (now - entry.at > RESEND_WINDOW_MS) return null;
   return entry;
