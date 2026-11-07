@@ -12,6 +12,19 @@ import { getNewestCreatedAt } from '../utils/db/indexedDbClient';
 import { memoLooksLikeUrl, sanitizeMemo } from '../utils/stellar/activity.js';
 import { UrlBadge } from './wallet/ActivityWarnings.jsx';
 
+// Lokales Datum (YYYY-MM-DD) und lokale Uhrzeit (HH:MM oder HH:MM:SS, immer 24 Stunden).
+// toISOString liefert das UTC-Datum und toLocaleTimeString je nach Sprache 12 Stunden mit
+// AM/PM: Beides passte nicht zur Zeitzone local und schnitt nach Mitternacht (Ortszeit) die
+// jüngsten Zahlungen aus dem Standard-Zeitraum.
+const pad2 = (n) => String(n).padStart(2, '0');
+function localDateStr(d) {
+  return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
+}
+function localTimeStr(d, withSeconds = false) {
+  const hm = `${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
+  return withSeconds ? `${hm}:${pad2(d.getSeconds())}` : hm;
+}
+
 // Message queryUtils.js/handleCancel use to signal a user-initiated abort -
 // never shown as an error, in any of the 4 scan operations.
 // Memos stammen von Absendern: nur bereinigt als Text zeigen, Webadressen markieren.
@@ -50,10 +63,7 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = NETWORKS.PUBLIC
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
   const [fromTime, setFromTime] = useState("00:00");
-  const [toTime, setToTime] = useState(() => {
-    const now = new Date();
-    return now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-  });
+  const [toTime, setToTime] = useState(() => localTimeStr(new Date()));
   // Zeitzone: 'local' | 'utc' | 'cst' | 'cdt'
   const [tz, setTz] = useState("local");
 
@@ -113,8 +123,8 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = NETWORKS.PUBLIC
   // Setze Default-Zeitraum: gestern → heute
   useEffect(() => {
     const now = new Date();
-    const today = now.toISOString().slice(0, 10);
-    const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+    const today = localDateStr(now);
+    const yesterday = localDateStr(new Date(now.getTime() - 24 * 60 * 60 * 1000));
     setFromDate(yesterday);
     setToDate(today);
   }, []);
@@ -189,10 +199,10 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = NETWORKS.PUBLIC
 
   /** Lokale Jetzt-Werte für <input type="date"> und <input type="time"> */
   function nowDateForInput() {
-    return new Date().toISOString().slice(0, 10);
+    return localDateStr(new Date());
   }
   function nowTimeForInput() {
-    return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    return localTimeStr(new Date(), true);
   }
 
   /**
