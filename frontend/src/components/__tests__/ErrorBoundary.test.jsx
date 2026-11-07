@@ -16,6 +16,8 @@ describe('ErrorBoundary', () => {
     await i18n.changeLanguage('de');
     vi.spyOn(console, 'error').mockImplementation(() => {});
     const reload = vi.fn();
+    const setLocal = vi.spyOn(Storage.prototype, 'setItem');
+    const idbOpen = window.indexedDB ? vi.spyOn(window.indexedDB, 'open') : null;
     const orig = window.location;
     Object.defineProperty(window, 'location', { configurable: true, value: { ...orig, reload } });
     render(<I18nextProvider i18n={i18n}><Host /></I18nextProvider>);
@@ -28,6 +30,11 @@ describe('ErrorBoundary', () => {
     expect(btn.disabled).toBe(false);
     fireEvent.click(btn);
     expect(reload).toHaveBeenCalledTimes(1);
+    // Kein Secret im Speicher: Der Fehlerpfad schreibt weder in Web Storage noch in IndexedDB.
+    expect(setLocal).not.toHaveBeenCalled();
+    if (idbOpen) expect(idbOpen).not.toHaveBeenCalled();
+    setLocal.mockRestore();
+    idbOpen?.mockRestore();
     Object.defineProperty(window, 'location', { configurable: true, value: orig });
   });
 });

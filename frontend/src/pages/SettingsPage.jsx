@@ -11,9 +11,11 @@ import { FEE_LEVELS, getStoredFeeLevel, setStoredFeeLevel } from '../utils/stell
 import { buildPath } from '../utils/basePath.js';
 import { clearAllTextInputHistories } from '../utils/inputHistory.js';
 import { clearAllCachedPayments } from '../utils/db/indexedDbClient.js';
+import { useConfirmDialog } from '../components/useConfirmDialog.jsx';
 
 export default function SettingsPage({ publicKey, onBack: _onBack }) {
   const { t } = useTranslation(['settings', 'quiz']);
+  const { confirm, dialog: confirmDialog } = useConfirmDialog();
   const navigate = useNavigate();
   const {
     explorers,
@@ -172,15 +174,15 @@ export default function SettingsPage({ publicKey, onBack: _onBack }) {
 
   const setAsDefault = (id) => setDefaultExplorer(id);
 
-  const handleClearInputHistory = () => {
-    if (!window.confirm(t('settings:inputHistory.confirm'))) return;
+  const handleClearInputHistory = async () => {
+    if (!(await confirm({ message: t('settings:inputHistory.confirm'), danger: true }))) return;
     clearAllTextInputHistories();
     setClearHistoryDone(true);
     setTimeout(() => setClearHistoryDone(false), 3000);
   };
 
   const handleClearPaymentCache = async () => {
-    if (!window.confirm(t('settings:paymentCache.confirm'))) return;
+    if (!(await confirm({ message: t('settings:paymentCache.confirm'), danger: true }))) return;
     setClearCacheError('');
     try {
       await clearAllCachedPayments();
@@ -526,8 +528,8 @@ export default function SettingsPage({ publicKey, onBack: _onBack }) {
             {resetScamDone && <p className="text-sm text-green-600 dark:text-green-400">{t('settings:scamSimulator.resetStats.done')}</p>}
             <button
               type="button"
-              onClick={() => {
-                if (!window.confirm(t('settings:scamSimulator.resetStats.confirm'))) return;
+              onClick={async () => {
+                if (!(await confirm({ message: t('settings:scamSimulator.resetStats.confirm'), danger: true }))) return;
                 try {
                   const raw = localStorage.getItem('skm.learn.progress.v1');
                   if (raw) {
@@ -547,6 +549,7 @@ export default function SettingsPage({ publicKey, onBack: _onBack }) {
         </section>
       )}
 
+      {confirmDialog}
     </div>
   );
 }
