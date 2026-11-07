@@ -13,6 +13,7 @@ import { computeJobSigningState } from '../utils/multisig/jobSigningState.js';
 import { getSessionSecrets } from '../utils/sessionSecrets.js';
 import { needsMultipleSignatures } from '../utils/stellar/isMultisigAccount.js';
 import { apiUrl } from '../utils/apiBase.js';
+import { backendErrorMessage } from '../utils/multisigErrors.js';
 import { JOB_INTEGRITY_ERROR, signAndMergeResultJob } from '../utils/multisig/signResultJob.js';
 import { getRequiredThreshold } from '../utils/getRequiredThreshold.js';
 import { useSettings } from '../utils/useSettings';
@@ -1396,7 +1397,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                 }));
               }
               const detail = data?.detail ? `: ${data.detail}` : '';
-              throw new Error((data?.error || 'multisig.jobs.create_failed') + detail);
+              throw new Error(backendErrorMessage(data?.error, 'multisig.jobs.create_failed') + detail);
             }
             job = data;
           } catch (e) {

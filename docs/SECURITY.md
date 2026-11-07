@@ -104,7 +104,9 @@ Ein Job ist eine unsignierte oder teilsignierte Transaktion, die mehrere Signer 
   `forbidden`. Der Timeout verhindert, dass ein hängendes Horizon den Job-Lock (Node) belegt.
 - **Speicherfehler und kaputtes JSON:** Schlägt das Schreiben der Jobdatei fehl, melden Anlegen, Merge, Ablehnen und
   Löschen in beiden Backends 500 und nie Erfolg (Node nimmt den Job dann auch wieder aus dem Speicher). Kaputtes JSON im
-  Body ergibt 400 `invalid_json` ohne Stacktrace und ohne Body-Inhalt.
+  Body ergibt 400 `invalid_json` ohne Stacktrace und ohne Body-Inhalt. Scheitert das Speichern, nachdem beim Anlegen oder
+  Merge schon an Horizon gesendet wurde, lautet der Code `multisig.jobs.save_failed_after_submit` (500, beide Backends):
+  Die Transaktion kann im Netz sein, ein erneutes Senden wäre falsch; die UI weist darauf hin.
 - **Nebenläufigkeit:** Node serialisiert Merge, Ablehnen und Löschen je Job (`services/multisigJobLock.js`), PHP
   arbeitet unter Dateilock. Endzustände werden im Lock geprüft.
 - **Anzeige vor dem Signieren** (`frontend/src/utils/multisig/describeTransaction.js`,
@@ -121,7 +123,7 @@ Ein Job ist eine unsignierte oder teilsignierte Transaktion, die mehrere Signer 
   Backends sofort mit 403 `forbidden_origin`, auch beim Preflight, bevor Body-Parser, Session oder Handler laufen.
   Vorher fehlte nur `Access-Control-Allow-Origin`; einfache Cross-Origin-Requests (Formular, `text/plain`) liefen
   bis in den Handler, und PHP las ihren Body als JSON. Ohne `Origin`-Header bleibt alles erlaubt (gleiche Origin,
-  Skripte, Monitoring), denn ein Browser sendet bei Cross-Origin-Requests und bei jedem POST immer eine Origin. Die 403 hat `Cache-Control: no-store`, `Vary: Origin` steht auf jeder CORS-Antwort. Das Trimmen von `PROD_ORIGIN` nutzt in beiden Backends dieselben Zeichen (nur ASCII-Whitespace und NUL), damit ein Wert mit NBSP oder BOM nicht in Node gilt und in PHP nicht.
+  Skripte, Monitoring), denn ein Browser sendet bei Cross-Origin-Requests und bei jedem POST immer eine Origin. Die 403 hat `Cache-Control: no-store`, `Vary: Origin` steht auf jeder CORS-Antwort. Das Trimmen von `PROD_ORIGIN` nutzt in beiden Backends dieselben Zeichen (nur ASCII-Whitespace und NUL), damit ein Wert mit NBSP oder BOM nicht in Node gilt und in PHP nicht; auch die Regex ist gleich (kein `s`-Flag), ein Zeilenumbruch im Pfad macht den Wert in beiden ungültig.
   Allowlist in beiden Backends gleich (`localhost:5173`, `127.0.0.1:5173`, `https://skm.steei.de`, `PROD_ORIGIN`
   normalisiert auf Schema, Host, Port); nur Node nimmt zusätzlich die Origin aus `PROD_API_URL` auf. Kein
   PHP-Endpunkt ist für fremde Origins gedacht, auch `federation.php` nicht (löst nur für das eigene Frontend auf,
@@ -174,9 +176,11 @@ Diese Punkte wurden in früheren Reviews falsch gemeldet. Bitte vor einer Meldun
 - **„Command Injection in composeMail.“** `spawn` ohne Shell mit festen Argumenten. composeMail ist nur im lokalen
   Node-Backend vorhanden. Der Endpunkt gilt nur für Aufrufe von derselben Maschine: Peer-Adresse und alle Adressen in
   `X-Forwarded-For`, `Forwarded` und `X-Real-IP` müssen Loopback sein (`services/network.js`), im Zweifel 403. Hinter dem
-  Vite-Proxy ist die Peer-Adresse immer Loopback; deshalb hängt der Proxy die Client-Adresse an (`xfwd: true`). Ein
-  anderer Reverse Proxy, der keine Forwarded-Header setzt, würde den Schutz umgehen: composeMail nie hinter einen
-  solchen Proxy stellen oder mit `ENABLE_COMPOSE_MAIL=0` abschalten.
+  Vite-Proxy ist die Peer-Adresse immer Loopback; deshalb hängt der Proxy die Client-Adresse an (`xfwd: true`). Restgrenzen:
+  jeder Prozess auf derselben Maschine gilt als lokal (ohne zusätzliches Secret nicht lösbar); ein Reverse Proxy, der keine
+  Forwarded-Header setzt oder `X-Forwarded-For` überschreibt, hebt den Schutz auf; und der Schutz hängt an `xfwd: true` in
+  `frontend/vite.config.js` (ein Test wertet die Konfiguration aus, `test/viteProxyXfwd.test.js`). composeMail nie hinter
+  einen solchen Proxy stellen oder mit `ENABLE_COMPOSE_MAIL=0` abschalten.
 - **„Job-Detail zeigt nicht alles, was signiert wird.“** Siehe `describeTransaction.js` und `TransactionFacts.jsx`.
 - **„PHP fehlt Prüfung X.“** Viele Prüfungen liegen in eigenen Dateien (`multisigDecline.php`,
   `multisigLifecycle.php`, `multisigJobsGuard.php`, `rateLimit.php`, `txSignatures.php`). Erst dort suchen.

@@ -96,7 +96,7 @@ function createCorsMiddleware({ methods, headers, credentials = false, allowedOr
     locals.skmCorsHandled = true;
     // Die Antwort haengt von Origin ab (erlaubt, abgewiesen, ohne): Caches muessen
     // sie je Origin getrennt halten, auch die 403 und Antworten ohne Origin.
-    res.header('Vary', 'Origin');
+    res.vary('Origin');
     const origin = req.headers.origin;
     if (origin !== undefined) {
       if (!allowedOrigins.has(origin)) {

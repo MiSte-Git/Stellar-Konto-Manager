@@ -6,7 +6,10 @@
 // doesn't depend on anything the client sends.
 function isLoopbackAddress(remoteAddress) {
   const addr = String(remoteAddress || '').replace(/^::ffff:/, '');
-  return addr === '::1' || /^127\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(addr);
+  if (addr === '::1') return true;
+  // B3-4: nur echte IPv4-Adressen 127.x.y.z, jedes Oktett 0 bis 255 (kein 127.999.1.1).
+  const m = /^127\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/.exec(addr);
+  return m !== null && m.slice(1).every((octet) => Number(octet) <= 255);
 }
 
 // G2: Hinter einem Reverse Proxy (Vite-Dev-Proxy) ist die Peer-Adresse immer

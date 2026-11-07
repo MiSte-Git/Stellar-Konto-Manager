@@ -544,6 +544,9 @@ function hasValidJobToken(job, req) {
 // fehlgeschlagen (horizon_timeout). Die Antwort des SDK danach wird verworfen.
 const HORIZON_LOAD_TIMEOUT_MS = Number(process.env.HORIZON_LOAD_TIMEOUT_MS) > 0 ? Number(process.env.HORIZON_LOAD_TIMEOUT_MS) : 10_000;
 
+// B3-1: Speichern scheiterte, nachdem schon an Horizon gesendet wurde (Anlegen, Merge).
+const SAVE_FAILED_AFTER_SUBMIT = 'multisig.jobs.save_failed_after_submit';
+
 async function loadAccount(server, accountId) {
   let timer;
   const timeout = new Promise((_, reject) => {
@@ -690,6 +693,9 @@ async function submitTx(tx, network) {
 }
 
 app.post('/api/multisig/jobs', async (req, res) => {
+  // B3-1: wurde schon an Horizon gesendet, bevor das Speichern scheitert, kommt ein eigener
+  // Code (die Transaktion kann im Netz sein). Gleicher Code wie PHP.
+  let submitAttempted = false;
   try {
     const { network, accountId, txXdr, createdBy } = req.body || {};
     const net = normalizeNetwork(network);
@@ -752,6 +758,7 @@ app.post('/api/multisig/jobs', async (req, res) => {
     };
     // Auto submit if threshold already met (e.g., single-sig)
     if (shouldSubmit) {
+      submitAttempted = true;
       try {
         const result = await submitTx(parsed.tx, net);
         job.status = 'submitted_success';
@@ -775,12 +782,12 @@ app.post('/api/multisig/jobs', async (req, res) => {
     // Speicher nehmen, damit er nicht in der Liste steht, ohne gespeichert zu sein.
     if (!(await saveMultisigDb())) {
       multisigDb.items = multisigDb.items.filter((j) => j.id !== job.id);
-      return res.status(500).json({ ok: false, error: 'multisig.jobs.save_failed' });
+      return res.status(500).json({ ok: false, error: submitAttempted ? SAVE_FAILED_AFTER_SUBMIT : 'multisig.jobs.save_failed' });
     }
     res.json(responseJob);
   } catch (e) {
     console.error('multisig.jobs.post.failed', e);
-    res.status(500).json({ ok: false, error: 'multisig.jobs.save_failed' });
+    res.status(500).json({ ok: false, error: submitAttempted ? SAVE_FAILED_AFTER_SUBMIT : 'multisig.jobs.save_failed' });
   }
 });
 
@@ -1035,6 +1042,7 @@ app.post('/api/multisig/jobs/:id/delete', (req, res) => withMultisigJobLock(req.
 }));
 
 app.post('/api/multisig/jobs/:id/merge-signed-xdr', (req, res) => withMultisigJobLock(req.params.id, async () => {
+  let submitAttempted = false; // B3-1
   try {
     const { id } = req.params;
     const { signedXdr } = req.body || {};
@@ -1164,6 +1172,7 @@ app.post('/api/multisig/jobs/:id/merge-signed-xdr', (req, res) => withMultisigJo
 
     // Auto-submit when threshold reached
     if (requiredWeight > 0 && collectedWeight >= requiredWeight) {
+      submitAttempted = true;
       try {
         const result = await submitTx(current.tx, net);
         updated.status = 'submitted_success';
@@ -1192,12 +1201,12 @@ app.post('/api/multisig/jobs/:id/merge-signed-xdr', (req, res) => withMultisigJo
     if (!(await saveMultisigDb())) {
       // Nur diesen Job zuruecksetzen, Aenderungen an anderen Jobs bleiben.
       multisigDb.items = multisigDb.items.map((j) => (j.id === job.id ? job : j));
-      return res.status(500).json({ ok: false, error: 'multisig.jobs.merge_failed' });
+      return res.status(500).json({ ok: false, error: submitAttempted ? SAVE_FAILED_AFTER_SUBMIT : 'multisig.jobs.merge_failed' });
     }
     res.json(updated);
   } catch (e) {
     console.error('multisig.jobs.merge.failed', e);
-    res.status(500).json({ ok: false, error: 'multisig.jobs.merge_failed' });
+    res.status(500).json({ ok: false, error: submitAttempted ? SAVE_FAILED_AFTER_SUBMIT : 'multisig.jobs.merge_failed' });
   }
 }));
 

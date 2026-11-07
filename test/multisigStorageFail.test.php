@@ -1,6 +1,6 @@
 <?php
 // Speicherfehler (PHP): Schlaegt das Schreiben der Jobdatei fehl, meldet kein Weg Erfolg.
-// Anlegen, Merge und Loeschen antworten 500 und aendern nichts. Beim Loeschen heisst der Code
+// Anlegen, Merge, Ablehnen und Loeschen antworten 500 und aendern nichts. Beim Loeschen heisst der Code
 // multisig.jobs.delete_failed wie in Node (vorher server_error). Der Fehler entsteht, indem
 // der Datenordner nach dem Start schreibgeschuetzt wird; Challenge-Datei und Rate-Limits
 // liegen per Umgebungsvariable in einem eigenen, beschreibbaren Ordner.
@@ -128,6 +128,11 @@ try {
     $nonce = base64_decode((string)($ch['body']['challenge'] ?? ''), true) ?: '';
     $deleteBody = ['signer' => $b->getAccountId(), 'signature' => base64_encode($b->sign('skm:delete:' . $nonce))];
 
+    // Challenge fuer das Ablehnen (anderer Job, gleicher Signer).
+    $ch = request('POST', BASE_URL . '/merge-job/challenge', [], ['signer' => $b->getAccountId()]);
+    $declineNonce = base64_decode((string)($ch['body']['challenge'] ?? ''), true) ?: '';
+    $declineBody = ['signer' => $b->getAccountId(), 'signature' => base64_encode($b->sign('skm:decline:' . $declineNonce))];
+
     chmod($apiDir . '/data', 0555);
     clearstatcache();
     $writable = @file_put_contents($apiDir . '/data/probe', 'x') !== false;
@@ -144,6 +149,12 @@ try {
         $res = request('POST', BASE_URL . '/merge-job/merge-signed-xdr', ['x-job-token: tok-merge-job'], ['signedXdr' => $signedXdr]);
         check('Merge: Speicherfehler ergibt 500 multisig.jobs.merge_failed (wie Node) und keinen Erfolg', $res['status'] === 500 && ($res['body']['ok'] ?? null) === false && ($res['body']['error'] ?? '') === 'multisig.jobs.merge_failed');
         check('Merge: Signatur nicht gespeichert', $storedWeight() === 0);
+
+        $res = request('POST', BASE_URL . '/merge-job/decline', [], $declineBody);
+        check('Ablehnen: Speicherfehler ergibt 500 multisig.jobs.decline_failed (wie Node) und keinen Erfolg', $res['status'] === 500 && ($res['body']['ok'] ?? null) === false && ($res['body']['error'] ?? '') === 'multisig.jobs.decline_failed');
+        $mergeRow = null;
+        foreach ((json_decode((string)file_get_contents($jobsFile), true) ?: [])['items'] ?? [] as $row) if (($row['id'] ?? '') === 'merge-job') $mergeRow = $row;
+        check('Ablehnen: Job unveraendert in der Datei', $mergeRow !== null && ($mergeRow['status'] ?? '') !== 'rejected' && empty($mergeRow['declinedSigners']));
 
         $res = request('POST', BASE_URL . '/final-job/delete', [], $deleteBody);
         check('Loeschen: Speicherfehler ergibt 500 multisig.jobs.delete_failed (wie Node)', $res['status'] === 500 && ($res['body']['error'] ?? '') === 'multisig.jobs.delete_failed');

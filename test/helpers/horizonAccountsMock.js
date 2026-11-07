@@ -29,3 +29,12 @@ StellarSdk.Horizon.Server.prototype.loadAccount = async function loadAccount(acc
     sequenceNumber: () => String(acc.sequence ?? '0'),
   };
 };
+
+// Optional: SKM_TEST_SUBMIT_HASH ersetzt Horizon.Server#submitTransaction durch eine erfolgreiche
+// Antwort mit diesem Hash (Test "Speichern scheitert nach dem Senden", B3-1). Ohne die Variable
+// bleibt das SDK unveraendert.
+if (process.env.SKM_TEST_SUBMIT_HASH) {
+  StellarSdk.Horizon.Server.prototype.submitTransaction = async function submitTransaction() {
+    return { hash: process.env.SKM_TEST_SUBMIT_HASH, ledger: 1 };
+  };
+}

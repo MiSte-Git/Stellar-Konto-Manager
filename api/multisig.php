@@ -483,6 +483,9 @@ $path = parse_url($uri, PHP_URL_PATH) ?? '/';
 
 // POST /api/multisig/jobs
 if ($method === 'POST' && $path === '/api/multisig/jobs') {
+    // B3-1: wurde schon an Horizon gesendet, bevor das Speichern scheitert, meldet der catch-Block
+    // einen eigenen Code (die Transaktion kann im Netz sein).
+    $submitAttempted = false;
     try {
         // Public, unauthenticated action (anyone may propose a job for any
         // account) - rate-limited per IP so it can't be used to grow
@@ -533,6 +536,7 @@ if ($method === 'POST' && $path === '/api/multisig/jobs') {
         $status = ($requiredWeight > 0 && $collectedWeight >= $requiredWeight) ? 'ready_to_submit' : 'pending_signatures';
         $submittedResult = null;
         if ($status === 'ready_to_submit' && $requiredWeight > 0) {
+            $submitAttempted = true;
             try {
                 $submittedResult = submitToNetwork($tx, $net);
                 $status = 'submitted_success';
@@ -571,7 +575,7 @@ if ($method === 'POST' && $path === '/api/multisig/jobs') {
         return sendJson($job);
     } catch (\Throwable $e) {
         error_log('[multisig] jobs.create failed: ' . $e->getMessage());
-        return sendError('multisig.jobs.save_failed', null, 500);
+        return sendError($submitAttempted ? 'multisig.jobs.save_failed_after_submit' : 'multisig.jobs.save_failed', null, 500);
     }
 }
 
@@ -904,6 +908,8 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/delete
 
 // POST /api/multisig/jobs/:id/merge-signed-xdr
 if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/merge-signed-xdr'))) {
+    // B3-1: siehe Anlegen. Gesetzt, sobald der Merge an Horizon sendet.
+    $submitAttempted = false;
     try {
         $id = $m['id'] ?? '';
         $body = jsonBody();
@@ -932,7 +938,7 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/merge-
         $resultRow = null;
         $signersUnavailable = false;
         $lifecycleRejected = null;
-        withJobsLock($jobFile, function (array $items) use ($id, $net, $incoming, &$resultRow, &$signersUnavailable, &$lifecycleRejected) {
+        withJobsLock($jobFile, function (array $items) use ($id, $net, $incoming, &$resultRow, &$signersUnavailable, &$lifecycleRejected, &$submitAttempted) {
             foreach ($items as &$j) {
                 if (($j['id'] ?? '') !== $id) continue;
 
@@ -1020,6 +1026,7 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/merge-
                 $status = ($required > 0 && $collectedWeight >= $required) ? 'ready_to_submit' : 'pending_signatures';
                 $submittedResult = $j['submittedResult'] ?? null;
                 if ($status === 'ready_to_submit' && $required > 0) {
+                    $submitAttempted = true;
                     try {
                         $submittedResult = submitToNetwork($merged, $net);
                         $status = 'submitted_success';
@@ -1059,7 +1066,7 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/merge-
         return sendJson($resultRow);
     } catch (\Throwable $e) {
         error_log('[multisig] jobs.merge failed: ' . $e->getMessage());
-        return sendError('multisig.jobs.merge_failed', null, 500);
+        return sendError($submitAttempted ? 'multisig.jobs.save_failed_after_submit' : 'multisig.jobs.merge_failed', null, 500);
     }
 }
 

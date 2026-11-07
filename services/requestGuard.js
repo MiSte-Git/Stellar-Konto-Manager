@@ -22,7 +22,7 @@ function isJsonContentType(contentType) {
 function requireAllowedOrigin(req, res, next) {
   if (!isAllowedOrigin(req.headers.origin)) {
     res.header('Cache-Control', 'no-store');
-    res.header('Vary', 'Origin');
+    res.vary('Origin');
     return res.status(403).json({ ok: false, error: 'forbidden_origin' });
   }
   return next();

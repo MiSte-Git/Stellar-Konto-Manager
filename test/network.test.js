@@ -69,3 +69,17 @@ test('G2: isLocalRequest lehnt im Zweifel ab (fail-closed)', () => {
 test('G2: isLoopbackAddress lehnt Adressen ab, die nur mit 127. beginnen', () => {
   assert.equal(isLoopbackAddress('127.0.0.1.evil.test'), false);
 });
+
+test('B3-4: isLoopbackAddress akzeptiert nur Oktette 0 bis 255', () => {
+  assert.equal(isLoopbackAddress('127.255.255.255'), true);
+  assert.equal(isLoopbackAddress('127.0.0.256'), false);
+  assert.equal(isLoopbackAddress('127.999.1.1'), false);
+  assert.equal(isLoopbackAddress('127.0.256.0'), false);
+  assert.equal(isLoopbackAddress('127.0.0.1\n'), false);
+});
+
+test('B3-4: isLocalRequest lehnt ungueltige Oktette im Weiterleitungs-Header ab', () => {
+  assert.equal(isLocalRequest(req('127.0.0.1', { 'x-forwarded-for': '127.999.1.1' })), false);
+  assert.equal(isLocalRequest(req('127.0.0.1', { forwarded: 'for=127.0.0.256' })), false);
+  assert.equal(isLocalRequest(req('127.0.0.1', { 'x-forwarded-for': '127.0.0.5' })), true);
+});

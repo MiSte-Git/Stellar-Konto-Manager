@@ -1,6 +1,7 @@
 import { Keypair } from '@stellar/stellar-sdk';
 import { Buffer } from 'buffer';
 import { apiUrl } from './apiBase.js';
+import { backendErrorMessage } from './multisigErrors.js';
 
 function ensureOk(res) {
   if (res.ok) return;
@@ -123,7 +124,7 @@ export async function mergeSignedXdr(payload) {
     });
     const data = await r.json().catch(() => ({}));
     if (!r.ok) {
-      const err = new Error(data?.error || 'multisig.jobs.merge_failed');
+      const err = new Error(backendErrorMessage(data?.error, 'multisig.jobs.merge_failed'));
       err.status = r.status;
       throw err;
     }
@@ -144,7 +145,7 @@ export async function createMultisigJobFromXdr({ network, accountId, txXdr }) {
     body: JSON.stringify({ network, accountId, txXdr, createdBy: 'local' }),
   });
   const data = await r.json().catch(() => ({}));
-  if (!r.ok) throw new Error(data?.error || 'multisig.jobs.create_failed');
+  if (!r.ok) throw new Error(backendErrorMessage(data?.error, 'multisig.jobs.create_failed'));
   const id = data?.id || data?.jobId || '';
   if (!id) throw new Error('multisig.jobs.create_failed');
   return {

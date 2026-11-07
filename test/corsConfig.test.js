@@ -9,6 +9,12 @@ function makeReqRes({ origin, method = 'GET' } = {}) {
   const req = { headers: origin === undefined ? {} : { origin }, method };
   const res = {
     header(name, value) { headersSet[name] = value; },
+    // wie Express: haengt den Wert an einen vorhandenen Vary-Header an
+    vary(name) {
+      const current = headersSet['Vary'];
+      headersSet['Vary'] = current && !current.split(/,\s*/).includes(name) ? `${current}, ${name}` : (current || name);
+      return res;
+    },
     removeHeader(name) { delete headersSet[name]; },
     sendStatus(code) { statusSent = code; return res; },
     status(code) { statusSent = code; return res; },
@@ -199,4 +205,19 @@ test('Fallback-CORS ueberschreibt die Header der engeren Pfad-Middleware nicht',
   narrow(req, res, () => fallback(req, res, () => { reached = true; }));
   assert.equal(reached, true);
   assert.equal(headersSet['Access-Control-Allow-Headers'], 'Content-Type, x-job-token');
+});
+
+test('B3-8: Vary wird angehaengt, ein vorhandener Vary-Wert bleibt erhalten', () => {
+  const mw = createCorsMiddleware({ methods: ['GET'], headers: ['Content-Type'] });
+  const { req, res, headersSet } = makeReqRes({ origin: 'http://localhost:5173' });
+  headersSet['Vary'] = 'Accept-Encoding';
+  mw(req, res, () => {});
+  assert.equal(headersSet['Vary'], 'Accept-Encoding, Origin');
+});
+
+test('B3-6: Zeilenumbruch im Pfad macht eine Origin ungueltig (wie PHP)', () => {
+  for (const raw of ['https://a.example/\nx', 'https://a.example/\r\nSet-Cookie:x', 'https://a.example/p\nq']) {
+    assert.equal(normalizeOrigin(raw), null, JSON.stringify(raw));
+  }
+  assert.equal(normalizeOrigin('https://a.example/pfad'), 'https://a.example');
 });

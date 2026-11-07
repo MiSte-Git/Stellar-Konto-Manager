@@ -67,6 +67,10 @@ $cases = [
     ["https://skm.steei.de\u{00A0}", null],
     ["\u{FEFF}https://skm.steei.de", null],
     ["https://skm.steei.de\u{2003}", null],
+    // B3-6: ein Zeilenumbruch im Pfad macht die Origin ungueltig (wie Node, kein s-Flag).
+    ["https://skm.steei.de/\nx", null],
+    ["https://skm.steei.de/\r\nSet-Cookie:x", null],
+    ["https://skm.steei.de/pfad", 'https://skm.steei.de'],
 ];
 foreach ($cases as [$input, $expected]) {
     check('cors_normalize_origin(' . json_encode($input, JSON_UNESCAPED_UNICODE) . ') = ' . json_encode($expected), cors_normalize_origin($input) === $expected);

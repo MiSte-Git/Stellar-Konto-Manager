@@ -14,6 +14,7 @@ import { getMultisigSafetyCheck } from '../utils/getMultisigSafetyCheck.js';
 import { Keypair, Operation, TransactionBuilder, StrKey } from '@stellar/stellar-sdk';
 import { findInvalidSignerKey, isValidSignerKey } from '../utils/multisig/signerKeys.js';
 import { apiUrl } from '../utils/apiBase.js';
+import { backendErrorMessage } from '../utils/multisigErrors.js';
 import { useRecentWalletOptions } from '../utils/useRecentWalletOptions.js';
 import { getSessionSecret } from '../utils/sessionSecrets.js';
 import { useSettings } from '../utils/useSettings.js';
@@ -462,7 +463,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
               defaultValue: 'Das Zeitfenster ist zu lang. Bitte die Multisig-Timeout-Einstellung auf maximal {{maxDays}} Tage reduzieren.',
             }));
           }
-          throw new Error(data?.error || 'multisig.jobs.create_failed');
+          throw new Error(backendErrorMessage(data?.error, 'multisig.jobs.create_failed'));
         }
         job = data;
       } catch (err) {

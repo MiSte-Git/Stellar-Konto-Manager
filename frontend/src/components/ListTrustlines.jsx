@@ -27,6 +27,7 @@ import { consumePendingTrustlineAsset } from '../utils/appNavigation.js';
 import { TransactionBuilder, Operation, Asset } from '@stellar/stellar-sdk';
 import MultisigPrepareDialog from './MultisigPrepareDialog.jsx';
 import { apiUrl } from '../utils/apiBase.js';
+import { backendErrorMessage } from '../utils/multisigErrors.js';
 import { resolveFeePerOp } from '../utils/stellar/fees.js';
 import { getMultisigTxTimeout } from '../utils/getMultisigTxTimeout.js';
 import { txHashHex } from '../utils/stellar/txHash.js';
@@ -341,7 +342,7 @@ function ListTrustlines({
           }),
         });
         const data = await r.json().catch(() => ({}));
-        if (!r.ok) throw new Error(data?.error || 'multisig.jobs.create_failed');
+        if (!r.ok) throw new Error(backendErrorMessage(data?.error, 'multisig.jobs.create_failed'));
         job = data;
       } catch (e) {
         setErrorMessage(formatErrorForUi(t, e));

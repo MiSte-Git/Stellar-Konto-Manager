@@ -28,7 +28,8 @@ apply_api_security_headers();
 function cors_normalize_origin(string $value): ?string {
     // G3-1: trim() entfernt nur Leerzeichen, \t, \n, \r, NUL und \v; Node nutzt dieselbe
     // Zeichenmenge (trimAscii in services/corsConfig.js), nicht String.trim() mit NBSP und BOM.
-    if (!preg_match('~^(https?)://([^/?#@\s]+)(?:[/?#].*)?$~is', trim($value), $m)) return null;
+    // B3-6: kein s-Flag, wie in Node: ein Zeilenumbruch im Pfad macht die Origin ungueltig.
+    if (!preg_match('~^(https?)://([^/?#@\s]+)(?:[/?#].*)?$~i', trim($value), $m)) return null;
     $scheme = strtolower($m[1]);
     $authority = strtolower($m[2]);
     if (!preg_match('~^(.*?)(?::(\d{1,5}))?$~s', $authority, $pm)) return null;

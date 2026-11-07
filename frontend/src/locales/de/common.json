@@ -1342,7 +1342,8 @@
   },
   "multisig": {
     "jobs": {
-      "create_failed": "Der Multisig-Job konnte nicht erstellt werden."
+      "create_failed": "Der Multisig-Job konnte nicht erstellt werden.",
+      "save_failed_after_submit": "Die Transaktion wurde möglicherweise gesendet, der Job konnte aber nicht gespeichert werden. Bitte den Status im Netz prüfen (zum Beispiel im Kontoverlauf) und die Transaktion nicht erneut senden."
     }
   },
   "resolveOrValidatePublicKey": {
