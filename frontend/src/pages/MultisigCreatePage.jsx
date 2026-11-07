@@ -18,6 +18,7 @@ import { SESSION_LOCKED_EVENT } from '../utils/sessionSecrets.js';
 import {
   Keypair,
   Operation,
+  StrKey,
   TransactionBuilder,
   Horizon
 } from '@stellar/stellar-sdk';
@@ -26,7 +27,13 @@ import {
 export const FRIENDBOT_TIMEOUT_MS = 30000;
 
 
-function NetworkSelector({ value, onChange }) {
+// Gewicht eines Signers als ganze Zahl im Bereich 0..255
+function clampWeight(w) {
+  const v = Number(w);
+  return Number.isFinite(v) ? Math.max(0, Math.min(255, Math.trunc(v))) : 0;
+}
+
+function NetworkSelector({ value, onChange, disabled = false }) {
   const { t } = useTranslation(['multisigCreate', 'network', 'common']);
   return (
     <div className="flex gap-4 mb-4">
@@ -37,6 +44,7 @@ function NetworkSelector({ value, onChange }) {
           value="PUBLIC"
           checked={value === 'PUBLIC'}
           onChange={() => onChange('PUBLIC')}
+          disabled={disabled}
         />
         {t('network:mainnet')}
       </label>
@@ -47,6 +55,7 @@ function NetworkSelector({ value, onChange }) {
           value="TESTNET"
           checked={value === 'TESTNET'}
           onChange={() => onChange('TESTNET')}
+          disabled={disabled}
         />
         {t('network:testnet')}
       </label>
@@ -65,8 +74,10 @@ export default function MultisigCreatePage() {
   const [signers, setSigners] = useState(['']);
   const [signerCount, setSignerCount] = useState(1);
 
-  const [enableMultisig, setEnableMultisig] = useState(false);
-  const [activateNow, setActivateNow] = useState(false);
+  // Wahl oben auf der Seite: 'account' (nur Konto) oder 'multisig' (Konto mit Multisig).
+  // Ein Wechsel verwirft keine erzeugten Schluessel.
+  const [mode, setMode] = useState('account');
+  const enableMultisig = mode === 'multisig';
   const [busy, setBusy] = useState(false);
   const [resultMsg, setResultMsg] = useState('');
   const [error, setError] = useState('');
@@ -79,8 +90,18 @@ export default function MultisigCreatePage() {
   // Pflicht vor jeder Aktivierung: Nutzer bestaetigt, dass er den angezeigten Secret Key
   // gesichert hat. Gilt nur fuer die aktuell angezeigten Schluessel.
   const [backupConfirmed, setBackupConfirmed] = useState(false);
-  const [secretVisible, setSecretVisible] = useState(true);
+  // Secret Key startet verborgen (auch nach jedem neuen Erzeugen); Kopieren geht trotzdem.
+  const [secretVisible, setSecretVisible] = useState(false);
   const [secretCopy, setSecretCopy] = useState(''); // '' | 'ok' | 'failed'
+  // Die Pflicht-Checkbox ist erst bedienbar, wenn der Secret Key dieser Schluessel mindestens
+  // einmal angezeigt oder erfolgreich kopiert wurde. Neues Erzeugen setzt das zurueck.
+  const [secretSeen, setSecretSeen] = useState(false);
+  // Fertig bei unklarer Aktivierung: Warnung mit eigener Bestaetigung in der Seite
+  // (kein window.confirm). null | { kind: 'missing' | 'unknown', network }
+  // network: Netz der Aktivierung, in dem live geprueft wurde
+  const [finishWarn, setFinishWarn] = useState(null);
+  // Hinweis ohne Erfolg (z. B. Fertig ohne Aktivierung): neutral, nicht in Erfolgsfarbe
+  const [infoMsg, setInfoMsg] = useState('');
   // Aktivierung der erzeugten Schluessel, sobald sie abgeschickt wurde (auch mit unklarem
   // Ausgang): { pub, network, hash, status: 'pending'|'success'|'ambiguous', multisigDone }.
   // Ab dann gehoeren die Schluessel zu einem (womoeglich gefuellten) Konto und duerfen beim
@@ -91,6 +112,10 @@ export default function MultisigCreatePage() {
   const activationRef = useRef(null);
   const setActivation = (next) => {
     const value = typeof next === 'function' ? next(activationRef.current) : next;
+    const before = activationRef.current;
+    // Warnung bei Fertig gilt nur fuer den Stand, fuer den sie bewertet wurde: Aendert sich
+    // der Status der Aktivierung (oder die Schluessel), muss Fertig neu pruefen.
+    if (before?.status !== value?.status || before?.pub !== value?.pub) setFinishWarn(null);
     activationRef.current = value;
     setActivationState(value);
   };
@@ -107,6 +132,36 @@ export default function MultisigCreatePage() {
   const [lowT, setLowT] = useState(1);
   const [medT, setMedT] = useState(2);
   const [highT, setHighT] = useState(2);
+  // Signer: EINE Liste von Paaren { key, weight } aus Feld und zugehoerigem Gewicht. Leere
+  // Felder fallen samt Gewicht heraus. Sicherheitspruefung, Summe, Vorpruefung, Anzeige im
+  // Dialog und Versand lesen genau diese Liste (keine zweite Filterung).
+  // signerRows sind alle Felder der Seite (auch leere) nur fuer die Anzeige im Formular.
+  const signerRows = useMemo(() => (
+    (signers || []).map((s, idx) => ({
+      key: (s || '').trim(),
+      weight: clampWeight(signerWeights[idx] ?? 0),
+    }))
+  ), [signers, signerWeights]);
+  const signerPairs = useMemo(() => signerRows.filter((r) => r.key), [signerRows]);
+  // Meldung je Feld (gleicher Index wie signerRows): ungueltig, eigener Key, Duplikat
+  const signerFieldErrors = useMemo(() => {
+    const seen = new Set();
+    return signerRows.map((r) => {
+      if (!r.key) return '';
+      if (!StrKey.isValidEd25519PublicKey(r.key)) return t('multisigCreate:multisig.signerInvalid');
+      if (generated?.pub && r.key === generated.pub) return t('multisigCreate:multisig.signerOwnKey');
+      if (seen.has(r.key)) return t('multisigCreate:multisig.signerDuplicate');
+      seen.add(r.key);
+      return '';
+    });
+  }, [signerRows, generated?.pub, t]);
+  // Meldung je Gewichtsfeld (gleicher Index): Ein eingetragener Signer braucht Gewicht ab 1.
+  // Gewicht 0 wuerde als Entfernen gesendet, das Konto haette dann keinen weiteren Signer.
+  const signerWeightErrors = useMemo(() => signerRows.map((r) => (
+    r.key && r.weight < 1 ? t('multisigCreate:multisig.signerWeightZero') : ''
+  )), [signerRows, t]);
+  const signersInvalid = signerFieldErrors.some(Boolean);
+  const weightsInvalid = signerWeightErrors.some(Boolean);
   const thresholdsForModal = useMemo(() => ({
     low_threshold: Math.max(0, Number(lowT) || 0),
     med_threshold: Math.max(0, Number(medT) || 0),
@@ -114,12 +169,9 @@ export default function MultisigCreatePage() {
   }), [lowT, medT, highT]);
   const signersForModal = useMemo(() => {
     const master = generated?.pub ? [{ public_key: generated.pub, weight: Math.max(0, Number(masterWeight) || 0) }] : [];
-    const others = (signers || []).map((s, idx) => ({
-      public_key: (s || '').trim(),
-      weight: Math.max(0, Number(signerWeights[idx] ?? 0) || 0)
-    })).filter((s) => !!s.public_key);
+    const others = signerPairs.map((p) => ({ public_key: p.key, weight: p.weight }));
     return [...master, ...others];
-  }, [generated?.pub, masterWeight, signers, signerWeights]);
+  }, [generated?.pub, masterWeight, signerPairs]);
   const requiredThreshold = useMemo(
     () => getRequiredThreshold('setOptions', thresholdsForModal),
     [thresholdsForModal]
@@ -143,19 +195,13 @@ export default function MultisigCreatePage() {
 
   const sumWeights = useMemo(() => {
     const mw = Math.max(0, Number(masterWeight) || 0);
-    const sw = (signerWeights || []).reduce((a, b) => a + Math.max(0, Number(b) || 0), 0);
+    const sw = signerPairs.reduce((a, p) => a + p.weight, 0);
     return mw + sw;
-  }, [masterWeight, signerWeights]);
+  }, [masterWeight, signerPairs]);
 
   const thLowErr = lowT > sumWeights;
   const thMedErr = medT > sumWeights;
   const thHighErr = highT > sumWeights;
-  const plannedSigners = useMemo(() => (
-    (signers || []).map((s, idx) => ({
-      key: (s || '').trim(),
-      weight: Math.max(0, Number(signerWeights[idx] ?? 0) || 0),
-    }))
-  ), [signers, signerWeights]);
   const safetyCheck = useMemo(() => {
     if (!enableMultisig) return { errors: [], warnings: [] };
     return getMultisigSafetyCheck({
@@ -163,14 +209,14 @@ export default function MultisigCreatePage() {
       currentAccount: null,
       defaultPublicKey: generated?.pub || '',
       masterWeight,
-      signers: plannedSigners,
+      signers: signerPairs,
       thresholds: {
         low: lowT,
         med: medT,
         high: highT,
       },
     });
-  }, [enableMultisig, generated?.pub, highT, lowT, masterWeight, medT, plannedSigners, t]);
+  }, [enableMultisig, generated?.pub, highT, lowT, masterWeight, medT, signerPairs, t]);
   const hasSafetyErrors = enableMultisig && safetyCheck.errors.length > 0;
 
   // Nach einem Netzwechsel (egal von wo) Reserve des neuen Netzes laden und das
@@ -201,8 +247,6 @@ export default function MultisigCreatePage() {
   function discardKeys(notice) {
     generatedRef.current = null;
     setGenerated(null);
-    setEnableMultisig(false);
-    setActivateNow(false);
     setSigners(['']);
     setSignerCount(1);
     setSignerWeights([1]);
@@ -213,9 +257,12 @@ export default function MultisigCreatePage() {
     setShowSecretModal(false);
     setPendingAction(null);
     setBackupConfirmed(false);
-    setSecretVisible(true);
+    setSecretVisible(false);
     setSecretCopy('');
+    setSecretSeen(false);
+    setFinishWarn(null);
     setResultMsg('');
+    setInfoMsg('');
     setError('');
     setNetworkNotice(notice);
   }
@@ -242,6 +289,8 @@ export default function MultisigCreatePage() {
       setShowSecretModal(false);
       setPendingAction(null);
       setNetworkNotice(keysNetworkNotice(keys, network));
+      // Warnung bei Fertig gehoert zum Stand vor dem Wechsel: Fertig prueft danach neu
+      setFinishWarn(null);
     }
     let cancelled = false;
     (async () => {
@@ -332,10 +381,10 @@ export default function MultisigCreatePage() {
     setActivation({ ...cur, status, hash: hash || cur.hash });
   }
 
-  // Live im Netz der Seite: 'exists' | 'missing' | 'unknown'
-  async function checkAccountLive(pub) {
+  // Live im Netz (Standard: das der Seite): 'exists' | 'missing' | 'unknown'
+  async function checkAccountLive(pub, net = network) {
     try {
-      await server.loadAccount(pub);
+      await (net === network ? server : getHorizonServerForNetwork(net)).loadAccount(pub);
       return 'exists';
     } catch (e) {
       return isAccountNotFoundError(e) ? 'missing' : 'unknown';
@@ -373,6 +422,13 @@ export default function MultisigCreatePage() {
   // Offener Zustand: Vermerk gesetzt, Nutzer hat noch nicht "Fertig, Key gesichert" gewaehlt.
   const keyMustStay = !!activation && !!generated && activation.pub === generated.pub;
   const activationLocked = keyMustStay && networkLocked;
+  // Mit Vermerk ist die Sicherung der Schluessel bestaetigt und nicht mehr abwaehlbar
+  const backupOk = backupConfirmed || keyMustStay;
+  // Waehrend eines Ablaufs und bei offenem Funder-Modal ist alles gesperrt, was den Stand
+  // aendert. Gesendet wird immer der Stand, der beim Bestaetigen sichtbar war.
+  const locked = busy || showSecretModal;
+  // Konto laut Vermerk im Netz aktiviert: der Aktivierungsschritt entfaellt, weiter im Panel
+  const activatedOk = keyMustStay && activation.status === 'success';
   // Waechter ab dem Erzeugen (KS-1, KS-2): Die Adresse kann schon Guthaben haben (eigene
   // Aktivierung laeuft oder Zahlung von aussen). Er endet erst mit "Fertig, Key gesichert"
   // oder "Schluessel verwerfen".
@@ -381,7 +437,7 @@ export default function MultisigCreatePage() {
     : t('multisigCreate:leaveGuard.confirmKeys'));
 
   function handleGenerate() {
-    if (busy) return;
+    if (locked) return;
     // Angezeigte Schluessel nie ohne Rueckfrage ersetzen: Die Adresse kann schon Guthaben
     // haben, mit gesendeter Aktivierung erst recht.
     if (generated) {
@@ -396,10 +452,13 @@ export default function MultisigCreatePage() {
     generatedRef.current = next;
     setGenerated(next);
     setBackupConfirmed(false);
-    setSecretVisible(true);
+    setSecretVisible(false);
     setSecretCopy('');
+    setSecretSeen(false);
+    setFinishWarn(null);
     setNetworkNotice('');
     setResultMsg('');
+    setInfoMsg('');
     setError('');
   }
 
@@ -411,18 +470,58 @@ export default function MultisigCreatePage() {
     return () => window.removeEventListener(SESSION_LOCKED_EVENT, hideSecret);
   }, []);
 
-  // "Fertig, Key gesichert": beendet den offenen Zustand, die Schluessel verschwinden.
-  function handleFinish() {
-    if (busy) return;
+  // Schluessel entfernen und abschliessen. activated: Vermerk vorhanden bzw. Konto im Netz gesehen.
+  function finalizeFinish(activated) {
     setActivation(null);
     discardKeys('');
-    setResultMsg(t('multisigCreate:activation.finished'));
+    // Ohne Aktivierung ist das kein Erfolg: Hinweis statt Erfolgsmeldung
+    if (activated) setResultMsg(t('multisigCreate:activation.finished'));
+    else setInfoMsg(t('multisigCreate:keys.finishedNotActivated'));
+  }
+
+  // "Fertig, Key gesichert": beendet den offenen Zustand, die Schluessel verschwinden.
+  // - Ohne Vermerk gilt die Pflicht-Checkbox.
+  // - Vermerk mit Erfolg: weiter.
+  // - Sonst (unklar): zuerst live pruefen. Konto da -> wie Erfolg. Sonst nicht verwerfen,
+  //   sondern Warnung mit eigener Bestaetigung in der Seite (kein window.confirm).
+  async function handleFinish() {
+    if (locked) return;
+    if (!keyMustStay) {
+      if (!backupConfirmed) {
+        setError(t('multisigCreate:backup.required'));
+        return;
+      }
+      finalizeFinish(false);
+      return;
+    }
+    if (activation.status === 'success') {
+      finalizeFinish(true);
+      return;
+    }
+    const pub = generated.pub;
+    const activationNetwork = activation.network;
+    setFinishWarn(null);
+    setBusy(true);
+    setError('');
+    let live = 'unknown';
+    try {
+      // Im Netz der Aktivierung pruefen, auch wenn die Seite gerade ein anderes Netz zeigt
+      live = await checkAccountLive(pub, activationNetwork);
+    } finally {
+      setBusy(false);
+    }
+    if (!aliveRef.current || generatedRef.current?.pub !== pub) return;
+    if (live === 'exists') {
+      finalizeFinish(true);
+      return;
+    }
+    setFinishWarn({ kind: live === 'missing' ? 'missing' : 'unknown', network: activationNetwork });
   }
 
   // "Schluessel verwerfen": ausdruecklich, mit Rueckfrage. Waehrend busy gesperrt, damit ein
   // laufender Ablauf nicht ohne Key zu Ende geht.
   function handleDiscardKeys() {
-    if (busy || !generated) return;
+    if (locked || !generated) return;
     if (!window.confirm(t('multisigCreate:keys.discardConfirm'))) return;
     setActivation(null);
     discardKeys('');
@@ -431,8 +530,17 @@ export default function MultisigCreatePage() {
 
   async function handleCopySecret() {
     if (!generated?.sec) return;
+    const pub = generated.pub;
     const ok = await copyText(generated.sec);
+    // Nur fuer dieselben Schluessel werten (zwischenzeitlich verworfen oder ersetzt)
+    if (generatedRef.current?.pub !== pub) return;
     setSecretCopy(ok ? 'ok' : 'failed');
+    if (ok) setSecretSeen(true);
+  }
+
+  function handleToggleSecret() {
+    if (!secretVisible) setSecretSeen(true);
+    setSecretVisible((v) => !v);
   }
 
   // Rueckgabe 'success' | 'exists'; unklar oder abgelehnt wirft.
@@ -534,15 +642,12 @@ export default function MultisigCreatePage() {
     const newKp = Keypair.fromSecret(newSecret);
     const newPub = newKp.publicKey();
 
-    // Filter gültige zusätzliche Signer (G...)
-    const validSigners = (signers || [])
-      .map((s) => s.trim())
-      .filter((s) => s && s.startsWith('G') && s.length >= 10);
-
-    if (validSigners.length === 0) {
-      // Nichts zu tun
-      return { hash: null, skipped: true };
-    }
+    // Die Signer-Paare sind schon geprueft; hier nur als letzte Sperre vor dem Senden, damit nie
+    // etwas Ungueltiges oder ohne Signer (und so keine Erfolgsmeldung) herausgeht.
+    const pre = multisigPrecheckError();
+    if (pre) throw new Error(pre);
+    // Erfolg mit Multisig nur, wenn mindestens ein weiterer Signer mit Gewicht ab 1 gesendet wird
+    if (!signerPairs.some((p) => p.weight >= 1)) throw new Error(t('multisigCreate:multisig.noSigners'));
 
     const acct = await server.loadAccount(newPub);
     const txb = new TransactionBuilder(acct, {
@@ -560,10 +665,9 @@ export default function MultisigCreatePage() {
       })
     );
     // 2) Zusätzliche Unterzeichner hinzufügen (jeweils mit Gewicht)
-    validSigners.forEach((s, idx) => {
-      const w = Math.max(0, Math.min(255, Number(signerWeights[idx]) || 0));
+    signerPairs.forEach((p) => {
       txb.addOperation(
-        Operation.setOptions({ signer: { ed25519PublicKey: s, weight: w } })
+        Operation.setOptions({ signer: { ed25519PublicKey: p.key, weight: p.weight } })
       );
     });
 
@@ -578,13 +682,11 @@ export default function MultisigCreatePage() {
   // Multisig fuer ein schon aktiviertes Konto nachholen (z. B. nach einem Netzwechsel
   // zwischen Aktivierung und Multisig-Schritt). Nur im Netz der Aktivierung.
   async function handleSetMultisigOnly() {
-    if (busy || !generated?.sec || !activation || activation.pub !== generated.pub) return;
-    if (networkLocked) {
-      setError(t('multisigCreate:activation.otherNetwork', { network: networkName(activation.network), current: networkName(network) }));
-      return;
-    }
-    if (hasSafetyErrors) {
-      setError(t('common:multisigEdit.error.safetyBlocked'));
+    if (locked || !generated?.sec || !activation || activation.pub !== generated.pub) return;
+    // Wie der Hauptweg: Netz, Sicherung (mit Vermerk bestaetigt) und Multisig-Voraussetzungen
+    const precheck = sendPrecheckError() || multisigPrecheckError();
+    if (precheck) {
+      setError(precheck);
       return;
     }
     setBusy(true);
@@ -592,9 +694,7 @@ export default function MultisigCreatePage() {
     setError('');
     try {
       const setRes = await setMultisigOnNewAccount(generated.sec, { abortMessage: t('createAccount:networkChanged.stoppedAfterPartial') });
-      setResultMsg(setRes.skipped
-        ? t('multisigCreate:createdNoSigners')
-        : t('multisigCreate:createdAndConfigured', { hash: setRes.hash || '' }));
+      setResultMsg(t('multisigCreate:createdAndConfigured', { hash: setRes.hash || '' }));
     } catch (e) {
       setError(String(e?.message || e));
     } finally {
@@ -614,6 +714,16 @@ export default function MultisigCreatePage() {
     if (startedOn !== network || readStoredNetworkId() !== startedOn) {
       setResultMsg('');
       setError(t('createAccount:networkChanged.funderAborted'));
+      return;
+    }
+    // Zweite Sicherung vor der bezahlten Aktivierung: dieselben Vorpruefungen wie beim Klick.
+    // Schluessel, Sicherung, Netz und (bei createAll) Signer, Gewichte und Schwellen.
+    const precheck = generated?.pub !== destPub
+      ? t('createAccount:networkChanged.funderAborted')
+      : sendPrecheckError() || (type === 'createAll' ? multisigPrecheckError() : '');
+    if (precheck) {
+      setResultMsg('');
+      setError(precheck);
       return;
     }
 
@@ -647,7 +757,16 @@ export default function MultisigCreatePage() {
         ? t('multisigCreate:activation.otherNetwork', { network: networkName(generated.network), current: networkName(network) })
         : t('multisigCreate:keys.otherNetwork', { network: networkName(generated.network), current: networkName(network) });
     }
-    if (!backupConfirmed) return t('multisigCreate:backup.required');
+    if (!backupOk) return t('multisigCreate:backup.required');
+    return '';
+  }
+
+  // Voraussetzungen fuer den Multisig-Schritt. Rueckgabe: Fehlertext oder ''.
+  function multisigPrecheckError() {
+    if (signerPairs.length === 0) return t('multisigCreate:multisig.noSigners');
+    if (signersInvalid) return t('multisigCreate:multisig.signersInvalid');
+    if (weightsInvalid) return t('multisigCreate:multisig.weightsInvalid');
+    if (thLowErr || thMedErr || thHighErr || hasSafetyErrors) return t('common:multisigEdit.error.safetyBlocked');
     return '';
   }
 
@@ -658,14 +777,13 @@ export default function MultisigCreatePage() {
     return window.confirm(t('multisigCreate:confirmLowBalance', { bal: bal.toFixed(7), req: requiredReserve.toFixed(7), count: Math.max(0, Number(signerCount)||0) }));
   }
 
+  // "Aktivieren und Multisig setzen": aktiviert, falls noetig, und setzt danach Multisig.
+  // Ist das Konto schon aktiv (Vermerk mit Erfolg oder live vorhanden), nur Multisig setzen.
   async function handleCreateAll() {
-    const precheck = sendPrecheckError();
+    if (locked) return;
+    const precheck = sendPrecheckError() || multisigPrecheckError();
     if (precheck) {
       setError(precheck);
-      return;
-    }
-    if (enableMultisig && hasSafetyErrors) {
-      setError(t('common:multisigEdit.error.safetyBlocked'));
       return;
     }
     const { pub, sec } = generated;
@@ -673,11 +791,11 @@ export default function MultisigCreatePage() {
     setResultMsg('');
     setError('');
     try {
-      // 1) Aktivieren (optional). Vermerk mit Erfolg: nur noch Multisig setzen. Sonst live
-      // pruefen: Konto da -> aktiviert; Vermerk ohne sichtbares Konto -> nicht erneut senden.
+      // 1) Aktivieren. Vermerk mit Erfolg: nur noch Multisig setzen. Sonst live pruefen:
+      // Konto da -> aktiviert; Vermerk ohne sichtbares Konto -> nicht erneut senden.
       const rec = recordFor(pub);
       let activated = rec?.status === 'success';
-      if (!activated && (activateNow || rec)) {
+      if (!activated) {
         const prep = await prepareActivation(pub);
         if (prep === 'blocked') {
           setError(t('multisigCreate:activation.stillUnclear'));
@@ -685,10 +803,9 @@ export default function MultisigCreatePage() {
         }
         activated = prep === 'exists';
       }
-      if (activateNow && !activated) {
+      if (!activated) {
         if (network === 'TESTNET') {
           await friendbotActivate(pub);
-          activated = true;
         } else {
           // Warn-Confirm bei zu geringem Startguthaben im Mainnet
           if (!confirmLowBalanceIfNeeded()) return;
@@ -699,15 +816,9 @@ export default function MultisigCreatePage() {
         }
       }
 
-      // 2) Multisig setzen (falls Signer vorhanden)
-      const setRes = await setMultisigOnNewAccount(sec, activated
-        ? { abortMessage: t('createAccount:networkChanged.stoppedAfterPartial') }
-        : undefined);
-      if (setRes.skipped) {
-        setResultMsg(t('multisigCreate:createdNoSigners'));
-      } else {
-        setResultMsg(t('multisigCreate:createdAndConfigured', { hash: setRes.hash || '' }));
-      }
+      // 2) Multisig setzen (Konto ist jetzt im Netz aktiviert)
+      const setRes = await setMultisigOnNewAccount(sec, { abortMessage: t('createAccount:networkChanged.stoppedAfterPartial') });
+      setResultMsg(t('multisigCreate:createdAndConfigured', { hash: setRes.hash || '' }));
     } catch (e) {
       setError(String(e?.message || e));
     } finally {
@@ -716,6 +827,7 @@ export default function MultisigCreatePage() {
   }
 
   async function handleActivateOnly() {
+    if (locked) return;
     const precheck = sendPrecheckError();
     if (precheck) {
       setError(precheck);
@@ -792,7 +904,39 @@ export default function MultisigCreatePage() {
 
       <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">{t('multisigCreate:hint')}</p>
 
-      <NetworkSelector value={network} onChange={setNetwork} />
+      <fieldset className="mb-4" data-testid="create-mode">
+        <legend className="mb-2 text-sm font-semibold">{t('multisigCreate:mode.title')}</legend>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {[
+            { value: 'account', label: t('multisigCreate:mode.account'), hint: t('multisigCreate:mode.accountHint') },
+            { value: 'multisig', label: t('multisigCreate:mode.multisig'), hint: t('multisigCreate:mode.multisigHint') },
+          ].map((opt) => (
+            <label
+              key={opt.value}
+              className={`flex cursor-pointer items-start gap-3 rounded-sm border-2 p-4 ${mode === opt.value
+                ? 'border-blue-600 bg-blue-50 dark:border-blue-400 dark:bg-blue-950'
+                : 'border-gray-300 bg-white hover:border-blue-400 dark:border-gray-600 dark:bg-gray-800'}`}
+            >
+              <input
+                type="radio"
+                name="createMode"
+                value={opt.value}
+                data-testid={`create-mode-${opt.value}`}
+                checked={mode === opt.value}
+                onChange={() => { if (!locked) setMode(opt.value); }}
+                disabled={locked}
+                className="mt-1"
+              />
+              <span>
+                <span className="block text-base font-semibold">{opt.label}</span>
+                <span className="block text-xs text-gray-600 dark:text-gray-400">{opt.hint}</span>
+              </span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
+
+      <NetworkSelector value={network} onChange={setNetwork} disabled={locked} />
       {networkNotice && (
         <p data-testid="create-network-notice" className="mb-4 text-sm text-amber-800 dark:text-amber-200 border border-amber-300 bg-amber-50 dark:bg-amber-900/30 rounded-sm p-2">
           {networkNotice}
@@ -801,13 +945,9 @@ export default function MultisigCreatePage() {
 
       <div className="bg-white dark:bg-gray-800 rounded-sm border p-4 mb-4">
         <div className="flex flex-wrap items-center gap-3 mb-2">
-          <button onClick={handleGenerate} className="bg-blue-600 text-white px-3 py-2 rounded-sm hover:bg-blue-700" disabled={busy}>
+          <button onClick={handleGenerate} className="bg-blue-600 text-white px-3 py-2 rounded-sm enabled:hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed" disabled={locked}>
             {t('multisigCreate:generateKeys')}
           </button>
-          <label className="inline-flex items-center gap-2 text-sm">
-            <input type="checkbox" checked={enableMultisig} onChange={()=>setEnableMultisig(v=>!v)} />
-            {t('multisigCreate:enableMultisig')}
-          </label>
         </div>
         {generated && (
           <div className="space-y-2">
@@ -833,7 +973,7 @@ export default function MultisigCreatePage() {
                 <button
                   type="button"
                   data-testid="create-secret-toggle"
-                  onClick={() => setSecretVisible((v) => !v)}
+                  onClick={handleToggleSecret}
                   className="rounded-sm border px-2 py-1 text-xs hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
                   {secretVisible ? t('multisigCreate:secretKey.hide') : t('multisigCreate:secretKey.show')}
@@ -859,8 +999,8 @@ export default function MultisigCreatePage() {
                 type="button"
                 data-testid="create-keys-discard"
                 onClick={handleDiscardKeys}
-                disabled={busy}
-                className="rounded-sm border border-red-300 px-3 py-1 text-xs text-red-700 hover:bg-red-50 disabled:opacity-50 dark:border-red-800 dark:text-red-300 dark:hover:bg-red-900/30"
+                disabled={locked}
+                className="rounded-sm border border-red-300 px-3 py-1 text-xs text-red-700 enabled:hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed dark:border-red-800 dark:text-red-300 dark:enabled:hover:bg-red-900/30"
               >
                 {t('multisigCreate:keys.discard')}
               </button>
@@ -895,8 +1035,8 @@ export default function MultisigCreatePage() {
               type="button"
               data-testid="create-activation-set-multisig"
               onClick={handleSetMultisigOnly}
-              disabled={busy || thLowErr || thMedErr || thHighErr || hasSafetyErrors}
-              className="mt-3 rounded-sm bg-green-600 px-3 py-2 text-white hover:bg-green-700 disabled:opacity-50"
+              disabled={locked || !!multisigPrecheckError()}
+              className="mt-3 rounded-sm bg-green-600 px-3 py-2 text-white enabled:hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {t('multisigCreate:activation.setMultisigNow')}
             </button>
@@ -906,11 +1046,42 @@ export default function MultisigCreatePage() {
             type="button"
             data-testid="create-activation-finish"
             onClick={handleFinish}
-            disabled={busy}
-            className="mt-2 rounded-sm border border-amber-400 bg-white px-3 py-2 text-amber-900 hover:bg-amber-100 disabled:opacity-50 dark:bg-gray-800 dark:text-amber-100 dark:hover:bg-gray-700"
+            disabled={locked}
+            className="mt-2 rounded-sm border border-amber-400 bg-white px-3 py-2 text-amber-900 enabled:hover:bg-amber-100 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-800 dark:text-amber-100 dark:enabled:hover:bg-gray-700"
           >
             {t('multisigCreate:activation.finish')}
           </button>
+          {enableMultisig && !activation.multisigDone && signerPairs.length === 0 && (
+            <p className="mt-2 text-xs" data-testid="create-activation-no-signers">{t('multisigCreate:multisig.noSigners')}</p>
+          )}
+          {finishWarn && (
+            <div role="alertdialog" data-testid="create-finish-warning" className="mt-3 rounded-sm border border-red-400 bg-white p-3 text-red-900 dark:border-red-700 dark:bg-gray-800 dark:text-red-100">
+              <p className="font-semibold">{t('multisigCreate:finishWarn.title', { network: networkName(finishWarn.network) })}</p>
+              <p className="mt-1">
+                {finishWarn.kind === 'missing' ? t('multisigCreate:finishWarn.missing') : t('multisigCreate:finishWarn.unknown')}
+              </p>
+              <p className="mt-1">{t('multisigCreate:finishWarn.ask')}</p>
+              <div className="mt-2 flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  data-testid="create-finish-confirm"
+                  onClick={() => finalizeFinish(true)}
+                  disabled={locked}
+                  className="rounded-sm bg-red-700 px-3 py-2 text-white enabled:hover:bg-red-800 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {t('multisigCreate:finishWarn.confirm')}
+                </button>
+                <button
+                  type="button"
+                  data-testid="create-finish-cancel"
+                  onClick={() => setFinishWarn(null)}
+                  className="rounded-sm border px-3 py-2 enabled:hover:bg-gray-100 dark:enabled:hover:bg-gray-700"
+                >
+                  {t('multisigCreate:finishWarn.cancel')}
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -933,7 +1104,10 @@ export default function MultisigCreatePage() {
             signerCountLabel={t('multisigConfig:signersCount')}
             signerCountLimitLabel={t('multisigConfig:signersCountLimit')}
             signerCountLimitTitle={t('multisigConfig:signersCountLimit')}
-            signers={plannedSigners}
+            signers={signerRows}
+            signerErrors={signerFieldErrors}
+            signerWeightErrors={signerWeightErrors}
+            disabled={locked}
             signerOptions={recentWalletOptions}
             onRemoveSignerOption={removeRecentWalletOption}
             onClearSignerOptions={clearRecentWalletOptions}
@@ -978,47 +1152,6 @@ export default function MultisigCreatePage() {
         </div>
       )}
 
-      <div className="bg-white dark:bg-gray-800 rounded-sm border p-4 mb-4">
-        <label className="flex items-start gap-2">
-          <input type="checkbox" checked={activateNow} onChange={() => setActivateNow(!activateNow)} />
-          <span>
-            <span className="font-semibold">{t('multisigCreate:activateNow')}</span>
-            <br />
-            <span className="text-xs text-gray-600 dark:text-gray-400">{t('multisigCreate:activateHint')}</span>
-          </span>
-        </label>
-        {network === 'PUBLIC' && activateNow && (
-          <>
-            <div className="mt-2 grid gap-2 sm:grid-cols-2">
-              <div>
-                <label className="block text-sm font-semibold mb-1">{t('multisigCreate:startingBalance')}</label>
-                <input
-                  type="number"
-                  step="0.0000001"
-                  min="0"
-                  value={startingBalance}
-                  onChange={(e) => setStartingBalance(e.target.value)}
-                  className="w-full border rounded-sm px-2 py-1"
-                />
-                {parseFloat(startingBalance || '0') < requiredReserve && (
-                  <p className="text-xs text-red-600 mt-1">
-                    {t('multisigCreate:balanceWarning', { req: requiredReserve.toFixed(7), count: Math.max(0, Number(signerCount)||0) })}
-                  </p>
-                )}
-              </div>
-              <div className="text-xs text-gray-700 dark:text-gray-300">
-                <div>{t('multisigCreate:reserve.base', { val: (baseReserve ?? 0.5).toFixed(7) })}</div>
-                <div className={(parseFloat(startingBalance || '0') < requiredReserve) ? 'font-semibold text-red-700 dark:text-red-400' : 'font-semibold'}>{t('multisigCreate:reserve.required', { val: requiredReserve.toFixed(7) })}</div>
-                <div>{t('multisigCreate:reserve.recommended', { val: recommended.toFixed(7) })}</div>
-              </div>
-            </div>
-            <p className="text-xs text-yellow-700 dark:text-yellow-400 mt-2">
-              {t('multisigCreate:mainnetActivateNote')}
-            </p>
-          </>
-        )}
-      </div>
-
       {generated && (
         <div data-testid="create-backup" className="mb-4 rounded-sm border border-red-300 bg-red-50 p-4 text-sm text-red-900 dark:border-red-800 dark:bg-red-900/30 dark:text-red-100">
           <p className="font-semibold">{t('multisigCreate:keyWarning.title')}</p>
@@ -1031,24 +1164,114 @@ export default function MultisigCreatePage() {
             <input
               type="checkbox"
               data-testid="create-backup-confirm"
-              checked={backupConfirmed}
-              onChange={() => setBackupConfirmed((v) => !v)}
+              checked={backupOk}
+              disabled={!secretSeen || keyMustStay || locked}
+              onChange={() => { if (secretSeen && !keyMustStay && !locked) setBackupConfirmed((v) => !v); }}
             />
             <span>{t('multisigCreate:backup.confirm')}</span>
           </label>
+          {!secretSeen && (
+            <p className="mt-1 text-xs" data-testid="create-backup-needs-reveal">{t('multisigCreate:backup.needsReveal')}</p>
+          )}
         </div>
       )}
 
-      <div className="flex flex-wrap gap-2">
-        <button onClick={handleCreateAll} disabled={busy || !backupConfirmed || networkLocked || (enableMultisig && (thLowErr || thMedErr || thHighErr || hasSafetyErrors))} className="bg-green-600 text-white px-4 py-2 rounded-sm hover:bg-green-700 disabled:opacity-50">
-          {t('multisigCreate:createButton')}
-        </button>
-        <button onClick={handleActivateOnly} disabled={busy || !backupConfirmed || networkLocked} className="px-4 py-2 rounded-sm border hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-50">
-          {t('multisigCreate:activateOnly')}
-        </button>
-      </div>
+      {generated && !activatedOk && (
+        <div data-testid="create-step-activate" className="bg-white dark:bg-gray-800 rounded-sm border p-4 mb-4">
+          <h3 className="font-semibold">
+            {enableMultisig ? t('multisigCreate:step.activateMultisigTitle') : t('multisigCreate:step.activateTitle')}
+          </h3>
+          <p className="mt-1 text-xs text-gray-600 dark:text-gray-400">
+            {network === 'TESTNET' ? t('multisigCreate:step.hintTestnet') : t('multisigCreate:step.hintMainnet')}
+          </p>
+          {network === 'PUBLIC' && (
+            <>
+              <div className="mt-2 grid gap-2 sm:grid-cols-2">
+                <div>
+                  <label className="block text-sm font-semibold mb-1" htmlFor="create-starting-balance">{t('multisigCreate:startingBalance')}</label>
+                  <input
+                    id="create-starting-balance"
+                    data-testid="create-starting-balance"
+                    type="number"
+                    step="0.0000001"
+                    min="0"
+                    value={startingBalance}
+                    onChange={(e) => setStartingBalance(e.target.value)}
+                    disabled={locked}
+                    className="w-full border rounded-sm px-2 py-1"
+                  />
+                  {parseFloat(startingBalance || '0') < requiredReserve && (
+                    <p className="text-xs text-red-600 mt-1">
+                      {t('multisigCreate:balanceWarning', { req: requiredReserve.toFixed(7), count: Math.max(0, Number(signerCount)||0) })}
+                    </p>
+                  )}
+                </div>
+                <div className="text-xs text-gray-700 dark:text-gray-300">
+                  <div>{t('multisigCreate:reserve.base', { val: (baseReserve ?? 0.5).toFixed(7) })}</div>
+                  <div className={(parseFloat(startingBalance || '0') < requiredReserve) ? 'font-semibold text-red-700 dark:text-red-400' : 'font-semibold'}>{t('multisigCreate:reserve.required', { val: requiredReserve.toFixed(7) })}</div>
+                  <div>{t('multisigCreate:reserve.recommended', { val: recommended.toFixed(7) })}</div>
+                </div>
+              </div>
+              {enableMultisig && (
+                <p className="text-xs text-yellow-700 dark:text-yellow-400 mt-2">
+                  {t('multisigCreate:mainnetActivateNote')}
+                </p>
+              )}
+            </>
+          )}
+          <div className="mt-3 flex flex-wrap gap-2">
+            {enableMultisig ? (
+              <button
+                type="button"
+                data-testid="create-activate-multisig"
+                onClick={handleCreateAll}
+                disabled={locked || !backupOk || networkLocked || !!multisigPrecheckError()}
+                className="bg-green-600 text-white px-4 py-2 rounded-sm enabled:hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {t('multisigCreate:activateAndMultisig')}
+              </button>
+            ) : (
+              <button
+                type="button"
+                data-testid="create-activate"
+                onClick={handleActivateOnly}
+                disabled={locked || !backupOk || networkLocked}
+                className="bg-green-600 text-white px-4 py-2 rounded-sm enabled:hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {t('multisigCreate:activateAccount')}
+              </button>
+            )}
+            {!keyMustStay && (
+              <button
+                type="button"
+                data-testid="create-keys-finish"
+                onClick={handleFinish}
+                disabled={locked || !backupOk}
+                className="px-4 py-2 rounded-sm border enabled:hover:bg-gray-100 dark:enabled:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {t('multisigCreate:activation.finish')}
+              </button>
+            )}
+          </div>
+          {enableMultisig && signerPairs.length === 0 && (
+            <p className="mt-2 text-xs text-gray-700 dark:text-gray-300" data-testid="create-multisig-no-signers">
+              {t('multisigCreate:multisig.noSigners')}
+            </p>
+          )}
+          {!keyMustStay && (
+            <p className="mt-2 text-xs text-gray-700 dark:text-gray-300" data-testid="create-not-activated-hint">
+              {t('multisigCreate:step.notActivatedHint')}
+            </p>
+          )}
+        </div>
+      )}
 
-      {resultMsg && <p className="mt-4 text-green-700 dark:text-green-400 text-sm">{resultMsg}</p>}
+      {resultMsg && <p className="mt-4 text-green-700 dark:text-green-400 text-sm" data-testid="create-result">{resultMsg}</p>}
+      {infoMsg && (
+        <p role="status" data-testid="create-info" className="mt-4 rounded-sm border border-amber-300 bg-amber-50 p-2 text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-900/30 dark:text-amber-100">
+          {infoMsg}
+        </p>
+      )}
       {error && <p className="mt-4 text-red-600 text-sm">{error}</p>}
 
       {showSecretModal && (

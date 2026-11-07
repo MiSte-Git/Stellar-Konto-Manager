@@ -66,9 +66,19 @@ function renderPage() {
 const radio = (container, value) => container.querySelector(`input[name="network"][value="${value}"]`);
 // Pflicht vor jeder Aktivierung: Secret Key gesichert
 const confirmBackup = async (view) => {
+  // Die Checkbox ist erst nach Anzeigen oder Kopieren des Secret Keys bedienbar
+  if (view.getByTestId('create-backup-confirm').disabled) {
+    await act(async () => { fireEvent.click(view.getByTestId('create-secret-toggle')); });
+  }
   await act(async () => { fireEvent.click(view.getByTestId('create-backup-confirm')); });
+  expect(view.getByTestId('create-backup-confirm').checked).toBe(true);
 };
 const notFound = () => Object.assign(new Error('not found'), { response: { status: 404 } });
+// Secret Key startet verborgen: anzeigen und lesen
+const showSecret = async (view) => {
+  await act(async () => { fireEvent.click(view.getByTestId('create-secret-toggle')); });
+  return view.getByTestId('create-secret').textContent;
+};
 
 describe('MultisigCreatePage: Netzschalter ist der globale Netzschalter', () => {
   beforeAll(async () => {
@@ -133,13 +143,14 @@ describe('MultisigCreatePage: Netzschalter ist der globale Netzschalter', () => 
     const { container, getByText, queryByTestId, getByTestId } = view;
     await act(async () => { fireEvent.click(getByText(i18n.t('multisigCreate:generateKeys'))); });
     const pub = container.textContent.match(/G[A-Z2-7]{55}/)?.[0];
-    const sec = container.textContent.match(/S[A-Z2-7]{55}/)?.[0];
+    const sec = await showSecret(view);
     expect(pub).toBeTruthy();
+    expect(sec).toMatch(/^S[A-Z2-7]{55}$/);
     expect(getByTestId('create-keys-network').textContent).toBe(i18n.t('multisigCreate:keys.network', { network: 'Testnet' }));
     await confirmBackup(view);
     expect(queryByTestId('create-network-notice')).toBeNull();
-    const activateOnly = () => getByText(i18n.t('multisigCreate:activateOnly')).closest('button');
-    const createAll = () => getByText(i18n.t('multisigCreate:createButton')).closest('button');
+    const activateOnly = () => getByTestId('create-activate');
+    const createAll = () => getByTestId('create-activate-multisig');
 
     await act(async () => { setGlobalNetwork('PUBLIC'); });
     expect(radio(container, 'PUBLIC').checked).toBe(true);
@@ -149,7 +160,11 @@ describe('MultisigCreatePage: Netzschalter ist der globale Netzschalter', () => 
     expect(getByTestId('create-network-notice').textContent).toBe(i18n.t('createAccount:networkChanged.keptKeys', { network: 'Testnet', current: 'Mainnet' }));
     expect(getByTestId('create-keys-locked')).toBeInTheDocument();
     expect(activateOnly()).toBeDisabled();
+    // Auch mit Multisig-Wahl gesperrt; der Wechsel der Wahl behaelt die Schluessel
+    await act(async () => { fireEvent.click(getByTestId('create-mode-multisig')); });
     expect(createAll()).toBeDisabled();
+    expect(container.textContent).toContain(pub);
+    await act(async () => { fireEvent.click(getByTestId('create-mode-account')); });
     // Klick trotz Sperre: weder Friendbot noch Funder-Dialog
     await act(async () => { fireEvent.click(activateOnly()); });
     expect(fetchSpy).not.toHaveBeenCalled();
@@ -224,7 +239,7 @@ describe('MultisigCreatePage: Netzschalter ist der globale Netzschalter', () => 
     const { getByText, findByTestId, container } = view;
     await act(async () => { fireEvent.click(getByText(i18n.t('multisigCreate:generateKeys'))); });
     await confirmBackup(view);
-    await act(async () => { fireEvent.click(getByText(i18n.t('multisigCreate:activateOnly'))); });
+    await act(async () => { fireEvent.click(view.getByTestId('create-activate')); });
     const confirm = await findByTestId('funder-confirm');
     await act(async () => { fireEvent.click(confirm); });
     await waitFor(() => expect(container.textContent).toContain(i18n.t('createAccount:networkChanged.funderAborted')));
@@ -240,7 +255,7 @@ describe('MultisigCreatePage: Netzschalter ist der globale Netzschalter', () => 
     const { getByText, findByTestId, queryByTestId, container } = view;
     await act(async () => { fireEvent.click(getByText(i18n.t('multisigCreate:generateKeys'))); });
     await confirmBackup(view);
-    await act(async () => { fireEvent.click(getByText(i18n.t('multisigCreate:activateOnly'))); });
+    await act(async () => { fireEvent.click(view.getByTestId('create-activate')); });
     const confirm = await findByTestId('funder-confirm');
     // Wechsel ohne Event in diesem Fenster (z. B. anderer Tab vor der Weiterleitung)
     window.localStorage.setItem('SKM_NETWORK', 'TESTNET');
@@ -258,7 +273,7 @@ describe('MultisigCreatePage: Netzschalter ist der globale Netzschalter', () => 
     await act(async () => { fireEvent.click(getByText(i18n.t('multisigCreate:generateKeys'))); });
     const pub = container.textContent.match(/G[A-Z2-7]{55}/)[0];
     await confirmBackup(view);
-    await act(async () => { fireEvent.click(getByText(i18n.t('multisigCreate:activateOnly'))); });
+    await act(async () => { fireEvent.click(view.getByTestId('create-activate')); });
     await findByTestId('funder-confirm');
     await act(async () => { setGlobalNetwork('TESTNET'); });
     expect(queryByTestId('funder-confirm')).toBeNull();
@@ -291,7 +306,7 @@ describe('MultisigCreatePage: Schluessel nach gesendeter Aktivierung', () => {
 
   // Mainnet: Schluessel erzeugen, Multisig mit einem Signer, sofort aktivieren, Funder bestaetigen.
   async function startCreateAll(view, { onNewAccountLoad } = {}) {
-    const { getByText, getByLabelText, findByTestId, container } = view;
+    const { getByText, getByTestId, findByTestId, container } = view;
     const { Account } = await import('@stellar/stellar-sdk');
     hoisted.funderLoad = (pk) => new Account(pk, '1');
     // Neues Konto existiert erst nach der Aktivierung (Live-Pruefung davor: 404)
@@ -300,15 +315,14 @@ describe('MultisigCreatePage: Schluessel nach gesendeter Aktivierung', () => {
       onNewAccountLoad?.();
       return new Account(pk, '1');
     };
+    await act(async () => { fireEvent.click(getByTestId('create-mode-multisig')); });
     await act(async () => { fireEvent.click(getByText(i18n.t('multisigCreate:generateKeys'))); });
     const pub = container.textContent.match(/G[A-Z2-7]{55}/)[0];
-    const sec = container.textContent.match(/S[A-Z2-7]{55}/)[0];
-    await act(async () => { fireEvent.click(getByLabelText(i18n.t('multisigCreate:enableMultisig'))); });
+    const sec = await showSecret(view);
     const signerInput = Array.from(container.querySelectorAll('input')).find((i) => i.placeholder === 'G...');
     await act(async () => { fireEvent.change(signerInput, { target: { value: COSIGNER } }); });
-    await act(async () => { fireEvent.click(getByLabelText(new RegExp(i18n.t('multisigCreate:activateNow')))); });
     await confirmBackup(view);
-    await act(async () => { fireEvent.click(getByText(i18n.t('multisigCreate:createButton'))); });
+    await act(async () => { fireEvent.click(getByTestId('create-activate-multisig')); });
     await act(async () => { fireEvent.click(await findByTestId('funder-confirm')); });
     return { pub, sec };
   }
@@ -336,7 +350,9 @@ describe('MultisigCreatePage: Schluessel nach gesendeter Aktivierung', () => {
     // Weitere Schritte gesperrt
     expect(getByTestId('create-activation-locked')).toBeInTheDocument();
     expect(queryByTestId('create-activation-set-multisig')).toBeNull();
-    expect(view.getByText(i18n.t('multisigCreate:createButton')).closest('button')).toBeDisabled();
+    // Aktivierungsschritt entfaellt nach Erfolg: kein zweiter Aktivieren-Button
+    expect(queryByTestId('create-activate-multisig')).toBeNull();
+    expect(queryByTestId('create-activate')).toBeNull();
 
     // Rueckwechsel: Multisig nachholen
     await act(async () => { setGlobalNetwork('PUBLIC'); });
@@ -393,7 +409,12 @@ describe('MultisigCreatePage: Schluessel nach gesendeter Aktivierung', () => {
     await act(async () => { setGlobalNetwork('TESTNET'); });
     expect(view.container.textContent).toContain(pub);
     expect(view.queryByTestId('create-activation')).toBeNull();
-    expect(view.getByText(i18n.t('multisigCreate:createButton')).closest('button')).toBeDisabled();
+    expect(view.getByTestId('create-activate')).toBeDisabled();
+    await act(async () => { fireEvent.click(view.getByTestId('create-mode-multisig')); });
+    const signerInput = Array.from(view.container.querySelectorAll('input')).find((i) => i.placeholder === 'G...');
+    await act(async () => { fireEvent.change(signerInput, { target: { value: COSIGNER } }); });
+    expect(view.getByTestId('create-activate-multisig')).toBeDisabled();
+    expect(view.container.textContent).toContain(pub);
     expect(view.getByTestId('create-network-notice').textContent).toBe(i18n.t('createAccount:networkChanged.keptKeys', { network: 'Mainnet', current: 'Testnet' }));
     expect(hoisted.submitted).toBe(0);
   });

@@ -250,7 +250,14 @@ function Main() {
   // Deshalb setzen wir nur setTrustlines, lesen aber trustlines nicht aus → ignorierbare Warnung
   const [, setShowSecretKey] = useState(false);
   const [results, setResults] = useState([]);
-  const [error, setError] = useState('');
+  const [error, setErrorText] = useState('');
+  // Herkunft der Fehlerzeile: 'account' = Laden/Aufloesen des Kontos im Wallet-Kopf,
+  // 'script' = window.onerror, sonst 'page'. Seiten ohne Kontobezug zeigen keine Kontofehler.
+  const [errorOrigin, setErrorOrigin] = useState('');
+  const setError = useCallback((msg, origin = 'page') => {
+    setErrorText(msg);
+    setErrorOrigin(msg ? origin : '');
+  }, []);
   const [notFound, setNotFound] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -472,7 +479,7 @@ function Main() {
       if (walletOpRequestRef.current !== requestId) return;
       const msg = String(err?.message || '');
       const isNotFound = /nicht gefunden|not found/i.test(msg);
-      setError(msg);
+      setError(msg, 'account');
       setNotFound(isNotFound);
       // Nicht existierendes Konto trotzdem als aktive Adresse uebernehmen, damit
       // Seiten nicht weiter das zuvor geladene Konto anzeigen.
@@ -550,7 +557,7 @@ function Main() {
       if (walletOpRequestRef.current !== requestId) return;
       const msg = String(err?.message || '');
       const isNotFound = /nicht gefunden|not found/i.test(msg);
-      setError(msg);
+      setError(msg, 'account');
       setNotFound(isNotFound);
       if (isNotFound) setXlmBalance(null);
     } finally {
@@ -559,7 +566,7 @@ function Main() {
         setXlmBalanceLoading(false);
       }
     }
-  }, [sourcePublicKey, t]);
+  }, [sourcePublicKey, t, setError]);
 
   useEffect(() => {
     const handler = () => { revalidateActiveWallet(); };
@@ -604,7 +611,7 @@ function Main() {
     // Initialize once from storage without emitting
     setDevTestnet(readStoredNetworkId() === 'TESTNET');
     return () => window.removeEventListener('stm-network-changed', handler);
-  }, [revalidateActiveWallet]);
+  }, [revalidateActiveWallet, setError]);
 
   // Navigation consolidation (finding #8): reacts to the URL changing outside
   // of this component's own control - browser back/forward, or App.jsx's own
@@ -697,13 +704,13 @@ function Main() {
         setTrustlinesOwner(sourcePublicKey);
       } catch (e) {
         if (cancelled) return;
-        setError(String(e?.message || ''));
+        setError(String(e?.message || ''), 'account');
       } finally {
         if (!cancelled) setIsLoading(false);
       }
     })();
     return () => { cancelled = true; };
-  }, [menuSelection, sourcePublicKey, devTestnet, trustlinesOwner, trustlines.length]);
+  }, [menuSelection, sourcePublicKey, devTestnet, trustlinesOwner, trustlines.length, setError]);
 
   // Entlaedt nur das Konto, das gewaehlte Netz bleibt: Wer danach eine andere Adresse
   // eingibt, arbeitet im selben Netz weiter. Laufende Ladevorgaenge werden verworfen.
@@ -724,7 +731,7 @@ function Main() {
     setIssuerAddress('');
     setError('');
     setXlmBalance(null);
-  }, []);
+  }, [setError]);
 
   const handleRecentRemove = useCallback((value) => {
     const key = (value || '').trim();
@@ -759,7 +766,7 @@ function Main() {
         return true;
       }
       console.error('Global error:', { message, source, lineno, colno, error });
-      setError(`Script error: ${message} at ${source}:${lineno}:${colno}${error ? ' - ' + error.message : ''}`);
+      setError(`Script error: ${message} at ${source}:${lineno}:${colno}${error ? ' - ' + error.message : ''}`, 'script');
       if (typeof previousOnError === 'function') {
         try { previousOnError(message, source, lineno, colno, error); } catch { /* noop */ }
       }
@@ -767,7 +774,7 @@ function Main() {
     };
     window.onerror = handleError;
     return () => { window.onerror = previousOnError; };
-  }, []);
+  }, [setError]);
 
   // Handle scroll for Back to Top button
   useEffect(() => {
@@ -814,7 +821,7 @@ function Main() {
         if (cancelled || walletOpRequestRef.current !== requestId) return;
         const msg = String(err?.message || '');
         const isNotFound = /nicht gefunden|not found/i.test(msg);
-        setError(msg);
+        setError(msg, 'account');
         setNotFound(isNotFound);
         if (isNotFound && resolved?.accountId) {
           setSourcePublicKey(resolved.accountId);
@@ -827,7 +834,7 @@ function Main() {
       }
     })();
     return () => { cancelled = true; };
-  }, [sourcePublicKey, t]);
+  }, [sourcePublicKey, t, setError]);
 
   // Kontoabhaengige Seiten nur mit existierendem Konto rendern (sonst AccountGate).
   // Bewusst nicht gegated: receive (Adresse zum Aktivieren anzeigen), Startseite,
@@ -1043,8 +1050,9 @@ function Main() {
         {error && !notFoundOnlyInGate && <p className="text-red-500 mt-4">{errorDisplay}</p>}
       </div>
       )}
-      {/* Ohne Wallet-Kopf dieselbe Fehlerzeile (auch Script-Fehler aus window.onerror) allein anzeigen */}
-      {hideWalletHeader && error && (
+      {/* Ohne Wallet-Kopf nur Fehler ohne Kontobezug (z. B. Script-Fehler aus window.onerror) anzeigen.
+          Kontofehler bleiben im State und erscheinen wieder, sobald der Wallet-Kopf zu sehen ist. */}
+      {hideWalletHeader && error && errorOrigin !== 'account' && (
         <div className="max-w-4xl mx-auto px-4 pt-4 text-center">
           <p className="text-red-500 mt-4" data-testid="main-error">{errorDisplay}</p>
         </div>

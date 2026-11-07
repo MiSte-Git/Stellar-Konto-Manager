@@ -2,7 +2,7 @@
   "title": "Konto + Multisig erstellen",
   "menu": "Konto erstellen + Multisig",
   "menuHint": "Neues Konto erzeugen und optional Multisig setzen",
-  "hint": "Erzeuge ein neues Konto, aktiviere es und konfiguriere optional Multisig.",
+  "hint": "Wähle zuerst, ob du nur ein Konto oder ein Konto mit Multisig erstellen willst. Danach Schlüssel generieren, den Secret Key sichern und das Konto aktivieren. Erst mit der Aktivierung existiert das Konto im Netz.",
   "generateKeys": "Schlüssel generieren",
   "enableMultisig": "Multisig aktivieren",
   "instructions": {
@@ -31,7 +31,8 @@
   },
   "backup": {
     "confirm": "Ich habe den angezeigten Secret Key gesichert (z. B. auf Papier oder in einem Passwort-Manager). Ohne ihn sind Konto und Guthaben verloren.",
-    "required": "Bestätige zuerst, dass du den Secret Key gesichert hast."
+    "required": "Bestätige zuerst, dass du den Secret Key gesichert hast.",
+    "needsReveal": "Zeige den Secret Key zuerst an oder kopiere ihn, erst dann lässt sich die Sicherung bestätigen."
   },
   "secretKey": {
     "copy": "Kopieren",
@@ -101,6 +102,40 @@
     "discardConfirm": "Die angezeigten Schlüssel werden von dieser Seite entfernt. SKM speichert sie nicht. Hat die Adresse schon Guthaben, ist es ohne gesicherten Secret Key verloren. Schlüssel wirklich verwerfen?",
     "discarded": "Die Schlüssel wurden von dieser Seite entfernt.",
     "replaceConfirm": "Neue Schlüssel ersetzen die angezeigten. SKM speichert sie nicht. Hat die Adresse schon Guthaben, ist es ohne gesicherten Secret Key verloren. Hast du den Secret Key gesichert?",
-    "leaveHint": "Die Schlüssel verschwinden nur mit „Schlüssel verwerfen“ oder „Fertig, Key gesichert“. Vor dem Verlassen der Seite fragt SKM nach."
+    "leaveHint": "Die Schlüssel verschwinden nur mit „Schlüssel verwerfen“ oder „Fertig, Key gesichert“. Vor dem Verlassen der Seite fragt SKM nach.",
+    "finishedNotActivated": "Abgeschlossen. Die Schlüssel wurden von dieser Seite entfernt. SKM hat das Konto nicht aktiviert."
+  },
+  "mode": {
+    "title": "Was möchtest du erstellen?",
+    "account": "Nur Konto",
+    "accountHint": "Neues Konto mit einem Schlüsselpaar. Wer den Secret Key hat, verfügt allein über das Konto.",
+    "multisig": "Konto mit Multisig",
+    "multisigHint": "Neues Konto mit weiteren Signern und Thresholds. Transaktionen brauchen danach mehrere Signaturen."
+  },
+  "step": {
+    "activateTitle": "Konto aktivieren",
+    "activateMultisigTitle": "Konto aktivieren und Multisig setzen",
+    "hintTestnet": "Im Testnet aktiviert Friendbot das Konto mit Test-XLM.",
+    "hintMainnet": "Im Mainnet aktiviert ein bestehendes Konto das neue mit Create Account und überweist dabei das Startguthaben. SKM fragt dafür nach dem Secret Key des bestehenden Kontos.",
+    "notActivatedHint": "Ohne Aktivierung existiert das Konto im Netz nicht. Mit „Fertig, Key gesichert“ entfernst du die Schlüssel von dieser Seite, ohne etwas zu senden. Aktivieren lässt sich das Konto später, indem jemand per Create Account XLM an den Public Key sendet."
+  },
+  "multisig": {
+    "noSigners": "Trage mindestens einen weiteren Signer (G...) ein, bevor du Multisig setzt.",
+    "signersInvalid": "Mindestens ein Signer ist ungültig, ist dein neuer Public Key oder kommt doppelt vor. Korrigiere die markierten Felder.",
+    "signerInvalid": "Keine gültige Stellar-Adresse (G…).",
+    "signerOwnKey": "Das ist der Public Key des neuen Kontos selbst. Trage einen weiteren Signer ein.",
+    "signerDuplicate": "Dieser Signer ist schon eingetragen.",
+    "signerWeightZero": "Gewicht mindestens 1. Mit Gewicht 0 würde dieser Signer nicht gesetzt.",
+    "weightsInvalid": "Mindestens ein Signer hat Gewicht 0. Gib jedem eingetragenen Signer ein Gewicht ab 1."
+  },
+  "activateAccount": "Konto aktivieren",
+  "activateAndMultisig": "Aktivieren und Multisig setzen",
+  "finishWarn": {
+    "title": "Die Aktivierung im {{network}} ist nicht bestätigt",
+    "missing": "Eine Aktivierung wurde gesendet, das Konto ist im Netz aber noch nicht sichtbar. Es kann trotzdem entstehen und Guthaben bekommen.",
+    "unknown": "SKM konnte das Konto im Netz nicht prüfen (Horizon nicht erreichbar). Das Konto kann existieren und Guthaben haben.",
+    "ask": "Ohne den Secret Key ist der Zugang verloren. Hast du ihn sicher gesichert?",
+    "confirm": "Ja, Key gesichert, Schlüssel verwerfen",
+    "cancel": "Abbrechen, Schlüssel behalten"
   }
 }

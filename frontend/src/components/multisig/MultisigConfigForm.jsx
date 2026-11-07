@@ -22,6 +22,9 @@ export default function MultisigConfigForm({
   signerCountLimitLabel = '',
   signerCountLimitTitle = '',
   signers = [],
+  signerErrors = [],
+  signerWeightErrors = [],
+  disabled = false,
   signerOptions = [],
   onRemoveSignerOption = null,
   onClearSignerOptions = null,
@@ -107,6 +110,7 @@ export default function MultisigConfigForm({
             onBlur={(e) => onSignerCountChange(e.target.value)}
             className="border rounded-sm px-2 py-1 text-sm w-24"
             title={signerCountLimitTitle}
+            disabled={disabled}
           />
           <span className="text-xs text-gray-600 dark:text-gray-400">{signerCountLimitLabel}</span>
         </div>
@@ -127,6 +131,7 @@ export default function MultisigConfigForm({
               onChange={(next) => onSignerKeyChange && onSignerKeyChange(i, next)}
               onSelect={(next) => onSignerKeyChange && onSignerKeyChange(i, next)}
               placeholder={signerPlaceholder}
+              disabled={disabled}
               options={signerOptions}
               accountPicker
               onRemoveOption={onRemoveSignerOption ? (entry) => onRemoveSignerOption(entry.value) : undefined}
@@ -148,8 +153,10 @@ export default function MultisigConfigForm({
                 value={s?.weight ?? 0}
                 onChange={(e) => onSignerWeightChange && onSignerWeightChange(i, e.target.value)}
                 onBlur={(e) => onSignerWeightChange && onSignerWeightChange(i, e.target.value)}
-                className={signerWeightInputClassName}
+                className={`${signerWeightInputClassName} ${signerWeightErrors[i] ? 'border-red-500' : ''}`}
                 title={signerWeightTooltip}
+                aria-invalid={signerWeightErrors[i] ? true : undefined}
+                disabled={disabled}
               />
               {signerWeightHint && (
                 <span className="text-xs text-gray-500">{signerWeightHint}</span>
@@ -161,12 +168,23 @@ export default function MultisigConfigForm({
                 <button
                   type="button"
                   onClick={() => onRemoveSigner(i)}
+                  disabled={disabled}
                   className="shrink-0 px-1.5 py-1 border rounded-sm text-xs whitespace-nowrap hover:bg-gray-100 dark:hover:bg-gray-800"
                 >
                   {removeSignerLabel}
                 </button>
               )}
             </div>
+            {signerErrors[i] && (
+              <div className="sm:col-span-6 text-xs text-red-600 dark:text-red-400 font-semibold" data-testid={`signer-error-${i}`}>
+                {signerErrors[i]}
+              </div>
+            )}
+            {signerWeightErrors[i] && (
+              <div className="sm:col-span-6 text-xs text-red-600 dark:text-red-400 font-semibold" data-testid={`signer-weight-error-${i}`}>
+                {signerWeightErrors[i]}
+              </div>
+            )}
             {(() => {
               // Picking from the Konten-Liste never blocks flagged accounts,
               // but a compromised/deactivated signer must be visible here.
@@ -193,7 +211,7 @@ export default function MultisigConfigForm({
 
       <div className="space-y-2">
         {hasAdd && (
-          <button type="button" onClick={onAddSigner} className={addSignerClassName}>
+          <button type="button" onClick={onAddSigner} className={addSignerClassName} disabled={disabled}>
             {addSignerLabel}
           </button>
         )}
@@ -233,6 +251,7 @@ export default function MultisigConfigForm({
           onBlur={(e) => onMasterWeightChange && onMasterWeightChange(e.target.value)}
           className={masterWeightInputClassName}
           title={masterWeightHint}
+          disabled={disabled}
         />
       </div>
 
@@ -249,6 +268,7 @@ export default function MultisigConfigForm({
               onChange={(e) => onThresholdChange && onThresholdChange('low', e.target.value)}
               onBlur={(e) => onThresholdChange && onThresholdChange('low', e.target.value)}
               className={`${thresholdInputClassName} ${thresholdErrors?.low ? 'border-red-500' : ''}`}
+              disabled={disabled}
             />
             <span className="text-xs text-gray-700 dark:text-gray-300">{thresholdUnitsLabel}</span>
           </label>
@@ -262,6 +282,7 @@ export default function MultisigConfigForm({
               onChange={(e) => onThresholdChange && onThresholdChange('med', e.target.value)}
               onBlur={(e) => onThresholdChange && onThresholdChange('med', e.target.value)}
               className={`${thresholdInputClassName} ${thresholdErrors?.med ? 'border-red-500' : ''}`}
+              disabled={disabled}
             />
             <span className="text-xs text-gray-700 dark:text-gray-300">{thresholdUnitsLabel}</span>
           </label>
@@ -275,6 +296,7 @@ export default function MultisigConfigForm({
               onChange={(e) => onThresholdChange && onThresholdChange('high', e.target.value)}
               onBlur={(e) => onThresholdChange && onThresholdChange('high', e.target.value)}
               className={`${thresholdInputClassName} ${thresholdErrors?.high ? 'border-red-500' : ''}`}
+              disabled={disabled}
             />
             <span className="text-xs text-gray-700 dark:text-gray-300">{thresholdUnitsLabel}</span>
           </label>

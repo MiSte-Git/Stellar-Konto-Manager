@@ -47,11 +47,14 @@ async function mountOnCreateAccountWithActivation({ activate = true } = {}) {
   await waitFor(() => expect(pageRadio('TESTNET')).not.toBeNull(), SLOW);
 
   await act(async () => { fireEvent.click(buttonByText(i18n.t('multisigCreate:generateKeys'))); });
+  // Secret Key startet verborgen: fuer die Pruefungen anzeigen
+  expect(byTestId('create-secret').textContent).not.toMatch(/^S/);
+  await act(async () => { fireEvent.click(byTestId('create-secret-toggle')); });
   const sec = byTestId('create-secret').textContent;
   expect(sec).toMatch(/^S[A-Z2-7]{55}$/);
   if (!activate) return { sec };
   await act(async () => { fireEvent.click(byTestId('create-backup-confirm')); });
-  await act(async () => { fireEvent.click(buttonByText(i18n.t('multisigCreate:activateOnly'))); });
+  await act(async () => { fireEvent.click(byTestId('create-activate')); });
   await waitFor(() => expect(byTestId('create-activation')).not.toBeNull(), SLOW);
   return { sec };
 }

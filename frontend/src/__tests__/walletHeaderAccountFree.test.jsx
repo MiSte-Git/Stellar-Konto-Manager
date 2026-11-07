@@ -112,19 +112,29 @@ describe('Wallet-Kopf auf Seiten ohne Kontobezug', () => {
     expect(pageRadio('PUBLIC').checked).toBe(true);
   });
 
-  it('zeigt die Fehlerzeile (Konto-Fehler und Script-Fehler) auch auf createAccount, ausserhalb des Kopfs', async () => {
+  it('zeigt auf createAccount und feedback keine Kontofehler, Script-Fehler aber weiterhin; im Kopf erscheint die Kontomeldung wieder', async () => {
     hoisted.submit.mockRejectedValue(new Error('Konto nicht gefunden'));
     await mountAppWithAccount('TESTNET').catch(() => {});
+    // Gegenprobe vorab: im Wallet-Kopf steht die Kontomeldung
+    await waitFor(() => expect(headerInput().form.parentElement.parentElement.textContent).toContain('Konto nicht gefunden'), SLOW);
+
+    for (const view of ['createAccount', 'feedback']) {
+      await openView(view);
+      await waitFor(() => expect(headerInput()).toBeNull(), SLOW);
+      expect(document.querySelector('[data-testid="main-error"]')).toBeNull();
+      expect(document.body.textContent).not.toContain('Konto nicht gefunden');
+    }
+
+    // Zurueck auf eine Seite mit Wallet-Kopf: die Kontomeldung ist wieder da
+    await openView('home');
+    await waitFor(() => expect(headerInput()).not.toBeNull(), SLOW);
+    expect(document.body.textContent).toContain('Konto nicht gefunden');
+    expect(document.querySelector('[data-testid="main-error"]')).toBeNull();
+
+    // Script-Fehler bleiben auf Seiten ohne Kontobezug sichtbar
     await openView('createAccount');
     await waitFor(() => expect(pageRadio('PUBLIC')).not.toBeNull(), SLOW);
-    expect(headerInput()).toBeNull();
-    const line = await waitFor(() => {
-      const el = document.querySelector('[data-testid="main-error"]');
-      expect(el).not.toBeNull();
-      return el;
-    }, SLOW);
-    expect(line.textContent).toContain('Konto nicht gefunden');
-
+    expect(document.querySelector('[data-testid="main-error"]')).toBeNull();
     await act(async () => { window.onerror('Boom im Test', 'http://localhost/src/x.js', 1, 2, new Error('Boom im Test')); });
     await waitFor(() => expect(document.querySelector('[data-testid="main-error"]').textContent).toContain('Boom im Test'), SLOW);
 
@@ -132,6 +142,34 @@ describe('Wallet-Kopf auf Seiten ohne Kontobezug', () => {
     await openView('home');
     await waitFor(() => expect(headerInput()).not.toBeNull(), SLOW);
     expect(document.querySelector('[data-testid="main-error"]')).toBeNull();
+    expect(document.body.textContent).toContain('Boom im Test');
+  });
+
+  it('Seitenfehler (nicht Konto, nicht Script) bleibt auf createAccount sichtbar', async () => {
+    const { default: i18n } = await import('../i18n.js');
+    await mountAppWithAccount('TESTNET');
+    await openView('compare');
+    const compareBtn = await waitFor(() => {
+      const el = Array.from(document.querySelectorAll('button')).find((b) => b.className.includes('mt-2 bg-blue-500'));
+      expect(el).toBeTruthy();
+      return el;
+    }, SLOW);
+    // Erst abwarten, bis der (hier unvermeidliche) Ladefehler des Kontos durch ist, damit er
+    // den Seitenfehler nicht danach im selben Fehlerfeld ueberschreibt
+    await waitFor(() => expect(document.body.textContent).toContain('nicht gefunden'), SLOW);
+    // Ungueltiges Ziel: die Seite meldet einen eigenen Fehler (Herkunft Seite)
+    const destInput = compareBtn.parentElement.querySelector('input');
+    await act(async () => { fireEvent.change(destInput, { target: { value: 'kein-gueltiger-key' } }); });
+    await act(async () => { fireEvent.click(compareBtn); });
+    const msg = i18n.t('publicKey:destination.error');
+    await waitFor(() => expect(document.body.textContent).toContain(msg), SLOW);
+
+    await openView('createAccount');
+    await waitFor(() => expect(pageRadio('PUBLIC')).not.toBeNull(), SLOW);
+    expect(headerInput()).toBeNull();
+    const line = document.querySelector('[data-testid="main-error"]');
+    expect(line).not.toBeNull();
+    expect(line.textContent).toContain(msg);
   });
 
   it('Netzwechsel aus anderem Tab wirkt wie ein Wechsel in diesem Tab', async () => {
