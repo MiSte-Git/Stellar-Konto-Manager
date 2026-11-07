@@ -1,6 +1,7 @@
 import React from 'react';
 import { act, fireEvent, render, waitFor } from '@testing-library/react';
 import { I18nextProvider } from 'react-i18next';
+import { autoAnswerConfirmDialog } from '../../test/confirmDialogHelper.js';
 import i18n from '../../i18n.js';
 import MultisigCreatePage from '../MultisigCreatePage.jsx';
 import { setGlobalNetwork } from '../../utils/globalNetwork.js';
@@ -181,43 +182,62 @@ describe('MultisigCreatePage: Netzschalter ist der globale Netzschalter', () => 
     fetchSpy.mockRestore();
   });
 
+  it('Startguthaben folgt dem Moduswechsel (Mainnet), solange es nicht selbst geaendert wurde', async () => {
+    window.localStorage.setItem('SKM_NETWORK', 'PUBLIC');
+    window.localStorage.setItem('SKM_NET_INIT', '1');
+    const view = renderPage();
+    const { getByText, getByTestId, container } = view;
+    await act(async () => { fireEvent.click(getByText(i18n.t('multisigCreate:generateKeys'))); });
+    const balance = () => container.querySelector('#create-starting-balance');
+    expect(balance().value).toBe('1.5000000');
+    // Mit Multisig steigt die noetige Reserve (Basisreserve 0.5 x (2 + Signer) + 0.5)
+    await act(async () => { fireEvent.click(getByTestId('create-mode-multisig')); });
+    await waitFor(() => expect(balance().value).toBe('2.0000000'));
+    await act(async () => { fireEvent.click(getByTestId('create-mode-account')); });
+    await waitFor(() => expect(balance().value).toBe('1.5000000'));
+    // Eigene Eingabe bleibt beim Moduswechsel erhalten
+    await act(async () => { fireEvent.change(balance(), { target: { value: '7' } }); });
+    await act(async () => { fireEvent.click(getByTestId('create-mode-multisig')); });
+    expect(balance().value).toBe('7');
+  });
+
   it('Schluessel verwerfen: Rueckfrage; Abbrechen behaelt sie, Bestaetigen entfernt sie samt Hinweis', async () => {
     window.localStorage.setItem('SKM_NETWORK', 'TESTNET');
-    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(false);
     const view = renderPage();
     const { container, getByText, queryByTestId, getByTestId } = view;
     await act(async () => { fireEvent.click(getByText(i18n.t('multisigCreate:generateKeys'))); });
     const pub = container.textContent.match(/G[A-Z2-7]{55}/)[0];
     await act(async () => { setGlobalNetwork('PUBLIC'); });
     await act(async () => { fireEvent.click(getByTestId('create-keys-discard')); });
-    expect(confirmSpy).toHaveBeenCalledWith(i18n.t('multisigCreate:keys.discardConfirm'));
+    expect(getByTestId('confirm-dialog').textContent).toContain(i18n.t('multisigCreate:keys.discardConfirm'));
+    await act(async () => { fireEvent.click(getByTestId('confirm-dialog-cancel')); });
+    expect(queryByTestId('confirm-dialog')).toBeNull();
     expect(container.textContent).toContain(pub);
 
-    confirmSpy.mockReturnValue(true);
     await act(async () => { fireEvent.click(getByTestId('create-keys-discard')); });
+    await act(async () => { fireEvent.click(getByTestId('confirm-dialog-ok')); });
     expect(container.textContent).not.toContain(pub);
     expect(container.textContent).not.toMatch(/S[A-Z2-7]{55}/);
     expect(queryByTestId('create-network-notice')).toBeNull();
     expect(queryByTestId('create-keys-discard')).toBeNull();
     expect(container.textContent).toContain(i18n.t('multisigCreate:keys.discarded'));
-    confirmSpy.mockRestore();
   });
 
   it('neue Schluessel ersetzen angezeigte nur nach Rueckfrage', async () => {
     window.localStorage.setItem('SKM_NETWORK', 'TESTNET');
-    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(false);
-    const { container, getByText } = renderPage();
+    const { container, getByText, getByTestId, queryByTestId } = renderPage();
     await act(async () => { fireEvent.click(getByText(i18n.t('multisigCreate:generateKeys'))); });
     const pub = container.textContent.match(/G[A-Z2-7]{55}/)[0];
     await act(async () => { fireEvent.click(getByText(i18n.t('multisigCreate:generateKeys'))); });
-    expect(confirmSpy).toHaveBeenCalledWith(i18n.t('multisigCreate:keys.replaceConfirm'));
+    expect(getByTestId('confirm-dialog').textContent).toContain(i18n.t('multisigCreate:keys.replaceConfirm'));
+    await act(async () => { fireEvent.click(getByTestId('confirm-dialog-x')); });
+    expect(queryByTestId('confirm-dialog')).toBeNull();
     expect(container.textContent).toContain(pub);
     // Gegenprobe: bestaetigt -> neue Schluessel
-    confirmSpy.mockReturnValue(true);
     await act(async () => { fireEvent.click(getByText(i18n.t('multisigCreate:generateKeys'))); });
+    await act(async () => { fireEvent.click(getByTestId('confirm-dialog-ok')); });
     expect(container.textContent).not.toContain(pub);
     expect(container.textContent).toMatch(/G[A-Z2-7]{55}/);
-    confirmSpy.mockRestore();
   });
 
   it('ohne erzeugte Schluessel bleibt der Netzwechsel ohne Hinweis', async () => {
@@ -288,6 +308,7 @@ describe('MultisigCreatePage: Netzschalter ist der globale Netzschalter', () => 
 describe('MultisigCreatePage: Schluessel nach gesendeter Aktivierung', () => {
   const COSIGNER = 'GD5KJP276E7CZT43PAI5KAEXCUDZMFFMV4X5AGFKBR7Q7IAZZ5BXZVKM';
   let confirmSpy;
+  let autoDialog;
 
   beforeAll(async () => { await i18n.changeLanguage('de'); });
   beforeEach(() => {
@@ -301,8 +322,9 @@ describe('MultisigCreatePage: Schluessel nach gesendeter Aktivierung', () => {
     hoisted.submittedTxs = [];
     hoisted.activationFailed = false;
     confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
+    autoDialog = autoAnswerConfirmDialog(true);
   });
-  afterEach(() => confirmSpy.mockRestore());
+  afterEach(() => { autoDialog.stop(); confirmSpy.mockRestore(); });
 
   // Mainnet: Schluessel erzeugen, Multisig mit einem Signer, sofort aktivieren, Funder bestaetigen.
   async function startCreateAll(view, { onNewAccountLoad } = {}) {

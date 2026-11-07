@@ -4,7 +4,10 @@
   },
   "app": {
     "errorBoundary": {
-      "title": "Etwas ist schiefgelaufen."
+      "title": "Etwas ist schiefgelaufen.",
+      "keysWarning": "Hinweis: Wurden gerade Schlüssel für ein neues Konto erzeugt und der Secret Key ist noch nicht gesichert, sind sie jetzt möglicherweise verloren. SKM speichert Secret Keys nirgends, auch nicht nach einem Fehler. Hat die Adresse schon Guthaben, ist es ohne gesicherten Secret Key nicht mehr erreichbar.",
+      "reloadAck": "Ich habe verstanden, dass nicht gesicherte Schlüssel beim Neuladen endgültig verloren sind.",
+      "reload": "Seite neu laden"
     }
   },
   "asset": {

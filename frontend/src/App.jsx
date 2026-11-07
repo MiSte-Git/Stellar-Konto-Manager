@@ -18,40 +18,9 @@ import AppLayout from './components/layout/AppLayout.jsx';
 import { isBugtrackerPath, isGlossaryPath, isLearnPath, isLessonQuizPath, isQuizRunPath, isQuizSettingsPath, isQuizAchievementsPath, isSettingsBackupPath, buildPath, isQuizDetailPath, isQuizIndexPath, isScamSimulatorPath, isStoryPath, isDiscoverPath } from './utils/basePath.js';
 import scenarios from './data/learn/scam-scenarios/scenarios.js';
 
-import { formatErrorForUi } from './utils/formatErrorForUi.js';
+import ErrorBoundary from './components/ErrorBoundary.jsx';
 
 console.log('App.jsx loaded');
-
-// Error Boundary Component
-class ErrorBoundary extends React.Component {
-  state = { error: null };
-  static getDerivedStateFromError(error) {
-    if (error?.name === 'NotFoundError' || String(error?.message || '').includes('removeChild')) {
-      return { error: null };
-    }
-    return { error: error.message };
-  }
-  componentDidCatch(error, info) {
-    if (error?.name === 'NotFoundError' || String(error?.message || '').includes('removeChild')) {
-      console.warn('Ignored NotFound/removeChild error', error);
-      return;
-    }
-    console.error('Uncaught error:', error, info);
-  }
-  render() {
-    const { t } = this.props;
-    if (this.state.error) {
-      const display = formatErrorForUi(t, this.state.error);
-      return (
-        <div className="text-red-500 p-4">
-          <h2>{t('common:app.errorBoundary.title')}</h2>
-          <p>{display}</p>
-        </div>
-      );
-    }
-    return this.props.children;
-  }
-}
 
 function LearnRedirect() {
   React.useEffect(() => {

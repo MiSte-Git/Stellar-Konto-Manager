@@ -109,6 +109,7 @@ describe('Neues Konto erstellen: Verlassen mit offenem Vermerk', () => {
     // Schluessel verwerfen (Rueckfrage bestaetigen), danach verlaesst der Menuewechsel direkt
     confirmSpy.mockReturnValue(true);
     await act(async () => { fireEvent.click(byTestId('create-keys-discard')); });
+    await act(async () => { fireEvent.click(byTestId('confirm-dialog-ok')); });
     expect(byTestId('create-secret')).toBeNull();
     confirmSpy.mockClear();
     await openView('feedback');
@@ -151,6 +152,7 @@ describe('Neues Konto erstellen: Verlassen mit offenem Vermerk', () => {
     const { sec } = await mountOnCreateAccountWithActivation({ activate: false });
     confirmSpy.mockReturnValue(true);
     await act(async () => { fireEvent.click(byTestId('create-keys-discard')); });
+    await act(async () => { fireEvent.click(byTestId('confirm-dialog-ok')); });
     expect(document.body.textContent).not.toContain(sec);
     confirmSpy.mockClear();
 

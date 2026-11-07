@@ -7,6 +7,8 @@ import MultiSigHelpDialog from '../components/multisig/MultiSigHelpDialog.jsx';
 import MultisigConfigForm from '../components/multisig/MultisigConfigForm.jsx';
 import { getHorizonServerForNetwork } from '../utils/stellar/stellarUtils.js';
 import { getRequiredThreshold } from '../utils/getRequiredThreshold.js';
+import { useConfirmDialog } from '../components/useConfirmDialog.jsx';
+import { isValidSignerKey } from '../utils/multisig/signerKeys.js';
 import { getMultisigSafetyCheck } from '../utils/getMultisigSafetyCheck.js';
 import { useRecentWalletOptions } from '../utils/useRecentWalletOptions.js';
 import { resolveFeePerOp } from '../utils/stellar/fees.js';
@@ -18,7 +20,6 @@ import { SESSION_LOCKED_EVENT } from '../utils/sessionSecrets.js';
 import {
   Keypair,
   Operation,
-  StrKey,
   TransactionBuilder,
   Horizon
 } from '@stellar/stellar-sdk';
@@ -70,6 +71,7 @@ export default function MultisigCreatePage() {
   // im Wallet-Kopf, der hier ausgeblendet ist) und folgt jedem Wechsel von anderer Stelle.
   const [network, setNetwork] = useGlobalNetwork();
   // { pub, sec, network }: network ist das Netz, fuer das die Schluessel erzeugt wurden
+  const { confirm, dialog: confirmDialog } = useConfirmDialog();
   const [generated, setGenerated] = useState(null);
   const [signers, setSigners] = useState(['']);
   const [signerCount, setSignerCount] = useState(1);
@@ -85,6 +87,7 @@ export default function MultisigCreatePage() {
   const [pendingAction, setPendingAction] = useState(null); // 'activate' | 'createAll'
   const [baseReserve, setBaseReserve] = useState(null); // XLM per entry
   const [startingBalance, setStartingBalance] = useState('1');
+  const startingBalanceEditedRef = useRef(false); // Nutzer hat das Startguthaben selbst geaendert
   const [showInfo2, setShowInfo2] = useState(false);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   // Pflicht vor jeder Aktivierung: Nutzer bestaetigt, dass er den angezeigten Secret Key
@@ -148,7 +151,7 @@ export default function MultisigCreatePage() {
     const seen = new Set();
     return signerRows.map((r) => {
       if (!r.key) return '';
-      if (!StrKey.isValidEd25519PublicKey(r.key)) return t('multisigCreate:multisig.signerInvalid');
+      if (!isValidSignerKey(r.key)) return t('multisigCreate:multisig.signerInvalid');
       if (generated?.pub && r.key === generated.pub) return t('multisigCreate:multisig.signerOwnKey');
       if (seen.has(r.key)) return t('multisigCreate:multisig.signerDuplicate');
       seen.add(r.key);
@@ -292,6 +295,7 @@ export default function MultisigCreatePage() {
       // Warnung bei Fertig gehoert zum Stand vor dem Wechsel: Fertig prueft danach neu
       setFinishWarn(null);
     }
+    startingBalanceEditedRef.current = false; // neues Netz: wieder der Vorschlag
     let cancelled = false;
     (async () => {
       const r = await fetchBaseReserveXLM();
@@ -436,7 +440,7 @@ export default function MultisigCreatePage() {
     ? t('multisigCreate:leaveGuard.confirm')
     : t('multisigCreate:leaveGuard.confirmKeys'));
 
-  function handleGenerate() {
+  async function handleGenerate() {
     if (locked) return;
     // Angezeigte Schluessel nie ohne Rueckfrage ersetzen: Die Adresse kann schon Guthaben
     // haben, mit gesendeter Aktivierung erst recht.
@@ -444,7 +448,8 @@ export default function MultisigCreatePage() {
       const message = recordFor(generated.pub)
         ? t('multisigCreate:activation.replaceConfirm')
         : t('multisigCreate:keys.replaceConfirm');
-      if (!window.confirm(message)) return;
+      if (!(await confirm({ message, danger: true }))) return;
+      if (locked) return;
     }
     setActivation(null);
     const kp = Keypair.random();
@@ -520,9 +525,10 @@ export default function MultisigCreatePage() {
 
   // "Schluessel verwerfen": ausdruecklich, mit Rueckfrage. Waehrend busy gesperrt, damit ein
   // laufender Ablauf nicht ohne Key zu Ende geht.
-  function handleDiscardKeys() {
+  async function handleDiscardKeys() {
     if (locked || !generated) return;
-    if (!window.confirm(t('multisigCreate:keys.discardConfirm'))) return;
+    if (!(await confirm({ message: t('multisigCreate:keys.discardConfirm'), danger: true }))) return;
+    if (locked) return;
     setActivation(null);
     discardKeys('');
     setResultMsg(t('multisigCreate:keys.discarded'));
@@ -770,11 +776,11 @@ export default function MultisigCreatePage() {
     return '';
   }
 
-  function confirmLowBalanceIfNeeded() {
+  async function confirmLowBalanceIfNeeded() {
     if (network !== 'PUBLIC') return true;
     const bal = parseFloat(startingBalance || '0');
     if (bal >= requiredReserve) return true;
-    return window.confirm(t('multisigCreate:confirmLowBalance', { bal: bal.toFixed(7), req: requiredReserve.toFixed(7), count: Math.max(0, Number(signerCount)||0) }));
+    return confirm({ message: t('multisigCreate:confirmLowBalance', { bal: bal.toFixed(7), req: requiredReserve.toFixed(7), count: Math.max(0, Number(signerCount)||0) }) });
   }
 
   // "Aktivieren und Multisig setzen": aktiviert, falls noetig, und setzt danach Multisig.
@@ -808,7 +814,7 @@ export default function MultisigCreatePage() {
           await friendbotActivate(pub);
         } else {
           // Warn-Confirm bei zu geringem Startguthaben im Mainnet
-          if (!confirmLowBalanceIfNeeded()) return;
+          if (!(await confirmLowBalanceIfNeeded())) return;
           // Mainnet → Secret vom Funder anfragen und danach fortsetzen
           setPendingAction({ type: 'createAll', destPub: pub, startingBalance, network });
           setShowSecretModal(true);
@@ -853,7 +859,7 @@ export default function MultisigCreatePage() {
         const outcome = await friendbotActivate(pub);
         setResultMsg(outcome === 'exists' ? t('multisigCreate:alreadyActive') : t('multisigCreate:activatedTestnet'));
       } else {
-        if (!confirmLowBalanceIfNeeded()) return;
+        if (!(await confirmLowBalanceIfNeeded())) return;
         setPendingAction({ type: 'activate', destPub: pub, startingBalance, network });
         setShowSecretModal(true);
       }
@@ -880,8 +886,19 @@ export default function MultisigCreatePage() {
     return Math.max(requiredReserve + 0.5, 1);
   }, [requiredReserve]);
 
+  // Startguthaben folgt dem Modus (Nur Konto / mit Multisig) und der Signer-Anzahl, solange es
+  // niemand selbst geaendert hat. Frueher wurde es nur beim Netzwechsel gesetzt und blieb nach
+  // dem Wechsel zu Multisig unter der noetigen Reserve.
+  useEffect(() => {
+    if (startingBalanceEditedRef.current || locked) return;
+    setStartingBalance(network === 'PUBLIC' ? recommended.toFixed(7) : '1');
+    // nur bei Modus- oder Signer-Wechsel; die uebrigen Werte werden zu diesem Zeitpunkt gelesen
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [enableMultisig, signerCount]);
+
   return (
     <div className="max-w-4xl mx-auto p-4">
+      {confirmDialog}
       <div className="mb-4 text-center">
         <h2 className="text-xl font-semibold">{t('multisigCreate:title')}</h2>
       </div>
@@ -1196,7 +1213,7 @@ export default function MultisigCreatePage() {
                     step="0.0000001"
                     min="0"
                     value={startingBalance}
-                    onChange={(e) => setStartingBalance(e.target.value)}
+                    onChange={(e) => { startingBalanceEditedRef.current = true; setStartingBalance(e.target.value); }}
                     disabled={locked}
                     className="w-full border rounded-sm px-2 py-1"
                   />

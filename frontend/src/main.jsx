@@ -250,13 +250,20 @@ function Main() {
   // Deshalb setzen wir nur setTrustlines, lesen aber trustlines nicht aus → ignorierbare Warnung
   const [, setShowSecretKey] = useState(false);
   const [results, setResults] = useState([]);
-  const [error, setErrorText] = useState('');
-  // Herkunft der Fehlerzeile: 'account' = Laden/Aufloesen des Kontos im Wallet-Kopf,
-  // 'script' = window.onerror, sonst 'page'. Seiten ohne Kontobezug zeigen keine Kontofehler.
-  const [errorOrigin, setErrorOrigin] = useState('');
+  // Fehler getrennt nach Herkunft, damit einer den anderen nicht ueberschreibt:
+  // 'account' = Laden/Aufloesen des Kontos im Wallet-Kopf, 'script' = window.onerror,
+  // 'page' = Fehler der Seiten. Seiten ohne Kontobezug zeigen keine Kontofehler.
+  // setError(msg, origin): setzt die Meldung dieser Herkunft; setError('', origin) loescht nur
+  // diese, setError('', 'all') alle.
+  const [errors, setErrors] = useState({});
   const setError = useCallback((msg, origin = 'page') => {
-    setErrorText(msg);
-    setErrorOrigin(msg ? origin : '');
+    setErrors((prev) => {
+      if (origin === 'all') return msg ? prev : {};
+      if (!msg && !prev[origin]) return prev;
+      const next = { ...prev };
+      if (msg) next[origin] = msg; else delete next[origin];
+      return next;
+    });
   }, []);
   const [notFound, setNotFound] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -457,7 +464,7 @@ function Main() {
     if (!input) return;
     const requestId = ++walletOpRequestRef.current;
     setIsLoading(true);
-    setError('');
+    setError('', 'account');
     let resolved = null;
     try {
       resolved = await resolveOrValidateAccount(input);
@@ -543,7 +550,7 @@ function Main() {
     const requestId = ++walletOpRequestRef.current;
     setIsLoading(true);
     setXlmBalanceLoading(true);
-    setError('');
+    setError('', 'account');
     try {
       const net = readStoredNetworkId();
       // Nur leichte Zusammenfassung nach Netzwechsel neu laden
@@ -600,7 +607,7 @@ function Main() {
       setDevTestnet(networkFromEvent(e) === 'TESTNET');
       setInfoMessage('');
       // Fehler des vorherigen Netzes (z. B. Konto nicht gefunden) gilt nach dem Wechsel nicht mehr
-      setError('');
+      setError('', 'all');
       setNotFound(false);
       // Konto im neuen Netz neu pruefen (setzt notFound/Saldo korrekt)
       revalidateActiveWallet();
@@ -729,7 +736,7 @@ function Main() {
     setResults([]);
     setDestinationPublicKey('');
     setIssuerAddress('');
-    setError('');
+    setError('', 'all');
     setXlmBalance(null);
   }, [setError]);
 
@@ -803,7 +810,7 @@ function Main() {
     const requestId = ++walletOpRequestRef.current;
     (async () => {
       setIsLoading(true);
-      setError('');
+      setError('', 'account');
       let resolved = null;
       try {
         const net = readStoredNetworkId();
@@ -858,16 +865,20 @@ function Main() {
     return nav ? t(nav.labelKey) : '';
   }, [menuSelection, t]);
 
-  const errorDisplay = React.useMemo(() => {
-    const raw = String(error || '');
-    if (!raw) return '';
-    const base = t('submitTransaction:failed', 'Transaction failed');
-    if (raw.startsWith('submitTransaction.failed:')) {
-      const detail = raw.slice('submitTransaction.failed:'.length);
-      return base + ': ' + t(detail, detail);
-    }
-    return t(raw, raw);
-  }, [error, t]);
+  // Sichtbare Fehlermeldungen mit Herkunft (Reihenfolge: Konto, Seite, Script).
+  const errorItems = React.useMemo(() => {
+    const format = (raw) => {
+      const base = t('submitTransaction:failed', 'Transaction failed');
+      if (raw.startsWith('submitTransaction.failed:')) {
+        const detail = raw.slice('submitTransaction.failed:'.length);
+        return base + ': ' + t(detail, detail);
+      }
+      return t(raw, raw);
+    };
+    return ['account', 'page', 'script']
+      .filter((origin) => errors[origin])
+      .map((origin) => ({ origin, text: format(String(errors[origin])) }));
+  }, [errors, t]);
 
   // Filter-Update
   const handleFilterChange = useCallback((key, value) => {
@@ -1047,14 +1058,18 @@ function Main() {
           </>
         )}
 
-        {error && !notFoundOnlyInGate && <p className="text-red-500 mt-4">{errorDisplay}</p>}
+        {!notFoundOnlyInGate && errorItems.map((e) => (
+          <p key={e.origin} className="text-red-500 mt-4" data-testid={`main-error-${e.origin}`}>{e.text}</p>
+        ))}
       </div>
       )}
       {/* Ohne Wallet-Kopf nur Fehler ohne Kontobezug (z. B. Script-Fehler aus window.onerror) anzeigen.
           Kontofehler bleiben im State und erscheinen wieder, sobald der Wallet-Kopf zu sehen ist. */}
-      {hideWalletHeader && error && errorOrigin !== 'account' && (
+      {hideWalletHeader && errorItems.some((e) => e.origin !== 'account') && (
         <div className="max-w-4xl mx-auto px-4 pt-4 text-center">
-          <p className="text-red-500 mt-4" data-testid="main-error">{errorDisplay}</p>
+          {errorItems.filter((e) => e.origin !== 'account').map((e) => (
+            <p key={e.origin} className="text-red-500 mt-4" data-testid="main-error">{e.text}</p>
+          ))}
         </div>
       )}
 
@@ -1074,7 +1089,7 @@ function Main() {
       {menuSelection === 'listAll' && !accountGateActive && (
         sourcePublicKey ? (
           <div className="max-w-6xl mx-auto px-3">
-            {error && <p className="text-sm text-gray-400">{errorDisplay}</p>}
+            {errorItems.map((e) => <p key={e.origin} className="text-sm text-gray-400">{e.text}</p>)}
             <ListTrustlines
               key={refreshToken}
               network={devTestnet ? 'TESTNET' : 'PUBLIC'}

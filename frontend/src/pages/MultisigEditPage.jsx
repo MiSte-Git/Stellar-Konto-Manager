@@ -12,6 +12,7 @@ import { getMultisigTxTimeout } from '../utils/getMultisigTxTimeout.js';
 import { validateMultisigConfig } from '../utils/validateMultisigConfig.js';
 import { getMultisigSafetyCheck } from '../utils/getMultisigSafetyCheck.js';
 import { Keypair, Operation, TransactionBuilder, StrKey } from '@stellar/stellar-sdk';
+import { findInvalidSignerKey, isValidSignerKey } from '../utils/multisig/signerKeys.js';
 import { apiUrl } from '../utils/apiBase.js';
 import { useRecentWalletOptions } from '../utils/useRecentWalletOptions.js';
 import { getSessionSecret } from '../utils/sessionSecrets.js';
@@ -236,6 +237,10 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
     if (hasSafetyErrors) {
       throw new Error('submitTransaction.failed:' + 'multisig.invalidConfig');
     }
+    // Ungueltige Signer nie stillschweigend weglassen (auch nicht ueber andere Aufrufwege).
+    if (findInvalidSignerKey(signers)) {
+      throw new Error(t('common:multisigEdit.validation.signerKeyInvalid'));
+    }
 
     const acct = await server.loadAccount(pk);
     const required = getRequiredThreshold('setOptions', acct.thresholds) || clampByte(acct.thresholds?.high_threshold ?? highT);
@@ -254,7 +259,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
     const currentMap = new Map();
     (acct.signers || []).forEach(s => { if (s.key !== pk && s.type && s.type.includes('ed25519')) currentMap.set(s.key, s.weight); });
     const plannedMap = new Map();
-    (signers || []).forEach(s => { const k = (s.key || '').trim(); if (k && k.startsWith('G')) plannedMap.set(k, clampByte(s.weight)); });
+    (signers || []).forEach(s => { const k = (s.key || '').trim(); if (k && isValidSignerKey(k)) plannedMap.set(k, clampByte(s.weight)); });
     const plannedMaster = clampByte(masterWeight);
     const plannedThresholds = { low: clampByte(lowT), med: clampByte(medT), high: clampByte(highT) };
 
@@ -390,12 +395,9 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
       return;
     }
     // validate signer keys (optional: allow empty rows)
-    for (const s of signers) {
-      const k = (s.key || '').trim();
-      if (k && !StrKey.isValidEd25519PublicKey(k)) {
-        setError(t('common:multisigEdit.validation.signerKeyInvalid'));
-        return;
-      }
+    if (findInvalidSignerKey(signers)) {
+      setError(t('common:multisigEdit.validation.signerKeyInvalid'));
+      return;
     }
     setPendingAction('save');
     setRiskAcknowledged(false);
@@ -505,7 +507,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
   const buildPlannedChanges = useCallback(() => {
     const pk = (defaultPublicKey || '').trim();
     const plannedMap = new Map();
-    (signers || []).forEach(s => { const k = (s.key || '').trim(); if (k && k.startsWith('G')) plannedMap.set(k, clampByte(s.weight)); });
+    (signers || []).forEach(s => { const k = (s.key || '').trim(); if (k && isValidSignerKey(k)) plannedMap.set(k, clampByte(s.weight)); });
     const plannedThresholds = { low: clampByte(lowT), med: clampByte(medT), high: clampByte(highT) };
     const currentMaster = clampByte(masterWeight);
     const changes = [];

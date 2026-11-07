@@ -145,6 +145,22 @@ describe('Wallet-Kopf auf Seiten ohne Kontobezug', () => {
     expect(document.body.textContent).toContain('Boom im Test');
   });
 
+  it('Kontofehler und Script-Fehler bleiben nebeneinander sichtbar, keiner ueberschreibt den anderen', async () => {
+    hoisted.submit.mockRejectedValue(new Error('Konto nicht gefunden'));
+    await mountAppWithAccount('TESTNET').catch(() => {});
+    await waitFor(() => expect(document.querySelector('[data-testid="main-error-account"]')).not.toBeNull(), SLOW);
+    await act(async () => { window.onerror('Boom im Test', 'http://localhost/src/x.js', 1, 2, new Error('Boom im Test')); });
+    await waitFor(() => expect(document.querySelector('[data-testid="main-error-script"]')).not.toBeNull(), SLOW);
+    expect(document.querySelector('[data-testid="main-error-account"]').textContent).toContain('Konto nicht gefunden');
+    expect(document.querySelector('[data-testid="main-error-script"]').textContent).toContain('Boom im Test');
+    // Neuer Kontoversuch loescht nur die Kontomeldung, der Script-Fehler bleibt
+    hoisted.submit.mockImplementation(async () => ({ publicKey: G, summary: { xlmBalance: '10.0000000' } }));
+    const input = headerInput();
+    await act(async () => { fireEvent.change(input, { target: { value: G } }); fireEvent.submit(input.form); });
+    await waitFor(() => expect(document.querySelector('[data-testid="main-error-account"]')).toBeNull(), SLOW);
+    expect(document.querySelector('[data-testid="main-error-script"]')).not.toBeNull();
+  });
+
   it('Seitenfehler (nicht Konto, nicht Script) bleibt auf createAccount sichtbar', async () => {
     const { default: i18n } = await import('../i18n.js');
     await mountAppWithAccount('TESTNET');

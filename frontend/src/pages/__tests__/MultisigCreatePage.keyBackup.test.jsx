@@ -4,6 +4,7 @@ import { I18nextProvider } from 'react-i18next';
 import i18n from '../../i18n.js';
 import MultisigCreatePage, { FRIENDBOT_TIMEOUT_MS } from '../MultisigCreatePage.jsx';
 import { setGlobalNetwork } from '../../utils/globalNetwork.js';
+import { autoAnswerConfirmDialog } from '../../test/confirmDialogHelper.js';
 import { confirmNavigation, hasNavigationGuard } from '../../utils/navigationGuard.js';
 import { SESSION_LOCKED_EVENT } from '../../utils/sessionSecrets.js';
 
@@ -118,6 +119,7 @@ function mockFriendbot(...responses) {
 const json = (status, body) => new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } });
 
 beforeAll(async () => { await i18n.changeLanguage('de'); });
+let autoDialog;
 beforeEach(() => {
   window.localStorage.clear();
   hoisted.loads = [];
@@ -131,8 +133,9 @@ beforeEach(() => {
   vi.spyOn(globalThis, 'fetch');
   // Rueckfragen (neue Schluessel ersetzen) bestaetigen
   vi.spyOn(window, 'confirm').mockReturnValue(true);
+  autoDialog = autoAnswerConfirmDialog(true);
 });
-afterEach(() => { vi.restoreAllMocks(); });
+afterEach(() => { autoDialog?.stop(); vi.restoreAllMocks(); });
 
 describe('Checkbox: Secret Key gesichert ist Pflicht vor jeder Aktivierung', () => {
   it.each(['TESTNET', 'PUBLIC'])('%s: ohne Haken gesperrt, mit Haken moeglich; neue Schluessel setzen den Haken zurueck', async (network) => {
@@ -710,14 +713,16 @@ describe('KS-2: Waechter fuer erzeugte Schluessel ohne Aktivierung', () => {
     expect(beforeUnloadPrevented()).toBe(true);
     expect(view.getByTestId('create-secret').textContent).toBe(sec);
 
-    // Verwerfen abgebrochen: alles bleibt
+    // Verwerfen abgebrochen (Dialog selbst beantworten): alles bleibt
+    autoDialog.stop();
     await act(async () => { fireEvent.click(view.getByTestId('create-keys-discard')); });
+    await act(async () => { fireEvent.click(view.getByTestId('confirm-dialog-cancel')); });
     expect(hasNavigationGuard()).toBe(true);
     expect(view.getByTestId('create-secret').textContent).toBe(sec);
 
     // Gegenprobe: Verwerfen bestaetigt -> keine Rueckfrage, kein beforeunload
-    window.confirm.mockReturnValue(true);
     await act(async () => { fireEvent.click(view.getByTestId('create-keys-discard')); });
+    await act(async () => { fireEvent.click(view.getByTestId('confirm-dialog-ok')); });
     expect(view.container.textContent).not.toContain(sec);
     expect(hasNavigationGuard()).toBe(false);
     expect(beforeUnloadPrevented()).toBe(false);
