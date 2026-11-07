@@ -8,7 +8,7 @@
 // Bewusst nicht unterstuetzt (Zeile wird blockiert, Hinweis auf "Zahlung senden"):
 // - Multisig-Konten als Sender (Sammelzahlung signiert nur mit dem Master Key des Senders)
 // - nicht aktivierte Empfaenger (Aktivierung per createAccount nur ueber "Zahlung senden")
-import { Account, Asset, Keypair, Memo, MuxedAccount, Operation, StrKey, TransactionBuilder } from '@stellar/stellar-sdk';
+import { Asset, Keypair, Memo, MuxedAccount, Operation, StrKey, TransactionBuilder } from '@stellar/stellar-sdk';
 import { Buffer } from 'buffer';
 import { resolveOrValidateAccount } from '../stellar/stellarUtils.js';
 import { accountRequiresMemo } from '../stellar/memoRequired.js';
@@ -223,190 +223,13 @@ export function paymentFingerprint({ network, row, destination }) {
   ]);
 }
 
-// Sicherheitsabstand zwischen maxTime und dem letzten bekannten Ledger, falls Horizon
-// hinter einem Load-Balancer laeuft und die Knoten unterschiedlich weit sind.
-export const AMBIGUOUS_LEDGER_BUFFER_SECONDS = 60;
-
-/**
- * Zeitpunkt (ms, lokale Uhr), ab dem resolveAmbiguous fruehestens 'expired' liefern kann:
- * maxTime der Transaktion plus Puffer. Massgeblich bleibt der Ledger-Zeitstempel von
- * Horizon; die Angabe ist fuer die Anzeige und die automatische Pruefung. null ohne maxTime.
- */
-export function ambiguousClearAt(entry) {
-  const maxTime = Number(entry?.maxTime);
-  return Number.isInteger(maxTime) && maxTime > 0 ? (maxTime + AMBIGUOUS_LEDGER_BUFFER_SECONDS) * 1000 : null;
-}
-
-// Mindestabstand der zwei Abfragen, bevor ein Eintrag mit verbrauchter (oder unbekannter)
-// Sequence als abgelaufen gilt. Ein hinkender Horizon-Knoten oder ein Cache soll den
-// Hash nicht zweimal kurz hintereinander als "nicht gefunden" melden koennen.
-export const AMBIGUOUS_STRICT_RECHECK_MS = 30 * 1000;
-
-const sleepMs = (ms) => new Promise((r) => setTimeout(r, ms));
-
-// Sequence eines Kontos (AccountResponse oder Account des SDK) als BigInt oder null.
-export function accountSequenceOf(account) {
-  try {
-    const raw = typeof account?.sequenceNumber === 'function' ? account.sequenceNumber() : account?.sequence;
-    return /^\d+$/.test(String(raw ?? '')) ? BigInt(String(raw)) : null;
-  } catch {
-    return null;
-  }
-}
-
-/**
- * Sucht einen Hash bei Horizon. Ein Treffer zaehlt nur, wenn der Hash der Antwort dem
- * gesuchten entspricht: 'success' (successful true), 'failed' (successful false),
- * 'notFound' (404) oder 'unknown' (Netzfehler, anderer Status, Antwort ohne passenden Hash
- * oder ohne eindeutiges successful).
- */
-export async function lookupTransaction(server, hash) {
-  try {
-    const record = await server.transactions().transaction(hash).call();
-    if (String(record?.hash || '').toLowerCase() !== String(hash || '').toLowerCase()) return 'unknown';
-    if (record.successful === true) return 'success';
-    if (record.successful === false) return 'failed';
-    return 'unknown';
-  } catch (e) {
-    return e?.response?.status === 404 ? 'notFound' : 'unknown';
-  }
-}
-
-// Alle Hashes eines Eintrags (aktueller zuerst, dann fruehere Versuche).
-function entryHashes(entry) {
-  return [entry.hash, ...(Array.isArray(entry.prev) ? entry.prev : [])].filter(Boolean);
-}
-
-/**
- * Sucht alle Hashes eines Eintrags: { result, hash }. Erfolgreich gefunden gewinnt; sonst
- * 'unknown', wenn eine Abfrage nicht eindeutig war; sonst 'failed' fuer den aktuellen Hash;
- * sonst 'notFound'. Eine fruehere, fehlgeschlagene Transaktion entscheidet nichts.
- */
-async function lookupEntry(server, entry) {
-  let unknown = false;
-  let failed = false;
-  for (const hash of entryHashes(entry)) {
-    const r = await lookupTransaction(server, hash);
-    if (r === 'success') return { result: 'success', hash };
-    if (r === 'unknown') unknown = true;
-    if (r === 'failed' && hash === entry.hash) failed = true;
-  }
-  if (unknown) return { result: 'unknown', hash: entry.hash };
-  if (failed) return { result: 'failed', hash: entry.hash };
-  return { result: 'notFound', hash: entry.hash };
-}
-
-async function latestClosedSeconds(server) {
-  try {
-    const ledgers = await server.ledgers().order('desc').limit(1).call();
-    return Date.parse(ledgers?.records?.[0]?.closed_at) / 1000;
-  } catch {
-    return NaN;
-  }
-}
-
-/**
- * Loest einen unklaren Eintrag ueber Horizon auf. Ergebnis { outcome, hash }:
- * - 'success' (im Ledger erfolgreich; hash = gefundener Hash, auch ein frueherer Versuch)
- * - 'failed' (im Ledger fehlgeschlagen)
- * - 'expiredPinned' (nicht im Ledger, abgelaufen, die Sequence ist laut Horizon noch frei:
- *   erneut senden nur mit genau dieser Sequence, dann kann das Netz hoechstens eine der
- *   beiden Transaktionen ausfuehren, auch wenn Horizon hinkt)
- * - 'expired' (nicht im Ledger, abgelaufen, Sequence verbraucht oder unbekannt: nur nach
- *   zwei Abfragen im Abstand von mindestens AMBIGUOUS_STRICT_RECHECK_MS, die beide den Hash
- *   nicht finden und beide einen Ledger nach maxTime plus Puffer melden)
- * - 'pending' (nicht im Ledger, laut letztem Ledger noch gueltig oder im Puffer)
- * - 'unknown' (Horizon nicht erreichbar oder nicht eindeutig, Eintrag ohne maxTime
- *   (auch maxTime <= 0) oder unlesbar)
- *
- * "Abgelaufen" haengt nicht an der Client-Uhr, sondern an closed_at des letzten Ledgers.
- */
-export async function resolveAmbiguousDetailed({
-  server, entry, retryDelayMs = 2000, strictDelayMs = AMBIGUOUS_STRICT_RECHECK_MS, sleep = sleepMs,
-}) {
-  if (!entry?.hash || entry.unreadable) return { outcome: 'unknown', hash: entry?.hash || '' };
-  const maxTime = Number(entry.maxTime);
-  const hasMaxTime = Number.isInteger(maxTime) && maxTime > 0;
-  const pastValidity = (closed) => Number.isFinite(closed) && closed > maxTime + AMBIGUOUS_LEDGER_BUFFER_SECONDS;
-  const found = (r) => ({ outcome: r.result, hash: r.hash });
-
-  if (!hasMaxTime) {
-    const r = await lookupEntry(server, entry);
-    return r.result === 'notFound' ? { outcome: 'unknown', hash: entry.hash } : found(r);
-  }
-
-  const closed1 = await latestClosedSeconds(server);
-  let r = await lookupEntry(server, entry);
-  if (r.result !== 'notFound') return found(r);
-  if (!pastValidity(closed1)) return { outcome: Number.isFinite(closed1) ? 'pending' : 'unknown', hash: entry.hash };
-
-  // Ist die Sequence der Transaktion noch frei? Dann ist sie nicht angewendet worden
-  // (oder Horizon hinkt). Eine neue Transaktion mit derselben Sequence schliesst eine
-  // Doppelzahlung in beiden Faellen aus.
-  if (entry.seq && entry.source) {
-    let accountSeq = null;
-    try {
-      accountSeq = accountSequenceOf(await server.loadAccount(entry.source));
-    } catch (e) {
-      if (e?.response?.status !== 404) return { outcome: 'unknown', hash: entry.hash };
-    }
-    if (accountSeq !== null && accountSeq < BigInt(entry.seq)) {
-      await sleep(retryDelayMs);
-      r = await lookupEntry(server, entry);
-      return r.result === 'notFound' ? { outcome: 'expiredPinned', hash: entry.hash } : found(r);
-    }
-  }
-
-  // Sequence verbraucht (andere Zahlungen dieses Kontos seitdem, oder die Transaktion
-  // selbst) oder unbekannt: nur nach einer zweiten Abfrage mit Abstand.
-  await sleep(strictDelayMs);
-  r = await lookupEntry(server, entry);
-  if (r.result !== 'notFound') return found(r);
-  const closed2 = await latestClosedSeconds(server);
-  if (!pastValidity(closed2)) return { outcome: Number.isFinite(closed2) ? 'pending' : 'unknown', hash: entry.hash };
-  return { outcome: 'expired', hash: entry.hash };
-}
-
-/** Wie resolveAmbiguousDetailed, liefert nur das Ergebnis (String). */
-export async function resolveAmbiguous(args) {
-  return (await resolveAmbiguousDetailed(args)).outcome;
-}
-
-/**
- * Konto fuer eine neue Transaktion einer zuvor unklaren Zahlung mit Pin: Ist die aktuelle
- * Sequence des Kontos kleiner als die gespeicherte, bekommt die neue Transaktion genau
- * diese Sequence (Account mit Sequence minus 1). { account, pinned } oder
- * { consumed: true }, wenn die Sequence schon erreicht oder ueberschritten ist.
- */
-export function pinnedSendAccount({ account, source, pinSeq }) {
-  const current = accountSequenceOf(account);
-  const pin = BigInt(pinSeq);
-  if (current === null || current >= pin) return { consumed: true };
-  return { account: new Account(String(source).trim(), (pin - 1n).toString()), pinned: true };
-}
-
-/** Hat das Netz die Transaktion wegen der Sequence abgelehnt (tx_bad_seq)? */
-export function isBadSeqError(err) {
-  return err?.response?.data?.extras?.result_codes?.transaction === 'tx_bad_seq';
-}
-
-/**
- * Sucht mehrere Hashes (fruehere Versuche einer Zahlung) einige Male. 'success' mit dem
- * gefundenen Hash, sonst 'notFound' oder 'unknown'.
- */
-export async function findAnyTransaction({ server, hashes, attempts = 3, delayMs = 1500, sleep = sleepMs }) {
-  let last = 'notFound';
-  for (let i = 0; i < attempts; i += 1) {
-    last = 'notFound';
-    for (const hash of hashes) {
-      const r = await lookupTransaction(server, hash);
-      if (r === 'success') return { result: 'success', hash };
-      if (r === 'unknown') last = 'unknown';
-    }
-    if (i < attempts - 1) await sleep(delayMs);
-  }
-  return { result: last, hash: '' };
-}
+// Aufloesen eines unklaren Status, Pin und Suche frueherer Versuche liegen im gemeinsamen
+// Modul (auch fuer "Zahlung senden"); hier fuer bestehende Aufrufer weiter exportiert.
+export {
+  AMBIGUOUS_LEDGER_BUFFER_SECONDS, AMBIGUOUS_STRICT_RECHECK_MS, accountSequenceOf, ambiguousClearAt,
+  findAnyTransaction, isBadSeqError, lookupTransaction, pinnedSendAccount, resolveAmbiguous,
+  resolveAmbiguousDetailed,
+} from '../submitGuard/ambiguousResolve.js';
 
 // Memo eines Horizon-Transaktionsdatensatzes in kanonischer Form (wie canonicalMemo).
 function horizonMemo(txRecord) {

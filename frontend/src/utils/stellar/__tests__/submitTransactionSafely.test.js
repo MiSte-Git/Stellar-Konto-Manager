@@ -270,3 +270,44 @@ describe('Diagnose bei unklarem Ausgang', () => {
     expect(lookups).toEqual([expect.objectContaining({ result: 'found' })]);
   });
 });
+
+// Fee-Bump (N2/F6): Horizon fuehrt fuer Fee-Bumps die Objekte inner_transaction und
+// fee_bump_transaction (Typen des SDK: TransactionResponse). Welcher Hash oben steht, haengt
+// vom abgefragten Hash ab; beide Formen muessen als Treffer zaehlen, angezeigt wird unser Hash.
+// result_xdr: Ergebnis der aeusseren Transaktion, txFeeBumpInnerFailed mit innerem txFailed
+// (Operation payment underfunded), erzeugt mit xdr.TransactionResult des SDK.
+const RESULT_XDR_FEE_BUMP_INNER_FAILED = 'AAAAAAAAAMj////zq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6sAAAAAAAAAZP////8AAAABAAAAAAAAAAH////+AAAAAAAAAAA=';
+describe('Fee-Bump einer anderen Partei um unsere Transaktion (F6)', () => {
+  const ours = 'ab'.repeat(32);
+  const outer = 'cd'.repeat(32);
+  const innerForm = { hash: ours, successful: true, inner_transaction: { hash: ours }, fee_bump_transaction: { hash: outer } };
+  const outerForm = { hash: outer, id: outer, successful: true, inner_transaction: { hash: ours }, fee_bump_transaction: { hash: outer } };
+
+  it.each([['innerer Hash oben', innerForm], ['aeusserer Hash oben', outerForm]])('findSubmittedTransaction findet den Datensatz (%s)', async (_n, record) => {
+    const server = fakeServer({ transactionImpl: vi.fn().mockResolvedValue(record) });
+    await expect(findSubmittedTransaction(server, ours, { attempts: 1 })).resolves.toBe(record);
+  });
+
+  it.each([['innerer Hash oben', innerForm], ['aeusserer Hash oben', outerForm]])('Erfolg zeigt unseren Hash, der Fee-Bump-Hash steht zusaetzlich da (%s)', async (_n, record) => {
+    const server = fakeServer({ submitImpl: vi.fn().mockRejectedValue(httpError(504)), transactionImpl: vi.fn().mockResolvedValue(record) });
+    const res = await submitTransactionSafely(server, fakeTx(ours));
+    expect(res.hash).toBe(ours);
+    expect(res.feeBumpHash).toBe(outer);
+  });
+
+  it('Gegenprobe: fremde innere Transaktion zaehlt nicht', async () => {
+    const server = fakeServer({ transactionImpl: vi.fn().mockResolvedValue({ hash: outer, successful: true, inner_transaction: { hash: 'ef'.repeat(32) } }) });
+    await expect(findSubmittedTransaction(server, ours, { attempts: 1 })).resolves.toBeNull();
+  });
+
+  it('innere Transaktion im Ledger fehlgeschlagen: Fehlercode der inneren Transaktion, Fee-Bump-Hash dabei', async () => {
+    expect(txResultCodeFromXdr(RESULT_XDR_FEE_BUMP_INNER_FAILED)).toBe('tx_failed');
+    const record = { ...outerForm, successful: false, result_xdr: RESULT_XDR_FEE_BUMP_INNER_FAILED };
+    const server = fakeServer({ submitImpl: vi.fn().mockRejectedValue(httpError(504)), transactionImpl: vi.fn().mockResolvedValue(record) });
+    const err = await submitTransactionSafely(server, fakeTx(ours)).catch((e) => e);
+    expect(err).toBeInstanceOf(SubmittedTransactionFailedError);
+    expect(err.hash).toBe(ours);
+    expect(err.feeBumpHash).toBe(outer);
+    expect(err.response.data.extras.result_codes.transaction).toBe('tx_failed');
+  });
+});

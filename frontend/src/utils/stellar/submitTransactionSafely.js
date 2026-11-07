@@ -7,6 +7,7 @@
 
 import { xdr } from '@stellar/stellar-sdk';
 import { txHashHex } from './txHash.js';
+import { feeBumpHashOf, recordMatchesHash } from '../submitGuard/ambiguousResolve.js';
 
 export function isAmbiguousSubmitError(err) {
   const extras = err?.response?.data?.extras;
@@ -47,9 +48,9 @@ export async function findSubmittedTransaction(server, hash, { attempts = 8, del
     const at = new Date().toISOString();
     try {
       const record = await server.transactions().transaction(hash).call();
-      // Nur ein Datensatz mit genau diesem Hash zaehlt (nicht jede 200-Antwort).
-      const recordHash = String(record?.hash || record?.id || '').toLowerCase();
-      if (recordHash && recordHash === String(hash).toLowerCase()) {
+      // Nur ein Datensatz mit genau diesem Hash zaehlt (nicht jede 200-Antwort), auch als
+      // innere Transaktion eines Fee-Bumps.
+      if (recordMatchesHash(record, hash)) {
         lookups?.push({ at, result: 'found' });
         return record;
       }
@@ -99,6 +100,7 @@ export class SubmittedTransactionFailedError extends Error {
     super('submitTransaction.ledgerFailed');
     this.name = 'SubmittedTransactionFailedError';
     this.hash = hash;
+    this.feeBumpHash = feeBumpHashOf(record, hash);
     this.record = record;
     this.response = {
       status: 400,
@@ -108,13 +110,24 @@ export class SubmittedTransactionFailedError extends Error {
 }
 
 // result_xdr -> Horizon-Schreibweise, z. B. txFailed -> tx_failed
+// Bei einem Fee-Bump-Datensatz zaehlt das Ergebnis der inneren Transaktion (unsere), nicht
+// txFeeBumpInnerFailed/-Success der aeusseren.
+const xdrField = (o, k) => (typeof o?.[k] === 'function' ? o[k]() : o?.[k]);
+const xdrUnionName = (u) => (typeof u?.switch === 'function' ? u.switch().name : u?.type);
+const xdrUnionValue = (u) => (typeof u?.value === 'function' ? u.value() : u?.value);
+
 export function txResultCodeFromXdr(resultXdr) {
   try {
     // v16: Feld-Getter result() und Union-Diskriminante switch().name;
     // ab v17 (js-xdr v5) Felder als Properties und Diskriminante als .type.
     const decoded = xdr.TransactionResult.fromXDR(resultXdr, 'base64');
-    const inner = typeof decoded.result === 'function' ? decoded.result() : decoded.result;
-    const name = typeof inner?.switch === 'function' ? inner.switch().name : inner?.type;
+    const inner = xdrField(decoded, 'result');
+    let name = xdrUnionName(inner);
+    if (name === 'txFeeBumpInnerFailed' || name === 'txFeeBumpInnerSuccess') {
+      const pair = xdrUnionValue(inner);
+      const innerName = xdrUnionName(xdrField(xdrField(pair, 'result'), 'result'));
+      if (typeof innerName === 'string' && innerName) name = innerName;
+    }
     if (typeof name !== 'string' || !name) return 'tx_failed';
     return name.replace(/([A-Z])/g, '_$1').toLowerCase();
   } catch {
@@ -143,7 +156,18 @@ export async function submitTransactionSafely(server, tx) {
     const confirmed = await findSubmittedTransaction(server, hash, { lookups });
     // Erfolg nur mit successful === true; ohne eindeutiges Feld bleibt der Ausgang offen.
     if (confirmed?.successful === false) throw new SubmittedTransactionFailedError(hash, confirmed);
-    if (confirmed?.successful === true) return confirmed;
+    if (confirmed?.successful === true) return withSubmittedHash(confirmed, hash);
     throw new AmbiguousSubmitResultError(hash, err, { request, lookups });
   }
+}
+
+/**
+ * Ergebnis eines gefundenen Datensatzes mit dem Hash, den wir gesendet haben (hash, id).
+ * War es ein Fee-Bump einer anderen Partei um unsere Transaktion, steht dessen Hash
+ * zusaetzlich in feeBumpHash (fuer Details).
+ */
+export function withSubmittedHash(record, hash) {
+  const feeBumpHash = feeBumpHashOf(record, hash);
+  if (!feeBumpHash && String(record?.hash || '').toLowerCase() === String(hash).toLowerCase()) return record;
+  return { ...record, hash, id: hash, ...(feeBumpHash ? { feeBumpHash } : {}) };
 }

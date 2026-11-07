@@ -75,8 +75,8 @@ vi.mock('../../../utils/stellar/submitTransactionSafely.js', async (importOrigin
 const hashOf = (tx) => Buffer.from(tx.hash()).toString('hex');
 const memoOf = (tx) => Buffer.from(tx.memo.value).toString();
 
-function account(id) {
-  return Object.assign(new Account(id, '100'), {
+function account(id, sequence = '100') {
+  return Object.assign(new Account(id, sequence), {
     account_id: id,
     subentry_count: 0,
     balances: [{ asset_type: 'native', balance: '1000' }],
@@ -1084,8 +1084,13 @@ describe('BatchPaymentDialog: Sequence beim erneuten Senden (F1)', () => {
     hash: OLD, at: Date.now() - 600000, status: 'notApplied', maxTime: nowSec() - 300, seq: '105', source: SENDER.publicKey(), pin: true, ...o,
   });
   const badSeq = () => { const e = new Error('bad'); e.response = { status: 400, data: { extras: { result_codes: { transaction: 'tx_bad_seq' } } } }; return e; };
+  // Ein Pin wird nur genutzt, wenn die Konto-Sequence genau Pin - 1 ist (F7, gleiche Bedingung
+  // wie beim Vergeben des Pins). Das Konto steht in diesen Tests daher auf 104.
+  beforeEach(() => {
+    hoisted.loadAccountMock.mockImplementation(async (id) => { countRequest(); return account(id, '104'); });
+  });
 
-  it('Erneut senden nutzt die gespeicherte Sequence, wenn die Konto-Sequence noch kleiner ist', async () => {
+  it('Erneut senden nutzt genau die gepinnte Sequence (Konto-Sequence = Pin - 1)', async () => {
     const a = rowA();
     writeSentEntry('PUBLIC', fpOf(a, DEST_A), pinned());
     saveBatchRows('PUBLIC', [a]);
@@ -1094,11 +1099,26 @@ describe('BatchPaymentDialog: Sequence beim erneuten Senden (F1)', () => {
     fireEvent.click(screen.getByRole('button', { name: '1 Zahlung senden' }));
     await waitFor(() => expect(screen.getByTestId('batch-summary').textContent).toContain('1 von 1'));
     const tx = hoisted.submitMock.mock.calls[0][1];
-    expect(tx.sequence).toBe('105'); // Konto steht auf 100, normal waere 101
+    expect(tx.sequence).toBe('105');
     expect(readSentEntry('PUBLIC', fpOf(a, DEST_A))).toMatchObject({ status: 'success', seq: '105', hash: hashOf(tx) });
   });
 
+  it('F7: Konto-Sequence weit unter dem Pin (z.B. Testnet-Reset): nicht senden, strenger Pfad', async () => {
+    // Frueher wurde hier mit Sequence 105 gesendet und vom Netz mit tx_bad_seq abgelehnt.
+    hoisted.loadAccountMock.mockImplementation(async (id) => { countRequest(); return account(id, '100'); });
+    const a = rowA();
+    writeSentEntry('PUBLIC', fpOf(a, DEST_A), pinned());
+    saveBatchRows('PUBLIC', [a]);
+    renderDialog();
+    await checkAndWait(1);
+    fireEvent.click(screen.getByRole('button', { name: '1 Zahlung senden' }));
+    await waitFor(() => expect(screen.getByText(/passt nicht mehr zum Konto/)).toBeInTheDocument());
+    expect(hoisted.submitMock).not.toHaveBeenCalled();
+    expect(readSentEntry('PUBLIC', fpOf(a, DEST_A))).toMatchObject({ status: 'ambiguous', hash: OLD, seq: '105' });
+  });
+
   it('Gegenprobe: ohne Pin (Sequence war verbraucht) normale Sequence', async () => {
+    hoisted.loadAccountMock.mockImplementation(async (id) => { countRequest(); return account(id, '100'); });
     const a = rowA();
     writeSentEntry('PUBLIC', fpOf(a, DEST_A), pinned({ pin: false }));
     saveBatchRows('PUBLIC', [a]);
@@ -1332,5 +1352,155 @@ describe('BatchPaymentDialog: unlesbarer Eintrag und Details kopieren (F4, F6)',
     expect(text).not.toContain(SENDER.secret());
     // Gegenprobe: normale Meldungen bleiben lesbar
     expect(text).toContain('tx_failed / op_underfunded');
+  });
+});
+
+// Gemeinsame Sperre mit "Zahlung senden": Ein unklarer Eintrag einer Einzelzahlung sperrt
+// jede Zahlung desselben Senders in der Sammelzahlung (utils/submitGuard/accountSendGuard.js).
+describe('BatchPaymentDialog: Sperre durch unklare Einzelzahlung', () => {
+  const pendingSingle = () => ({
+    hash: 'e'.repeat(64), at: Date.now(), status: 'ambiguous', maxTime: Math.floor(Date.now() / 1000) + 170,
+    seq: '101', source: SENDER.publicKey(), origin: 'payment', cause: { kind: 'network', status: null },
+  });
+
+  it('sperrt die Zeilen dieses Senders schon beim Pruefen, andere Sender bleiben bereit', async () => {
+    const { writeAccountEntry, resetAccountSendGuardMemory } = await import('../../../utils/submitGuard/accountSendGuard.js');
+    resetAccountSendGuardMemory();
+    writeAccountEntry('PUBLIC', SENDER.publicKey(), pendingSingle());
+    saveBatchRows('PUBLIC', [rowA(), createEmptyRow({ source: SENDER2.publicKey(), dest: DEST_B, amount: '1', memoVal: 'x' })]);
+    renderDialog();
+    await checkAndWait(1);
+    expect(screen.getByText(/Einzelzahlung \(Zahlung senden\) mit unklarem Status/)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: '1 Zahlung senden' }));
+    await waitFor(() => expect(screen.getByTestId('batch-summary').textContent).toContain('1 von 1'));
+    expect(hoisted.submitMock.mock.calls.map(([, tx]) => tx.source)).toEqual([SENDER2.publicKey()]);
+  });
+
+  it('Einzelzahlung wird nach dem Pruefen unklar (anderer Tab): Zeile wird beim Senden uebersprungen', async () => {
+    const { writeAccountEntry, resetAccountSendGuardMemory } = await import('../../../utils/submitGuard/accountSendGuard.js');
+    resetAccountSendGuardMemory();
+    saveBatchRows('PUBLIC', [rowA()]);
+    renderDialog();
+    await checkAndWait(1);
+    writeAccountEntry('PUBLIC', SENDER.publicKey(), pendingSingle());
+    fireEvent.click(screen.getByRole('button', { name: '1 Zahlung senden' }));
+    await waitFor(() => expect(screen.getByText(/Einzelzahlung \(Zahlung senden\) mit unklarem Status/)).toBeInTheDocument());
+    expect(hoisted.submitMock).not.toHaveBeenCalled();
+  });
+});
+
+// Nachbesserung review_zahlung_unklar_sonnet.md: Pin und Sperre gelten fuer das Konto, in
+// beiden Sendewegen; unlesbare Eintraege sperren alle Konten im Netz.
+describe('BatchPaymentDialog: Pin und Sperre pro Konto (F1, F2)', () => {
+  const nowSec = () => Math.floor(Date.now() / 1000);
+  const singlePin = (o = {}) => ({
+    hash: 'e'.repeat(64), at: Date.now() - 600000, status: 'notApplied', maxTime: nowSec() - 300, seq: '105',
+    source: SENDER.publicKey(), origin: 'payment', pin: true, ...o,
+  });
+  async function guard() {
+    const mod = await import('../../../utils/submitGuard/accountSendGuard.js');
+    mod.resetAccountSendGuardMemory();
+    return mod;
+  }
+  // Arbeitsspeicher des Moduls (bekannte unklare Eintraege) wie nach einem Neuladen leeren.
+  beforeEach(async () => { await guard(); });
+
+  it('Pin aus Zahlung senden: die Sammelzahlung nutzt genau diese Sequence, danach ist der Pin erledigt', async () => {
+    const { writeAccountEntry, readAccountEntry } = await guard();
+    hoisted.loadAccountMock.mockImplementation(async (id) => { countRequest(); return account(id, '104'); });
+    writeAccountEntry('PUBLIC', SENDER.publicKey(), singlePin());
+    saveBatchRows('PUBLIC', [rowA()]);
+    renderDialog();
+    await checkAndWait(1);
+    fireEvent.click(screen.getByRole('button', { name: '1 Zahlung senden' }));
+    await waitFor(() => expect(screen.getByTestId('batch-summary').textContent).toContain('1 von 1'));
+    expect(hoisted.submitMock.mock.calls[0][1].sequence).toBe('105');
+    expect(readAccountEntry('PUBLIC', SENDER.publicKey())).toMatchObject({ status: 'notApplied' });
+    expect(readAccountEntry('PUBLIC', SENDER.publicKey()).pin).toBeUndefined();
+  });
+
+  it('Pin aus Zahlung senden passt nicht (Konto weiter): nicht senden, Eintrag wieder unklar, Konto gesperrt', async () => {
+    const { writeAccountEntry, readAccountEntry } = await guard();
+    hoisted.loadAccountMock.mockImplementation(async (id) => { countRequest(); return account(id, '105'); });
+    writeAccountEntry('PUBLIC', SENDER.publicKey(), singlePin());
+    saveBatchRows('PUBLIC', [rowA(), rowB()]);
+    renderDialog();
+    await checkAndWait(2);
+    fireEvent.click(screen.getByRole('button', { name: '2 Zahlungen senden' }));
+    await waitFor(() => expect(screen.getByTestId('batch-summary')).toBeInTheDocument());
+    expect(hoisted.submitMock).not.toHaveBeenCalled();
+    expect(readAccountEntry('PUBLIC', SENDER.publicKey())).toMatchObject({ status: 'ambiguous', recheck: 'pinConsumed' });
+    expect(screen.getByText(/Sequence der früheren Transaktion ist inzwischen verbraucht/)).toBeInTheDocument();
+    expect(screen.getByText(/Einzelzahlung \(Zahlung senden\) mit unklarem Status/)).toBeInTheDocument();
+  });
+
+  it('Pin einer anderen Zahlung desselben Senders (Sammelzahlung) gilt auch fuer diese Zeile', async () => {
+    hoisted.loadAccountMock.mockImplementation(async (id) => { countRequest(); return account(id, '104'); });
+    const other = rowA({ dest: DEST_B, amount: '9', memoVal: 'x' });
+    writeSentEntry('PUBLIC', fpOf(other, DEST_B), singlePin({ origin: undefined }));
+    saveBatchRows('PUBLIC', [rowA()]);
+    renderDialog();
+    await checkAndWait(1);
+    fireEvent.click(screen.getByRole('button', { name: '1 Zahlung senden' }));
+    await waitFor(() => expect(screen.getByTestId('batch-summary').textContent).toContain('1 von 1'));
+    expect(hoisted.submitMock.mock.calls[0][1].sequence).toBe('105');
+    expect(readSentEntry('PUBLIC', fpOf(other, DEST_B)).pin).toBeUndefined();
+  });
+
+  it('unklar sperrt das Konto: andere unklare Zahlung desselben Senders sperrt alle seine Zeilen, andere Sender nicht', async () => {
+    const other = rowA({ dest: DEST_B, amount: '9', memoVal: 'x' });
+    writeSentEntry('PUBLIC', fpOf(other, DEST_B), {
+      hash: 'd'.repeat(64), at: Date.now(), status: 'ambiguous', maxTime: nowSec() + 170, seq: '101', source: SENDER.publicKey(),
+    });
+    hoisted.ledgerClosedAt.value = new Date(nowSec() * 1000).toISOString();
+    saveBatchRows('PUBLIC', [rowA(), createEmptyRow({ source: SENDER2.publicKey(), dest: DEST_B, amount: '1', memoVal: 'y' })]);
+    renderDialog();
+    await checkAndWait(1);
+    expect(screen.getByText(/andere Zahlung mit unklarem Status offen/)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: '1 Zahlung senden' }));
+    await waitFor(() => expect(screen.getByTestId('batch-summary').textContent).toContain('1 von 1'));
+    expect(hoisted.submitMock.mock.calls.map(([, tx]) => tx.source)).toEqual([SENDER2.publicKey()]);
+  });
+
+  it('andere Zahlung desselben Senders wird beim Senden unklar (anderer Tab): Zeile uebersprungen', async () => {
+    saveBatchRows('PUBLIC', [rowA()]);
+    renderDialog();
+    await checkAndWait(1);
+    const other = rowA({ dest: DEST_B, amount: '9', memoVal: 'x' });
+    writeSentEntry('PUBLIC', fpOf(other, DEST_B), {
+      hash: 'd'.repeat(64), at: Date.now(), status: 'ambiguous', maxTime: nowSec() + 170, seq: '101', source: SENDER.publicKey(),
+    });
+    fireEvent.click(screen.getByRole('button', { name: '1 Zahlung senden' }));
+    await waitFor(() => expect(screen.getByText(/andere Zahlung mit unklarem Status offen/)).toBeInTheDocument());
+    expect(hoisted.submitMock).not.toHaveBeenCalled();
+  });
+
+  it('unlesbarer Eintrag ohne Quellkonto sperrt alle Zeilen im Netz, Hinweis mit Ausweg ueber Horizon', async () => {
+    await guard();
+    const brokenKey = `skm_batch_sent_v1:PUBLIC:${'f'.repeat(64)}`;
+    window.localStorage.setItem(brokenKey, JSON.stringify({ hash: 'c'.repeat(64), status: 'kaputt' }));
+    saveBatchRows('PUBLIC', [rowA(), createEmptyRow({ source: SENDER2.publicKey(), dest: DEST_B, amount: '1', memoVal: 'y' })]);
+    renderDialog();
+    fireEvent.click(screen.getByRole('button', { name: 'Prüfen' }));
+    await waitFor(() => expect(screen.getByTestId('batch-unreadable-banner')).toBeInTheDocument());
+    expect(screen.getAllByText(/unlesbar und lässt sich keinem Konto zuordnen/)).toHaveLength(2);
+    expect(screen.queryByText('Bereit')).toBeNull();
+    // Lesbarer Hash im Ledger: Sperre frei, Liste neu geprueft
+    hoisted.txLookupMock.mockImplementation(async (hash) => {
+      if (hash === 'c'.repeat(64)) return { hash, successful: true };
+      const e = new Error('nf'); e.response = { status: 404 }; throw e;
+    });
+    fireEvent.click(screen.getByTestId('batch-unreadable-check'));
+    await waitFor(() => expect(screen.getAllByText('Bereit')).toHaveLength(2));
+    expect(window.localStorage.getItem(brokenKey)).toBeNull();
+    expect(screen.getByTestId('batch-unreadable-banner').textContent).toMatch(/im Kontoverlauf prüfen/);
+  });
+
+  it('unlesbarer Eintrag in einem anderen Netz sperrt nicht', async () => {
+    window.localStorage.setItem(`skm_batch_sent_v1:TESTNET:${'f'.repeat(64)}`, '{kaputt');
+    saveBatchRows('PUBLIC', [rowA()]);
+    renderDialog();
+    await checkAndWait(1);
+    expect(screen.queryByTestId('batch-unreadable-banner')).toBeNull();
   });
 });

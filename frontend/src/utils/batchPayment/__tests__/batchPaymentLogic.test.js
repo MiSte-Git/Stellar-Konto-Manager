@@ -416,8 +416,11 @@ describe('resolveAmbiguous mit Sequence (F1)', () => {
 
 describe('pinnedSendAccount und tx_bad_seq (F1)', () => {
   const SOURCE = SRC.publicKey();
-  it('nutzt genau die gespeicherte Sequence, wenn die aktuelle kleiner ist', () => {
-    const p = pinnedSendAccount({ account: new Account(SOURCE, '100'), source: SOURCE, pinSeq: '105' });
+  // F7: gleiche Bedingung wie beim Vergeben des Pins (Konto-Sequence genau Pin - 1). Frueher
+  // wurde auch bei einer kleineren Konto-Sequence (100) gepinnt; das Netz haette die
+  // Transaktion dann mit tx_bad_seq abgelehnt.
+  it('nutzt genau die gespeicherte Sequence, wenn die aktuelle genau eins darunter ist', () => {
+    const p = pinnedSendAccount({ account: new Account(SOURCE, '104'), source: SOURCE, pinSeq: '105' });
     expect(p.pinned).toBe(true);
     expect(p.account.sequenceNumber()).toBe('104');
     const tx = new TransactionBuilder(p.account, { fee: '100', networkPassphrase: Networks.TESTNET })
@@ -427,6 +430,10 @@ describe('pinnedSendAccount und tx_bad_seq (F1)', () => {
   it('Gegenprobe: Sequence erreicht oder ueberschritten -> consumed, kein Konto', () => {
     expect(pinnedSendAccount({ account: new Account(SOURCE, '105'), source: SOURCE, pinSeq: '105' })).toEqual({ consumed: true });
     expect(pinnedSendAccount({ account: new Account(SOURCE, '200'), source: SOURCE, pinSeq: '105' })).toEqual({ consumed: true });
+  });
+  it('F7: Konto-Sequence weiter darunter -> nicht nutzbar (behind), kein Konto', () => {
+    expect(pinnedSendAccount({ account: new Account(SOURCE, '100'), source: SOURCE, pinSeq: '105' })).toEqual({ consumed: true, behind: true });
+    expect(pinnedSendAccount({ account: new Account(SOURCE, '103'), source: SOURCE, pinSeq: '105' })).toEqual({ consumed: true, behind: true });
   });
   it('erkennt tx_bad_seq', () => {
     expect(isBadSeqError({ response: { data: { extras: { result_codes: { transaction: 'tx_bad_seq' } } } } })).toBe(true);

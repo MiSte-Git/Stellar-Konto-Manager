@@ -487,8 +487,49 @@
       "muxedActivationCaptureJob": "Dieser Job enthält zwei Operationen (Kontoaktivierung + Muxed-Zuordnung) und kostet entsprechend zwei Operationsgebühren.",
       "ambiguousResult": {
         "title": "Status unklar – nicht erneut senden",
-        "body": "Die Transaktion konnte serverseitig nicht eindeutig bestätigt werden (Zeitüberschreitung oder Serverfehler). Bitte prüfen Sie den Transaktions-Hash im Explorer, bevor Sie es erneut versuchen.",
-        "acknowledge": "Status geprüft – Senden wieder freigeben"
+        "bodyBlocked": "Die Transaktion wurde gesendet, Horizon hat das Ergebnis aber nicht bestätigt. Sie kann noch ankommen. Bis Horizon den Ausgang zeigt, ist Senden von diesem Konto in diesem Netz gesperrt, auch in der Sammelzahlung.",
+        "batchBody": "Eine Zahlung der Sammelzahlung von diesem Konto hat einen unklaren Status. Bis Horizon den Ausgang zeigt, ist Senden von diesem Konto in diesem Netz gesperrt.",
+        "cause": {
+          "network": "Ursache: Netzwerkfehler, keine Antwort von Horizon (z. B. Verbindung unterbrochen oder Blocker).",
+          "timeout": "Ursache: Zeitüberschreitung, Horizon hat nicht rechtzeitig geantwortet.",
+          "server": "Ursache: Serverantwort HTTP {{status}} ohne Ergebnis der Transaktion.",
+          "unknown": "Ursache unbekannt: Das Senden wurde unterbrochen (z. B. Seite neu geladen) oder läuft gerade in einem anderen Tab."
+        },
+        "missing": "Der gespeicherte Eintrag fehlt (z. B. Website-Daten gelöscht). SKM nutzt die Angaben aus diesem Tab, hat den Eintrag wiederhergestellt und prüft bei Horizon.",
+        "sentAt": "Gesendet um {{time}}",
+        "payment": "Zahlung: {{amount}} {{asset}} an {{recipient}}",
+        "countdown": "Status unklar. SKM prüft automatisch erneut in {{time}}. Bis dahin ist Senden von diesem Konto gesperrt, auch in der Sammelzahlung.",
+        "unreadable": "Der gespeicherte Eintrag zu einem früheren Senden von diesem Konto ist unlesbar. Der Ausgang ist offen, Senden ist gesperrt. SKM prüft bei Horizon, ob eine damals gesendete Transaktion noch ankommen kann.",
+        "resend": "Erneut senden (dieselbe Transaktion)",
+        "resendBusy": "Wird erneut gesendet …",
+        "resendHint": "Sendet genau dieselbe signierte Transaktion (gleicher Hash) noch einmal. Das Netz kann sie höchstens einmal ausführen. Eine neue Transaktion wird nicht gebaut.",
+        "resendUnavailable": "Erneut senden ist hier nicht möglich: Die signierte Transaktion liegt nur im Arbeitsspeicher des Tabs, in dem gesendet wurde (nach Neuladen nicht mehr vorhanden). Bitte die Klärung über Horizon abwarten.",
+        "resendAmbiguous": "Auch das erneute Senden blieb ohne eindeutige Antwort. Der Status bleibt unklar.",
+        "resendRejected": "Erneut senden abgelehnt: {{detail}}. Das sagt nichts Sicheres über die erste Sendung, der Status bleibt unklar. SKM prüft bei Horizon.",
+        "resolvedApplied": "Laut Horizon wurde die Transaktion angewendet. Die Zahlung ist gesendet, nicht erneut senden.",
+        "resolvedAppliedBatch": "Laut Horizon wurde die Zahlung der Sammelzahlung angewendet. Senden von diesem Konto ist wieder möglich.",
+        "resolvedNotApplied": "Laut Horizon wurde die Transaktion nicht ausgeführt und kann nicht mehr ankommen. Senden ist wieder möglich.",
+        "resolvedNotAppliedBatch": "Laut Horizon wurde die Zahlung der Sammelzahlung nicht ausgeführt und kann nicht mehr ankommen. Senden von diesem Konto ist wieder möglich.",
+        "resolvedPinned": "Die nächste Zahlung von diesem Konto nutzt die Sequence der alten Transaktion, egal ob über „Zahlung senden“ oder die Sammelzahlung. Dann kann das Netz höchstens eine der beiden ausführen.",
+        "resolvedUnreadable": "Laut Horizon kann keine damals gesendete Transaktion mehr ankommen. Ob sie angekommen ist, ist unbekannt: Bitte vor erneutem Senden im Kontoverlauf prüfen.",
+        "waitingForLock": "Wartet auf einen anderen Sendevorgang in einem anderen Tab (Sammelzahlung oder Zahlung senden) …",
+        "blockedReason": {
+          "blocked": "Nicht gesendet: Von diesem Konto ist eine Transaktion mit unklarem Status offen.",
+          "pinConsumed": "Nicht gesendet: Die Sequence einer früheren, nicht ausgeführten Transaktion dieses Kontos passt nicht mehr (verbraucht oder Konto-Sequence darunter). Ihr Status wird erneut über Horizon geprüft, bis dahin ist Senden gesperrt.",
+          "badSeq": "Nicht gesendet: Das Netz hat die Sequence abgelehnt, vermutlich wurde die frühere Transaktion doch ausgeführt. Ihr Status wird erneut über Horizon geprüft, bis dahin ist Senden gesperrt.",
+          "storageUnavailable": "Nicht gesendet: Der lokale Speicher des Browsers ist nicht beschreibbar. Ohne ihn fehlt der Schutz gegen Doppelzahlung.",
+          "concurrent": "Nicht gesendet: Ein anderer Tab sendet gerade von diesem Konto.",
+          "lockCancelled": "Warten abgebrochen. Nicht gesendet."
+        },
+        "bodyMaybe": "Die Transaktion wurde möglicherweise gesendet (das Senden wurde unterbrochen oder läuft in einem anderen Tab). Bis Horizon den Ausgang zeigt, ist Senden von diesem Konto in diesem Netz gesperrt, auch in der Sammelzahlung.",
+        "bodyRecheck": {
+          "pinConsumed": "Eine frühere Transaktion dieses Kontos war laut Horizon nicht ausgeführt. Ihre Sequence passt nicht mehr zum Konto (verbraucht oder Konto-Sequence darunter), daher prüft SKM sie erneut streng über Horizon. Bis dahin ist Senden von diesem Konto in diesem Netz gesperrt, auch in der Sammelzahlung.",
+          "badSeq": "Das Netz hat die Sequence einer früheren, als nicht ausgeführt geführten Transaktion dieses Kontos abgelehnt, vermutlich wurde sie doch ausgeführt. SKM prüft sie erneut über Horizon. Bis dahin ist Senden von diesem Konto in diesem Netz gesperrt, auch in der Sammelzahlung."
+        },
+        "batchUnreadableBody": "Ein Eintrag im Sende-Protokoll der Sammelzahlung ist unlesbar. Er lässt sich keinem Konto zuordnen, daher ist Senden in diesem Netz für alle Konten gesperrt, bis SKM ihn über Horizon klären kann.",
+        "unreadableBatch": "Unlesbarer Eintrag der Sammelzahlung: Der Ausgang ist offen. SKM prüft bei Horizon, ob eine damals gesendete Transaktion noch ankommen kann.",
+        "resolvedUnreadableFailed": "Laut Horizon ist die damals gesendete Transaktion im Ledger fehlgeschlagen: Gebühr bezahlt, keine Zahlung ausgeführt. Senden ist wieder möglich.",
+        "resolvedUnreadableBatch": "Laut Horizon kann keine damals gesendete Transaktion der Sammelzahlung mehr ankommen. Ob sie angekommen ist, ist unbekannt: Bitte vor erneutem Senden im Kontoverlauf der Sender prüfen."
       },
       "reviewTitle": "Transaktion bestätigen",
       "sentBefore": "Diese Zahlung wurde mit denselben Daten von diesem Konto bereits gesendet ({{time}}). Nur bei Absicht erneut senden.",
@@ -497,7 +538,8 @@
         "reset": "Netz gewechselt: Die Eingaben gehörten zum vorigen Netz und wurden geleert. Bitte die Zahlung neu eingeben.",
         "aborted": "Abgebrochen: Das Netz wurde gewechselt, seit die Zahlung vorbereitet wurde. Es wurde nichts gesendet.",
         "jobOtherNetwork": "Dieser Multisig-Job gehört zu einem anderen Netz als dem aktuell gewählten. Signieren ist hier gesperrt; bitte im passenden Netz über die Job-Liste signieren."
-      }
+      },
+      "feeBumpHash": "Fee-Bump-Hash (eine andere Partei hat die Gebühr für diese Transaktion übernommen): {{hash}}"
     }
   },
   "activation": {

@@ -71,7 +71,9 @@ function sentKey(p) {
   ]);
 }
 
-// status: 'success' | 'ambiguous'
+// status: 'success' | 'ambiguous'. Ein unklarer Vermerk folgt der Sperre pro Konto
+// (utils/submitGuard/accountSendGuard.js): Nach der Klaerung ueber Horizon wird er auf
+// success gesetzt (angewendet) oder entfernt (nicht ausgefuehrt).
 export function recordSentPayment(payment, { hash = '', status = 'success', at = Date.now() } = {}) {
   const key = sentKey(payment);
   sentPayments = [{ key, hash, status, at }, ...sentPayments.filter((e) => e.key !== key)].slice(0, SENT_MAX);
@@ -81,4 +83,34 @@ export function recordSentPayment(payment, { hash = '', status = 'success', at =
 export function findSentPayment(payment, now = Date.now()) {
   const key = sentKey(payment);
   return sentPayments.find((e) => e.key === key && now - e.at < SENT_WINDOW_MS) || null;
+}
+
+// Vermerk einer Zahlung entfernen (z.B. laut Horizon nicht ausgefuehrt). Mit hash nur,
+// wenn der Vermerk genau diesen Hash hat.
+export function forgetSentPayment(payment, hash = '') {
+  const key = sentKey(payment);
+  sentPayments = sentPayments.filter((e) => e.key !== key || (hash && e.hash !== hash));
+}
+
+/**
+ * Unklare Vermerke von Konto und Netz mit einem dieser Hashes nach einer Klaerung (auch in
+ * einem anderen Tab) angleichen: status 'success' -> gesendet (mit successHash), sonst
+ * entfernen. Liefert, ob sich etwas geaendert hat.
+ */
+export function settleSentPaymentsByHash({ network, account, hashes, status, successHash = '' }) {
+  const want = new Set((hashes || []).filter(Boolean).map((h) => String(h).toLowerCase()));
+  if (!want.size) return false;
+  let changed = false;
+  const next = [];
+  for (const e of sentPayments) {
+    let parsed = null;
+    try { parsed = JSON.parse(e.key); } catch { /* fremd */ }
+    const match = e.status === 'ambiguous' && parsed && parsed[0] === String(network || '') && parsed[1] === String(account || '')
+      && want.has(String(e.hash || '').toLowerCase());
+    if (!match) { next.push(e); continue; }
+    changed = true;
+    if (status === 'success') next.push({ ...e, status: 'success', hash: successHash || e.hash });
+  }
+  sentPayments = next;
+  return changed;
 }

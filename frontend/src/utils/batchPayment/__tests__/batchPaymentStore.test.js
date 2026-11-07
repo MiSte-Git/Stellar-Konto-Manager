@@ -243,9 +243,22 @@ describe('sent log', () => {
     expect(writeSentEntry('PUBLIC', 'na2', { hash: HASH, at: 1, status: 'notApplied', pin: true })).toBe(false);
     window.localStorage.setItem(sentEntryKey('PUBLIC', 'na3'), JSON.stringify({ hash: HASH, at: 1, status: 'notApplied', pin: true }));
     expect(readSentEntry('PUBLIC', 'na3')).toMatchObject({ status: 'ambiguous', unreadable: true });
-    // notApplied bleibt beim Aufraeumen stehen
-    pruneSentLog(Date.now() + 30 * 24 * 3600 * 1000);
+    // notApplied bleibt beim Aufraeumen bis 30 Tage stehen (F5: danach entfernt, siehe unten)
+    pruneSentLog(1 + 29 * 24 * 3600 * 1000);
     expect(readSentEntry('PUBLIC', 'na')).not.toBeNull();
+  });
+
+  it('F5: entfernt nicht ausgefuehrte Eintraege (auch mit Pin) nach 30 Tagen, unklare nie', () => {
+    const SRC_KEY = Keypair.random().publicKey();
+    const now = Date.now();
+    const day = 24 * 3600 * 1000;
+    writeSentEntry('PUBLIC', 'naOld', { hash: HASH, at: now - 31 * day, status: 'notApplied', seq: '101', source: SRC_KEY, pin: true });
+    writeSentEntry('PUBLIC', 'naNew', { hash: HASH, at: now - 29 * day, status: 'notApplied', seq: '101', source: SRC_KEY });
+    writeSentEntry('PUBLIC', 'ambOld', { hash: HASH, at: now - 90 * day, status: 'ambiguous' });
+    pruneSentLog(now);
+    expect(readSentEntry('PUBLIC', 'naOld')).toBeNull();
+    expect(readSentEntry('PUBLIC', 'naNew')).not.toBeNull();
+    expect(readSentEntry('PUBLIC', 'ambOld')).not.toBeNull();
   });
 
   it('treats ambiguous as recent forever and success only within the window', () => {

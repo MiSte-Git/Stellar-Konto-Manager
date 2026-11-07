@@ -21,6 +21,9 @@ export const MAX_ROWS = 50;
 export const RESEND_WINDOW_MS = 20 * 60 * 60 * 1000;
 // Erfolgreiche Eintraege werden danach aus dem Protokoll entfernt.
 const SENT_LOG_RETENTION_MS = 7 * 24 * 60 * 60 * 1000;
+// Laut Horizon nicht ausgefuehrte (auch fehlgeschlagene) Eintraege, auch mit Pin, werden
+// danach entfernt (gemeinsam mit "Zahlung senden", siehe utils/submitGuard/accountSendGuard.js).
+export const NOT_APPLIED_RETENTION_MS = 30 * 24 * 60 * 60 * 1000;
 const MAX_FIELD_LENGTH = 200;
 
 let idCounter = 0;
@@ -175,7 +178,7 @@ function cleanSeq(value) {
   return n > 0n && n <= 9223372036854775807n ? n.toString() : null;
 }
 
-function sanitizeSentEntry(raw) {
+export function sanitizeSentEntry(raw) {
   if (!raw || typeof raw !== 'object') return null;
   const at = Number(raw.at);
   const status = SENT_STATUSES.includes(raw.status) ? raw.status : null;
@@ -224,9 +227,14 @@ export function sentEntryKey(network, fingerprint) {
  * ({ status: 'ambiguous', unreadable: true }) und sperrt die Zahlung.
  */
 export function readSentEntry(network, fingerprint) {
+  return readSentEntryByKey(sentEntryKey(network, fingerprint));
+}
+
+/** Wie readSentEntry, mit dem localStorage-Schluessel (siehe listSentEntryKeys). */
+export function readSentEntryByKey(key) {
   let raw;
   try {
-    raw = window.localStorage.getItem(sentEntryKey(network, fingerprint));
+    raw = window.localStorage.getItem(key);
   } catch {
     return null;
   }
@@ -243,7 +251,11 @@ export function readSentEntry(network, fingerprint) {
  * einzigen setItem/removeItem. Liefert false, wenn nicht geschrieben werden konnte.
  */
 export function writeSentEntry(network, fingerprint, entry) {
-  const key = sentEntryKey(network, fingerprint);
+  return writeSentEntryByKey(sentEntryKey(network, fingerprint), entry);
+}
+
+/** Wie writeSentEntry, mit dem localStorage-Schluessel (siehe listSentEntryKeys). */
+export function writeSentEntryByKey(key, entry) {
   try {
     if (!entry) {
       window.localStorage.removeItem(key);
@@ -258,9 +270,23 @@ export function writeSentEntry(network, fingerprint, entry) {
   }
 }
 
-// Entfernt nur eindeutig lesbare, erfolgreiche Eintraege nach der Aufbewahrungszeit.
-// Unklare, nicht ausgefuehrte und unlesbare Eintraege bleiben stehen (unlesbare sperren
-// die Zahlung als unklar, siehe readSentEntry).
+// Alle Schluessel des Sende-Protokolls eines Netzes (fuer die Sperre pro Konto in
+// "Zahlung senden": ein unklarer Eintrag der Sammelzahlung sperrt dort das Quellkonto).
+export function listSentEntryKeys(network) {
+  const prefix = `${BATCH_SENT_PREFIX}${network}:`;
+  const keys = [];
+  try {
+    for (let i = 0; i < window.localStorage.length; i += 1) {
+      const k = window.localStorage.key(i);
+      if (k && k.startsWith(prefix)) keys.push(k);
+    }
+  } catch { /* noop */ }
+  return keys;
+}
+
+// Entfernt nur eindeutig lesbare Eintraege nach der Aufbewahrungszeit: erfolgreiche nach
+// 7 Tagen, nicht ausgefuehrte nach 30 Tagen. Unklare und unlesbare Eintraege bleiben stehen
+// (unlesbare sperren als unklar, siehe readSentEntry).
 export function pruneSentLog(now = Date.now()) {
   try {
     const keys = [];
@@ -272,6 +298,7 @@ export function pruneSentLog(now = Date.now()) {
       let entry = null;
       try { entry = sanitizeSentEntry(JSON.parse(window.localStorage.getItem(k) || 'null')); } catch { /* unlesbar: bleibt */ }
       if (entry && entry.status === 'success' && now - entry.at > SENT_LOG_RETENTION_MS) window.localStorage.removeItem(k);
+      else if (entry && entry.status === 'notApplied' && now - entry.at > NOT_APPLIED_RETENTION_MS) window.localStorage.removeItem(k);
     }
   } catch { /* noop */ }
 }

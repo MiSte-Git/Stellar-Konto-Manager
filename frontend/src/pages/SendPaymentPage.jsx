@@ -32,7 +32,7 @@ import {
   removeHistoryValue,
   writeHistoryArray,
 } from '../utils/inputHistory.js';
-import { submitTransactionSafely, AmbiguousSubmitResultError } from '../utils/stellar/submitTransactionSafely.js';
+import { AmbiguousSubmitResultError } from '../utils/stellar/submitTransactionSafely.js';
 import { formatValidUntil } from '../utils/multisig/formatValidUntil.js';
 import { accountRequiresMemo, isAccountRequiresMemoError } from '../utils/stellar/memoRequired.js';
 import { resolveFeePerOp } from '../utils/stellar/fees.js';
@@ -40,7 +40,14 @@ import QrScanDialog from '../components/wallet/QrScanDialog.jsx';
 import { networkMismatch, parsePaymentInput } from '../utils/stellar/sep7.js';
 import { CONTRACT_ADDRESS_ERROR, isContractAddress } from '../utils/stellar/addressType.js';
 import { txHashHex } from '../utils/stellar/txHash.js';
-import { draftGeneration, findSentPayment, readSendPaymentDraft, recordSentPayment, writeSendPaymentDraft } from '../utils/sendPaymentDraft.js';
+import {
+  draftGeneration, findSentPayment, forgetSentPayment, readSendPaymentDraft, recordSentPayment, settleSentPaymentsByHash,
+  writeSendPaymentDraft,
+} from '../utils/sendPaymentDraft.js';
+import { guardedSubmit, SendBlockedError } from '../utils/submitGuard/guardedSubmit.js';
+import { PENDING_TX_PREFIX, findAccountSendBlock, readAccountEntry } from '../utils/submitGuard/accountSendGuard.js';
+import { useAccountSendBlock } from '../utils/submitGuard/useAccountSendBlock.js';
+import SendAmbiguousPanel, { SendResolvedNotice } from '../components/wallet/SendAmbiguousPanel.jsx';
 import BatchPaymentDialog from '../components/wallet/BatchPaymentDialog.jsx';
 import { requestHeaderBalanceRefresh } from '../utils/balanceRefresh.js';
 
@@ -344,7 +351,9 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
 
   const [status, setStatus] = useState('');
   const [sentInfo, setSentInfo] = useState(null);
-  const [ambiguousSubmission, setAmbiguousSubmission] = useState(null); // { hash } - set when a submit's outcome could not be confirmed
+  // Wartet das Senden auf einen anderen Sendevorgang (anderer Tab, gleicher Lock wie die Sammelzahlung)?
+  const [lockWaiting, setLockWaiting] = useState(false);
+  const sendAbortRef = useRef(null);
   const [isProcessing, setIsProcessing] = useState(false); // Zeigt einen globalen Processing-Indikator während des Payment-Flows an.
   const [error, setError] = useState('');
   const [preflight, setPreflight] = useState({
@@ -399,8 +408,56 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     recordSentPayment(key, info);
     setSentVersion((v) => v + 1);
   }, []);
+  // Unklarer Sendestatus pro Konto und Netz (gespeichert, gilt auch fuer die Sammelzahlung
+  // und andere Tabs). Freigabe nur ueber Horizon, siehe utils/submitGuard/.
+  const appliedRef = useRef(null);
+  const notAppliedRef = useRef(null);
+  const sendGuard = useAccountSendBlock({
+    network: netLabel,
+    account: publicKey,
+    maxValiditySeconds: LOCAL_SUBMIT_TIMEOUT_SECONDS,
+    onApplied: (info) => appliedRef.current?.(info),
+    onNotApplied: (info) => notAppliedRef.current?.(info),
+  });
+  const sendBlocked = !!sendGuard.block;
+  const bumpSendGuard = sendGuard.bump;
+  // Vermerk "gesendet" und gespeicherter Eintrag duerfen sich nicht widersprechen: Wurde der
+  // Eintrag (auch in einem anderen Tab) ueber Horizon geklaert, den unklaren Vermerk
+  // derselben Zahlung angleichen.
+  useEffect(() => {
+    const own = readAccountEntry(netLabel, publicKey);
+    if (!own?.payment || own.status === 'ambiguous') return;
+    const key = { network: netLabel, account: publicKey, ...own.payment };
+    const cur = findSentPayment(key);
+    if (cur?.status !== 'ambiguous') return;
+    if (own.status === 'success') markSent(key, { hash: own.hash, status: 'success', at: cur.at });
+    else { forgetSentPayment(key); setSentVersion((v) => v + 1); }
+  }, [sendGuard.block, netLabel, publicKey, markSent]);
+  // Klaerung in einem anderen Tab (storage-Event): unklare Vermerke im Arbeitsspeicher dieses
+  // Tabs fuer dasselbe Konto und denselben Hash angleichen, auch wenn der Eintrag danach schon
+  // von einer neuen Zahlung ueberschrieben wurde.
+  useEffect(() => {
+    const onStorage = (e) => {
+      if (!String(e?.key || '').startsWith(PENDING_TX_PREFIX)) return;
+      let next = null;
+      let prev = null;
+      try { next = JSON.parse(e.newValue || 'null'); } catch { /* unlesbar */ }
+      try { prev = JSON.parse(e.oldValue || 'null'); } catch { /* unlesbar */ }
+      if (!next || (next.status !== 'success' && next.status !== 'notApplied')) return;
+      const hashes = [next.hash, prev?.status === 'ambiguous' ? prev.hash : ''];
+      const changed = settleSentPaymentsByHash({
+        network: next.network, account: next.source, hashes, status: next.status, successHash: next.hash,
+      });
+      if (changed) setSentVersion((v) => v + 1);
+    };
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
+  }, []);
+  useEffect(() => () => { sendAbortRef.current?.abort(); }, []);
   const renderSentBefore = (spacing) => {
     if (!sentBefore) return null;
+    // Unklar und gesperrt: Der Kasten oben zeigt Status und Ausweg.
+    if (sentBefore.status === 'ambiguous' && sendBlocked) return null;
     const time = new Date(sentBefore.at).toLocaleString(i18n.language || undefined);
     const ambiguous = sentBefore.status === 'ambiguous';
     return (
@@ -506,6 +563,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       memo: payload.memo,
       activated: !!payload.activated,
       muxedActivationCapture: !!payload.muxedActivationCapture,
+      feeBumpHash: payload.feeBumpHash || '',
     });
   }, [publicKey]);
 
@@ -669,6 +727,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
         : t('multisig:confirm.result.job.hashLabel', 'Transaktions-Hash');
       lines.push(`${hashLabel}: ${dialog.hash}`);
     }
+    if (dialog.feeBumpHash) lines.push(t('common:payment.send.feeBumpHash', { hash: dialog.feeBumpHash }));
     return lines.filter(Boolean).join('\n');
   }, [buildSummaryItems, t]);
 
@@ -751,7 +810,9 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     }
   }, [t]);
 
-  const buildPaymentTx = useCallback(async ({ signers, signTx = false, requireSigners = false, immediateSubmit = false, expectedNetwork = '' } = {}) => {
+  // adjustAccount (nur Direktversand): Konto vor dem Bauen anpassen (Pin der Sequence einer
+  // frueheren, laut Horizon nicht ausgefuehrten Transaktion, siehe guardedSubmit).
+  const buildPaymentTx = useCallback(async ({ signers, signTx = false, requireSigners = false, immediateSubmit = false, expectedNetwork = '', adjustAccount = null } = {}) => {
     const signerList = Array.isArray(signers) ? signers.filter(Boolean) : [];
     const primary = signerList[0];
     if (requireSigners && !primary) throw new Error('submitTransaction.failed:' + 'multisig.noKeysProvided');
@@ -765,7 +826,8 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     const formNetwork = netLabel;
     assertFormNetwork(formNetwork, expectedNetwork);
     const net = passphraseFor(formNetwork);
-    const account = await server.loadAccount(publicKey);
+    const loadedAccount = await server.loadAccount(publicKey);
+    const account = adjustAccount ? adjustAccount(loadedAccount) : loadedAccount;
     const fee = await resolveFeePerOp(server, { deferred: !immediateSubmit });
     const { memo, display: memoDisplay } = buildMemoObject();
     let resolvedDest;
@@ -1066,22 +1128,66 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     return true;
   }, [checkRecipientTrustlineStatus, checkRecipientMemoRequired, checkFederationMemoMismatch, t]);
 
-  const submitPayment = useCallback(async (signerKeypairs, expectedNetwork = '') => {
+  // Direktversand und lokaler Multisig-Versand. Nach den Regeln der Sammelzahlung
+  // (guardedSubmit): exklusiv pro Netz, gesperrt bei unklarem Eintrag des Kontos, Eintrag vor
+  // dem Submit, Pin der Sequence nach "nicht ausgefuehrt". sentKey/snapshot: oeffentliche
+  // Daten der Zahlung fuer Anzeige und Vermerk nach einer spaeteren Klaerung.
+  const submitPayment = useCallback(async (signerKeypairs, expectedNetwork = '', { sentKey = null, snapshot = null } = {}) => {
     const signerList = Array.isArray(signerKeypairs) ? signerKeypairs : [signerKeypairs];
-    const { tx, meta } = await buildPaymentTx({ signers: signerList, signTx: true, requireSigners: true, immediateSubmit: true, expectedNetwork });
-    const txHash = txHashHex(tx);
-    const res = await submitTransactionSafely(server, tx);
-    return {
-      hash: res.hash || res.id || txHash,
-      recipient: meta.recipient,
-      amountDisplay: meta.amountDisplay,
-      asset: meta.asset,
-      memo: meta.memo,
-      activated: meta.activated,
-      muxedActivationCapture: meta.muxedActivationCapture,
-      network: netLabel,
-    };
-  }, [buildPaymentTx, netLabel, server]);
+    const sendNetwork = netLabel;
+    const controller = new AbortController();
+    sendAbortRef.current = controller;
+    try {
+      const { res, built, hash: txHash } = await guardedSubmit({
+        network: sendNetwork,
+        account: publicKey,
+        server,
+        networkPassphrase: passphraseFor(sendNetwork),
+        signal: controller.signal,
+        onWaiting: () => setLockWaiting(true),
+        buildTx: ({ adjustAccount }) => {
+          setLockWaiting(false);
+          return buildPaymentTx({ signers: signerList, signTx: true, requireSigners: true, immediateSubmit: true, expectedNetwork, adjustAccount });
+        },
+        entryData: ({ meta }) => ({
+          origin: 'payment',
+          payment: sentKey ? {
+            dest: sentKey.dest, amount: sentKey.amount, assetKey: sentKey.assetKey, memoType: sentKey.memoType, memoVal: sentKey.memoVal,
+          } : undefined,
+          summary: {
+            recipient: meta.recipient,
+            amountDisplay: meta.amountDisplay,
+            asset: meta.asset,
+            memo: meta.memo,
+            activated: !!meta.activated,
+            muxedActivationCapture: !!meta.muxedActivationCapture,
+            sourceFederation: snapshot?.sourceFederation || '',
+            sourceLabel: snapshot?.sourceLabel || '',
+            recipientFederation: snapshot?.recipientFederation || '',
+            recipientLabel: snapshot?.recipientLabel || '',
+          },
+        }),
+      });
+      const { meta } = built;
+      return {
+        // Immer der Hash, den wir gesendet haben; ein Fee-Bump einer anderen Partei um unsere
+        // Transaktion steht zusaetzlich in feeBumpHash (Details).
+        hash: txHash,
+        feeBumpHash: res?.feeBumpHash || '',
+        recipient: meta.recipient,
+        amountDisplay: meta.amountDisplay,
+        asset: meta.asset,
+        memo: meta.memo,
+        activated: meta.activated,
+        muxedActivationCapture: meta.muxedActivationCapture,
+        network: sendNetwork,
+      };
+    } finally {
+      if (sendAbortRef.current === controller) sendAbortRef.current = null;
+      setLockWaiting(false);
+      bumpSendGuard();
+    }
+  }, [buildPaymentTx, bumpSendGuard, netLabel, publicKey, server]);
 
   // Export produces an unsigned XDR that may be signed and submitted later - possibly by a
   // different person, offline, well after this click. Skipping the pre-submit guards here
@@ -1612,6 +1718,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
         network: result.network,
       },
       hash: result.hash,
+      feeBumpHash: result.feeBumpHash || '',
       muxedActivationCapture: !!result.muxedActivationCapture,
     });
   }, [publicKey]);
@@ -1646,7 +1753,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       try {
         setReviewProcessing(true);
         setIsProcessing(true);
-        const result = await submitPayment(reviewDialog.signers, sendNetwork);
+        const result = await submitPayment(reviewDialog.signers, sendNetwork, { sentKey, snapshot: reviewDialog.snapshot });
         const reviewSnapshot = reviewDialog.snapshot || {};
         const resultWithWalletInfo = {
           ...result,
@@ -1663,11 +1770,20 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
         refreshIfSameNetwork();
       } catch (err) {
         if (err instanceof AmbiguousSubmitResultError) {
+          // Eintrag mit Ursache ist gespeichert (guardedSubmit); der Kasten oben zeigt ihn.
           markSent(sentKey, { hash: err.hash || '', status: 'ambiguous' });
-          setAmbiguousSubmission({ hash: err.hash, network: sendNetwork });
           closeReviewDialog();
           // Outcome unknown - current balances help the user judge whether it went through.
           refreshIfSameNetwork();
+        } else if (err instanceof SendBlockedError) {
+          const msg = t(`common:payment.send.ambiguousResult.blockedReason.${err.reason}`);
+          if (err.reason === 'blocked' || err.reason === 'pinConsumed' || err.reason === 'badSeq') {
+            // Gesperrt: Pruefdialog schliessen, der Kasten oben zeigt Status und Ausweg.
+            closeReviewDialog();
+            setError(msg);
+          } else {
+            setReviewError(msg);
+          }
         } else {
           const detail = handlePaymentError(err);
           setReviewError(detail);
@@ -1689,10 +1805,35 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     } finally {
       setReviewProcessing(false);
     }
-  }, [applySendResult, runPreSubmitChecks, closeReviewDialog, handlePaymentError, markSent, netLabel, openSentResultDialog, refreshBalancesAfterSend, reviewDialog, submitPayment, t]);
+  }, [applySendResult, runPreSubmitChecks, closeReviewDialog, handlePaymentError, markSent, netLabel, openSentResultDialog, refreshBalancesAfterSend, reviewDialog, setError, submitPayment, t]);
+
+  // Klaerung ueber Horizon: angewendet -> wie nach einem normalen Erfolg (Vermerk, Ergebnis,
+  // Saldo), nicht erneut senden. Nicht ausgefuehrt -> unklaren Vermerk entfernen.
+  appliedRef.current = ({ network, account, block, hash }) => {
+    if (block.kind !== 'single') return;
+    const e = block.entry || {};
+    if (e.payment) markSent({ network, account, ...e.payment }, { hash, status: 'success', at: e.at || Date.now() });
+    if (network !== currentNetworkRef.current || account !== publicKey) return;
+    if (e.summary?.recipient) {
+      const result = { ...e.summary, hash, network };
+      applySendResult(result);
+      openSentResultDialog(result);
+    }
+    refreshBalancesAfterSend();
+  };
+  notAppliedRef.current = ({ network, account, block }) => {
+    if (block.kind !== 'single' || !block.entry?.payment) return;
+    forgetSentPayment({ network, account, ...block.entry.payment });
+    setSentVersion((v) => v + 1);
+  };
 
   const handleSendClick = useCallback(async () => {
     const epoch = networkEpochRef.current;
+    // Unklarer Status von diesem Konto (auch aus einem anderen Tab oder der Sammelzahlung).
+    if (findAccountSendBlock(netLabel, publicKey)) {
+      bumpSendGuard();
+      return;
+    }
     clearSuccess();
     setError('');
     setNetworkNotice('');
@@ -1734,7 +1875,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       }
     }
     openSecretModal(false, 'send');
-  }, [buildMemoObject, clearSuccess, isCurrentEpoch, isMultisig, openReviewDialog, openSecretModal, publicKey, runPreflight, setError, setShowConfirmModal, t]);
+  }, [buildMemoObject, bumpSendGuard, clearSuccess, isCurrentEpoch, isMultisig, netLabel, openReviewDialog, openSecretModal, publicKey, runPreflight, setError, setShowConfirmModal, t]);
 
   const trustCount = trustlines.length;
   const lpCount = lpTrusts.length;
@@ -2005,7 +2146,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       </div>
       {showBatchDialog && (
         <BatchPaymentDialog
-          onClose={() => setShowBatchDialog(false)}
+          onClose={() => { setShowBatchDialog(false); bumpSendGuard(); }}
           onNetworkChangeClose={() => { setShowBatchDialog(false); setBatchNotice(t('batchPayment:networkChanged.closed')); }}
         />
       )}
@@ -2022,25 +2163,17 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
         </div>
       )}
       {error && <div className="text-red-600 text-sm text-center">{error}</div>}
-      {ambiguousSubmission && (
-        <div className="text-sm bg-amber-100 dark:bg-amber-900/30 border border-amber-300/60 text-amber-800 dark:text-amber-200 rounded-sm p-3 max-w-4xl mx-auto">
-          <div className="font-semibold mb-1">{t('common:payment.send.ambiguousResult.title', 'Status unklar – nicht erneut senden')}</div>
-          <div>{t('common:payment.send.ambiguousResult.body', 'Die Transaktion konnte serverseitig nicht eindeutig bestätigt werden (Zeitüberschreitung oder Serverfehler). Bitte prüfen Sie den Transaktions-Hash im Explorer, bevor Sie es erneut versuchen.')}</div>
-          {ambiguousSubmission.hash && (
-            <div className="mt-1 font-mono break-all text-xs">{ambiguousSubmission.hash}</div>
-          )}
-          {ambiguousSubmission.network && (
-            <div className="mt-1 text-xs" data-testid="send-ambiguous-network">{t('common:networkLabel', 'Netzwerk')}: {formatNetworkLabel(ambiguousSubmission.network)}</div>
-          )}
-          <button
-            type="button"
-            className="mt-2 px-3 py-1 rounded-sm border border-amber-400 text-xs font-semibold hover:bg-amber-200/60 dark:hover:bg-amber-900/60"
-            onClick={() => setAmbiguousSubmission(null)}
-          >
-            {t('common:payment.send.ambiguousResult.acknowledge', 'Status geprüft – Senden wieder freigeben')}
-          </button>
-        </div>
-      )}
+      <SendAmbiguousPanel
+        guard={sendGuard}
+        t={t}
+        language={i18n.language}
+        networkLabel={formatNetworkLabel(netLabel)}
+        explorerLinks={(hash) => [
+          { href: buildExplorerUrl(txExplorers.stellarExpert, hash, netLabel, { type: 'tx' }), label: t('common:balance.explorer.expert', 'stellar.expert') },
+          { href: buildExplorerUrl(txExplorers.stellarchain, hash, netLabel, { type: 'tx' }), label: t('common:balance.explorer.stellarchain', 'Stellarchain.io') },
+        ].filter((l) => l.href)}
+      />
+      <SendResolvedNotice notice={sendGuard.notice} t={t} onDismiss={sendGuard.dismissNotice} />
       {sentInfo && sentInfo.account === publicKey && (
         <div className="text-sm bg-green-100 dark:bg-green-900/30 border border-green-300/60 text-green-800 dark:text-green-200 rounded-sm p-3 max-w-4xl mx-auto">
           <div className="font-semibold mb-1">{t('common:payment.send.successShort', 'Erfolgreich gesendet')}</div>
@@ -2071,6 +2204,9 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
               <div className="text-green-800 dark:text-green-200 font-medium">{t('common:payment.send.muxedActivationCapture', 'Account was activated; an additional minimal transaction fee applied to also record the muxed ID on-chain.')}</div>
             )}
             {status && (<div><span className="text-gray-600 dark:text-gray-400">TX:</span> <span className="font-mono break-all">{status}</span></div>)}
+            {sentInfo.feeBumpHash && (
+              <div className="text-xs" data-testid="send-success-feebump">{t('common:payment.send.feeBumpHash', { hash: sentInfo.feeBumpHash })}</div>
+            )}
           </div>
         </div>
       )}
@@ -2337,7 +2473,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
           {renderSentBefore('mt-2')}
           <button
             className="mt-3 px-4 py-2 rounded-sm bg-blue-600 text-white disabled:opacity-50"
-            disabled={!dest || !amount || (Number(amount) || 0) <= 0 || !!ambiguousSubmission}
+            disabled={!dest || !amount || (Number(amount) || 0) <= 0 || sendBlocked}
             onClick={handleSendClick}
           >
             {t('common:payment.send.sendButton')}
@@ -2525,6 +2661,14 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
               </div>
             )}
 
+            {lockWaiting && (
+              <div className="text-xs text-amber-700 dark:text-amber-300 mb-2" role="status" data-testid="send-lock-waiting">
+                {t('common:payment.send.ambiguousResult.waitingForLock')}
+                <button type="button" className="ml-2 underline" onClick={() => sendAbortRef.current?.abort()}>
+                  {t('batchPayment:actions.cancelWaiting')}
+                </button>
+              </div>
+            )}
             {reviewError && (
               <div className="text-xs text-red-600 mb-2">{reviewError}</div>
             )}
@@ -2542,7 +2686,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                 type="button"
                 className="px-4 py-2 rounded-sm bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50"
                 onClick={handleReviewConfirm}
-                disabled={reviewProcessing || !!ambiguousSubmission}
+                disabled={reviewProcessing || sendBlocked}
               >
                 {reviewProcessing ? t('common:main.processing') : t('common:option.confirm.action.text', 'Bestätigen')}
               </button>
@@ -2621,6 +2765,11 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
           summaryItems={buildSummaryItems(resultDialog.summary, { includeValidUntil: false })}
           notice={(
             <>
+              {resultDialog.type === 'sent' && resultDialog.feeBumpHash && (
+                <div className="text-xs text-gray-600 dark:text-gray-300 mb-3 break-all" data-testid="sent-result-feebump">
+                  {t('common:payment.send.feeBumpHash', { hash: resultDialog.feeBumpHash })}
+                </div>
+              )}
               {resultDialog.type === 'sent' && resultDialog.muxedActivationCapture && (
                 <div className="text-sm text-green-800 dark:text-green-200 font-medium mb-3">
                   {t('common:payment.send.muxedActivationCapture', 'Account was activated; an additional minimal transaction fee applied to also record the muxed ID on-chain.')}
@@ -2855,7 +3004,8 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
               return;
             } catch (e) {
               if (e instanceof AmbiguousSubmitResultError) {
-                setAmbiguousSubmission({ hash: e.hash, network: netLabel });
+                // Eintrag ist gespeichert; der Kasten oben zeigt ihn.
+                bumpSendGuard();
                 closeSecretModal();
               } else {
                 const detail = handlePaymentError(e);

@@ -122,10 +122,14 @@
     "containsSecret": "In dieser Zeile steht etwas, das wie ein Secret Key aussieht. Bitte entfernen, die Zeile wird nicht geprüft.",
     "networkChanged": "Netz gewechselt, nicht gesendet",
     "badSeqMaybeSent": "Das Netz hat die Sequence abgelehnt (tx_bad_seq), die frühere Transaktion wurde wahrscheinlich ausgeführt. Es wird nicht erneut gesendet.",
-    "pinConsumed": "Die Sequence der früheren Transaktion ist inzwischen verbraucht. Nicht gesendet, der Status der früheren Transaktion wird erneut geprüft.",
+    "pinConsumed": "Die Sequence der früheren Transaktion ist inzwischen verbraucht oder passt nicht mehr zum Konto. Nicht gesendet, der Status der früheren Transaktion wird erneut geprüft.",
     "logMissing": "Der Eintrag im Sende-Protokoll fehlt. Der Ausgang der früheren Transaktion ist offen. Bitte die Liste erneut prüfen, SKM sucht dann bei Horizon nach dieser Zahlung.",
     "logMissingPending": "Der Eintrag im Sende-Protokoll fehlt, und die frühere Transaktion kann laut Netz noch ankommen. Nicht senden, bitte später erneut prüfen.",
-    "historyCheckFailed": "Der Eintrag im Sende-Protokoll fehlt, und Horizon konnte nicht nach dieser Zahlung (letzte 24 Stunden) durchsucht werden. Nicht senden, bitte später erneut prüfen."
+    "historyCheckFailed": "Der Eintrag im Sende-Protokoll fehlt, und Horizon konnte nicht nach dieser Zahlung (letzte 24 Stunden) durchsucht werden. Nicht senden, bitte später erneut prüfen.",
+    "accountAmbiguous": "Von diesem Sender ist eine Einzelzahlung (Zahlung senden) mit unklarem Status offen. Erst dort über Horizon klären.",
+    "sourceAmbiguous": "Von diesem Sender ist eine andere Zahlung mit unklarem Status offen. Unklar sperrt das Konto: erst über Horizon klären, dann die Liste erneut prüfen.",
+    "logUnreadable": "Ein Eintrag im Sende-Protokoll ist unlesbar und lässt sich keinem Konto zuordnen. Bis er geklärt ist, ist Senden in diesem Netz gesperrt.",
+    "pinBadSeqAccount": "Nicht gesendet: Das Netz hat die Sequence einer früheren, nicht ausgeführten Transaktion dieses Kontos abgelehnt. Sie wird erneut über Horizon geprüft, bis dahin ist Senden von diesem Konto gesperrt."
   },
   "flags": {
     "compromised": "Warnung: Dieser Empfänger ist in der Vertrauensliste als kompromittiert markiert.",
@@ -163,5 +167,9 @@
     "lookupFound": "gefunden",
     "lookupStatus": "HTTP {{status}}",
     "lookupNetwork": "Netzfehler ({{name}}: {{message}})"
+  },
+  "unreadableLog": {
+    "blocked": "Im Sende-Protokoll dieses Netzes steht ein unlesbarer Eintrag. Er lässt sich keinem Konto zuordnen, daher ist Senden in diesem Netz gesperrt, auch in „Zahlung senden“. SKM kann ihn über Horizon klären: lesbarer Hash im Ledger oder sicher abgelaufen (Ledger-Zeit).",
+    "released": "Der unlesbare Eintrag ist laut Horizon geklärt (im Ledger oder sicher abgelaufen). Ob die Zahlung damals angekommen ist, kann unbekannt sein: Bitte vor erneutem Senden im Kontoverlauf prüfen."
   }
 }

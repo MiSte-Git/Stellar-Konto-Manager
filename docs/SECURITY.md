@@ -151,9 +151,11 @@ Ein Job ist eine unsignierte oder teilsignierte Transaktion, die mehrere Signer 
 
 | Risiko | Warum akzeptiert |
 |---|---|
-| Sammelzahlung: Sperre gegen doppeltes Senden in zwei Tabs ist ohne Web Locks API nur probabilistisch (`localStorage`) | Moderne Browser haben Web Locks; Rest betrifft nur Altbrowser. |
+| Sammelzahlung und „Zahlung senden“: Sperre gegen doppeltes Senden in zwei Tabs ist ohne Web Locks API nur probabilistisch (`localStorage`) | Moderne Browser haben Web Locks; Rest betrifft nur Altbrowser. |
 | Sammelzahlung: nach Tab-Absturz bis 3 Minuten Wartezeit | Schutz vor Doppelzahlung geht vor. |
 | Sammelzahlung: Fehltreffer der Warnhinweise nur bei ungültigen Eingaben | Kein Einfluss auf gültige Zahlungen. |
+| „Zahlung senden“ und Sammelzahlung: Ein unlesbarer Eintrag wird über Horizon nur zeitlich freigegeben (erstes Erkennen plus Gültigkeit plus Puffer, Ledger-Zeit); ohne lesbaren Hash ist nicht bekannt, ob die Transaktion angewendet wurde. Ein unlesbarer Eintrag der Sammelzahlung sperrt bis dahin alle Konten im Netz | Nur bei beschädigtem localStorage; Hinweis auf den Kontoverlauf. Erstes Erkennen ist das Spätere aus lokaler Zeit und Ledger-Zeit (beim Erkennen, spätestens bei der ersten Prüfung festgehalten). Nur wenn Horizon beim Erkennen nicht erreichbar war und die Rechneruhr zwischen Senden und Erkennen zurückgestellt wurde, kann die Freigabe zu früh kommen. |
+| Pin der Sequence nach „nicht ausgeführt“ wird nach 30 Tagen mit dem Eintrag aufgeräumt | Der Pin schützt gegen einen hinkenden Horizon-Knoten beim Klären und wirkt beim nächsten Senden von diesem Konto, in beiden Sendewegen. Wird 30 Tage lang nicht gesendet, entfällt er; war die frühere Transaktion trotz „nicht ausgeführt“ doch angewendet, bleibt nur der Kontoverlauf als Hinweis. Gewollt (Aufräumen nicht ausgeführter Einträge). |
 | `npm audit`: moderate Meldungen über `exceljs` → `archiver` → `glob`/`minimatch` | Im genutzten Pfad nicht ausnutzbar; der angebotene Fix wäre ein Downgrade. |
 
 ## Hinweise für Reviewer (häufige Fehlannahmen)

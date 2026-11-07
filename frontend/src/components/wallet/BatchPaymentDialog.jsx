@@ -7,7 +7,9 @@ import { passphraseFor, readStoredNetworkId } from '../../config/networks.js';
 import { getHorizonServerForNetwork } from '../../utils/stellar/stellarUtils.js';
 import { NETWORK_CHANGED_EVENT, networkFromEvent } from '../../utils/globalNetwork.js';
 import { resolveFeePerOp } from '../../utils/stellar/fees.js';
-import { submitTransactionSafely, AmbiguousSubmitResultError } from '../../utils/stellar/submitTransactionSafely.js';
+import {
+  submitTransactionSafely, AmbiguousSubmitResultError, SubmittedTransactionFailedError,
+} from '../../utils/stellar/submitTransactionSafely.js';
 import { txHashHex } from '../../utils/stellar/txHash.js';
 import { buildExplorerUrl } from '../../utils/stellar/accountUtils.js';
 import { splitAddressForCompare } from '../../utils/stellar/walletSummary.js';
@@ -19,14 +21,23 @@ import { useSettings } from '../../utils/useSettings';
 import { createWalletInfoMap, findWalletInfo } from '../../utils/walletInfo.js';
 import {
   MAX_ROWS, MEMO_TYPES, containsSecretKey, createEmptyRow, isStorageWritable, loadBatchRows, looksLikeThousandsSeparator,
-  normalizeAmount, pruneSentLog, readSentEntry, recentSendOf, saveBatchRows, writeSentEntry,
+  listSentEntryKeys, normalizeAmount, pruneSentLog, readSentEntry, readSentEntryByKey, recentSendOf, saveBatchRows,
+  sentEntryKey, writeSentEntry, writeSentEntryByKey,
 } from '../../utils/batchPayment/batchPaymentStore.js';
 import {
-  AMBIGUOUS_LEDGER_BUFFER_SECONDS, ambiguousClearAt, assetDisplay, buildSignedRowTx, checkRowOnNetwork, checkSourceAccount,
-  computeSourceTotals, describeSubmitError, findAnyTransaction, findRecentMatchingPayment, isBadSeqError, paymentFingerprint,
-  pinnedSendAccount, resolveAmbiguousDetailed, routingFingerprint, toStroops, validateRowInput,
+  AMBIGUOUS_LEDGER_BUFFER_SECONDS, BATCH_SUBMIT_TIMEOUT_SECONDS, ambiguousClearAt, assetDisplay, buildSignedRowTx,
+  checkRowOnNetwork, checkSourceAccount, computeSourceTotals, describeSubmitError, findAnyTransaction,
+  findRecentMatchingPayment, isBadSeqError, paymentFingerprint, resolveAmbiguousDetailed, routingFingerprint, toStroops,
+  validateRowInput,
 } from '../../utils/batchPayment/batchPaymentLogic.js';
 import { withSendLock } from '../../utils/batchPayment/sendLock.js';
+import { settleAmbiguousEntry } from '../../utils/submitGuard/ambiguousResolve.js';
+import {
+  accountEntryBlocks, applyAccountPins, batchAccountBlock, batchUnreadableInfo, findAccountPins, listUnreadableBatchKeys,
+  markPinRecheck, recordUnreadableLedgerSeen, releasePins, settleBatchUnreadable,
+} from '../../utils/submitGuard/accountSendGuard.js';
+import { AmbiguousStatus } from '../AmbiguousSubmitStatus.jsx';
+import { AMBER_BOX_CLS, autoCheckDue, diagnosticsLines, formatClearTime, safeDiagText } from '../../utils/submitGuard/ambiguousDisplay.js';
 
 const inputCls = 'border rounded-sm w-full px-2 py-1 text-base md:text-sm bg-white dark:bg-gray-900';
 const btnCls = 'px-3 py-1.5 rounded-sm border text-sm font-medium disabled:opacity-50';
@@ -110,133 +121,6 @@ function HashLinks({ hash, links }) {
       </div>
     </div>
   );
-}
-
-// Uhrzeit, ab der ein unklarer Status eindeutig werden kann (lokale Zeit; Datum nur,
-// wenn es nicht heute ist).
-function formatClearTime(ms) {
-  const d = new Date(ms);
-  return d.toDateString() === new Date().toDateString() ? d.toLocaleTimeString() : d.toLocaleString();
-}
-
-// Wartezeit nach maxTime plus Puffer bis zur automatischen Pruefung: ein bis zwei
-// Ledger (je etwa 5 s), damit Horizon den entscheidenden Ledger schon kennt.
-const AUTO_CHECK_MARGIN_MS = 10 * 1000;
-
-// Restzeit als mm:ss (aufgerundete Sekunden).
-function formatCountdown(ms) {
-  const total = Math.max(0, Math.ceil(ms / 1000));
-  const mm = String(Math.floor(total / 60)).padStart(2, '0');
-  const ss = String(total % 60).padStart(2, '0');
-  return `${mm}:${ss}`;
-}
-
-// Zeitpunkt der automatischen Pruefung: maxTime plus Puffer plus Marge. Haengt nur am
-// gespeicherten maxTime, stimmt also auch nach Neuladen.
-function autoCheckDue(entry) {
-  const clearAt = ambiguousClearAt(entry);
-  return clearAt ? clearAt + AUTO_CHECK_MARGIN_MS : null;
-}
-
-// Unklarer Status: Countdown bis zur automatischen Pruefung (Amber-Kasten), darunter klein
-// die Uhrzeit, ab der der Status eindeutig werden kann, und "Status jetzt pruefen".
-// check: { state, at } der letzten Pruefung (at = Beginn der Horizon-Abfrage).
-function AmbiguousStatus({ entry, check, onCheck, t }) {
-  const clearAt = ambiguousClearAt(entry);
-  const due = autoCheckDue(entry);
-  const [now, setNow] = useState(() => Date.now());
-  const checking = check?.state === 'checking';
-  const ticking = !!due && now < due;
-  useEffect(() => {
-    if (!due) return undefined;
-    const timer = setInterval(() => setNow(Date.now()), 1000);
-    return () => clearInterval(timer);
-  }, [due]);
-  // Ergebnis einer Pruefung nach dem Zeitpunkt (automatisch, beim Pruefen der Liste oder per Button)
-  const checkedAfterDue = !!due && Number(check?.at) >= due && !checking;
-  let main;
-  if (checking) main = t('batchPayment:ambiguous.checking');
-  else if (ticking) main = t('batchPayment:ambiguous.countdown', { time: formatCountdown(due - now) });
-  else if (!due) main = t('batchPayment:ambiguous.clearAtUnknown');
-  else if (checkedAfterDue && check.state === 'pending') main = t('batchPayment:ambiguous.stillPending', { time: formatClearTime(clearAt) });
-  else if (checkedAfterDue && check.state === 'unknown') main = t('batchPayment:ambiguous.unreachable');
-  else main = t('batchPayment:ambiguous.checking');
-  // Ergebnis einer Pruefung per Button vor dem Zeitpunkt: klein unter dem Countdown.
-  const earlyResult = ticking && !checking && check && Number(check.at) < due ? check.state : '';
-  // Unlesbarer Eintrag: kein Hash bekannt, Horizon kann nichts klaeren. Bleibt gesperrt.
-  if (entry?.unreadable) {
-    return (
-      <div className="mt-1 text-xs" data-testid="batch-ambiguous-status">
-        <div
-          className="rounded-sm border border-amber-300 bg-amber-50 dark:border-amber-700 dark:bg-amber-900/30 px-2 py-1.5 text-sm font-medium text-amber-900 dark:text-amber-100"
-          role="status"
-          data-testid="batch-ambiguous-unreadable"
-        >
-          {t('batchPayment:ambiguous.unreadable')}
-        </div>
-      </div>
-    );
-  }
-  return (
-    <div className="mt-1 space-y-1 text-xs" data-testid="batch-ambiguous-status">
-      <div
-        className="rounded-sm border border-amber-300 bg-amber-50 dark:border-amber-700 dark:bg-amber-900/30 px-2 py-1.5 text-sm font-medium text-amber-900 dark:text-amber-100"
-        role="status"
-        data-testid="batch-ambiguous-countdown"
-      >
-        {main}
-      </div>
-      {clearAt && (
-        <div className="text-gray-600 dark:text-gray-400" data-testid="batch-ambiguous-clear-at">
-          {t('batchPayment:ambiguous.clearAt', { time: formatClearTime(clearAt) })}
-        </div>
-      )}
-      {earlyResult === 'pending' && (
-        <div className="text-amber-700 dark:text-amber-300">{t('batchPayment:ambiguous.stillPending', { time: formatClearTime(clearAt) })}</div>
-      )}
-      {earlyResult === 'unknown' && (
-        <div className="text-amber-700 dark:text-amber-300">{t('batchPayment:ambiguous.unreachable')}</div>
-      )}
-      <button type="button" className={smallBtnCls} onClick={onCheck} disabled={checking}>
-        {checking ? t('batchPayment:actions.checkingStatus') : t('batchPayment:actions.checkStatusNow')}
-      </button>
-    </div>
-  );
-}
-
-// Diagnose-Text ohne Secrets und ohne lange Base64-Folgen (XDR); kurz gehalten.
-function safeDiagText(value) {
-  const text = String(value ?? '').slice(0, 300);
-  if (containsSecretKey(text)) return '[entfernt]';
-  return text.replace(/[A-Za-z0-9+/=]{56,}/g, '[…]');
-}
-
-// Diagnose eines unklaren Ausgangs fuer "Details kopieren" (eine Zeile pro Feld).
-function diagnosticsLines(diag, t) {
-  if (!diag) return [];
-  const req = diag.request || {};
-  const err = req.error || {};
-  const lines = [t('batchPayment:diag.title')];
-  lines.push(`  ${t('batchPayment:diag.request', { method: safeDiagText(req.method || 'POST'), url: safeDiagText(req.url || '?') })}`);
-  lines.push(`  ${t('batchPayment:diag.time', { at: safeDiagText(req.at || '?'), ms: Number.isFinite(req.durationMs) ? req.durationMs : '?' })}`);
-  const kind = err.status
-    ? t('batchPayment:diag.httpStatus', { status: err.status, statusText: safeDiagText(err.statusText || '') }).trim()
-    : t('batchPayment:diag.noResponse');
-  lines.push(`  ${t('batchPayment:diag.error', { name: safeDiagText(err.name || '?'), message: safeDiagText(err.message || ''), kind })}`);
-  lines.push(`  ${t('batchPayment:diag.env', { online: req.online === null || req.online === undefined ? '?' : String(req.online), visibility: safeDiagText(req.visibility || '?') })}`);
-  lines.push(`  ${t('batchPayment:diag.requests', { run: diag.requestsInRun ?? '?', total: diag.requestsSinceOpen ?? '?' })}`);
-  const lookups = Array.isArray(diag.lookups) ? diag.lookups : [];
-  lines.push(`  ${t('batchPayment:diag.lookups', { count: lookups.length })}`);
-  lookups.forEach((l, idx) => {
-    let result;
-    if (l.result === 'notFound') result = t('batchPayment:diag.lookupNotFound');
-    else if (l.result === 'found') result = t('batchPayment:diag.lookupFound');
-    else if (l.result === 'status') result = t('batchPayment:diag.lookupStatus', { status: l.status });
-    else if (l.result === 'network') result = t('batchPayment:diag.lookupNetwork', { name: safeDiagText(l.name || '?'), message: safeDiagText(l.message || '') });
-    else result = safeDiagText(l.result || '?');
-    lines.push(`    ${idx + 1}. ${safeDiagText(l.at || '?')} ${result}`);
-  });
-  return lines;
 }
 
 /**
@@ -339,6 +223,8 @@ export default function BatchPaymentDialog({ onClose, onNetworkChangeClose }) {
   const [waitingForLock, setWaitingForLock] = useState(false);
   // Pruefung unklarer Zahlungen pro Zeile: { state: checking | pending | unknown | notSent | success }
   const [ambiguousChecks, setAmbiguousChecks] = useState({});
+  // Pruefung unlesbarer Eintraege im Netz: { state: checking | pending | unknown | released, clearAt? }
+  const [unreadableCheck, setUnreadableCheck] = useState(null);
   const autoCheckedRef = useRef(new Set());
   const checkingRef = useRef(new Set());
   const reviewRef = useRef(review);
@@ -423,27 +309,18 @@ export default function BatchPaymentDialog({ onClose, onNetworkChangeClose }) {
   // bei noch freier Sequence mit Pin. Ein fehlender Eintrag entsteht so nie durch eine
   // Aufloesung. cache (Map Hash -> Ergebnis): Haupt- und Routing-Eintrag mit demselben
   // Hash nur einmal bei Horizon pruefen.
-  const resolveEntry = async (fp, cache = null) => {
-    let entry = readSentEntry(network, fp);
-    if (entry?.status !== 'ambiguous' || entry.unreadable) return { entry, outcome: null };
-    let res = cache?.get(entry.hash);
-    if (!res) {
-      res = await resolveAmbiguousDetailed({ server, entry });
-      cache?.set(entry.hash, res);
-    }
-    // Nur den eben geprueften Eintrag aendern: Ein anderer Tab kann inzwischen einen
-    // neuen Eintrag geschrieben (oder diesen schon aufgeloest) haben.
-    const current = readSentEntry(network, fp);
-    if (current?.hash !== entry.hash || current.status !== 'ambiguous') return { entry: current, outcome: null };
-    const { outcome } = res;
-    if (outcome === 'success') {
-      entry = { hash: res.hash || entry.hash, at: entry.at, status: 'success', maxTime: entry.maxTime, seq: entry.seq, source: entry.source };
-      writeSentEntry(network, fp, entry);
-    } else if (outcome === 'failed' || outcome === 'expired' || outcome === 'expiredPinned') {
-      entry = { ...entry, status: 'notApplied', pin: outcome === 'expiredPinned' };
-      writeSentEntry(network, fp, entry);
-    }
-    return { entry, outcome: outcome === 'expiredPinned' ? 'expired' : outcome };
+  // Sequence einer Transaktion im Ledger verbraucht: Pins des Kontos mit ihr sind erledigt.
+  const onConsumed = (e) => { if (e?.seq && e?.source) releasePins(network, e.source, e.seq); };
+  const resolveKey = (key, cache = null) => settleAmbiguousEntry({
+    server, cache, onConsumed,
+    read: () => readSentEntryByKey(key),
+    write: (e) => writeSentEntryByKey(key, e),
+    resolve: resolveAmbiguousDetailed,
+  });
+  const resolveEntry = (fp, cache = null) => resolveKey(sentEntryKey(network, fp), cache);
+  const ownKeysOf = (item) => {
+    const routeFp = item.fp ? routingFingerprint({ network, row: item.row, destination: item.destination }) : null;
+    return [item.fp ? sentEntryKey(network, item.fp) : '', routeFp ? sentEntryKey(network, routeFp) : ''];
   };
 
   // Unklare Eintraege, die in diesem Dialog verschwunden sind (Website-Daten geloescht,
@@ -493,7 +370,8 @@ export default function BatchPaymentDialog({ onClose, onNetworkChangeClose }) {
       const seen = new Set();
       const seenRoutes = new Set();
       for (const row of snapshot) {
-        const sourceCode = sourceCodes.get(row.source.trim());
+        // Unklare Einzelzahlung ("Zahlung senden") von diesem Sender: sperrt jede Zahlung des Kontos.
+        const sourceCode = sourceCodes.get(row.source.trim()) || (accountEntryBlocks(network, row.source) ? 'accountAmbiguous' : null);
         let check = sourceCode ? { code: sourceCode } : await checkRowOnNetwork({ server, row });
         let fp = '';
         let recent = null;
@@ -578,15 +456,54 @@ export default function BatchPaymentDialog({ onClose, onNetworkChangeClose }) {
           include: !check.code && !recent && !similar && !flagged,
         });
       }
+      // Unklar sperrt das Konto: unklare Eintraege anderer Zahlungen der Sender dieser Liste
+      // ebenfalls ueber Horizon klaeren, danach sperrt ein verbliebener unklarer Eintrag alle
+      // Zeilen desselben Senders, ein unlesbarer alle Zeilen im Netz.
+      const listSources = new Set(snapshot.map((r) => r.source.trim()));
+      for (const key of listSentEntryKeys(network)) {
+        const e = readSentEntryByKey(key);
+        if (e?.status === 'ambiguous' && !e.unreadable && listSources.has(e.source)) await resolveKey(key, resolveCache);
+      }
+      for (const item of items) {
+        if (item.code || item.recent?.status === 'ambiguous' || item.similar?.status === 'ambiguous') continue;
+        const reason = batchAccountBlock(network, item.row.source, ownKeysOf(item));
+        if (reason) { item.code = reason; item.include = false; }
+      }
+      // Erstes Erkennen unlesbarer Eintraege auch mit der Ledger-Zeit festhalten.
+      const unreadableKeys = listUnreadableBatchKeys(network);
+      for (const key of unreadableKeys) {
+        const info = batchUnreadableInfo(key);
+        if (info && !info.ledgerSeenAt) recordUnreadableLedgerSeen('', '', { kind: 'batchUnreadable', entry: info }, ledgerClosedSec);
+      }
       if (!mountedRef.current) return;
       setAmbiguousChecks(checksAtLoad);
-      setReview({ items, accounts, baseReserveStroops, feeStroops });
+      setReview({ items, accounts, baseReserveStroops, feeStroops, unreadableCount: unreadableKeys.length });
       setPhase('review');
     } catch (e) {
       if (!mountedRef.current) return;
       setGeneralError(String(e?.message || e));
       setPhase('edit');
     }
+  };
+
+  // Unlesbare Eintraege im Netz ueber Horizon klaeren (gleicher Ausweg wie in "Zahlung senden"):
+  // lesbarer Hash im Ledger oder zeitliche Freigabe ueber die Ledger-Zeit. Danach die Liste neu pruefen.
+  const checkUnreadable = async () => {
+    setUnreadableCheck({ state: 'checking' });
+    let state = 'released';
+    let clearAt = 0;
+    try {
+      for (const key of listUnreadableBatchKeys(network)) {
+        const res = await settleBatchUnreadable({ key, server, maxValiditySeconds: BATCH_SUBMIT_TIMEOUT_SECONDS });
+        if (res.outcome === 'pending') { state = 'pending'; clearAt = Math.max(clearAt, Number(res.clearAt) || 0); }
+        else if (res.outcome === 'unknown' && state !== 'pending') state = 'unknown';
+      }
+    } catch {
+      state = 'unknown';
+    }
+    if (!mountedRef.current) return;
+    setUnreadableCheck({ state, clearAt: clearAt || null });
+    if (state === 'released') handleCheck();
   };
 
   // "Erneut senden" im Ergebnis: neue Pruefung derselben Liste. Die nicht gesendete Zahlung
@@ -833,6 +750,11 @@ export default function BatchPaymentDialog({ onClose, onNetworkChangeClose }) {
           const blockReason = () => {
             // Eintrag in diesem Dialog verschwunden und noch nicht bei Horizon gesucht.
             if (missingRef.current.has(item.fp) || (routeFp && missingRef.current.has(routeFp))) return 'logMissing';
+            // Inzwischen unklare Einzelzahlung von diesem Sender (anderer Tab, "Zahlung senden").
+            if (accountEntryBlocks(network, row.source)) return 'accountAmbiguous';
+            // Unklare andere Zahlung desselben Senders oder unlesbarer Eintrag im Netz.
+            const accountBlock = batchAccountBlock(network, row.source, ownKeysOf(item));
+            if (accountBlock) return accountBlock;
             const main = recentSendOf(readSentEntry(network, item.fp));
             const mainOk = !main || (main.status === 'success' && item.recent && main.hash === item.recent.hash && main.at === item.recent.at);
             if (!mainOk) return main.status === 'ambiguous' ? 'blockedAmbiguous' : 'sentMeanwhile';
@@ -868,16 +790,21 @@ export default function BatchPaymentDialog({ onClose, onNetworkChangeClose }) {
           let seq;
           let pinned = false;
           let wroteOwn = false;
+          // Offene Pins des Kontos aus beiden Sendewegen (gilt fuer das Konto, nicht fuer die
+          // Zahlung). Eigener Pin: Haupt- oder Routing-Eintrag dieser Zahlung.
+          const pins = findAccountPins(network, source);
+          const ownKeys = ownKeysOf(item);
+          const ownPinUsed = pins.some((p) => p.store === 'batch' && ownKeys.includes(p.key));
           try {
             const loaded = await server.loadAccount(source);
             let account = loaded;
-            if (earlier?.pin) {
-              const p = pinnedSendAccount({ account: loaded, source, pinSeq: earlier.seq });
-              if (p.consumed) {
-                // Sequence inzwischen verbraucht: Die neue Transaktion koennte neben der
-                // frueheren ausgefuehrt werden. Nicht senden, frueheren Status erneut pruefen.
-                if (readSentEntry(network, item.fp)?.hash === earlier.hash) writeSentEntry(network, item.fp, earlierAsAmbiguous());
-                if (routeFp && readSentEntry(network, routeFp)?.hash === earlier.hash) writeSentEntry(network, routeFp, earlierAsAmbiguous());
+            if (pins.length) {
+              const p = applyAccountPins({ loaded, source, pins });
+              if (p.blocked) {
+                // Sequence passt nicht mehr genau (verbraucht oder Konto darunter): Die neue
+                // Transaktion koennte neben der frueheren ausgefuehrt werden. Nicht senden,
+                // fruehere Transaktionen erneut als unklar pruefen.
+                p.blocked.forEach((pin) => markPinRecheck(network, source, pin, 'pinConsumed'));
                 setResult(row.id, { status: 'skipped', message: errorText('pinConsumed') });
                 continue;
               }
@@ -931,6 +858,8 @@ export default function BatchPaymentDialog({ onClose, onNetworkChangeClose }) {
             const done = { hash, at: Date.now(), status: 'success', maxTime, seq, source };
             const savedMain = readSentEntry(network, item.fp)?.hash === hash && writeSentEntry(network, item.fp, done);
             const savedRoute = !routeFp || (readSentEntry(network, routeFp)?.hash === hash && writeSentEntry(network, routeFp, done));
+            // Sequence durch diese Transaktion verbraucht: Pins des Kontos mit ihr sind erledigt.
+            releasePins(network, source, seq);
             setResult(row.id, { status: 'success', hash, message: savedMain && savedRoute ? '' : errorText('logNotUpdated') });
           } catch (err) {
             if (err instanceof AmbiguousSubmitResultError) {
@@ -950,12 +879,22 @@ export default function BatchPaymentDialog({ onClose, onNetworkChangeClose }) {
                 status: 'ambiguous', hash: err.hash || hash, message: causeText, maxTime, seq, source, prev: prevHashes, at: Date.now(), diag,
               });
               stopReason = 'stoppedAmbiguous';
+            } else if (pinned && wroteOwn && isBadSeqError(err) && !(ownPinUsed && earlier?.pin)) {
+              // Gepinnte Sequence stammt aus einer anderen Zahlung dieses Kontos (anderer
+              // Eintrag oder "Zahlung senden"): eigenen Eintrag zuruecksetzen, die frueheren
+              // Transaktionen wieder als unklar fuehren. Das Konto ist damit gesperrt.
+              if (readSentEntry(network, item.fp)?.hash === hash) writeSentEntry(network, item.fp, before);
+              if (routeFp && readSentEntry(network, routeFp)?.hash === hash) writeSentEntry(network, routeFp, routeBefore);
+              pins.forEach((pin) => markPinRecheck(network, source, pin, 'badSeq'));
+              setResult(row.id, { status: 'skipped', message: errorText('pinBadSeqAccount') });
             } else if (pinned && wroteOwn && isBadSeqError(err)) {
               // Das Netz lehnt die gespeicherte Sequence ab: Sie ist inzwischen verbraucht,
               // vermutlich von der frueheren Transaktion. Nicht erneut versuchen, sondern als
               // moeglicherweise gesendet fuehren und nach den frueheren Hashes suchen.
               const back = earlierAsAmbiguous();
               setResult(row.id, { ...back, status: 'maybeSent', message: errorText('badSeqMaybeSent') });
+              // Andere Pins desselben Kontos (andere Eintraege) ebenfalls erneut pruefen.
+              pins.forEach((pin) => markPinRecheck(network, source, pin, 'badSeq'));
               const foundEarlier = await findAnyTransaction({ server, hashes: prevHashes });
               if (foundEarlier.result === 'success') {
                 writeOwn(hash, { hash: foundEarlier.hash, at: earlier.at, status: 'success', maxTime: earlier.maxTime, seq: earlier.seq, source: earlier.source });
@@ -971,6 +910,8 @@ export default function BatchPaymentDialog({ onClose, onNetworkChangeClose }) {
               if (wroteOwn) {
                 if (readSentEntry(network, item.fp)?.hash === hash) writeSentEntry(network, item.fp, before);
                 if (routeFp && readSentEntry(network, routeFp)?.hash === hash) writeSentEntry(network, routeFp, routeBefore);
+                // Im Ledger fehlgeschlagen: Sequence verbraucht, Pins mit ihr sind erledigt.
+                if (err instanceof SubmittedTransactionFailedError) releasePins(network, source, seq);
               }
               setResult(row.id, { status: 'failed', hash: err?.hash || '', message: describeSubmitError(err) || errorText('sendFailed') });
             }
@@ -1188,6 +1129,20 @@ export default function BatchPaymentDialog({ onClose, onNetworkChangeClose }) {
 
         {(phase === 'review' || phase === 'sending') && review && (
           <>
+            {phase === 'review' && (review.unreadableCount > 0 || unreadableCheck?.state === 'released') && (
+              <div className={`${AMBER_BOX_CLS} space-y-1`} role="status" data-testid="batch-unreadable-banner">
+                <div>{review.unreadableCount > 0 ? t('batchPayment:unreadableLog.blocked') : t('batchPayment:unreadableLog.released')}</div>
+                {unreadableCheck?.state === 'pending' && unreadableCheck.clearAt && (
+                  <div className="text-xs">{t('batchPayment:ambiguous.stillPending', { time: formatClearTime(unreadableCheck.clearAt) })}</div>
+                )}
+                {unreadableCheck?.state === 'unknown' && <div className="text-xs">{t('batchPayment:ambiguous.unreachable')}</div>}
+                {review.unreadableCount > 0 && (
+                  <button type="button" className={smallBtnCls} onClick={checkUnreadable} disabled={unreadableCheck?.state === 'checking'} data-testid="batch-unreadable-check">
+                    {unreadableCheck?.state === 'checking' ? t('batchPayment:actions.checkingStatus') : t('batchPayment:actions.checkStatusNow')}
+                  </button>
+                )}
+              </div>
+            )}
             <div className="space-y-2">
               {review.items.map((item) => {
                 const res = results[item.row.id];
