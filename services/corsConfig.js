@@ -24,9 +24,16 @@ const FIXED_APP_ORIGINS = Object.freeze([
 const ORIGIN_RE = /^(https?):\/\/([^/?#@\s]+)(?:[/?#].*)?$/i;
 const HOST_RE = /^(?:[a-z0-9-]+(?:\.[a-z0-9-]+)*|\[[0-9a-f:.]+\])$/;
 
+// G3-1: Trim wie PHP trim(): nur Leerzeichen, \t, \n, \r, NUL und \v. String.trim()
+// entfernt zusaetzlich NBSP, BOM und weitere Unicode-Leerzeichen; ein PROD_ORIGIN mit
+// BOM wurde so in Node akzeptiert und in PHP ignoriert. Gleiche Zeichenmenge in api/cors.php.
+function trimAscii(value) {
+  return value.replace(/^[ \t\n\r\0\x0B]+|[ \t\n\r\0\x0B]+$/g, '');
+}
+
 function normalizeOrigin(value) {
   if (typeof value !== 'string') return null;
-  const m = ORIGIN_RE.exec(value.trim());
+  const m = ORIGIN_RE.exec(trimAscii(value));
   if (!m) return null;
   const scheme = m[1].toLowerCase();
   const authority = m[2].toLowerCase();
@@ -50,7 +57,7 @@ function buildAllowedOrigins(env = process.env, log = console.error) {
   const origins = new Set(FIXED_APP_ORIGINS);
   const addFromEnv = (name) => {
     const raw = env[name];
-    if (raw === undefined || String(raw).trim() === '') return;
+    if (raw === undefined || trimAscii(String(raw)) === '') return;
     const origin = normalizeOrigin(String(raw));
     if (origin) {
       origins.add(origin);
@@ -80,15 +87,25 @@ function createCorsMiddleware({ methods, headers, credentials = false, allowedOr
   const methodsHeader = methods.join(',');
   const headersHeader = headers.join(', ');
   return function corsMiddleware(req, res, next) {
+    // Mehrere CORS-Middlewares stehen hintereinander (Pfad-Gruppe, dann globaler
+    // Fallback). Die erste, die einen Request behandelt, gilt: Die spaetere darf
+    // weder Methods noch Headers (z. B. x-job-token) mit ihren engeren Werten
+    // ueberschreiben. Wie PHP, wo jeder Endpunkt die Header genau einmal setzt.
+    const locals = res.locals || (res.locals = {});
+    if (locals.skmCorsHandled) return next();
+    locals.skmCorsHandled = true;
+    // Die Antwort haengt von Origin ab (erlaubt, abgewiesen, ohne): Caches muessen
+    // sie je Origin getrennt halten, auch die 403 und Antworten ohne Origin.
+    res.header('Vary', 'Origin');
     const origin = req.headers.origin;
     if (origin !== undefined) {
       if (!allowedOrigins.has(origin)) {
         res.removeHeader('Access-Control-Allow-Origin');
+        res.header('Cache-Control', 'no-store');
         return res.status(403).json({ ok: false, error: 'forbidden_origin' });
       }
       res.header('Access-Control-Allow-Origin', origin);
       if (credentials) res.header('Access-Control-Allow-Credentials', 'true');
-      res.header('Vary', 'Origin');
     }
     res.header('Access-Control-Allow-Headers', headersHeader);
     res.header('Access-Control-Allow-Methods', methodsHeader);

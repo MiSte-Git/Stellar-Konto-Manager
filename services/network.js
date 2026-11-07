@@ -6,7 +6,40 @@
 // doesn't depend on anything the client sends.
 function isLoopbackAddress(remoteAddress) {
   const addr = String(remoteAddress || '').replace(/^::ffff:/, '');
-  return addr === '::1' || addr === '127.0.0.1' || addr.startsWith('127.');
+  return addr === '::1' || /^127\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(addr);
 }
 
-module.exports = { isLoopbackAddress };
+// G2: Hinter einem Reverse Proxy (Vite-Dev-Proxy) ist die Peer-Adresse immer
+// Loopback, auch wenn der Aufrufer von aussen kommt. Deshalb zaehlt ein Request
+// nur dann als lokal, wenn die Peer-Adresse Loopback ist UND jede Adresse in
+// X-Forwarded-For, Forwarded und X-Real-IP ebenfalls Loopback ist. Fail-closed:
+// ein Eintrag, der sich nicht sicher als Loopback-Adresse lesen laesst, lehnt ab.
+// Voraussetzung: der Proxy haengt die Client-Adresse an (Vite: xfwd: true in
+// frontend/vite.config.js). Ein vom Client mitgeschickter Header kann nur
+// weitere Adressen hinzufuegen, nie die echte entfernen.
+function headerValues(value) {
+  if (value === undefined) return [];
+  return (Array.isArray(value) ? value : [value]).map(String);
+}
+
+function forwardedEntriesLoopback(headers) {
+  const entries = [];
+  for (const v of headerValues(headers['x-forwarded-for'])) entries.push(...v.split(','));
+  for (const v of headerValues(headers['x-real-ip'])) entries.push(...v.split(','));
+  for (const v of headerValues(headers.forwarded)) {
+    for (const element of v.split(',')) {
+      const m = /(?:^|;)\s*for\s*=\s*("[^"]*"|[^;]*)/i.exec(element);
+      // Ein Forwarded-Element ohne for= traegt keine Adresse, ist aber ungewoehnlich: ablehnen.
+      if (!m) return false;
+      entries.push(m[1].replace(/^"|"$/g, '').replace(/^\[|\](?::\d+)?$/g, '').replace(/^(\d+\.\d+\.\d+\.\d+):\d+$/, '$1'));
+    }
+  }
+  return entries.every((e) => isLoopbackAddress(e.trim()));
+}
+
+function isLocalRequest(req) {
+  if (!isLoopbackAddress(req?.socket?.remoteAddress)) return false;
+  return forwardedEntriesLoopback(req.headers || {});
+}
+
+module.exports = { isLoopbackAddress, isLocalRequest };

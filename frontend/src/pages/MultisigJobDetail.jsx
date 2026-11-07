@@ -126,6 +126,8 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
   // Fehler beim Zugriff auf den Job (Challenge, Token, Abruf) als lesbarer Text.
   const accessErrorText = useCallback((e) => {
     const code = String(e?.message || '');
+    // Horizon war nicht erreichbar: sagt nichts darueber, ob das Konto Signer ist (R2).
+    if (e?.status === 503 || code === 'horizon_unavailable') return t('multisig:detail.access.horizonUnavailable', 'Das Stellar-Netz (Horizon) ist gerade nicht erreichbar. Ob dieses Konto Signer ist, lässt sich im Moment nicht prüfen. Bitte später erneut versuchen.');
     if (e?.status === 403 || code === 'forbidden') return t('multisig:detail.notASigner', 'Dieses Konto ist kein aktiver Signer dieses Auftrags.');
     if (e?.status === 429 || code === 'too_many_requests') {
       return e?.retryAfter > 0

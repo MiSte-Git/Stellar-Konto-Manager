@@ -66,7 +66,13 @@ function jsonBody(): array {
     $raw = file_get_contents('php://input');
     if (!$raw) return [];
     $data = json_decode($raw, true);
-    return is_array($data) ? $data : [];
+    // G5: kaputtes JSON (oder Skalar statt Objekt) ergibt 400 invalid_json, ohne den Body
+    // zu wiederholen. Wie Node (Fehlerbehandlung nach express.json) und api/bugreport.php.
+    if (!is_array($data)) {
+        sendError('invalid_json', null, 400);
+        exit;
+    }
+    return $data;
 }
 
 function sendJson($data, int $status = 200): void {
@@ -191,10 +197,20 @@ function normalizeNetwork(?string $net): ?string {
     return skm_normalize_network($net);
 }
 
+// R1: Der Guzzle-Client des SDK hat standardmaessig keinen Timeout; ein haengendes Horizon
+// blockiert die Anfrage dann bis zum PHP-Limit. Gleiche Grenze wie Node (10 s).
+const HORIZON_LOAD_TIMEOUT_SECONDS = 10;
+
 function horizonClient(string $net): StellarSDK {
-    return $net === 'public'
+    $sdk = $net === 'public'
         ? StellarSDK::getPublicNetInstance()
         : StellarSDK::getTestNetInstance();
+    $sdk->setHttpClient(new \GuzzleHttp\Client([
+        'base_uri' => skm_horizon_url($net === 'public' ? 'public' : 'testnet'),
+        'connect_timeout' => 5,
+        'timeout' => HORIZON_LOAD_TIMEOUT_SECONDS,
+    ]));
+    return $sdk;
 }
 
 function networkObj(string $net): Network {
@@ -307,8 +323,17 @@ function fetchAccountSigners(string $accountId, string $net): array {
         // at least the master key as a signer). Callers that would destroy
         // data on an empty list (the merge route's signature filtering) must
         // treat this as "unknown", never as "no signers".
-        return ['ok' => false, 'signers' => [], 'thresholds' => ['low' => 0, 'med' => 0, 'high' => 0], 'sequence' => null];
+        // R2: notFound = Horizon kennt das Konto nicht (404), alles andere ist "nicht erreichbar".
+        $notFound = $e instanceof \Soneso\StellarSDK\Exceptions\HorizonRequestException && $e->getStatusCode() === 404;
+        return ['ok' => false, 'signers' => [], 'thresholds' => ['low' => 0, 'med' => 0, 'high' => 0], 'sequence' => null, 'notFound' => $notFound];
     }
+}
+
+// R2: Eine fehlgeschlagene Abfrage, die nicht "Konto unbekannt" heisst, sagt nichts ueber die
+// Signer. Token, Ablehnen und Loeschen antworten dann 503 horizon_unavailable statt 403
+// forbidden ("kein Signer"). Gleiche Regel wie sendSignerLookupFailed in server.js.
+function signerLookupUnavailable(array $meta): bool {
+    return ($meta['ok'] ?? true) === false && !($meta['notFound'] ?? false);
 }
 
 function signersCacheFilePath(): string {
@@ -546,7 +571,7 @@ if ($method === 'POST' && $path === '/api/multisig/jobs') {
         return sendJson($job);
     } catch (\Throwable $e) {
         error_log('[multisig] jobs.create failed: ' . $e->getMessage());
-        return sendError('server_error', null, 500);
+        return sendError('multisig.jobs.save_failed', null, 500);
     }
 }
 
@@ -711,6 +736,7 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/token'
 
     $net = $job['network'] ?? 'public';
     $meta = fetchAccountSignersCached($job['accountId'] ?? '', $net);
+    if (signerLookupUnavailable($meta)) return sendJson(['ok' => false, 'error' => 'horizon_unavailable'], 503);
     $isActiveSigner = false;
     foreach ($meta['signers'] ?? [] as $s) {
         if (($s['publicKey'] ?? '') === $signerPk && (int)($s['weight'] ?? 0) > 0) {
@@ -751,6 +777,7 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/declin
     }
 
     $meta = fetchAccountSignersCached($job['accountId'] ?? '', $job['network'] ?? 'public');
+    if (signerLookupUnavailable($meta)) return sendJson(['ok' => false, 'error' => 'horizon_unavailable'], 503);
     $liveSigners = $meta['signers'] ?? [];
     $isActiveSigner = false;
     foreach ($liveSigners as $s) {
@@ -799,7 +826,7 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/declin
         });
     } catch (\Throwable $e) {
         error_log('[multisig] jobs.decline failed: ' . $e->getMessage());
-        return sendError('server_error', null, 500);
+        return sendError('multisig.jobs.decline_failed', null, 500);
     }
     if ($conflict !== null) return sendJson(['ok' => false, 'error' => $conflict], 409);
     if ($result === null) return sendJson(['ok' => false, 'error' => 'not_found'], 404);
@@ -838,6 +865,7 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/delete
     }
 
     $meta = fetchAccountSignersCached($job['accountId'] ?? '', $job['network'] ?? 'public');
+    if (signerLookupUnavailable($meta)) return sendJson(['ok' => false, 'error' => 'horizon_unavailable'], 503);
     $isActiveSigner = false;
     foreach ($meta['signers'] ?? [] as $s) {
         if (($s['publicKey'] ?? '') === $signerPk && (int)($s['weight'] ?? 0) > 0) {
@@ -867,7 +895,7 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/delete
         });
     } catch (\Throwable $e) {
         error_log('[multisig] jobs.delete_one failed: ' . $e->getMessage());
-        return sendError('server_error', null, 500);
+        return sendError('multisig.jobs.delete_failed', null, 500);
     }
     if ($conflict !== null) return sendJson(['ok' => false, 'error' => 'not_final', 'status' => $conflict], 409);
     if (!$deleted) return sendJson(['ok' => false, 'error' => 'not_found'], 404);
@@ -1031,7 +1059,7 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/merge-
         return sendJson($resultRow);
     } catch (\Throwable $e) {
         error_log('[multisig] jobs.merge failed: ' . $e->getMessage());
-        return sendError('server_error', null, 500);
+        return sendError('multisig.jobs.merge_failed', null, 500);
     }
 }
 

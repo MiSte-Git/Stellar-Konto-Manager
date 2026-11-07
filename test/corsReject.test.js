@@ -87,6 +87,9 @@ const assertForbidden = (res, label) => {
   assert.deepEqual(res.body, { ok: false, error: 'forbidden_origin' }, label);
   assert.equal(res.headers.get('access-control-allow-origin'), null, label);
   assert.equal(res.headers.get('access-control-allow-credentials'), null, label);
+  // G3-3: 403 nie cachen, Antwort haengt von Origin ab.
+  assert.equal(res.headers.get('cache-control'), 'no-store', label);
+  assert.equal(res.headers.get('vary'), 'Origin', label);
 };
 
 test('fremde Origin: POST mit text/plain auf Bugreport-Anlegen ergibt 403, kein Report angelegt', async () => {
@@ -211,4 +214,18 @@ test('https://skm.steei.de ist erlaubt', async () => {
   const res = await send('OPTIONS', `${BASE}/bugreport`, { origin: 'https://skm.steei.de' });
   assert.equal(res.status, 200);
   assert.equal(res.headers.get('access-control-allow-origin'), 'https://skm.steei.de');
+});
+
+test('G3-3: Vary: Origin auf erlaubten Antworten und auf Antworten ohne Origin-Header', async () => {
+  const allowed = await send('OPTIONS', `${BASE}/bugreport`);
+  assert.equal(allowed.headers.get('vary'), 'Origin');
+  const noOrigin = await send('GET', `${BASE}/admin/check`, { origin: null });
+  assert.equal(noOrigin.headers.get('vary'), 'Origin');
+  assert.equal(noOrigin.headers.get('access-control-allow-origin'), null);
+});
+
+test('Fallback-CORS ueberschreibt Allow-Headers der Multisig-Gruppe nicht (x-job-token bleibt)', async () => {
+  const res = await send('GET', `${BASE}/multisig/jobs/unbekannt`);
+  assert.match(res.headers.get('access-control-allow-headers'), /x-job-token/);
+  assert.equal(res.headers.get('vary'), 'Origin');
 });

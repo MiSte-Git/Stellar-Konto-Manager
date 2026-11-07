@@ -61,6 +61,12 @@ $cases = [
     ['https://skm.steei.de:', null],
     ['null', null],
     ['', null],
+    // G3-1: nur ASCII-Trim; NBSP und BOM gehoeren nicht zur Origin (gleiche Faelle wie in Node).
+    ["\t https://skm.steei.de \n\0\x0B", 'https://skm.steei.de'],
+    ["\u{00A0}https://skm.steei.de", null],
+    ["https://skm.steei.de\u{00A0}", null],
+    ["\u{FEFF}https://skm.steei.de", null],
+    ["https://skm.steei.de\u{2003}", null],
 ];
 foreach ($cases as [$input, $expected]) {
     check('cors_normalize_origin(' . json_encode($input, JSON_UNESCAPED_UNICODE) . ') = ' . json_encode($expected), cors_normalize_origin($input) === $expected);
@@ -89,6 +95,12 @@ check('ungueltiges PROD_ORIGIN wird ignoriert', $list === ['http://localhost:517
 check('ungueltiges PROD_ORIGIN wird einmal (je Request) geloggt', substr_count($logged, 'PROD_ORIGIN') === 1);
 putenv('PROD_ORIGIN=   ');
 check('leeres PROD_ORIGIN wird still ignoriert', count(cors_allowed_origins()) === 3);
+$prevLog2 = ini_set('error_log', '/dev/null');
+foreach (["\u{00A0}https://admin.example.test", "\u{FEFF}https://admin.example.test", "https://admin.example.test\u{00A0}"] as $raw) {
+    putenv('PROD_ORIGIN=' . $raw);
+    check('G3-1: PROD_ORIGIN mit NBSP oder BOM wird ignoriert: ' . json_encode($raw), count(cors_allowed_origins()) === 3);
+}
+ini_set('error_log', (string)$prevLog2);
 putenv('PROD_ORIGIN');
 
 // --- HTTP gegen eine Kopie von api/ ------------------------------------------------
@@ -128,7 +140,10 @@ function is_forbidden_origin(array $res): bool {
     return $res['status'] === 403
         && $res['body'] === ['ok' => false, 'error' => 'forbidden_origin']
         && !isset($res['headers']['access-control-allow-origin'])
-        && !isset($res['headers']['access-control-allow-credentials']);
+        && !isset($res['headers']['access-control-allow-credentials'])
+        // G3-3: 403 nie cachen, Antwort haengt von Origin ab.
+        && ($res['headers']['cache-control'] ?? '') === 'no-store'
+        && ($res['headers']['vary'] ?? '') === 'Origin';
 }
 
 $apiDir = sys_get_temp_dir() . '/skm-g3-' . bin2hex(random_bytes(4));
@@ -264,6 +279,11 @@ try {
     $res = send('OPTIONS', BASE . '/bugreport.php', PROD_ORIGIN);
     check('PROD_ORIGIN mit Grossbuchstaben, Pfad und Slash passt normalisiert', $res['status'] === 204 && ($res['headers']['access-control-allow-origin'] ?? '') === PROD_ORIGIN);
     check('der rohe PROD_ORIGIN-Wert ist keine Browser-Origin und passt nicht', is_forbidden_origin(send('OPTIONS', BASE . '/bugreport.php', PROD_ORIGIN_RAW)));
+    $res = send('OPTIONS', BASE . '/bugreport.php', 'https://skm.steei.de');
+    // G3-3: Vary: Origin auf erlaubten Antworten und auf Antworten ohne Origin-Header.
+    check('G3-3: Vary: Origin bei erlaubter Origin', ($res['headers']['vary'] ?? '') === 'Origin');
+    $res = send('GET', BASE . '/admin/check', null);
+    check('G3-3: Vary: Origin auch ohne Origin-Header, ohne Allow-Origin', ($res['headers']['vary'] ?? '') === 'Origin' && !isset($res['headers']['access-control-allow-origin']));
     $res = send('OPTIONS', BASE . '/bugreport.php', 'https://skm.steei.de');
     check('https://skm.steei.de ist erlaubt', $res['status'] === 204 && ($res['headers']['access-control-allow-origin'] ?? '') === 'https://skm.steei.de');
 } finally {

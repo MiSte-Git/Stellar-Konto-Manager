@@ -98,6 +98,13 @@ Ein Job ist eine unsignierte oder teilsignierte Transaktion, die mehrere Signer 
   nicht: Es hat auch, wer den Job angelegt hat, und es bleibt gültig, wenn ein Signer später entfernt wird
   (Review Runde 2, Befund C1). Das Löschen aller Jobs eines Netzes bleibt dem Admin-Endpunkt mit
   `MULTISIG_ADMIN_TOKEN` vorbehalten.
+- **Signer-Prüfung bei Horizon-Ausfall:** Token, Ablehnen und Löschen prüfen die Signer live. Ist Horizon nicht
+  erreichbar (Netz, Timeout 10 s, 5xx), antworten beide Backends 503 `horizon_unavailable`, nicht 403: Der Ausfall sagt
+  nichts über die Signer, und die UI soll nicht „kein Signer“ melden. Ein Horizon-404 (Konto unbekannt) bleibt 403
+  `forbidden`. Der Timeout verhindert, dass ein hängendes Horizon den Job-Lock (Node) belegt.
+- **Speicherfehler und kaputtes JSON:** Schlägt das Schreiben der Jobdatei fehl, melden Anlegen, Merge, Ablehnen und
+  Löschen in beiden Backends 500 und nie Erfolg (Node nimmt den Job dann auch wieder aus dem Speicher). Kaputtes JSON im
+  Body ergibt 400 `invalid_json` ohne Stacktrace und ohne Body-Inhalt.
 - **Nebenläufigkeit:** Node serialisiert Merge, Ablehnen und Löschen je Job (`services/multisigJobLock.js`), PHP
   arbeitet unter Dateilock. Endzustände werden im Lock geprüft.
 - **Anzeige vor dem Signieren** (`frontend/src/utils/multisig/describeTransaction.js`,
@@ -114,7 +121,7 @@ Ein Job ist eine unsignierte oder teilsignierte Transaktion, die mehrere Signer 
   Backends sofort mit 403 `forbidden_origin`, auch beim Preflight, bevor Body-Parser, Session oder Handler laufen.
   Vorher fehlte nur `Access-Control-Allow-Origin`; einfache Cross-Origin-Requests (Formular, `text/plain`) liefen
   bis in den Handler, und PHP las ihren Body als JSON. Ohne `Origin`-Header bleibt alles erlaubt (gleiche Origin,
-  Skripte, Monitoring), denn ein Browser sendet bei Cross-Origin-Requests und bei jedem POST immer eine Origin.
+  Skripte, Monitoring), denn ein Browser sendet bei Cross-Origin-Requests und bei jedem POST immer eine Origin. Die 403 hat `Cache-Control: no-store`, `Vary: Origin` steht auf jeder CORS-Antwort. Das Trimmen von `PROD_ORIGIN` nutzt in beiden Backends dieselben Zeichen (nur ASCII-Whitespace und NUL), damit ein Wert mit NBSP oder BOM nicht in Node gilt und in PHP nicht.
   Allowlist in beiden Backends gleich (`localhost:5173`, `127.0.0.1:5173`, `https://skm.steei.de`, `PROD_ORIGIN`
   normalisiert auf Schema, Host, Port); nur Node nimmt zusätzlich die Origin aus `PROD_API_URL` auf. Kein
   PHP-Endpunkt ist für fremde Origins gedacht, auch `federation.php` nicht (löst nur für das eigene Frontend auf,
@@ -165,7 +172,11 @@ Diese Punkte wurden in früheren Reviews falsch gemeldet. Bitte vor einer Meldun
 - **„Token- und Ablehnungs-Signatur sind austauschbar.“** Nein, siehe Zweckbindung. Bitte per Probe prüfen, nicht aus
   Funktionsnamen schließen.
 - **„Command Injection in composeMail.“** `spawn` ohne Shell mit festen Argumenten. composeMail ist nur im lokalen
-  Node-Backend vorhanden.
+  Node-Backend vorhanden. Der Endpunkt gilt nur für Aufrufe von derselben Maschine: Peer-Adresse und alle Adressen in
+  `X-Forwarded-For`, `Forwarded` und `X-Real-IP` müssen Loopback sein (`services/network.js`), im Zweifel 403. Hinter dem
+  Vite-Proxy ist die Peer-Adresse immer Loopback; deshalb hängt der Proxy die Client-Adresse an (`xfwd: true`). Ein
+  anderer Reverse Proxy, der keine Forwarded-Header setzt, würde den Schutz umgehen: composeMail nie hinter einen
+  solchen Proxy stellen oder mit `ENABLE_COMPOSE_MAIL=0` abschalten.
 - **„Job-Detail zeigt nicht alles, was signiert wird.“** Siehe `describeTransaction.js` und `TransactionFacts.jsx`.
 - **„PHP fehlt Prüfung X.“** Viele Prüfungen liegen in eigenen Dateien (`multisigDecline.php`,
   `multisigLifecycle.php`, `multisigJobsGuard.php`, `rateLimit.php`, `txSignatures.php`). Erst dort suchen.

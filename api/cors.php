@@ -26,6 +26,8 @@ apply_api_security_headers();
  * zurueck. Gleiche Regeln wie normalizeOrigin() in services/corsConfig.js.
  */
 function cors_normalize_origin(string $value): ?string {
+    // G3-1: trim() entfernt nur Leerzeichen, \t, \n, \r, NUL und \v; Node nutzt dieselbe
+    // Zeichenmenge (trimAscii in services/corsConfig.js), nicht String.trim() mit NBSP und BOM.
     if (!preg_match('~^(https?)://([^/?#@\s]+)(?:[/?#].*)?$~is', trim($value), $m)) return null;
     $scheme = strtolower($m[1]);
     $authority = strtolower($m[2]);
@@ -96,6 +98,7 @@ function cors_reject_foreign_origin(): void {
     http_response_code(403);
     header('Content-Type: application/json; charset=utf-8');
     header('Cache-Control: no-store');
+    header('Vary: Origin');
     echo json_encode(['ok' => false, 'error' => 'forbidden_origin']);
     exit;
 }
@@ -109,11 +112,12 @@ function cors_reject_foreign_origin(): void {
  */
 function apply_cors_headers(array $allowedMethods, array $allowedHeaders, bool $withCredentials = false): void {
     cors_reject_foreign_origin();
+    // Die Antwort haengt von Origin ab: Vary immer setzen, auch ohne Origin-Header.
+    header('Vary: Origin');
     $origin = (string)($_SERVER['HTTP_ORIGIN'] ?? '');
     if ($origin !== '') {
         header('Access-Control-Allow-Origin: ' . $origin);
         if ($withCredentials) header('Access-Control-Allow-Credentials: true');
-        header('Vary: Origin');
     }
     header('Access-Control-Allow-Methods: ' . implode(', ', $allowedMethods));
     header('Access-Control-Allow-Headers: ' . implode(', ', $allowedHeaders));

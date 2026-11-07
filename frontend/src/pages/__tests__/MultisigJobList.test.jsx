@@ -190,6 +190,19 @@ describe('MultisigJobList: Filter', () => {
       expect(hoisted.challenge).toHaveBeenCalledWith('eigen-abgelaufen', ME);
       expect(hoisted.token).not.toHaveBeenCalled();
     });
+    it('R2: meldet bei nicht erreichbarem Horizon (503) "Horizon nicht erreichbar" statt "kein Signer"', async () => {
+      hoisted.sessionSecret.mockResolvedValue(ME_SECRET);
+      hoisted.del.mockImplementation(async () => { throw Object.assign(new Error('horizon_unavailable'), { status: 503 }); });
+      renderList();
+      await waitFor(() => expect(screen.getAllByTestId('job-row')).toHaveLength(4));
+      fireEvent.click(screen.getByRole('checkbox', { name: 'Alle abgeschlossenen auswählen' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Auswahl löschen (3)' }));
+      await screen.findByTestId('job-delete-panel');
+      fireEvent.click(screen.getByRole('button', { name: 'Löschen' }));
+      const result = await screen.findByTestId('job-delete-result');
+      expect(result).toHaveTextContent('Horizon nicht erreichbar');
+      expect(result).not.toHaveTextContent('kein Signer');
+    });
     it('bricht bei 429 ab, meldet die nicht versuchten Jobs und loest bei Doppelklick nur einen Lauf aus', async () => {
       hoisted.sessionSecret.mockResolvedValue(ME_SECRET);
       hoisted.del.mockImplementationOnce(async () => ({ ok: true }));

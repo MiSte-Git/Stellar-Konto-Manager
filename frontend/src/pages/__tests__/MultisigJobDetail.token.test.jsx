@@ -203,6 +203,16 @@ describe('MultisigJobDetail: Zugriffstoken', () => {
       expect(hoisted.getJob).not.toHaveBeenCalled();
     });
 
+    it('R2: nennt bei nicht erreichbarem Horizon (503) nicht "kein Signer", sondern den Netzfehler', async () => {
+      hoisted.challenge.mockRejectedValue(Object.assign(new Error('horizon_unavailable'), { status: 503 }));
+      renderDetail({ jobId: 'd-reload', currentPublicKey: SIGNER });
+      await screen.findByTestId('job-unlock');
+      fireEvent.change(unlockInput(), { target: { value: SECRET } });
+      fireEvent.click(openButton());
+      expect(await screen.findByText(/Das Stellar-Netz \(Horizon\) ist gerade nicht erreichbar/)).toBeInTheDocument();
+      expect(screen.queryByText('Dieses Konto ist kein aktiver Signer dieses Auftrags.')).toBeNull();
+    });
+
     it('verlangt ohne Konto zuerst das Laden des Signer-Kontos', async () => {
       renderDetail({ jobId: 'd-reload', currentPublicKey: '' });
       expect(await screen.findByText(/Bitte zuerst das Konto laden/)).toBeInTheDocument();

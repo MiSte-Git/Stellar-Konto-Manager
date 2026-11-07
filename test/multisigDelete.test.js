@@ -63,7 +63,6 @@ test.before(async () => {
     baseJob('offen', 'pending_signatures', 'tok-offen'),
     baseJob('abgelaufen', 'expired', 'tok-abgelaufen'),
     baseJob('abgelehnt', 'rejected', 'tok-abgelehnt'),
-    baseJob('gesendet', 'submitted_success', 'tok-gesendet'),
     baseJob('fremd', 'expired', 'tok-fremd', unknownAccount.publicKey()),
   ] }));
   fs.writeFileSync(accountsPath, JSON.stringify(liveAccount([[owner, 1], [b, 1], [c, 1], [zero, 0]])));
@@ -97,7 +96,7 @@ const signChallenge = (kp, challenge, purpose) => {
   const data = purpose === null ? nonce : Buffer.concat([Buffer.from(`skm:${purpose}:`), nonce]);
   return Buffer.from(kp.sign(data)).toString('base64');
 };
-// Budget: /challenge erlaubt 20 Anfragen je Minute und IP (C2), diese Datei braucht 17.
+// Budget: /challenge erlaubt 20 Anfragen je Minute und IP (C2), diese Datei braucht 18.
 // Neue Faelle nur mit Blick darauf ergaenzen. Challenge fuer signer holen, mit signWith (Standard: signer) und Zweck signieren, an action schicken.
 const withChallenge = async (jobId, signer, action, purpose, signWith = signer) => {
   const { body: ch } = await post(`${BASE}/${jobId}/challenge`, { signer: signer.publicKey() });
@@ -175,16 +174,17 @@ test('delete-Signatur gilt nicht fuer Token und Ablehnen', async () => {
   assert.equal(res.body.error, 'invalid_signature');
 });
 
-test('Loeschen: Nicht-Signer, Signer mit Gewicht 0 und Konto ohne Horizon-Antwort -> 403 forbidden', async () => {
+test('Loeschen: Nicht-Signer und Signer mit Gewicht 0 -> 403 forbidden; Horizon nicht erreichbar -> 503 horizon_unavailable', async () => {
   for (const kp of [stranger, zero]) {
     const res = await withChallenge('abgelaufen', kp, 'delete', 'delete');
     assert.equal(res.status, 403);
     assert.equal(res.body.error, 'forbidden');
   }
-  // Konto, das der Horizon-Mock nicht kennt: loadAccount wirft -> 403.
+  // Konto, das der Horizon-Mock nicht kennt: loadAccount wirft ohne Status (Horizon nicht
+  // erreichbar). Das sagt nichts ueber die Signer: 503 statt 403 "kein Signer" (R2).
   const res = await withChallenge('fremd', b, 'delete', 'delete');
-  assert.equal(res.status, 403);
-  assert.equal(res.body.error, 'forbidden');
+  assert.equal(res.status, 503);
+  assert.equal(res.body.error, 'horizon_unavailable');
   assert.ok(storedIds().includes('abgelaufen'));
   assert.ok(storedIds().includes('fremd'));
 });

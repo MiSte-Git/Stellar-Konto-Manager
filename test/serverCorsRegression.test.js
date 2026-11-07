@@ -31,9 +31,9 @@ test('server.js applies an allowlist-based fallback CORS middleware before expre
   assert.ok(fallbackIndex < jsonIndex, 'the global fallback CORS middleware must run before express.json()/routes');
 });
 
-test('composeMail route checks isLoopbackAddress before doing anything else', () => {
+test('composeMail route checks isLocalRequest before doing anything else', () => {
   const routeIndex = serverSource.indexOf("app.post('/api/composeMail'");
-  const checkIndex = serverSource.indexOf('isLoopbackAddress(req.socket');
+  const checkIndex = serverSource.indexOf('isLocalRequest(req)');
   assert.ok(routeIndex > -1 && checkIndex > -1, 'sanity: both the route and the check exist');
   assert.ok(checkIndex > routeIndex, 'the loopback check must live inside the composeMail handler');
   // Nothing between the handler's try{ and the loopback check should read

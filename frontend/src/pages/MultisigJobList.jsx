@@ -177,6 +177,8 @@ function MultisigJobList({ onBack, publicKey, onOpenDetail, refreshKey = 0 }) {
         }
         const reason = e?.status === 403
           ? t('multisig:list.deleteNotSigner', 'kein Signer')
+          : e?.status === 503
+            ? t('multisig:list.deleteHorizonUnavailable', 'Horizon nicht erreichbar')
           : e?.message === 'not_final'
             ? t('multisig:list.deleteNotFinal', 'nicht abgeschlossen')
             : String(e?.message || 'delete_failed');

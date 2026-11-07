@@ -34,7 +34,9 @@ function json_body(): array {
     $raw = file_get_contents('php://input');
     if (!$raw) return [];
     $data = json_decode($raw, true);
-    return is_array($data) ? $data : [];
+    // G5: kaputtes JSON ergibt 400 invalid_json, wie Node und api/bugreport.php.
+    if (!is_array($data)) json_out(['ok' => false, 'error' => 'invalid_json'], 400);
+    return $data;
 }
 
 // Brute-force protection for POST /api/admin/login (per-IP lockout, file-backed

@@ -201,7 +201,7 @@ try {
     $res = withChallenge('abgelaufen', $zero, 'delete', 'skm:delete:');
     check('Signer mit Gewicht 0 -> 403 forbidden', $res['status'] === 403 && ($res['body']['error'] ?? '') === 'forbidden');
     $res = withChallenge('fremd', $b, 'delete', 'skm:delete:');
-    check('Horizon-Fehler beim Job-Konto -> 403 forbidden', $res['status'] === 403 && ($res['body']['error'] ?? '') === 'forbidden');
+    check('Horizon nicht erreichbar beim Job-Konto -> 503 horizon_unavailable statt 403 (R2)', $res['status'] === 503 && ($res['body']['error'] ?? '') === 'horizon_unavailable');
     check('Jobs nach 403 noch da', in_array('abgelaufen', $storedIds(), true) && in_array('fremd', $storedIds(), true));
 
     // Endzustand

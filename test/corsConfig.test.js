@@ -104,6 +104,12 @@ const NORMALIZE_CASES = [
   ['https://skm.steei.de:', null],
   ['null', null],
   ['', null],
+  // G3-1: nur ASCII-Trim wie PHP trim(); NBSP und BOM gehoeren nicht zur Origin.
+  ["\t https://skm.steei.de \n\0\x0B", 'https://skm.steei.de'],
+  ['\u00a0https://skm.steei.de', null],
+  ['https://skm.steei.de\u00a0', null],
+  ['\ufeffhttps://skm.steei.de', null],
+  ['https://skm.steei.de\u2003', null],
 ];
 
 test('normalizeOrigin: wie der Browser serialisiert, Unsinn ergibt null (G4-2)', () => {
@@ -155,4 +161,42 @@ test('createCorsMiddleware: erlaubte Origin aus einer eigenen Liste setzt CORS-H
   assert.equal(getStatus(), 200);
   assert.equal(headersSet['Access-Control-Allow-Origin'], 'https://admin.example.test');
   assert.equal(headersSet['Access-Control-Allow-Credentials'], 'true');
+});
+
+test('G3-1: PROD_ORIGIN mit NBSP oder BOM wird ignoriert und geloggt, wie in PHP', () => {
+  for (const raw of ['\u00a0https://admin.example.test', '\ufeffhttps://admin.example.test', 'https://admin.example.test\u00a0']) {
+    const logs = [];
+    const set = buildAllowedOrigins({ PROD_ORIGIN: raw }, (m) => logs.push(m));
+    assert.equal(set.size, 3, JSON.stringify(raw));
+    assert.equal(logs.length, 1, JSON.stringify(raw));
+  }
+  // Nur NBSP ist nicht leer und damit ungueltig (PHP trim() entfernt es nicht).
+  const logs = [];
+  buildAllowedOrigins({ PROD_ORIGIN: '\u00a0' }, (m) => logs.push(m));
+  assert.equal(logs.length, 1);
+});
+
+test('G3-3: Vary: Origin steht auf jeder Antwort, die 403 zusaetzlich mit Cache-Control: no-store', () => {
+  const mw = createCorsMiddleware({ methods: ['GET'], headers: ['Content-Type'] });
+  for (const origin of [undefined, 'http://localhost:5173']) {
+    const { req, res, headersSet } = makeReqRes({ origin });
+    mw(req, res, () => {});
+    assert.equal(headersSet['Vary'], 'Origin', String(origin));
+    assert.equal(headersSet['Cache-Control'], undefined, String(origin));
+  }
+  const { req, res, headersSet, getStatus } = makeReqRes({ origin: 'https://evil.example' });
+  mw(req, res, () => {});
+  assert.equal(getStatus(), 403);
+  assert.equal(headersSet['Cache-Control'], 'no-store');
+  assert.equal(headersSet['Vary'], 'Origin');
+});
+
+test('Fallback-CORS ueberschreibt die Header der engeren Pfad-Middleware nicht', () => {
+  const narrow = createCorsMiddleware({ methods: ['GET', 'POST', 'OPTIONS'], headers: ['Content-Type', 'x-job-token'] });
+  const fallback = createCorsMiddleware({ methods: ['GET', 'POST', 'OPTIONS'], headers: ['Content-Type'] });
+  const { req, res, headersSet } = makeReqRes({ origin: 'http://localhost:5173' });
+  let reached = false;
+  narrow(req, res, () => fallback(req, res, () => { reached = true; }));
+  assert.equal(reached, true);
+  assert.equal(headersSet['Access-Control-Allow-Headers'], 'Content-Type, x-job-token');
 });

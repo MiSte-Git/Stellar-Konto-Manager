@@ -28,6 +28,8 @@ function is_json_content_type(?string $contentType): bool {
 function request_guard_reject(int $status, string $error): void {
     http_response_code($status);
     header('Content-Type: application/json; charset=utf-8');
+    header('Cache-Control: no-store');
+    if ($error === 'forbidden_origin') header('Vary: Origin');
     echo json_encode(['ok' => false, 'error' => $error]);
     exit;
 }

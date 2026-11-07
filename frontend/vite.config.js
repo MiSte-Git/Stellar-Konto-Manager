@@ -78,6 +78,9 @@ export default defineConfig(({ mode }) => {
         '/api': {
           target: devProxyTarget,
           changeOrigin: true,
+          // Haengt die Client-Adresse als X-Forwarded-For an. Ohne sie sieht das Backend
+          // jeden Aufruf ueber den Proxy als Loopback (composeMail-Pruefung, G2).
+          xfwd: true,
           secure: !devProxyIsHttps ? false : true,
         },
       },

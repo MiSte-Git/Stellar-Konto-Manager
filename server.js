@@ -18,7 +18,7 @@ const { writeJsonFileLocked } = require('./services/jsonFileStore.js');
 const { createChallenge, consumeChallenge, verifyChallengeSignature } = require('./services/challengeStore.js');
 const { createChallengeLimiter } = require('./services/challengeRateLimit.js');
 const { filterValidSignatures, requiredWeightForOperations, signatureKey, txSourceBaseAccount } = require('./services/txSignatures.js');
-const { isLoopbackAddress } = require('./services/network.js');
+const { isLocalRequest } = require('./services/network.js');
 const stellarNetworks = require('./services/stellarNetworks.js');
 const { computeMultisigLifecycleStatus, extractMaxTimeUnix, mapSubmitResultCodeToLifecycleStatus, isMultisigTimeboundWithinCap, MULTISIG_JOB_MAX_TIMEBOUND_SECONDS } = require('./services/multisigLifecycle.js');
 const { applyDecline, dropDeclinesOfCollected } = require('./services/multisigDecline.js');
@@ -188,7 +188,9 @@ if (composeMailEnabled) {
       // TCP peer address instead lets the endpoint stay unauthenticated (no
       // extra secret to configure for a pure dev convenience feature) while
       // still only being triggerable from the same host.
-      if (!isLoopbackAddress(req.socket?.remoteAddress)) {
+      // G2: hinter dem Vite-Proxy ist die Peer-Adresse immer Loopback; deshalb
+      // zaehlen zusaetzlich die vom Proxy angehaengten Forwarded-Adressen.
+      if (!isLocalRequest(req)) {
         return res.status(403).json({ ok: false, error: 'composeMail.forbidden' });
       }
       const { to, subject = '', body = '' } = req.body || {};
@@ -213,6 +215,21 @@ if (composeMailEnabled) {
         detached: true,
         stdio: 'ignore',
       });
+      // G1: Fehlt das Mailprogramm, meldet spawn das asynchron als error-Event.
+      // Ohne Listener beendet das den ganzen Prozess. Auf spawn oder error warten
+      // und den Fehler als Antwort melden.
+      try {
+        await new Promise((resolve, reject) => {
+          child.once('error', reject);
+          child.once('spawn', resolve);
+        });
+      } catch (spawnError) {
+        console.error('composeMail spawn failed', spawnError?.code || spawnError?.message || spawnError);
+        cleanup();
+        return res.status(500).json({ ok: false, error: 'composeMail.spawnFailed' });
+      }
+      // Spaetere Fehler des Kindprozesses duerfen den Server nie beenden.
+      child.on('error', () => {});
       child.unref();
       cleanup();
       res.json({ ok: true });
@@ -522,8 +539,33 @@ function hasValidJobToken(job, req) {
   return timingSafeEqualStrings(provided, expected);
 }
 
+// R1: Ohne Timeout haelt ein haengendes Horizon den Job-Lock (Ablehnen, Loeschen, Merge)
+// und die Anfrage beliebig lange. Nach HORIZON_LOAD_TIMEOUT_MS gilt die Abfrage als
+// fehlgeschlagen (horizon_timeout). Die Antwort des SDK danach wird verworfen.
+const HORIZON_LOAD_TIMEOUT_MS = Number(process.env.HORIZON_LOAD_TIMEOUT_MS) > 0 ? Number(process.env.HORIZON_LOAD_TIMEOUT_MS) : 10_000;
+
 async function loadAccount(server, accountId) {
-  return server.loadAccount(accountId);
+  let timer;
+  const timeout = new Promise((_, reject) => {
+    timer = setTimeout(() => reject(Object.assign(new Error('horizon_timeout'), { code: 'horizon_timeout' })), HORIZON_LOAD_TIMEOUT_MS);
+  });
+  const load = server.loadAccount(accountId);
+  load.catch(() => {}); // kein unbehandeltes Rejection, falls der Timeout zuerst kommt
+  try {
+    return await Promise.race([load, timeout]);
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+// R2: Horizon antwortet 404 = das Konto gibt es nicht, also ist niemand dessen Signer (403).
+// Jeder andere Fehler (Netz, Timeout, 5xx) sagt nichts ueber die Signer: 503 horizon_unavailable.
+function isAccountNotFound(err) {
+  return err?.response?.status === 404 || err?.name === 'NotFoundError';
+}
+function sendSignerLookupFailed(res, err) {
+  if (isAccountNotFound(err)) return res.status(403).json({ ok: false, error: 'forbidden' });
+  return res.status(503).json({ ok: false, error: 'horizon_unavailable' });
 }
 
 function extractSignerMeta(account) {
@@ -728,11 +770,12 @@ app.post('/api/multisig/jobs', async (req, res) => {
     // marked 'expired' by the guard call above, and the response must
     // reflect that rather than the stale in-memory object from before it ran.
     const responseJob = multisigDb.items.find((j) => j.id === job.id) || job;
-    try {
-      await saveMultisigDb();
-    } catch (saveErr) {
-      console.warn('multisig.jobs.save_failed', saveErr?.message || saveErr);
-      // continue; even if persistence fails, return job to caller
+    // Beim Speichern fehlgeschlagen nie Erfolg melden (wie PHP, dort wirft saveJobs):
+    // saveMultisigDb wirft nicht, sondern gibt false zurueck. Den Job wieder aus dem
+    // Speicher nehmen, damit er nicht in der Liste steht, ohne gespeichert zu sein.
+    if (!(await saveMultisigDb())) {
+      multisigDb.items = multisigDb.items.filter((j) => j.id !== job.id);
+      return res.status(500).json({ ok: false, error: 'multisig.jobs.save_failed' });
     }
     res.json(responseJob);
   } catch (e) {
@@ -870,8 +913,8 @@ app.post('/api/multisig/jobs/:id/token', async (req, res) => {
     try {
       const account = await loadAccount(serverForNet, job.accountId);
       signerMeta = extractSignerMeta(account);
-    } catch {
-      return res.status(403).json({ ok: false, error: 'forbidden' });
+    } catch (loadErr) {
+      return sendSignerLookupFailed(res, loadErr);
     }
     const isActiveSigner = (signerMeta.signers || []).some(
       (s) => s.publicKey === signerPk && Number(s.weight || 0) > 0
@@ -909,8 +952,8 @@ app.post('/api/multisig/jobs/:id/decline', (req, res) => withMultisigJobLock(req
     let signerMeta;
     try {
       signerMeta = extractSignerMeta(await loadAccount(horizonServerForNet(job.network), job.accountId));
-    } catch {
-      return res.status(403).json({ ok: false, error: 'forbidden' });
+    } catch (loadErr) {
+      return sendSignerLookupFailed(res, loadErr);
     }
     const isActiveSigner = (signerMeta.signers || []).some((s) => s.publicKey === signerPk && Number(s.weight || 0) > 0);
     if (!isActiveSigner) return res.status(403).json({ ok: false, error: 'forbidden' });
@@ -970,8 +1013,8 @@ app.post('/api/multisig/jobs/:id/delete', (req, res) => withMultisigJobLock(req.
     let signerMeta;
     try {
       signerMeta = extractSignerMeta(await loadAccount(horizonServerForNet(job.network), job.accountId));
-    } catch {
-      return res.status(403).json({ ok: false, error: 'forbidden' });
+    } catch (loadErr) {
+      return sendSignerLookupFailed(res, loadErr);
     }
     const isActiveSigner = (signerMeta.signers || []).some((s) => s.publicKey === signerPk && Number(s.weight || 0) > 0);
     if (!isActiveSigner) return res.status(403).json({ ok: false, error: 'forbidden' });
@@ -1146,7 +1189,11 @@ app.post('/api/multisig/jobs/:id/merge-signed-xdr', (req, res) => withMultisigJo
     }
 
     multisigDb.items = expireStalePendingJobs(multisigDb.items.map((j) => (j.id === job.id ? updated : j)));
-    await saveMultisigDb();
+    if (!(await saveMultisigDb())) {
+      // Nur diesen Job zuruecksetzen, Aenderungen an anderen Jobs bleiben.
+      multisigDb.items = multisigDb.items.map((j) => (j.id === job.id ? job : j));
+      return res.status(500).json({ ok: false, error: 'multisig.jobs.merge_failed' });
+    }
     res.json(updated);
   } catch (e) {
     console.error('multisig.jobs.merge.failed', e);
@@ -1305,6 +1352,22 @@ app.use('/expert', async (req, res) => {
 // Inbound-Zuordnung entfernt – nicht mehr erforderlich, da E‑Mail optional direkt mitgesendet wird.
 
 // Webhook-Integration entfernt: Postmark-Inbound wird nicht mehr benötigt.
+
+// G5: Fehler aus Middleware (vor allem express.json bei kaputtem JSON) nie als Stacktrace
+// mit Body-Ausschnitt ausgeben, wie Express es ausserhalb von production tut. Kaputtes JSON
+// ergibt 400 invalid_json wie in PHP; jeder andere Fehler eine feste 4xx/500-Antwort.
+// Weder err.message noch err.body (enthaelt den Request-Inhalt) gelangen in die Antwort.
+app.use((err, req, res, next) => {
+  if (res.headersSent) return next(err);
+  if (err?.type === 'entity.parse.failed') {
+    return res.status(400).json({ ok: false, error: 'invalid_json' });
+  }
+  if (err?.type === 'entity.too.large') {
+    return res.status(413).json({ ok: false, error: 'payload_too_large' });
+  }
+  console.error('request.failed', err?.type || err?.name || 'error');
+  return res.status(500).json({ ok: false, error: 'server_error' });
+});
 
 app.listen(port, () => {
   console.log(`Backend server running at http://localhost:${port}`);

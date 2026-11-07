@@ -52,7 +52,7 @@ test('G5 stage 2: the create route rejects a timebound beyond the cap before any
 
 test('the create route runs expireStalePendingJobs() on the full item list before saving (write-time guard parity)', () => {
   const guardIndex = createBlock.indexOf('multisigDb.items = expireStalePendingJobs(multisigDb.items);');
-  const saveIndex = createBlock.indexOf('await saveMultisigDb();');
+  const saveIndex = createBlock.indexOf('await saveMultisigDb()');
   assert.ok(guardIndex > -1, 'the guard call must exist in the create route');
   assert.ok(saveIndex > -1 && guardIndex < saveIndex, 'the guard must run before the job file is saved');
 });

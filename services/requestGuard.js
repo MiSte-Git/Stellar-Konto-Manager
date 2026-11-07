@@ -21,6 +21,8 @@ function isJsonContentType(contentType) {
 
 function requireAllowedOrigin(req, res, next) {
   if (!isAllowedOrigin(req.headers.origin)) {
+    res.header('Cache-Control', 'no-store');
+    res.header('Vary', 'Origin');
     return res.status(403).json({ ok: false, error: 'forbidden_origin' });
   }
   return next();
@@ -28,6 +30,7 @@ function requireAllowedOrigin(req, res, next) {
 
 function requireJsonContentType(req, res, next) {
   if (!isJsonContentType(req.headers['content-type'])) {
+    res.header('Cache-Control', 'no-store');
     return res.status(415).json({ ok: false, error: 'unsupported_media_type' });
   }
   return next();
