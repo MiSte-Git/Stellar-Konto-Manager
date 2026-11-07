@@ -301,10 +301,24 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
           <div className="text-xs text-gray-500 dark:text-gray-400">
             {!item.claimableNow && <span className="font-medium text-gray-700 dark:text-gray-300">{t('wallet:claimable.notClaimable')} </span>}
             {item.claimableNow && item.blockedReason && <span className="font-medium text-gray-700 dark:text-gray-300">{t(`wallet:claimable.blocked.${item.blockedReason}`)} </span>}
-            {item.window?.until && t('wallet:claimable.until', { date: formatDate(item.window.until) })}
-            {item.window?.from && t('wallet:claimable.fromDate', { date: formatDate(item.window.from) })}
+            {item.window?.unconditional && t('wallet:claimable.noDeadline')}
+            {item.window?.from != null && t('wallet:claimable.fromDate', { date: formatDate(item.window.from) })}
+            {item.window?.from != null && item.window?.until != null && ' '}
+            {item.window?.until != null && t('wallet:claimable.until', { date: formatDate(item.window.until) })}
+            {item.window?.complex && t('wallet:claimable.complexConditions')}
             {needsTrustline(item) && <span> {t('wallet:claimable.withTrustline', { code: item.asset.code })}</span>}
           </div>
+          {item.senderClaimant && (
+            <div className="text-xs text-amber-800 dark:text-amber-300" data-testid="claimable-sender-claimant">
+              {t(item.senderClaimant.unconditional ? 'wallet:claimable.senderReclaimAny' : 'wallet:claimable.senderReclaimLater')}
+            </div>
+          )}
+          {item.window?.complex && (
+            <details className="text-xs text-gray-500 dark:text-gray-400" data-testid="claimable-conditions">
+              <summary className="cursor-pointer">{t('wallet:claimable.conditionsDetails')}</summary>
+              <pre className="mt-1 overflow-x-auto whitespace-pre-wrap break-all font-mono">{JSON.stringify(item.predicate, null, 2)}</pre>
+            </details>
+          )}
         </div>
         <div className="flex items-center gap-1">
           <button type="button" className={linkBtnCls} onClick={() => toggleHidden(item.id)}>

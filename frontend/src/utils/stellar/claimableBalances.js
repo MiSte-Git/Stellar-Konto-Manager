@@ -54,19 +54,62 @@ export function evaluatePredicate(predicate, nowSec, createdSec) {
   return false;
 }
 
-// Fuer die Anzeige nur die beiden haeufigen einfachen Formen: einloesbar bis / ab Zeitpunkt.
-export function describePredicateWindow(predicate) {
+// Zeitfenster einer Bedingung fuer die Anzeige. Ergebnis (oder null bei ungueltiger Eingabe):
+// - { unconditional: true }: einloesbar ohne Frist
+// - { from?, until? }: einloesbar ab / bis (Sekunden); and-Kombinationen werden zusammengefuehrt
+//   (spaetestes ab, fruehestes bis), or mit einer unbedingten Seite ist unbedingt
+// - { complex: true }: alles andere (z.B. or aus zwei Fristen, not von Kombinationen): die
+//   Anzeige verweist dann auf die Bedingungen im Detail
+// createdSec ist die Basis fuer rel_before; ohne sie ist rel_before nicht darstellbar (complex).
+export function describePredicateWindow(predicate, createdSec = null) {
   if (!predicate || typeof predicate !== 'object') return null;
-  if (predicate.abs_before != null || predicate.abs_before_epoch != null) {
-    const until = toEpochSeconds(predicate.abs_before_epoch ?? predicate.abs_before);
-    return until != null ? { until } : null;
-  }
-  const inner = predicate.not;
-  if (inner && (inner.abs_before != null || inner.abs_before_epoch != null)) {
-    const from = toEpochSeconds(inner.abs_before_epoch ?? inner.abs_before);
-    return from != null ? { from } : null;
-  }
-  return null;
+  const COMPLEX = { complex: true };
+  const isWindow = (w) => w && !w.complex;
+  const walk = (p) => {
+    if (!p || typeof p !== 'object') return COMPLEX;
+    if (p.unconditional) return { unconditional: true };
+    if (Array.isArray(p.and) && p.and.length === 2) {
+      const [a, b] = p.and.map(walk);
+      if (!isWindow(a) || !isWindow(b)) return COMPLEX;
+      const out = {};
+      const froms = [a.from, b.from].filter((v) => v != null);
+      const untils = [a.until, b.until].filter((v) => v != null);
+      if (froms.length) out.from = Math.max(...froms);
+      if (untils.length) out.until = Math.min(...untils);
+      if (out.from != null && out.until != null && out.from >= out.until) return COMPLEX; // nie einloesbar
+      return Object.keys(out).length ? out : { unconditional: true };
+    }
+    if (Array.isArray(p.or) && p.or.length === 2) {
+      const [a, b] = p.or.map(walk);
+      return (isWindow(a) && a.unconditional) || (isWindow(b) && b.unconditional) ? { unconditional: true } : COMPLEX;
+    }
+    if (p.not) {
+      const w = walk(p.not);
+      if (!isWindow(w) || w.unconditional || (w.from != null && w.until != null)) return COMPLEX;
+      return w.until != null ? { from: w.until } : { until: w.from };
+    }
+    if (p.abs_before != null || p.abs_before_epoch != null) {
+      const until = toEpochSeconds(p.abs_before_epoch ?? p.abs_before);
+      return until != null ? { until } : COMPLEX;
+    }
+    if (p.rel_before != null) {
+      const rel = Number(p.rel_before);
+      return Number.isFinite(rel) && createdSec != null ? { until: createdSec + rel } : COMPLEX;
+    }
+    return COMPLEX;
+  };
+  return walk(predicate);
+}
+
+// Ein anderer Claimant ist der Absender (Sponsor): Er kann die Balance selbst einloesen,
+// bei einer Frist des Empfaengers typischerweise nach deren Ablauf. Ergebnis null oder
+// { unconditional } (true: ohne Bedingung, also jederzeit).
+export function describeSenderClaimant(record, accountId) {
+  const sender = record?.sponsor;
+  if (!sender || sender === accountId) return null;
+  const other = (record?.claimants || []).find((c) => c?.destination === sender);
+  if (!other) return null;
+  return { unconditional: !!other.predicate?.unconditional };
 }
 
 // Betrag in Stroops (BigInt), null bei ungueltiger Eingabe.
@@ -122,7 +165,8 @@ export function classifyClaimableBalances(records, account, nowSec = Math.floor(
         blockedReason,
         predicate: claimant.predicate,
         createdSec,
-        window: describePredicateWindow(claimant.predicate),
+        window: describePredicateWindow(claimant.predicate, createdSec),
+        senderClaimant: describeSenderClaimant(r, accountId),
         hasTrustline: asset.isNative || !!line,
         isIssuer: !asset.isNative && asset.issuer === accountId,
       };

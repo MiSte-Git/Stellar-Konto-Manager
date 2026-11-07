@@ -25,6 +25,7 @@
     "token": "Token: {{token}} (Zahlungen: {{occurrences}})",
     "tokenShort": "Token: {{token}}"
   },
+  "hintNoTrustline": "Findet Einzahlungen auch ohne Trustline: Gesucht wird über den Ledger nach dem Tokennamen im Memo, nicht in deinen Trustlines.",
   "missingPublicKey": "Public Key fehlt.",
   "moreTruncated": "… und {{extra}} weitere Gruppen",
   "toWallet": "an Wallet: {{address}}",

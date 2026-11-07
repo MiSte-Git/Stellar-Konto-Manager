@@ -149,7 +149,7 @@
     "importSuccess": "Import erfolgreich",
     "replaceHint": "Ersetze die Datei unter src/locales/{{lang}}/{{file}} und deploye die App neu.",
     "requiredFields": "Pflichtfelder fehlen: {{fields}}",
-    "invalidFile": "Ungültiges Dateiformat. Bitte .xlsx oder .csv verwenden.",
+    "invalidFile": "Ungültiges Dateiformat. Bitte eine .xlsx-Datei verwenden.",
     "noData": "Keine Daten gefunden.",
     "row": "Zeile {{row}}",
     "lessonOverview": "Lektionsübersicht (Wartung)",

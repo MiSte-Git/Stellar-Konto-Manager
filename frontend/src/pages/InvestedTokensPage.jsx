@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import InvestedTokensPanel from '../components/InvestedTokensPanel';
 
 /**
- * Seite für „Anzahl gekaufter Token“ hinter dem Menüpunkt token.purchases.
+ * Seite „Memo-Einzahlungen“ (früher Token-Käufe) hinter dem Menüpunkt token.purchases.
  * - Zeigt Titel + Zurück-Button (UI-Texte via t()).
  * - Rendert das Panel, das die Investments über Horizon ermittelt.
  */
@@ -16,6 +16,7 @@ export default function InvestedTokensPage({ publicKey, onBack: _onBack }) {
       {/* Kopfbereich mit zentriertem Titel */}
       <div className="text-center">
         <h2 className="text-xl font-semibold">{t('token:purchases')}</h2>
+        <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">{t('investedTokens:hintNoTrustline')}</p>
       </div>
 
       {/* Inhalt: Panel / Hinweis */}

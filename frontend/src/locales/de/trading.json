@@ -351,7 +351,10 @@
         "toml": "Asset ist in der stellar.toml dieses Issuers gelistet"
       },
       "duplicateCodeWarning": "Achtung: Für {{codes}} gibt es mehrere Treffer mit unterschiedlichen Ausstellern. Der Code allein sagt nichts über Echtheit aus – nur die Issuer-Adresse entscheidet. Vergleiche sie sorgfältig, bevor du eine Trustline anlegst oder tauschst.",
-      "duplicateCodeBadge": "{{count}} unterschiedliche Aussteller verwenden diesen Asset-Code."
+      "duplicateCodeBadge": "{{count}} unterschiedliche Aussteller verwenden diesen Asset-Code (Groß-/Kleinschreibung nicht beachtet).",
+      "codeVariantWarning": "Achtung: Die Codes {{codes}} unterscheiden sich nur in der Groß-/Kleinschreibung. Der Asset-Code ist case-sensitiv, es sind verschiedene Assets.",
+      "codeVariantBadge": "Andere Schreibweise: Derselbe Code kommt hier auch in anderer Groß-/Kleinschreibung vor. Der Asset-Code ist case-sensitiv, es sind verschiedene Assets.",
+      "codeVariantBadgeText": "Aa"
     },
     "invalidInput": {
       "codeMissing": "Bitte einen Asset-Code eingeben.",
@@ -403,6 +406,7 @@
     "resultsWithCode_one": "{{count}} Token mit dem Code {{code}} gefunden",
     "resultsWithCode_other": "{{count}} Tokens mit dem Code {{code}} gefunden",
     "sameCodeHint": "Gleicher Code heißt nicht gleiches Token. Ein Token ist nur durch Code und Issuer eindeutig. Prüfe den Issuer, bevor du wählst.",
+    "caseVariantHint": "Einige Codes unterscheiden sich nur in der Groß-/Kleinschreibung ({{codes}}). Der Asset-Code ist case-sensitiv, das sind verschiedene Assets.",
     "clickToSelect": "Treffer anklicken, um ein Token zu wählen.",
     "issuer": "Issuer",
     "homeDomain": "Home-Domain",

@@ -3,7 +3,7 @@ import { describe, it, expect } from 'vitest';
 import { Account, Keypair, Networks } from '@stellar/stellar-sdk';
 import {
   fromStroops, toStroops,
-  buildClaimTx, claimJobTimeoutSeconds, classifyClaimableBalances, describePredicateWindow, evaluatePredicate, parseClaimableAsset,
+  buildClaimTx, claimJobTimeoutSeconds, classifyClaimableBalances, describePredicateWindow, describeSenderClaimant, evaluatePredicate, parseClaimableAsset,
 } from '../claimableBalances.js';
 
 const ME = Keypair.random().publicKey();
@@ -35,7 +35,26 @@ describe('describePredicateWindow', () => {
   it('erkennt einloesbar bis und einloesbar ab', () => {
     expect(describePredicateWindow({ abs_before_epoch: '123' })).toEqual({ until: 123 });
     expect(describePredicateWindow({ not: { abs_before_epoch: '456' } })).toEqual({ from: 456 });
-    expect(describePredicateWindow({ unconditional: true })).toBeNull();
+    expect(describePredicateWindow({ unconditional: true })).toEqual({ unconditional: true });
+    expect(describePredicateWindow(null)).toBeNull();
+  });
+  it('and aus ab X und bis Y wird zusammengefuehrt', () => {
+    const p = { and: [{ not: { abs_before_epoch: '100' } }, { abs_before_epoch: '200' }] };
+    expect(describePredicateWindow(p)).toEqual({ from: 100, until: 200 });
+    expect(describePredicateWindow({ and: [{ abs_before_epoch: '300' }, { abs_before_epoch: '200' }] })).toEqual({ until: 200 });
+  });
+  it('or mit unbedingter Seite ist ohne Frist, sonst complex', () => {
+    expect(describePredicateWindow({ or: [{ unconditional: true }, { abs_before_epoch: '5' }] })).toEqual({ unconditional: true });
+    expect(describePredicateWindow({ or: [{ abs_before_epoch: '5' }, { not: { abs_before_epoch: '9' } }] })).toEqual({ complex: true });
+  });
+  it('rel_before nur mit Erstellzeit, never-claimable und unbekannte Formen sind complex', () => {
+    expect(describePredicateWindow({ rel_before: '50' }, 1000)).toEqual({ until: 1050 });
+    expect(describePredicateWindow({ rel_before: '50' })).toEqual({ complex: true });
+    expect(describePredicateWindow({ and: [{ not: { abs_before_epoch: '300' } }, { abs_before_epoch: '200' }] })).toEqual({ complex: true });
+    expect(describePredicateWindow({ something: 1 })).toEqual({ complex: true });
+  });
+  it('not einer Fristform dreht sie um', () => {
+    expect(describePredicateWindow({ not: { not: { abs_before_epoch: '7' } } })).toEqual({ until: 7 });
   });
 });
 
@@ -140,5 +159,27 @@ describe('claimJobTimeoutSeconds bei zusammengesetzten Bedingungen', () => {
   it('liefert null, wenn nicht mehr einloesbar', () => {
     const item = { window: null, createdSec: NOW - 500, predicate: { rel_before: '100' } };
     expect(claimJobTimeoutSeconds(item, 86400, NOW)).toBeNull();
+  });
+});
+
+describe('describeSenderClaimant', () => {
+  const rec = (claimants, sponsor = OTHER) => ({ sponsor, claimants });
+  it('Absender ist selbst Claimant: mit Bedingung und unbedingt', () => {
+    expect(describeSenderClaimant(rec([{ destination: ME, predicate: {} }, { destination: OTHER, predicate: { not: { abs_before_epoch: '5' } } }]), ME)).toEqual({ unconditional: false });
+    expect(describeSenderClaimant(rec([{ destination: ME, predicate: {} }, { destination: OTHER, predicate: { unconditional: true } }]), ME)).toEqual({ unconditional: true });
+  });
+  it('kein Hinweis, wenn der Absender nicht Claimant ist oder man selbst Absender ist', () => {
+    expect(describeSenderClaimant(rec([{ destination: ME, predicate: {} }]), ME)).toBeNull();
+    expect(describeSenderClaimant(rec([{ destination: ME, predicate: {} }], ME), ME)).toBeNull();
+    expect(describeSenderClaimant({ claimants: [] }, ME)).toBeNull();
+  });
+  it('classify liefert senderClaimant und das zusammengefuehrte Fenster', () => {
+    const r = { id: id(9), asset: 'native', amount: '1', sponsor: OTHER, claimants: [
+      { destination: ME, predicate: { and: [{ not: { abs_before_epoch: '100' } }, { abs_before_epoch: '200' }] } },
+      { destination: OTHER, predicate: { not: { abs_before_epoch: '200' } } },
+    ] };
+    const [item] = classifyClaimableBalances([r], { account_id: ME, balances: [] }, 150);
+    expect(item.window).toEqual({ from: 100, until: 200 });
+    expect(item.senderClaimant).toEqual({ unconditional: false });
   });
 });

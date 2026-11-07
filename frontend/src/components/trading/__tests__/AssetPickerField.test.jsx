@@ -51,6 +51,16 @@ describe('AssetPickerField Trefferliste', () => {
     expect(box).toHaveTextContent('Treffer anklicken, um ein Token zu wählen.');
   });
 
+  it('weist auf Schreibvarianten hin (ldex und LDEX), sonst nicht', () => {
+    renderPicker({ results: [{ assetCode: 'LDEX', assetIssuer: ISSUER_B, numAccounts: '1' }, { assetCode: 'ldex', assetIssuer: ISSUER_B, numAccounts: '1' }] });
+    expect(screen.getByTestId('asset-picker-variant-hint')).toHaveTextContent('LDEX, ldex');
+  });
+
+  it('kein Varianten-Hinweis bei gleicher Schreibweise', () => {
+    renderPicker();
+    expect(screen.queryByTestId('asset-picker-variant-hint')).toBeNull();
+  });
+
   it('nennt ohne gemeinsamen Code nur die Anzahl, auch im Singular', () => {
     const { rerender } = renderPicker({ results: [sameCodeResults[0], { assetCode: 'OTHER', assetIssuer: ISSUER_B, numAccounts: '2' }] });
     expect(screen.getByTestId('asset-picker-results')).toHaveTextContent('2 Tokens gefunden');

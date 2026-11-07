@@ -187,7 +187,7 @@ export default function QuizExportImport() {
     if (!file) return;
 
     const ext = file.name.split('.').pop()?.toLowerCase();
-    if (ext !== 'xlsx' && ext !== 'csv') {
+    if (ext !== 'xlsx') {
       setImportError(t('settings:maintenance.invalidFile'));
       return;
     }
@@ -547,7 +547,7 @@ export default function QuizExportImport() {
         <input
           ref={fileRef}
           type="file"
-          accept=".xlsx,.csv"
+          accept=".xlsx"
           onChange={handleFile}
           className="block text-sm text-gray-600 dark:text-gray-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-sm file:border-0 file:text-sm file:font-medium file:bg-gray-200 file:text-gray-800 dark:file:bg-gray-700 dark:file:text-gray-200 hover:file:bg-gray-300 dark:hover:file:bg-gray-600"
         />

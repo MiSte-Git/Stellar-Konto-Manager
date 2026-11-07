@@ -106,7 +106,7 @@ describe('AppLayout / Sidebar', () => {
   it('Drawer schliesst nach Auswahl eines Eintrags', () => {
     renderLayout();
     fireEvent.click(screen.getByRole('button', { name: 'Navigation öffnen' }));
-    fireEvent.click(within(screen.getByRole('dialog')).getByRole('button', { name: 'Token-Käufe' }));
+    fireEvent.click(within(screen.getByRole('dialog')).getByRole('button', { name: 'Memo-Einzahlungen' }));
     expect(screen.queryByRole('dialog')).toBeNull();
   });
   it('kombiniert in der Titelleiste hidden nie mit einer festen Anzeige-Klasse (Handy-Breite)', () => {

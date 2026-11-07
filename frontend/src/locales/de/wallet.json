@@ -7,8 +7,8 @@
     "reverseLabel": "Name laut Federation-Server von {{domain}}"
   },
   "flag": {
-    "compromised": "Warnung: Diese Wallet ist in deiner VertrauListe als kompromittiert markiert.",
-    "deactivated": "Hinweis: Diese Wallet ist in deiner VertrauListe als deaktiviert markiert."
+    "compromised": "Warnung: Diese Wallet ist in deiner Vertrauensliste als kompromittiert markiert.",
+    "deactivated": "Hinweis: Diese Wallet ist in deiner Vertrauensliste als deaktiviert markiert."
   },
   "xlmBalance": "XLM",
   "unfunded": "Nicht aktiviert",
@@ -148,6 +148,11 @@
     "until": "Einlösbar bis {{date}}.",
     "fromDate": "Einlösbar ab {{date}}.",
     "notClaimable": "Derzeit nicht einlösbar.",
+  "noDeadline": "Einlösbar ohne Frist.",
+  "complexConditions": "Es gelten besondere Bedingungen, siehe Details.",
+  "conditionsDetails": "Bedingungen anzeigen",
+  "senderReclaimAny": "Der Absender ist selbst Claimant und kann die Balance jederzeit selbst einlösen.",
+  "senderReclaimLater": "Der Absender ist selbst Claimant und kann die Balance nach Ablauf der Frist zurückholen.",
     "withTrustline": "Legt beim Einlösen eine Trustline für {{code}} an.",
     "noTrustTitle": "Für Assets ohne Trustline ({{count}})",
     "noTrustShow": "Anzeigen",

@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { shortenKey, assetResultKey } from './assetSearchUtils.js';
+import { groupAssetCodes } from './assetCodeGroups.js';
 
 // Loading/present/absent checkmark badge for the domain/TOML columns. Only
 // ever used in this table - kept private (was the container's own
@@ -45,21 +46,12 @@ export default function AssetResultsTable({
 }) {
   const { t } = useTranslation(['trading', 'common']);
   // Asset codes are case-sensitive on Stellar and, on their own, prove
-  // nothing about legitimacy - only the issuer address does. Group counts
-  // by exact code so duplicate-code hits (e.g. many different issuers all
-  // using "USDC") can be flagged instead of silently ranked by quality score.
-  const codeCounts = useMemo(() => {
-    const counts = new Map();
-    assetResults.forEach((r) => {
-      const code = r.assetCode || '';
-      counts.set(code, (counts.get(code) || 0) + 1);
-    });
-    return counts;
-  }, [assetResults]);
-  const duplicateCodes = useMemo(
-    () => [...codeCounts.entries()].filter(([, count]) => count > 1).map(([code]) => code),
-    [codeCounts]
-  );
+  // nothing about legitimacy - only the issuer address does. Codes are grouped
+  // ignoring case (ldex looks like LDEX but is a different asset), so
+  // duplicate-code hits and spelling variants can be flagged instead of
+  // silently ranked by quality score.
+  const codeGroups = useMemo(() => groupAssetCodes(assetResults), [assetResults]);
+  const { duplicateCodes, variantCodes } = codeGroups;
   return (
     <div className="rounded-sm border border-gray-200 dark:border-gray-700">
       {assetResults.length === 0 && !assetError && !assetLoading && (
@@ -76,6 +68,11 @@ export default function AssetResultsTable({
           {duplicateCodes.length > 0 && (
             <div className="border-b border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100">
               {t('trading:assetSearch.result.duplicateCodeWarning', { codes: duplicateCodes.join(', ') })}
+            </div>
+          )}
+          {variantCodes.length > 0 && (
+            <div className="border-b border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100" data-testid="asset-code-variant-warning">
+              {t('trading:assetSearch.result.codeVariantWarning', { codes: variantCodes.join(', ') })}
             </div>
           )}
           <div className="overflow-x-auto">
@@ -103,7 +100,8 @@ export default function AssetResultsTable({
               <tbody>
                 {sortedAssetResults.map((r, idx) => {
                   const rowFacts = assetResultFacts[assetResultKey(r)] || {};
-                  const isDuplicateCode = (codeCounts.get(r.assetCode || '') || 0) > 1;
+                  const isDuplicateCode = codeGroups.isDuplicate(r.assetCode);
+                  const isVariant = codeGroups.hasVariants(r.assetCode);
                   return (
                     <tr key={`${r.assetCode}-${r.assetIssuer}-${idx}`} className="border-t border-gray-200 dark:border-gray-700">
                       <td className="py-2 pl-3 pr-3">
@@ -111,9 +109,18 @@ export default function AssetResultsTable({
                         {isDuplicateCode && (
                           <span
                             className="ml-1 inline-flex items-center rounded-sm bg-amber-100 px-1 text-[10px] font-semibold text-amber-800 dark:bg-amber-900 dark:text-amber-100"
-                            title={t('trading:assetSearch.result.duplicateCodeBadge', { count: codeCounts.get(r.assetCode || '') })}
+                            title={t('trading:assetSearch.result.duplicateCodeBadge', { count: codeGroups.countOf(r.assetCode) })}
                           >
-                            {codeCounts.get(r.assetCode || '')}×
+                            {codeGroups.countOf(r.assetCode)}×
+                          </span>
+                        )}
+                        {isVariant && (
+                          <span
+                            className="ml-1 inline-flex items-center rounded-sm bg-amber-100 px-1 text-[10px] font-semibold text-amber-800 dark:bg-amber-900 dark:text-amber-100"
+                            title={t('trading:assetSearch.result.codeVariantBadge')}
+                            data-testid="asset-code-variant-badge"
+                          >
+                            {t('trading:assetSearch.result.codeVariantBadgeText')}
                           </span>
                         )}
                       </td>

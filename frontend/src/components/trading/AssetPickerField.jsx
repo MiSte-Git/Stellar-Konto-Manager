@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ClearInputButton from '../ClearInputButton.jsx';
+import { groupAssetCodes } from './assetCodeGroups.js';
 import { getAssetTrustlineCount, parseHorizonNumber, shortenKey } from './assetSearchUtils.js';
 
 // Home-Domain nur, wenn die Suchdaten sie mitliefern (derzeit liefern die
@@ -49,6 +50,7 @@ export default function AssetPickerField({
   children,
 }) {
   const { t } = useTranslation(['common', 'trading']);
+  const { variantCodes } = useMemo(() => groupAssetCodes(results), [results]);
   const [copiedKey, setCopiedKey] = useState('');
   const codes = [...new Set(results.map((item) => item.assetCode))];
   const heading = codes.length === 1
@@ -119,6 +121,11 @@ export default function AssetPickerField({
           <p className="rounded-sm border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100">
             {t('trading:assetPicker.sameCodeHint')}
           </p>
+          {variantCodes.length > 0 && (
+            <p className="rounded-sm border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100" data-testid="asset-picker-variant-hint">
+              {t('trading:assetPicker.caseVariantHint', { codes: variantCodes.join(', ') })}
+            </p>
+          )}
           {!selected && <p className="text-xs text-gray-600 dark:text-gray-300">{t('trading:assetPicker.clickToSelect')}</p>}
           <div role="listbox" aria-label={heading} className="max-h-72 overflow-y-auto rounded-sm border border-gray-200 dark:border-gray-700">
             {results.map((item, index) => {

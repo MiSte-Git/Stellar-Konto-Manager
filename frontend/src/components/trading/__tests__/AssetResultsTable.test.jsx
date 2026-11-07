@@ -61,6 +61,31 @@ describe('AssetResultsTable', () => {
     expect(badges.length).toBe(2);
   });
 
+  it('zaehlt ldex und LDEX desselben Issuers zusammen und markiert die Schreibvariante', () => {
+    renderTable(baseProps({
+      assetResults: [
+        { assetCode: 'LDEX', assetIssuer: ISSUER_A },
+        { assetCode: 'ldex', assetIssuer: ISSUER_A },
+        { assetCode: 'OTHER', assetIssuer: ISSUER_A },
+      ],
+    }));
+    expect(screen.getAllByText('2×').length).toBe(2);
+    expect(screen.getAllByTestId('asset-code-variant-badge').length).toBe(2);
+    expect(screen.getByTestId('asset-code-variant-warning').textContent).toMatch(/LDEX, ldex/);
+    expect(screen.getByText(/mehrere Treffer/)).toBeTruthy();
+  });
+
+  it('gleicher Code in gleicher Schreibweise bekommt kein Varianten-Badge', () => {
+    renderTable(baseProps({
+      assetResults: [
+        { assetCode: 'USDC', assetIssuer: ISSUER_A },
+        { assetCode: 'USDC', assetIssuer: ISSUER_B },
+      ],
+    }));
+    expect(screen.queryByTestId('asset-code-variant-badge')).toBe(null);
+    expect(screen.queryByTestId('asset-code-variant-warning')).toBe(null);
+  });
+
   it('does not badge a code that only appears once even if other codes in the list are duplicated', () => {
     renderTable(baseProps({
       assetResults: [
