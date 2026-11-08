@@ -19,6 +19,8 @@ import { AmbiguousSubmitResultError } from '../../utils/stellar/submitTransactio
 import { adjustedAccount, guardedSubmit, guardedUnsignedBuild, SendBlockedError } from '../../utils/submitGuard/guardedSubmit.js';
 import { useAccountSendBlock } from '../../utils/submitGuard/useAccountSendBlock.js';
 import AccountSendGuardNotice from './AccountSendGuardNotice.jsx';
+import SendLockWaiting from './SendLockWaiting.jsx';
+import { LOAD_IN_LOCK_TIMEOUT_MS } from '../../utils/submitGuard/loadTimeout.js';
 import { getRequiredThreshold } from '../../utils/getRequiredThreshold.js';
 import { formatErrorForUi } from '../../utils/formatErrorForUi.js';
 import { getSessionSecrets, rememberSessionSecrets, InsecureCryptoContextError } from '../../utils/sessionSecrets.js';
@@ -38,7 +40,7 @@ const TRUSTLINE_RESERVE_XLM = 0.5;
 // Abbruch im Lock mit fertigem Text (nicht einloesbar, Gewicht reicht nicht): nichts gesendet.
 class ClaimAbort extends Error {}
 // Gruende, bei denen der Statuskasten den Ausweg zeigt: Signatur-Dialog schliessen.
-const CLOSE_ON = ['blocked', 'pinConsumed', 'badSeq'];
+const CLOSE_ON = ['blocked', 'pinConsumed', 'badSeq', 'lockCancelled'];
 
 const cardCls = 'rounded-2xl border border-gray-200 bg-white shadow-xs dark:border-gray-700 dark:bg-gray-800/70';
 const linkBtnCls =
@@ -71,6 +73,11 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
   const [claimError, setClaimError] = React.useState('');
   const [info, setInfo] = React.useState('');
   const inFlightRef = React.useRef(false);
+  // Warten am Sende-Lock (anderer Tab sendet): Anzeige und Abbruch. Ein Controller je Vorgang.
+  const [lockWaiting, setLockWaiting] = React.useState(false);
+  const lockAbortRef = React.useRef(null);
+  const cancelWaiting = () => { lockAbortRef.current?.abort(); };
+  React.useEffect(() => () => { lockAbortRef.current?.abort(); }, []);
   const [preparedJob, setPreparedJob] = React.useState(null);
   const [showBatch, setShowBatch] = React.useState(false);
   const { multisigTimeoutSeconds } = useSettings();
@@ -176,6 +183,8 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
       return;
     }
     inFlightRef.current = true;
+    const controller = new AbortController();
+    lockAbortRef.current = controller;
     try {
       setClaiming(true);
       // Explizites Netz wie die Passphrase (Default-Pfad wuerde localStorage lesen).
@@ -186,7 +195,11 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
       const { tx, current } = await guardedUnsignedBuild({
         network,
         account: publicKey,
+        signal: controller.signal,
+        onWaiting: () => setLockWaiting(true),
+        buildTimeoutMs: LOAD_IN_LOCK_TIMEOUT_MS,
         build: async ({ adjustAccount }) => {
+          setLockWaiting(false);
           const fresh = await server.loadAccount(publicKey);
           const [cur] = classifyClaimableBalances(records.filter((r) => r.id === item.id), fresh);
           if (!cur || !cur.claimableNow || cur.blockedReason) {
@@ -230,6 +243,8 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
         setClaimError(describeError(e));
       }
     } finally {
+      if (lockAbortRef.current === controller) lockAbortRef.current = null;
+      setLockWaiting(false);
       inFlightRef.current = false;
       setClaiming(false);
     }
@@ -247,6 +262,8 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
   const executeClaim = async (collected, remember) => {
     if (!claimItem || inFlightRef.current) return;
     inFlightRef.current = true;
+    const controller = new AbortController();
+    lockAbortRef.current = controller;
     try {
       setClaiming(true);
       setClaimError('');
@@ -264,7 +281,11 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
         networkPassphrase,
         // Kein Zahlungsziel (claimClaimableBalance, changeTrust): keine Memo-Pruefung (SEP-29).
         skipMemoRequiredCheck: true,
+        signal: controller.signal,
+        onWaiting: () => setLockWaiting(true),
+        buildTimeoutMs: LOAD_IN_LOCK_TIMEOUT_MS,
         buildTx: async ({ adjustAccount }) => {
+          setLockWaiting(false);
           const fresh = await server.loadAccount(publicKey);
           const [cur] = classifyClaimableBalances(records.filter((r) => r.id === claimItem.id), fresh);
           if (!cur || !cur.claimableNow || cur.blockedReason) {
@@ -326,6 +347,8 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
         onClaimed?.();
       }
     } finally {
+      if (lockAbortRef.current === controller) lockAbortRef.current = null;
+      setLockWaiting(false);
       inFlightRef.current = false;
       setClaiming(false);
     }
@@ -440,6 +463,8 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
         </p>
       )}
       {!showBatch && <div className="px-5 pt-3 empty:hidden"><AccountSendGuardNotice guard={sendGuard} network={network} /></div>}
+      {/* Im SecretKeyModal steht der Hinweis dort; hier fuer den Job (ohne Modal). */}
+      <div className="px-5 pt-2 empty:hidden"><SendLockWaiting waiting={lockWaiting && !claimItem} onCancel={cancelWaiting} /></div>
       {info && <p role="status" className="px-5 pt-2 text-xs text-green-700 dark:text-green-400 break-all">{info}</p>}
       {claimError && !claimItem && <p role="alert" className="px-5 pt-2 text-xs text-red-700 dark:text-red-300">{claimError}</p>}
       {loadError && <p className="px-5 pt-2 text-xs text-red-700 dark:text-red-300">{loadError}</p>}
@@ -503,7 +528,12 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
       {claimItem && (
         <SecretKeyModal
           onConfirm={(collected, remember) => { void executeClaim(collected, remember); }}
-          onCancel={() => { setClaimItem(null); setClaimError(''); }}
+          onCancel={() => {
+            // Beendet das Warten am Lock: danach wird nichts gesendet. Ein laufender POST bleibt.
+            cancelWaiting();
+            setClaimItem(null);
+            setClaimError('');
+          }}
           errorMessage={claimError}
           thresholds={account?.thresholds}
           signers={account?.signers || []}
@@ -513,6 +543,7 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
             needsTrustline(claimItem) ? getRequiredThreshold('changeTrust', account?.thresholds) : 0
           )}
           isProcessing={claiming}
+          waitingForLock={lockWaiting}
           account={account}
           initialSecretValues={prefill}
         />

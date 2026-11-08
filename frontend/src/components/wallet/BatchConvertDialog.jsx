@@ -12,6 +12,8 @@ import { AmbiguousSubmitResultError } from '../../utils/stellar/submitTransactio
 import { adjustedAccount, guardedSubmit, guardedUnsignedBuild, SendBlockedError } from '../../utils/submitGuard/guardedSubmit.js';
 import { useSharedSendBlock } from '../../utils/submitGuard/useAccountSendBlock.js';
 import AccountSendGuardNotice from './AccountSendGuardNotice.jsx';
+import SendLockWaiting from './SendLockWaiting.jsx';
+import { LOAD_IN_LOCK_TIMEOUT_MS } from '../../utils/submitGuard/loadTimeout.js';
 import { getRequiredThreshold } from '../../utils/getRequiredThreshold.js';
 import { formatErrorForUi } from '../../utils/formatErrorForUi.js';
 import { getSessionSecrets, rememberSessionSecrets, InsecureCryptoContextError } from '../../utils/sessionSecrets.js';
@@ -82,6 +84,10 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
   const [quotedAt, setQuotedAt] = React.useState(0);
   const [quotedSlippage, setQuotedSlippage] = React.useState('');
   const inFlightRef = React.useRef(false);
+  // Warten am Sende-Lock (anderer Tab sendet): Anzeige und Abbruch. Ein Controller je Lauf bzw. Job.
+  const [lockWaiting, setLockWaiting] = React.useState(false);
+  const lockAbortRef = React.useRef(null);
+  const cancelWaiting = () => { lockAbortRef.current?.abort(); };
   // Sperre pro Konto bei unklarem Sendestatus: von der Seite geteilt oder eigene.
   const guard = useSharedSendBlock(sendGuard, { network, account: publicKey, onApplied: () => onDone?.(), onNotApplied: () => onDone?.() });
   const sendBlocked = !!guard.block;
@@ -227,6 +233,8 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
   const runLocal = async (collected, remember) => {
     if (inFlightRef.current || !chunks.length) return;
     inFlightRef.current = true;
+    const controller = new AbortController();
+    lockAbortRef.current = controller;
     setError('');
     const out = [];
     let started = false;
@@ -234,6 +242,8 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
       const server = getHorizonServerForNetwork(network);
       await assertHorizonNetwork(server, networkPassphrase);
       const check = await verifyFresh(server, selectedQuotes);
+      // "Abbrechen" im Secret-Key-Dialog waehrend der Pruefung: nichts signieren, nichts senden.
+      if (controller.signal.aborted) return;
       if (check.problem) {
         setShowSecretModal(false);
         setError(t(`wallet:batchConvert.${check.problem}`));
@@ -264,7 +274,11 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
             networkPassphrase,
             // Path Payments an das eigene Konto: keine Memo-Pruefung (SEP-29).
             skipMemoRequiredCheck: true,
+            signal: controller.signal,
+            onWaiting: () => setLockWaiting(true),
+            buildTimeoutMs: LOAD_IN_LOCK_TIMEOUT_MS,
             buildTx: async ({ adjustAccount }) => {
+              setLockWaiting(false);
               const acct = await server.loadAccount(publicKey);
               // Vor jedem Signieren: gilt das Netz des Ablaufs noch? Nach der ersten gesendeten
               // Transaktion mit dem Hinweis, dass Gesendetes bestehen bleibt.
@@ -311,6 +325,8 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
       console.error('[SKM] batch convert failed', e);
       setError(describeError(e));
     } finally {
+      if (lockAbortRef.current === controller) lockAbortRef.current = null;
+      setLockWaiting(false);
       inFlightRef.current = false;
       setProgress(null);
       guard.bump();
@@ -328,6 +344,8 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
   const prepareJob = async () => {
     if (inFlightRef.current || !chunks.length || jobCreated) return;
     inFlightRef.current = true;
+    const controller = new AbortController();
+    lockAbortRef.current = controller;
     setError('');
     try {
       const chunk = chunks[0];
@@ -344,7 +362,11 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
       const { tx } = await guardedUnsignedBuild({
         network,
         account: publicKey,
+        signal: controller.signal,
+        onWaiting: () => setLockWaiting(true),
+        buildTimeoutMs: LOAD_IN_LOCK_TIMEOUT_MS,
         build: async ({ adjustAccount }) => {
+          setLockWaiting(false);
           const check = await verifyFresh(server, chunk);
           if (check.problem) throw new ConvertAbort(t(`wallet:batchConvert.${check.problem}`));
           return {
@@ -394,6 +416,8 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
         setError(describeError(e));
       }
     } finally {
+      if (lockAbortRef.current === controller) lockAbortRef.current = null;
+      setLockWaiting(false);
       inFlightRef.current = false;
     }
   };
@@ -413,6 +437,7 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
         <h2 id="batch-convert-title" className="text-lg font-semibold text-gray-900 dark:text-white">{t('wallet:batchConvert.title')}</h2>
         <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">{t('wallet:batchConvert.intro')}</p>
         <div className="mt-3 empty:hidden"><AccountSendGuardNotice guard={guard} network={network} /></div>
+        <div className="mt-3 empty:hidden"><SendLockWaiting waiting={lockWaiting} onCancel={cancelWaiting} /></div>
 
         {(phase === 'setup' || phase === 'quoting') && (
           <div className="mt-4 space-y-3">
@@ -612,7 +637,11 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
       {showSecretModal && (
         <SecretKeyModal
           onConfirm={(collected, remember) => { void runLocal(collected, remember); }}
-          onCancel={() => setShowSecretModal(false)}
+          onCancel={() => {
+            // Beendet die Pruefung bzw. das Warten am Lock: Danach wird nichts gesendet.
+            cancelWaiting();
+            setShowSecretModal(false);
+          }}
           errorMessage={error}
           thresholds={account?.thresholds}
           signers={account?.signers || []}

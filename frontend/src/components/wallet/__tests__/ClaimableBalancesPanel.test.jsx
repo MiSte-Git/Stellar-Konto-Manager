@@ -7,6 +7,7 @@ import i18n from '../../../i18n.js';
 import { resetServerNetworkCalls, serverNetworkCalls } from '../../../test/horizonMock.js';
 import ClaimableBalancesPanel from '../ClaimableBalancesPanel.jsx';
 import { readAccountEntry, resetAccountSendGuardMemory, writeAccountEntry } from '../../../utils/submitGuard/accountSendGuard.js';
+import { withSendLock } from '../../../utils/submitGuard/sendLock.js';
 
 const ME = {
   secret: 'SDAIDSY2LAXR5HPEJ2CKWQ3QV67VPYLXB6C2ATBY3J7VRKT6YD7SYV6Y',
@@ -34,6 +35,11 @@ vi.mock('../../../utils/stellar/stellarUtils.js', async (importOriginal) => (awa
 vi.mock('../../../utils/stellar/submitTransactionSafely.js', async (importOriginal) => ({
   ...(await importOriginal()),
   submitTransactionSafely: hoisted.submitMock,
+}));
+// Kurzes Zeitlimit fuers Laden im Lock, damit der Test es abwarten kann (gross genug fuer die Mocks).
+vi.mock('../../../utils/submitGuard/loadTimeout.js', async (importOriginal) => ({
+  ...(await importOriginal()),
+  LOAD_IN_LOCK_TIMEOUT_MS: 400,
 }));
 vi.mock('../../../utils/sessionSecrets.js', async (importOriginal) => ({
   ...(await importOriginal()),
@@ -463,6 +469,176 @@ describe('Sendeschutz (Buendel 4c): Claimable Balances einloesen', () => {
       const tx = TransactionBuilder.fromXDR(JSON.parse(fetchMock.mock.calls[0][1].body).txXdr, Networks.TESTNET);
       expect(tx.sequence).toBe('101');
     });
+  });
+});
+
+
+// ---- Buendel 4c-Fix: Warten am Sende-Lock (M4), Pin, zwei Laeufe nacheinander -------------------
+
+// Ein anderer Tab haelt den Sende-Lock des Netzes, bis release() aufgerufen wird.
+async function holdSendLock(network = 'TESTNET') {
+  let release;
+  const gate = new Promise((resolve) => { release = resolve; });
+  let held;
+  const started = new Promise((resolve) => { held = resolve; });
+  const done = withSendLock(network, async () => { held(); await gate; });
+  await started;
+  return async () => { release(); await done; };
+}
+const typeSecretAndSend = async () => {
+  await waitFor(() => expect(document.querySelector('input[type="password"]')).not.toBeNull());
+  fireEvent.change(document.querySelector('input[type="password"]'), { target: { value: ME.secret } });
+  const buttons = screen.getAllByRole('button', { name: /^(senden|submit)$/i });
+  fireEvent.click(buttons[buttons.length - 1]);
+};
+
+describe('Buendel 4c-Fix: Warten am Sende-Lock (M4)', () => {
+  beforeAll(async () => { await i18n.changeLanguage('de'); });
+
+  it('Einloesen wartet auf einen anderen Tab: Hinweis im Dialog; "Abbrechen" beendet das Warten, danach wird nie gesendet', async () => {
+    renderPanel();
+    await screen.findByText('Claimable Balances');
+    const release = await holdSendLock();
+    fireEvent.click(claimButton(1));
+    await typeSecretAndSend();
+    const waiting = await screen.findByTestId('send-lock-waiting');
+    expect(waiting).toHaveTextContent(/Wartet auf einen anderen Sendevorgang/);
+    expect(hoisted.submitMock).not.toHaveBeenCalled();
+
+    // Abbrechen im Secret-Key-Dialog
+    const cancel = screen.getAllByRole('button', { name: 'Abbrechen' });
+    fireEvent.click(cancel[cancel.length - 1]);
+    await screen.findByText('Warten abgebrochen. Nicht gesendet.');
+    expect(screen.queryByTestId('send-lock-waiting')).toBeNull();
+    expect(document.querySelector('input[type="password"]')).toBeNull();
+
+    // Der andere Tab ist fertig: Es wird nichts nachgeholt.
+    await release();
+    await new Promise((r) => setTimeout(r, 1500));
+    expect(hoisted.submitMock).not.toHaveBeenCalled();
+    expect(hoisted.loadAccountMock).not.toHaveBeenCalled();
+    expect(readAccountEntry('TESTNET', ME.publicKey)).toBeNull();
+    // Das Konto ist nicht gesperrt: ein neuer Versuch ist moeglich.
+    expect(claimButton(1)).not.toBeDisabled();
+    fireEvent.click(claimButton(1));
+    await typeSecretAndSend();
+    await screen.findByText(/eingelöst\. Transaktion claimhash/);
+    expect(hoisted.submitMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('ohne Abbrechen wird nach dem Warten gesendet (der Hinweis verschwindet, sobald der Lock frei ist)', async () => {
+    renderPanel();
+    await screen.findByText('Claimable Balances');
+    const release = await holdSendLock();
+    fireEvent.click(claimButton(1));
+    await typeSecretAndSend();
+    await screen.findByTestId('send-lock-waiting');
+    await release();
+    await screen.findByText(/eingelöst\. Transaktion claimhash/);
+    expect(screen.queryByTestId('send-lock-waiting')).toBeNull();
+    expect(hoisted.submitMock).toHaveBeenCalledTimes(1);
+  });
+
+  describe('Job (Multisig-Konto)', () => {
+    let fetchMock;
+    beforeEach(() => {
+      hoisted.loadAccountMock.mockImplementation(async () => makeAccount({ multisig: true }));
+      fetchMock = vi.fn(async (_url, opts) => ({ ok: true, json: async () => ({ id: 'job-7', txHash: 'h', txXdrCurrent: JSON.parse(opts.body).txXdr }) }));
+      vi.stubGlobal('fetch', fetchMock);
+    });
+    afterEach(() => { vi.unstubAllGlobals(); });
+
+    it('wartet auf den Lock: Hinweis mit "Warten abbrechen"; nach dem Abbrechen entsteht nie ein Job', async () => {
+      renderPanel({ account: makeAccount({ multisig: true }) });
+      await screen.findByText('Claimable Balances');
+      const release = await holdSendLock();
+      fireEvent.click(within(itemById(1)).getByRole('button', { name: 'Als Multisig-Job vorbereiten' }));
+      const waiting = await screen.findByTestId('send-lock-waiting');
+      expect(waiting).toHaveTextContent(/Wartet auf einen anderen Sendevorgang/);
+      fireEvent.click(screen.getByTestId('send-lock-waiting-cancel'));
+      await screen.findByText(/Warten abgebrochen\. Nicht erstellt\./);
+      await release();
+      await new Promise((r) => setTimeout(r, 1500));
+      expect(fetchMock).not.toHaveBeenCalled();
+    });
+  });
+});
+
+describe('Buendel 4c-Fix: Zeitlimit fuers Laden im Lock', () => {
+  beforeAll(async () => { await i18n.changeLanguage('de'); });
+
+  it('Horizon antwortet beim Laden nicht: nach dem Limit nichts gesendet, kein Eintrag, der Lock ist frei und ein neuer Versuch klappt', async () => {
+    renderPanel();
+    await screen.findByText('Claimable Balances');
+    hoisted.loadAccountMock.mockImplementationOnce(() => new Promise(() => {}));
+    await claim(1);
+    await screen.findByText(/Nichts gesendet: Horizon hat beim Laden nicht rechtzeitig geantwortet/, undefined, { timeout: 3000 });
+    expect(hoisted.submitMock).not.toHaveBeenCalled();
+    expect(readAccountEntry('TESTNET', ME.publicKey)).toBeNull();
+    expect(claimButton(1)).not.toBeDisabled();
+    await claim(1);
+    await screen.findByText(/eingelöst\. Transaktion claimhash/);
+    expect(hoisted.submitMock).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('Buendel 4c-Fix: Pin passt nicht mehr (direktes Einloesen) und zwei Laeufe nacheinander', () => {
+  beforeAll(async () => { await i18n.changeLanguage('de'); });
+
+  it('Pin, der nicht mehr zur Konto-Sequence passt: nichts gesendet, fruehere Transaktion wieder unklar, Kasten sichtbar', async () => {
+    // Konto-Sequence ist 100, der Pin gehoert zu 999 (nicht 101): verbraucht bzw. Konto darunter.
+    writeAccountEntry('TESTNET', ME.publicKey, guardEntry({ origin: 'payment', status: 'notApplied', pin: true, seq: '999', maxTime: nowSec() - 300 }));
+    renderPanel();
+    await screen.findByText('Claimable Balances');
+    await claim(1);
+    await screen.findByText(/Nicht gesendet: Die Sequence einer früheren, nicht ausgeführten Transaktion/);
+    expect(hoisted.submitMock).not.toHaveBeenCalled();
+    expect(readAccountEntry('TESTNET', ME.publicKey)).toMatchObject({ status: 'ambiguous', recheck: 'pinConsumed' });
+    expect(readAccountEntry('TESTNET', ME.publicKey).pin).toBeFalsy();
+    expect(await screen.findByTestId('send-ambiguous')).toBeInTheDocument();
+    expect(claimButton(1)).toBeDisabled();
+  });
+
+  it('Lauf 1 unklar -> Lauf 2 gesperrt -> Beleg -> Lauf 3 sendet: Zustand wirkt von Lauf zu Lauf, ohne Loeschen der skm_*-Schluessel', async () => {
+    hoisted.submitMock.mockRejectedValueOnce(new AmbiguousSubmitResultError('amb-hash', new TypeError('Failed to fetch')));
+    const errSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    renderPanel();
+    await screen.findByText('Claimable Balances');
+
+    // Lauf 1: unklar. Eintrag bleibt.
+    await claim(1);
+    await screen.findByText(/Ergebnis ist unklar.*amb-hash/);
+    const first = readAccountEntry('TESTNET', ME.publicKey);
+    expect(first).toMatchObject({ status: 'ambiguous', origin: 'claimable' });
+    expect(hoisted.submitMock).toHaveBeenCalledTimes(1);
+
+    // Lauf 2: gesperrt, es gibt nicht einmal einen Knopf zum Senden; direkt aufgerufen blockt guardedSubmit.
+    expect(claimButton(1)).toBeDisabled();
+    expect(claimButton(2)).toBeDisabled();
+    expect(hoisted.submitMock).toHaveBeenCalledTimes(1);
+    expect(readAccountEntry('TESTNET', ME.publicKey)).toEqual(first);
+
+    // Ohne Beleg von Horizon bleibt es gesperrt, mit Beleg wird frei.
+    fireEvent.click(screen.getByTestId('send-ambiguous-check'));
+    await waitFor(() => expect(hoisted.txLookupMock).toHaveBeenCalled());
+    await waitFor(() => expect(screen.getByTestId('send-ambiguous-check')).not.toBeDisabled());
+    expect(claimButton(2)).toBeDisabled();
+    hoisted.txLookupMock.mockImplementation(async (hash) => ({ hash, successful: true }));
+    fireEvent.click(screen.getByTestId('send-ambiguous-check'));
+    await waitFor(() => expect(screen.queryByTestId('send-ambiguous')).toBeNull());
+    expect(readAccountEntry('TESTNET', ME.publicKey)).toMatchObject({ status: 'success', hash: first.hash });
+
+    // Lauf 3: sendet genau einmal, der Eintrag gehoert jetzt zur neuen Transaktion.
+    let during = null;
+    hoisted.submitMock.mockImplementationOnce(async () => { during = readAccountEntry('TESTNET', ME.publicKey); return { hash: 'second' }; });
+    expect(claimButton(2)).not.toBeDisabled();
+    await claim(2);
+    await screen.findByText(/eingelöst\. Transaktion second/);
+    expect(hoisted.submitMock).toHaveBeenCalledTimes(2);
+    expect(during).toMatchObject({ status: 'ambiguous', origin: 'claimable' });
+    expect(during.hash).not.toBe(first.hash);
+    expect(readAccountEntry('TESTNET', ME.publicKey)).toMatchObject({ status: 'success', hash: during.hash });
+    errSpy.mockRestore();
   });
 });
 

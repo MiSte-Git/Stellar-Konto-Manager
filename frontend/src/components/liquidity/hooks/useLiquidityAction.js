@@ -7,6 +7,7 @@ import { AmbiguousSubmitResultError } from '../../../utils/stellar/submitTransac
 import { signTransactionWithCollectedSigners } from '../../../utils/stellar/tradingTransactions.js';
 import { guardedSubmit, guardedUnsignedBuild, SendBlockedError } from '../../../utils/submitGuard/guardedSubmit.js';
 import { useSharedSendBlock } from '../../../utils/submitGuard/useAccountSendBlock.js';
+import { LOAD_IN_LOCK_TIMEOUT_MS } from '../../../utils/submitGuard/loadTimeout.js';
 import { assertHorizonNetwork } from '../../../utils/multisig/jobRevocation.js';
 import { getRequiredThreshold } from '../../../utils/getRequiredThreshold.js';
 import { finishUnsignedTx } from '../../../utils/multisig/unsignedTx.js';
@@ -25,7 +26,7 @@ class WorkChanged extends Error {
 const BLOCKED = 'common:payment.send.ambiguousResult.blockedReason';
 const UNSIGNED_BLOCKED = 'common:payment.send.ambiguousResult.unsignedBlockedReason';
 // Gruende, bei denen der Statuskasten den Ausweg zeigt: Dialog schliessen statt Fehler im Modal.
-const CLOSE_ON = ['blocked', 'pinConsumed', 'badSeq'];
+const CLOSE_ON = ['blocked', 'pinConsumed', 'badSeq', 'lockCancelled'];
 
 /**
  * Gemeinsamer Ablauf fuer Einzahlen und Abheben, mit dem Sendeschutz wie im Trading:
@@ -64,6 +65,12 @@ const CLOSE_ON = ['blocked', 'pinConsumed', 'badSeq'];
  * - exportXdr legt keinen Job an und sendet nichts; XDR und Hash landen in
  *   exportedXdr. Keine Sperre danach, nur kein paralleler Aufbau.
  *
+ * Warten am Sende-Lock (anderer Tab sendet): lockWaiting zeigt es an, cancelWaiting (und
+ * "Abbrechen" im SecretKeyModal, modalProps.onCancel) beendet es; danach wird nichts gesendet
+ * (SendBlockedError 'lockCancelled'). Ein Abbruch, der erst waehrend des Ladens im Lock kommt,
+ * wirkt ebenfalls vor dem Eintrag. Laden und Bauen im Lock haben ein Zeitlimit
+ * (LOAD_IN_LOCK_TIMEOUT_MS, danach nichts gesendet), der POST nicht.
+ *
  * sendGuard (optional): Sperre der Seite (useAccountSendBlock), geteilt mit dem Dialog; ohne sie
  * fuehrt der Hook eine eigene. guard/blocked im Ergebnis.
  */
@@ -85,12 +92,25 @@ export default function useLiquidityAction({ publicKey, network, poolId, operati
   const [jobCreated, setJobCreated] = useState(false);
   const jobCreatedRef = useRef(false);
   const [exportedXdr, setExportedXdr] = useState(null);
+  // Warten am Sende-Lock: Anzeige und Abbruch (ein Controller je Ablauf).
+  const [lockWaiting, setLockWaiting] = useState(false);
+  const lockAbortRef = useRef(null);
+  const lockWaitingRef = useRef(false);
+  const setWaiting = useCallback((on) => {
+    lockWaitingRef.current = on;
+    if (mountedRef.current) setLockWaiting(on);
+  }, []);
+  const cancelWaiting = useCallback(() => { lockAbortRef.current?.abort(); }, []);
   // Optionen des laufenden SecretKeyModal-Ablaufs: { local, onBackToSelection }
   const [signingMode, setSigningMode] = useState({ local: false, onBackToSelection: null });
 
   useEffect(() => {
     mountedRef.current = true;
-    return () => { mountedRef.current = false; };
+    return () => {
+      mountedRef.current = false;
+      // Wartet der Ablauf noch auf den Lock, ist niemand mehr da, der das Ergebnis sieht: abbrechen.
+      if (lockWaitingRef.current) lockAbortRef.current?.abort();
+    };
   }, []);
   const alive = useCallback(() => mountedRef.current, []);
 
@@ -142,6 +162,8 @@ export default function useLiquidityAction({ publicKey, network, poolId, operati
       setProcessing(true);
       setModalError('');
       let sent = false;
+      const controller = new AbortController();
+      lockAbortRef.current = controller;
       const reportInBackground = (res) => {
         if (sent) onBackgroundResultRef.current?.({ ...res, network, publicKey });
       };
@@ -156,7 +178,11 @@ export default function useLiquidityAction({ publicKey, network, poolId, operati
           networkPassphrase,
           // Liquidity-Operationen haben kein Zahlungsziel: keine Memo-Pruefung (SEP-29).
           skipMemoRequiredCheck: true,
+          signal: controller.signal,
+          onWaiting: () => setWaiting(true),
+          buildTimeoutMs: LOAD_IN_LOCK_TIMEOUT_MS,
           buildTx: async ({ adjustAccount }) => {
+            setWaiting(false);
             // work() laedt frisch und baut im Lock, mit der gepinnten Sequence (adjustAccount).
             const outcome = await work(server, collected, alive, adjustAccount);
             if (!outcome) throw new WorkAbandoned();
@@ -212,11 +238,13 @@ export default function useLiquidityAction({ publicKey, network, poolId, operati
         }
         setModalError(describeLiquidityError(t, err));
       } finally {
+        if (lockAbortRef.current === controller) lockAbortRef.current = null;
+        setWaiting(false);
         inFlightRef.current = false;
         if (mountedRef.current) setProcessing(false);
       }
     });
-  }, [alive, beginAction, closeModal, network, operationType, publicKey, t]);
+  }, [alive, beginAction, closeModal, network, operationType, publicKey, setWaiting, t]);
 
   // Gemeinsamer Ablauf fuer Job und XDR-Export (unsignierte Transaktion).
   const prepareUnsigned = useCallback(async (work, mode) => {
@@ -225,6 +253,8 @@ export default function useLiquidityAction({ publicKey, network, poolId, operati
     setProcessing(true);
     setJobError('');
     setNotice('');
+    const controller = new AbortController();
+    lockAbortRef.current = controller;
     try {
       const server = getHorizonServerForNetwork(network);
       await assertHorizonNetwork(server, passphraseFor(network));
@@ -233,7 +263,13 @@ export default function useLiquidityAction({ publicKey, network, poolId, operati
       const outcome = await guardedUnsignedBuild({
         network,
         account: publicKey,
-        build: ({ adjustAccount }) => work(server, alive, adjustAccount),
+        signal: controller.signal,
+        onWaiting: () => setWaiting(true),
+        buildTimeoutMs: LOAD_IN_LOCK_TIMEOUT_MS,
+        build: ({ adjustAccount }) => {
+          setWaiting(false);
+          return work(server, alive, adjustAccount);
+        },
       });
       if (!outcome || !mountedRef.current) return;
       if (outcome.changed) {
@@ -263,10 +299,12 @@ export default function useLiquidityAction({ publicKey, network, poolId, operati
         setJobError(describeLiquidityError(t, err));
       }
     } finally {
+      if (lockAbortRef.current === controller) lockAbortRef.current = null;
+      setWaiting(false);
       inFlightRef.current = false;
       if (mountedRef.current) setProcessing(false);
     }
-  }, [alive, network, publicKey, t]);
+  }, [alive, network, publicKey, setWaiting, t]);
   const prepareJob = useCallback((work) => prepareUnsigned(work, 'job'), [prepareUnsigned]);
   const exportXdr = useCallback((work) => prepareUnsigned(work, 'xdr'), [prepareUnsigned]);
   const clearExportedXdr = useCallback(() => setExportedXdr(null), []);
@@ -274,11 +312,14 @@ export default function useLiquidityAction({ publicKey, network, poolId, operati
   const modalProps = {
     onConfirm: (collected) => pendingAction?.execute?.(collected),
     onCancel: () => {
+      // Beendet das Warten am Lock; ein schon laufendes Senden (POST) laesst sich nicht abbrechen.
+      cancelWaiting();
       closeModal();
       setModalError('');
     },
     errorMessage: modalError,
     isProcessing: processing,
+    waitingForLock: lockWaiting,
     thresholds: data.account?.thresholds || null,
     signers: data.account?.signers || [],
     account: data.account,
@@ -298,7 +339,7 @@ export default function useLiquidityAction({ publicKey, network, poolId, operati
   };
 
   return {
-    data, reload, begin, guard, blocked: !!guard.block, showSecretModal, modalProps, result, notice, setNotice, processing,
+    data, reload, begin, guard, blocked: !!guard.block, lockWaiting, cancelWaiting, showSecretModal, modalProps, result, notice, setNotice, processing,
     prepareJob, jobError, preparedJob, jobCreated, exportXdr, exportedXdr, clearExportedXdr,
   };
 }

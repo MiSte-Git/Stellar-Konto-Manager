@@ -16,6 +16,7 @@ import {
 } from '../stellar/submitTransactionSafely.js';
 import { txHashHex } from '../stellar/txHash.js';
 import { withSendLock } from './sendLock.js';
+import { runWithLoadTimeout } from './loadTimeout.js';
 import { classifySubmitCause, isBadSeqError } from './ambiguousResolve.js';
 import {
   MAX_SEND_VALIDITY_SECONDS, SEND_VALIDITY_SLACK_SECONDS, applyAccountPins, findAccountPins, findAccountSendBlock, forgetAmbiguous, forgetSignedTx, markPinRecheck,
@@ -27,7 +28,8 @@ import {
  * Nicht gesendet, weil der Schutz es verhindert. reason:
  * blocked (unklarer Eintrag), pinConsumed (Sequence eines offenen Pins passt nicht mehr,
  * fruehere Transaktion erneut unklar), badSeq (Netz lehnt die gepinnte Sequence ab, erneut
- * unklar), storageUnavailable, concurrent (anderer Tab), lockCancelled (Warten abgebrochen).
+ * unklar), storageUnavailable, concurrent (anderer Tab), lockCancelled (Warten abgebrochen, auch
+ * ein Abbruch, der erst nach dem Erteilen des Locks, aber vor dem Eintrag kam).
  */
 export class SendBlockedError extends Error {
   constructor(reason) {
@@ -64,10 +66,14 @@ function asAmbiguous(entry, recheck) {
  * entryData(built): weitere, oeffentliche Felder des Eintrags (origin, payment, summary).
  * Ergebnis { res, built, hash }. Wirft SendBlockedError, AmbiguousSubmitResultError oder
  * den Fehler des Submits.
+ * signal bricht das Warten am Lock ab (SendBlockedError 'lockCancelled'). Kommt der Abbruch erst
+ * waehrend buildTx (Lock schon erteilt), wird ebenfalls nichts geschrieben und nichts gesendet.
+ * buildTimeoutMs (optional): Zeitlimit nur fuer buildTx (Laden und Bauen im Lock, nie fuer den
+ * POST); danach LoadTimeoutError (PreSubmitCheckError: nichts gesendet, kein Eintrag).
  */
 export async function guardedSubmit({
   network, account, server, networkPassphrase, buildTx, entryData = () => ({}), onWaiting, signal,
-  submit = submitTransactionSafely, skipMemoRequiredCheck = false,
+  submit = submitTransactionSafely, skipMemoRequiredCheck = false, buildTimeoutMs = 0,
 }) {
   const source = String(account || '').trim();
   if (!isStorageWritable()) throw new SendBlockedError('storageUnavailable');
@@ -95,7 +101,9 @@ export async function guardedSubmit({
         return p.account;
       } : null;
 
-      const built = await buildTx({ adjustAccount });
+      const built = await runWithLoadTimeout(buildTx, adjustAccount, buildTimeoutMs);
+      // Abbruch waehrend des Ladens (Lock schon erteilt): nichts schreiben, nichts senden.
+      if (signal?.aborted) throw new SendBlockedError('lockCancelled');
       const { tx } = built;
       if (String(tx.source) !== source) throw new Error('sourceMismatch');
       // Offener Pin, aber nicht angewendet: nie ohne Pin senden.
@@ -175,12 +183,13 @@ export async function guardedSubmit({
  *   wird nichts gebaut, die fruehere Transaktion geht wieder in die strenge Pruefung
  *   ('pinConsumed').
  * - Speicher nicht beschreibbar: 'storageUnavailable' (ohne ihn fehlt der Schutz).
- * - Lock verloren (localStorage-Fallback) oder Warten abgebrochen: 'concurrent' bzw. 'lockCancelled'.
+ * - Lock verloren (localStorage-Fallback) oder Warten abgebrochen: 'concurrent' bzw. 'lockCancelled'
+ *   (auch ein Abbruch waehrend des Bauens). buildTimeoutMs wie bei guardedSubmit.
  * Es wird nichts geschrieben ausser dem Wiederaufnehmen eines Pins als unklar und nichts
  * aufgeraeumt (ein Pin geht hier nie verloren). build({ adjustAccount }) baut die Transaktion;
  * adjustAccount (oder null) muss auf das geladene Quellkonto angewendet werden.
  */
-export async function guardedUnsignedBuild({ network, account, build, onWaiting, signal }) {
+export async function guardedUnsignedBuild({ network, account, build, onWaiting, signal, buildTimeoutMs = 0 }) {
   const source = String(account || '').trim();
   if (!isStorageWritable()) throw new SendBlockedError('storageUnavailable');
   try {
@@ -197,7 +206,8 @@ export async function guardedUnsignedBuild({ network, account, build, onWaiting,
         pinned = true;
         return p.account;
       } : null;
-      const built = await build({ adjustAccount });
+      const built = await runWithLoadTimeout(build, adjustAccount, buildTimeoutMs);
+      if (signal?.aborted) throw new SendBlockedError('lockCancelled');
       // Offener Pin, aber nicht angewendet: nie ohne Pin bauen.
       if (pins.length && !pinned) throw new SendBlockedError('pinConsumed');
       // Lock waehrend des Bauens verloren (anderer Tab hat uebernommen) oder ein Eintrag entstanden.

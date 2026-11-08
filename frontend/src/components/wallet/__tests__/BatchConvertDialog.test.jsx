@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, waitFor, fireEvent, within } from '@testing-library/react';
+import { cleanup, render, screen, waitFor, fireEvent, within } from '@testing-library/react';
 import { I18nextProvider } from 'react-i18next';
 import { Account, Keypair, Networks, TransactionBuilder } from '@stellar/stellar-sdk';
 import { AmbiguousSubmitResultError } from '../../../utils/stellar/submitTransactionSafely.js';
@@ -7,6 +7,15 @@ import i18n from '../../../i18n.js';
 import BatchConvertDialog from '../BatchConvertDialog.jsx';
 import { resetServerNetworkCalls, serverNetworkCalls } from '../../../test/horizonMock.js';
 import { readAccountEntry, resetAccountSendGuardMemory, writeAccountEntry } from '../../../utils/submitGuard/accountSendGuard.js';
+import { withSendLock } from '../../../utils/submitGuard/sendLock.js';
+
+// Schalter fuer die Probe "Sperre wirkungslos": Dann schuetzt nur die Schleife des Sammel-Tauschs
+// (break) vor weiterem Senden, nicht die Sperre des Kontos.
+const guardSwitch = vi.hoisted(() => ({ off: false }));
+vi.mock('../../../utils/submitGuard/accountSendGuard.js', async (importOriginal) => {
+  const orig = await importOriginal();
+  return { ...orig, findAccountSendBlock: (...args) => (guardSwitch.off ? null : orig.findAccountSendBlock(...args)) };
+});
 
 const ME = {
   secret: 'SDAIDSY2LAXR5HPEJ2CKWQ3QV67VPYLXB6C2ATBY3J7VRKT6YD7SYV6Y',
@@ -553,6 +562,184 @@ describe('Sendeschutz (Buendel 4c): Sammel-Tausch', () => {
       await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
       const tx = TransactionBuilder.fromXDR(JSON.parse(fetchMock.mock.calls[0][1].body).txXdr, Networks.TESTNET);
       expect(tx.sequence).toBe('101');
+    });
+  });
+});
+
+
+// ---- Buendel 4c-Fix: break, Pin, zwei Laeufe, Warten am Sende-Lock ------------------------------
+
+async function holdSendLock(network = 'TESTNET') {
+  let release;
+  const gate = new Promise((resolve) => { release = resolve; });
+  let held;
+  const started = new Promise((resolve) => { held = resolve; });
+  const done = withSendLock(network, async () => { held(); await gate; });
+  await started;
+  return async () => { release(); await done; };
+}
+
+describe('Buendel 4c-Fix: Sammel-Tausch', () => {
+  beforeAll(async () => { await i18n.changeLanguage('de'); });
+  afterEach(() => { guardSwitch.off = false; });
+
+  it('N16: Stopp haengt nicht an der Sperre: unklar bei Transaktion 2 von 3, Transaktion 3 wird nie gesendet (Sperre unwirksam)', async () => {
+    // Die Sperre des Kontos ist hier wirkungslos geschaltet. Dann verhindert nur das break der
+    // Schleife, dass Transaktion 3 gesendet wird. Ohne break wuerde submit ein drittes Mal aufgerufen.
+    guardSwitch.off = true;
+    hoisted.submitMock
+      .mockResolvedValueOnce({ hash: 'h1' })
+      .mockRejectedValueOnce(new AmbiguousSubmitResultError('amb-hash', new TypeError('Failed to fetch')));
+    const errSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    renderDialog({ items: fiftyFive() });
+    await loadPreview();
+    await startAndSign();
+    await screen.findByText(/Transaktion 2 mit 25 Einträgen: Ergebnis unklar.*amb-hash/);
+    expect(screen.getByText(/Transaktion 3 mit 5 Einträgen nicht gesendet \(Lauf gestoppt/)).toBeInTheDocument();
+    await new Promise((r) => setTimeout(r, 1200));
+    expect(hoisted.submitMock).toHaveBeenCalledTimes(2);
+    // Genau eine Zeile je Transaktion (kein zusaetzlicher Versuch, keine doppelte Zeile).
+    expect(screen.getAllByText(/^Transaktion \d/)).toHaveLength(3);
+    errSpy.mockRestore();
+  });
+
+  it('N16: eindeutig fehlgeschlagen bei Transaktion 2 von 3 (Sperre unwirksam): Transaktion 3 wird nie gesendet', async () => {
+    // Im Ledger fehlgeschlagen: kein Eintrag, die Sperre haette hier nie gegriffen; nur das break stoppt.
+    guardSwitch.off = true;
+    const err = new Error('http 400');
+    err.response = { status: 400, data: { extras: { result_codes: { transaction: 'tx_failed' } } } };
+    hoisted.submitMock.mockResolvedValueOnce({ hash: 'h1' }).mockRejectedValueOnce(err);
+    const errSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    renderDialog({ items: fiftyFive() });
+    await loadPreview();
+    await startAndSign();
+    await screen.findByText(/Transaktion 2 mit 25 Einträgen fehlgeschlagen/);
+    expect(screen.getByText(/Transaktion 3 mit 5 Einträgen nicht gesendet \(Lauf gestoppt/)).toBeInTheDocument();
+    await new Promise((r) => setTimeout(r, 800));
+    expect(hoisted.submitMock).toHaveBeenCalledTimes(2);
+    expect(screen.getAllByText(/^Transaktion \d/)).toHaveLength(3);
+    errSpy.mockRestore();
+  });
+
+  it('Pin, der nicht mehr zur Konto-Sequence passt: nichts gesendet, Transaktionen als nicht gesendet angezeigt, fruehere Transaktion wieder unklar', async () => {
+    // Konto-Sequence 100, der Pin gehoert zu 999: verbraucht bzw. Konto darunter.
+    writeAccountEntry('TESTNET', ME.publicKey, guardEntry({ origin: 'payment', status: 'notApplied', pin: true, seq: '999', maxTime: nowSec() - 300 }));
+    renderDialog({ items: fiftyFive() });
+    await loadPreview();
+    await startAndSign();
+    await screen.findByText(/Transaktion 1 mit 25 Einträgen nicht gesendet: Nicht gesendet: Die Sequence einer früheren, nicht ausgeführten Transaktion/);
+    expect(screen.getByText(/Transaktion 2 mit 25 Einträgen nicht gesendet \(Lauf gestoppt/)).toBeInTheDocument();
+    expect(screen.getByText(/Transaktion 3 mit 5 Einträgen nicht gesendet \(Lauf gestoppt/)).toBeInTheDocument();
+    expect(hoisted.submitMock).not.toHaveBeenCalled();
+    expect(readAccountEntry('TESTNET', ME.publicKey)).toMatchObject({ status: 'ambiguous', recheck: 'pinConsumed' });
+    expect(screen.getByTestId('send-ambiguous')).toBeInTheDocument();
+  });
+
+  it('Lauf 1 unklar -> Lauf 2 (neu geoeffnet) gesperrt -> Beleg -> Lauf 3 sendet: Zustand wirkt von Lauf zu Lauf, ohne Loeschen der skm_*-Schluessel', async () => {
+    hoisted.submitMock.mockRejectedValueOnce(new AmbiguousSubmitResultError('amb-hash', new TypeError('Failed to fetch')));
+    const errSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    renderDialog();
+    await loadPreview();
+    await startAndSign();
+    await screen.findByText(/Transaktion 1 mit 2 Einträgen: Ergebnis unklar.*amb-hash/);
+    const first = readAccountEntry('TESTNET', ME.publicKey);
+    expect(first).toMatchObject({ status: 'ambiguous', origin: 'convert' });
+    expect(hoisted.submitMock).toHaveBeenCalledTimes(1);
+
+    // Lauf 2: Dialog neu geoeffnet, Zustand aus Lauf 1 ist noch da und sperrt.
+    cleanup();
+    renderDialog();
+    expect(screen.getByTestId('send-ambiguous')).toBeInTheDocument();
+    await loadPreview();
+    expect(startButton()).toBeDisabled();
+    expect(hoisted.submitMock).toHaveBeenCalledTimes(1);
+    expect(readAccountEntry('TESTNET', ME.publicKey)).toEqual(first);
+
+    // Ohne Beleg bleibt es gesperrt, mit Beleg wird frei.
+    fireEvent.click(screen.getByTestId('send-ambiguous-check'));
+    await waitFor(() => expect(hoisted.txLookupMock).toHaveBeenCalled());
+    await waitFor(() => expect(screen.getByTestId('send-ambiguous-check')).not.toBeDisabled());
+    expect(startButton()).toBeDisabled();
+    hoisted.txLookupMock.mockImplementation(async (hash) => ({ hash, successful: true }));
+    fireEvent.click(screen.getByTestId('send-ambiguous-check'));
+    await waitFor(() => expect(screen.queryByTestId('send-ambiguous')).toBeNull());
+    expect(startButton()).not.toBeDisabled();
+
+    // Lauf 3: genau einmal. Ein Eintrag weniger gewaehlt, damit es eine andere Transaktion ist (gleiche
+    // Operationen in derselben Sekunde ergaeben denselben Hash).
+    fireEvent.click(checkbox(2));
+    await startAndSign();
+    await screen.findByText(/Transaktion 1: 1 Einträge umgewandelt/);
+    expect(hoisted.submitMock).toHaveBeenCalledTimes(2);
+    const last = readAccountEntry('TESTNET', ME.publicKey);
+    expect(last).toMatchObject({ status: 'success', origin: 'convert' });
+    expect(last.hash).not.toBe(first.hash);
+    errSpy.mockRestore();
+  });
+
+  describe('M4: Warten am Sende-Lock', () => {
+    it('Warten wird im Lauf angezeigt; "Warten abbrechen" stoppt den Lauf, alle Transaktionen bleiben ungesendet', async () => {
+      renderDialog({ items: fiftyFive() });
+      await loadPreview();
+      const release = await holdSendLock();
+      await startAndSign();
+      const waiting = await screen.findByTestId('send-lock-waiting');
+      expect(waiting).toHaveTextContent(/Wartet auf einen anderen Sendevorgang/);
+      expect(hoisted.submitMock).not.toHaveBeenCalled();
+      fireEvent.click(screen.getByTestId('send-lock-waiting-cancel'));
+      await screen.findByText(/Transaktion 1 mit 25 Einträgen nicht gesendet: Warten abgebrochen\. Nicht gesendet\./);
+      expect(screen.getByText(/Transaktion 2 mit 25 Einträgen nicht gesendet \(Lauf gestoppt/)).toBeInTheDocument();
+      expect(screen.getByText(/Transaktion 3 mit 5 Einträgen nicht gesendet \(Lauf gestoppt/)).toBeInTheDocument();
+      await release();
+      await new Promise((r) => setTimeout(r, 1500));
+      expect(hoisted.submitMock).not.toHaveBeenCalled();
+      expect(readAccountEntry('TESTNET', ME.publicKey)).toBeNull();
+    });
+
+    it('"Abbrechen" im Secret-Key-Dialog waehrend der Pruefung: danach wird nichts signiert und nichts gesendet', async () => {
+      renderDialog();
+      await loadPreview();
+      let release;
+      const gate = new Promise((resolve) => { release = resolve; });
+      const loadsBefore = hoisted.loadAccountMock.mock.calls.length;
+      hoisted.loadAccountMock.mockImplementationOnce(async () => { await gate; return makeAccount(); });
+      await startAndSign();
+      await waitFor(() => expect(hoisted.loadAccountMock).toHaveBeenCalledTimes(loadsBefore + 1));
+      const cancel = screen.getAllByRole('button', { name: 'Abbrechen' });
+      fireEvent.click(cancel[cancel.length - 1]);
+      expect(document.querySelector('input[type="password"]')).toBeNull();
+      release();
+      await new Promise((r) => setTimeout(r, 1200));
+      expect(hoisted.submitMock).not.toHaveBeenCalled();
+      // Nach dem Abbruch wird nichts mehr geladen (kein Lock, kein Bauen).
+      expect(hoisted.loadAccountMock).toHaveBeenCalledTimes(loadsBefore + 1);
+      expect(readAccountEntry('TESTNET', ME.publicKey)).toBeNull();
+      // Der Dialog steht wieder in der Vorschau, ein neuer Start ist moeglich.
+      expect(startButton()).not.toBeDisabled();
+    });
+
+    describe('Job (Multisig)', () => {
+      let fetchMock;
+      const jobProps = () => ({ multisig: true, account: makeAccount({ multisig: true }), items: Array.from({ length: 30 }, (_, i) => tokenItem(i + 1, `T${i}`)) });
+      beforeEach(() => {
+        hoisted.loadAccountMock.mockImplementation(async (pk) => (pk === ME.publicKey ? makeAccount({ multisig: true }) : { flags: {} }));
+        fetchMock = vi.fn(async (_url, opts) => ({ ok: true, json: async () => ({ id: 'job-7', txHash: 'h', txXdrCurrent: JSON.parse(opts.body).txXdr }) }));
+        vi.stubGlobal('fetch', fetchMock);
+      });
+      afterEach(() => { vi.unstubAllGlobals(); });
+
+      it('wartet auf den Lock: Hinweis mit "Warten abbrechen"; nach dem Abbrechen entsteht nie ein Job', async () => {
+        renderDialog(jobProps());
+        await loadPreview();
+        const release = await holdSendLock();
+        fireEvent.click(screen.getByRole('button', { name: 'Als Multisig-Job vorbereiten' }));
+        expect(await screen.findByTestId('send-lock-waiting')).toBeInTheDocument();
+        fireEvent.click(screen.getByTestId('send-lock-waiting-cancel'));
+        await screen.findByText(/Warten abgebrochen\. Nicht erstellt\./);
+        await release();
+        await new Promise((r) => setTimeout(r, 1500));
+        expect(fetchMock).not.toHaveBeenCalled();
+      });
     });
   });
 });

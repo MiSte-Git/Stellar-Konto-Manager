@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Keypair } from '@stellar/stellar-sdk';
 import { validateSecretKey } from '../utils/stellar/stellarUtils';
 import { formatErrorForUi } from '../utils/formatErrorForUi.js';
+import SendLockWaiting from './wallet/SendLockWaiting.jsx';
 
 function SecretKeyModal({
   onConfirm,
@@ -25,6 +26,8 @@ function SecretKeyModal({
   subtitle = '',
   // Konto, fuer das signiert wird. Ohne Angabe aus account (Horizon: id/account_id).
   accountId = '',
+  // Der Vorgang wartet auf einen anderen Sendevorgang (Sende-Lock). "Abbrechen" beendet das Warten.
+  waitingForLock = false,
 }) {
   const { t } = useTranslation(['secretKey', 'trustline', 'common', 'publicKey']);
   const [secretInputs, setSecretInputs] = useState(
@@ -240,6 +243,9 @@ function SecretKeyModal({
           <div className="mb-3 text-sm text-blue-700 dark:text-blue-300">
             {t('common:main.processing')}
           </div>
+        )}
+        {isProcessing && waitingForLock && (
+          <div className="mb-3"><SendLockWaiting waiting /></div>
         )}
         {error && (
           <div className="text-center text-xs text-red-700 mb-2">{error}</div>

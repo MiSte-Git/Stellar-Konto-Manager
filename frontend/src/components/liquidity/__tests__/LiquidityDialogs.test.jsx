@@ -11,6 +11,7 @@ import { consumePendingTrustlineAsset, setMainMounted } from '../../../utils/app
 import { takeMultisigJobToken } from '../../multisig/multisigNavigation.js';
 import { readAccountEntry, resetAccountSendGuardMemory, writeAccountEntry } from '../../../utils/submitGuard/accountSendGuard.js';
 import { AmbiguousSubmitResultError } from '../../../utils/stellar/submitTransactionSafely.js';
+import { withSendLock } from '../../../utils/submitGuard/sendLock.js';
 
 const hoisted = vi.hoisted(() => ({
   loadAccount: vi.fn(),
@@ -47,8 +48,9 @@ vi.mock('../../../utils/stellar/submitTransactionSafely.js', async (importOrigin
 
 // Schlanker Ersatz fuer das SecretKeyModal: liefert die vorbereiteten Signer.
 vi.mock('../../SecretKeyModal.jsx', () => ({
-  default: ({ onConfirm, onCancel, errorMessage, secretContext, initialCollectAllSignaturesLocally, onBackToSelection }) => (
+  default: ({ onConfirm, onCancel, errorMessage, secretContext, initialCollectAllSignaturesLocally, onBackToSelection, waitingForLock }) => (
     <div data-testid="secret-modal" data-context={secretContext || ''} data-local={String(!!initialCollectAllSignaturesLocally)}>
+      {waitingForLock && <div data-testid="modal-waiting">waiting</div>}
       <button type="button" onClick={() => onConfirm(hoisted.collected)}>keys-ok</button>
       <button type="button" onClick={onCancel}>keys-cancel</button>
       {onBackToSelection && <button type="button" onClick={onBackToSelection}>keys-back</button>}
@@ -1030,6 +1032,115 @@ describe('Sendeschutz (Buendel 4c): Liquidity', () => {
       await waitFor(() => expect(hoisted.createJob).toHaveBeenCalledTimes(1));
       const tx = TransactionBuilder.fromXDR(hoisted.createJob.mock.calls[0][0].txXdr, Networks.PUBLIC);
       expect(tx.sequence).toBe('101');
+    });
+  });
+});
+
+// ---- Buendel 4c-Fix: Warten am Sende-Lock (M4) --------------------------------------------------
+
+async function holdSendLock(network = 'PUBLIC') {
+  let release;
+  const gate = new Promise((resolve) => { release = resolve; });
+  let held;
+  const started = new Promise((resolve) => { held = resolve; });
+  const done = withSendLock(network, async () => { held(); await gate; });
+  await started;
+  return async () => { release(); await done; };
+}
+
+describe('Buendel 4c-Fix: Liquidity wartet am Sende-Lock (M4)', () => {
+  beforeAll(async () => { await i18n.changeLanguage('de'); });
+  beforeEach(() => {
+    hoisted.loadAccount.mockReset();
+    hoisted.poolCall.mockReset();
+    hoisted.submit.mockReset();
+    hoisted.createJob.mockReset();
+    hoisted.collected = [{ keypair: owner }];
+    hoisted.passphrase = null;
+    hoisted.poolCall.mockResolvedValue(poolRecord());
+    hoisted.loadAccount.mockImplementation(async () => makeAccount({ shares: '30.0000000' }));
+    hoisted.submit.mockResolvedValue({ hash: 'ok1' });
+    window.localStorage.setItem('SKM_NETWORK', 'PUBLIC');
+  });
+
+  async function startDeposit() {
+    renderDeposit();
+    await enterDeposit('10');
+    fireEvent.click(screen.getByRole('button', { name: 'Operationen prüfen' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Signieren und senden' }));
+    await act(async () => { fireEvent.click(await screen.findByText('keys-ok')); });
+  }
+
+  it('Einzahlen: Warten wird angezeigt, "Abbrechen" im Secret-Key-Dialog beendet es, danach wird nie gesendet', async () => {
+    const release = await holdSendLock();
+    await startDeposit();
+    await screen.findByTestId('modal-waiting');
+    expect(hoisted.submit).not.toHaveBeenCalled();
+
+    fireEvent.click(screen.getByText('keys-cancel'));
+    await screen.findByText('Warten abgebrochen. Nicht gesendet.');
+    expect(screen.queryByTestId('secret-modal')).toBeNull();
+
+    await release();
+    await new Promise((r) => setTimeout(r, 1500));
+    expect(hoisted.submit).not.toHaveBeenCalled();
+    expect(readAccountEntry('PUBLIC', owner.publicKey())).toBeNull();
+    // Kein zweites Senden aus dem Hintergrund, und ein neuer Versuch ist moeglich (nicht gesperrt).
+    expect(screen.getByRole('button', { name: 'Signieren und senden' })).not.toBeDisabled();
+  });
+
+  it('Einzahlen: ohne Abbrechen wird nach dem Warten genau einmal gesendet', async () => {
+    const release = await holdSendLock();
+    await startDeposit();
+    await screen.findByTestId('modal-waiting');
+    await release();
+    await screen.findByTestId('liquidity-success');
+    expect(hoisted.submit).toHaveBeenCalledTimes(1);
+  });
+
+  it('Abheben: Abbrechen waehrend des Wartens, danach wird nie gesendet', async () => {
+    const release = await holdSendLock();
+    renderWithdraw();
+    fireEvent.click(await screen.findByRole('button', { name: '50 %' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Operationen prüfen' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Signieren und senden' }));
+    await act(async () => { fireEvent.click(await screen.findByText('keys-ok')); });
+    await screen.findByTestId('modal-waiting');
+    fireEvent.click(screen.getByText('keys-cancel'));
+    await screen.findByText('Warten abgebrochen. Nicht gesendet.');
+    await release();
+    await new Promise((r) => setTimeout(r, 1500));
+    expect(hoisted.submit).not.toHaveBeenCalled();
+    expect(readAccountEntry('PUBLIC', owner.publicKey())).toBeNull();
+  });
+
+  describe('Job (Multisig-Konto)', () => {
+    const cosigner = Keypair.random();
+    beforeEach(() => {
+      hoisted.createJob.mockResolvedValue({ id: 'job-1', hash: 'jobhash', xdr: 'AAAA' });
+      hoisted.loadAccount.mockImplementation(async () => makeAccount({
+        thresholds: { low_threshold: 1, med_threshold: 2, high_threshold: 2 },
+        signers: [{ key: owner.publicKey(), weight: 1, type: 'ed25519_public_key' }, { key: cosigner.publicKey(), weight: 1, type: 'ed25519_public_key' }],
+      }));
+      window.localStorage.setItem('stm.multisigTimeoutSeconds', '3600');
+    });
+    afterEach(() => window.localStorage.removeItem('stm.multisigTimeoutSeconds'));
+
+    it('wartet auf den Lock: Hinweis mit "Warten abbrechen", danach entsteht nie ein Job', async () => {
+      renderDeposit();
+      await enterDeposit('10');
+      fireEvent.click(screen.getByRole('button', { name: 'Operationen prüfen' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Signieren und senden' }));
+      await screen.findByText('Option wählen');
+      const release = await holdSendLock();
+      fireEvent.click(await screen.findByRole('radio', { name: /Multisig-Job erstellen/ }));
+      await act(async () => { fireEvent.click(screen.getByRole('button', { name: 'Weiter' })); });
+      expect(await screen.findByTestId('send-lock-waiting')).toHaveTextContent(/Wartet auf einen anderen Sendevorgang/);
+      fireEvent.click(screen.getByTestId('send-lock-waiting-cancel'));
+      expect(await screen.findByText(/Warten abgebrochen\. Nicht erstellt\./)).toBeInTheDocument();
+      await release();
+      await new Promise((r) => setTimeout(r, 1500));
+      expect(hoisted.createJob).not.toHaveBeenCalled();
     });
   });
 });

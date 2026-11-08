@@ -30,6 +30,7 @@ import LiquidityDialogShell, { BTN_PRIMARY, BTN_SECONDARY, FactList, INPUT, NOTE
 import { CheckInfos, CheckProblems, ResultNote, SlippageField } from './dialogParts.jsx';
 import { JobNotes, LiquidityResultDialog, LiquiditySigningOptions } from './jobParts.jsx';
 import AccountSendGuardNotice from '../wallet/AccountSendGuardNotice.jsx';
+import SendLockWaiting from '../wallet/SendLockWaiting.jsx';
 
 function buildDepositTx({ account, pool, check, quote, feePerOp, network, timeoutSeconds }) {
   return buildLiquidityDepositTransaction({
@@ -302,6 +303,8 @@ export default function DepositDialog({ poolId, firstAsset, publicKey, network, 
   return (
     <LiquidityDialogShell title={t('liquidity:deposit.title')} onClose={onClose} closeDisabled={action.processing} testId="deposit-dialog">
       <AccountSendGuardNotice guard={action.guard} network={network} />
+      {/* Im SecretKeyModal steht der Hinweis dort; hier fuer Job und XDR (ohne Modal). */}
+      <SendLockWaiting waiting={action.lockWaiting && !action.showSecretModal} onCancel={action.cancelWaiting} />
       {body}
       <LiquiditySigningOptions
         open={optionsOpen}

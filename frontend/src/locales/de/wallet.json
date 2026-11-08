@@ -165,7 +165,7 @@
     "success": "{{amount}} {{code}} eingelöst. Transaktion {{hash}}.",
     "failed": "Einlösen fehlgeschlagen: {{reason}}",
     "guardAction": "Claimable Balance einlösen: {{amount}} {{code}}",
-    "ambiguous": "Das Ergebnis ist unklar (Netzwerkfehler). Das Konto ist gesperrt, bis Horizon den Ausgang zeigt (siehe Hinweis). Transaktion: {{hash}}",
+    "ambiguous": "Das Ergebnis ist unklar (Netzwerkfehler). Das Konto ist in diesem Browser gesperrt, bis Horizon den Ausgang zeigt (siehe Hinweis). Nicht von einem anderen Gerät oder aus einer anderen Wallet erneut senden, bevor Horizon geprüft ist. Transaktion: {{hash}}",
     "blocked": {
       "trustlineNotAuthorized": "Deine Trustline für dieses Asset ist vom Herausgeber nicht freigegeben.",
       "trustlineLimit": "Das Limit deiner Trustline reicht für diesen Betrag nicht."
@@ -226,7 +226,7 @@
     "txBlocked": "Transaktion {{index}} mit {{count}} Einträgen nicht gesendet: {{reason}}",
     "txNotSent": "Transaktion {{index}} mit {{count}} Einträgen nicht gesendet (Lauf gestoppt, wird nicht automatisch nachgeholt).",
     "guardAction": "Sammel-Tausch: Transaktion {{current}} von {{total}} nach {{target}}",
-    "stoppedNote": "Der Lauf wurde gestoppt, es wird nichts automatisch weitergesendet. Bestätigte Transaktionen sind gültig. Eine fehlgeschlagene oder nicht gesendete hat bis auf die Gebühr nichts verändert. Ist ein Ergebnis unklar, ist das Konto gesperrt, bis Horizon den Ausgang zeigt (siehe Hinweis); danach kann der Sammel-Tausch mit einer neuen Vorschau erneut gestartet werden.",
+    "stoppedNote": "Der Lauf wurde gestoppt, es wird nichts automatisch weitergesendet. Bestätigte Transaktionen sind gültig. Eine fehlgeschlagene oder nicht gesendete hat bis auf die Gebühr nichts verändert. Ist ein Ergebnis unklar, ist das Konto in diesem Browser gesperrt, bis Horizon den Ausgang zeigt (siehe Hinweis); danach kann der Sammel-Tausch mit einer neuen Vorschau erneut gestartet werden. Nicht von einem anderen Gerät oder aus einer anderen Wallet erneut senden, bevor Horizon geprüft ist.",
     "txAmbiguous": "Transaktion {{index}} mit {{count}} Einträgen: Ergebnis unklar (Netzwerkfehler). Bitte Hash {{hash}} im Explorer prüfen.",
     "changedSincePreview": "Seit der Vorschau hat sich etwas geändert (Konto, Trustlines oder Claimable Balances). Bitte die Vorschau neu laden.",
     "previewTooOld": "Die Vorschau ist älter als 2 Minuten. Bitte neu laden, damit die Kurse aktuell sind.",

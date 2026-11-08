@@ -516,9 +516,10 @@
         "resolvedNotAppliedBatch": "Laut Horizon wurde die Zahlung der Sammelzahlung nicht ausgeführt und kann nicht mehr ankommen. Senden von diesem Konto ist wieder möglich.",
         "resolvedPinned": "Die nächste Zahlung von diesem Konto nutzt die Sequence der alten Transaktion, egal ob über „Zahlung senden“ oder die Sammelzahlung. Dann kann das Netz höchstens eine der beiden ausführen.",
         "resolvedUnreadable": "Laut Horizon kann keine damals gesendete Transaktion mehr ankommen. Ob sie angekommen ist, ist unbekannt: Bitte vor erneutem Senden im Kontoverlauf prüfen.",
+        "browserOnlyHint": "Diese Sperre gilt nur in diesem Browser. SKM kann ein anderes Gerät, einen anderen Browser oder eine andere Wallet mit demselben Konto nicht sperren. Sende bei unklarem Ergebnis dort nicht erneut, bevor Horizon den Ausgang gezeigt hat: Sonst kann dieselbe Aktion doppelt ausgeführt werden.",
         "waitingForLock": "Wartet auf einen anderen Sendevorgang in einem anderen Tab (Sammelzahlung oder Zahlung senden) …",
         "blockedReason": {
-          "blocked": "Nicht gesendet: Von diesem Konto ist eine Transaktion mit unklarem Status offen.",
+          "blocked": "Nicht gesendet: Von diesem Konto ist eine Transaktion mit unklarem Status offen. Die Sperre gilt nur in diesem Browser: Bei unklarem Ergebnis nicht von einem anderen Gerät oder aus einer anderen Wallet erneut senden, bevor Horizon geprüft ist.",
           "pinConsumed": "Nicht gesendet: Die Sequence einer früheren, nicht ausgeführten Transaktion dieses Kontos passt nicht mehr (verbraucht oder Konto-Sequence darunter). Ihr Status wird erneut über Horizon geprüft, bis dahin ist Senden gesperrt.",
           "badSeq": "Nicht gesendet: Das Netz hat die Sequence abgelehnt, vermutlich wurde die frühere Transaktion doch ausgeführt. Ihr Status wird erneut über Horizon geprüft, bis dahin ist Senden gesperrt.",
           "storageUnavailable": "Nicht gesendet: Der lokale Speicher des Browsers ist nicht beschreibbar. Ohne ihn fehlt der Schutz gegen Doppelzahlung.",
@@ -527,7 +528,7 @@
           "validityTooLong": "Nicht gesendet: Die Gültigkeit der Transaktion ist länger als der Sendeschutz zulässt."
         },
         "unsignedBlockedReason": {
-          "blocked": "Nicht erstellt: Von diesem Konto ist eine Transaktion mit unklarem Status offen. Solange Horizon den Ausgang nicht zeigt, entstehen weder Job noch XDR.",
+          "blocked": "Nicht erstellt: Von diesem Konto ist eine Transaktion mit unklarem Status offen. Solange Horizon den Ausgang nicht zeigt, entstehen weder Job noch XDR. Die Sperre gilt nur in diesem Browser: Bei unklarem Ergebnis nicht von einem anderen Gerät oder aus einer anderen Wallet erneut senden, bevor Horizon geprüft ist.",
           "pinConsumed": "Nicht erstellt: Die Sequence einer früheren, nicht ausgeführten Transaktion dieses Kontos passt nicht mehr (verbraucht oder Konto-Sequence darunter). Ihr Status wird erneut über Horizon geprüft, bis dahin entstehen weder Job noch XDR.",
           "storageUnavailable": "Nicht erstellt: Der lokale Speicher des Browsers ist nicht beschreibbar. Ohne ihn fehlt der Schutz gegen Doppelzahlung.",
           "concurrent": "Nicht erstellt: Ein anderer Tab sendet gerade von diesem Konto. Bitte danach erneut versuchen.",

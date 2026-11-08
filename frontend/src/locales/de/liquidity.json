@@ -96,7 +96,7 @@
     "networkMismatch": "Der Horizon-Server gehört nicht zum gewählten Netzwerk. Es wurde nichts gesendet.",
     "success": "Transaktion erfolgreich gesendet.",
     "ambiguousTitle": "Status unklar – nicht erneut senden",
-    "ambiguousBody": "Die Transaktion konnte nicht eindeutig bestätigt werden (Zeitüberschreitung oder Serverfehler). Das Konto ist gesperrt, bis Horizon den Ausgang zeigt (siehe Hinweis). Ein neuer Versuch ist erst danach möglich.",
+    "ambiguousBody": "Die Transaktion konnte nicht eindeutig bestätigt werden (Zeitüberschreitung oder Serverfehler). Das Konto ist in diesem Browser gesperrt, bis Horizon den Ausgang zeigt (siehe Hinweis). Ein neuer Versuch ist erst danach möglich. Sende nicht von einem anderen Gerät oder aus einer anderen Wallet erneut, bevor Horizon geprüft ist.",
     "feeHint": "Höchstbetrag",
     "signingSummary": "Zusammenfassung"
   },

@@ -87,6 +87,8 @@ export default function SendAmbiguousPanel({ guard, t, language, networkLabel, e
     <div className="text-sm bg-amber-50 dark:bg-amber-900/30 border border-amber-300 dark:border-amber-700 text-amber-900 dark:text-amber-100 rounded-sm p-3 max-w-4xl mx-auto space-y-1" role="alert" data-testid="send-ambiguous">
       <div className="font-semibold">{t(`${K}.title`)}</div>
       <div data-testid="send-ambiguous-body">{bodyText(block, t)}</div>
+      {/* Grenze der Sperre: gilt nur in diesem Browser, nicht fuer andere Geraete oder Wallets. */}
+      <div className="text-xs" data-testid="send-ambiguous-browser-only">{t(`${K}.browserOnlyHint`)}</div>
       {showCause && <div data-testid="send-ambiguous-cause">{causeText(entry, t)}</div>}
       {block.missing && <div className="text-xs">{t(`${K}.missing`)}</div>}
       {sentAt && <div className="text-xs" data-testid="send-ambiguous-sent-at">{t(`${K}.sentAt`, { time: sentAt })}</div>}
