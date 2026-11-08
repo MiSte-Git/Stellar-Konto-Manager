@@ -10,7 +10,9 @@
 const { spawnSync } = require("child_process");
 const crypto = require("crypto");
 const fs = require("fs");
+const os = require("os");
 const path = require("path");
+const { printFromFile } = require("./print-test-failures");
 const readline = require("readline");
 
 const REMOTE_HOST = "cyon-skm"; // Eintrag in ~/.ssh/config
@@ -257,13 +259,39 @@ function createDeploy({ root, frontendDir, run, npmCmd, dryRun }) {
   const distDir = path.join(frontendDir, "dist");
   let commit = null;
 
+  // Testlauf wie bisher (Ausgabe live, Abbruch bei Fehler). Zusaetzlich landet das Ergebnis in einer
+  // Temp-Datei; scheitert der Lauf, steht danach eine Zusammenfassung (Datei, Test, erste Zeilen der
+  // Meldung) am Ende der Ausgabe, direkt vor dem Abbruch.
+  async function runTests(label, cwd, extraArgs) {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "skm-tests-"));
+    const resultFile = path.join(dir, "result.json");
+    // shell: true reicht die Argumente ungequotet weiter: ein Temp-Pfad mit Leerzeichen braucht Anfuehrungszeichen.
+    const quoted = /\s/.test(resultFile) ? `"${resultFile}"` : resultFile;
+    const args = extraArgs.map((a) => a.replace("__RESULT__", quoted));
+    try {
+      await run(npmCmd(), args, { cwd, shell: true, env: { ...process.env, SKM_TEST_RESULT_FILE: resultFile } });
+    } catch (error) {
+      printFromFile(resultFile, { label, cwd: root });
+      throw error;
+    } finally {
+      fs.rmSync(dir, { recursive: true, force: true });
+    }
+  }
+
   // Vor dem Build: Git-Stand pruefen, Tests laufen lassen, Build-Umgebung fixieren.
   async function beforeBuild() {
     console.log(`[deploy] Ziel: ${REMOTE_HOST}:${REMOTE_DIR}${dryRun ? " (Dry-Run)" : ""}`);
     commit = checkGit(root, { dryRun, fetch: true });
 
-    await run(npmCmd(), ["test"], { cwd: root, shell: true });
-    await run(npmCmd(), ["test"], { cwd: frontendDir, shell: true });
+    // test:report = npm test plus Reporter, der gescheiterte Tests in SKM_TEST_RESULT_FILE schreibt
+    await runTests("Tests (Root)", root, ["run", "test:report"]);
+    await runTests("Tests (frontend)", frontendDir, [
+      "test",
+      "--",
+      "--reporter=default",
+      "--reporter=json",
+      "--outputFile=__RESULT__",
+    ]);
 
     process.env.VITE_BASE = VITE_BASE;
     delete process.env.VITE_CSP_REPORT_ONLY;

@@ -11,6 +11,7 @@
     "deploy": "node scripts/start-build.js --deploy",
     "deploy:dry-run": "node scripts/start-build.js --deploy --dry-run",
     "test": "node --test --test-isolation=none test/*.test.js",
+    "test:report": "node --test --test-isolation=none --test-reporter=spec --test-reporter-destination=stdout --test-reporter=./scripts/node-failures-reporter.js --test-reporter-destination=stdout test/*.test.js",
     "test:trade": "node --test --test-isolation=none test/tradeService.test.js",
     "i18n:extract-glossary-keys": "node scripts/dev/extractGlossaryKeys.js",
     "i18n:sync-glossary": "node scripts/dev/syncGlossaryNamespace.mjs",
