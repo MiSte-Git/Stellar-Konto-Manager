@@ -23,20 +23,25 @@ export function decodeJobTransaction(job) {
 }
 
 // issues: Liste von { code, expected?, actual? }, code ist
-// undecodable | network_unknown | missing_job_data | hash_mismatch | account_mismatch.
+// undecodable | network_unknown | missing_job_data | hash_mismatch | account_mismatch | fee_bump.
+// fee_bump: Fee-Bump-Transaktionen sind als Job nicht vorgesehen (beide Backends lehnen sie ab, #15).
+// Eine Signatur wuerde nur die zahlende Huelle autorisieren, nicht die angezeigten Operationen; es gibt
+// keine Bestaetigung, die das aufhebt.
 export function verifyJobTransaction(job, decodedTx) {
   const network = parseJobNetwork(job?.network);
   const seqInfo = getJobSequenceInfo(decodedTx);
   const sourceAccountId = seqInfo?.sourceAccountId || '';
+  const feeBump = !!decodedTx?.innerTransaction;
   const rawSource = String((decodedTx?.innerTransaction || decodedTx)?.source || '');
   const muxedSource = StrKey.isValidMed25519PublicKey(rawSource) ? rawSource : '';
 
   const issues = [];
   if (!seqInfo) issues.push({ code: 'undecodable' });
+  if (feeBump) issues.push({ code: 'fee_bump' });
   if (!network) issues.push({ code: 'network_unknown', actual: String(job?.network ?? '') });
   if (!job?.txHash || !job?.accountId) {
     issues.push({ code: 'missing_job_data' });
-  } else if (seqInfo) {
+  } else if (seqInfo && !feeBump) {
     // Der Hash haengt am Netz: Ohne bekanntes Netz sagt ein Vergleich nichts aus.
     const expectedHash = String(job.txHash).toLowerCase();
     const actualHash = network ? txHashHex(decodedTx) : expectedHash;

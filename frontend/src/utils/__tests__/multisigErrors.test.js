@@ -35,3 +35,20 @@ describe('save_failed_after_submit (B3-1)', () => {
     await expect(createMultisigJobFromXdr({ network: 'testnet', accountId: 'G', txXdr: 'x' })).rejects.toThrow(expectedText());
   });
 });
+
+describe('fee_bump_not_supported (#15)', () => {
+  beforeAll(async () => { await i18n.changeLanguage('de'); });
+
+  it('hat einen verstaendlichen Hinweis und ist ein anderer Text als der Code', () => {
+    const text = backendErrorMessage('fee_bump_not_supported');
+    expect(text).not.toBe('fee_bump_not_supported');
+    expect(text).toMatch(/Fee-Bump/);
+    expect(text).toMatch(/nicht vorgesehen/);
+  });
+
+  it('Anlegen eines Jobs: die Ablehnung des Backends erscheint als Hinweis, nicht als Rohcode', async () => {
+    mockResponse(400, { ok: false, error: 'fee_bump_not_supported' });
+    await expect(createMultisigJobFromXdr({ network: 'testnet', accountId: 'GA', txXdr: 'AAAA' }))
+      .rejects.toThrow(/Fee-Bump-Transaktionen sind als Multisig-Job nicht vorgesehen/);
+  });
+});

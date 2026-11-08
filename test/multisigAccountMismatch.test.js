@@ -152,9 +152,9 @@ test('Merge: mismatched_hash kommt vor account_mismatch', async () => {
   assert.equal(body.error, 'mismatched_hash');
 });
 
-// Node parst nur einfache Transaktionen: Ein Fee-Bump endet beim Anlegen und beim Merge als
-// invalid_xdr, noch vor der Konto-Pruefung. PHP verhaelt sich anders, siehe Pendant.
-test('Fee-Bump: Create und Merge lehnen als invalid_xdr ab', async () => {
+// Fee-Bump ist als Job nicht vorgesehen (#15): beide Backends lehnen ihn beim Anlegen und beim Merge
+// ausdruecklich mit fee_bump_not_supported ab, vor Quelle, Zeitgrenze und Hash (Pendant: PHP-Test).
+test('Fee-Bump: Create und Merge lehnen mit fee_bump_not_supported ab (auch bei passender und fremder Quelle)', async () => {
   const owner = Keypair.random();
   const inner = paymentTx(new Account(owner.publicKey(), '100'));
   inner.sign(owner);
@@ -163,12 +163,51 @@ test('Fee-Bump: Create und Merge lehnen als invalid_xdr ab', async () => {
   for (const accountId of [owner.publicKey(), attackerAccount]) {
     const { status, body } = await createJob(accountId, feeBump);
     assert.equal(status, 400);
-    assert.equal(body.error, 'invalid_xdr');
+    assert.deepEqual(body, { ok: false, error: 'fee_bump_not_supported' });
   }
 
   const created = await createJob(owner.publicKey(), inner);
   assert.equal(created.status, 200);
   const merged = await post(`${BASE}/${created.body.id}/merge-signed-xdr`, { signedXdr: feeBump.toXDR() }, { 'x-job-token': created.body.accessToken });
   assert.equal(merged.status, 400);
-  assert.equal(merged.body.error, 'invalid_xdr');
+  assert.deepEqual(merged.body, { ok: false, error: 'fee_bump_not_supported' });
+});
+
+test('txSourceBaseAccount: ein Fee-Bump hat keine Quelle (null), nie die innere', () => {
+  const owner = Keypair.random();
+  const inner = paymentTx(new Account(owner.publicKey(), '100'));
+  inner.sign(owner);
+  const feeBump = TransactionBuilder.buildFeeBumpTransaction(Keypair.random(), '2000', inner, Networks.TESTNET);
+  assert.equal(txSourceBaseAccount(inner), owner.publicKey());
+  assert.equal(txSourceBaseAccount(feeBump), null);
+});
+
+// F7: gleiche Antworten wie PHP bei falschem Typ und gleiche Reihenfolge der Pruefungen.
+test('Create: txXdr ist kein String oder leer -> 400 invalid_xdr (nie 500)', async () => {
+  for (const txXdr of [123, ['a'], { a: 1 }, null, '']) {
+    const { status, body } = await post(BASE, { network: 'testnet', accountId: attackerAccount, txXdr });
+    assert.equal(status, 400, JSON.stringify(txXdr));
+    assert.equal(body.error, 'invalid_xdr', JSON.stringify(txXdr));
+  }
+});
+
+test('Merge: signedXdr fehlt oder ist kein String: erst Job (404) und Token (403), dann 400 invalid_xdr', async () => {
+  const owner = Keypair.random();
+  const tx = paymentTx(new Account(owner.publicKey(), '100'));
+  const created = await createJob(owner.publicKey(), tx);
+  assert.equal(created.status, 200);
+  const url = `${BASE}/${created.body.id}/merge-signed-xdr`;
+  const token = { 'x-job-token': created.body.accessToken };
+
+  for (const body of [{}, { signedXdr: '' }, { signedXdr: 123 }, { signedXdr: ['a'] }, { signedXdr: null }]) {
+    const unknown = await post(`${BASE}/gibt-es-nicht/merge-signed-xdr`, body, token);
+    assert.equal(unknown.status, 404, `unbekannter Job ${JSON.stringify(body)}`);
+    const noToken = await post(url, body);
+    assert.equal(noToken.status, 403, `ohne Token ${JSON.stringify(body)}`);
+    const wrongToken = await post(url, body, { 'x-job-token': 'falsch' });
+    assert.equal(wrongToken.status, 403, `falsches Token ${JSON.stringify(body)}`);
+    const withToken = await post(url, body, token);
+    assert.equal(withToken.status, 400, `mit Token ${JSON.stringify(body)}`);
+    assert.equal(withToken.body.error, 'invalid_xdr');
+  }
 });

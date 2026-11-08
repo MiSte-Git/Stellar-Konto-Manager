@@ -13,13 +13,17 @@
 // - Sperren (Schloss, Inaktivitaets-Timeout) loescht ihn ueber clearAllSessionSecrets.
 //   Eine bereits eingehaengte Seite schreibt danach nicht mehr in den Speicher
 //   (Generation), ihr sichtbares Formular bleibt aber stehen.
-// - Felder, die wie ein Secret Key aussehen, werden nicht uebernommen.
+// - Felder, die wie ein Secret Key aussehen, werden nicht uebernommen (auch autoFilledMemo und
+//   die Werte von initial).
 // - Gesendete Zahlungen werden je Konto vermerkt, damit die Seite beim gleichen Konto
 //   mit gleichen Daten warnen kann (der Entwurf selbst bleibt fuer das naechste Konto).
 import { containsSecretKey } from './batchPayment/batchPaymentStore.js';
 
 const SENT_MAX = 20;
 const SENT_WINDOW_MS = 20 * 60 * 60 * 1000;
+
+// Nur Text und Zahlen koennen ein Secret tragen (Objekte, Booleans nicht).
+const isSecretValue = (v) => (typeof v === 'string' || typeof v === 'number') && containsSecretKey(v);
 
 let draft = null;
 let generation = 0;
@@ -47,6 +51,14 @@ export function writeSendPaymentDraft(next, gen) {
   const clean = { ...next };
   for (const field of ['dest', 'amount', 'memoVal']) {
     if (containsSecretKey(clean[field])) clean[field] = '';
+  }
+  // autoFilledMemo (aus der Federation-Aufloesung) und initial (Spenden-/Deep-Link) stammen nicht aus
+  // einer Eingabe des Nutzers, bleiben aber im Speicher: gleiche Regel wie fuer die Felder.
+  if (containsSecretKey(clean.autoFilledMemo)) clean.autoFilledMemo = '';
+  if (clean.initial && typeof clean.initial === 'object' && Object.values(clean.initial).some(isSecretValue)) {
+    // Nur dann eine Kopie: Sonst bleibt es dasselbe Objekt (die Seite wendet jedes initial einmal an
+    // und erkennt es an der Identitaet).
+    clean.initial = Object.fromEntries(Object.entries(clean.initial).map(([k, v]) => [k, isSecretValue(v) ? '' : v]));
   }
   draft = clean;
   return true;

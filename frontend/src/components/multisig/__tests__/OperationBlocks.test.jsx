@@ -21,6 +21,14 @@ const renderBlocks = (blocks) => render(<I18nextProvider i18n={i18n}><OperationB
 describe('OperationBlocks', () => {
   beforeAll(async () => { await i18n.changeLanguage('de'); });
 
+  it('F11: Werte stehen links-nach-rechts und isoliert (RTL-Text ordnet die Umgebung nicht um)', () => {
+    renderBlocks([block({ rows: [{ key: 'memo', label: 'Memo', value: '"\u05D0\u05D1 123"', wrap: true }] })]);
+    const cell = screen.getByRole('cell');
+    expect(cell).toHaveAttribute('dir', 'ltr');
+    expect(cell.style.unicodeBidi).toBe('isolate');
+    expect(cell.className).toContain('font-mono');
+  });
+
   it('nummeriert die Bloecke und zeigt Titel und Tabelle mit Label und Wert', () => {
     renderBlocks([block(), block({ type: 'createAccount', title: 'Konto erstellen' })]);
     const [first, second] = screen.getAllByTestId('operation-block');

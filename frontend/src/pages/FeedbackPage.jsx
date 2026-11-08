@@ -2,6 +2,7 @@ import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { apiUrl } from '../utils/apiBase.js';
 import { useSettings } from '../utils/useSettings.js';
+import { reportUrl } from '../utils/reportUrl.js';
 
 // Renders the feedback page and writes entries directly into the bug tracker (no email).
 export default function FeedbackPage({ onBack }) {
@@ -97,7 +98,7 @@ export default function FeedbackPage({ onBack }) {
   const submitBugReport = useCallback(async () => {
     try {
       const payload = {
-        url: window.location.href,
+        url: reportUrl(),
         userAgent: navigator.userAgent,
         language: navigator.language,
         reportToken,

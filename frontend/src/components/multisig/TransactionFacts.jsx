@@ -1,4 +1,5 @@
 import React from 'react';
+import { BIDI_ISOLATE } from '../../utils/bidiIsolate.js';
 
 /**
  * Transaktionsweite Angaben (Modell aus describeTransaction) als Tabelle Label/Wert, im
@@ -17,7 +18,7 @@ export default function TransactionFacts({ details, title }) {
               className={`align-top ${row.warn ? 'bg-amber-50 text-amber-900 dark:bg-amber-900/30 dark:text-amber-100' : ''}`}
             >
               <th scope="row" className="w-2/5 break-words py-0.5 pr-2 font-normal">{row.label}</th>
-              <td className={`py-0.5 ${row.wrap ? 'break-all font-mono' : 'break-words'} ${row.emphasis ? 'font-semibold' : ''}`}>{row.value}</td>
+              <td {...BIDI_ISOLATE} className={`py-0.5 ${row.wrap ? 'break-all font-mono' : 'break-words'} ${row.emphasis ? 'font-semibold' : ''}`}>{row.value}</td>
             </tr>
           ))}
         </tbody>

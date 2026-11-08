@@ -119,6 +119,14 @@ Ein Job ist eine unsignierte oder teilsignierte Transaktion, die mehrere Signer 
 - **Anzeige vor dem Signieren** (`frontend/src/utils/multisig/describeTransaction.js`,
   `frontend/src/components/multisig/TransactionFacts.jsx`): Quelle, Sequence, Memo (unsichtbare Zeichen maskiert),
   Fees, Zeitfenster und Ledger-Grenzen, Operationen mit `op.source`, Extra Signer, Fee-Bump.
+- **Fee-Bump ist als Job gesperrt (#15).** Beide Backends lehnen ihn beim Anlegen und beim Merge mit 400
+  `fee_bump_not_supported` ab (vor Quelle, Zeitgrenze und Hash), das Frontend sperrt ihn im Job-Detail ohne
+  Bestätigung (`verifyJobTransaction`, Grund `fee_bump`). Grund: Eine Signatur auf der Hülle autorisiert nur das
+  zahlende Konto, nicht die angezeigten Operationen. Der Widerruf (Sequence verbrauchen) bleibt möglich.
+- **Typ- und Reihenfolge-Regeln sind in beiden Backends gleich:** Ein `txXdr` oder `signedXdr`, das kein String oder leer
+  ist, ergibt 400 `invalid_xdr` (nie 500). Beim Merge kommen Job (404) und Token (403) vor der XDR-Prüfung.
+- **Bugreports tragen kein Zugriffstoken:** Die Seitenadresse im Bugreport wird über `reportUrl()` gebildet
+  (`frontend/src/utils/reportUrl.js`): Query-Parameter und Fragment mit „token“ werden entfernt.
 - **Eigenes Konto als `op.source`** sperrt das Signieren hart, ohne Bestätigungs-Checkbox.
 
 ### Weitere Schutzmaßnahmen

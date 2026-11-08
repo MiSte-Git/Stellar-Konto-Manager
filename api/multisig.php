@@ -33,6 +33,7 @@ require __DIR__ . '/multisigDecline.php';
 
 use Soneso\StellarSDK\StellarSDK;
 use Soneso\StellarSDK\AbstractTransaction;
+use Soneso\StellarSDK\FeeBumpTransaction;
 use Soneso\StellarSDK\Network;
 use Soneso\StellarSDK\Crypto\KeyPair;
 use Soneso\StellarSDK\Crypto\StrKey;
@@ -503,11 +504,14 @@ if ($method === 'POST' && $path === '/api/multisig/jobs') {
         $txXdr = $body['txXdr'] ?? '';
         if (!$net) return sendJson(['ok' => false, 'error' => 'invalid_network'], 400);
         if (!StrKey::isValidAccountId($accountId)) return sendJson(['ok' => false, 'error' => 'invalid_account'], 400);
-        if (!$txXdr) return sendJson(['ok' => false, 'error' => 'invalid_xdr'], 400);
+        // Kein String (Zahl, Array, null) ist ungueltiges XDR (400), nie ein TypeError (500). Wie Node.
+        if (!is_string($txXdr) || $txXdr === '') return sendJson(['ok' => false, 'error' => 'invalid_xdr'], 400);
 
         $parseErr = null;
         $tx = parseTx($txXdr, $net, $parseErr);
         if (!$tx) return sendJson(['ok' => false, 'error' => 'invalid_xdr', 'detail' => $parseErr], 400);
+        // Fee-Bump ist als Job nicht vorgesehen (#15): ausdruecklich ablehnen, vor Quelle und Zeitgrenze.
+        if ($tx instanceof FeeBumpTransaction) return sendJson(['ok' => false, 'error' => 'fee_bump_not_supported'], 400);
         if (txSourceBaseAccount($tx) !== $accountId) return sendAccountMismatch();
 
         // G5 stage 2: reject a timebound longer than the app's own cap before
@@ -914,7 +918,6 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/merge-
         $id = $m['id'] ?? '';
         $body = jsonBody();
         $signedXdr = $body['signedXdr'] ?? '';
-        if (!$signedXdr) return sendJson(['ok' => false, 'error' => 'invalid_xdr'], 400);
 
         // Fail fast on obvious client errors before taking the write lock.
         $preCheck = loadJobs($jobFile);
@@ -924,11 +927,15 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/merge-
         }
         if (!$job) return sendJson(['ok' => false, 'error' => 'not_found'], 404);
         if (!hasValidJobToken($job)) return sendJson(['ok' => false, 'error' => 'forbidden'], 403);
+        // Erst nach Job und Token (404, 403), wie Node: Ein fehlendes oder falsch getyptes signedXdr
+        // gibt ohne Token nichts preis und ist danach 400, nie ein TypeError (500).
+        if (!is_string($signedXdr) || $signedXdr === '') return sendJson(['ok' => false, 'error' => 'invalid_xdr'], 400);
 
         $net = $job['network'] ?? 'public';
         $parseErr = null;
         $incoming = parseTx($signedXdr, $net, $parseErr);
         if (!$incoming) return sendJson(['ok' => false, 'error' => 'invalid_xdr', 'detail' => $parseErr], 400);
+        if ($incoming instanceof FeeBumpTransaction) return sendJson(['ok' => false, 'error' => 'fee_bump_not_supported'], 400);
         $hash = txHash($incoming, $net);
         if ($hash !== ($job['txHash'] ?? '')) return sendJson(['ok' => false, 'error' => 'mismatched_hash'], 400);
         // K1: Altjobs von vor dieser Pruefung bleiben gespeichert, nehmen aber keine

@@ -79,7 +79,7 @@ check('txSourceBaseAccount: M-Adresse zaehlt zum Basiskonto', txSourceBaseAccoun
 $inner = paymentTx($plain);
 $inner->sign($plain, Network::testnet());
 $feeBump = (new FeeBumpTransactionBuilder($inner))->setFeeAccount(KeyPair::random()->getAccountId())->setBaseFee(200)->build();
-check('txSourceBaseAccount: Fee-Bump nimmt die innere Transaktion', txSourceBaseAccount($feeBump) === $plain->getAccountId());
+check('txSourceBaseAccount: Fee-Bump hat keine Quelle (null), nie die innere', txSourceBaseAccount($feeBump) === null);
 
 // --- HTTP-Ablauf --------------------------------------------------------------
 
@@ -162,22 +162,40 @@ try {
     $res = post(BASE_URL . '/legacy-mismatch/merge-signed-xdr', ['signedXdr' => paymentTx($victim)->toEnvelopeXdrBase64()], ['x-job-token: legacy-token']);
     check('Merge: mismatched_hash kommt vor account_mismatch', $res['status'] === 400 && ($res['body']['error'] ?? '') === 'mismatched_hash');
 
-    // PHP parst Fee-Bumps und vergleicht die innere Quelle. Ein Fee-Bump hat selbst keine
-    // Zeitgrenze und scheitert danach am Cap, Node lehnt schon beim Parsen als invalid_xdr ab.
+    // Fee-Bump ist als Job nicht vorgesehen (#15): ausdruecklich fee_bump_not_supported, vor Quelle und
+    // Zeitgrenze, beim Anlegen und beim Merge (Pendant: test/multisigAccountMismatch.test.js).
     $feeOwner = KeyPair::random();
     $feeInner = paymentTx($feeOwner);
     $feeInner->sign($feeOwner, Network::testnet());
     $feeBumpTx = (new FeeBumpTransactionBuilder($feeInner))->setFeeAccount(KeyPair::random()->getAccountId())->setBaseFee(200)->build();
 
     $res = createJob($attacker->getAccountId(), $feeBumpTx);
-    check('Fee-Bump: Create mit fremder innerer Quelle -> account_mismatch', $res['status'] === 400 && ($res['body']['error'] ?? '') === 'account_mismatch');
+    check('Fee-Bump: Create mit fremder Quelle -> fee_bump_not_supported', $res['status'] === 400 && ($res['body'] ?? []) === ['ok' => false, 'error' => 'fee_bump_not_supported']);
     $res = createJob($feeOwner->getAccountId(), $feeBumpTx);
-    check('Fee-Bump: Create mit passender innerer Quelle -> timebound_too_long', $res['status'] === 400 && ($res['body']['error'] ?? '') === 'timebound_too_long');
+    check('Fee-Bump: Create mit passender Quelle -> fee_bump_not_supported', $res['status'] === 400 && ($res['body'] ?? []) === ['ok' => false, 'error' => 'fee_bump_not_supported']);
 
     $created = createJob($feeOwner->getAccountId(), $feeInner);
     check('sanity: Job fuer die innere Transaktion wird angelegt', $created['status'] === 200);
     $res = post(BASE_URL . '/' . ($created['body']['id'] ?? '') . '/merge-signed-xdr', ['signedXdr' => $feeBumpTx->toEnvelopeXdrBase64()], ['x-job-token: ' . ($created['body']['accessToken'] ?? '')]);
-    check('Fee-Bump: Merge in den Job der inneren Tx -> mismatched_hash', $res['status'] === 400 && ($res['body']['error'] ?? '') === 'mismatched_hash');
+    check('Fee-Bump: Merge -> fee_bump_not_supported', $res['status'] === 400 && ($res['body'] ?? []) === ['ok' => false, 'error' => 'fee_bump_not_supported']);
+
+    // F7: Falscher Typ ist 400 invalid_xdr (nie 500), gleiche Antworten und Reihenfolge wie Node.
+    foreach ([['txXdr' => 123], ['txXdr' => ['a']], ['txXdr' => ['a' => 1]], ['txXdr' => null], ['txXdr' => ''], []] as $i => $extra) {
+        $res = post(BASE_URL, array_merge(['network' => 'testnet', 'accountId' => $attacker->getAccountId()], $extra));
+        check("Create: txXdr ungueltig (#$i) -> 400 invalid_xdr", $res['status'] === 400 && ($res['body']['error'] ?? '') === 'invalid_xdr');
+    }
+    $mergeUrl = BASE_URL . '/' . ($created['body']['id'] ?? '') . '/merge-signed-xdr';
+    $goodToken = ['x-job-token: ' . ($created['body']['accessToken'] ?? '')];
+    foreach ([[], ['signedXdr' => ''], ['signedXdr' => 123], ['signedXdr' => ['a']], ['signedXdr' => null]] as $i => $body) {
+        $res = post(BASE_URL . '/gibt-es-nicht/merge-signed-xdr', $body, $goodToken);
+        check("Merge: unbekannter Job vor der XDR-Pruefung (#$i) -> 404", $res['status'] === 404);
+        $res = post($mergeUrl, $body);
+        check("Merge: ohne Token vor der XDR-Pruefung (#$i) -> 403", $res['status'] === 403);
+        $res = post($mergeUrl, $body, ['x-job-token: falsch']);
+        check("Merge: falsches Token vor der XDR-Pruefung (#$i) -> 403", $res['status'] === 403);
+        $res = post($mergeUrl, $body, $goodToken);
+        check("Merge: mit Token, signedXdr ungueltig (#$i) -> 400 invalid_xdr", $res['status'] === 400 && ($res['body']['error'] ?? '') === 'invalid_xdr');
+    }
 } finally {
     proc_terminate($server);
     proc_close($server);

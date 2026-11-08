@@ -371,6 +371,43 @@ describe('Pruefung der Job-Transaktion (K1, M1)', () => {
     await expectLocked(block);
   });
 
+  it('sperrt einen Fee-Bump (#15): eigener Hinweis, keine Bestaetigung, Signieren und Import gesperrt, Widerruf bleibt', async () => {
+    const inner = jobTx();
+    inner.sign(Keypair.fromSecret(SIGNER_A.secret));
+    const bump = TransactionBuilder.buildFeeBumpTransaction(Keypair.fromSecret(SIGNER_B.secret), '2000', inner, Networks.TESTNET);
+    hoisted.getJobMock.mockImplementation(async () => makeJob({ txXdr: bump.toXDR(), txHash: txHashHex(bump) }));
+    hoisted.sessionSecretMock.mockResolvedValue(SIGNER_A.secret);
+    renderPage();
+    const block = await screen.findByTestId('job-integrity-block');
+    expect(block).toHaveTextContent('Diese Transaktion ist ein Fee-Bump');
+    expect(block).toHaveTextContent('nicht vorgesehen');
+    expect(block).toHaveTextContent('Der Widerruf bleibt möglich');
+    await expectLocked(block);
+  });
+
+  it('F4: Anzeige und Kopieren des XDR nutzen dasselbe Feld wie die Pruefung (jobTxXdr), nie txXdr', async () => {
+    // Leeres txXdrCurrent: Geprueft und gezeigt wird txXdrOriginal. Ein anderes Feld txXdr darf weder im
+    // Textfeld stehen noch kopiert werden.
+    const good = jobTx('100');
+    const other = new TransactionBuilder(new Account(SOURCE, '100'), { fee: '1000', networkPassphrase: Networks.TESTNET })
+      .addOperation(Operation.payment({ destination: SIGNER_B.publicKey, asset: Asset.native(), amount: '9999' }))
+      .setTimeout(86400)
+      .build();
+    hoisted.getJobMock.mockImplementation(async () => makeJob({
+      txXdrCurrent: '', txXdrOriginal: good.toXDR(), txXdr: other.toXDR(), txHash: txHashHex(good),
+    }));
+    const writeText = vi.fn();
+    Object.defineProperty(navigator, 'clipboard', { value: { writeText }, configurable: true });
+    renderPage();
+    await screen.findByTestId('job-source');
+    const box = screen.getAllByRole('textbox').find((el) => el.readOnly);
+    expect(box.value).toBe(good.toXDR());
+    expect(box.value).not.toBe(other.toXDR());
+    expect(screen.queryByTestId('job-integrity-block')).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: i18n.t('multisig:detail.xdr.copy') }));
+    expect(writeText).toHaveBeenCalledWith(good.toXDR());
+  });
+
   it('entfernt bei Abweichung auch die Bestaetigung fuer fremde Quellkonten', async () => {
     const tx = new TransactionBuilder(new Account(SOURCE, '100'), { fee: '1000', networkPassphrase: Networks.TESTNET })
       .addOperation(Operation.payment({ destination: SIGNER_B.publicKey, asset: Asset.native(), amount: '1', source: SIGNER_A.publicKey }))
@@ -695,17 +732,16 @@ describe('Fremdes Quellkonto einer Operation', () => {
     expect(screen.getByTestId('job-dead')).toBeInTheDocument();
   });
 
-  it('Fee-Bump mit fremder op.source in der inneren Transaktion: Warnung und Sperre', async () => {
+  it('Fee-Bump mit fremder op.source in der inneren Transaktion: gesperrt, die Bestaetigung gibt es nicht mehr (#15)', async () => {
     const inner = paymentTx(SIGNER_B.publicKey);
     inner.sign(Keypair.fromSecret(SIGNER_A.secret));
     const bump = TransactionBuilder.buildFeeBumpTransaction(Keypair.fromSecret(SIGNER_A.secret), '2000', inner, Networks.TESTNET);
     hoisted.getJobMock.mockImplementation(async () => makeJob({ txXdr: bump.toXDR(), txHash: txHashHex(bump) }));
     renderPage();
-    expect(await screen.findByTestId('job-foreign-sources')).toHaveTextContent(SIGNER_B.publicKey);
+    expect(await screen.findByTestId('job-integrity-block')).toHaveTextContent('Fee-Bump');
     expect(screen.getByTestId('operation-block')).toHaveTextContent(`Quellkonto${SIGNER_B.publicKey}`);
     expect(signButton()).toBeDisabled();
-    fireEvent.click(screen.getByRole('checkbox', { name: FOREIGN }));
-    expect(signButton()).toBeEnabled();
+    expect(screen.queryByRole('checkbox', { name: FOREIGN })).toBeNull();
   });
 
   it('Fee-Bump: wertet gegen die innere Transaktion und zeigt deren Operationen', async () => {
@@ -1016,9 +1052,10 @@ describe('Memo, Fee und Preconditions im Job-Detail (H1)', () => {
     renderPage();
     expect(await screen.findByTestId('job-tx-preconditions')).toHaveTextContent('Extra Signer');
     expect(screen.getByTestId('job-tx-row-feeBumpSource')).toHaveTextContent(SIGNER_B.publicKey);
+    // #15: Ein Fee-Bump bleibt gesperrt, auch mit der Bestaetigung der Preconditions.
+    expect(screen.getByTestId('job-integrity-block')).toHaveTextContent('Fee-Bump');
     expect(signButton()).toBeDisabled();
-    fireEvent.click(screen.getByRole('checkbox', { name: PRECOND }));
-    expect(signButton()).toBeEnabled();
+    expect(screen.queryByRole('checkbox', { name: PRECOND })).toBeNull();
   });
 
   it('F1: minSeqNum 0 mit hoher Sequence verlangt die Bestaetigung und warnt', async () => {

@@ -37,10 +37,19 @@ describe('verifyJobTransaction', () => {
     expect(verifyJobTransaction(job, decodeJobTransaction(job))).toMatchObject({ ok: true, sourceAccountId: source, muxedSource: tx.source });
   });
 
-  it('nimmt bei einem Fee-Bump die innere Transaktion', () => {
+  it('sperrt einen Fee-Bump mit eigenem Code (#15), egal ob Konto und Hash passen', () => {
     const inner = buildTx();
     const feeBump = TransactionBuilder.buildFeeBumpTransaction(Keypair.random(), '1000', inner, Networks.TESTNET);
-    expect(codes(jobFor(feeBump))).toEqual([]);
+    const job = jobFor(feeBump);
+    const result = verifyJobTransaction(job, decodeJobTransaction(job));
+    expect(result.ok).toBe(false);
+    expect(result.issues).toEqual([{ code: 'fee_bump' }]);
+    // Auch bei abweichendem Konto bleibt es bei dem einen, klaren Grund (kein Folgefehler).
+    expect(codes(jobFor(feeBump, { accountId: Keypair.random().publicKey() }))).toEqual(['fee_bump']);
+  });
+
+  it('eine normale Transaktion mit demselben Inhalt wird nicht gesperrt', () => {
+    expect(codes(jobFor(buildTx()))).toEqual([]);
   });
 
   it('nennt bei falschem Hash beide Werte, Grossschreibung zaehlt nicht', () => {

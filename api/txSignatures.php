@@ -19,18 +19,17 @@ require_once __DIR__ . '/stellarNetworks.php';
 use Soneso\StellarSDK\AbstractOperation;
 use Soneso\StellarSDK\AbstractTransaction;
 use Soneso\StellarSDK\Crypto\KeyPair;
-use Soneso\StellarSDK\FeeBumpTransaction;
 use Soneso\StellarSDK\Network;
 use Soneso\StellarSDK\Transaction;
 use Soneso\StellarSDK\Xdr\XdrDecoratedSignature;
 
 const MAX_TX_SIGNATURES = 20; // Stellar XDR: Signatures is DecoratedSignature<20>
 
-// Basiskonto (G-Adresse) der Transaktionsquelle: Eine M-Adresse zaehlt zu ihrem
-// Basiskonto, bei einem Fee-Bump gilt die innere Transaktion. Pendant:
-// txSourceBaseAccount() in services/txSignatures.js.
+// Basiskonto (G-Adresse) der Transaktionsquelle: Eine M-Adresse zaehlt zu ihrem Basiskonto.
+// Fee-Bump-Transaktionen sind als Job nicht vorgesehen (sie werden beim Anlegen und beim Merge
+// vorher abgelehnt) und haben hier keine Quelle: null, nie eine geliehene innere Quelle.
+// Pendant: txSourceBaseAccount() in services/txSignatures.js.
 function txSourceBaseAccount(AbstractTransaction $tx): ?string {
-    if ($tx instanceof FeeBumpTransaction) $tx = $tx->getInnerTx();
     return $tx instanceof Transaction ? $tx->getSourceAccount()->getEd25519AccountId() : null;
 }
 

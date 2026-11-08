@@ -23,6 +23,29 @@ describe('sendPaymentDraft', () => {
     expect(d.amount).toBe('5');
   });
 
+  it('F11: filters autoFilledMemo and the values of initial, which do not come from an input field', () => {
+    writeSendPaymentDraft({ dest: 'GB', autoFilledMemo: `memo ${SECRET}`, initial: { recipient: SECRET, amount: 5, memoText: `x ${SECRET}`, label: 'ok' }, network: 'PUBLIC' });
+    const d = readSendPaymentDraft('PUBLIC');
+    expect(d.autoFilledMemo).toBe('');
+    expect(d.initial).toEqual({ recipient: '', amount: 5, memoText: '', label: 'ok' });
+    expect(JSON.stringify(d)).not.toContain(SECRET);
+  });
+
+  it('F11: keeps harmless autoFilledMemo and the same initial object (the page recognizes initial by identity)', () => {
+    const initial = { recipient: 'GB', amount: 5, memoText: 'r1' };
+    writeSendPaymentDraft({ dest: 'GB', autoFilledMemo: 'r1', initial, network: 'PUBLIC' });
+    const d = readSendPaymentDraft('PUBLIC');
+    expect(d.autoFilledMemo).toBe('r1');
+    expect(d.initial).toBe(initial);
+  });
+
+  it('F11: a missing or null autoFilledMemo and initial stay as they are', () => {
+    writeSendPaymentDraft({ dest: 'GB', autoFilledMemo: null, initial: undefined, network: 'PUBLIC' });
+    const d = readSendPaymentDraft('PUBLIC');
+    expect(d.autoFilledMemo).toBeNull();
+    expect(d.initial).toBeUndefined();
+  });
+
   it('ignores writes from an instance mounted before the lock', () => {
     const gen = draftGeneration();
     expect(writeSendPaymentDraft({ amount: '1', network: 'PUBLIC' }, gen)).toBe(true);

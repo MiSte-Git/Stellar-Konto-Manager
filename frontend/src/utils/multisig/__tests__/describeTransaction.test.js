@@ -157,4 +157,36 @@ describe('describeTransaction', () => {
     expect(r.feeBumpSource.value).toBe(feeSource.publicKey());
     expect(r.feeBumpFee.value).toBe('0,0002 XLM');
   });
+
+  it('F11: ist nur die aeussere Fee hoch, ist nur die Zeile der aeusseren Fee gelb, nicht die der inneren', () => {
+    const inner = build({ fee: '100' });
+    const bump = TransactionBuilder.buildFeeBumpTransaction(Keypair.random(), String(HIGH_FEE_PER_OP_STROOPS * 3n), inner, Networks.TESTNET);
+    const d = describeTransaction(bump, t, { locale: 'de' });
+    const r = rowsOf(d);
+    expect(d.highFee).toBe(true);
+    expect(r.feeBumpFee.warn).toBe(true);
+    expect(r.fee.warn).toBeFalsy();
+    expect(d.warnings.length).toBeGreaterThan(0);
+  });
+
+  it('F11: sind beide Fees hoch, sind beide Zeilen gelb; sind beide niedrig, keine', () => {
+    const innerHigh = build({ fee: String(HIGH_FEE_PER_OP_STROOPS * 2n), ops: 1 });
+    const high = describeTransaction(TransactionBuilder.buildFeeBumpTransaction(Keypair.random(), String(HIGH_FEE_PER_OP_STROOPS * 4n), innerHigh, Networks.TESTNET), t, { locale: 'de' });
+    expect(rowsOf(high).fee.warn).toBe(true);
+    expect(rowsOf(high).feeBumpFee.warn).toBe(true);
+    const low = describeTransaction(TransactionBuilder.buildFeeBumpTransaction(Keypair.random(), '200', build({ fee: '100' }), Networks.TESTNET), t, { locale: 'de' });
+    expect(low.highFee).toBe(false);
+    expect(rowsOf(low).fee.warn).toBeFalsy();
+    expect(rowsOf(low).feeBumpFee.warn).toBeFalsy();
+  });
+
+  it('F11: das Text-Memo steht als wrap-Zeile (monospace), ein Memo mit Steuerzeichen bleibt maskiert und gelb', () => {
+    const plain = rowsOf(describeTransaction(build({ memo: Memo.text('abc') }), t, { locale: 'de' })).memo;
+    expect(plain.wrap).toBe(true);
+    expect(plain.value).toBe('"abc"');
+    const rtl = rowsOf(describeTransaction(build({ memo: Memo.text('a\u202Eb') }), t, { locale: 'de' })).memo;
+    expect(rtl.wrap).toBe(true);
+    expect(rtl.warn).toBe(true);
+    expect(rtl.value).not.toContain('\u202E');
+  });
 });

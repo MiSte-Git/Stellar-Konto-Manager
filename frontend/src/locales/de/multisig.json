@@ -123,6 +123,7 @@
   "jobCreated": "Multisig-Job erstellt (ID: {{id}}). Öffne „Multisig-Jobs“, um den Status zu sehen.",
   "errors": {
     "accountMismatch": "Das Quellkonto der Transaktion stimmt nicht mit dem Konto des Jobs überein. Die Signatur wurde nicht übernommen.",
+    "feeBump": "Fee-Bump-Transaktionen sind als Multisig-Job nicht vorgesehen und werden abgelehnt. Bitte die Transaktion ohne Fee-Bump neu erstellen.",
     "mismatchedHash": "Die signierte XDR gehört nicht zu dieser Transaktion.",
     "signersUnavailable": "Die Signer-Liste des Kontos ist bei Horizon gerade nicht abrufbar. Die Signatur wurde nicht übernommen. Bitte in ein paar Sekunden erneut versuchen.",
     "timeboundTooLong": "Das Zeitfenster ist zu lang. Bitte die Multisig-Timeout-Einstellung auf maximal {{maxDays}} Tage reduzieren."
@@ -200,6 +201,7 @@
       "accountMismatch": "Das Quellkonto der Transaktion weicht vom Konto des Jobs ab. Eine Signatur würde für das Quellkonto der Transaktion gelten, die Signer des Jobs gehören aber zum anderen Konto.",
       "jobAccount": "Konto laut Job",
       "txSource": "Quelle laut Transaktion",
+      "feeBump": "Diese Transaktion ist ein Fee-Bump. Fee-Bump-Transaktionen sind als Job nicht vorgesehen: Eine Signatur würde nur das zahlende Konto der äußeren Hülle autorisieren, nicht die angezeigten Operationen.",
       "hashMismatch": "Die Transaktion passt nicht zum gespeicherten Hash.",
       "jobHash": "Hash laut Job",
       "txHash": "Hash der Transaktion",

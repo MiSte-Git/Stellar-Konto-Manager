@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { apiUrl } from '../utils/apiBase.js';
+import { reportUrl } from '../utils/reportUrl.js';
 
 /**
  * FeedbackForm: Schreibt das Feedback direkt in den Bugtracker (kein Mailto).
@@ -15,7 +16,7 @@ export default function FeedbackForm(props) {
     const title = description || t('common:bugReport.title');
     try {
       const payload = {
-        url: window.location.href,
+        url: reportUrl(),
         userAgent: navigator.userAgent,
         language: navigator.language,
         subject: title,

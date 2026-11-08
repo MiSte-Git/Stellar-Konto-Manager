@@ -160,7 +160,7 @@ export function describeTransaction(tx, t, options = {}) {
     } else {
       const { escaped, found } = escapeInvisible(decoded);
       // Anfuehrungszeichen machen Leerzeichen am Rand sichtbar.
-      rows.push({ key: 'memo', label: label('memo', 'Memo'), value: `"${escaped}"`, emphasis: true, warn: found });
+      rows.push({ key: 'memo', label: label('memo', 'Memo'), value: `"${escaped}"`, wrap: true, emphasis: true, warn: found });
       if (found) warnings.push(text('warnMemoInvisible', 'Das Memo enthält unsichtbare oder leicht verwechselbare Zeichen (z. B. Steuer-, Zero-Width- oder Bidi-Zeichen, besondere Leerzeichen). Sie sind als \\u… dargestellt. Prüfe das Memo genau.'));
       if (decoded !== decoded.trim()) warnings.push(text('warnMemoWhitespace', 'Das Memo beginnt oder endet mit einem Leerzeichen.'));
     }
@@ -174,10 +174,13 @@ export function describeTransaction(tx, t, options = {}) {
   const innerFee = toBigInt(inner?.fee);
   const opCount = BigInt(Math.max(ops.length, 1));
   let highFee = false;
+  // Getrennt: Ist nur die aeussere Fee hoch, ist die Zeile der inneren Fee nicht gelb (und umgekehrt).
+  let innerHigh = false;
+  let outerHigh = false;
   if (innerFee !== null) {
     rows.push({ key: 'fee', label: label('fee', 'Maximale Fee'), value: formatAmountWithUnit(innerFee, 'XLM', locale), emphasis: true });
     rows.push({ key: 'feePerOp', label: label('feePerOp', 'Maximale Fee je Operation'), value: formatAmountWithUnit(innerFee / opCount, 'XLM', locale) });
-    highFee = innerFee > HIGH_FEE_PER_OP_STROOPS * opCount;
+    innerHigh = innerFee > HIGH_FEE_PER_OP_STROOPS * opCount;
   }
   if (feeBump) {
     const outerFee = toBigInt(tx.fee);
@@ -185,11 +188,12 @@ export function describeTransaction(tx, t, options = {}) {
     if (outerFee !== null) {
       rows.push({ key: 'feeBumpFee', label: label('feeBumpFee', 'Fee-Bump: maximale Fee'), value: formatAmountWithUnit(outerFee, 'XLM', locale), emphasis: true });
       const outerOps = opCount + 1n;
-      highFee = highFee || outerFee > HIGH_FEE_PER_OP_STROOPS * outerOps;
+      outerHigh = outerFee > HIGH_FEE_PER_OP_STROOPS * outerOps;
     }
   }
+  highFee = innerHigh || outerHigh;
   if (highFee) {
-    rows.filter((r) => r.key === 'fee' || r.key === 'feeBumpFee').forEach((r) => { r.warn = true; });
+    rows.filter((r) => (r.key === 'fee' && innerHigh) || (r.key === 'feeBumpFee' && outerHigh)).forEach((r) => { r.warn = true; });
     warnings.push(text(
       'warnHighFee',
       'Die Fee liegt über dem, was SKM selbst bietet (höchstens {{max}} je Operation). Sie ist ein Höchstgebot: Bei Netzlast kann sie bis zu diesem Betrag kosten.',

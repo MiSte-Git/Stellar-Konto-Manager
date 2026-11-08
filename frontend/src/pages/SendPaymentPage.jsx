@@ -14,6 +14,8 @@ import { getSessionSecrets } from '../utils/sessionSecrets.js';
 import { needsMultipleSignatures } from '../utils/stellar/isMultisigAccount.js';
 import { apiUrl } from '../utils/apiBase.js';
 import { backendErrorMessage } from '../utils/multisigErrors.js';
+import { jobTxXdr } from '../utils/multisig/verifyJobTransaction.js';
+import { BIDI_ISOLATE } from '../utils/bidiIsolate.js';
 import { JOB_INTEGRITY_ERROR, signAndMergeResultJob } from '../utils/multisig/signResultJob.js';
 import { getRequiredThreshold } from '../utils/getRequiredThreshold.js';
 import { useSettings } from '../utils/useSettings';
@@ -2223,15 +2225,15 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
             {sentInfo.sourceLabel && (
               <div><span className="text-gray-600 dark:text-gray-400">{t('wallet:federationDisplay.accountLabel', 'Label')}:</span> {sentInfo.sourceLabel}</div>
             )}
-            <div><span className="text-gray-600 dark:text-gray-400">{t('common:payment.send.recipient')}:</span> <span className="font-mono break-all">{sentInfo.recipient}</span></div>
+            <div><span className="text-gray-600 dark:text-gray-400">{t('common:payment.send.recipient')}:</span> <span {...BIDI_ISOLATE} className="font-mono break-all">{sentInfo.recipient}</span></div>
             {sentInfo.recipientFederation && (
-              <div><span className="text-gray-600 dark:text-gray-400">{t('wallet:federationDisplay.label', 'Föderationsadresse')}:</span> <span className="font-mono break-all">{sentInfo.recipientFederation}</span></div>
+              <div><span className="text-gray-600 dark:text-gray-400">{t('wallet:federationDisplay.label', 'Föderationsadresse')}:</span> <span {...BIDI_ISOLATE} className="font-mono break-all">{sentInfo.recipientFederation}</span></div>
             )}
             {sentInfo.recipientLabel && (
               <div><span className="text-gray-600 dark:text-gray-400">{t('wallet:federationDisplay.accountLabel', 'Label')}:</span> {sentInfo.recipientLabel}</div>
             )}
             <div><span className="text-gray-600 dark:text-gray-400">{t('common:payment.send.amount')}:</span> {sentAmountText || '0'} {sentInfo.asset}</div>
-            <div><span className="text-gray-600 dark:text-gray-400">{t('common:payment.send.memo')}:</span> {sentInfo.memo || '-'}</div>
+            <div><span className="text-gray-600 dark:text-gray-400">{t('common:payment.send.memo')}:</span> <span {...BIDI_ISOLATE} className="font-mono break-all">{sentInfo.memo || '-'}</span></div>
             {sentInfo.network && (
               <div data-testid="send-success-network"><span className="text-gray-600 dark:text-gray-400">{t('common:networkLabel', 'Netzwerk')}:</span> {formatNetworkLabel(sentInfo.network)}</div>
             )}
@@ -2535,7 +2537,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
         <div className="text-sm space-y-1 mb-4">
           <div className="flex items-start justify-between gap-2">
             <span className="text-gray-600 dark:text-gray-400">{t('common:payment.send.recipient')}:</span>
-            <span className="font-mono break-all text-right">{dest}</span>
+            <span {...BIDI_ISOLATE} className="font-mono break-all text-right">{dest}</span>
           </div>
           <div className="flex items-start justify-between gap-2">
             <span className="text-gray-600 dark:text-gray-400">{t('common:payment.send.amount')}:</span>
@@ -2548,7 +2550,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
           </div>
           <div className="flex items-start justify-between gap-2">
             <span className="text-gray-600 dark:text-gray-400">{t('common:payment.send.memo')}:</span>
-            <span className="text-right break-all">{memoType==='none' || !memoVal ? '-' : memoVal}</span>
+            <span {...BIDI_ISOLATE} className="font-mono text-right break-all">{memoType==='none' || !memoVal ? '-' : memoVal}</span>
           </div>
           {netLabel && (
             <div className="flex items-start justify-between gap-2">
@@ -2632,12 +2634,12 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
               )}
               <div className="flex items-start justify-between gap-2">
                 <span className="text-gray-600 dark:text-gray-400">{t('common:payment.send.recipient')}:</span>
-                <span className="font-mono break-all text-right">{reviewDialog.snapshot?.recipient}</span>
+                <span {...BIDI_ISOLATE} className="font-mono break-all text-right">{reviewDialog.snapshot?.recipient}</span>
               </div>
               {reviewDialog.snapshot?.recipientFederation && (
                 <div className="flex items-start justify-between gap-2">
                   <span className="text-gray-600 dark:text-gray-400">{t('wallet:federationDisplay.label', 'Föderationsadresse')}:</span>
-                  <span className="font-mono break-all text-right">{reviewDialog.snapshot.recipientFederation}</span>
+                  <span {...BIDI_ISOLATE} className="font-mono break-all text-right">{reviewDialog.snapshot.recipientFederation}</span>
                 </div>
               )}
               {reviewDialog.snapshot?.recipientLabel && (
@@ -2657,7 +2659,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
               </div>
               <div className="flex items-start justify-between gap-2">
                 <span className="text-gray-600 dark:text-gray-400">{t('common:payment.send.memo')}:</span>
-                <span className="text-right break-all">{reviewDialog.snapshot?.memo || '-'}</span>
+                <span {...BIDI_ISOLATE} className="font-mono text-right break-all">{reviewDialog.snapshot?.memo || '-'}</span>
               </div>
               {reviewDialog.snapshot?.network && (
                 <div className="flex items-start justify-between gap-2">
@@ -2965,7 +2967,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                     type: 'job',
                     jobId: jobToSign.jobId,
                     hash,
-                    xdr: merged?.txXdrCurrent || merged?.txXdr || jobToSign.xdr,
+                    xdr: jobTxXdr(merged) || jobToSign.xdr,
                     summary,
                     status,
                     requiredWeight: Number(merged?.requiredWeight || jobToSign.requiredWeight || 0) || null,
@@ -2981,6 +2983,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                   let detail = mergeErr?.message || 'multisig.jobs.merge_failed';
                   if (mergeErr?.code === JOB_INTEGRITY_ERROR) detail = t('multisig:detail.integrity.title');
                   else if (detail === 'account_mismatch') detail = t('multisig:errors.accountMismatch');
+                  else if (detail === 'fee_bump_not_supported') detail = t('multisig:errors.feeBump');
                   showErrorMessage(detail);
                 } finally {
                   setIsProcessing(false);

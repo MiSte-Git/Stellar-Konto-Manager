@@ -1,5 +1,6 @@
 import React from 'react';
 import { DESCRIBED_OPERATION_TYPES } from '../../utils/multisig/describeOperations.js';
+import { BIDI_ISOLATE } from '../../utils/bidiIsolate.js';
 
 const BASE = 'rounded-sm border p-2';
 const NORMAL = `${BASE} border-gray-200 dark:border-gray-700`;
@@ -31,7 +32,7 @@ export default function OperationBlocks({ blocks }) {
               {block.rows.map((row) => (
                 <tr key={row.key} className="align-top">
                   <th scope="row" className="w-2/5 break-words py-0.5 pr-2 font-normal">{row.label}</th>
-                  <td className={`py-0.5 ${row.wrap ? 'break-all font-mono' : 'break-words'} ${row.emphasis ? 'font-semibold' : ''}`}>{row.value}</td>
+                  <td {...BIDI_ISOLATE} className={`py-0.5 ${row.wrap ? 'break-all font-mono' : 'break-words'} ${row.emphasis ? 'font-semibold' : ''}`}>{row.value}</td>
                 </tr>
               ))}
             </tbody>

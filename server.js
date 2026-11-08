@@ -505,19 +505,41 @@ app.patch('/api/bugreport/:id', requireAllowedOrigin, requireJsonContentType, as
 // --- Pending multisig jobs (file-backed, no secrets stored) ---
 const { normalizeNetwork } = stellarNetworks;
 
+// Fee-Bump-Transaktionen sind als Multisig-Job nicht vorgesehen (#15): Beim Anlegen und beim Merge
+// wird ausdruecklich mit 'fee_bump_not_supported' abgelehnt, nicht nur beilaeufig als ungueltiges
+// XDR. Pendant: api/multisig.php (gleicher Code, gleiche Reihenfolge).
+const FEE_BUMP_CODE = 'fee_bump_not_supported';
+
 function parseTxAndHash(txXdr, network) {
+  let tx;
   try {
     const passphrase = stellarNetworks.passphraseFor(network);
-    const tx = new StellarSdk.Transaction(txXdr, passphrase);
+    tx = StellarSdk.TransactionBuilder.fromXDR(txXdr, passphrase);
+  } catch (e) {
+    const err = new Error(e?.message || 'invalid_xdr');
+    err.code = 'invalid_xdr';
+    throw err;
+  }
+  if (tx instanceof StellarSdk.FeeBumpTransaction) {
+    const err = new Error(FEE_BUMP_CODE);
+    err.code = FEE_BUMP_CODE;
+    throw err;
+  }
+  try {
     // Buffer.from: ab stellar-sdk v17 liefert hash() ein Uint8Array, dessen toString('hex') kein Hex ist.
     const hashHex = Buffer.from(tx.hash()).toString('hex');
     return { tx, hashHex };
   } catch (e) {
-    const msg = e?.message || 'invalid_xdr';
-    const err = new Error(msg);
+    const err = new Error(e?.message || 'invalid_xdr');
     err.code = 'invalid_xdr';
     throw err;
   }
+}
+
+// Antwort fuer einen Fehler aus parseTxAndHash: Fee-Bump mit eigenem Code, sonst invalid_xdr.
+function parseErrorBody(e) {
+  if (e?.code === FEE_BUMP_CODE) return { ok: false, error: FEE_BUMP_CODE };
+  return { ok: false, error: 'invalid_xdr', detail: e?.message || 'invalid_xdr' };
 }
 
 function newJobId() {
@@ -708,7 +730,7 @@ app.post('/api/multisig/jobs', async (req, res) => {
     try {
       parsed = parseTxAndHash(txXdr, net);
     } catch (e) {
-      return res.status(400).json({ ok: false, error: 'invalid_xdr', detail: e?.message || 'invalid_xdr' });
+      return res.status(400).json(parseErrorBody(e));
     }
     if (txSourceBaseAccount(parsed.tx) !== accountId.trim()) {
       return res.status(400).json(ACCOUNT_MISMATCH_BODY);
@@ -975,7 +997,7 @@ app.post('/api/multisig/jobs/:id/decline', (req, res) => withMultisigJobLock(req
     // ein Threshold inzwischen gesenkt, darf der Job nicht faelschlich abgelehnt werden.
     const tx = parseJobTx(job);
     const requiredWeight = tx
-      ? requiredWeightForOperations((tx.innerTransaction || tx).operations, signerMeta.thresholds)
+      ? requiredWeightForOperations(tx.operations, signerMeta.thresholds)
       : Number(job.requiredWeight || 0);
     const result = applyDecline({ ...job, requiredWeight }, signerPk, signerMeta.signers, new Date().toISOString());
     const updated = { ...job, requiredWeight, declinedSigners: result.declinedSigners, status: result.status };
@@ -1057,7 +1079,7 @@ app.post('/api/multisig/jobs/:id/merge-signed-xdr', (req, res) => withMultisigJo
     try {
       incoming = parseTxAndHash(signedXdr, net);
     } catch (e) {
-      return res.status(400).json({ ok: false, error: 'invalid_xdr', detail: e?.message || 'invalid_xdr' });
+      return res.status(400).json(parseErrorBody(e));
     }
     if (incoming.hashHex !== job.txHash) {
       return res.status(400).json({ ok: false, error: 'mismatched_hash' });

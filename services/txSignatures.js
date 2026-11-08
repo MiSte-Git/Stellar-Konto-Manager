@@ -14,11 +14,12 @@ const { Keypair, StrKey } = require('@stellar/stellar-sdk');
 
 const MAX_TX_SIGNATURES = 20; // Stellar XDR: Signatures is DecoratedSignature<20>
 
-// Basiskonto (G-Adresse) der Transaktionsquelle: Eine M-Adresse zaehlt zu ihrem
-// Basiskonto, bei einem Fee-Bump gilt die innere Transaktion. Pendant:
-// txSourceBaseAccount() in api/txSignatures.php.
+// Basiskonto (G-Adresse) der Transaktionsquelle: Eine M-Adresse zaehlt zu ihrem Basiskonto.
+// Fee-Bump-Transaktionen sind als Job nicht vorgesehen (sie werden beim Anlegen und beim Merge
+// vorher abgelehnt); hat eine keine eigene Quelle, kommt null (nie eine geliehene innere Quelle).
+// Pendant: txSourceBaseAccount() in api/txSignatures.php.
 function txSourceBaseAccount(tx) {
-  const source = String((tx?.innerTransaction || tx)?.source || '');
+  const source = String(tx?.source || '');
   if (StrKey.isValidMed25519PublicKey(source)) {
     return StrKey.encodeEd25519PublicKey(StrKey.decodeMed25519PublicKey(source).subarray(0, 32));
   }

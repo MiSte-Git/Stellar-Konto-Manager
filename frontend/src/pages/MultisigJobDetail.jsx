@@ -17,7 +17,7 @@ import { submitTransactionSafely, AmbiguousSubmitResultError } from '../utils/st
 import { getRequiredThreshold } from '../utils/getRequiredThreshold.js';
 import { formatErrorForUi } from '../utils/formatErrorForUi.js';
 import { accountSequenceOf, assertHorizonNetwork, buildJobRevocationTx, checkRevocationSequence, collectEffectiveSigners, getJobSequenceInfo, parseJobNetwork } from '../utils/multisig/jobRevocation.js';
-import { decodeJobTransaction, verifyJobTransaction } from '../utils/multisig/verifyJobTransaction.js';
+import { decodeJobTransaction, jobTxXdr, verifyJobTransaction } from '../utils/multisig/verifyJobTransaction.js';
 import { txHashHex } from '../utils/stellar/txHash.js';
 import { evaluateLiquidityOperation, exactDepositPrices, hasLiquidityPoolOps, resolveLiquidityPoolInfo } from '../utils/multisig/liquidityPoolInfo.js';
 import { jobSubmitResultCodes, liquidityErrorKeyFromResultCodes } from '../utils/stellar/liquidityErrors.js';
@@ -46,6 +46,7 @@ const INTEGRITY_ISSUE_TEXTS = {
   missing_job_data: 'multisig:detail.integrity.missingJobData',
   hash_mismatch: 'multisig:detail.integrity.hashMismatch',
   account_mismatch: 'multisig:detail.integrity.accountMismatch',
+  fee_bump: 'multisig:detail.integrity.feeBump',
 };
 
 // Grund aus submittedResult.error: PHP liefert einen String, Node die Horizon-Antwort.
@@ -592,6 +593,8 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
         setError(t('multisig:errors.mismatchedHash'));
       } else if (raw === 'account_mismatch') {
         setError(t('multisig:errors.accountMismatch'));
+      } else if (raw === 'fee_bump_not_supported') {
+        setError(t('multisig:errors.feeBump'));
       } else if (raw === 'signers_unavailable') {
         setError(t('multisig:errors.signersUnavailable'));
       } else {
@@ -669,6 +672,8 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
         setError(t('multisig:errors.signersUnavailable'));
       } else if (String(e?.message || '') === 'account_mismatch') {
         setError(t('multisig:errors.accountMismatch'));
+      } else if (String(e?.message || '') === 'fee_bump_not_supported') {
+        setError(t('multisig:errors.feeBump'));
       } else {
         setError(String(e?.message || 'multisig.jobs.merge_failed'));
       }
@@ -1308,7 +1313,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
                 className="text-xs px-2 py-1 rounded-sm border border-blue-200 text-blue-700 dark:text-blue-200 dark:border-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900"
                 onClick={() => {
                   try {
-                    navigator.clipboard.writeText(job.txXdrCurrent || job.txXdr || '');
+                    navigator.clipboard.writeText(jobTxXdr(job));
                     setInfo(t('multisig:detail.xdr.copy.success'));
                   } catch {
                     setError(t('multisig:detail.xdr.copy.error'));
@@ -1319,7 +1324,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
               </button>
             </div>
             <p className="text-xs text-gray-700 dark:text-gray-300 mb-2">{t('multisig:detail.xdr.hint')}</p>
-            <textarea className="w-full h-32 text-xs font-mono bg-gray-50 dark:bg-gray-900 border rounded-sm px-2 py-1" readOnly value={job.txXdrCurrent || job.txXdr || ''} />
+            <textarea className="w-full h-32 text-xs font-mono bg-gray-50 dark:bg-gray-900 border rounded-sm px-2 py-1" readOnly value={jobTxXdr(job)} />
           </div>
 
           {/* Abgeschlossene Jobs (auch veraltete/abgelaufene) nehmen keine Signaturen mehr an. */}
