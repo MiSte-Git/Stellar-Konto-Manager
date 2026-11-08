@@ -29,6 +29,7 @@ import { parseSlippagePercent } from './dialogInputs.js';
 import LiquidityDialogShell, { BTN_PRIMARY, BTN_SECONDARY, FactList, INPUT, NOTE_ERROR, NOTE_NEUTRAL, NOTE_WARN, OperationsPreview } from './LiquidityDialogShell.jsx';
 import { CheckInfos, CheckProblems, ResultNote, SlippageField } from './dialogParts.jsx';
 import { JobNotes, LiquidityResultDialog, LiquiditySigningOptions } from './jobParts.jsx';
+import AccountSendGuardNotice from '../wallet/AccountSendGuardNotice.jsx';
 
 function buildDepositTx({ account, pool, check, quote, feePerOp, network, timeoutSeconds }) {
   return buildLiquidityDepositTransaction({
@@ -55,12 +56,12 @@ function buildDepositTx({ account, pool, check, quote, feePerOp, network, timeou
  * Direkt vor dem Bauen werden Konto und Pool neu geladen; liegt der Preis dann
  * ausserhalb der bestaetigten Grenzen, wird abgebrochen und neu angezeigt.
  */
-export default function DepositDialog({ poolId, firstAsset, publicKey, network, onClose, onDone, onBackgroundResult }) {
+export default function DepositDialog({ poolId, firstAsset, publicKey, network, onClose, onDone, onBackgroundResult, sendGuard = null }) {
   const { t, i18n } = useTranslation(['liquidity', 'errors', 'submitTransaction', 'common']);
   const { t: tOps } = useTranslation('multisig');
   const locale = i18n.language;
   const { multisigTimeoutSeconds } = useSettings();
-  const action = useLiquidityAction({ publicKey, network, poolId, operationType: 'liquidityPoolDeposit', t, onDone, onBackgroundResult });
+  const action = useLiquidityAction({ publicKey, network, poolId, operationType: 'liquidityPoolDeposit', t, onDone, onBackgroundResult, sendGuard });
   const { data } = action;
   const pool = data.pool;
   // Optionsauswahl (Job/lokal/XDR) nur, wenn kein einzelner Signer die Schwelle allein erreicht.
@@ -138,8 +139,8 @@ export default function DepositDialog({ poolId, firstAsset, publicKey, network, 
 
   // Frischer Stand gegen die bestaetigten Werte (direkter Weg und Job-Weg gleich):
   // { changed, fresh } bei Abweichung, sonst { fresh, freshCheck }.
-  const verifyFresh = async (server, c, feePerOp) => {
-    const fresh = await loadFreshState(server, publicKey, poolId);
+  const verifyFresh = async (server, c, feePerOp, adjustAccount = null) => {
+    const fresh = await loadFreshState(server, publicKey, poolId, adjustAccount);
     const sim = simulateDeposit(fresh.pool, c.quote.maxAmountA, c.quote.maxAmountB);
     const priceOk = poolPriceWithin(fresh.pool, c.quote.minPrice, c.quote.maxPrice)
       && sim.shares > 0n
@@ -155,8 +156,10 @@ export default function DepositDialog({ poolId, firstAsset, publicKey, network, 
   // local: Multisig-Option "Alle Signaturen lokal eingeben" (Rueckweg zur Optionsauswahl).
   const handleSign = ({ local = false } = {}) => {
     const c = confirmed;
-    action.begin(c, async (server, collected, alive, send) => {
-      const v = await verifyFresh(server, c, data.feePerOp);
+    const pair = sides.map((s) => labelOf(s.asset)).join(' / ');
+    // Gebaut wird im Sende-Lock (guardedSubmit) mit der Sequence eines offenen Pins (adjustAccount).
+    action.begin(c, async (server, collected, alive, adjustAccount) => {
+      const v = await verifyFresh(server, c, data.feePerOp, adjustAccount);
       if (!alive()) return null;
       if (v.changed) {
         setConfirmed(null);
@@ -164,25 +167,24 @@ export default function DepositDialog({ poolId, firstAsset, publicKey, network, 
       }
       assertSignerWeight(v.fresh.account, collected, 'liquidityPoolDeposit');
       if (!alive()) return null;
-      const tx = buildDepositTx({ account: v.fresh.account, pool: v.fresh.pool, check: v.freshCheck, quote: c.quote, feePerOp: data.feePerOp, network });
-      const res = await send(tx);
-      return { hash: res?.hash || res?.id || '' };
-    }, { local, onBackToSelection: local ? () => setOptionsOpen(true) : null });
+      const tx = buildDepositTx({ account: v.fresh.buildAccount, pool: v.fresh.pool, check: v.freshCheck, quote: c.quote, feePerOp: data.feePerOp, network });
+      return { tx };
+    }, { local, onBackToSelection: local ? () => setOptionsOpen(true) : null, actionText: `${t('liquidity:deposit.title')}: ${pair}` });
   };
 
   // Multisig-Job und XDR-Export: gleiche Pruefung, Fee fuer spaeteres Einreichen
   // (deferred), Gueltigkeit aus den Einstellungen. Gebaut wird mit den
   // bestaetigten Werten, unsigniert.
-  const unsignedWork = (c) => async (server, alive) => {
+  const unsignedWork = (c) => async (server, alive, adjustAccount) => {
     const feePerOp = await resolveFeePerOp(server, { deferred: true });
-    const v = await verifyFresh(server, c, feePerOp);
+    const v = await verifyFresh(server, c, feePerOp, adjustAccount);
     if (!alive()) return null;
     if (v.changed) {
       setConfirmed(null);
       return v;
     }
     const timeoutSeconds = getMultisigTxTimeout({ immediateSubmit: false, multisigTimeoutSeconds });
-    const tx = buildDepositTx({ account: v.fresh.account, pool: v.fresh.pool, check: v.freshCheck, quote: c.quote, feePerOp, network, timeoutSeconds });
+    const tx = buildDepositTx({ account: v.fresh.buildAccount, pool: v.fresh.pool, check: v.freshCheck, quote: c.quote, feePerOp, network, timeoutSeconds });
     const pair = sides.map((s) => labelOf(s.asset)).join(' / ');
     return {
       tx,
@@ -284,7 +286,7 @@ export default function DepositDialog({ poolId, firstAsset, publicKey, network, 
             <OperationsPreview blocks={confirmed.blocks} legend={t('liquidity:dialog.legend', { a: labelOf(pool.assetA), b: labelOf(pool.assetB) })} />
             {multisig && <JobNotes hints={[t('liquidity:job.depositHint')]} />}
             <div className="flex flex-wrap gap-2">
-              <button type="button" className={BTN_PRIMARY} onClick={handleSignClick} disabled={action.processing || action.jobCreated}>{t('liquidity:dialog.sign')}</button>
+              <button type="button" className={BTN_PRIMARY} onClick={handleSignClick} disabled={action.processing || action.jobCreated || action.blocked}>{t('liquidity:dialog.sign')}</button>
               <button type="button" className={BTN_SECONDARY} onClick={() => setConfirmed(null)} disabled={action.jobCreated}>{t('liquidity:dialog.back')}</button>
             </div>
           </>
@@ -299,6 +301,7 @@ export default function DepositDialog({ poolId, firstAsset, publicKey, network, 
 
   return (
     <LiquidityDialogShell title={t('liquidity:deposit.title')} onClose={onClose} closeDisabled={action.processing} testId="deposit-dialog">
+      <AccountSendGuardNotice guard={action.guard} network={network} />
       {body}
       <LiquiditySigningOptions
         open={optionsOpen}

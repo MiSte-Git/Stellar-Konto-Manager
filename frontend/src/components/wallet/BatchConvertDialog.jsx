@@ -8,7 +8,10 @@ import { getHorizonServerForNetwork } from '../../utils/stellar/stellarUtils.js'
 import { assertFlowNetwork } from '../../utils/globalNetwork.js';
 import { shortenAddress } from '../../utils/stellar/walletSummary.js';
 import { resolveFeePerOp } from '../../utils/stellar/fees.js';
-import { submitTransactionSafely, AmbiguousSubmitResultError } from '../../utils/stellar/submitTransactionSafely.js';
+import { AmbiguousSubmitResultError } from '../../utils/stellar/submitTransactionSafely.js';
+import { adjustedAccount, guardedSubmit, guardedUnsignedBuild, SendBlockedError } from '../../utils/submitGuard/guardedSubmit.js';
+import { useSharedSendBlock } from '../../utils/submitGuard/useAccountSendBlock.js';
+import AccountSendGuardNotice from './AccountSendGuardNotice.jsx';
 import { getRequiredThreshold } from '../../utils/getRequiredThreshold.js';
 import { formatErrorForUi } from '../../utils/formatErrorForUi.js';
 import { getSessionSecrets, rememberSessionSecrets, InsecureCryptoContextError } from '../../utils/sessionSecrets.js';
@@ -35,6 +38,9 @@ const STROOPS_PER_XLM = 10000000;
 const TRUSTLINE_LIST_LIMIT = 50;
 const PREVIEW_MAX_AGE_MS = 2 * 60 * 1000;
 
+// Abbruch im Lock mit fertigem Text (Vorschau veraltet): nichts gesendet.
+class ConvertAbort extends Error {}
+
 const btnPrimary = 'rounded-lg border-0 bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50';
 const btnSecondary = 'rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-800 hover:bg-gray-50 disabled:opacity-50 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100';
 
@@ -42,7 +48,7 @@ const btnSecondary = 'rounded-lg border border-gray-300 bg-white px-4 py-2 text-
  * Batch-Convert: mehrere Claimable Balances einloesen und in ein Ziel-Asset umwandeln.
  * @param {{ publicKey: string, account: object, network: 'PUBLIC'|'TESTNET', available: number, items: object[], multisig: boolean, multisigTimeoutSeconds: number, fmt?: Function, onClose: () => void, onDone?: () => void }} props
  */
-export default function BatchConvertDialog({ publicKey, account, network, available, items, multisig, multisigTimeoutSeconds, fmt, onClose, onDone }) {
+export default function BatchConvertDialog({ publicKey, account, network, available, items, multisig, multisigTimeoutSeconds, fmt, onClose, onDone, sendGuard = null }) {
   const { t } = useTranslation(['wallet', 'common', 'multisig', 'secretKey']);
   const isTestnet = network === 'TESTNET';
   const networkPassphrase = passphraseFor(network);
@@ -76,6 +82,9 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
   const [quotedAt, setQuotedAt] = React.useState(0);
   const [quotedSlippage, setQuotedSlippage] = React.useState('');
   const inFlightRef = React.useRef(false);
+  // Sperre pro Konto bei unklarem Sendestatus: von der Seite geteilt oder eigene.
+  const guard = useSharedSendBlock(sendGuard, { network, account: publicKey, onApplied: () => onDone?.(), onNotApplied: () => onDone?.() });
+  const sendBlocked = !!guard.block;
 
   let target = NATIVE_TARGET;
   if (targetMode === 'custom') target = parseTargetAsset(customTarget);
@@ -241,32 +250,52 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
       setPhase('running');
       started = true;
       let includeTargetTrustline = needTargetTrustline;
-      let acct = fresh;
       for (let i = 0; i < chunks.length; i += 1) {
         setProgress({ current: i + 1, total: chunks.length });
         const count = chunks[i].length;
         try {
-          if (i > 0) acct = await server.loadAccount(publicKey);
-          // Vor jedem Signieren: gilt das Netz des Ablaufs noch? Nach der ersten gesendeten
-          // Transaktion mit dem Hinweis, dass Gesendetes bestehen bleibt.
-          assertFlowNetwork(network, i > 0 ? 'createAccount:networkChanged.stoppedAfterPartial' : 'createAccount:networkChanged.funderAborted');
-          const tx = buildBatchTx({
-            account: acct,
-            accountId: publicKey,
-            chunk: chunks[i],
-            target: quotedTarget,
-            includeTargetTrustline,
-            fee,
+          // Jede Transaktion einzeln geschuetzt (guardedSubmit): exklusiv pro Netz, gesperrt bei
+          // unklarem Eintrag des Kontos, Eintrag vor dem Submit, Pin der Sequence. Konto frisch im
+          // Lock laden, die Sequence der vorigen Transaktion ist verbraucht.
+          const { res, hash } = await guardedSubmit({
+            network,
+            account: publicKey,
+            server,
             networkPassphrase,
+            // Path Payments an das eigene Konto: keine Memo-Pruefung (SEP-29).
+            skipMemoRequiredCheck: true,
+            buildTx: async ({ adjustAccount }) => {
+              const acct = await server.loadAccount(publicKey);
+              // Vor jedem Signieren: gilt das Netz des Ablaufs noch? Nach der ersten gesendeten
+              // Transaktion mit dem Hinweis, dass Gesendetes bestehen bleibt.
+              assertFlowNetwork(network, i > 0 ? 'createAccount:networkChanged.stoppedAfterPartial' : 'createAccount:networkChanged.funderAborted');
+              const tx = buildBatchTx({
+                account: adjustedAccount(acct, adjustAccount),
+                accountId: publicKey,
+                chunk: chunks[i],
+                target: quotedTarget,
+                includeTargetTrustline,
+                fee,
+                networkPassphrase,
+              });
+              signers.forEach((s) => tx.sign(s.keypair));
+              return { tx };
+            },
+            entryData: () => ({
+              origin: 'convert',
+              summary: { action: t('wallet:batchConvert.guardAction', { current: i + 1, total: chunks.length, target: targetText }) },
+            }),
           });
-          signers.forEach((s) => tx.sign(s.keypair));
-          const res = await submitTransactionSafely(server, tx);
-          out.push({ status: 'ok', hash: res?.hash || res?.id || txHashHex(tx), count });
+          out.push({ status: 'ok', hash: res?.hash || res?.id || hash, count });
           includeTargetTrustline = false;
         } catch (e) {
           console.error('[SKM] batch convert transaction failed', e);
           if (e instanceof AmbiguousSubmitResultError) out.push({ status: 'ambiguous', hash: e.hash, count });
+          else if (e instanceof SendBlockedError) out.push({ status: 'blocked', count, reason: t(`common:payment.send.ambiguousResult.blockedReason.${e.reason}`) });
           else out.push({ status: 'failed', count, reason: describeError(e) });
+          // Gestoppt: kein automatisches Weitersenden. Die uebrigen Transaktionen bleiben
+          // unversendet und werden angezeigt (ihre Eintraege entstehen nie).
+          for (let j = i + 1; j < chunks.length; j += 1) out.push({ status: 'notSent', count: chunks[j].length });
           break;
         }
       }
@@ -284,6 +313,7 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
     } finally {
       inFlightRef.current = false;
       setProgress(null);
+      guard.bump();
       // Teilerfolge nie verwerfen: sobald gesendet wurde, Ergebnis zeigen und neu laden
       if (started) {
         setResults(out);
@@ -309,20 +339,27 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
       const timeoutSeconds = Math.min(...windows);
       const server = getHorizonServerForNetwork(network);
       await assertHorizonNetwork(server, networkPassphrase);
-      const check = await verifyFresh(server, chunk);
-      if (check.problem) {
-        setError(t(`wallet:batchConvert.${check.problem}`));
-        return;
-      }
-      const tx = buildBatchTx({
-        account: check.fresh,
-        accountId: publicKey,
-        chunk,
-        target: quotedTarget,
-        includeTargetTrustline: needTargetTrustline,
-        fee,
-        networkPassphrase,
-        timeoutSeconds,
+      // Wird erst spaeter eingereicht, konkurriert aber mit unklaren oder gepinnten Transaktionen
+      // des Kontos: Sperre und Pin gelten schon beim Bauen (guardedUnsignedBuild, im Sende-Lock).
+      const { tx } = await guardedUnsignedBuild({
+        network,
+        account: publicKey,
+        build: async ({ adjustAccount }) => {
+          const check = await verifyFresh(server, chunk);
+          if (check.problem) throw new ConvertAbort(t(`wallet:batchConvert.${check.problem}`));
+          return {
+            tx: buildBatchTx({
+              account: adjustedAccount(check.fresh, adjustAccount),
+              accountId: publicKey,
+              chunk,
+              target: quotedTarget,
+              includeTargetTrustline: needTargetTrustline,
+              fee,
+              networkPassphrase,
+              timeoutSeconds,
+            }),
+          };
+        },
       });
       assertFlowNetwork(network);
       const job = await createMultisigJobFromXdr({ network: getNetworkConfig(network).backendId, accountId: publicKey, txXdr: tx.toXDR() });
@@ -347,8 +384,15 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
         },
       });
     } catch (e) {
-      console.error('[SKM] batch convert job failed', e);
-      setError(describeError(e));
+      if (e instanceof ConvertAbort) {
+        setError(e.message);
+      } else if (e instanceof SendBlockedError) {
+        guard.bump();
+        setError(t(`common:payment.send.ambiguousResult.unsignedBlockedReason.${e.reason}`));
+      } else {
+        console.error('[SKM] batch convert job failed', e);
+        setError(describeError(e));
+      }
     } finally {
       inFlightRef.current = false;
     }
@@ -368,6 +412,7 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
       <div className="my-auto w-full max-w-2xl rounded-2xl bg-white p-5 text-left shadow-xl dark:bg-gray-800">
         <h2 id="batch-convert-title" className="text-lg font-semibold text-gray-900 dark:text-white">{t('wallet:batchConvert.title')}</h2>
         <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">{t('wallet:batchConvert.intro')}</p>
+        <div className="mt-3 empty:hidden"><AccountSendGuardNotice guard={guard} network={network} /></div>
 
         {(phase === 'setup' || phase === 'quoting') && (
           <div className="mt-4 space-y-3">
@@ -524,11 +569,11 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
               <button type="button" className={btnSecondary} onClick={() => setPhase('setup')}>{t('wallet:batchConvert.back')}</button>
               <button type="button" className={btnSecondary} onClick={() => { void loadPreview(); }}>{t('wallet:batchConvert.loadPreview')}</button>
               {multisig && (
-                <button type="button" className={btnSecondary} onClick={() => { void prepareJob(); }} disabled={!canStart || jobCreated}>
+                <button type="button" className={btnSecondary} onClick={() => { void prepareJob(); }} disabled={!canStart || jobCreated || sendBlocked}>
                   {t('wallet:claimable.prepareJob')}
                 </button>
               )}
-              <button type="button" className={btnPrimary} onClick={() => setShowSecretModal(true)} disabled={!canStart}>
+              <button type="button" className={btnPrimary} onClick={() => setShowSecretModal(true)} disabled={!canStart || sendBlocked}>
                 {t('wallet:batchConvert.start', { count: selectedQuotes.length })}
               </button>
             </div>
@@ -545,10 +590,12 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
           <div className="mt-4 space-y-2">
             <ul className="space-y-1 text-xs">
               {results.map((r, i) => (
-                <li key={i} className={`break-all ${r.status === 'ok' ? 'text-green-700 dark:text-green-400' : r.status === 'ambiguous' ? 'text-amber-800 dark:text-amber-200' : 'text-red-700 dark:text-red-300'}`}>
+                <li key={i} className={`break-all ${r.status === 'ok' ? 'text-green-700 dark:text-green-400' : r.status === 'ambiguous' || r.status === 'notSent' ? 'text-amber-800 dark:text-amber-200' : 'text-red-700 dark:text-red-300'}`}>
                   {r.status === 'ok' && t('wallet:batchConvert.txOk', { index: i + 1, count: r.count, hash: r.hash })}
                   {r.status === 'ambiguous' && t('wallet:batchConvert.txAmbiguous', { index: i + 1, count: r.count, hash: r.hash })}
                   {r.status === 'failed' && t('wallet:batchConvert.txFailed', { index: i + 1, count: r.count, reason: r.reason })}
+                  {r.status === 'blocked' && t('wallet:batchConvert.txBlocked', { index: i + 1, count: r.count, reason: r.reason })}
+                  {r.status === 'notSent' && t('wallet:batchConvert.txNotSent', { index: i + 1, count: r.count })}
                 </li>
               ))}
             </ul>

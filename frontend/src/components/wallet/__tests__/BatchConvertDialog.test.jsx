@@ -6,6 +6,7 @@ import { AmbiguousSubmitResultError } from '../../../utils/stellar/submitTransac
 import i18n from '../../../i18n.js';
 import BatchConvertDialog from '../BatchConvertDialog.jsx';
 import { resetServerNetworkCalls, serverNetworkCalls } from '../../../test/horizonMock.js';
+import { readAccountEntry, resetAccountSendGuardMemory, writeAccountEntry } from '../../../utils/submitGuard/accountSendGuard.js';
 
 const ME = {
   secret: 'SDAIDSY2LAXR5HPEJ2CKWQ3QV67VPYLXB6C2ATBY3J7VRKT6YD7SYV6Y',
@@ -15,7 +16,9 @@ const COSIGNER = Keypair.random().publicKey();
 const ISSUER = Keypair.random().publicKey();
 const id = (n) => `00000000${String(n).padStart(64, '0')}`;
 
-const hoisted = vi.hoisted(() => ({ loadAccountMock: vi.fn(), submitMock: vi.fn(), pathsMock: vi.fn(), recordsMock: vi.fn(), rememberMock: vi.fn(async () => {}) }));
+const hoisted = vi.hoisted(() => ({
+  loadAccountMock: vi.fn(), submitMock: vi.fn(), pathsMock: vi.fn(), recordsMock: vi.fn(), rememberMock: vi.fn(async () => {}), txLookupMock: vi.fn(), ledgerMock: vi.fn(),
+}));
 
 vi.mock('../../../utils/stellar/stellarUtils.js', async (importOriginal) => (await import('../../../test/horizonMock.js')).withNetworkServer({
   ...(await importOriginal()),
@@ -25,6 +28,8 @@ vi.mock('../../../utils/stellar/stellarUtils.js', async (importOriginal) => (awa
     feeStats: vi.fn(async () => ({ last_ledger_base_fee: '100', fee_charged: { mode: '100', p95: '100' } })),
     strictSendPaths: (src) => ({ call: () => hoisted.pathsMock(src) }),
     claimableBalances: () => ({ claimant: () => ({ limit: () => ({ call: hoisted.recordsMock }) }) }),
+    transactions: () => ({ transaction: (hash) => ({ call: () => hoisted.txLookupMock(hash) }) }),
+    ledgers: () => ({ order: () => ({ limit: () => ({ call: () => hoisted.ledgerMock() }) }) }),
   }),
 }));
 vi.mock('../../../utils/stellar/submitTransactionSafely.js', async (importOriginal) => ({
@@ -111,6 +116,8 @@ beforeEach(() => {
   hoisted.loadAccountMock.mockImplementation(async (pk) => (pk === ME.publicKey ? makeAccount() : { flags: {} }));
   hoisted.pathsMock.mockImplementation(async (src) => ({ records: src.code === 'NOMKT' ? [] : [{ destination_amount: '1.5', path: [] }] }));
   hoisted.submitMock.mockResolvedValue({ hash: 'batchhash' });
+  hoisted.txLookupMock.mockImplementation(async () => { throw Object.assign(new Error('nf'), { response: { status: 404 } }); });
+  hoisted.ledgerMock.mockImplementation(async () => ({ records: [{ closed_at: new Date().toISOString(), base_reserve_in_stroops: 5000000 }] }));
 });
 
 describe('BatchConvertDialog', () => {
@@ -250,7 +257,8 @@ describe('BatchConvertDialog', () => {
     hoisted.loadAccountMock.mockImplementation(async (pk) => {
       if (pk !== ME.publicKey) return { flags: {} };
       calls += 1;
-      if (calls >= 2) throw new Error('horizon down');
+      // 1: Frischepruefung vor dem Signieren, 2: Konto im Lock fuer Transaktion 1, 3: fuer Transaktion 2.
+      if (calls >= 3) throw new Error('horizon down');
       return makeAccount();
     });
     const errSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
@@ -360,3 +368,198 @@ describe('BatchConvertDialog', () => {
   });
 });
 
+
+
+// ---- Buendel 4c: Sendeschutz im Sammel-Tausch -----------------------------------------------
+
+const nowSec = () => Math.floor(Date.now() / 1000);
+const guardEntry = (o = {}) => ({
+  hash: 'a'.repeat(64), at: Date.now() - 5000, status: 'ambiguous', maxTime: nowSec() + 170, seq: '101', source: ME.publicKey,
+  origin: 'payment', cause: { kind: 'network', status: null }, summary: { action: 'Etwas' }, ...o,
+});
+// 55 Eintraege = drei Transaktionen (25 + 25 + 5)
+const fiftyFive = () => Array.from({ length: 55 }, (_, i) => tokenItem(i + 1, `T${i}`));
+const startButton = () => screen.getByRole('button', { name: /einlösen & umwandeln/ });
+
+describe('Sendeschutz (Buendel 4c): Sammel-Tausch', () => {
+  beforeAll(async () => { await i18n.changeLanguage('de'); });
+  afterEach(() => { vi.unstubAllGlobals(); });
+
+  it('jede Transaktion einzeln geschuetzt: der Eintrag steht vor dem Submit im Speicher (Herkunft convert)', async () => {
+    const during = [];
+    hoisted.submitMock.mockImplementation(async () => { during.push(readAccountEntry('TESTNET', ME.publicKey)); return { hash: 'batchhash' }; });
+    renderDialog({ items: Array.from({ length: 30 }, (_, i) => tokenItem(i + 1, `T${i}`)) });
+    await loadPreview();
+    await startAndSign();
+    await waitFor(() => expect(hoisted.submitMock).toHaveBeenCalledTimes(2));
+    expect(during).toHaveLength(2);
+    during.forEach((e) => expect(e).toMatchObject({ status: 'ambiguous', origin: 'convert', source: ME.publicKey }));
+    expect(during[0].summary.action).toContain('Transaktion 1 von 2');
+    expect(during[1].summary.action).toContain('Transaktion 2 von 2');
+    expect(during[0].hash).not.toBe(during[1].hash);
+    await screen.findByText(/Transaktion 2: 5 Einträge umgewandelt/);
+    expect(readAccountEntry('TESTNET', ME.publicKey)).toMatchObject({ status: 'success', hash: during[1].hash });
+  });
+
+  it('unklar bei Transaktion 2 von 3: der Lauf stoppt, Transaktion 3 wird nie gesendet und angezeigt, Konto gesperrt', async () => {
+    hoisted.submitMock
+      .mockResolvedValueOnce({ hash: 'h1' })
+      .mockRejectedValueOnce(new AmbiguousSubmitResultError('amb-hash', new TypeError('Failed to fetch')));
+    const errSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    renderDialog({ items: fiftyFive() });
+    await loadPreview();
+    await startAndSign();
+    await screen.findByText(/Transaktion 2 mit 25 Einträgen: Ergebnis unklar.*amb-hash/);
+    expect(screen.getByText(/Transaktion 1: 25 Einträge umgewandelt/)).toBeInTheDocument();
+    expect(screen.getByText(/Transaktion 3 mit 5 Einträgen nicht gesendet/)).toBeInTheDocument();
+    // Kein automatisches Weitersenden, auch nicht nach einer Weile.
+    await new Promise((r) => setTimeout(r, 1500));
+    expect(hoisted.submitMock).toHaveBeenCalledTimes(2);
+    expect(readAccountEntry('TESTNET', ME.publicKey)).toMatchObject({ status: 'ambiguous', origin: 'convert' });
+    expect(screen.getByTestId('send-ambiguous')).toBeInTheDocument();
+    errSpy.mockRestore();
+  });
+
+  it('eindeutig abgelehnt bei Transaktion 1 von 3: Lauf stoppt, die uebrigen werden als nicht gesendet angezeigt, keine Sperre', async () => {
+    const err = new Error('http 400');
+    err.response = { status: 400, data: { extras: { result_codes: { transaction: 'tx_failed' } } } };
+    hoisted.submitMock.mockRejectedValueOnce(err);
+    const errSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    renderDialog({ items: fiftyFive() });
+    await loadPreview();
+    await startAndSign();
+    await screen.findByText(/Transaktion 1 mit 25 Einträgen fehlgeschlagen/);
+    expect(screen.getByText(/Transaktion 2 mit 25 Einträgen nicht gesendet/)).toBeInTheDocument();
+    expect(screen.getByText(/Transaktion 3 mit 5 Einträgen nicht gesendet/)).toBeInTheDocument();
+    expect(hoisted.submitMock).toHaveBeenCalledTimes(1);
+    expect(readAccountEntry('TESTNET', ME.publicKey)).toBeNull();
+    errSpy.mockRestore();
+  });
+
+  it('Sperre durch einen anderen Tab zwischen Transaktion 1 und 2: Transaktion 2 und 3 nicht gesendet, Hinweis', async () => {
+    renderDialog({ items: fiftyFive() });
+    await loadPreview();
+    // Waehrend Transaktion 1 laeuft, schreibt ein anderer Tab (Zahlung senden) einen unklaren Eintrag.
+    hoisted.submitMock.mockReset();
+    hoisted.submitMock.mockImplementationOnce(async () => {
+      writeAccountEntry('TESTNET', ME.publicKey, guardEntry({ origin: 'payment', hash: 'b'.repeat(64) }));
+      return { hash: 'h1' };
+    });
+    await startAndSign();
+    await screen.findByText(/Transaktion 2 mit 25 Einträgen nicht gesendet: Nicht gesendet: Von diesem Konto ist eine Transaktion mit unklarem Status offen/);
+    expect(screen.getByText(/Transaktion 3 mit 5 Einträgen nicht gesendet \(Lauf gestoppt/)).toBeInTheDocument();
+    expect(hoisted.submitMock).toHaveBeenCalledTimes(1);
+    expect(screen.getByTestId('send-ambiguous')).toBeInTheDocument();
+  });
+
+  it('offenes Ergebnis beim Oeffnen (nach Neuladen): Kasten sichtbar, Start und Job gesperrt', async () => {
+    writeAccountEntry('TESTNET', ME.publicKey, guardEntry({ origin: 'convert' }));
+    renderDialog({ items: fiftyFive() });
+    expect(screen.getByTestId('send-ambiguous')).toBeInTheDocument();
+    await loadPreview();
+    expect(startButton()).toBeDisabled();
+    expect(hoisted.submitMock).not.toHaveBeenCalled();
+  });
+
+  it('Freigabe nur mit Horizon-Beleg', async () => {
+    writeAccountEntry('TESTNET', ME.publicKey, guardEntry({ origin: 'convert' }));
+    renderDialog();
+    await loadPreview();
+    expect(startButton()).toBeDisabled();
+    fireEvent.click(screen.getByTestId('send-ambiguous-check'));
+    await waitFor(() => expect(hoisted.txLookupMock).toHaveBeenCalled());
+    await waitFor(() => expect(screen.getByTestId('send-ambiguous-check')).not.toBeDisabled());
+    expect(readAccountEntry('TESTNET', ME.publicKey)).toMatchObject({ status: 'ambiguous' });
+    expect(startButton()).toBeDisabled();
+
+    hoisted.txLookupMock.mockImplementation(async (hash) => ({ hash, successful: true }));
+    fireEvent.click(screen.getByTestId('send-ambiguous-check'));
+    await waitFor(() => expect(screen.queryByTestId('send-ambiguous')).toBeNull());
+    expect(readAccountEntry('TESTNET', ME.publicKey)).toMatchObject({ status: 'success' });
+    expect(startButton()).not.toBeDisabled();
+  });
+
+  it('Doppelklick auf Senden: genau ein Lauf, jede Transaktion einmal', async () => {
+    let release;
+    const gate = new Promise((resolve) => { release = resolve; });
+    hoisted.submitMock.mockImplementation(async () => { await gate; return { hash: 'batchhash' }; });
+    renderDialog();
+    await loadPreview();
+    fireEvent.click(startButton());
+    await waitFor(() => expect(document.querySelector('input[type="password"]')).not.toBeNull());
+    fireEvent.change(document.querySelector('input[type="password"]'), { target: { value: ME.secret } });
+    const buttons = screen.getAllByRole('button', { name: /^(senden|submit)$/i });
+    const send = buttons[buttons.length - 1];
+    fireEvent.click(send);
+    fireEvent.click(send);
+    await waitFor(() => expect(hoisted.submitMock).toHaveBeenCalledTimes(1));
+    release();
+    await screen.findByText(/Transaktion 1: 2 Einträge umgewandelt/);
+    await new Promise((r) => setTimeout(r, 1500));
+    expect(hoisted.submitMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('offener Pin mit passender Sequence: die erste Transaktion nutzt genau die gepinnte Sequence', async () => {
+    writeAccountEntry('TESTNET', ME.publicKey, guardEntry({ origin: 'payment', status: 'notApplied', pin: true, seq: '101', maxTime: nowSec() - 300 }));
+    renderDialog();
+    await loadPreview();
+    await startAndSign();
+    await waitFor(() => expect(hoisted.submitMock).toHaveBeenCalledTimes(1));
+    expect(hoisted.submitMock.mock.calls[0][1].sequence).toBe('101');
+  });
+
+  describe('Job (Multisig) baut nur ohne Sperre und mit dem Pin', () => {
+    let fetchMock;
+    const jobProps = () => ({ multisig: true, account: makeAccount({ multisig: true }), items: Array.from({ length: 30 }, (_, i) => tokenItem(i + 1, `T${i}`)) });
+    beforeEach(() => {
+      hoisted.loadAccountMock.mockImplementation(async (pk) => (pk === ME.publicKey ? makeAccount({ multisig: true }) : { flags: {} }));
+      fetchMock = vi.fn(async (_url, opts) => ({ ok: true, json: async () => ({ id: 'job-7', txHash: 'h', txXdrCurrent: JSON.parse(opts.body).txXdr }) }));
+      vi.stubGlobal('fetch', fetchMock);
+    });
+    const jobButton = () => screen.getByRole('button', { name: 'Als Multisig-Job vorbereiten' });
+
+    it('unklarer Eintrag: Job-Knopf gesperrt', async () => {
+      writeAccountEntry('TESTNET', ME.publicKey, guardEntry({ origin: 'claimable' }));
+      renderDialog(jobProps());
+      await loadPreview();
+      expect(jobButton()).toBeDisabled();
+      expect(fetchMock).not.toHaveBeenCalled();
+    });
+
+    it('Eintrag erscheint nach der Vorschau (anderer Tab): kein Job, Hinweistext', async () => {
+      renderDialog(jobProps());
+      await loadPreview();
+      writeAccountEntry('TESTNET', ME.publicKey, guardEntry({ origin: 'payment' }));
+      fireEvent.click(jobButton());
+      await screen.findByText(/Nicht erstellt: Von diesem Konto ist eine Transaktion mit unklarem Status offen/);
+      expect(fetchMock).not.toHaveBeenCalled();
+    });
+
+    it('Pin, der nicht mehr passt: kein Job, Eintrag wieder unklar', async () => {
+      renderDialog(jobProps());
+      await loadPreview();
+      writeAccountEntry('TESTNET', ME.publicKey, guardEntry({ origin: 'payment', status: 'notApplied', pin: true, seq: '999', maxTime: nowSec() - 300 }));
+      fireEvent.click(jobButton());
+      await screen.findByText(/Nicht erstellt: Die Sequence einer früheren, nicht ausgeführten Transaktion/);
+      expect(fetchMock).not.toHaveBeenCalled();
+      expect(readAccountEntry('TESTNET', ME.publicKey)).toMatchObject({ status: 'ambiguous', recheck: 'pinConsumed' });
+    });
+
+    it('passender Pin: der Job nutzt genau die gepinnte Sequence', async () => {
+      writeAccountEntry('TESTNET', ME.publicKey, guardEntry({ origin: 'payment', status: 'notApplied', pin: true, seq: '101', maxTime: nowSec() - 300 }));
+      renderDialog(jobProps());
+      await loadPreview();
+      fireEvent.click(jobButton());
+      await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
+      const tx = TransactionBuilder.fromXDR(JSON.parse(fetchMock.mock.calls[0][1].body).txXdr, Networks.TESTNET);
+      expect(tx.sequence).toBe('101');
+    });
+  });
+});
+
+
+// Der Sendeschutz speichert einen unklaren Ausgang pro Konto: kein Zustand zwischen den Tests.
+beforeEach(() => {
+  Object.keys(window.localStorage).filter((k) => k.startsWith('skm_')).forEach((k) => window.localStorage.removeItem(k));
+  resetAccountSendGuardMemory();
+});

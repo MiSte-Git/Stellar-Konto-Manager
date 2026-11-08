@@ -9,6 +9,8 @@ import usePoolLookup from '../components/liquidity/hooks/usePoolLookup.js';
 import { readPoolIdFromSearch } from '../components/liquidity/liquidityNavigation.js';
 import { NETWORKS } from '../config/networks.js';
 import { shortenKey } from '../components/trading/assetSearchUtils.js';
+import AccountSendGuardNotice from '../components/wallet/AccountSendGuardNotice.jsx';
+import { useAccountSendBlock } from '../utils/submitGuard/useAccountSendBlock.js';
 
 /**
  * Liquidity Pools: eigene Positionen und Pool-Suche fuer native Stellar Pools,
@@ -38,6 +40,14 @@ export default function LiquidityPoolsPage({ publicKey = '', notFound = false, a
   // Ergebnis eines Submits, dessen Dialog schon abgebaut war: { type, hash?, message?, network, publicKey }
   const [backgroundResult, setBackgroundResult] = useState(null);
   const hasAccount = !!publicKey && !notFound && !accountLoading;
+  // Unklarer Sendestatus des Kontos (auch aus anderen Sendewegen oder vor einem Neuladen): Sperre
+  // und Hinweiskasten der Seite, die Dialoge teilen sie (sendGuard).
+  const sendGuard = useAccountSendBlock({
+    network,
+    account: hasAccount ? publicKey : '',
+    onApplied: () => setRefreshToken((v) => v + 1),
+    onNotApplied: () => setRefreshToken((v) => v + 1),
+  });
 
   // Konto- oder Netzwechsel: offenen Dialog schliessen (laufende Schritte verwirft der Dialog beim Unmount).
   useEffect(() => {
@@ -97,6 +107,7 @@ export default function LiquidityPoolsPage({ publicKey = '', notFound = false, a
           {t('liquidity:page.network')}: {NETWORKS[network]?.label || network}
         </p>
       </div>
+      {hasAccount && !dialog && <AccountSendGuardNotice guard={sendGuard} network={network} />}
       {backgroundResult && <BackgroundResultNote result={backgroundResult} onDismiss={() => setBackgroundResult(null)} />}
       <PoolPositions
         publicKey={publicKey}
@@ -140,6 +151,7 @@ export default function LiquidityPoolsPage({ publicKey = '', notFound = false, a
           onClose={() => setDialog(null)}
           onDone={() => handleDone(dialog.poolId)}
           onBackgroundResult={handleBackgroundResult}
+          sendGuard={sendGuard}
         />
       )}
       {dialog?.type === 'withdraw' && hasAccount && (
@@ -150,6 +162,7 @@ export default function LiquidityPoolsPage({ publicKey = '', notFound = false, a
           onClose={() => setDialog(null)}
           onDone={() => handleDone(dialog.poolId)}
           onBackgroundResult={handleBackgroundResult}
+          sendGuard={sendGuard}
         />
       )}
     </div>

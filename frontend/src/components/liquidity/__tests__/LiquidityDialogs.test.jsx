@@ -9,6 +9,8 @@ import { poolIdFor } from '../../../utils/stellar/liquidityPools.js';
 import { txHashHex } from '../../../utils/stellar/txHash.js';
 import { consumePendingTrustlineAsset, setMainMounted } from '../../../utils/appNavigation.js';
 import { takeMultisigJobToken } from '../../multisig/multisigNavigation.js';
+import { readAccountEntry, resetAccountSendGuardMemory, writeAccountEntry } from '../../../utils/submitGuard/accountSendGuard.js';
+import { AmbiguousSubmitResultError } from '../../../utils/stellar/submitTransactionSafely.js';
 
 const hoisted = vi.hoisted(() => ({
   loadAccount: vi.fn(),
@@ -17,6 +19,8 @@ const hoisted = vi.hoisted(() => ({
   createJob: vi.fn(),
   collected: [],
   passphrase: null,
+  txLookup: vi.fn(),
+  ledger: vi.fn(),
 }));
 
 vi.mock('../../../utils/multisigApi.js', async (importOriginal) => ({
@@ -31,6 +35,8 @@ vi.mock('../../../utils/stellar/stellarUtils.js', async (importOriginal) => (awa
     liquidityPools: () => ({ liquidityPoolId: (id) => ({ call: () => hoisted.poolCall(id) }) }),
     feeStats: async () => { throw new Error('offline'); },
     root: async () => ({ network_passphrase: hoisted.passphrase || Networks.PUBLIC }),
+    transactions: () => ({ transaction: (hash) => ({ call: () => hoisted.txLookup(hash) }) }),
+    ledgers: () => ({ order: () => ({ limit: () => ({ call: () => hoisted.ledger() }) }) }),
   }),
 }));
 
@@ -385,6 +391,8 @@ describe('DepositDialog', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Signieren und senden' }));
     hoisted.poolCall.mockImplementation(() => new Promise((resolve) => { resolvePool = resolve; }));
     await act(async () => { fireEvent.click(await screen.findByText('keys-ok')); });
+    // work() laeuft erst im Sende-Lock: abwarten, bis es den Pool laedt (und dort haengt).
+    await waitFor(() => expect(resolvePool).toBeDefined());
     // Konto-/Netzwechsel: die Seite unmountet den Dialog
     view.unmount();
     await act(async () => { resolvePool(poolRecord()); });
@@ -400,6 +408,7 @@ describe('DepositDialog', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Signieren und senden' }));
     hoisted.poolCall.mockImplementation(() => new Promise((resolve) => { resolvePool = resolve; }));
     await act(async () => { fireEvent.click(await screen.findByText('keys-ok')); });
+    await waitFor(() => expect(resolvePool).toBeDefined());
     view.unmount();
     await act(async () => { resolvePool(poolRecord()); });
     expect(hoisted.submit).not.toHaveBeenCalled();
@@ -734,6 +743,7 @@ describe('Multisig-Konten: Optionsdialog (Job, lokal, XDR)', () => {
     const view = await reviewDeposit({ onBackgroundResult });
     hoisted.poolCall.mockImplementation(() => new Promise((resolve) => { resolvePool = resolve; }));
     await chooseOption(JOB);
+    await waitFor(() => expect(resolvePool).toBeDefined());
     view.unmount();
     await act(async () => { resolvePool(poolRecord()); });
     expect(hoisted.createJob).not.toHaveBeenCalled();
@@ -813,4 +823,219 @@ describe('Multisig-Konten: Optionsdialog (Job, lokal, XDR)', () => {
     expect(tx.operations[0]).toMatchObject({ amount: '30.0000000', minAmountA: '99.5000000', minAmountB: '9.9500000' });
     expect(tx.signatures).toHaveLength(0);
   });
+});
+
+
+// ---- Buendel 4c: Sendeschutz fuer Liquidity (Einzahlen und Abheben) --------------------------
+
+const nowSec = () => Math.floor(Date.now() / 1000);
+const notFound = () => Object.assign(new Error('not found'), { response: { status: 404 } });
+const ledgerAt = (sec) => ({ records: [{ closed_at: new Date(sec * 1000).toISOString(), base_reserve_in_stroops: 5000000 }] });
+const guardEntry = (o = {}) => ({
+  hash: 'a'.repeat(64), at: Date.now() - 5000, status: 'ambiguous', maxTime: nowSec() + 170, seq: '101', source: owner.publicKey(),
+  origin: 'liquidity', cause: { kind: 'network', status: null }, summary: { action: 'Einzahlen' }, ...o,
+});
+
+describe('Sendeschutz (Buendel 4c): Liquidity', () => {
+  beforeAll(async () => { await i18n.changeLanguage('de'); });
+  beforeEach(() => {
+    hoisted.loadAccount.mockReset();
+    hoisted.poolCall.mockReset();
+    hoisted.submit.mockReset();
+    hoisted.txLookup.mockReset();
+    hoisted.ledger.mockReset();
+    hoisted.collected = [{ keypair: owner }];
+    hoisted.passphrase = null;
+    hoisted.poolCall.mockResolvedValue(poolRecord());
+    hoisted.loadAccount.mockImplementation(async () => makeAccount({ shares: '30.0000000' }));
+    hoisted.txLookup.mockImplementation(async () => { throw notFound(); });
+    hoisted.ledger.mockImplementation(async () => ledgerAt(nowSec()));
+    window.localStorage.setItem('SKM_NETWORK', 'PUBLIC');
+  });
+
+  async function signDeposit(view = null) {
+    const v = view || renderDeposit();
+    await enterDeposit('10');
+    fireEvent.click(screen.getByRole('button', { name: 'Operationen prüfen' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Signieren und senden' }));
+    await act(async () => { fireEvent.click(await screen.findByText('keys-ok')); });
+    return v;
+  }
+
+  it('Einzahlen: der Eintrag steht vor dem Submit im Speicher (unklar, Herkunft liquidity), danach Erfolg', async () => {
+    let during = null;
+    hoisted.submit.mockImplementation(async () => { during = readAccountEntry('PUBLIC', owner.publicKey()); return { hash: 'ok1' }; });
+    await signDeposit();
+    await screen.findByTestId('liquidity-success');
+    expect(during).toMatchObject({ status: 'ambiguous', origin: 'liquidity', source: owner.publicKey() });
+    expect(during.hash).toMatch(/^[0-9a-f]{64}$/);
+    expect(during.summary.action).toContain('USD');
+    expect(readAccountEntry('PUBLIC', owner.publicKey())).toMatchObject({ status: 'success', hash: during.hash });
+  });
+
+  it('Abheben: der Eintrag steht vor dem Submit im Speicher (Herkunft liquidity)', async () => {
+    let during = null;
+    hoisted.submit.mockImplementation(async () => { during = readAccountEntry('PUBLIC', owner.publicKey()); return { hash: 'w1' }; });
+    renderWithdraw();
+    fireEvent.click(await screen.findByRole('button', { name: '50 %' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Operationen prüfen' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Signieren und senden' }));
+    await act(async () => { fireEvent.click(await screen.findByText('keys-ok')); });
+    await screen.findByTestId('liquidity-success');
+    expect(during).toMatchObject({ status: 'ambiguous', origin: 'liquidity' });
+    expect(during.summary.action).toContain('USD');
+  });
+
+  it('unklarer Ausgang: Eintrag bleibt, Kasten sichtbar, kein Neuversuch (auch nicht in einem neuen Dialog)', async () => {
+    hoisted.submit.mockRejectedValue(new AmbiguousSubmitResultError('deadbeef', new TypeError('Failed to fetch')));
+    const first = await signDeposit();
+    expect(await screen.findByTestId('liquidity-ambiguous')).toHaveTextContent('deadbeef');
+    expect(screen.getByTestId('send-ambiguous')).toBeInTheDocument();
+    expect(readAccountEntry('PUBLIC', owner.publicKey())).toMatchObject({ status: 'ambiguous', origin: 'liquidity' });
+    first.unmount();
+
+    // Neuer Dialog (auch nach Neuladen): gleiche Sperre, Signieren gesperrt, nichts wird gesendet.
+    renderDeposit();
+    await enterDeposit('10');
+    fireEvent.click(screen.getByRole('button', { name: 'Operationen prüfen' }));
+    expect(screen.getByTestId('send-ambiguous')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Signieren und senden' })).toBeDisabled();
+    expect(hoisted.submit).toHaveBeenCalledTimes(1);
+  });
+
+  it('Freigabe nur mit Horizon-Beleg: ohne Beleg bleibt es gesperrt, mit gefundener Transaktion wird frei', async () => {
+    writeAccountEntry('PUBLIC', owner.publicKey(), guardEntry());
+    renderDeposit();
+    await enterDeposit('10');
+    fireEvent.click(screen.getByRole('button', { name: 'Operationen prüfen' }));
+    expect(screen.getByRole('button', { name: 'Signieren und senden' })).toBeDisabled();
+
+    // Horizon kennt die Transaktion nicht, maxTime ist noch nicht vorbei: keine Freigabe.
+    fireEvent.click(screen.getByTestId('send-ambiguous-check'));
+    await waitFor(() => expect(hoisted.txLookup).toHaveBeenCalled());
+    await waitFor(() => expect(screen.getByTestId('send-ambiguous-check')).not.toBeDisabled());
+    expect(readAccountEntry('PUBLIC', owner.publicKey())).toMatchObject({ status: 'ambiguous' });
+    expect(screen.getByRole('button', { name: 'Signieren und senden' })).toBeDisabled();
+
+    // Horizon zeigt die Transaktion als erfolgreich: freigegeben, Hinweis "angewendet".
+    hoisted.txLookup.mockImplementation(async (hash) => ({ hash, successful: true }));
+    fireEvent.click(screen.getByTestId('send-ambiguous-check'));
+    await waitFor(() => expect(screen.queryByTestId('send-ambiguous')).toBeNull());
+    expect(screen.getByTestId('send-ambiguous-resolved').dataset.kind).toBe('applied');
+    expect(readAccountEntry('PUBLIC', owner.publicKey())).toMatchObject({ status: 'success' });
+    expect(screen.getByRole('button', { name: 'Signieren und senden' })).not.toBeDisabled();
+  });
+
+  it('Sperre eines anderen Sendewegs (Zahlung senden) gilt auch hier', async () => {
+    writeAccountEntry('PUBLIC', owner.publicKey(), guardEntry({ origin: 'payment', summary: { recipient: 'GDEST', amountDisplay: '5', asset: 'XLM' } }));
+    renderDeposit();
+    await enterDeposit('10');
+    fireEvent.click(screen.getByRole('button', { name: 'Operationen prüfen' }));
+    expect(screen.getByRole('button', { name: 'Signieren und senden' })).toBeDisabled();
+    expect(hoisted.submit).not.toHaveBeenCalled();
+  });
+
+  it('Eintrag erscheint nach dem Oeffnen des Dialogs (anderer Tab): guardedSubmit sendet nicht', async () => {
+    renderDeposit();
+    await enterDeposit('10');
+    fireEvent.click(screen.getByRole('button', { name: 'Operationen prüfen' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Signieren und senden' }));
+    writeAccountEntry('PUBLIC', owner.publicKey(), guardEntry({ origin: 'payment' }));
+    await act(async () => { fireEvent.click(await screen.findByText('keys-ok')); });
+    await waitFor(() => expect(screen.getByTestId('send-ambiguous')).toBeInTheDocument());
+    expect(hoisted.submit).not.toHaveBeenCalled();
+  });
+
+  it('offener Pin mit passender Sequence: gesendet wird mit genau der gepinnten Sequence, Pin danach erledigt', async () => {
+    // Konto-Sequence 100, Pin auf 101 (frueheres, nicht ausgefuehrtes Senden)
+    writeAccountEntry('PUBLIC', owner.publicKey(), {
+      hash: 'c'.repeat(64), at: Date.now() - 60000, status: 'notApplied', pin: true, maxTime: nowSec() - 300, seq: '101', source: owner.publicKey(), origin: 'payment',
+    });
+    hoisted.submit.mockResolvedValue({ hash: 'pinned' });
+    await signDeposit();
+    await screen.findByTestId('liquidity-success');
+    expect(hoisted.submit.mock.calls[0][1].sequence).toBe('101');
+  });
+
+  it('offener Pin, der nicht mehr passt: nichts gesendet, fruehere Transaktion wieder unklar, Kasten sichtbar', async () => {
+    writeAccountEntry('PUBLIC', owner.publicKey(), {
+      hash: 'c'.repeat(64), at: Date.now() - 60000, status: 'notApplied', pin: true, maxTime: nowSec() - 300, seq: '999', source: owner.publicKey(), origin: 'payment',
+    });
+    await signDeposit();
+    await waitFor(() => expect(screen.getByTestId('send-ambiguous')).toBeInTheDocument());
+    expect(hoisted.submit).not.toHaveBeenCalled();
+    expect(readAccountEntry('PUBLIC', owner.publicKey())).toMatchObject({ status: 'ambiguous', recheck: 'pinConsumed' });
+  });
+
+  describe('Job und XDR (Multisig-Konto) bauen nur ohne Sperre und mit dem Pin', () => {
+    const cosigner = Keypair.random();
+    const multisigProps = {
+      thresholds: { low_threshold: 1, med_threshold: 2, high_threshold: 2 },
+      signers: [{ key: owner.publicKey(), weight: 1, type: 'ed25519_public_key' }, { key: cosigner.publicKey(), weight: 1, type: 'ed25519_public_key' }],
+    };
+    beforeEach(() => {
+      hoisted.createJob.mockReset();
+      hoisted.createJob.mockResolvedValue({ id: 'job-1', hash: 'jobhash', xdr: 'AAAA' });
+      hoisted.loadAccount.mockImplementation(async () => makeAccount(multisigProps));
+      window.localStorage.setItem('stm.multisigTimeoutSeconds', '3600');
+    });
+    afterEach(() => window.localStorage.removeItem('stm.multisigTimeoutSeconds'));
+
+    async function openOptions() {
+      renderDeposit();
+      await enterDeposit('10');
+      fireEvent.click(screen.getByRole('button', { name: 'Operationen prüfen' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Signieren und senden' }));
+      await screen.findByText('Option wählen');
+    }
+    const proceed = async (option) => {
+      fireEvent.click(await screen.findByRole('radio', { name: option }));
+      await act(async () => { fireEvent.click(screen.getByRole('button', { name: 'Weiter' })); });
+    };
+
+    it('Job: Eintrag erscheint nach dem Oeffnen der Optionen -> kein Job, Hinweistext', async () => {
+      await openOptions();
+      writeAccountEntry('PUBLIC', owner.publicKey(), guardEntry({ origin: 'payment' }));
+      await proceed(/Multisig-Job erstellen/);
+      expect(await screen.findByText(/Nicht erstellt: Von diesem Konto ist eine Transaktion mit unklarem Status offen/)).toBeInTheDocument();
+      expect(hoisted.createJob).not.toHaveBeenCalled();
+    });
+
+    it('XDR: gleiche Sperre, kein XDR', async () => {
+      await openOptions();
+      writeAccountEntry('PUBLIC', owner.publicKey(), guardEntry({ origin: 'payment' }));
+      await proceed(/XDR exportieren/);
+      expect(await screen.findByText(/Nicht erstellt: Von diesem Konto ist eine Transaktion mit unklarem Status offen/)).toBeInTheDocument();
+      expect(screen.queryByText(/XDR vorbereitet/)).toBeNull();
+      expect(hoisted.createJob).not.toHaveBeenCalled();
+    });
+
+    it('Job mit Pin, der nicht mehr passt: nichts gebaut, Eintrag wieder unklar', async () => {
+      await openOptions();
+      writeAccountEntry('PUBLIC', owner.publicKey(), {
+        hash: 'c'.repeat(64), at: Date.now() - 60000, status: 'notApplied', pin: true, maxTime: nowSec() - 300, seq: '999', source: owner.publicKey(), origin: 'payment',
+      });
+      await proceed(/Multisig-Job erstellen/);
+      expect(await screen.findByText(/Nicht erstellt: Die Sequence einer früheren, nicht ausgeführten Transaktion/)).toBeInTheDocument();
+      expect(hoisted.createJob).not.toHaveBeenCalled();
+      expect(readAccountEntry('PUBLIC', owner.publicKey())).toMatchObject({ status: 'ambiguous', recheck: 'pinConsumed' });
+    });
+
+    it('Job mit passendem Pin: die Transaktion nutzt genau die gepinnte Sequence', async () => {
+      await openOptions();
+      writeAccountEntry('PUBLIC', owner.publicKey(), {
+        hash: 'c'.repeat(64), at: Date.now() - 60000, status: 'notApplied', pin: true, maxTime: nowSec() - 300, seq: '101', source: owner.publicKey(), origin: 'payment',
+      });
+      await proceed(/Multisig-Job erstellen/);
+      await waitFor(() => expect(hoisted.createJob).toHaveBeenCalledTimes(1));
+      const tx = TransactionBuilder.fromXDR(hoisted.createJob.mock.calls[0][0].txXdr, Networks.PUBLIC);
+      expect(tx.sequence).toBe('101');
+    });
+  });
+});
+
+// Der Sendeschutz speichert einen unklaren Ausgang pro Konto: kein Zustand zwischen den Tests.
+beforeEach(() => {
+  Object.keys(window.localStorage).filter((k) => k.startsWith('skm_')).forEach((k) => window.localStorage.removeItem(k));
+  resetAccountSendGuardMemory();
 });

@@ -245,3 +245,15 @@ export function useAccountSendBlock({ network, account, onApplied, onNotApplied 
     dismissNotice: () => setNotice(null),
   };
 }
+
+/**
+ * Eine Sperre pro Seite: Eine Seite, die Dialoge mit Sendewegen oeffnet, haelt die Sperre
+ * (useAccountSendBlock) und reicht sie als shared weiter; die Dialoge teilen sie dann, statt eine
+ * zweite Instanz zu fuehren (zwei Instanzen wuerden dieselbe Sperre doppelt ueber Horizon pruefen).
+ * Ohne shared (Dialog allein) fuehrt der Aufrufer eine eigene. Der Hook wird immer aufgerufen;
+ * mit shared ist sein Konto leer, er sperrt und prueft dann nichts.
+ */
+export function useSharedSendBlock(shared, opts) {
+  const own = useAccountSendBlock({ ...opts, account: shared ? '' : opts.account });
+  return shared || own;
+}

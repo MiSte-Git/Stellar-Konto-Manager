@@ -2,8 +2,8 @@ import { Account } from '@stellar/stellar-sdk';
 import { normalizeNativePool } from '../../utils/stellar/liquidityPools.js';
 import { getRequiredThreshold } from '../../utils/getRequiredThreshold.js';
 import { getCollectedSignerWeight } from '../trading/assetSearchUtils.js';
-import { signTransactionWithCollectedSigners } from '../../utils/stellar/tradingTransactions.js';
-import { submitTransactionSafely, AmbiguousSubmitResultError } from '../../utils/stellar/submitTransactionSafely.js';
+import { AmbiguousSubmitResultError } from '../../utils/stellar/submitTransactionSafely.js';
+import { adjustedAccount } from '../../utils/submitGuard/guardedSubmit.js';
 import { formatErrorForUi } from '../../utils/formatErrorForUi.js';
 import { liquidityErrorKey } from '../../utils/stellar/liquidityErrors.js';
 
@@ -14,13 +14,17 @@ import { liquidityErrorKey } from '../../utils/stellar/liquidityErrors.js';
 /**
  * Konto und Pool frisch von Horizon laden. Wirft liquidityPools.poolIdMismatch,
  * wenn die Pool-Daten inkonsistent sind oder zu einem anderen Pool gehoeren.
+ * adjustAccount (aus guardedSubmit/guardedUnsignedBuild, oder null): offene Pins des Kontos.
+ * account bleibt das geladene Konto (fuer die Vorpruefungen), buildAccount ist das Konto
+ * mit der gepinnten Sequence, mit dem die Transaktion gebaut werden muss. Passt ein Pin nicht
+ * mehr genau, wirft das SendBlockedError('pinConsumed').
  */
-export async function loadFreshState(server, publicKey, poolId) {
+export async function loadFreshState(server, publicKey, poolId, adjustAccount = null) {
   const [account, record] = await Promise.all([
     server.loadAccount(publicKey),
     server.liquidityPools().liquidityPoolId(poolId).call(),
   ]);
-  return { account, pool: normalizeNativePool(record, poolId) };
+  return { account, buildAccount: adjustedAccount(account, adjustAccount), pool: normalizeNativePool(record, poolId) };
 }
 
 /** Issuer-Flags fuer Assets ohne Trustline (auth_required, auth_clawback_enabled). */
@@ -49,10 +53,6 @@ export function assertSignerWeight(account, collectedSigners, operationType) {
   if (current < required) {
     throw Object.assign(new Error('submitTransaction.failed:multisig.insufficientWeight'), { required, current });
   }
-}
-
-export function signAndSubmit(server, tx, collectedSigners) {
-  return submitTransactionSafely(server, signTransactionWithCollectedSigners(tx, collectedSigners));
 }
 
 /** Fehlertext fuer die Dialoge; AmbiguousSubmitResultError wird vom Aufrufer gesondert behandelt. */

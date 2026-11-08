@@ -19,6 +19,7 @@ import { parseSlippagePercent, sharesFromPercent } from './dialogInputs.js';
 import LiquidityDialogShell, { BTN_PRIMARY, BTN_SECONDARY, FactList, INPUT, NOTE_ERROR, NOTE_NEUTRAL, NOTE_WARN, OperationsPreview } from './LiquidityDialogShell.jsx';
 import { CheckProblems, ResultNote, SlippageField } from './dialogParts.jsx';
 import { JobNotes, LiquidityResultDialog, LiquiditySigningOptions } from './jobParts.jsx';
+import AccountSendGuardNotice from '../wallet/AccountSendGuardNotice.jsx';
 
 const PERCENT_PRESETS = ['25', '50', '75', '100'];
 
@@ -44,12 +45,12 @@ function buildWithdrawTx({ account, pool, quote, shares, removePoolTrust, feePer
  * entfernen (Default an). Vor dem Bauen wird neu geladen; liegen die neuen
  * Betraege unter den bestaetigten Mindestbetraegen, wird abgebrochen.
  */
-export default function WithdrawDialog({ poolId, publicKey, network, onClose, onDone, onBackgroundResult }) {
+export default function WithdrawDialog({ poolId, publicKey, network, onClose, onDone, onBackgroundResult, sendGuard = null }) {
   const { t, i18n } = useTranslation(['liquidity', 'errors', 'submitTransaction', 'common']);
   const { t: tOps } = useTranslation('multisig');
   const locale = i18n.language;
   const { multisigTimeoutSeconds } = useSettings();
-  const action = useLiquidityAction({ publicKey, network, poolId, operationType: 'liquidityPoolWithdraw', t, onDone, onBackgroundResult });
+  const action = useLiquidityAction({ publicKey, network, poolId, operationType: 'liquidityPoolWithdraw', t, onDone, onBackgroundResult, sendGuard });
   const { data } = action;
   const pool = data.pool;
   // Optionsauswahl (Job/lokal/XDR) nur, wenn kein einzelner Signer die Schwelle allein erreicht.
@@ -107,8 +108,8 @@ export default function WithdrawDialog({ poolId, publicKey, network, onClose, on
 
   // Frischer Stand gegen die bestaetigten Werte (direkter Weg und Job-Weg gleich):
   // { changed, fresh } bei Abweichung, sonst { fresh }.
-  const verifyFresh = async (server, c, feePerOp) => {
-    const fresh = await loadFreshState(server, publicKey, poolId);
+  const verifyFresh = async (server, c, feePerOp, adjustAccount = null) => {
+    const fresh = await loadFreshState(server, publicKey, poolId, adjustAccount);
     const freshQuote = quoteWithdraw({ pool: fresh.pool, shares: c.shares, slippageBps: c.slippageBps });
     const freshLine = findPoolShareLine(fresh.account, poolId);
     const freshBalance = freshLine ? toStroops(freshLine.balance) : 0n;
@@ -124,8 +125,9 @@ export default function WithdrawDialog({ poolId, publicKey, network, onClose, on
   // local: Multisig-Option "Alle Signaturen lokal eingeben" (Rueckweg zur Optionsauswahl).
   const handleSign = ({ local = false } = {}) => {
     const c = confirmed;
-    action.begin(c, async (server, collected, alive, send) => {
-      const v = await verifyFresh(server, c, data.feePerOp);
+    // Gebaut wird im Sende-Lock (guardedSubmit) mit der Sequence eines offenen Pins (adjustAccount).
+    action.begin(c, async (server, collected, alive, adjustAccount) => {
+      const v = await verifyFresh(server, c, data.feePerOp, adjustAccount);
       if (!alive()) return null;
       if (v.changed) {
         setConfirmed(null);
@@ -134,25 +136,24 @@ export default function WithdrawDialog({ poolId, publicKey, network, onClose, on
       assertSignerWeight(v.fresh.account, collected, 'liquidityPoolWithdraw');
       if (!alive()) return null;
       // Bestaetigte Mindestbetraege verwenden, nicht die neu berechneten.
-      const tx = buildWithdrawTx({ account: v.fresh.account, pool: v.fresh.pool, quote: c.quote, shares: c.shares, removePoolTrust: c.removePoolTrust, feePerOp: data.feePerOp, network });
-      const res = await send(tx);
-      return { hash: res?.hash || res?.id || '' };
-    }, { local, onBackToSelection: local ? () => setOptionsOpen(true) : null });
+      const tx = buildWithdrawTx({ account: v.fresh.buildAccount, pool: v.fresh.pool, quote: c.quote, shares: c.shares, removePoolTrust: c.removePoolTrust, feePerOp: data.feePerOp, network });
+      return { tx };
+    }, { local, onBackToSelection: local ? () => setOptionsOpen(true) : null, actionText: `${t('liquidity:withdraw.title')}: ${labelA} / ${labelB}` });
   };
 
   // Multisig-Job und XDR-Export: gleiche Pruefung, Fee fuer spaeteres Einreichen
   // (deferred), Gueltigkeit aus den Einstellungen, bestaetigte Mindestbetraege,
   // unsigniert.
-  const unsignedWork = (c) => async (server, alive) => {
+  const unsignedWork = (c) => async (server, alive, adjustAccount) => {
     const feePerOp = await resolveFeePerOp(server, { deferred: true });
-    const v = await verifyFresh(server, c, feePerOp);
+    const v = await verifyFresh(server, c, feePerOp, adjustAccount);
     if (!alive()) return null;
     if (v.changed) {
       setConfirmed(null);
       return v;
     }
     const timeoutSeconds = getMultisigTxTimeout({ immediateSubmit: false, multisigTimeoutSeconds });
-    const tx = buildWithdrawTx({ account: v.fresh.account, pool: v.fresh.pool, quote: c.quote, shares: c.shares, removePoolTrust: c.removePoolTrust, feePerOp, network, timeoutSeconds });
+    const tx = buildWithdrawTx({ account: v.fresh.buildAccount, pool: v.fresh.pool, quote: c.quote, shares: c.shares, removePoolTrust: c.removePoolTrust, feePerOp, network, timeoutSeconds });
     return {
       tx,
       items: [
@@ -260,7 +261,7 @@ export default function WithdrawDialog({ poolId, publicKey, network, onClose, on
             <OperationsPreview blocks={confirmed.blocks} legend={t('liquidity:dialog.legend', { a: labelA, b: labelB })} />
             {multisig && <JobNotes hints={[t('liquidity:job.withdrawHint'), confirmed.removePoolTrust ? t('liquidity:job.removeTrustHint') : '']} />}
             <div className="flex flex-wrap gap-2">
-              <button type="button" className={BTN_PRIMARY} onClick={handleSignClick} disabled={action.processing || action.jobCreated}>{t('liquidity:dialog.sign')}</button>
+              <button type="button" className={BTN_PRIMARY} onClick={handleSignClick} disabled={action.processing || action.jobCreated || action.blocked}>{t('liquidity:dialog.sign')}</button>
               <button type="button" className={BTN_SECONDARY} onClick={() => setConfirmed(null)} disabled={action.jobCreated}>{t('liquidity:dialog.back')}</button>
             </div>
           </>
@@ -275,6 +276,7 @@ export default function WithdrawDialog({ poolId, publicKey, network, onClose, on
 
   return (
     <LiquidityDialogShell title={t('liquidity:withdraw.title')} onClose={onClose} closeDisabled={action.processing} testId="withdraw-dialog">
+      <AccountSendGuardNotice guard={action.guard} network={network} />
       {body}
       <LiquiditySigningOptions
         open={optionsOpen}

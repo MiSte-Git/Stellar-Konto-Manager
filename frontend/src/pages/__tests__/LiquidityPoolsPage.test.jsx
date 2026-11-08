@@ -5,6 +5,7 @@ import { Account, Asset, Keypair, Networks } from '@stellar/stellar-sdk';
 import i18n from '../../i18n.js';
 import LiquidityPoolsPage from '../LiquidityPoolsPage.jsx';
 import { poolIdFor } from '../../utils/stellar/liquidityPools.js';
+import { resetAccountSendGuardMemory, writeAccountEntry } from '../../utils/submitGuard/accountSendGuard.js';
 
 const hoisted = vi.hoisted(() => ({
   loadAccount: vi.fn(),
@@ -115,6 +116,32 @@ describe('LiquidityPoolsPage', () => {
     renderPage({ publicKey: PK, notFound: true });
     expect(screen.getByTestId('account-gate')).toHaveTextContent(PK);
     expect(hoisted.accountCall).not.toHaveBeenCalled();
+  });
+
+  describe('offenes Ergebnis (unklarer Sendestatus) nach Neuladen', () => {
+    const entry = (o = {}) => ({
+      hash: 'a'.repeat(64), at: Date.now() - 5000, status: 'ambiguous', maxTime: Math.floor(Date.now() / 1000) + 170, seq: '101', source: PK,
+      origin: 'liquidity', cause: { kind: 'network', status: null }, summary: { action: 'Einzahlen: XLM / USDC' }, ...o,
+    });
+
+    it('zeigt den Kasten mit Aktion und Hash, auch wenn der Eintrag aus einem frueheren Tab stammt', async () => {
+      hoisted.accountCall.mockResolvedValue({ balances: [] });
+      writeAccountEntry('PUBLIC', PK, entry());
+      renderPage({ publicKey: PK });
+      const panel = await screen.findByTestId('send-ambiguous');
+      expect(panel).toHaveTextContent('Einzahlen: XLM / USDC');
+      expect(screen.getByTestId('send-ambiguous-hash')).toHaveTextContent('a'.repeat(64));
+    });
+
+    it('zeigt ihn nicht ohne Konto und nicht fuer ein anderes Konto oder Netz', async () => {
+      hoisted.accountCall.mockResolvedValue({ balances: [] });
+      writeAccountEntry('PUBLIC', PK, entry());
+      const first = renderPage({ publicKey: '' });
+      expect(screen.queryByTestId('send-ambiguous')).toBeNull();
+      first.unmount();
+      renderPage({ publicKey: PK, network: 'TESTNET' });
+      expect(screen.queryByTestId('send-ambiguous')).toBeNull();
+    });
   });
 
   it('zeigt Positionen mit Anteil, Gegenwert und Quelle, Trustline mit 0 Shares gekennzeichnet', async () => {
@@ -524,4 +551,11 @@ describe('LiquidityPoolsPage', () => {
     renderPage({ publicKey: PK });
     expect(await screen.findByRole('button', { name: 'Einzahlen' })).toBeDisabled();
   });
+});
+
+
+// Der Sendeschutz speichert einen unklaren Ausgang pro Konto: kein Zustand zwischen den Tests.
+beforeEach(() => {
+  Object.keys(window.localStorage).filter((k) => k.startsWith('skm_')).forEach((k) => window.localStorage.removeItem(k));
+  resetAccountSendGuardMemory();
 });

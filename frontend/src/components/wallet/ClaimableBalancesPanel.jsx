@@ -15,7 +15,10 @@ import { shortenAddress } from '../../utils/stellar/walletSummary.js';
 import { isDustAmount, looksLikeNativeCode } from '../../utils/stellar/activity.js';
 import { DustBadge, FakeNativeBadge } from './ActivityWarnings.jsx';
 import { resolveFeePerOp } from '../../utils/stellar/fees.js';
-import { submitTransactionSafely, AmbiguousSubmitResultError } from '../../utils/stellar/submitTransactionSafely.js';
+import { AmbiguousSubmitResultError } from '../../utils/stellar/submitTransactionSafely.js';
+import { adjustedAccount, guardedSubmit, guardedUnsignedBuild, SendBlockedError } from '../../utils/submitGuard/guardedSubmit.js';
+import { useAccountSendBlock } from '../../utils/submitGuard/useAccountSendBlock.js';
+import AccountSendGuardNotice from './AccountSendGuardNotice.jsx';
 import { getRequiredThreshold } from '../../utils/getRequiredThreshold.js';
 import { formatErrorForUi } from '../../utils/formatErrorForUi.js';
 import { getSessionSecrets, rememberSessionSecrets, InsecureCryptoContextError } from '../../utils/sessionSecrets.js';
@@ -31,6 +34,11 @@ import {
 import { txHashHex } from '../../utils/stellar/txHash.js';
 
 const TRUSTLINE_RESERVE_XLM = 0.5;
+
+// Abbruch im Lock mit fertigem Text (nicht einloesbar, Gewicht reicht nicht): nichts gesendet.
+class ClaimAbort extends Error {}
+// Gruende, bei denen der Statuskasten den Ausweg zeigt: Signatur-Dialog schliessen.
+const CLOSE_ON = ['blocked', 'pinConsumed', 'badSeq'];
 
 const cardCls = 'rounded-2xl border border-gray-200 bg-white shadow-xs dark:border-gray-700 dark:bg-gray-800/70';
 const linkBtnCls =
@@ -67,6 +75,15 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
   const [showBatch, setShowBatch] = React.useState(false);
   const { multisigTimeoutSeconds } = useSettings();
   const multisig = isMultisigAccount(account);
+  // Unklarer Sendestatus des Kontos (aus jedem Sendeweg, auch nach Neuladen): sperrt das Einloesen
+  // und den Sammel-Tausch; Freigabe nur ueber Horizon. Der Sammel-Tausch teilt diese Instanz.
+  const sendGuard = useAccountSendBlock({
+    network,
+    account: publicKey,
+    onApplied: () => onClaimed?.(),
+    onNotApplied: () => onClaimed?.(),
+  });
+  const sendBlocked = !!sendGuard.block;
 
   React.useEffect(() => {
     setHiddenIds(getHiddenClaimableIds(network, publicKey));
@@ -139,6 +156,10 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
   const startClaim = (item) => {
     setInfo('');
     setClaimError('');
+    if (sendGuard.block) {
+      setClaimError(t('common:payment.send.ambiguousResult.blockedReason.blocked'));
+      return;
+    }
     if (!item.claimableNow || item.blockedReason || !reserveOk(item)) return;
     setClaimItem(item);
   };
@@ -160,15 +181,22 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
       // Explizites Netz wie die Passphrase (Default-Pfad wuerde localStorage lesen).
       const server = getHorizonServerForNetwork(network);
       await assertHorizonNetwork(server, networkPassphrase);
-      const fresh = await server.loadAccount(publicKey);
-      const [current] = classifyClaimableBalances(records.filter((r) => r.id === item.id), fresh);
-      if (!current || !current.claimableNow || current.blockedReason) {
-        setClaimError(t(current?.blockedReason ? `wallet:claimable.blocked.${current.blockedReason}` : 'wallet:claimable.notClaimable'));
-        return;
-      }
-      // Wird erst spaeter eingereicht: Gebuehrenstufe Schnell (siehe fees.js)
-      const fee = await resolveFeePerOp(server, { deferred: true });
-      const tx = buildClaimTx({ account: fresh, item: current, fee, networkPassphrase, timeoutSeconds });
+      // Wird erst spaeter eingereicht, konkurriert aber mit unklaren oder gepinnten Transaktionen
+      // des Kontos: Sperre und Pin gelten schon beim Bauen (guardedUnsignedBuild, im Sende-Lock).
+      const { tx, current } = await guardedUnsignedBuild({
+        network,
+        account: publicKey,
+        build: async ({ adjustAccount }) => {
+          const fresh = await server.loadAccount(publicKey);
+          const [cur] = classifyClaimableBalances(records.filter((r) => r.id === item.id), fresh);
+          if (!cur || !cur.claimableNow || cur.blockedReason) {
+            throw new ClaimAbort(t(cur?.blockedReason ? `wallet:claimable.blocked.${cur.blockedReason}` : 'wallet:claimable.notClaimable'));
+          }
+          // Wird erst spaeter eingereicht: Gebuehrenstufe Schnell (siehe fees.js)
+          const fee = await resolveFeePerOp(server, { deferred: true });
+          return { tx: buildClaimTx({ account: adjustedAccount(fresh, adjustAccount), item: cur, fee, networkPassphrase, timeoutSeconds }), current: cur };
+        },
+      });
       assertFlowNetwork(network);
       const job = await createMultisigJobFromXdr({
         network: getNetworkConfig(network).backendId,
@@ -192,8 +220,15 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
         },
       });
     } catch (e) {
-      console.error('[SKM] claimable balance job creation failed', e);
-      setClaimError(describeError(e));
+      if (e instanceof ClaimAbort) {
+        setClaimError(e.message);
+      } else if (e instanceof SendBlockedError) {
+        sendGuard.bump();
+        setClaimError(t(`common:payment.send.ambiguousResult.unsignedBlockedReason.${e.reason}`));
+      } else {
+        console.error('[SKM] claimable balance job creation failed', e);
+        setClaimError(describeError(e));
+      }
     } finally {
       inFlightRef.current = false;
       setClaiming(false);
@@ -218,33 +253,47 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
       // Explizites Netz wie die Passphrase (Default-Pfad wuerde localStorage lesen).
       const server = getHorizonServerForNetwork(network);
       await assertHorizonNetwork(server, networkPassphrase);
-      // Frisch laden: Signer, Thresholds und Trustlines koennen sich geaendert haben.
-      const fresh = await server.loadAccount(publicKey);
-      const [item] = classifyClaimableBalances(
-        records.filter((r) => r.id === claimItem.id),
-        fresh
-      );
-      if (!item || !item.claimableNow || item.blockedReason) {
-        setClaimError(t(item?.blockedReason ? `wallet:claimable.blocked.${item.blockedReason}` : 'wallet:claimable.notClaimable'));
-        return;
-      }
-      const withTrustline = needsTrustline(item);
-      const required = Math.max(
-        getRequiredThreshold('claimClaimableBalance', fresh?.thresholds),
-        withTrustline ? getRequiredThreshold('changeTrust', fresh?.thresholds) : 0
-      );
-      const { signers, weight } = collectEffectiveSigners(collected, fresh?.signers);
-      if (!signers.length || weight < required) {
-        setClaimError(t(multisig ? 'wallet:claimable.insufficientWeightJob' : 'wallet:claimable.insufficientWeight', { required }));
-        return;
-      }
-      const fee = await resolveFeePerOp(server);
-      const tx = buildClaimTx({ account: fresh, item, fee, networkPassphrase });
-      // Nach den Horizon-Aufrufen: gilt das Netz des Ablaufs noch?
-      assertFlowNetwork(network);
-      signers.forEach((s) => tx.sign(s.keypair));
-      const res = await submitTransactionSafely(server, tx);
-      const hash = res?.hash || res?.id || txHashHex(tx);
+      // Gesendet wird nach den Regeln der Sammelzahlung (guardedSubmit): exklusiv pro Netz, gesperrt
+      // bei unklarem Eintrag des Kontos (aus jedem Sendeweg), Eintrag vor dem Submit, Pin der
+      // Sequence nach "nicht ausgefuehrt". Frisch laden im Lock: Signer, Thresholds und Trustlines
+      // koennen sich geaendert haben.
+      const { res, built, hash: txHash } = await guardedSubmit({
+        network,
+        account: publicKey,
+        server,
+        networkPassphrase,
+        // Kein Zahlungsziel (claimClaimableBalance, changeTrust): keine Memo-Pruefung (SEP-29).
+        skipMemoRequiredCheck: true,
+        buildTx: async ({ adjustAccount }) => {
+          const fresh = await server.loadAccount(publicKey);
+          const [cur] = classifyClaimableBalances(records.filter((r) => r.id === claimItem.id), fresh);
+          if (!cur || !cur.claimableNow || cur.blockedReason) {
+            throw new ClaimAbort(t(cur?.blockedReason ? `wallet:claimable.blocked.${cur.blockedReason}` : 'wallet:claimable.notClaimable'));
+          }
+          const withTrustline = needsTrustline(cur);
+          const required = Math.max(
+            getRequiredThreshold('claimClaimableBalance', fresh?.thresholds),
+            withTrustline ? getRequiredThreshold('changeTrust', fresh?.thresholds) : 0
+          );
+          const { signers, weight } = collectEffectiveSigners(collected, fresh?.signers);
+          if (!signers.length || weight < required) {
+            throw new ClaimAbort(t(multisig ? 'wallet:claimable.insufficientWeightJob' : 'wallet:claimable.insufficientWeight', { required }));
+          }
+          const fee = await resolveFeePerOp(server);
+          const tx = buildClaimTx({ account: adjustedAccount(fresh, adjustAccount), item: cur, fee, networkPassphrase });
+          // Nach den Horizon-Aufrufen: gilt das Netz des Ablaufs noch?
+          assertFlowNetwork(network);
+          signers.forEach((s) => tx.sign(s.keypair));
+          return { tx, item: cur };
+        },
+        entryData: ({ item: cur }) => ({
+          origin: 'claimable',
+          summary: { action: t('wallet:claimable.guardAction', { amount: cur.amount, code: cur.asset.code }) },
+        }),
+      });
+      const item = built.item;
+      const hash = res?.hash || res?.id || txHash;
+      sendGuard.bump();
       setClaimItem(null);
       setInfo(t('wallet:claimable.success', { amount: item.amount, code: item.asset.code, hash }));
       // Erst nach erfolgreicher Signatur und Einreichung merken
@@ -257,10 +306,21 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
       }
       onClaimed?.();
     } catch (e) {
+      if (e instanceof ClaimAbort) {
+        setClaimError(e.message);
+        return;
+      }
+      sendGuard.bump();
+      if (e instanceof SendBlockedError) {
+        // Gesperrt: Der Statuskasten zeigt Status und Ausweg, der Signatur-Dialog schliesst.
+        setClaimError(t(`common:payment.send.ambiguousResult.blockedReason.${e.reason}`));
+        if (CLOSE_ON.includes(e.reason)) setClaimItem(null);
+        return;
+      }
       console.error('[SKM] claim claimable balance failed', e);
       setClaimError(describeError(e));
-      // Ergebnis unklar: kein sofortiges zweites Senden. Dialog schliessen und neu laden,
-      // dann zeigt die Liste, ob die Claimable Balance noch da ist.
+      // Ergebnis unklar: kein sofortiges zweites Senden (der Eintrag sperrt das Konto bis Horizon
+      // den Ausgang zeigt). Dialog schliessen und neu laden.
       if (e instanceof AmbiguousSubmitResultError) {
         setClaimItem(null);
         onClaimed?.();
@@ -328,7 +388,7 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
             <button
               type="button"
               onClick={() => { void prepareJob(item); }}
-              disabled={!item.claimableNow || !!item.blockedReason || claiming}
+              disabled={!item.claimableNow || !!item.blockedReason || claiming || sendBlocked}
               className="rounded-lg border border-blue-300 bg-white px-3 py-1.5 text-xs font-semibold text-blue-700 hover:bg-blue-50 disabled:opacity-50 dark:border-blue-700 dark:bg-gray-900 dark:text-blue-200"
             >
               {t('wallet:claimable.prepareJob')}
@@ -337,7 +397,7 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
           <button
             type="button"
             onClick={() => startClaim(item)}
-            disabled={!item.claimableNow || !!item.blockedReason || claiming}
+            disabled={!item.claimableNow || !!item.blockedReason || claiming || sendBlocked}
             className="rounded-lg border-0 bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
           >
             {t('wallet:claimable.claim')}
@@ -379,6 +439,7 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
           {t('wallet:claimable.unsolicitedNote')}
         </p>
       )}
+      {!showBatch && <div className="px-5 pt-3 empty:hidden"><AccountSendGuardNotice guard={sendGuard} network={network} /></div>}
       {info && <p role="status" className="px-5 pt-2 text-xs text-green-700 dark:text-green-400 break-all">{info}</p>}
       {claimError && !claimItem && <p role="alert" className="px-5 pt-2 text-xs text-red-700 dark:text-red-300">{claimError}</p>}
       {loadError && <p className="px-5 pt-2 text-xs text-red-700 dark:text-red-300">{loadError}</p>}
@@ -425,6 +486,7 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
           fmt={fmt}
           onClose={() => setShowBatch(false)}
           onDone={() => onClaimed?.()}
+          sendGuard={sendGuard}
         />
       )}
 

@@ -17,9 +17,7 @@ import {
 import { AmbiguousSubmitResultError } from '../../utils/stellar/submitTransactionSafely.js';
 import { guardedSubmit, SendBlockedError } from '../../utils/submitGuard/guardedSubmit.js';
 import { useAccountSendBlock } from '../../utils/submitGuard/useAccountSendBlock.js';
-import SendAmbiguousPanel, { SendResolvedNotice } from '../wallet/SendAmbiguousPanel.jsx';
-import { buildExplorerUrl } from '../../utils/stellar/accountUtils.js';
-import { useSettings } from '../../utils/useSettings.js';
+import AccountSendGuardNotice from '../wallet/AccountSendGuardNotice.jsx';
 import {
   DEFAULT_TRUSTLINE_LIMIT,
   EMPTY_ASSET_FACTS,
@@ -133,7 +131,6 @@ export default function AssetSearch() {
   });
   // Unklarer Sendestatus pro Konto und Netz (gespeichert, gilt auch fuer "Zahlung senden" und die
   // Sammelzahlung). Freigabe nur ueber Horizon, siehe utils/submitGuard/.
-  const { explorers } = useSettings();
   const sendGuard = useAccountSendBlock({
     network,
     account: accountId,
@@ -1273,21 +1270,7 @@ export default function AssetSearch() {
         actionMessage={actionMessage}
         modalError={modalError}
       />
-      <SendAmbiguousPanel
-        guard={sendGuard}
-        t={t}
-        language={i18n.language}
-        networkLabel={getNetworkConfig(network).label}
-        explorerLinks={(hash) => {
-          const list = explorers || [];
-          const find = (key) => list.find((exp) => (exp.key || exp.id) === key) || null;
-          return [
-            { href: buildExplorerUrl(find('stellar_expert'), hash, network, { type: 'tx' }), label: t('common:balance.explorer.expert', 'stellar.expert') },
-            { href: buildExplorerUrl(find('stellarchain'), hash, network, { type: 'tx' }), label: t('common:balance.explorer.stellarchain', 'Stellarchain.io') },
-          ].filter((l) => l.href);
-        }}
-      />
-      <SendResolvedNotice notice={sendGuard.notice} t={t} onDismiss={sendGuard.dismissNotice} />
+      <AccountSendGuardNotice guard={sendGuard} network={network} />
 
       <AssetResultsTable
         assetResults={assetResults}

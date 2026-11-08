@@ -37,6 +37,22 @@ export class SendBlockedError extends Error {
   }
 }
 
+/**
+ * Konto fuer das Bauen mit der gepinnten Sequence (adjustAccount aus guardedSubmit oder
+ * guardedUnsignedBuild, oder null). applyAccountPins liefert nur ein Konto mit der Sequence;
+ * Salden, Schwellen, Signer und Flags des geladenen Kontos bleiben fuer Builder erhalten, die
+ * sie lesen (z. B. Abheben aus dem Pool). Wirft SendBlockedError('pinConsumed'), wenn der Pin
+ * nicht mehr genau passt.
+ */
+export function adjustedAccount(loaded, adjustAccount) {
+  if (!adjustAccount) return loaded;
+  const adjusted = adjustAccount(loaded);
+  if (adjusted === loaded) return loaded;
+  return Object.assign(adjusted, {
+    balances: loaded.balances, thresholds: loaded.thresholds, signers: loaded.signers, flags: loaded.flags,
+  });
+}
+
 // Fruehere, nicht ausgefuehrte Transaktion wieder als unklar fuehren (strenge Pruefung).
 function asAmbiguous(entry, recheck) {
   return { ...entry, status: 'ambiguous', pin: false, recheck };

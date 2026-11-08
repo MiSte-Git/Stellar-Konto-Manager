@@ -45,7 +45,10 @@ export const SEND_VALIDITY_SLACK_SECONDS = 10;
 // unveraendert stehen): skm_unreadable_seen_v1:<Schluessel des Eintrags>.
 export const UNREADABLE_SEEN_PREFIX = 'skm_unreadable_seen_v1:';
 // Herkunft eines Eintrags (welcher Sendeweg). Weitere Wege (z.B. 'trade') hier ergaenzen.
-const ORIGINS = ['payment', 'trade'];
+// Herkunft des Eintrags: Zahlung senden, Trading, Liquidity (Einzahlen/Abheben), Claimable
+// Balance einloesen, Sammel-Tausch. Nur Anzeige und Diagnose, die Sperre gilt fuer alle gleich.
+export const SEND_ORIGINS = ['payment', 'trade', 'liquidity', 'claimable', 'convert'];
+const ORIGINS = SEND_ORIGINS;
 const CAUSE_KINDS = ['network', 'timeout', 'server'];
 // Warum ein frueher als nicht ausgefuehrt gefuehrter Eintrag wieder unklar ist.
 const RECHECK_REASONS = ['pinConsumed', 'badSeq'];

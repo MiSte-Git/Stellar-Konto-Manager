@@ -2,6 +2,7 @@ import { act, renderHook } from '@testing-library/react';
 import { Account, Keypair, Networks, Operation, TransactionBuilder } from '@stellar/stellar-sdk';
 import useLiquidityAction from '../useLiquidityAction.js';
 import { resetServerNetworkCalls, serverNetworkCalls } from '../../../../test/horizonMock.js';
+import { resetAccountSendGuardMemory } from '../../../../utils/submitGuard/accountSendGuard.js';
 
 const hoisted = vi.hoisted(() => ({ submit: vi.fn() }));
 
@@ -38,41 +39,40 @@ describe('useLiquidityAction send', () => {
     hoisted.submit.mockResolvedValue({ hash: 'first' });
   });
 
-  it('wirft beim zweiten send im selben Ablauf, bevor etwas signiert oder gesendet wird', async () => {
+  it('sendet bei zwei gleichzeitigen Bestaetigungen (Doppelklick) genau einmal: work laeuft nur einmal, nur eine Transaktion wird signiert', async () => {
     const { result } = renderHook(() => useLiquidityAction(hookProps));
-    const secondTx = buildTx();
-    let secondError = null;
-    act(() => {
-      result.current.begin({}, async (server, collected, alive, send) => {
-        await send(buildTx());
-        try {
-          await send(secondTx);
-        } catch (err) {
-          secondError = err;
-        }
-        return { hash: 'first' };
-      });
+    const txs = [];
+    const work = vi.fn(async () => {
+      const tx = buildTx();
+      txs.push(tx);
+      return { tx };
     });
-    await act(async () => { await result.current.modalProps.onConfirm([{ keypair: owner }]); });
+    act(() => { result.current.begin({}, work); });
+    await act(async () => {
+      await Promise.all([
+        result.current.modalProps.onConfirm([{ keypair: owner }]),
+        result.current.modalProps.onConfirm([{ keypair: owner }]),
+      ]);
+    });
 
+    expect(work).toHaveBeenCalledTimes(1);
     expect(hoisted.submit).toHaveBeenCalledTimes(1);
-    expect(secondError?.message).toBe('submitTransaction.failed:liquidity.alreadySent');
-    expect(secondTx.signatures).toHaveLength(0);
+    expect(txs).toHaveLength(1);
+    expect(txs[0].signatures).toHaveLength(1);
     expect(result.current.result).toEqual({ hash: 'first' });
   });
 
-  it('erlaubt in einem neuen Ablauf wieder genau ein send', async () => {
+  it('erlaubt nach einem eindeutigen Fehlschlag einen neuen Ablauf mit genau einem Senden', async () => {
     const { result } = renderHook(() => useLiquidityAction(hookProps));
     hoisted.submit.mockRejectedValueOnce(Object.assign(new Error('rejected'), { response: { status: 400, data: { extras: { result_codes: { transaction: 'tx_bad_seq' } } } } }));
-    const work = async (server, collected, alive, send) => {
-      const res = await send(buildTx());
-      return { hash: res.hash };
-    };
+    const work = async () => ({ tx: buildTx() });
     act(() => { result.current.begin({}, work); });
     await act(async () => { await result.current.modalProps.onConfirm([{ keypair: owner }]); });
     expect(result.current.modalProps.errorMessage).toBeTruthy();
+    // Eindeutig abgelehnt: keine Sperre, der Eintrag ist zurueckgenommen.
+    expect(result.current.blocked).toBe(false);
 
-    // Erneuter Versuch nach einem eindeutigen Fehlschlag: eigener Ablauf, eigenes send
+    // Erneuter Versuch nach einem eindeutigen Fehlschlag: eigener Ablauf, eigenes Senden
     await act(async () => { await result.current.modalProps.onConfirm([{ keypair: owner }]); });
     expect(hoisted.submit).toHaveBeenCalledTimes(2);
     expect(result.current.result).toEqual({ hash: 'first' });
@@ -92,11 +92,10 @@ describe('useLiquidityAction: Netz des Ablaufs', () => {
     const { result } = renderHook(() => useLiquidityAction(hookProps));
     const tx = buildTx();
     act(() => {
-      result.current.begin({}, async (server, collected, alive, send) => {
+      result.current.begin({}, async () => {
         // work() laedt frisch; waehrenddessen wechselt ein anderer Tab das Netz.
         window.localStorage.setItem('SKM_NETWORK', 'TESTNET');
-        const res = await send(tx);
-        return { hash: res.hash };
+        return { tx };
       });
     });
     await act(async () => { await result.current.modalProps.onConfirm([{ keypair: owner }]); });
@@ -119,4 +118,11 @@ describe('useLiquidityAction: Netz des Ablaufs', () => {
     expect(result.current.jobCreated).toBe(false);
     expect(result.current.jobError).toBe('createAccount:networkChanged.funderAborted');
   });
+});
+
+
+// Der Sendeschutz speichert einen unklaren Ausgang pro Konto: kein Zustand zwischen den Tests.
+beforeEach(() => {
+  Object.keys(window.localStorage).filter((k) => k.startsWith('skm_')).forEach((k) => window.localStorage.removeItem(k));
+  resetAccountSendGuardMemory();
 });
