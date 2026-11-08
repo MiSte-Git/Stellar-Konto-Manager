@@ -55,6 +55,49 @@ async function liveSequenceState(net, account, tx) {
   }
 }
 
+// Prueft einen Job. Liefert null, wenn er unauffaellig ist, sonst { job, kind, detail, risky }.
+// Fee-Bump (nur Altjobs aus PHP): txSourceBaseAccount kennt dafuer keine Quelle (null). Hier zaehlt
+// die innere Transaktion, weil deren Sequence und Quelle der Widerruf trifft. Das Konto wird
+// gegen die innere Quelle verglichen, der Fee-Bump selbst wird gesondert gemeldet.
+async function inspectJob(job, { now = Math.floor(Date.now() / 1000), useHorizon = false } = {}) {
+  const { tx, net, error } = decode(job);
+  if (!tx) return { job, kind: 'nicht pruefbar', detail: error };
+  const feeBump = !!tx.innerTransaction;
+  const inner = tx.innerTransaction || tx;
+  const source = txSourceBaseAccount(inner);
+  const accountId = String(job.accountId || '');
+  const mismatch = !!source && accountId !== source;
+  const foreign = source
+    ? [...new Set(inner.operations.filter((op) => op.source && baseOf(op.source) !== source).map((op) => baseOf(op.source)))]
+    : [];
+  if (!mismatch && !foreign.length && !feeBump) return null;
+
+  const maxTime = Number(inner.timeBounds?.maxTime || 0);
+  const timeOk = !maxTime || maxTime > now;
+  const status = String(job.status || '');
+  let live = '';
+  if (useHorizon && timeOk && source) live = await liveSequenceState(net, source, tx);
+  return {
+    job,
+    kind: [feeBump && 'Fee-Bump', mismatch && 'accountId ungleich Tx-Quelle', foreign.length && 'fremde op.source'].filter(Boolean).join(', '),
+    detail: [
+      `Netz ${job.network}, Status ${status || '-'}${FINAL.has(status) ? ' (Endzustand)' : ''}`,
+      `accountId  ${accountId}`,
+      feeBump
+        ? `Tx-Quelle  ${source || '(unlesbar)'} (innere Transaktion; zahlendes Konto ${tx.feeSource})`
+        : `Tx-Quelle  ${source || '(unlesbar)'}`,
+      feeBump ? 'Fee-Bump: als Job nicht vorgesehen, nimmt keine Signatur mehr an; Widerruf bumpt die Sequence der inneren Quelle' : '',
+      foreign.length ? `fremde op.source: ${foreign.join(', ')}` : '',
+      `Signaturen im XDR: ${tx.signatures.length}, gesammelt laut Job: ${(job.collectedSigners || []).length}`,
+      `Zeitfenster: ${maxTime ? new Date(maxTime * 1000).toISOString() : 'unbegrenzt'} ${timeOk ? '(noch offen)' : '(abgelaufen)'}`,
+      live ? `Sequence: ${live}` : '',
+    ].filter(Boolean),
+    // Endzustaende sind erledigt (Sequence verbraucht oder abgelaufen). Ein gespeichertes
+    // pending kann veraltet sein, --horizon klaert das.
+    risky: timeOk && tx.signatures.length > 0 && !FINAL.has(status) && !live.startsWith('verbraucht'),
+  };
+}
+
 async function main() {
   const [file, ...flags] = process.argv.slice(2);
   if (!file) {
@@ -69,40 +112,10 @@ async function main() {
   let undecodable = 0;
 
   for (const job of items) {
-    const { tx, net, error } = decode(job);
-    if (!tx) {
-      undecodable += 1;
-      findings.push({ job, kind: 'nicht pruefbar', detail: error });
-      continue;
-    }
-    const inner = tx.innerTransaction || tx;
-    const source = txSourceBaseAccount(tx);
-    const accountId = String(job.accountId || '');
-    const mismatch = accountId !== source;
-    const foreign = [...new Set(inner.operations.filter((op) => op.source && baseOf(op.source) !== source).map((op) => baseOf(op.source)))];
-    if (!mismatch && !foreign.length && !tx.innerTransaction) continue;
-
-    const maxTime = Number(inner.timeBounds?.maxTime || 0);
-    const timeOk = !maxTime || maxTime > now;
-    const status = String(job.status || '');
-    let live = '';
-    if (useHorizon && timeOk) live = await liveSequenceState(net, source, tx);
-    findings.push({
-      job,
-      kind: [mismatch && 'accountId ungleich Tx-Quelle', foreign.length && 'fremde op.source', tx.innerTransaction && 'Fee-Bump'].filter(Boolean).join(', '),
-      detail: [
-        `Netz ${job.network}, Status ${status || '-'}${FINAL.has(status) ? ' (Endzustand)' : ''}`,
-        `accountId  ${accountId}`,
-        `Tx-Quelle  ${source}`,
-        foreign.length ? `fremde op.source: ${foreign.join(', ')}` : '',
-        `Signaturen im XDR: ${tx.signatures.length}, gesammelt laut Job: ${(job.collectedSigners || []).length}`,
-        `Zeitfenster: ${maxTime ? new Date(maxTime * 1000).toISOString() : 'unbegrenzt'} ${timeOk ? '(noch offen)' : '(abgelaufen)'}`,
-        live ? `Sequence: ${live}` : '',
-      ].filter(Boolean),
-      // Endzustaende sind erledigt (Sequence verbraucht oder abgelaufen). Ein gespeichertes
-      // pending kann veraltet sein, --horizon klaert das.
-      risky: timeOk && tx.signatures.length > 0 && !FINAL.has(status) && !live.startsWith('verbraucht'),
-    });
+    const f = await inspectJob(job, { now, useHorizon });
+    if (!f) continue;
+    if (f.kind === 'nicht pruefbar') undecodable += 1;
+    findings.push(f);
   }
 
   console.log(`${items.length} Jobs geprueft, ${findings.length} auffaellig, ${undecodable} nicht dekodierbar.\n`);
@@ -121,7 +134,11 @@ async function main() {
   }
 }
 
-main().catch((e) => {
-  console.error(e);
-  process.exit(1);
-});
+module.exports = { inspectJob };
+
+if (require.main === module) {
+  main().catch((e) => {
+    console.error(e);
+    process.exit(1);
+  });
+}

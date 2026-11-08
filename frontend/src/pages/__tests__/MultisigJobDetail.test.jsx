@@ -347,9 +347,10 @@ describe('Pruefung der Job-Transaktion (K1, M1)', () => {
     expect(screen.getByTestId('job-import-blocked')).toHaveTextContent('Prüfung oben nicht bestanden');
     expect(screen.queryByRole('checkbox')).not.toBeInTheDocument();
     expect(block).toHaveAttribute('role', 'alert');
+    // Die Knoepfe sind disabled, ein Klick loest in React keinen onClick aus: Entscheidend sind die
+    // disabled-Pruefungen oben; die Guards in den Handlern selbst deckt der Test darunter nicht ab.
     fireEvent.click(signButton());
     fireEvent.click(importButton());
-    await waitFor(() => expect(hoisted.sessionSecretMock).not.toHaveBeenCalledWith(expect.anything(), SIGNER_A.publicKey));
     expect(hoisted.mergeMock).not.toHaveBeenCalled();
   }
 
@@ -371,7 +372,7 @@ describe('Pruefung der Job-Transaktion (K1, M1)', () => {
     await expectLocked(block);
   });
 
-  it('sperrt einen Fee-Bump (#15): eigener Hinweis, keine Bestaetigung, Signieren und Import gesperrt, Widerruf bleibt', async () => {
+  it('sperrt einen Fee-Bump (#15): eigener Hinweis, keine Bestaetigung, Signieren und Import gesperrt, Hinweis auf den Widerruf', async () => {
     const inner = jobTx();
     inner.sign(Keypair.fromSecret(SIGNER_A.secret));
     const bump = TransactionBuilder.buildFeeBumpTransaction(Keypair.fromSecret(SIGNER_B.secret), '2000', inner, Networks.TESTNET);
@@ -383,6 +384,41 @@ describe('Pruefung der Job-Transaktion (K1, M1)', () => {
     expect(block).toHaveTextContent('nicht vorgesehen');
     expect(block).toHaveTextContent('Der Widerruf bleibt möglich');
     await expectLocked(block);
+  });
+
+  function feeBumpJob(overrides = {}) {
+    const inner = jobTx('100');
+    inner.sign(Keypair.fromSecret(SIGNER_A.secret));
+    const bump = TransactionBuilder.buildFeeBumpTransaction(Keypair.fromSecret(SIGNER_B.secret), '2000', inner, Networks.TESTNET);
+    return makeJob({ txXdr: bump.toXDR(), txHash: txHashHex(bump), ...overrides });
+  }
+
+  it('M1: Fee-Bump-Altjob mit richtigem Hash: Widerruf laeuft durch (bumpSequence auf die innere Quelle)', async () => {
+    hoisted.getJobMock.mockImplementation(async () => feeBumpJob());
+    await openSecretModal();
+    typeSecrets(SIGNER_A.secret);
+    submitSecretModal();
+    await waitFor(() => expect(hoisted.submitMock).toHaveBeenCalledTimes(1));
+    const tx = hoisted.submitMock.mock.calls[0][1];
+    expect(tx.source).toBe(SOURCE);
+    expect(tx.operations[0].type).toBe('bumpSequence');
+    expect(tx.operations[0].bumpTo).toBe('101');
+    await screen.findByText(/Job widerrufen\. Transaktion revokehash/);
+    expect(hoisted.mergeMock).not.toHaveBeenCalled();
+  });
+
+  it('M1: Fee-Bump-Altjob mit falschem Hash: Widerruf gesperrt, nichts gebaut oder gesendet', async () => {
+    hoisted.getJobMock.mockImplementation(async () => feeBumpJob({ txHash: 'a'.repeat(64) }));
+    renderPage();
+    const block = await screen.findByTestId('job-integrity-block');
+    expect(block).toHaveTextContent('Fee-Bump');
+    expect(block).toHaveTextContent('passt nicht zum gespeicherten Hash');
+    expect(block).not.toHaveTextContent('Der Widerruf bleibt möglich');
+    fireEvent.click(await screen.findByRole('button', { name: 'Job widerrufen' }));
+    await screen.findByText(/Ein Widerruf ist aus Sicherheitsgründen gesperrt/);
+    expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
+    expect(hoisted.loadAccountMock).not.toHaveBeenCalled();
+    expect(hoisted.submitMock).not.toHaveBeenCalled();
   });
 
   it('F4: Anzeige und Kopieren des XDR nutzen dasselbe Feld wie die Pruefung (jobTxXdr), nie txXdr', async () => {

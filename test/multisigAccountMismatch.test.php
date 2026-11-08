@@ -106,7 +106,20 @@ $legacyJob = [
     'collectedSigners' => [],
     'collectedWeight' => 0,
 ];
-file_put_contents($apiDir . '/data/multisig_jobs.json', json_encode(['items' => [$legacyJob]]));
+// Fee-Bump-Altjob (vor der Sperre angelegt): txHash ist der Hash der Fee-Bump-Huelle.
+$fbOwner = KeyPair::random();
+$fbInner = paymentTx($fbOwner);
+$fbInner->sign($fbOwner, Network::testnet());
+$fbLegacyTx = (new FeeBumpTransactionBuilder($fbInner))->setFeeAccount(KeyPair::random()->getAccountId())->setBaseFee(200)->build();
+$legacyFeeBumpJob = array_merge($legacyJob, [
+    'id' => 'legacy-feebump',
+    'accessToken' => 'fb-token',
+    'accountId' => $fbOwner->getAccountId(),
+    'txHash' => bin2hex($fbLegacyTx->hash(Network::testnet())),
+    'txXdrOriginal' => $fbLegacyTx->toEnvelopeXdrBase64(),
+    'txXdrCurrent' => $fbLegacyTx->toEnvelopeXdrBase64(),
+]);
+file_put_contents($apiDir . '/data/multisig_jobs.json', json_encode(['items' => [$legacyJob, $legacyFeeBumpJob]]));
 
 $server = proc_open(
     [PHP_BINARY, '-S', '127.0.0.1:' . TEST_PORT, $apiDir . '/multisig.php'],
@@ -196,6 +209,26 @@ try {
         $res = post($mergeUrl, $body, $goodToken);
         check("Merge: mit Token, signedXdr ungueltig (#$i) -> 400 invalid_xdr", $res['status'] === 400 && ($res['body']['error'] ?? '') === 'invalid_xdr');
     }
+
+    // N1: network ist nur als String ein Netz (Array, Zahl, Objekt): 400 invalid_network, nie 200/500.
+    $netXdr = paymentTx($attacker)->toEnvelopeXdrBase64();
+    // Anlegen ist pro IP auf 20 je 5 Minuten begrenzt, und der Test liegt nah daran: Zaehler zuruecksetzen.
+    @unlink($apiDir . '/data/multisig_job_rate_limit.json');
+    foreach ([['testnet'], 5, ['a' => 1], null, true, 'gibt-es-nicht'] as $i => $network) {
+        $res = post(BASE_URL, ['network' => $network, 'accountId' => $attacker->getAccountId(), 'txXdr' => $netXdr]);
+        check("Create: network ungueltig (#$i) -> 400 invalid_network", $res['status'] === 400 && ($res['body']['error'] ?? '') === 'invalid_network');
+    }
+
+    // M1 (Backend-Seite): Merge in einen gespeicherten Fee-Bump-Altjob, kein 500, Altjob bleibt unveraendert.
+    $fbUrl = BASE_URL . '/legacy-feebump/merge-signed-xdr';
+    $fbToken = ['x-job-token: fb-token'];
+    $res = post($fbUrl, ['signedXdr' => $fbInner->toEnvelopeXdrBase64()], $fbToken);
+    check('Merge: Fee-Bump-Altjob + normales XDR -> mismatched_hash', $res['status'] === 400 && ($res['body']['error'] ?? '') === 'mismatched_hash');
+    $res = post($fbUrl, ['signedXdr' => $fbLegacyTx->toEnvelopeXdrBase64()], $fbToken);
+    check('Merge: Fee-Bump-Altjob + Fee-Bump -> fee_bump_not_supported', $res['status'] === 400 && ($res['body'] ?? []) === ['ok' => false, 'error' => 'fee_bump_not_supported']);
+    $stored = json_decode((string)file_get_contents($apiDir . '/data/multisig_jobs.json'), true);
+    $fbStored = array_values(array_filter($stored['items'] ?? [], fn($j) => ($j['id'] ?? '') === 'legacy-feebump'))[0] ?? [];
+    check('Merge: Fee-Bump-Altjob bleibt unveraendert gespeichert', ($fbStored['txXdrCurrent'] ?? '') === $fbLegacyTx->toEnvelopeXdrBase64() && ($fbStored['status'] ?? '') === 'pending_signatures');
 } finally {
     proc_terminate($server);
     proc_close($server);

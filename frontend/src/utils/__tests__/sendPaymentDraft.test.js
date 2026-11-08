@@ -1,5 +1,5 @@
 import {
-  clearSendPaymentDraft, draftGeneration, findSentPayment, readSendPaymentDraft, recordSentPayment, writeSendPaymentDraft,
+  clearSendPaymentDraft, draftGeneration, findSentPayment, originalInitial, readSendPaymentDraft, recordSentPayment, writeSendPaymentDraft,
 } from '../sendPaymentDraft.js';
 import { clearAllSessionSecrets } from '../sessionSecrets.js';
 
@@ -29,6 +29,23 @@ describe('sendPaymentDraft', () => {
     expect(d.autoFilledMemo).toBe('');
     expect(d.initial).toEqual({ recipient: '', amount: 5, memoText: '', label: 'ok' });
     expect(JSON.stringify(d)).not.toContain(SECRET);
+  });
+
+  it('N5: eine bereinigte Kopie von initial fuehrt ueber originalInitial zum Original zurueck, ohne das Secret zu tragen', () => {
+    const initial = { recipient: 'GB', amount: 5, memoText: `x ${SECRET}` };
+    writeSendPaymentDraft({ dest: 'GB', initial, network: 'PUBLIC' });
+    const d = readSendPaymentDraft('PUBLIC');
+    expect(d.initial).not.toBe(initial);
+    expect(originalInitial(d.initial)).toBe(initial);
+    expect(JSON.stringify(d)).not.toContain(SECRET);
+    // Jeder weitere Schreibvorgang bleibt beim selben Original (keine Kopie von der Kopie als neues Original).
+    writeSendPaymentDraft({ dest: 'GB', initial: d.initial, network: 'PUBLIC' });
+    expect(originalInitial(readSendPaymentDraft('PUBLIC').initial)).toBe(initial);
+    // Ohne Kopie, undefined und null bleiben sie selbst.
+    const plain = { recipient: 'GB' };
+    expect(originalInitial(plain)).toBe(plain);
+    expect(originalInitial(undefined)).toBeUndefined();
+    expect(originalInitial(null)).toBeNull();
   });
 
   it('F11: keeps harmless autoFilledMemo and the same initial object (the page recognizes initial by identity)', () => {

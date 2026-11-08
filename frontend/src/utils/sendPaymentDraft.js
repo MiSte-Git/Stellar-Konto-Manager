@@ -25,6 +25,16 @@ const SENT_WINDOW_MS = 20 * 60 * 60 * 1000;
 // Nur Text und Zahlen koennen ein Secret tragen (Objekte, Booleans nicht).
 const isSecretValue = (v) => (typeof v === 'string' || typeof v === 'number') && containsSecretKey(v);
 
+// Entwurf-Kopie von initial (Secret blanko) -> das urspruengliche Objekt. Die Seite erkennt ein schon
+// angewendetes initial an der Identitaet; die bereinigte Kopie darf das nicht brechen. WeakMap: weder
+// aufzaehlbar noch serialisierbar, nie in einem Speicher; der Entwurf selbst traegt das Secret nicht.
+const originalOfCleanedInitial = new WeakMap();
+
+/** Das initial, aus dem der Entwurf stammt (bei bereinigter Kopie das Original, sonst der Wert selbst). */
+export function originalInitial(draftInitial) {
+  return (draftInitial && typeof draftInitial === 'object' && originalOfCleanedInitial.get(draftInitial)) || draftInitial;
+}
+
 let draft = null;
 let generation = 0;
 let sentPayments = [];
@@ -57,8 +67,10 @@ export function writeSendPaymentDraft(next, gen) {
   if (containsSecretKey(clean.autoFilledMemo)) clean.autoFilledMemo = '';
   if (clean.initial && typeof clean.initial === 'object' && Object.values(clean.initial).some(isSecretValue)) {
     // Nur dann eine Kopie: Sonst bleibt es dasselbe Objekt (die Seite wendet jedes initial einmal an
-    // und erkennt es an der Identitaet).
+    // und erkennt es an der Identitaet). Bei einer Kopie fuehrt originalInitial() zurueck zum Original.
+    const original = originalInitial(clean.initial);
     clean.initial = Object.fromEntries(Object.entries(clean.initial).map(([k, v]) => [k, isSecretValue(v) ? '' : v]));
+    originalOfCleanedInitial.set(clean.initial, original);
   }
   draft = clean;
   return true;

@@ -499,7 +499,8 @@ if ($method === 'POST' && $path === '/api/multisig/jobs') {
         }
 
         $body = jsonBody();
-        $net = normalizeNetwork($body['network'] ?? null);
+        // Nur ein String ist ein Netz: Array, Zahl, Objekt ergeben 400 invalid_network (nie TypeError/500). Wie Node.
+        $net = normalizeNetwork(is_string($body['network'] ?? null) ? $body['network'] : null);
         $accountId = is_string($body['accountId'] ?? null) ? trim($body['accountId']) : '';
         $txXdr = $body['txXdr'] ?? '';
         if (!$net) return sendJson(['ok' => false, 'error' => 'invalid_network'], 400);

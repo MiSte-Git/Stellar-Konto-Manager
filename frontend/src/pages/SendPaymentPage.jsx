@@ -45,7 +45,7 @@ import { networkMismatch, parsePaymentInput } from '../utils/stellar/sep7.js';
 import { CONTRACT_ADDRESS_ERROR, isContractAddress } from '../utils/stellar/addressType.js';
 import { txHashHex } from '../utils/stellar/txHash.js';
 import {
-  draftGeneration, findSentPayment, forgetSentPayment, readSendPaymentDraft, recordSentPayment, settleSentPaymentsByHash,
+  draftGeneration, findSentPayment, originalInitial, forgetSentPayment, readSendPaymentDraft, recordSentPayment, settleSentPaymentsByHash,
   writeSendPaymentDraft,
 } from '../utils/sendPaymentDraft.js';
 import { guardedSubmit, guardedUnsignedBuild, SendBlockedError } from '../utils/submitGuard/guardedSubmit.js';
@@ -249,7 +249,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   const [draftGen] = useState(() => draftGeneration());
   const [restoredDraft] = useState(() => {
     const d = readSendPaymentDraft(mountNetwork);
-    return d && (!initial || d.initial === initial) ? d : null;
+    return d && (!initial || originalInitial(d.initial) === initial) ? d : null;
   });
   const [dest, setDest] = useState(restoredDraft ? restoredDraft.dest : (initial?.recipient || ''));
   const [amount, setAmount] = useState(restoredDraft?.amount ?? '');
@@ -268,7 +268,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   // geaendertes Memo manuell bleibt und ein Federation-Memo weiter gepflegt wird.
   const autoFilledMemoRef = useRef(restoredDraft ? restoredDraft.autoFilledMemo : '');
   // Merkt sich, welches `initial` schon angewendet wurde (siehe Effekt weiter unten).
-  const appliedInitialRef = useRef(restoredDraft ? restoredDraft.initial : undefined);
+  const appliedInitialRef = useRef(restoredDraft ? originalInitial(restoredDraft.initial) : undefined);
 
   // Netz, zu dem die aktuellen Eingaben gehoeren (siehe Reset beim Netzwechsel).
   const fieldsNetworkRef = useRef(mountNetwork);
@@ -2983,7 +2983,6 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                   let detail = mergeErr?.message || 'multisig.jobs.merge_failed';
                   if (mergeErr?.code === JOB_INTEGRITY_ERROR) detail = t('multisig:detail.integrity.title');
                   else if (detail === 'account_mismatch') detail = t('multisig:errors.accountMismatch');
-                  else if (detail === 'fee_bump_not_supported') detail = t('multisig:errors.feeBump');
                   showErrorMessage(detail);
                 } finally {
                   setIsProcessing(false);

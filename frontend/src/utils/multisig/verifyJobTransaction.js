@@ -41,12 +41,14 @@ export function verifyJobTransaction(job, decodedTx) {
   if (!network) issues.push({ code: 'network_unknown', actual: String(job?.network ?? '') });
   if (!job?.txHash || !job?.accountId) {
     issues.push({ code: 'missing_job_data' });
-  } else if (seqInfo && !feeBump) {
+  } else if (seqInfo) {
     // Der Hash haengt am Netz: Ohne bekanntes Netz sagt ein Vergleich nichts aus.
+    // Auch bei einem Fee-Bump (Altjob): Der Widerruf baut aus diesem XDR und darf es nur mit
+    // bestandener Hash-Pruefung tun. Der Kontovergleich entfaellt dort (fee_bump sperrt ohnehin).
     const expectedHash = String(job.txHash).toLowerCase();
     const actualHash = network ? txHashHex(decodedTx) : expectedHash;
     if (actualHash !== expectedHash) issues.push({ code: 'hash_mismatch', expected: expectedHash, actual: actualHash });
-    if (job.accountId !== sourceAccountId) issues.push({ code: 'account_mismatch', expected: job.accountId, actual: sourceAccountId });
+    if (!feeBump && job.accountId !== sourceAccountId) issues.push({ code: 'account_mismatch', expected: job.accountId, actual: sourceAccountId });
   }
   return { ok: issues.length === 0, issues, network, sourceAccountId, muxedSource };
 }

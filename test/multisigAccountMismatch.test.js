@@ -45,13 +45,28 @@ const legacyJob = {
   collectedWeight: 0,
 };
 
+// Fee-Bump-Altjob (in PHP vor der Sperre angelegt): txHash ist der Hash der Fee-Bump-Huelle.
+const fbOwner = Keypair.random();
+const fbInner = paymentTx(new Account(fbOwner.publicKey(), '100'));
+fbInner.sign(fbOwner);
+const fbLegacyTx = TransactionBuilder.buildFeeBumpTransaction(Keypair.random(), '2000', fbInner, Networks.TESTNET);
+const legacyFeeBumpJob = {
+  ...legacyJob,
+  id: 'legacy-feebump',
+  accessToken: 'fb-token',
+  accountId: fbOwner.publicKey(),
+  txHash: Buffer.from(fbLegacyTx.hash()).toString('hex'),
+  txXdrOriginal: fbLegacyTx.toXDR(),
+  txXdrCurrent: fbLegacyTx.toXDR(),
+};
+
 let server;
 let dataDir;
 
 test.before(async () => {
   dataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'skm-k1-'));
   const dbPath = path.join(dataDir, 'multisig_jobs.json');
-  fs.writeFileSync(dbPath, JSON.stringify({ items: [legacyJob] }));
+  fs.writeFileSync(dbPath, JSON.stringify({ items: [legacyJob, legacyFeeBumpJob] }));
   server = spawn(process.execPath, ['server.js'], {
     cwd: path.join(__dirname, '..'),
     env: { ...process.env, PORT: String(PORT), BUG_DB_DIR: dataDir, MULTISIG_DB_PATH: dbPath },
@@ -210,4 +225,31 @@ test('Merge: signedXdr fehlt oder ist kein String: erst Job (404) und Token (403
     assert.equal(withToken.status, 400, `mit Token ${JSON.stringify(body)}`);
     assert.equal(withToken.body.error, 'invalid_xdr');
   }
+});
+
+// N1: network ist nur als String ein Netz. Array, Zahl, Objekt, null: 400 invalid_network (nie 200, nie 500).
+test('Create: network ist kein String -> 400 invalid_network', async () => {
+  const owner = Keypair.random();
+  const txXdr = paymentTx(new Account(owner.publicKey(), '100')).toXDR();
+  for (const network of [['testnet'], 5, { a: 1 }, null, true, 'gibt-es-nicht']) {
+    const { status, body } = await post(BASE, { network, accountId: owner.publicKey(), txXdr });
+    assert.equal(status, 400, JSON.stringify(network));
+    assert.equal(body.error, 'invalid_network', JSON.stringify(network));
+  }
+});
+
+// M1 (Backend-Seite): Merge in einen gespeicherten Fee-Bump-Altjob. Ein normales XDR passt nicht zum Hash der
+// Huelle, ein Fee-Bump wird ausdruecklich abgelehnt; der Altjob bleibt unveraendert, kein 500.
+test('Merge: Fee-Bump-Altjob nimmt weder ein normales XDR noch einen Fee-Bump an und bleibt unveraendert', async () => {
+  const url = `${BASE}/legacy-feebump/merge-signed-xdr`;
+  const token = { 'x-job-token': 'fb-token' };
+  const plain = await post(url, { signedXdr: fbInner.toXDR() }, token);
+  assert.equal(plain.status, 400);
+  assert.equal(plain.body.error, 'mismatched_hash');
+  const bump = await post(url, { signedXdr: fbLegacyTx.toXDR() }, token);
+  assert.equal(bump.status, 400);
+  assert.deepEqual(bump.body, { ok: false, error: 'fee_bump_not_supported' });
+  const stored = JSON.parse(fs.readFileSync(path.join(dataDir, 'multisig_jobs.json'), 'utf8')).items.find((j) => j.id === 'legacy-feebump');
+  assert.equal(stored.txXdrCurrent, fbLegacyTx.toXDR());
+  assert.equal(stored.status, 'pending_signatures');
 });

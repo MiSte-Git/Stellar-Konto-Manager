@@ -4,7 +4,7 @@ import { I18nextProvider } from 'react-i18next';
 import { Account, AccountRequiresMemoError, Keypair, MuxedAccount, NotFoundError } from '@stellar/stellar-sdk';
 import i18n from '../../i18n.js';
 import SendPaymentPage from '../SendPaymentPage.jsx';
-import { clearSendPaymentDraft } from '../../utils/sendPaymentDraft.js';
+import { clearSendPaymentDraft, readSendPaymentDraft } from '../../utils/sendPaymentDraft.js';
 import { clearAllSessionSecrets } from '../../utils/sessionSecrets.js';
 
 // Covers three fixes to the federation-memo-autofill flow (fix 1):
@@ -1400,6 +1400,24 @@ describe('form draft survives an account switch', () => {
     renderFor(OTHER_SENDER, initial);
     await new Promise((r) => setTimeout(r, 0));
     expect(amountInput().value).toBe('8');
+  });
+
+  it('N5: an initial with a secret in memoText keeps the draft across the account switch and never stores the secret', async () => {
+    const SECRET_TEXT = 'SDAIDSY2LAXR5HPEJ2CKWQ3QV67VPYLXB6C2ATBY3J7VRKT6YD7SYV6Y';
+    const initial = { recipient: DEST_PK, amount: 5, memoText: `x ${SECRET_TEXT}` };
+    const first = renderFor(SENDER.publicKey, initial);
+    await waitFor(() => expect(amountInput().value).toBe('5'));
+    fireEvent.change(amountInput(), { target: { value: '8' } });
+    first.unmount();
+
+    renderFor(OTHER_SENDER, initial);
+    await new Promise((r) => setTimeout(r, 0));
+    // Entwurf bleibt (Betrag), initial wird nicht erneut angewendet, das Secret steht nicht wieder im Feld.
+    expect(amountInput().value).toBe('8');
+    expect(memoInput().value).toBe('');
+    expect(JSON.stringify(readSendPaymentDraft('PUBLIC'))).not.toContain(SECRET_TEXT);
+    expect(JSON.stringify({ ...window.localStorage })).not.toContain(SECRET_TEXT);
+    expect(JSON.stringify({ ...window.sessionStorage })).not.toContain(SECRET_TEXT);
   });
 
   it('does not restore the draft in another network', async () => {

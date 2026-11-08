@@ -593,8 +593,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
         setError(t('multisig:errors.mismatchedHash'));
       } else if (raw === 'account_mismatch') {
         setError(t('multisig:errors.accountMismatch'));
-      } else if (raw === 'fee_bump_not_supported') {
-        setError(t('multisig:errors.feeBump'));
+      // fee_bump_not_supported: backendErrorMessage (multisigErrors.js) liefert schon den uebersetzten Text.
       } else if (raw === 'signers_unavailable') {
         setError(t('multisig:errors.signersUnavailable'));
       } else {
@@ -672,8 +671,6 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
         setError(t('multisig:errors.signersUnavailable'));
       } else if (String(e?.message || '') === 'account_mismatch') {
         setError(t('multisig:errors.accountMismatch'));
-      } else if (String(e?.message || '') === 'fee_bump_not_supported') {
-        setError(t('multisig:errors.feeBump'));
       } else {
         setError(String(e?.message || 'multisig.jobs.merge_failed'));
       }

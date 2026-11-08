@@ -720,7 +720,8 @@ app.post('/api/multisig/jobs', async (req, res) => {
   let submitAttempted = false;
   try {
     const { network, accountId, txXdr, createdBy } = req.body || {};
-    const net = normalizeNetwork(network);
+    // Nur ein String ist ein Netz: Array, Zahl, Objekt ergeben 400 invalid_network (wie PHP, nie 200/500).
+    const net = normalizeNetwork(typeof network === 'string' ? network : null);
     if (!net) return res.status(400).json({ ok: false, error: 'invalid_network' });
     if (typeof accountId !== 'string' || !StellarSdk.StrKey.isValidEd25519PublicKey(accountId.trim())) {
       return res.status(400).json({ ok: false, error: 'invalid_account' });

@@ -48,6 +48,14 @@ describe('verifyJobTransaction', () => {
     expect(codes(jobFor(feeBump, { accountId: Keypair.random().publicKey() }))).toEqual(['fee_bump']);
   });
 
+  it('M1: ein Fee-Bump-Altjob mit falschem Hash meldet zusaetzlich hash_mismatch (Widerruf gesperrt), mit richtigem Hash nur fee_bump', () => {
+    const feeBump = TransactionBuilder.buildFeeBumpTransaction(Keypair.random(), '1000', buildTx(), Networks.TESTNET);
+    expect(codes(jobFor(feeBump))).toEqual(['fee_bump']);
+    expect(codes(jobFor(feeBump, { txHash: 'a'.repeat(64) }))).toEqual(['fee_bump', 'hash_mismatch']);
+    // Der Hash der inneren Transaktion ist nicht der Hash der Huelle.
+    expect(codes(jobFor(feeBump, { txHash: txHashHex(buildTx()) }))).toEqual(['fee_bump', 'hash_mismatch']);
+  });
+
   it('eine normale Transaktion mit demselben Inhalt wird nicht gesperrt', () => {
     expect(codes(jobFor(buildTx()))).toEqual([]);
   });
