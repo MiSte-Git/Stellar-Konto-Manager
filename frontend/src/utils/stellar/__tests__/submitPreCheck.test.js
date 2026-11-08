@@ -3,12 +3,12 @@
 // "nichts gesendet", nie "unklar". Wartezeit nur beim Laden (GET), nie beim POST.
 import { describe, expect, it, vi } from 'vitest';
 import {
-  Account, AccountRequiresMemoError, Asset, Horizon, Keypair, Networks, Operation, TransactionBuilder,
+  Account, AccountRequiresMemoError, Asset, Horizon, Keypair, Networks, NotFoundError, Operation, TransactionBuilder,
 } from '@stellar/stellar-sdk';
-import { isAccountRequiresMemoError, makeMemoRequiredError } from '../memoRequired.js';
+import { isAccountRequiresMemoError, isNotFoundError, makeMemoRequiredError } from '../memoRequired.js';
 import { isTransientLoadError, loadWithBackoff } from '../retryLoad.js';
 import {
-  AmbiguousSubmitResultError, PreSubmitCheckError, requestTargetOf, submitTransactionSafely,
+  AmbiguousSubmitResultError, PreSubmitCheckError, requestTargetOf, submitTransactionSafely, verifyMemoRequired,
 } from '../submitTransactionSafely.js';
 
 const SRC = Keypair.random();
@@ -175,5 +175,54 @@ describe('Diagnose: echte Methode und URL', () => {
     } finally {
       vi.useRealTimers();
     }
+  });
+});
+
+describe('N11: 404 wird ueber die SDK-Klasse erkannt, nicht ueber response.status', () => {
+  it('NotFoundError mit beliebigem Body (HTML, leer, ohne "status") ist ein 404', () => {
+    expect(isNotFoundError(new NotFoundError('Not Found', { status: 404 }))).toBe(true);
+    expect(isNotFoundError(new NotFoundError('Not Found', '<html>proxy</html>'))).toBe(true);
+    expect(isNotFoundError(new NotFoundError('Not Found', undefined))).toBe(true);
+  });
+
+  it('ein Fehler, der nur wie ein 404 aussieht, ist keiner', () => {
+    expect(isNotFoundError(httpErr(404))).toBe(false);
+    expect(isNotFoundError(netErr())).toBe(false);
+    expect(isNotFoundError(undefined)).toBe(false);
+  });
+
+  it('loadWithBackoff wiederholt NotFoundError nie, auch wenn der Body keinen Status traegt', async () => {
+    const sleep = vi.fn(async () => {});
+    const load = vi.fn().mockRejectedValue(new NotFoundError('Not Found', '<html>proxy</html>'));
+    await expect(loadWithBackoff(load, { sleep })).rejects.toBeInstanceOf(NotFoundError);
+    expect(load).toHaveBeenCalledTimes(1);
+    expect(isTransientLoadError(new NotFoundError('Not Found', {}))).toBe(false);
+  });
+
+  it('echtes checkMemoRequired: ein NotFoundError des Ziels (nicht aktiviert) ist keine Sperre', async () => {
+    const server = new Horizon.Server('https://horizon-testnet.stellar.org');
+    server.loadAccount = async () => { throw new NotFoundError('Not Found', '<html>proxy</html>'); };
+    await expect(verifyMemoRequired(server, paymentTx())).resolves.toBeUndefined();
+  });
+});
+
+describe('verifyMemoRequired (Pruefung der gebauten Transaktion, fail-closed)', () => {
+  it('Ziel verlangt Memo: AccountRequiresMemoError, nicht PreSubmitCheckError', async () => {
+    const server = new Horizon.Server('https://horizon-testnet.stellar.org');
+    server.loadAccount = async () => ({ data_attr: { 'config.memo_required': 'MQ==' } });
+    await expect(verifyMemoRequired(server, paymentTx())).rejects.toSatisfy(isAccountRequiresMemoError);
+  });
+
+  it('Netzfehler: nach Wiederholungen des Ladens PreSubmitCheckError, kein POST', async () => {
+    const server = new Horizon.Server('https://horizon-testnet.stellar.org');
+    server.loadAccount = vi.fn(async () => { throw netErr(); });
+    server.submitTransaction = vi.fn();
+    await expect(verifyMemoRequired(server, paymentTx(), { sleep: noWait })).rejects.toBeInstanceOf(PreSubmitCheckError);
+    expect(server.loadAccount).toHaveBeenCalledTimes(3);
+    expect(server.submitTransaction).not.toHaveBeenCalled();
+  });
+
+  it('Server ohne checkMemoRequired: gesperrt (fail-closed), anders als bei submitTransactionSafely mit Test-Doubles', async () => {
+    await expect(verifyMemoRequired({}, paymentTx())).rejects.toBeInstanceOf(PreSubmitCheckError);
   });
 });

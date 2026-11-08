@@ -33,9 +33,9 @@ import {
   removeHistoryValue,
   writeHistoryArray,
 } from '../utils/inputHistory.js';
-import { AmbiguousSubmitResultError, PreSubmitCheckError } from '../utils/stellar/submitTransactionSafely.js';
+import { AmbiguousSubmitResultError, PreSubmitCheckError, verifyMemoRequired } from '../utils/stellar/submitTransactionSafely.js';
 import { formatValidUntil } from '../utils/multisig/formatValidUntil.js';
-import { accountRequiresMemo, isAccountRequiresMemoError, makeMemoRequiredError } from '../utils/stellar/memoRequired.js';
+import { accountRequiresMemo, isAccountRequiresMemoError, isNotFoundError } from '../utils/stellar/memoRequired.js';
 import { loadWithBackoff } from '../utils/stellar/retryLoad.js';
 import { resolveFeePerOp } from '../utils/stellar/fees.js';
 import QrScanDialog from '../components/wallet/QrScanDialog.jsx';
@@ -516,7 +516,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   }, [memoType, memoVal, t]);
 
   const describeHorizonError = useCallback((err) => {
-    // Rueckfallnetz: stellar-sdk prueft SEP-29 beim Submit selbst noch einmal.
+    // Rueckfallnetz: verifyMemoRequired prueft SEP-29 an der gebauten Transaktion vor dem Senden.
     if (isAccountRequiresMemoError(err)) return t('common:payment.send.memoRequired.error');
     // Pruefung vor dem Senden gescheitert (Horizon nicht erreichbar): nichts gesendet.
     if (err instanceof PreSubmitCheckError) return t('errors:submitTransaction.failed.memoCheck.unreachable');
@@ -1070,9 +1070,11 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   // SEP-29: Das Ziel verlangt ein Memo (config.memo_required = 1, typisch Boersen). Ohne Memo
   // kommt die Zahlung zwar an, kann beim Empfaenger aber keinem Kunden zugeordnet werden -
   // daher harte Sperre wie bei der Trustline, ohne "trotzdem senden". Eine M-Adresse traegt
-  // die Zuordnung selbst und ist laut SEP-29 ausgenommen. Ein Horizon-Fehler blockiert nicht
-  // (gleiches Muster wie checkRecipientTrustlineStatus); beim Direktversand prueft stellar-sdk
-  // im submitTransaction() ohnehin noch einmal, siehe describeHorizonError.
+  // die Zuordnung selbst und ist laut SEP-29 ausgenommen. Vorpruefung fuer fruehe Rueckmeldung:
+  // Kann das Ziel nicht geladen werden (ausser 404), gilt "nicht pruefbar" und es wird nicht
+  // gesendet (fail-closed). Massgeblich ist beim Direktversand verifyMemoRequired an der gebauten
+  // Transaktion, siehe submitPayment (die Aufloesung einer Federation-Adresse kann sich zwischen
+  // Vorpruefung und Bauen unterscheiden).
   const checkRecipientMemoRequired = useCallback(async () => {
     const v = (dest || '').trim();
     if (!v) return { status: 'ok' };
@@ -1098,8 +1100,9 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       // Nur das Laden (GET) wird bei kurzzeitigen Fehlern mit Wartezeit wiederholt.
       account = await loadWithBackoff(() => server.loadAccount(resolved.accountId));
     } catch (e) {
-      // Unfunded (activation path): kein Konto, also keine Memo-Pflicht.
-      if (e?.response?.status === 404) return { status: 'ok' };
+      // Unfunded (activation path): kein Konto, also keine Memo-Pflicht. Erkennung ueber die Klasse
+      // des SDK, nicht ueber response.status (bei NotFoundError ist response der Body).
+      if (isNotFoundError(e)) return { status: 'ok' };
       console.warn('[SKM] memo_required preflight: could not load recipient account', e);
       // Fail-closed: Ohne Pruefung nicht senden (das SDK-Nachladen vor dem POST entfaellt).
       return { status: 'unverifiable', error: e };
@@ -1163,15 +1166,16 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
         networkPassphrase: passphraseFor(sendNetwork),
         signal: controller.signal,
         onWaiting: () => setLockWaiting(true),
-        // Die Memo-Pruefung (SEP-29) macht SKM selbst, unmittelbar vor dem Bauen und vor dem
-        // Eintrag (buildTx); der POST laedt das Empfaengerkonto nicht noch einmal.
+        // Die Memo-Pruefung (SEP-29) macht SKM selbst, an der FERTIG GEBAUTEN Transaktion (buildTx,
+        // vor dem Eintrag): geprueft wird genau das Ziel, das gesendet wird, nicht ein separat
+        // aufgeloester Empfaenger. Ein Fehler dabei heisst "nichts gesendet" (PreSubmitCheckError).
+        // Der POST laedt das Empfaengerkonto danach nicht noch einmal (skipMemoRequiredCheck).
         skipMemoRequiredCheck: true,
         buildTx: async ({ adjustAccount }) => {
           setLockWaiting(false);
-          const memoCheck = await checkRecipientMemoRequired();
-          if (memoCheck.status === 'memo_required') throw makeMemoRequiredError(String(dest || '').trim());
-          if (memoCheck.status === 'unverifiable') throw new PreSubmitCheckError(memoCheck.error);
-          return buildPaymentTx({ signers: signerList, signTx: true, requireSigners: true, immediateSubmit: true, expectedNetwork, adjustAccount });
+          const built = await buildPaymentTx({ signers: signerList, signTx: true, requireSigners: true, immediateSubmit: true, expectedNetwork, adjustAccount });
+          await verifyMemoRequired(server, built.tx);
+          return built;
         },
         entryData: ({ meta }) => ({
           origin: 'payment',
@@ -1211,7 +1215,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       setLockWaiting(false);
       bumpSendGuard();
     }
-  }, [buildPaymentTx, bumpSendGuard, checkRecipientMemoRequired, dest, netLabel, publicKey, server]);
+  }, [buildPaymentTx, bumpSendGuard, netLabel, publicKey, server]);
 
   // Job und XDR-Export: bauen nur, wenn das Konto nicht gesperrt ist; offene Pins werden angewendet.
   const buildUnsignedGuarded = useCallback((args) => guardedUnsignedBuild({
@@ -1466,6 +1470,8 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
           });
           closeConfirmDialogs();
         } catch (err) {
+          // Sperre oder Pin (guardedUnsignedBuild): gleiche Behandlung wie im XDR-Weg, nie der Rohschluessel.
+          if (err instanceof SendBlockedError) { handlePaymentError(err); return; }
           const detail = err?.message || handlePaymentError(err);
           showErrorMessage(detail || '');
           closeConfirmDialogs();
@@ -1474,6 +1480,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
 
       await runPreSubmitChecks(proceed, (msg) => showErrorMessage(msg));
     } catch (err) {
+      if (err instanceof SendBlockedError) { handlePaymentError(err); return; }
       const detail = err?.message || handlePaymentError(err);
       showErrorMessage(detail || '');
       closeConfirmDialogs();

@@ -215,3 +215,134 @@ describe('D: Aufraeumen nur fuer das aktive Netz, nur unter dem Lock', () => {
     await expect(tryWithSendLock('PUBLIC', async () => { throw new Error('boom'); })).rejects.toThrow('boom');
   });
 });
+
+// ---- Buendel 4b-Fix: Bauen von Job/XDR unter dem Sende-Lock (N10), Web-Locks-Zweig ----------
+
+// Minimaler Ersatz fuer navigator.locks (jsdom hat keine Web Locks): exklusiv pro Name,
+// ifAvailable und signal wie in der echten API (abgebrochenes Warten wirft AbortError).
+function installFakeLocks() {
+  const held = new Set();
+  const abort = () => Object.assign(new Error('aborted'), { name: 'AbortError' });
+  const locks = {
+    request: vi.fn(async (name, optsOrCb, maybeCb) => {
+      const opts = typeof optsOrCb === 'function' ? {} : optsOrCb;
+      const cb = typeof optsOrCb === 'function' ? optsOrCb : maybeCb;
+      if (opts.signal?.aborted) throw abort();
+      if (opts.ifAvailable && held.has(name)) return cb(null);
+      while (held.has(name)) {
+        await new Promise((r) => setTimeout(r, 5));
+        if (opts.signal?.aborted) throw abort();
+      }
+      held.add(name);
+      try { return await cb({ name }); } finally { held.delete(name); }
+    }),
+  };
+  Object.defineProperty(window.navigator, 'locks', { value: locks, configurable: true });
+  return locks;
+}
+const removeFakeLocks = () => { delete window.navigator.locks; };
+
+// Beide Zweige von withSendLock (Web Locks vorhanden / nicht vorhanden) mit denselben Erwartungen.
+describe.each([
+  ['localStorage-Fallback (kein navigator.locks)', () => {}, () => {}],
+  ['Web Locks (navigator.locks)', installFakeLocks, removeFakeLocks],
+])('Sende-Lock: %s', (_name, setup, teardown) => {
+  beforeEach(() => { setup(); });
+  afterEach(() => { teardown(); });
+
+  it('tryWithSendLock: frei laeuft, belegt laeuft nicht und wartet nicht, Fehler aus fn gehen durch', async () => {
+    expect(await tryWithSendLock('PUBLIC', async () => 42)).toEqual({ ran: true, value: 42 });
+    let release;
+    const gate = new Promise((r) => { release = r; });
+    const holder = withSendLock('PUBLIC', async () => { await gate; });
+    await new Promise((r) => setTimeout(r, 300));
+    const fn = vi.fn();
+    expect(await tryWithSendLock('PUBLIC', fn)).toEqual({ ran: false });
+    expect(fn).not.toHaveBeenCalled();
+    release();
+    await holder;
+    await expect(tryWithSendLock('PUBLIC', async () => { throw new Error('boom'); })).rejects.toThrow('boom');
+  });
+
+  it('withSendLock: zweiter Aufruf wartet, onWaiting wird gerufen, signal bricht das Warten ab', async () => {
+    let release;
+    const gate = new Promise((r) => { release = r; });
+    const holder = withSendLock('PUBLIC', async () => { await gate; });
+    await new Promise((r) => setTimeout(r, 300));
+    const controller = new AbortController();
+    const onWaiting = vi.fn();
+    const fn = vi.fn();
+    const waiting = withSendLock('PUBLIC', fn, { signal: controller.signal, onWaiting });
+    await new Promise((r) => setTimeout(r, 700));
+    expect(onWaiting).toHaveBeenCalledTimes(1);
+    expect(fn).not.toHaveBeenCalled();
+    controller.abort();
+    await expect(waiting).rejects.toMatchObject({ name: 'AbortError' });
+    expect(fn).not.toHaveBeenCalled();
+    release();
+    await holder;
+  });
+
+  it('N10: guardedUnsignedBuild wartet auf einen Sendevorgang im selben Netz und sieht danach dessen Eintrag (kein Bauen zwischen Pruefung und Schreiben)', async () => {
+    let release;
+    const gate = new Promise((r) => { release = r; });
+    // Sendevorgang eines anderen Tabs: haelt den Lock, schreibt seinen Eintrag vor dem POST.
+    const sender = withSendLock('PUBLIC', async () => {
+      await gate;
+      writeAccountEntry('PUBLIC', account, entry());
+    });
+    await new Promise((r) => setTimeout(r, 300));
+    const buildFn = vi.fn(async () => ({ tx: {} }));
+    const onWaiting = vi.fn();
+    const pending = guardedUnsignedBuild({ network: 'PUBLIC', account, build: buildFn, onWaiting });
+    pending.catch(() => {});
+    await new Promise((r) => setTimeout(r, 700));
+    expect(buildFn).not.toHaveBeenCalled();
+    expect(onWaiting).toHaveBeenCalledTimes(1);
+    release();
+    await sender;
+    await expect(pending).rejects.toMatchObject({ name: 'SendBlockedError', reason: 'blocked' });
+    expect(buildFn).not.toHaveBeenCalled();
+  });
+
+  it('N10: ohne Eintrag baut guardedUnsignedBuild nach dem Warten und gibt den Lock danach wieder frei', async () => {
+    let release;
+    const gate = new Promise((r) => { release = r; });
+    const sender = withSendLock('PUBLIC', async () => { await gate; });
+    await new Promise((r) => setTimeout(r, 300));
+    const pending = guardedUnsignedBuild({ network: 'PUBLIC', account, build: build(new Account(account, '100')) });
+    release();
+    await sender;
+    expect((await pending).tx.sequence).toBe('101');
+    // Lock frei: ein weiterer Aufruf (auch nach einem Fehler beim Bauen) wartet nicht.
+    await expect(guardedUnsignedBuild({ network: 'PUBLIC', account, build: async () => { throw new Error('boom'); } })).rejects.toThrow('boom');
+    expect(await tryWithSendLock('PUBLIC', async () => 1)).toEqual({ ran: true, value: 1 });
+  });
+
+  it('N10: Abbruch beim Warten ist lockCancelled, es wird nichts gebaut', async () => {
+    let release;
+    const gate = new Promise((r) => { release = r; });
+    const sender = withSendLock('PUBLIC', async () => { await gate; });
+    await new Promise((r) => setTimeout(r, 300));
+    const controller = new AbortController();
+    const buildFn = vi.fn();
+    const pending = guardedUnsignedBuild({ network: 'PUBLIC', account, build: buildFn, signal: controller.signal });
+    await new Promise((r) => setTimeout(r, 700));
+    controller.abort();
+    await expect(pending).rejects.toMatchObject({ name: 'SendBlockedError', reason: 'lockCancelled' });
+    expect(buildFn).not.toHaveBeenCalled();
+    release();
+    await sender;
+  });
+
+  it('N10: anderes Netz hat einen eigenen Lock, guardedUnsignedBuild wartet dort nicht', async () => {
+    let release;
+    const gate = new Promise((r) => { release = r; });
+    const sender = withSendLock('TESTNET', async () => { await gate; });
+    await new Promise((r) => setTimeout(r, 300));
+    const built = await guardedUnsignedBuild({ network: 'PUBLIC', account, build: build(new Account(account, '100')) });
+    expect(built.tx.sequence).toBe('101');
+    release();
+    await sender;
+  });
+});

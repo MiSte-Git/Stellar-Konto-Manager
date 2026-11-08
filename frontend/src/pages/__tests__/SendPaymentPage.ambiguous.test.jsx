@@ -33,8 +33,11 @@ const hoisted = vi.hoisted(() => ({
 }));
 
 vi.mock('../../utils/stellar/stellarUtils.js', async (importOriginal) => {
+  const sdk = await import('@stellar/stellar-sdk');
   const fakeServer = () => ({
     loadAccount: hoisted.loadAccountMock,
+    // Echte Pruefung des SDK an der gebauten Transaktion (Memo-Pflicht), gegen die gemockten Konten.
+    checkMemoRequired: (tx) => sdk.Horizon.Server.prototype.checkMemoRequired.call({ loadAccount: hoisted.loadAccountMock }, tx),
     feeStats: vi.fn(async () => ({ fee_charged: { mode: '100' } })),
     offers: () => ({ forAccount: () => ({ limit: () => ({ call: async () => ({ records: [] }) }) }) }),
     ledgers: () => ({ order: () => ({ limit: () => ({ call: () => hoisted.ledgerMock() }) }) }),
@@ -64,6 +67,7 @@ function funded(publicKey, sequence = '100') {
     thresholds: { low_threshold: 0, med_threshold: 0, high_threshold: 0 },
     signers: [{ key: publicKey, weight: 1, type: 'ed25519_public_key' }],
     balances: [{ asset_type: 'native', balance: '10000.0000000' }],
+    data_attr: {},
     subentry_count: 0,
   });
 }

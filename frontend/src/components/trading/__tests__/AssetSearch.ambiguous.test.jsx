@@ -310,8 +310,10 @@ describe('AssetSearch - unklarer Sendestatus (Sendeschutz wie Zahlung senden)', 
     await waitFor(() => expect(hoisted.submitTransactionMock).toHaveBeenCalledTimes(1));
     release();
     await screen.findByText(/Limit-Order wurde platziert/);
-    // Ein zweiter, am Lock wartender Aufruf haette nach dem ersten Senden noch einmal gesendet.
-    await act(async () => { await new Promise((r) => setTimeout(r, 500)); });
+    // Ein zweiter, am Lock wartender Aufruf (localStorage-Lock: Abfrage alle 500 ms plus 100 ms
+    // Settle) haette nach dem ersten Senden noch einmal gesendet: deutlich laenger warten als ein
+    // voller Abfragezyklus, damit das Fehlen des Schutzes sicher auffaellt.
+    await act(async () => { await new Promise((r) => setTimeout(r, 2000)); });
     expect(hoisted.submitTransactionMock).toHaveBeenCalledTimes(1);
   });
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { act, render, screen, waitFor, fireEvent, within } from '@testing-library/react';
 import { I18nextProvider } from 'react-i18next';
-import { Account, AccountRequiresMemoError, Keypair, MuxedAccount } from '@stellar/stellar-sdk';
+import { Account, AccountRequiresMemoError, Keypair, MuxedAccount, NotFoundError } from '@stellar/stellar-sdk';
 import i18n from '../../i18n.js';
 import SendPaymentPage from '../SendPaymentPage.jsx';
 import { clearSendPaymentDraft } from '../../utils/sendPaymentDraft.js';
@@ -50,13 +50,17 @@ const hoisted = vi.hoisted(() => ({
   getSessionSecretMock: vi.fn(),
   submitTransactionSafelyMock: vi.fn(),
   serverNetworkMock: vi.fn(),
+  feeStatsHook: { fn: null },
   rememberImpl: { fn: null },
 }));
 
 vi.mock('../../utils/stellar/stellarUtils.js', async (importOriginal) => {
+  const sdk = await import('@stellar/stellar-sdk');
   const fakeServer = () => ({
     loadAccount: hoisted.loadAccountMock,
-    feeStats: vi.fn(async () => ({ fee_charged: { mode: '100' } })),
+    // Echte Pruefung des SDK (Ziel jeder payment-Operation), gegen die gemockten Konten.
+    checkMemoRequired: (tx) => sdk.Horizon.Server.prototype.checkMemoRequired.call({ loadAccount: hoisted.loadAccountMock }, tx),
+    feeStats: vi.fn(async () => { hoisted.feeStatsHook.fn?.(); return { fee_charged: { mode: '100' } }; }),
     offers: () => ({ forAccount: () => ({ limit: () => ({ call: async () => ({ records: [] }) }) }) }),
     ledgers: () => ({ order: () => ({ limit: () => ({ call: async () => ({ records: [] }) }) }) }),
   });
@@ -97,6 +101,8 @@ function makeFundedAccount(publicKey, { sequence = '100', extraBalances = [], fl
     signers: [{ key: publicKey, weight: 1, type: 'ed25519_public_key' }],
     balances: [{ asset_type: 'native', balance: '10000.0000000' }, ...extraBalances],
     flags,
+    // Horizon liefert data_attr immer (das SDK liest es in checkMemoRequired ohne Pruefung).
+    data_attr: {},
     subentry_count: 1,
   });
 }
@@ -135,6 +141,7 @@ const SENDER_FOO_BALANCE = { asset_type: 'credit_alphanum4', asset_code: ASSET_C
 beforeEach(() => {
   vi.clearAllMocks();
   hoisted.rememberImpl.fn = null;
+  hoisted.feeStatsHook.fn = null;
   window.localStorage.clear();
   clearSendPaymentDraft();
   hoisted.loadAccountMock.mockImplementation(async (pk) => (
@@ -450,9 +457,7 @@ describe('recipient trustline preflight before sending (a5)', () => {
     hoisted.loadAccountMock.mockImplementation(async (pk) => {
       if (pk === SENDER.publicKey) return makeFundedAccount(pk, { extraBalances: [SENDER_FOO_BALANCE] });
       if (pk === DEST_PK) {
-        const err = new Error('Not Found');
-        err.response = { status: 404 };
-        throw err;
+        throw new NotFoundError('Not Found', { status: 404 });
       }
       return makeFundedAccount(pk);
     });
@@ -869,9 +874,7 @@ describe('muxedActivationCapture hint surfaces on every result path (G4)', () =>
     hoisted.loadAccountMock.mockImplementation(async (pk) => {
       if (pk === SENDER.publicKey) return makeFundedAccount(pk, { extraBalances: [SENDER_FOO_BALANCE] });
       if (pk === DEST_PK) {
-        const err = new Error('Not Found');
-        err.response = { status: 404 };
-        throw err;
+        throw new NotFoundError('Not Found', { status: 404 });
       }
       return makeFundedAccount(pk);
     });
@@ -895,9 +898,7 @@ describe('muxedActivationCapture hint surfaces on every result path (G4)', () =>
     hoisted.loadAccountMock.mockImplementation(async (pk) => {
       if (pk === SENDER.publicKey) return makeFundedAccount(pk, { extraBalances: [SENDER_FOO_BALANCE] });
       if (pk === DEST_PK) {
-        const err = new Error('Not Found');
-        err.response = { status: 404 };
-        throw err;
+        throw new NotFoundError('Not Found', { status: 404 });
       }
       return makeFundedAccount(pk);
     });
@@ -925,9 +926,7 @@ describe('muxedActivationCapture hint surfaces on every result path (G4)', () =>
           return acct;
         }
         if (pk === DEST_PK) {
-          const err = new Error('Not Found');
-          err.response = { status: 404 };
-          throw err;
+          throw new NotFoundError('Not Found', { status: 404 });
         }
         return makeFundedAccount(pk);
       });
@@ -1068,6 +1067,87 @@ describe('SEP-29 memo_required preflight before sending (P1.1)', () => {
     errSpy.mockRestore();
   });
 
+  it('M3: Federation-Aufloesung scheitert in der Vorpruefung, gelingt beim Bauen, Ziel verlangt Memo, kein Memo: nichts gesendet', async () => {
+    const FED = 'kunde*boerse.example';
+    let armed = false;
+    let building = false;
+    // feeStats wird nur beim Bauen der Transaktion gerufen: ab da loest die Federation auf.
+    hoisted.feeStatsHook.fn = () => { building = true; };
+    hoisted.resolveOrValidateAccountMock.mockImplementation(async (input) => {
+      if (input === FED) {
+        // Formularpruefung (vor "Bist du sicher?") gelingt, die Vorpruefungen des Sendens scheitern, das Bauen gelingt.
+        if (armed && !building) throw new Error('error.noFederationId');
+        return { accountId: DEST_PK, muxedAddress: null, address: input };
+      }
+      return { accountId: input, muxedAddress: null, address: input };
+    });
+    const errSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    renderPage();
+    fireEvent.change(amountInput(), { target: { value: '10' } });
+    fireEvent.change(destInput(), { target: { value: FED } });
+    fireEvent.click(screen.getByRole('button', { name: 'Senden' }));
+    await screen.findByText('Transaktion bestätigen');
+    armed = true;
+    fireEvent.click(screen.getByRole('button', { name: 'Bist du sicher?' }));
+    await waitFor(() => expect(building).toBe(true));
+    await waitFor(() => expect(screen.getAllByText(MEMO_REQUIRED_ERROR).length).toBeGreaterThan(0));
+    expect(hoisted.submitTransactionSafelyMock).not.toHaveBeenCalled();
+    // Kein Eintrag: nichts wurde gesendet oder vorgemerkt.
+    const { readAccountEntry } = await import('../../utils/submitGuard/accountSendGuard.js');
+    expect(readAccountEntry('PUBLIC', SENDER.publicKey)).toBeNull();
+    errSpy.mockRestore();
+  });
+
+  it('M3: Laden des Ziels gelingt beim Bauen, scheitert danach in der Pruefung der gebauten Transaktion: PreSubmitCheckError, nichts gesendet, kein Eintrag', async () => {
+    let building = false;
+    let destLoadsWhileBuilding = 0;
+    hoisted.feeStatsHook.fn = () => { building = true; };
+    hoisted.loadAccountMock.mockImplementation(async (pk) => {
+      if (pk === SENDER.publicKey) return makeFundedAccount(pk, { extraBalances: [SENDER_FOO_BALANCE] });
+      if (building && pk === DEST_PK) {
+        destLoadsWhileBuilding += 1;
+        // Erster Aufruf: buildPaymentTx (Konto existiert). Alle weiteren: checkMemoRequired.
+        if (destLoadsWhileBuilding > 1) throw Object.assign(new Error('Service Unavailable'), { response: { status: 503 } });
+      }
+      return makeFundedAccount(pk);
+    });
+    const errSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    await fillAndConfirm();
+    const msgs = await screen.findAllByText(/Nichts gesendet: Der Empfänger konnte nicht auf Memo-Pflicht/, {}, { timeout: 10000 });
+    expect(msgs.length).toBeGreaterThan(0);
+    // Nur das Laden wurde wiederholt (1 Laden beim Bauen + 3 Versuche), gesendet wurde nie.
+    expect(destLoadsWhileBuilding).toBe(4);
+    expect(hoisted.submitTransactionSafelyMock).not.toHaveBeenCalled();
+    const { readAccountEntry } = await import('../../utils/submitGuard/accountSendGuard.js');
+    expect(readAccountEntry('PUBLIC', SENDER.publicKey)).toBeNull();
+    errSpy.mockRestore();
+  }, 20000);
+
+  it('N11: 404 des Ziels mit anderem Body (kein "status", z. B. Proxy) gilt als nicht aktiviert und blockiert die Aktivierung nicht', async () => {
+    hoisted.loadAccountMock.mockImplementation(async (pk) => {
+      if (pk === SENDER.publicKey) return makeFundedAccount(pk, { extraBalances: [SENDER_FOO_BALANCE] });
+      if (pk === DEST_PK) throw new NotFoundError('Not Found', '<html>proxy 404</html>');
+      return makeFundedAccount(pk);
+    });
+    await fillAndConfirm();
+    await waitFor(() => expect(hoisted.submitTransactionSafelyMock).toHaveBeenCalledTimes(1));
+    expect(screen.queryByText(/Nichts gesendet: Der Empfänger konnte nicht auf Memo-Pflicht/)).not.toBeInTheDocument();
+  });
+
+  it('N11: ein Fehler, der nur wie ein 404 aussieht (kein NotFoundError), ist nicht pruefbar: nichts gesendet', async () => {
+    hoisted.loadAccountMock.mockImplementation(async (pk) => {
+      if (pk === SENDER.publicKey) return makeFundedAccount(pk, { extraBalances: [SENDER_FOO_BALANCE] });
+      if (pk === DEST_PK) throw Object.assign(new Error('Not Found'), { response: { status: 404 } });
+      return makeFundedAccount(pk);
+    });
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    await fillAndConfirm();
+    const msgs = await screen.findAllByText(/Nichts gesendet: Der Empfänger konnte nicht auf Memo-Pflicht/, {}, { timeout: 10000 });
+    expect(msgs.length).toBeGreaterThan(0);
+    expect(hoisted.submitTransactionSafelyMock).not.toHaveBeenCalled();
+    warn.mockRestore();
+  }, 20000);
+
   it('sperrt auch den XDR-Export ohne Memo', async () => {
     hoisted.loadAccountMock.mockImplementation(async (pk) => {
       if (pk === SENDER.publicKey) {
@@ -1122,6 +1202,62 @@ describe('Buendel 4b (M2): Job und XDR-Export bauen nicht bei offenem Pin', () =
     expect(msgs.length).toBeGreaterThan(0);
     expect(screen.queryByText('XDR vorbereitet (nicht gesendet)')).not.toBeInTheDocument();
     expect(readAccountEntry('PUBLIC', SENDER.publicKey)).toMatchObject({ status: 'ambiguous', recheck: 'pinConsumed' });
+  });
+});
+
+describe('Buendel 4b-Fix (N9): Job-Weg wie der XDR-Weg', () => {
+  afterEach(async () => {
+    const { resetAccountSendGuardMemory, writeAccountEntry } = await import('../../utils/submitGuard/accountSendGuard.js');
+    writeAccountEntry('PUBLIC', SENDER.publicKey, null);
+    resetAccountSendGuardMemory();
+    vi.unstubAllGlobals();
+  });
+
+  async function openJobChoice() {
+    hoisted.loadAccountMock.mockImplementation(async (pk) => {
+      const acct = makeFundedAccount(pk, pk === SENDER.publicKey ? { extraBalances: [SENDER_FOO_BALANCE] } : {});
+      if (pk === SENDER.publicKey) makeTwoOfTwo(acct);
+      return acct;
+    });
+    renderPage();
+    await waitFor(() => expect(hoisted.loadAccountMock).toHaveBeenCalledWith(SENDER.publicKey));
+    fireEvent.change(amountInput(), { target: { value: '10' } });
+    fireEvent.change(destInput(), { target: { value: DEST_PK } });
+    fireEvent.click(screen.getByRole('button', { name: 'Senden' }));
+    await screen.findByText('XDR exportieren (nicht senden)');
+    // Standard-Auswahl ist der Job.
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Weiter' })).not.toBeDisabled());
+  }
+
+  it('Sperre durch Pin: Hinweistext statt Rohschluessel, kein alert, kein Job, Eintrag wieder unklar, Statuskasten sichtbar', async () => {
+    const { readAccountEntry, writeAccountEntry } = await import('../../utils/submitGuard/accountSendGuard.js');
+    const fetchMock = vi.fn();
+    vi.stubGlobal('fetch', fetchMock);
+    const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
+    writeAccountEntry('PUBLIC', SENDER.publicKey, {
+      hash: 'c'.repeat(64), at: Date.now(), status: 'notApplied', pin: true, maxTime: 2000, seq: '999999999', source: SENDER.publicKey, origin: 'payment',
+    });
+    await openJobChoice();
+    fireEvent.click(screen.getByRole('button', { name: 'Weiter' }));
+    const msgs = await screen.findAllByText(/Nicht erstellt: Die Sequence einer früheren, nicht ausgeführten Transaktion/);
+    expect(msgs.length).toBeGreaterThan(0);
+    expect(screen.queryByText(/sendBlocked:/)).not.toBeInTheDocument();
+    expect(alertSpy.mock.calls.some((c) => String(c[0]).includes('sendBlocked'))).toBe(false);
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect(readAccountEntry('PUBLIC', SENDER.publicKey)).toMatchObject({ status: 'ambiguous', recheck: 'pinConsumed' });
+    // Statuskasten ohne weiteren Anstoss aktualisiert: der Sendeschutz meldet die Sperre.
+    await screen.findByText(/Eine frühere Transaktion dieses Kontos war laut Horizon nicht ausgeführt/);
+    alertSpy.mockRestore();
+  });
+
+  it('Erfolg: ohne Sperre wird der Job angelegt (POST an multisig/jobs) und der Ergebnisdialog gezeigt', async () => {
+    const fetchMock = vi.fn(async () => ({ ok: true, json: async () => ({ id: 'job-1', accessToken: 'tok', requiredWeight: 2 }) }));
+    vi.stubGlobal('fetch', fetchMock);
+    await openJobChoice();
+    fireEvent.click(screen.getByRole('button', { name: 'Weiter' }));
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
+    expect(String(fetchMock.mock.calls[0][0])).toContain('multisig/jobs');
+    expect(hoisted.submitTransactionSafelyMock).not.toHaveBeenCalled();
   });
 });
 

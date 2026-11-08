@@ -164,6 +164,25 @@ export function txResultCodeFromXdr(resultXdr) {
 }
 
 /**
+ * Memo-Pflicht (SEP-29) der FERTIG GEBAUTEN Transaktion pruefen (checkMemoRequired des SDK: Ziel
+ * jeder payment-, pathPayment- und accountMerge-Operation, ohne Memo und ohne M-Adresse). Fail-closed:
+ * Ein Fehler beim Laden (Netz, Server) oder ein Server ohne diese Methode ist PreSubmitCheckError,
+ * also "nichts gesendet". AccountRequiresMemoError kommt unveraendert durch. Wiederholt wird nur das
+ * Laden (GET). sleep: nur fuer Tests.
+ */
+export async function verifyMemoRequired(server, tx, { sleep } = {}) {
+  if (typeof server?.checkMemoRequired !== 'function') {
+    throw new PreSubmitCheckError(new Error('checkMemoRequired unavailable'));
+  }
+  try {
+    await loadWithBackoff(() => server.checkMemoRequired(tx), sleep ? { sleep } : {});
+  } catch (checkErr) {
+    if (isAccountRequiresMemoError(checkErr)) throw checkErr;
+    throw new PreSubmitCheckError(checkErr);
+  }
+}
+
+/**
  * skipMemoRequiredCheck: Der Aufrufer hat die Memo-Pruefung (SEP-29) selbst gemacht oder sie ist
  * nicht noetig. Sonst laeuft sie hier VOR dem Senden, getrennt vom POST: ein Fehler dabei (Netz,
  * Server) ist PreSubmitCheckError, also eindeutig "nichts gesendet", nie "unklar". Nur das Laden
@@ -177,12 +196,7 @@ export async function submitTransactionSafely(server, tx, { skipMemoRequiredChec
   if (skipMemoRequiredCheck) {
     opts = { skipMemoRequiredCheck: true };
   } else if (typeof server?.checkMemoRequired === 'function') {
-    try {
-      await loadWithBackoff(() => server.checkMemoRequired(tx), sleep ? { sleep } : {});
-    } catch (checkErr) {
-      if (isAccountRequiresMemoError(checkErr)) throw checkErr;
-      throw new PreSubmitCheckError(checkErr);
-    }
+    await verifyMemoRequired(server, tx, { sleep });
     opts = { skipMemoRequiredCheck: true };
   }
   try {

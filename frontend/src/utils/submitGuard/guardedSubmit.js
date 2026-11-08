@@ -152,35 +152,45 @@ export async function guardedSubmit({
  * Bauen einer Transaktion ohne lokales Senden (Multisig-Job, XDR-Export) von einem Konto.
  * Die Transaktion wird hier nicht gesendet, kann aber spaeter (von anderen Signern oder extern)
  * eingereicht werden. Deshalb gilt schon beim Bauen dieselbe Sperre wie beim Senden (nicht nur
- * ueber gesperrte Knoepfe):
+ * ueber gesperrte Knoepfe), und zwar unter demselben Sende-Lock pro Netz wie guardedSubmit:
+ * Ein gleichzeitig sendender Tab schreibt seinen Eintrag und baut nie zwischen Pruefung und Bauen.
  * - Unklarer Eintrag des Kontos (eigener, der Sammelzahlung, unlesbar): SendBlockedError 'blocked'.
  * - Offene Pins: Die Transaktion nutzt genau die gepinnte Sequence. Passt sie nicht mehr genau,
  *   wird nichts gebaut, die fruehere Transaktion geht wieder in die strenge Pruefung
  *   ('pinConsumed').
  * - Speicher nicht beschreibbar: 'storageUnavailable' (ohne ihn fehlt der Schutz).
+ * - Lock verloren (localStorage-Fallback) oder Warten abgebrochen: 'concurrent' bzw. 'lockCancelled'.
  * Es wird nichts geschrieben ausser dem Wiederaufnehmen eines Pins als unklar und nichts
  * aufgeraeumt (ein Pin geht hier nie verloren). build({ adjustAccount }) baut die Transaktion;
  * adjustAccount (oder null) muss auf das geladene Quellkonto angewendet werden.
  */
-export async function guardedUnsignedBuild({ network, account, build }) {
+export async function guardedUnsignedBuild({ network, account, build, onWaiting, signal }) {
   const source = String(account || '').trim();
   if (!isStorageWritable()) throw new SendBlockedError('storageUnavailable');
-  if (findAccountSendBlock(network, source)) throw new SendBlockedError('blocked');
-  const pins = findAccountPins(network, source);
-  let pinned = false;
-  const adjustAccount = pins.length ? (loaded) => {
-    const p = applyAccountPins({ loaded, source, pins });
-    if (p.blocked) {
-      p.blocked.forEach((pin) => markPinRecheck(network, source, pin, 'pinConsumed'));
-      throw new SendBlockedError('pinConsumed');
-    }
-    pinned = true;
-    return p.account;
-  } : null;
-  const built = await build({ adjustAccount });
-  // Offener Pin, aber nicht angewendet: nie ohne Pin bauen.
-  if (pins.length && !pinned) throw new SendBlockedError('pinConsumed');
-  // Wahrend des Bauens kann ein anderer Tab einen unklaren Eintrag geschrieben haben.
-  if (findAccountSendBlock(network, source)) throw new SendBlockedError('blocked');
-  return built;
+  try {
+    return await withSendLock(network, async (lock) => {
+      if (findAccountSendBlock(network, source)) throw new SendBlockedError('blocked');
+      const pins = findAccountPins(network, source);
+      let pinned = false;
+      const adjustAccount = pins.length ? (loaded) => {
+        const p = applyAccountPins({ loaded, source, pins });
+        if (p.blocked) {
+          p.blocked.forEach((pin) => markPinRecheck(network, source, pin, 'pinConsumed'));
+          throw new SendBlockedError('pinConsumed');
+        }
+        pinned = true;
+        return p.account;
+      } : null;
+      const built = await build({ adjustAccount });
+      // Offener Pin, aber nicht angewendet: nie ohne Pin bauen.
+      if (pins.length && !pinned) throw new SendBlockedError('pinConsumed');
+      // Lock waehrend des Bauens verloren (anderer Tab hat uebernommen) oder ein Eintrag entstanden.
+      if (!lock.isHeld()) throw new SendBlockedError('concurrent');
+      if (findAccountSendBlock(network, source)) throw new SendBlockedError('blocked');
+      return built;
+    }, { signal, onWaiting });
+  } catch (err) {
+    if (err?.name === 'AbortError') throw new SendBlockedError('lockCancelled');
+    throw err;
+  }
 }
