@@ -70,8 +70,8 @@ import useTradingMultisig, { JOB_DISABLED_TYPES, requiredWeightFor } from './hoo
 import { LiquidityResultDialog, LiquiditySigningOptions } from '../liquidity/jobParts.jsx';
 import { resolveFeePerOp } from '../../utils/stellar/fees.js';
 
-// Laengste Gueltigkeit einer direkt gesendeten Trading-Transaktion (Standard der Builder in
-// tradingTransactions.js). Gebraucht fuer die Klaerung unlesbarer Eintraege des Sendeschutzes.
+// Gueltigkeit einer direkt gesendeten Trading-Transaktion (Standard der Builder in
+// tradingTransactions.js), kleiner als MAX_SEND_VALIDITY_SECONDS des Sendeschutzes.
 const TRADING_SUBMIT_TIMEOUT_SECONDS = 60;
 
 export default function AssetSearch() {
@@ -116,7 +116,10 @@ export default function AssetSearch() {
     beginAction,
   } = useTradingSubmit();
   // Multisig-Ablauf (ADR 0007): Auswahl Job/lokal/XDR nur, wenn kein einzelner Signer reicht
+  const bumpGuardRef = useRef(null);
+  const submitInFlightRef = useRef(false);
   const multisig = useTradingMultisig({
+    onBlocked: () => bumpGuardRef.current?.(),
     network,
     accountId,
     accountInfo,
@@ -134,9 +137,9 @@ export default function AssetSearch() {
   const sendGuard = useAccountSendBlock({
     network,
     account: accountId,
-    maxValiditySeconds: TRADING_SUBMIT_TIMEOUT_SECONDS,
     onApplied: () => setTrustlineRefreshToken((value) => value + 1),
   });
+  bumpGuardRef.current = sendGuard.bump;
   // Solange fuer das Konto ein unklarer Eintrag besteht, sind alle Sendeaktionen gesperrt.
   const pendingAmbiguousSubmission = sendGuard.block ? { hash: sendGuard.block.entry?.hash || '' } : null;
   const [showTrustlineConfirm, setShowTrustlineConfirm] = useState(false);
@@ -826,6 +829,8 @@ export default function AssetSearch() {
       account: flow.accountId,
       server,
       networkPassphrase: passphraseFor(flow.network),
+      // Trading hat kein fremdes Ziel (Swap sendet an das eigene Konto): keine Memo-Pruefung (SEP-29).
+      skipMemoRequiredCheck: true,
       buildTx: async ({ adjustAccount }) => {
         const { tx } = await prepare({ server, flow, checkAccount, adjustAccount, timeoutSeconds: TRADING_SUBMIT_TIMEOUT_SECONDS });
         // Nach den Horizon-Aufrufen: passt die Transaktion zur Aktion, gilt das Netz noch?
@@ -941,7 +946,17 @@ export default function AssetSearch() {
       network: flow.network,
       accountId: flow.accountId,
       payload,
-      execute: (collected) => execute(collected, flow),
+      // Ein Sendevorgang gleichzeitig: ein zweiter Aufruf (Doppelklick, noch bevor die Oberflaeche
+      // gesperrt ist) wird ignoriert, nicht an den Lock gehaengt und danach nochmals gesendet.
+      execute: async (collected) => {
+        if (submitInFlightRef.current) return undefined;
+        submitInFlightRef.current = true;
+        try {
+          return await execute(collected, flow);
+        } finally {
+          submitInFlightRef.current = false;
+        }
+      },
       prepare,
       rows: multisigRows(description, details, flow),
       items: multisigItems(description, details, type, flow),

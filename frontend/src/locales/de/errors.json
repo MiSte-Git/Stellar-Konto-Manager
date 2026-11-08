@@ -49,6 +49,9 @@
       "tx_bad_auth": "Transaktion abgelehnt: Ungültige Signatur",
       "tx_failed": "Transaktion fehlgeschlagen",
       "unknown": "Unbekannter Fehler bei der Transaktion",
+      "memoCheck": {
+        "unreachable": "Nichts gesendet: Der Empfänger konnte nicht auf Memo-Pflicht (SEP-29) geprüft werden, weil Horizon nicht antwortete. Bitte erneut versuchen."
+      },
       "signingFailed": "Eine oder mehrere Signaturen konnten nicht erstellt werden. Bitte erneut versuchen.",
       "multisig": {
         "invalidSecret": "Einer der eingegebenen Secret Keys ist ungültig.",

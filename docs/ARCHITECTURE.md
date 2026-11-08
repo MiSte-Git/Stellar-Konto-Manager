@@ -45,7 +45,7 @@ React mit Vite, Tailwind CSS v4, framer-motion, i18next.
 | `src/utils/multisigApi.js` | Client für die Multisig-Endpunkte, inkl. Challenge-Signatur mit Zweck |
 | `src/utils/sessionSecrets.js` | Gemerkte Secret Keys, verschlüsselt, mit Inaktivitäts-Timeout |
 | `src/utils/batchPayment/` | Sammelzahlung |
-| `src/utils/submitGuard/` | Unklarer Sendestatus, gemeinsam für Sammelzahlung, „Zahlung senden“ und Trading: Auflösung über Horizon, Sperre pro Konto, Send-Lock pro Netz, geschützter Submit, React-Hook |
+| `src/utils/submitGuard/` | Unklarer Sendestatus, gemeinsam für Sammelzahlung, „Zahlung senden“ und Trading: Auflösung über Horizon, Sperre pro Konto, Send-Lock pro Netz, geschützter Submit (`guardedSubmit`), Bauen von Job und XDR unter derselben Sperre (`guardedUnsignedBuild`), React-Hook |
 | `src/utils/db/indexedDbClient.js` | Lokaler Cache für Zahlungen je Konto (IndexedDB) |
 | `src/locales/<sprache>/<namespace>.json` | Texte, DE ist Quelle (siehe [i18n-pipeline.md](i18n-pipeline.md)) |
 

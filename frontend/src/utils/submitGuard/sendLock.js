@@ -97,3 +97,20 @@ export async function withSendLock(network, fn, options = {}) {
   onWaiting?.();
   return locks.request(name, signal ? { signal } : {}, () => fn(held));
 }
+
+/**
+ * Wie withSendLock, wartet aber nie: ist der Lock belegt (anderer Lauf oder Tab sendet gerade),
+ * laeuft fn nicht. Ergebnis { ran: true, value } oder { ran: false }. Fuer Arbeiten, die nur
+ * unter dem Lock sicher sind, aber nicht dringend (z.B. Aufraeumen des Sende-Protokolls).
+ */
+export async function tryWithSendLock(network, fn) {
+  const controller = new AbortController();
+  try {
+    const value = await withSendLock(network, fn, { signal: controller.signal, onWaiting: () => controller.abort() });
+    return { ran: true, value };
+  } catch (err) {
+    // Nur der Abbruch durch onWaiting (Lock belegt), nicht ein Fehler aus fn.
+    if (err?.name === 'AbortError' && controller.signal.aborted) return { ran: false };
+    throw err;
+  }
+}

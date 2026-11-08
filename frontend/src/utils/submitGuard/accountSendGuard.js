@@ -33,6 +33,14 @@ import {
 } from './ambiguousResolve.js';
 
 export const PENDING_TX_PREFIX = 'skm_pending_tx_v1:';
+// Laengste Gueltigkeit (Sekunden) einer Transaktion, die ein Sendeweg direkt sendet (Zahlung
+// senden, Sammelzahlung und Trading). Ein unlesbarer Eintrag liegt unter einem Schluessel pro Konto
+// und verraet nicht, welcher Weg ihn schrieb: Freigegeben wird deshalb immer mit diesem einen Wert
+// (erstes Erkennen plus diese Gueltigkeit plus Puffer), nie mit dem Wert der gerade offenen Seite.
+// guardedSubmit sendet nichts mit laengerer Gueltigkeit.
+export const MAX_SEND_VALIDITY_SECONDS = 180;
+// Toleranz zwischen Bauen und Pruefen der Gueltigkeit (Sekunden).
+export const SEND_VALIDITY_SLACK_SECONDS = 10;
 // Erstes Erkennen eines unlesbaren Eintrags der Sammelzahlung (der Eintrag selbst bleibt
 // unveraendert stehen): skm_unreadable_seen_v1:<Schluessel des Eintrags>.
 export const UNREADABLE_SEEN_PREFIX = 'skm_unreadable_seen_v1:';
@@ -441,11 +449,11 @@ const keepFields = (e) => ({
  * Prueft eine Sperre ueber Horizon (Netz des Eintrags, nicht das globale) und schreibt das
  * Ergebnis zurueck. Regeln wie in der Sammelzahlung (settleAmbiguousEntry). Ergebnis
  * { outcome, entry } mit outcome success | failed | expired | pending | unknown oder null.
- * maxValiditySeconds: laengste Gueltigkeit, die dieser Sendeweg setzt (fuer eigene unlesbare
- * Eintraege), batchMaxValiditySeconds: dasselbe fuer die Sammelzahlung.
+ * Unlesbare Eintraege (eigene und der Sammelzahlung) werden immer mit MAX_SEND_VALIDITY_SECONDS
+ * freigegeben, unabhaengig vom aufrufenden Sendeweg.
  */
 export async function settleAccountBlock({
-  network, account, block, server, maxValiditySeconds, batchMaxValiditySeconds = maxValiditySeconds,
+  network, account, block, server,
   resolve = resolveAmbiguousDetailed, strictDelayMs = AMBIGUOUS_STRICT_RECHECK_MS, sleep,
 }) {
   const source = String(account || '').trim();
@@ -459,12 +467,12 @@ export async function settleAccountBlock({
     });
   }
   if (block.kind === 'batchUnreadable') {
-    return settleBatchUnreadable({ key: block.key, server, maxValiditySeconds: batchMaxValiditySeconds, strictDelayMs, sleep });
+    return settleBatchUnreadable({ key: block.key, server, strictDelayMs, sleep });
   }
   if (block.entry?.unreadable) {
     const key = accountEntryKey(network, source);
     return settleUnreadable({
-      server, entry: block.entry, maxValiditySeconds, strictDelayMs, sleep,
+      server, entry: block.entry, strictDelayMs, sleep,
       stillSame: () => {
         try {
           const raw = JSON.parse(readRaw(key) || 'null');
@@ -492,12 +500,12 @@ export async function settleAccountBlock({
  * Unlesbarer Eintrag der Sammelzahlung (Schluessel key): wie settleUnreadable, frei wird er
  * durch Entfernen des Eintrags.
  */
-export async function settleBatchUnreadable({ key, server, maxValiditySeconds, strictDelayMs = AMBIGUOUS_STRICT_RECHECK_MS, sleep }) {
+export async function settleBatchUnreadable({ key, server, strictDelayMs = AMBIGUOUS_STRICT_RECHECK_MS, sleep }) {
   const entry = batchUnreadableInfo(key);
   if (!entry) return { outcome: 'expired', entry: null };
   const block = { kind: 'batchUnreadable', key, entry };
   return settleUnreadable({
-    server, entry, maxValiditySeconds, strictDelayMs, sleep,
+    server, entry, strictDelayMs, sleep,
     stillSame: () => {
       const raw = readRaw(key);
       return raw !== null && sha256Hex(raw) === entry.digest;
@@ -526,10 +534,10 @@ async function latestClosedSeconds(server) {
  * Ledger-Zeit (ledgerSeenAt, beim Erkennen bzw. spaetestens bei dieser Pruefung
  * festgehalten). Freigabe erst, wenn zwei Abfragen im Abstand von mindestens 30 s einen
  * Ledger nach diesem Zeitpunkt plus Puffer melden (Ledger-Zeit, nicht die lokale Uhr).
- * Ohne maxValiditySeconds bleibt er gesperrt.
+ * Gueltigkeit: immer MAX_SEND_VALIDITY_SECONDS.
  */
 async function settleUnreadable({
-  server, entry, maxValiditySeconds, strictDelayMs, sleep = sleepMs, stillSame, release, recordLedgerSeen,
+  server, entry, strictDelayMs, sleep = sleepMs, stillSame, release, recordLedgerSeen,
 }) {
   const settled = (outcome) => {
     if (stillSame()) release();
@@ -540,8 +548,8 @@ async function settleUnreadable({
     if (r === 'success' || r === 'failed') return settled(r);
     if (r === 'unknown') return { outcome: 'unknown', entry };
   }
-  const validity = Number(maxValiditySeconds);
-  if (!Number.isFinite(validity) || validity <= 0 || !Number.isFinite(entry.seenAt)) return { outcome: 'unknown', entry };
+  const validity = MAX_SEND_VALIDITY_SECONDS;
+  if (!Number.isFinite(entry.seenAt)) return { outcome: 'unknown', entry };
   const closed1 = await latestClosedSeconds(server);
   if (!Number.isFinite(closed1)) return { outcome: 'unknown', entry };
   let ledgerSeen = positive(entry.ledgerSeenAt);
@@ -588,16 +596,18 @@ export function pruneUnreadableSeen() {
  * 30 Tagen ab Klaerung bzw. Vergabe des Pins (wie in der Sammelzahlung). Unklare und unlesbare
  * bleiben. keepKeys: Schluessel, die nie entfernt werden (die Pins, die das laufende Senden
  * eben gelesen hat: sie muessen bis zum Ende dieses Sendens, auch zur erneuten Pruefung,
- * erhalten bleiben).
+ * erhalten bleiben). network (optional): nur Eintraege dieses Netzes, aufzurufen unter dem
+ * Sende-Lock dieses Netzes (ein anderes Netz sendet evtl. gerade); ohne Angabe alle Netze.
  */
-export function pruneAccountEntries(now = Date.now(), keepKeys = []) {
+export function pruneAccountEntries(now = Date.now(), keepKeys = [], network = null) {
   pruneUnreadableSeen();
   const keep = new Set(keepKeys);
+  const prefix = network ? `${PENDING_TX_PREFIX}${network}:` : PENDING_TX_PREFIX;
   try {
     const keys = [];
     for (let i = 0; i < window.localStorage.length; i += 1) {
       const k = window.localStorage.key(i);
-      if (k && k.startsWith(PENDING_TX_PREFIX)) keys.push(k);
+      if (k && k.startsWith(prefix)) keys.push(k);
     }
     for (const k of keys) {
       if (keep.has(k)) continue;

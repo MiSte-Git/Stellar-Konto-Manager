@@ -6,6 +6,8 @@
 // Gleiche Pruefung wie Horizon.Server.checkMemoRequired() im stellar-sdk:
 // Horizon liefert Data-Entries base64-kodiert in data_attr, "1" ist "MQ==".
 
+import { AccountRequiresMemoError } from '@stellar/stellar-sdk';
+
 export const MEMO_REQUIRED_DATA_KEY = 'config.memo_required';
 const MEMO_REQUIRED_VALUE_B64 = 'MQ==';
 
@@ -15,9 +17,15 @@ export function accountRequiresMemo(account) {
   return data[MEMO_REQUIRED_DATA_KEY] === MEMO_REQUIRED_VALUE_B64;
 }
 
-// stellar-sdk wirft beim submitTransaction() selbst einen AccountRequiresMemoError,
-// wenn ein Ziel ein Memo verlangt und keins gesetzt ist. Erkennung ueber den Namen,
-// damit kein harter Import der Fehlerklasse noetig ist.
+// stellar-sdk wirft in checkMemoRequired() einen AccountRequiresMemoError, wenn ein Ziel ein Memo
+// verlangt und keins gesetzt ist. Die SDK-Klasse setzt keinen eigenen name (er bleibt 'Error'),
+// deshalb Erkennung ueber die Klasse selbst (instanceof). Der Name bleibt als Rueckfall fuer
+// Fehler, die SKM selbst mit diesem Namen wirft (isAccountRequiresMemoError, makeMemoRequiredError).
 export function isAccountRequiresMemoError(err) {
-  return err?.name === 'AccountRequiresMemoError';
+  return err instanceof AccountRequiresMemoError || err?.name === 'AccountRequiresMemoError';
+}
+
+/** Fehler "Konto verlangt ein Memo" fuer die eigene Pruefung von SKM (wie der des SDK). */
+export function makeMemoRequiredError(accountId = '', operationIndex = 0) {
+  return new AccountRequiresMemoError('account requires memo', accountId, operationIndex);
 }

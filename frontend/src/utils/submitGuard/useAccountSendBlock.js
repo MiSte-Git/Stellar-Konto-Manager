@@ -10,12 +10,12 @@ import { getHorizonServerForNetwork } from '../stellar/stellarUtils.js';
 import { AmbiguousSubmitResultError, submitTransactionSafely } from '../stellar/submitTransactionSafely.js';
 import { txHashHex } from '../stellar/txHash.js';
 import { BATCH_SENT_PREFIX } from '../batchPayment/batchPaymentStore.js';
-import { BATCH_SUBMIT_TIMEOUT_SECONDS, describeSubmitError } from '../batchPayment/batchPaymentLogic.js';
+import { describeSubmitError } from '../batchPayment/batchPaymentLogic.js';
 import { withSendLock } from './sendLock.js';
 import { AUTO_CHECK_MARGIN_MS } from './ambiguousDisplay.js';
 import { AMBIGUOUS_LEDGER_BUFFER_SECONDS, ambiguousClearAt, classifySubmitCause } from './ambiguousResolve.js';
 import {
-  PENDING_TX_PREFIX, UNREADABLE_SEEN_PREFIX, findAccountSendBlock, forgetSignedTx, readAccountEntry,
+  MAX_SEND_VALIDITY_SECONDS, PENDING_TX_PREFIX, UNREADABLE_SEEN_PREFIX, findAccountSendBlock, forgetSignedTx, readAccountEntry,
   recordUnreadableLedgerSeen, rememberDiagnostics, settleAccountBlock, signedTxFor, writeAccountEntry,
 } from './accountSendGuard.js';
 
@@ -27,24 +27,23 @@ function blockIdOf(block, network, account) {
 
 // Zeitpunkt der automatischen Pruefung (lokale Uhr, nur Anzeige und Ausloeser; entschieden
 // wird ueber die Ledger-Zeit von Horizon).
-function dueOf(block, maxValiditySeconds) {
+function dueOf(block) {
   if (!block?.entry) return null;
   if (block.entry.unreadable) {
-    const v = Number(block.kind === 'batchUnreadable' ? BATCH_SUBMIT_TIMEOUT_SECONDS : maxValiditySeconds);
-    return Number.isFinite(block.entry.seenAt) && v > 0
-      ? block.entry.seenAt + (v + AMBIGUOUS_LEDGER_BUFFER_SECONDS) * 1000 + AUTO_CHECK_MARGIN_MS : null;
+    return Number.isFinite(block.entry.seenAt)
+      ? block.entry.seenAt + (MAX_SEND_VALIDITY_SECONDS + AMBIGUOUS_LEDGER_BUFFER_SECONDS) * 1000 + AUTO_CHECK_MARGIN_MS : null;
   }
   const clearAt = ambiguousClearAt(block.entry);
   return clearAt ? clearAt + AUTO_CHECK_MARGIN_MS : null;
 }
 
 /**
- * network, account: Netz und Quellkonto der Seite. maxValiditySeconds: laengste Gueltigkeit
- * einer Transaktion dieses Sendewegs (fuer unlesbare Eintraege).
+ * network, account: Netz und Quellkonto der Seite. Die Gueltigkeit unlesbarer Eintraege ist
+ * fuer alle Sendewege gleich (MAX_SEND_VALIDITY_SECONDS).
  * onApplied({ network, account, block, hash }) / onNotApplied({ network, account, block, pinned }):
  * nach einer Klaerung ueber Horizon (auch wenn Netz oder Konto inzwischen gewechselt haben).
  */
-export function useAccountSendBlock({ network, account, maxValiditySeconds, onApplied, onNotApplied }) {
+export function useAccountSendBlock({ network, account, onApplied, onNotApplied }) {
   const [version, setVersion] = useState(0);
   const bump = useCallback(() => setVersion((v) => v + 1), []);
   // eslint-disable-next-line react-hooks/exhaustive-deps -- version liest den Speicher neu
@@ -111,7 +110,7 @@ export function useAccountSendBlock({ network, account, maxValiditySeconds, onAp
       // Immer das Netz des Eintrags, nie das globale.
       const server = getHorizonServerForNetwork(blk.entry?.network || net);
       res = await settleAccountBlock({
-        network: net, account: acc, block: blk, server, maxValiditySeconds, batchMaxValiditySeconds: BATCH_SUBMIT_TIMEOUT_SECONDS,
+        network: net, account: acc, block: blk, server,
       });
     } catch {
       res = { outcome: 'unknown' };
@@ -126,13 +125,13 @@ export function useAccountSendBlock({ network, account, maxValiditySeconds, onAp
       setCheck(outcome ? { id, state: outcome === 'pending' ? 'pending' : 'unknown', at, clearAt: res.clearAt } : null);
     }
     if (mountedRef.current) bump();
-  }, [account, bump, finish, maxValiditySeconds, network]);
+  }, [account, bump, finish, network]);
   const checkRef = useRef(checkNow);
   checkRef.current = checkNow;
 
   // Einmal automatisch pruefen, sobald die Sperre laut maxTime geklaert werden kann
   // (sofort, wenn der Zeitpunkt schon vorbei ist, z.B. nach dem Neuladen).
-  const due = dueOf(block, maxValiditySeconds);
+  const due = dueOf(block);
   const autoDoneRef = useRef(new Set());
   useEffect(() => {
     if (!blockId || !due || autoDoneRef.current.has(blockId)) return undefined;
@@ -189,7 +188,8 @@ export function useAccountSendBlock({ network, account, maxValiditySeconds, onAp
         const tx = TransactionBuilder.fromXDR(mem.xdr, mem.networkPassphrase);
         if (txHashHex(tx) !== mem.hash) { outcome = 'changed'; return; }
         try {
-          await submitTransactionSafely(getHorizonServerForNetwork(net), tx);
+          // Dieselbe, schon geprueft gesendete Transaktion: keine neue Memo-Pruefung vor dem POST.
+          await submitTransactionSafely(getHorizonServerForNetwork(net), tx, { skipMemoRequiredCheck: true });
           const now = readAccountEntry(net, acc);
           if (now?.hash === mem.hash && now.status === 'ambiguous') {
             writeAccountEntry(net, acc, { ...now, status: 'success', prev: undefined });

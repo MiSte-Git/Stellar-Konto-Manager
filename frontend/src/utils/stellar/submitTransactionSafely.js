@@ -8,6 +8,8 @@
 import { xdr } from '@stellar/stellar-sdk';
 import { txHashHex } from './txHash.js';
 import { feeBumpHashOf, recordMatchesHash } from '../submitGuard/ambiguousResolve.js';
+import { isAccountRequiresMemoError } from './memoRequired.js';
+import { loadWithBackoff } from './retryLoad.js';
 
 export function isAmbiguousSubmitError(err) {
   const extras = err?.response?.data?.extras;
@@ -27,6 +29,20 @@ export function describeRequestError(err) {
     statusText: status ? String(err?.response?.statusText || '').slice(0, 60) : '',
     readable: !!status,
   };
+}
+
+// Methode und URL (nur Origin und Pfad, ohne Query und Zugangsdaten) der Anfrage, die gescheitert
+// ist, soweit der Fehler sie traegt (axios: config, beim SDK auch unter cause). Kein Body, keine
+// Header. null, wenn nichts bekannt ist.
+export function requestTargetOf(err) {
+  const cfg = err?.config || err?.cause?.config;
+  if (!cfg?.url) return null;
+  try {
+    const u = new URL(String(cfg.url), cfg.baseURL ? String(cfg.baseURL) : undefined);
+    return { method: String(cfg.method || 'get').toUpperCase(), url: `${u.origin}${u.pathname}` };
+  } catch {
+    return null;
+  }
 }
 
 // URL eines Horizon-Endpunkts ohne Query (nur Origin und Pfad), '' wenn unbekannt.
@@ -80,6 +96,18 @@ export async function findSubmittedTransaction(server, hash, { attempts = 8, del
 // the transaction hash manually.
 // diagnostics (optional): { request: { method, url, at, durationMs, error, online, visibility },
 // lookups: [...] } ohne Body, XDR oder Secrets (siehe submitTransactionSafely).
+// Thrown BEFORE anything was sent: the pre-submit memo check (SEP-29, loads the destination
+// account with GET) failed for a network or server reason. Nothing was posted, the outcome is
+// not unclear; the user can simply try again. request: { method, url } of the failed GET.
+export class PreSubmitCheckError extends Error {
+  constructor(cause) {
+    super('submitTransaction.failed:memoCheck.unreachable');
+    this.name = 'PreSubmitCheckError';
+    this.cause = cause;
+    this.request = requestTargetOf(cause);
+  }
+}
+
 export class AmbiguousSubmitResultError extends Error {
   constructor(hash, cause, diagnostics = null) {
     super('submitTransaction.ambiguousResult');
@@ -135,17 +163,38 @@ export function txResultCodeFromXdr(resultXdr) {
   }
 }
 
-export async function submitTransactionSafely(server, tx) {
+/**
+ * skipMemoRequiredCheck: Der Aufrufer hat die Memo-Pruefung (SEP-29) selbst gemacht oder sie ist
+ * nicht noetig. Sonst laeuft sie hier VOR dem Senden, getrennt vom POST: ein Fehler dabei (Netz,
+ * Server) ist PreSubmitCheckError, also eindeutig "nichts gesendet", nie "unklar". Nur das Laden
+ * der Empfaengerkonten wird mit Wartezeit wiederholt (GET), der POST nie.
+ * sleep: nur fuer Tests.
+ */
+export async function submitTransactionSafely(server, tx, { skipMemoRequiredCheck = false, sleep } = {}) {
   const hash = txHashHex(tx);
   const startedAt = Date.now();
+  let opts;
+  if (skipMemoRequiredCheck) {
+    opts = { skipMemoRequiredCheck: true };
+  } else if (typeof server?.checkMemoRequired === 'function') {
+    try {
+      await loadWithBackoff(() => server.checkMemoRequired(tx), sleep ? { sleep } : {});
+    } catch (checkErr) {
+      if (isAccountRequiresMemoError(checkErr)) throw checkErr;
+      throw new PreSubmitCheckError(checkErr);
+    }
+    opts = { skipMemoRequiredCheck: true };
+  }
   try {
-    return await server.submitTransaction(tx);
+    return await (opts ? server.submitTransaction(tx, opts) : server.submitTransaction(tx));
   } catch (err) {
     if (!isAmbiguousSubmitError(err)) throw err;
     // Zustand zum Zeitpunkt des Fehlers, bevor die Nachfragen laufen.
+    // Echte Methode und URL der gescheiterten Anfrage, falls der Fehler sie traegt.
+    const target = requestTargetOf(err);
     const request = {
-      method: 'POST',
-      url: horizonEndpointUrl(server, 'transactions'),
+      method: target?.method || 'POST',
+      url: target?.url || horizonEndpointUrl(server, 'transactions'),
       at: new Date(startedAt).toISOString(),
       durationMs: Date.now() - startedAt,
       error: describeRequestError(err),

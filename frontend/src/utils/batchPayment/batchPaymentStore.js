@@ -297,12 +297,15 @@ export function listSentEntryKeys(network) {
 // Entfernt nur eindeutig lesbare Eintraege nach der Aufbewahrungszeit: erfolgreiche nach
 // 7 Tagen, nicht ausgefuehrte nach 30 Tagen. Unklare und unlesbare Eintraege bleiben stehen
 // (unlesbare sperren als unklar, siehe readSentEntry).
-export function pruneSentLog(now = Date.now()) {
+// network (optional): nur Eintraege dieses Netzes (aufzurufen unter dem Sende-Lock dieses Netzes);
+// ohne Angabe alle Netze (nur fuer Tests).
+export function pruneSentLog(now = Date.now(), network = null) {
+  const prefix = network ? `${BATCH_SENT_PREFIX}${network}:` : BATCH_SENT_PREFIX;
   try {
     const keys = [];
     for (let i = 0; i < window.localStorage.length; i += 1) {
       const k = window.localStorage.key(i);
-      if (k && k.startsWith(BATCH_SENT_PREFIX)) keys.push(k);
+      if (k && k.startsWith(prefix)) keys.push(k);
     }
     for (const k of keys) {
       let entry = null;

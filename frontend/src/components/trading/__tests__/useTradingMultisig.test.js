@@ -2,6 +2,7 @@ import { act, renderHook } from '@testing-library/react';
 import { Account, Asset, Keypair, Networks, Operation, TransactionBuilder } from '@stellar/stellar-sdk';
 import useTradingMultisig, { requiredWeightFor } from '../hooks/useTradingMultisig.js';
 import { getRequiredThreshold } from '../../../utils/getRequiredThreshold.js';
+import { readAccountEntry, resetAccountSendGuardMemory, writeAccountEntry } from '../../../utils/submitGuard/accountSendGuard.js';
 
 const hoisted = vi.hoisted(() => ({ createJob: vi.fn(), serverNetworks: [] }));
 
@@ -143,6 +144,67 @@ describe('useTradingMultisig - runUnsigned', () => {
       act(() => { result.current.proceed(); });
       expect(hoisted.createJob).not.toHaveBeenCalled();
     }
+  });
+});
+
+describe('useTradingMultisig - Sperre und Pin gelten schon beim Bauen von Job und XDR (Buendel 4b, M2)', () => {
+  const unclear = (o = {}) => ({ hash: 'a'.repeat(64), at: 1000, status: 'ambiguous', maxTime: 2000, seq: '11', source: ACCOUNT, origin: 'payment', ...o });
+  const pin = (o = {}) => unclear({ status: 'notApplied', pin: true, seq: '11', at: Date.now(), ...o });
+  // prepare wie im Trading: das geladene Konto (Sequence 10) durch adjustAccount schicken.
+  const pinAwarePrepare = () => vi.fn(async ({ adjustAccount }) => {
+    const loaded = new Account(ACCOUNT, '10');
+    const acc = adjustAccount ? adjustAccount(loaded) : loaded;
+    const tx = new TransactionBuilder(acc, { fee: '100', networkPassphrase: Networks.PUBLIC })
+      .addOperation(Operation.changeTrust({ asset: new Asset('FOO', Keypair.random().publicKey()) }))
+      .setTimeout(3600).build();
+    return { tx };
+  });
+
+  beforeEach(() => { resetAccountSendGuardMemory(); });
+
+  it.each(['job', 'xdr'])('unklarer Eintrag des Kontos: %s wird nicht gebaut, Hinweis, Status-Kasten wird neu gelesen', async (mode) => {
+    writeAccountEntry('PUBLIC', ACCOUNT, unclear());
+    const onBlocked = vi.fn();
+    const { result } = renderMultisig({ onBlocked });
+    const action = makeAction({ prepare: pinAwarePrepare() });
+    await act(async () => { await result.current.runUnsigned(action, mode); });
+    expect(action.prepare).not.toHaveBeenCalled();
+    expect(hoisted.createJob).not.toHaveBeenCalled();
+    expect(result.current.exportedXdr).toBeNull();
+    expect(result.current.preparedJob).toBeNull();
+    expect(result.current.error).toBe('common:payment.send.ambiguousResult.unsignedBlockedReason.blocked');
+    expect(onBlocked).toHaveBeenCalled();
+  });
+
+  it.each(['job', 'xdr'])('offener Pin, Sequence passt nicht mehr: %s wird verweigert, fruehere Transaktion wieder unklar', async (mode) => {
+    writeAccountEntry('PUBLIC', ACCOUNT, pin({ seq: '15' })); // Konto steht bei 10, der Pin braucht genau 14
+    const { result } = renderMultisig();
+    const action = makeAction({ prepare: pinAwarePrepare() });
+    await act(async () => { await result.current.runUnsigned(action, mode); });
+    expect(hoisted.createJob).not.toHaveBeenCalled();
+    expect(result.current.exportedXdr).toBeNull();
+    expect(result.current.error).toBe('common:payment.send.ambiguousResult.unsignedBlockedReason.pinConsumed');
+    expect(readAccountEntry('PUBLIC', ACCOUNT)).toMatchObject({ status: 'ambiguous', recheck: 'pinConsumed' });
+  });
+
+  it('offener Pin, Aktion wendet adjustAccount nicht an: nicht gebaut (nie ohne Pin)', async () => {
+    writeAccountEntry('PUBLIC', ACCOUNT, pin());
+    const { result } = renderMultisig();
+    const action = makeAction(); // Standard-prepare ignoriert adjustAccount
+    await act(async () => { await result.current.runUnsigned(action, 'xdr'); });
+    expect(result.current.exportedXdr).toBeNull();
+    expect(result.current.error).toBe('common:payment.send.ambiguousResult.unsignedBlockedReason.pinConsumed');
+  });
+
+  it('Gegenprobe: Pin passt genau (Konto 10, Pin 11): Job und XDR nutzen die Pin-Sequence', async () => {
+    writeAccountEntry('PUBLIC', ACCOUNT, pin());
+    const { result } = renderMultisig();
+    const action = makeAction({ prepare: pinAwarePrepare() });
+    await act(async () => { await result.current.runUnsigned(action, 'xdr'); });
+    expect(action.prepare).toHaveBeenCalledTimes(1);
+    expect(result.current.exportedXdr?.xdr).toBeTruthy();
+    const built = (await action.prepare.mock.results[0].value).tx;
+    expect(built.sequence).toBe('11');
   });
 });
 

@@ -18,7 +18,7 @@ import { txHashHex } from '../stellar/txHash.js';
 import { withSendLock } from './sendLock.js';
 import { classifySubmitCause, isBadSeqError } from './ambiguousResolve.js';
 import {
-  applyAccountPins, findAccountPins, findAccountSendBlock, forgetAmbiguous, forgetSignedTx, markPinRecheck,
+  MAX_SEND_VALIDITY_SECONDS, SEND_VALIDITY_SLACK_SECONDS, applyAccountPins, findAccountPins, findAccountSendBlock, forgetAmbiguous, forgetSignedTx, markPinRecheck,
   markSubmitting, pruneAccountEntries, readAccountEntry, releasePins, rememberAmbiguous, rememberDiagnostics,
   rememberSignedTx, writeAccountEntry,
 } from './accountSendGuard.js';
@@ -51,7 +51,7 @@ function asAmbiguous(entry, recheck) {
  */
 export async function guardedSubmit({
   network, account, server, networkPassphrase, buildTx, entryData = () => ({}), onWaiting, signal,
-  submit = submitTransactionSafely,
+  submit = submitTransactionSafely, skipMemoRequiredCheck = false,
 }) {
   const source = String(account || '').trim();
   if (!isStorageWritable()) throw new SendBlockedError('storageUnavailable');
@@ -64,7 +64,7 @@ export async function guardedSubmit({
       const pins = findAccountPins(network, source);
       // Aufraeumen erst nach dem Lesen der Pins: Ein Pin, den dieses Senden noch braucht, wird
       // nie vorher entfernt (N1). Die Frist zaehlt ab Vergabe des Pins (settledAt).
-      pruneAccountEntries(Date.now(), pins.filter((p) => p.store === 'account').map((p) => p.key));
+      pruneAccountEntries(Date.now(), pins.filter((p) => p.store === 'account').map((p) => p.key), network);
       const ownPin = pins.find((p) => p.store === 'account') || null;
       let pinned = false;
       const adjustAccount = pins.length ? (loaded) => {
@@ -87,6 +87,12 @@ export async function guardedSubmit({
       const hash = txHashHex(tx);
       const maxTime = Number(tx.timeBounds?.maxTime);
       const seq = String(tx.sequence);
+      // Laengere Gueltigkeit als MAX_SEND_VALIDITY_SECONDS (ohne Zeitgrenze oder zu lang): Die
+      // Freigabe unlesbarer Eintraege rechnet mit diesem Wert, also nicht senden.
+      if (!Number.isFinite(maxTime) || maxTime <= 0
+        || maxTime - Date.now() / 1000 > MAX_SEND_VALIDITY_SECONDS + SEND_VALIDITY_SLACK_SECONDS) {
+        throw new SendBlockedError('validityTooLong');
+      }
       // Unmittelbar vor dem Schreiben erneut pruefen.
       if (!lock.isHeld()) throw new SendBlockedError('concurrent');
       if (findAccountSendBlock(network, source)) throw new SendBlockedError('blocked');
@@ -103,7 +109,7 @@ export async function guardedSubmit({
         rememberSignedTx(network, source, { hash, xdr: tx.toXDR(), networkPassphrase });
         const isOwn = () => readAccountEntry(network, source)?.hash === hash;
         try {
-          const res = await submit(server, tx);
+          const res = await submit(server, tx, { skipMemoRequiredCheck });
           if (isOwn()) writeAccountEntry(network, source, { ...pending, status: 'success', at: Date.now(), prev: undefined });
           // Sequence durch diese Transaktion verbraucht: Pins mit ihr sind erledigt.
           releasePins(network, source, seq);
@@ -140,4 +146,41 @@ export async function guardedSubmit({
     if (err?.name === 'AbortError') throw new SendBlockedError('lockCancelled');
     throw err;
   }
+}
+
+/**
+ * Bauen einer Transaktion ohne lokales Senden (Multisig-Job, XDR-Export) von einem Konto.
+ * Die Transaktion wird hier nicht gesendet, kann aber spaeter (von anderen Signern oder extern)
+ * eingereicht werden. Deshalb gilt schon beim Bauen dieselbe Sperre wie beim Senden (nicht nur
+ * ueber gesperrte Knoepfe):
+ * - Unklarer Eintrag des Kontos (eigener, der Sammelzahlung, unlesbar): SendBlockedError 'blocked'.
+ * - Offene Pins: Die Transaktion nutzt genau die gepinnte Sequence. Passt sie nicht mehr genau,
+ *   wird nichts gebaut, die fruehere Transaktion geht wieder in die strenge Pruefung
+ *   ('pinConsumed').
+ * - Speicher nicht beschreibbar: 'storageUnavailable' (ohne ihn fehlt der Schutz).
+ * Es wird nichts geschrieben ausser dem Wiederaufnehmen eines Pins als unklar und nichts
+ * aufgeraeumt (ein Pin geht hier nie verloren). build({ adjustAccount }) baut die Transaktion;
+ * adjustAccount (oder null) muss auf das geladene Quellkonto angewendet werden.
+ */
+export async function guardedUnsignedBuild({ network, account, build }) {
+  const source = String(account || '').trim();
+  if (!isStorageWritable()) throw new SendBlockedError('storageUnavailable');
+  if (findAccountSendBlock(network, source)) throw new SendBlockedError('blocked');
+  const pins = findAccountPins(network, source);
+  let pinned = false;
+  const adjustAccount = pins.length ? (loaded) => {
+    const p = applyAccountPins({ loaded, source, pins });
+    if (p.blocked) {
+      p.blocked.forEach((pin) => markPinRecheck(network, source, pin, 'pinConsumed'));
+      throw new SendBlockedError('pinConsumed');
+    }
+    pinned = true;
+    return p.account;
+  } : null;
+  const built = await build({ adjustAccount });
+  // Offener Pin, aber nicht angewendet: nie ohne Pin bauen.
+  if (pins.length && !pinned) throw new SendBlockedError('pinConsumed');
+  // Wahrend des Bauens kann ein anderer Tab einen unklaren Eintrag geschrieben haben.
+  if (findAccountSendBlock(network, source)) throw new SendBlockedError('blocked');
+  return built;
 }

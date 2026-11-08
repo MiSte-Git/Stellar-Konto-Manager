@@ -25,12 +25,12 @@ import {
   sentEntryKey, writeSentEntry, writeSentEntryByKey,
 } from '../../utils/batchPayment/batchPaymentStore.js';
 import {
-  AMBIGUOUS_LEDGER_BUFFER_SECONDS, BATCH_SUBMIT_TIMEOUT_SECONDS, ambiguousClearAt, assetDisplay, buildSignedRowTx,
+  AMBIGUOUS_LEDGER_BUFFER_SECONDS, ambiguousClearAt, assetDisplay, buildSignedRowTx,
   checkRowOnNetwork, checkSourceAccount, computeSourceTotals, describeSubmitError, findAnyTransaction,
   findRecentMatchingPayment, isBadSeqError, paymentFingerprint, resolveAmbiguousDetailed, routingFingerprint, toStroops,
   validateRowInput,
 } from '../../utils/batchPayment/batchPaymentLogic.js';
-import { withSendLock } from '../../utils/batchPayment/sendLock.js';
+import { tryWithSendLock, withSendLock } from '../../utils/batchPayment/sendLock.js';
 import { settleAmbiguousEntry, throwIfAborted } from '../../utils/submitGuard/ambiguousResolve.js';
 import {
   accountEntryBlocks, applyAccountPins, batchAccountBlock, batchUnreadableInfo, findAccountPins, listUnreadableBatchKeys,
@@ -340,8 +340,11 @@ export default function BatchPaymentDialog({ onClose, onNetworkChangeClose }) {
     if (Object.keys(errs).length) return;
 
     setPhase('checking');
-    pruneSentLog();
-    pruneUnreadableSeen();
+    // Aufraeumen nur fuer dieses Netz und nur unter dem Sende-Lock (ein anderer Lauf oder Tab
+    // sendet evtl. gerade und hat Pins gelesen). Ist der Lock belegt, wird nicht aufgeraeumt.
+    try {
+      await tryWithSendLock(network, () => { pruneSentLog(Date.now(), network); pruneUnreadableSeen(); });
+    } catch { /* Aufraeumen ist nie zwingend */ }
     // Abbruch durch die Nutzerin: beendet die Klaerung, ohne Eintraege freizugeben oder zu
     // veraendern (geschrieben wird nur, wenn eine Klaerung vollstaendig fertig ist).
     const controller = new AbortController();
@@ -510,7 +513,7 @@ export default function BatchPaymentDialog({ onClose, onNetworkChangeClose }) {
     let clearAt = 0;
     try {
       for (const key of listUnreadableBatchKeys(network)) {
-        const res = await settleBatchUnreadable({ key, server, maxValiditySeconds: BATCH_SUBMIT_TIMEOUT_SECONDS });
+        const res = await settleBatchUnreadable({ key, server });
         if (res.outcome === 'pending') { state = 'pending'; clearAt = Math.max(clearAt, Number(res.clearAt) || 0); }
         else if (res.outcome === 'unknown' && state !== 'pending') state = 'unknown';
       }
@@ -870,7 +873,9 @@ export default function BatchPaymentDialog({ onClose, onNetworkChangeClose }) {
               continue;
             }
             wroteOwn = true;
-            await submitTransactionSafely(server, tx);
+            // Memo-Pflicht (SEP-29) hat checkRowOnNetwork beim Pruefen gemeldet; der POST wird nicht
+            // durch das Nachladen des Empfaengerkontos im SDK verzoegert oder gestoert.
+            await submitTransactionSafely(server, tx, { skipMemoRequiredCheck: true });
             const done = { hash, at: Date.now(), status: 'success', maxTime, seq, source };
             const savedMain = readSentEntry(network, item.fp)?.hash === hash && writeSentEntry(network, item.fp, done);
             const savedRoute = !routeFp || (readSentEntry(network, routeFp)?.hash === hash && writeSentEntry(network, routeFp, done));

@@ -1,11 +1,12 @@
 import React from 'react';
-import { render, screen, within, waitFor, fireEvent } from '@testing-library/react';
+import { act, render, screen, within, waitFor, fireEvent } from '@testing-library/react';
 import { I18nextProvider } from 'react-i18next';
 import { Account, Keypair, Networks, TransactionBuilder } from '@stellar/stellar-sdk';
 import i18n from '../../../i18n.js';
 import AssetSearch from '../AssetSearch.jsx';
 import { readAccountEntry, resetAccountSendGuardMemory, writeAccountEntry } from '../../../utils/submitGuard/accountSendGuard.js';
-import { writeSentEntry } from '../../../utils/batchPayment/batchPaymentStore.js';
+import { txHashHex } from '../../../utils/stellar/txHash.js';
+import { readSentEntry, writeSentEntry } from '../../../utils/batchPayment/batchPaymentStore.js';
 
 // Same well-known testnet-style keypairs used in tradingTransactions.test.js, so a
 // human scanning both files recognizes the same fixture accounts.
@@ -263,5 +264,61 @@ describe('AssetSearch - unklarer Sendestatus (Sendeschutz wie Zahlung senden)', 
     await screen.findByText(/op_underfunded/);
     expect(readAccountEntry('PUBLIC', ACCOUNT.publicKey)).toBeNull();
     expect(screen.queryByTestId('send-ambiguous')).not.toBeInTheDocument();
+  });
+  it('der Eintrag steht VOR dem Submit im Speicher (Reihenfolge), als unklar mit Herkunft trade', async () => {
+    let atSubmit = null;
+    hoisted.submitTransactionMock.mockReset().mockImplementation(async (tx) => {
+      atSubmit = { entry: readAccountEntry('PUBLIC', ACCOUNT.publicKey), hash: txHashHex(tx) };
+      return { hash: 'submittedhash123' };
+    });
+    const limitSection = await openLimitOrder();
+    await sendLimitOrder(limitSection);
+    await screen.findByText(/Limit-Order wurde platziert/);
+    expect(atSubmit.entry).toMatchObject({ status: 'ambiguous', origin: 'trade', hash: atSubmit.hash, source: ACCOUNT.publicKey });
+    expect(atSubmit.entry.summary.action).toMatch(/Limit-Order/);
+  });
+
+  it('passender Pin (Konto-Sequence = Pin - 1): gesendet mit genau der Pin-Sequence, Pin danach erledigt', async () => {
+    // Konto-Sequence 100: die naechste freie ist 101. Der Pin der Sammelzahlung verlangt genau 101.
+    writeSentEntry('PUBLIC', 'fpPin', {
+      hash: H('d'), at: Date.now(), status: 'notApplied', pin: true, maxTime: 2000, seq: '101', source: ACCOUNT.publicKey,
+    });
+    const limitSection = await openLimitOrder();
+    await sendLimitOrder(limitSection);
+    await screen.findByText(/Limit-Order wurde platziert/);
+    expect(hoisted.submitTransactionMock).toHaveBeenCalledTimes(1);
+    expect(hoisted.submitTransactionMock.mock.calls[0][0].sequence).toBe('101');
+    expect(readSentEntry('PUBLIC', 'fpPin')).toMatchObject({ status: 'notApplied' });
+    expect(readSentEntry('PUBLIC', 'fpPin').pin).toBeFalsy();
+    expect(readAccountEntry('PUBLIC', ACCOUNT.publicKey)).toMatchObject({ status: 'success' });
+  });
+
+  it('Doppelklick auf "Senden" im Signatur-Dialog (zweiter Aufruf vor dem Neuzeichnen): genau ein Submit', async () => {
+    let release;
+    const gate = new Promise((resolve) => { release = resolve; });
+    hoisted.submitTransactionMock.mockReset().mockImplementation(async () => { await gate; return { hash: 'submittedhash123' }; });
+    const limitSection = await openLimitOrder();
+    fireEvent.click(within(limitSection).getByRole('button', { name: 'Limit-Order platzieren' }));
+    fireEvent.click(await screen.findByRole('button', { name: 'Weiter zur Signatur' }));
+    typeSecret(ACCOUNT.secret);
+    const sendBtn = screen.getByRole('button', { name: /senden|submit/i });
+    // Beide Klicks in einem Durchgang: die Oberflaeche (isProcessing) ist dazwischen nicht neu gezeichnet.
+    act(() => {
+      fireEvent.click(sendBtn);
+      fireEvent.click(sendBtn);
+    });
+    await waitFor(() => expect(hoisted.submitTransactionMock).toHaveBeenCalledTimes(1));
+    release();
+    await screen.findByText(/Limit-Order wurde platziert/);
+    // Ein zweiter, am Lock wartender Aufruf haette nach dem ersten Senden noch einmal gesendet.
+    await act(async () => { await new Promise((r) => setTimeout(r, 500)); });
+    expect(hoisted.submitTransactionMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('Trading sendet mit skipMemoRequiredCheck (kein fremdes Ziel, keine Nachladen-Anfrage vor dem POST)', async () => {
+    const limitSection = await openLimitOrder();
+    await sendLimitOrder(limitSection);
+    await screen.findByText(/Limit-Order wurde platziert/);
+    expect(hoisted.submitTransactionMock.mock.calls[0][1]).toEqual({ skipMemoRequiredCheck: true });
   });
 });

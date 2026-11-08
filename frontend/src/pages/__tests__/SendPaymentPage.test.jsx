@@ -1,7 +1,7 @@
 import React from 'react';
 import { act, render, screen, waitFor, fireEvent, within } from '@testing-library/react';
 import { I18nextProvider } from 'react-i18next';
-import { Account, Keypair, MuxedAccount } from '@stellar/stellar-sdk';
+import { Account, AccountRequiresMemoError, Keypair, MuxedAccount } from '@stellar/stellar-sdk';
 import i18n from '../../i18n.js';
 import SendPaymentPage from '../SendPaymentPage.jsx';
 import { clearSendPaymentDraft } from '../../utils/sendPaymentDraft.js';
@@ -1031,27 +1031,37 @@ describe('SEP-29 memo_required preflight before sending (P1.1)', () => {
     expect(screen.queryByText(MEMO_REQUIRED_ERROR)).not.toBeInTheDocument();
   });
 
-  it('blockiert nicht, wenn Horizon das Zielkonto beim Check nicht liefert', async () => {
+  it('sperrt fail-closed, wenn Horizon das Zielkonto nicht liefert: nichts gesendet, Meldung zum erneuten Versuch', async () => {
+    let destLoads = 0;
     hoisted.loadAccountMock.mockImplementation(async (pk) => {
       if (pk === SENDER.publicKey) return makeFundedAccount(pk, { extraBalances: [SENDER_FOO_BALANCE] });
+      destLoads += 1;
       const err = new Error('Service Unavailable');
       err.response = { status: 503 };
       throw err;
     });
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
     await fillAndConfirm();
-    await waitFor(() => expect(hoisted.submitTransactionSafelyMock).toHaveBeenCalledTimes(1));
+    const msgs = await screen.findAllByText(/Nichts gesendet: Der Empfänger konnte nicht auf Memo-Pflicht/, {}, { timeout: 10000 });
+    expect(msgs.length).toBeGreaterThan(0);
+    expect(hoisted.submitTransactionSafelyMock).not.toHaveBeenCalled();
+    // Nur das Laden wurde wiederholt (Wartezeit), nie gesendet.
+    expect(destLoads).toBeGreaterThan(1);
     expect(warn.mock.calls.some((c) => String(c[0]).includes('memo_required preflight'))).toBe(true);
     warn.mockRestore();
+  }, 20000);
+
+  it('sendet mit skipMemoRequiredCheck, weil SKM die Pruefung selbst macht', async () => {
+    await fillAndConfirm({ memo: 'kunde-123' });
+    await waitFor(() => expect(hoisted.submitTransactionSafelyMock).toHaveBeenCalledTimes(1));
+    expect(hoisted.submitTransactionSafelyMock.mock.calls[0][2]).toEqual({ skipMemoRequiredCheck: true });
   });
 
-  it('zeigt den SEP-29-Text, wenn erst stellar-sdk beim Submit sperrt', async () => {
+  it('zeigt den SEP-29-Text auch fuer den echten Fehler des SDK (AccountRequiresMemoError)', async () => {
     hoisted.loadAccountMock.mockImplementation(async (pk) => (
       pk === SENDER.publicKey ? makeFundedAccount(pk, { extraBalances: [SENDER_FOO_BALANCE] }) : makeFundedAccount(pk)
     ));
-    const sdkErr = new Error('account requires memo');
-    sdkErr.name = 'AccountRequiresMemoError';
-    hoisted.submitTransactionSafelyMock.mockRejectedValueOnce(sdkErr);
+    hoisted.submitTransactionSafelyMock.mockRejectedValueOnce(new AccountRequiresMemoError('account requires memo', DEST_PK, 0));
     const errSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
     await fillAndConfirm();
     await waitFor(() => expect(screen.getAllByText(MEMO_REQUIRED_ERROR).length).toBeGreaterThan(0));
@@ -1078,6 +1088,40 @@ describe('SEP-29 memo_required preflight before sending (P1.1)', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Weiter' }));
     await screen.findByText(MEMO_REQUIRED_ERROR);
     expect(screen.queryByText('XDR vorbereitet (nicht gesendet)')).not.toBeInTheDocument();
+  });
+});
+
+describe('Buendel 4b (M2): Job und XDR-Export bauen nicht bei offenem Pin', () => {
+  // Der Eintrag wuerde sonst das Senden in allen folgenden Tests sperren.
+  afterEach(async () => {
+    const { resetAccountSendGuardMemory, writeAccountEntry } = await import('../../utils/submitGuard/accountSendGuard.js');
+    writeAccountEntry('PUBLIC', SENDER.publicKey, null);
+    resetAccountSendGuardMemory();
+  });
+
+  it('sperrt den XDR-Export bei einem Pin, dessen Sequence nicht mehr passt: Hinweis, kein XDR, Eintrag wieder unklar', async () => {
+    const { readAccountEntry, writeAccountEntry } = await import('../../utils/submitGuard/accountSendGuard.js');
+    hoisted.loadAccountMock.mockImplementation(async (pk) => {
+      const acct = makeFundedAccount(pk, pk === SENDER.publicKey ? { extraBalances: [SENDER_FOO_BALANCE] } : {});
+      if (pk === SENDER.publicKey) makeTwoOfTwo(acct);
+      return acct;
+    });
+    writeAccountEntry('PUBLIC', SENDER.publicKey, {
+      hash: 'c'.repeat(64), at: Date.now(), status: 'notApplied', pin: true, maxTime: 2000, seq: '999999999', source: SENDER.publicKey, origin: 'payment',
+    });
+    renderPage();
+    await waitFor(() => expect(hoisted.loadAccountMock).toHaveBeenCalledWith(SENDER.publicKey));
+    fireEvent.change(amountInput(), { target: { value: '10' } });
+    fireEvent.change(destInput(), { target: { value: DEST_PK } });
+    fireEvent.click(screen.getByRole('button', { name: 'Senden' }));
+    await screen.findByText('XDR exportieren (nicht senden)');
+    fireEvent.click(screen.getByRole('radio', { name: /XDR exportieren/ }));
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Weiter' })).not.toBeDisabled());
+    fireEvent.click(screen.getByRole('button', { name: 'Weiter' }));
+    const msgs = await screen.findAllByText(/Nicht erstellt: Die Sequence einer früheren, nicht ausgeführten Transaktion/);
+    expect(msgs.length).toBeGreaterThan(0);
+    expect(screen.queryByText('XDR vorbereitet (nicht gesendet)')).not.toBeInTheDocument();
+    expect(readAccountEntry('PUBLIC', SENDER.publicKey)).toMatchObject({ status: 'ambiguous', recheck: 'pinConsumed' });
   });
 });
 

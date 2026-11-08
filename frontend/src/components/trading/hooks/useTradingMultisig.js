@@ -9,6 +9,7 @@ import { getRequiredThreshold } from '../../../utils/getRequiredThreshold.js';
 import { needsMultipleSignatures } from '../../../utils/stellar/isMultisigAccount.js';
 import { useSettings } from '../../../utils/useSettings.js';
 import { formatErrorForUi } from '../../../utils/formatErrorForUi.js';
+import { SendBlockedError, guardedUnsignedBuild } from '../../../utils/submitGuard/guardedSubmit.js';
 
 // Aktionen des Trading und ihre Operationen (Namen wie im SDK). changeTrust,
 // pathPaymentStrictSend und manageSellOffer sind laut Protokoll Medium-Operationen;
@@ -55,7 +56,7 @@ export const FLOW_CONTEXT_CHANGED = 'trading:assetSearch.multisig.contextChanged
  * spaeteres Einreichen (deferred) und Gueltigkeit aus den Einstellungen wie in Liquidity Pools,
  * dann finishUnsignedTx (keine lokale Signatur).
  */
-export default function useTradingMultisig({ network, accountId, accountInfo, beginAction, closeSecretModal, t }) {
+export default function useTradingMultisig({ network, accountId, accountInfo, beginAction, closeSecretModal, onBlocked, t }) {
   const { multisigTimeoutSeconds } = useSettings();
   const [options, setOptions] = useState(null);
   const [choice, setChoice] = useState('job');
@@ -68,6 +69,8 @@ export default function useTradingMultisig({ network, accountId, accountInfo, be
   const inFlightRef = useRef(false);
   const mountedRef = useRef(true);
   // Aktueller Zustand des Hooks, nur zum Vergleich mit der Aktion (nie zum Bauen).
+  const onBlockedRef = useRef(onBlocked);
+  onBlockedRef.current = onBlocked;
   const currentRef = useRef({ network, accountId });
   currentRef.current = { network, accountId };
   useEffect(() => {
@@ -122,7 +125,13 @@ export default function useTradingMultisig({ network, accountId, accountInfo, be
       const server = getHorizonServerForNetwork(flow.network);
       await assertHorizonNetwork(server, passphraseFor(flow.network));
       const timeoutSeconds = getMultisigTxTimeout({ immediateSubmit: false, multisigTimeoutSeconds });
-      const { tx } = await action.prepare({ server, flow, deferred: true, timeoutSeconds });
+      // Job und XDR werden spaeter eingereicht: schon beim Bauen dieselbe Sperre und derselbe Pin
+      // wie beim direkten Senden (guardedUnsignedBuild).
+      const { tx } = await guardedUnsignedBuild({
+        network: flow.network,
+        account: flow.accountId,
+        build: ({ adjustAccount }) => action.prepare({ server, flow, deferred: true, timeoutSeconds, adjustAccount }),
+      });
       if (!mountedRef.current) return;
       // Quelle und Netz der gebauten Transaktion gegen die Aktion, globales Netz unveraendert
       assertTxMatchesFlow(tx, flow);
@@ -134,7 +143,13 @@ export default function useTradingMultisig({ network, accountId, accountInfo, be
       if (mode === 'xdr') setExportedXdr(result);
       else setPreparedJob(result);
     } catch (err) {
-      if (mountedRef.current) setError(formatErrorForUi(t, err));
+      if (err instanceof SendBlockedError) {
+        // Der Kasten mit dem Status liest den Speicher neu (ein Pin kann wieder unklar sein).
+        onBlockedRef.current?.();
+        if (mountedRef.current) setError(t(`common:payment.send.ambiguousResult.unsignedBlockedReason.${err.reason}`));
+      } else if (mountedRef.current) {
+        setError(formatErrorForUi(t, err));
+      }
     } finally {
       inFlightRef.current = false;
       if (mountedRef.current) setProcessing(false);

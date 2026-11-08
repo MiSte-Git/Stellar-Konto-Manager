@@ -33,9 +33,10 @@ import {
   removeHistoryValue,
   writeHistoryArray,
 } from '../utils/inputHistory.js';
-import { AmbiguousSubmitResultError } from '../utils/stellar/submitTransactionSafely.js';
+import { AmbiguousSubmitResultError, PreSubmitCheckError } from '../utils/stellar/submitTransactionSafely.js';
 import { formatValidUntil } from '../utils/multisig/formatValidUntil.js';
-import { accountRequiresMemo, isAccountRequiresMemoError } from '../utils/stellar/memoRequired.js';
+import { accountRequiresMemo, isAccountRequiresMemoError, makeMemoRequiredError } from '../utils/stellar/memoRequired.js';
+import { loadWithBackoff } from '../utils/stellar/retryLoad.js';
 import { resolveFeePerOp } from '../utils/stellar/fees.js';
 import QrScanDialog from '../components/wallet/QrScanDialog.jsx';
 import { networkMismatch, parsePaymentInput } from '../utils/stellar/sep7.js';
@@ -45,7 +46,7 @@ import {
   draftGeneration, findSentPayment, forgetSentPayment, readSendPaymentDraft, recordSentPayment, settleSentPaymentsByHash,
   writeSendPaymentDraft,
 } from '../utils/sendPaymentDraft.js';
-import { guardedSubmit, SendBlockedError } from '../utils/submitGuard/guardedSubmit.js';
+import { guardedSubmit, guardedUnsignedBuild, SendBlockedError } from '../utils/submitGuard/guardedSubmit.js';
 import { PENDING_TX_PREFIX, findAccountSendBlock, readAccountEntry } from '../utils/submitGuard/accountSendGuard.js';
 import { useAccountSendBlock } from '../utils/submitGuard/useAccountSendBlock.js';
 import SendAmbiguousPanel, { SendResolvedNotice } from '../components/wallet/SendAmbiguousPanel.jsx';
@@ -416,12 +417,13 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   const sendGuard = useAccountSendBlock({
     network: netLabel,
     account: publicKey,
-    maxValiditySeconds: LOCAL_SUBMIT_TIMEOUT_SECONDS,
     onApplied: (info) => appliedRef.current?.(info),
     onNotApplied: (info) => notAppliedRef.current?.(info),
   });
   const sendBlocked = !!sendGuard.block;
   const bumpSendGuard = sendGuard.bump;
+  const bumpSendGuardRef = useRef(null);
+  bumpSendGuardRef.current = bumpSendGuard;
   // Vermerk "gesendet" und gespeicherter Eintrag duerfen sich nicht widersprechen: Wurde der
   // Eintrag (auch in einem anderen Tab) ueber Horizon geklaert, den unklaren Vermerk
   // derselben Zahlung angleichen.
@@ -516,6 +518,8 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   const describeHorizonError = useCallback((err) => {
     // Rueckfallnetz: stellar-sdk prueft SEP-29 beim Submit selbst noch einmal.
     if (isAccountRequiresMemoError(err)) return t('common:payment.send.memoRequired.error');
+    // Pruefung vor dem Senden gescheitert (Horizon nicht erreichbar): nichts gesendet.
+    if (err instanceof PreSubmitCheckError) return t('errors:submitTransaction.failed.memoCheck.unreachable');
     const extras = err?.response?.data?.extras;
     if (extras?.result_codes) {
       const tx = extras.result_codes.transaction;
@@ -542,6 +546,13 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   }, [t]);
 
   const handlePaymentError = useCallback((err) => {
+    if (err instanceof SendBlockedError) {
+      // Job oder XDR-Export nicht gebaut (Sperre oder Pin, siehe guardedUnsignedBuild).
+      const msg = t(`common:payment.send.ambiguousResult.unsignedBlockedReason.${err.reason}`);
+      setError(msg);
+      bumpSendGuardRef.current?.();
+      return msg;
+    }
     console.error('Payment submission failed', err);
     const detail = describeHorizonError(err);
     setError(t('common:payment.send.error', { detail }));
@@ -1084,12 +1095,14 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
 
     let account;
     try {
-      account = await server.loadAccount(resolved.accountId);
+      // Nur das Laden (GET) wird bei kurzzeitigen Fehlern mit Wartezeit wiederholt.
+      account = await loadWithBackoff(() => server.loadAccount(resolved.accountId));
     } catch (e) {
-      if (e?.response?.status !== 404) {
-        console.warn('[SKM] memo_required preflight: could not load recipient account', e);
-      }
-      return { status: 'ok' }; // unfunded (activation path) or Horizon failure - never block
+      // Unfunded (activation path): kein Konto, also keine Memo-Pflicht.
+      if (e?.response?.status === 404) return { status: 'ok' };
+      console.warn('[SKM] memo_required preflight: could not load recipient account', e);
+      // Fail-closed: Ohne Pruefung nicht senden (das SDK-Nachladen vor dem POST entfaellt).
+      return { status: 'unverifiable', error: e };
     }
     return accountRequiresMemo(account) ? { status: 'memo_required' } : { status: 'ok' };
   }, [buildMemoObject, dest, server]);
@@ -1116,6 +1129,10 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     const memoRequiredStatus = await checkRecipientMemoRequired();
     if (memoRequiredStatus.status === 'memo_required') {
       onHardBlock(t('common:payment.send.memoRequired.error'));
+      return false;
+    }
+    if (memoRequiredStatus.status === 'unverifiable') {
+      onHardBlock(t('errors:submitTransaction.failed.memoCheck.unreachable'));
       return false;
     }
 
@@ -1146,8 +1163,14 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
         networkPassphrase: passphraseFor(sendNetwork),
         signal: controller.signal,
         onWaiting: () => setLockWaiting(true),
-        buildTx: ({ adjustAccount }) => {
+        // Die Memo-Pruefung (SEP-29) macht SKM selbst, unmittelbar vor dem Bauen und vor dem
+        // Eintrag (buildTx); der POST laedt das Empfaengerkonto nicht noch einmal.
+        skipMemoRequiredCheck: true,
+        buildTx: async ({ adjustAccount }) => {
           setLockWaiting(false);
+          const memoCheck = await checkRecipientMemoRequired();
+          if (memoCheck.status === 'memo_required') throw makeMemoRequiredError(String(dest || '').trim());
+          if (memoCheck.status === 'unverifiable') throw new PreSubmitCheckError(memoCheck.error);
           return buildPaymentTx({ signers: signerList, signTx: true, requireSigners: true, immediateSubmit: true, expectedNetwork, adjustAccount });
         },
         entryData: ({ meta }) => ({
@@ -1188,7 +1211,14 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       setLockWaiting(false);
       bumpSendGuard();
     }
-  }, [buildPaymentTx, bumpSendGuard, netLabel, publicKey, server]);
+  }, [buildPaymentTx, bumpSendGuard, checkRecipientMemoRequired, dest, netLabel, publicKey, server]);
+
+  // Job und XDR-Export: bauen nur, wenn das Konto nicht gesperrt ist; offene Pins werden angewendet.
+  const buildUnsignedGuarded = useCallback((args) => guardedUnsignedBuild({
+    network: netLabel,
+    account: publicKey,
+    build: ({ adjustAccount }) => buildPaymentTx({ ...args, adjustAccount }),
+  }), [buildPaymentTx, netLabel, publicKey]);
 
   // Export produces an unsigned XDR that may be signed and submitted later - possibly by a
   // different person, offline, well after this click. Skipping the pre-submit guards here
@@ -1207,7 +1237,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
 
       const proceed = async () => {
         try {
-          const { tx, meta } = await buildPaymentTx({ signTx: false, requireSigners: false });
+          const { tx, meta } = await buildUnsignedGuarded({ signTx: false, requireSigners: false });
           const hashHex = txHashHex(tx);
           const xdr = tx.toXDR();
           setResultDialog({
@@ -1234,7 +1264,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     } catch (err) {
       handlePaymentError(err);
     }
-  }, [buildPaymentTx, closeConfirmDialogs, handlePaymentError, netLabel, preflight, publicKey, runPreSubmitChecks, showErrorMessage, t]);
+  }, [buildUnsignedGuarded, closeConfirmDialogs, handlePaymentError, netLabel, preflight, publicKey, runPreSubmitChecks, showErrorMessage, t]);
 
   useEffect(() => {
     clearSuccess();
@@ -1353,7 +1383,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
 
       const proceed = async () => {
         try {
-          const { tx, meta } = await buildPaymentTx({ signers, signTx: signers.length > 0, requireSigners: false });
+          const { tx, meta } = await buildUnsignedGuarded({ signers, signTx: signers.length > 0, requireSigners: false });
           const hashHex = txHashHex(tx);
           const xdr = tx.toXDR();
           const signerMeta = (accountInfo?.signers || []).map((s) => ({
@@ -1448,7 +1478,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       showErrorMessage(detail || '');
       closeConfirmDialogs();
     }
-  }, [accountInfo, buildPaymentTx, runPreSubmitChecks, closeConfirmDialogs, handlePaymentError, isCurrentEpoch, masterWeight, netLabel, openSecretModal, preflight, publicKey, requiredThreshold, showErrorMessage, t]);
+  }, [accountInfo, buildUnsignedGuarded, runPreSubmitChecks, closeConfirmDialogs, handlePaymentError, isCurrentEpoch, masterWeight, netLabel, openSecretModal, preflight, publicKey, requiredThreshold, showErrorMessage, t]);
 
   const handleConfirmProceed = useCallback(async () => {
     if (confirmChoice === 'local') {
