@@ -29,6 +29,23 @@ export const AMBIGUOUS_STRICT_RECHECK_MS = 30 * 1000;
 
 const sleepMs = (ms) => new Promise((r) => setTimeout(r, ms));
 
+/** Wirft einen AbortError, wenn das Signal abgebrochen ist (Abbruch durch die Nutzerin). */
+export function throwIfAborted(signal) {
+  if (signal?.aborted) throw new DOMException('Aborted', 'AbortError');
+}
+
+// Wartezeit, die ein Abbruch sofort beendet (AbortError).
+function abortableSleep(ms, signal) {
+  if (!signal) return sleepMs(ms);
+  return new Promise((resolve, reject) => {
+    if (signal.aborted) { reject(new DOMException('Aborted', 'AbortError')); return; }
+    const done = () => { signal.removeEventListener('abort', onAbort); resolve(); };
+    const timer = setTimeout(done, ms);
+    const onAbort = () => { clearTimeout(timer); reject(new DOMException('Aborted', 'AbortError')); };
+    signal.addEventListener('abort', onAbort, { once: true });
+  });
+}
+
 // Sequence eines Kontos (AccountResponse oder Account des SDK) als BigInt oder null.
 export function accountSequenceOf(account) {
   try {
@@ -134,10 +151,15 @@ async function latestClosedSeconds(server) {
  *   (auch maxTime <= 0) oder unlesbar)
  *
  * "Abgelaufen" haengt nicht an der Client-Uhr, sondern an closed_at des letzten Ledgers.
+ *
+ * signal (optional): Bricht die Nutzerin ab, wirft die Funktion einen AbortError (auch mitten
+ * in einer Wartezeit) und liefert kein Ergebnis; der Eintrag wird dann nicht angefasst.
  */
 export async function resolveAmbiguousDetailed({
-  server, entry, retryDelayMs = 2000, strictDelayMs = AMBIGUOUS_STRICT_RECHECK_MS, sleep = sleepMs,
+  server, entry, retryDelayMs = 2000, strictDelayMs = AMBIGUOUS_STRICT_RECHECK_MS, sleep: sleepIn = null, signal = null,
 }) {
+  const sleep = sleepIn || ((ms) => abortableSleep(ms, signal));
+  throwIfAborted(signal);
   if (!entry?.hash || entry.unreadable) return { outcome: 'unknown', hash: entry?.hash || '' };
   const maxTime = Number(entry.maxTime);
   const hasMaxTime = Number.isInteger(maxTime) && maxTime > 0;
@@ -150,7 +172,9 @@ export async function resolveAmbiguousDetailed({
   }
 
   const closed1 = await latestClosedSeconds(server);
+  throwIfAborted(signal);
   let r = await lookupEntry(server, entry);
+  throwIfAborted(signal);
   if (r.result !== 'notFound') return found(r);
   if (!pastValidity(closed1)) return { outcome: Number.isFinite(closed1) ? 'pending' : 'unknown', hash: entry.hash };
 
@@ -166,9 +190,11 @@ export async function resolveAmbiguousDetailed({
     } catch (e) {
       if (e?.response?.status !== 404) return { outcome: 'unknown', hash: entry.hash };
     }
+    throwIfAborted(signal);
     if (accountSeq !== null && accountSeq === BigInt(entry.seq) - 1n) {
       await sleep(retryDelayMs);
       r = await lookupEntry(server, entry);
+      throwIfAborted(signal);
       return r.result === 'notFound' ? { outcome: 'expiredPinned', hash: entry.hash } : found(r);
     }
   }
@@ -177,8 +203,9 @@ export async function resolveAmbiguousDetailed({
   // selbst), nicht direkt verwendbar oder unbekannt: nur nach einer zweiten Abfrage mit Abstand.
   await sleep(strictDelayMs);
   r = await lookupEntry(server, entry);
-  if (r.result !== 'notFound') return found(r);
+  if (r.result !== 'notFound') { throwIfAborted(signal); return found(r); }
   const closed2 = await latestClosedSeconds(server);
+  throwIfAborted(signal);
   if (!pastValidity(closed2)) return { outcome: Number.isFinite(closed2) ? 'pending' : 'unknown', hash: entry.hash };
   return { outcome: 'expired', hash: entry.hash };
 }
@@ -201,17 +228,20 @@ export async function resolveAmbiguous(args) {
  * cache (Map Hash -> Ergebnis): denselben Hash nur einmal bei Horizon pruefen.
  * onConsumed(entry): die Transaktion dieses Eintrags (genau dieser Hash, also diese Sequence)
  * steht im Ledger, erfolgreich oder fehlgeschlagen; ihre Sequence ist verbraucht.
+ * signal (optional): Abbruch durch die Nutzerin. Dann wirft die Funktion einen AbortError und
+ * schreibt nichts; der Eintrag bleibt unklar und sperrt weiter (fail-closed).
  */
 export async function settleAmbiguousEntry({
-  server, read, write, cache = null, extra = () => ({}), resolve = resolveAmbiguousDetailed, onConsumed = null,
+  server, read, write, cache = null, extra = () => ({}), resolve = resolveAmbiguousDetailed, onConsumed = null, signal = null,
 }) {
   let entry = read();
   if (entry?.status !== 'ambiguous' || entry.unreadable) return { entry, outcome: null };
   let res = cache?.get(entry.hash);
   if (!res) {
-    res = await resolve({ server, entry });
+    res = await resolve({ server, entry, signal });
     cache?.set(entry.hash, res);
   }
+  throwIfAborted(signal);
   const current = read();
   if (current?.hash !== entry.hash || current.status !== 'ambiguous') return { entry: current, outcome: null };
   const { outcome } = res;
@@ -222,7 +252,8 @@ export async function settleAmbiguousEntry({
     if (entry.hash === original.hash) onConsumed?.(original);
   } else if (outcome === 'failed' || outcome === 'expired' || outcome === 'expiredPinned') {
     const { recheck: _r, ...rest } = entry;
-    entry = { ...rest, status: 'notApplied', pin: outcome === 'expiredPinned' };
+    // settledAt: Beginn der 30 Tage Aufbewahrung (ab Klaerung bzw. Vergabe des Pins, nicht ab Senden).
+    entry = { ...rest, status: 'notApplied', pin: outcome === 'expiredPinned', settledAt: Date.now() };
     write(entry);
     if (outcome === 'failed') onConsumed?.(original);
   }

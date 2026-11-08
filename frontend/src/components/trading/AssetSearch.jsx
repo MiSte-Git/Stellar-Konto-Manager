@@ -14,7 +14,12 @@ import {
   buildPathPaymentStrictSendTransaction,
   signTransactionWithCollectedSigners,
 } from '../../utils/stellar/tradingTransactions.js';
-import { submitTransactionSafely, AmbiguousSubmitResultError } from '../../utils/stellar/submitTransactionSafely.js';
+import { AmbiguousSubmitResultError } from '../../utils/stellar/submitTransactionSafely.js';
+import { guardedSubmit, SendBlockedError } from '../../utils/submitGuard/guardedSubmit.js';
+import { useAccountSendBlock } from '../../utils/submitGuard/useAccountSendBlock.js';
+import SendAmbiguousPanel, { SendResolvedNotice } from '../wallet/SendAmbiguousPanel.jsx';
+import { buildExplorerUrl } from '../../utils/stellar/accountUtils.js';
+import { useSettings } from '../../utils/useSettings.js';
 import {
   DEFAULT_TRUSTLINE_LIMIT,
   EMPTY_ASSET_FACTS,
@@ -64,6 +69,10 @@ import useTradingSubmit from './hooks/useTradingSubmit.js';
 import useTradingMultisig, { JOB_DISABLED_TYPES, requiredWeightFor } from './hooks/useTradingMultisig.js';
 import { LiquidityResultDialog, LiquiditySigningOptions } from '../liquidity/jobParts.jsx';
 import { resolveFeePerOp } from '../../utils/stellar/fees.js';
+
+// Laengste Gueltigkeit einer direkt gesendeten Trading-Transaktion (Standard der Builder in
+// tradingTransactions.js). Gebraucht fuer die Klaerung unlesbarer Eintraege des Sendeschutzes.
+const TRADING_SUBMIT_TIMEOUT_SECONDS = 60;
 
 export default function AssetSearch() {
   const { t, i18n } = useTranslation(['trading', 'common', 'liquidity']);
@@ -119,6 +128,17 @@ export default function AssetSearch() {
     },
     t,
   });
+  // Unklarer Sendestatus pro Konto und Netz (gespeichert, gilt auch fuer "Zahlung senden" und die
+  // Sammelzahlung). Freigabe nur ueber Horizon, siehe utils/submitGuard/.
+  const { explorers } = useSettings();
+  const sendGuard = useAccountSendBlock({
+    network,
+    account: accountId,
+    maxValiditySeconds: TRADING_SUBMIT_TIMEOUT_SECONDS,
+    onApplied: () => setTrustlineRefreshToken((value) => value + 1),
+  });
+  // Solange fuer das Konto ein unklarer Eintrag besteht, sind alle Sendeaktionen gesperrt.
+  const pendingAmbiguousSubmission = sendGuard.block ? { hash: sendGuard.block.entry?.hash || '' } : null;
   const [showTrustlineConfirm, setShowTrustlineConfirm] = useState(false);
   const [showTrustlineSwapConfirm, setShowTrustlineSwapConfirm] = useState(false);
   const [showSwapConfirm, setShowSwapConfirm] = useState(false);
@@ -163,7 +183,6 @@ export default function AssetSearch() {
   const [pendingOfferAction, setPendingOfferAction] = useState(null);
   const [showOfferConfirm, setShowOfferConfirm] = useState(false);
   const [isSubmittingOffer, setIsSubmittingOffer] = useState(false);
-  const [pendingAmbiguousSubmission, setPendingAmbiguousSubmission] = useState(null); // { hash } - set when a submit's outcome could not be confirmed
 
   const parsedQuery = useMemo(() => parseAssetSearchQuery(assetQuery), [assetQuery]);
   const parsedSwapTarget = useMemo(() => parseAssetSearchQuery(swapTargetQuery), [swapTargetQuery]);
@@ -624,16 +643,19 @@ export default function AssetSearch() {
   // flow: { network, accountId } der Bestaetigung (aus der Aktion, nie aus dem aktuellen
   // Zustand). checkAccount: Gewichtspruefung direkt nach dem Laden des Kontos (nur beim
   // lokalen Signieren). deferred/timeoutSeconds: Fee und Gueltigkeit fuer Job und XDR.
-  const loadAccountAndFee = async (server, { flow, checkAccount, deferred = false }) => {
+  // adjustAccount (nur Direktversand): Konto vor dem Bauen anpassen (Pin der Sequence einer
+  // frueheren, nicht ausgefuehrten Transaktion dieses Kontos, siehe guardedSubmit).
+  const loadAccountAndFee = async (server, { flow, checkAccount, deferred = false, adjustAccount = null }) => {
     if (!flow?.accountId || !flow?.network) throw new Error('submitTransaction.failed:trustlines.invalidInput');
     const feePromise = resolveFeePerOp(server, { deferred });
-    const account = await server.loadAccount(flow.accountId);
-    checkAccount?.(account);
+    const loaded = await server.loadAccount(flow.accountId);
+    checkAccount?.(loaded);
+    const account = adjustAccount ? adjustAccount(loaded) : loaded;
     return { account, feePromise };
   };
 
-  const prepareChangeTrustTx = async ({ server, flow, asset, limit, checkAccount, deferred, timeoutSeconds }) => {
-    const { account, feePromise } = await loadAccountAndFee(server, { flow, checkAccount, deferred });
+  const prepareChangeTrustTx = async ({ server, flow, asset, limit, checkAccount, deferred, timeoutSeconds, adjustAccount }) => {
+    const { account, feePromise } = await loadAccountAndFee(server, { flow, checkAccount, deferred, adjustAccount });
     const tx = buildChangeTrustTransaction({
       account,
       asset,
@@ -645,7 +667,7 @@ export default function AssetSearch() {
     return { account, tx };
   };
 
-  const prepareSwapTx = async ({ server, flow, checkAccount, deferred, timeoutSeconds }) => {
+  const prepareSwapTx = async ({ server, flow, checkAccount, deferred, timeoutSeconds, adjustAccount }) => {
     if (!flow?.accountId || !selectedAsset || !swapPreview.path) throw new Error('submitTransaction.failed:trustlines.invalidInput');
     const sendAmount = normalizeAmount(swapAmount);
     if (!sendAmount) throw new Error(t('trading:assetSearch.swapPreview.invalidAmount', { asset: swapSourceLabel }));
@@ -656,7 +678,7 @@ export default function AssetSearch() {
     const pairError = validateSwapPair();
     if (pairError) throw new Error(pairError);
 
-    const { account, feePromise } = await loadAccountAndFee(server, { flow, checkAccount, deferred });
+    const { account, feePromise } = await loadAccountAndFee(server, { flow, checkAccount, deferred, adjustAccount });
 
     if (!swapDestinationAsset.isNative()) {
       const destinationTrustline = await findTrustlineForAsset(server, swapDestinationAsset, 0, flow.accountId);
@@ -701,7 +723,7 @@ export default function AssetSearch() {
     return { account, tx };
   };
 
-  const prepareTrustlineAndSwapTx = async ({ server, flow, checkAccount, deferred, timeoutSeconds }) => {
+  const prepareTrustlineAndSwapTx = async ({ server, flow, checkAccount, deferred, timeoutSeconds, adjustAccount }) => {
     if (!flow?.accountId || !selectedStellarAsset || !swapPreview.path) throw new Error('submitTransaction.failed:trustlines.invalidInput');
     if (swapDirection !== 'xlm-to-token') throw new Error(t('trading:assetSearch.trustlineFlow.combinedOnlyXlm'));
     if (assetFacts.loading) throw new Error(t('trading:assetSearch.facts.loading'));
@@ -715,7 +737,7 @@ export default function AssetSearch() {
       throw new Error(t('trading:assetSearch.swapPreview.invalidSlippage'));
     }
 
-    const { account, feePromise } = await loadAccountAndFee(server, { flow, checkAccount, deferred });
+    const { account, feePromise } = await loadAccountAndFee(server, { flow, checkAccount, deferred, adjustAccount });
 
     const existingTrustline = await findTrustlineForAsset(server, selectedStellarAsset, 0, flow.accountId);
     if (existingTrustline?.isAuthorized === false) throw new Error(t('trading:assetSearch.swapPreview.destinationTrustlineUnauthorized'));
@@ -763,9 +785,9 @@ export default function AssetSearch() {
     return { account, tx };
   };
 
-  const prepareManageSellOfferTx = async ({ server, flow, selling, buying, amount, price, offerId = '0', checkAccount, deferred, timeoutSeconds }) => {
+  const prepareManageSellOfferTx = async ({ server, flow, selling, buying, amount, price, offerId = '0', checkAccount, deferred, timeoutSeconds, adjustAccount }) => {
     if (!flow?.accountId || !selling || !buying) throw new Error('submitTransaction.failed:trustlines.invalidInput');
-    const { account, feePromise } = await loadAccountAndFee(server, { flow, checkAccount, deferred });
+    const { account, feePromise } = await loadAccountAndFee(server, { flow, checkAccount, deferred, adjustAccount });
     const tx = buildManageSellOfferTransaction({
       account,
       selling,
@@ -783,7 +805,11 @@ export default function AssetSearch() {
   // Lokal signieren und senden (direkter Weg und "Alle Signaturen lokal"): Gewicht der
   // gesammelten Keys gegen die Schwelle der Aktion, nach den Horizon-Aufrufen Pruefung von
   // Quelle, Passphrase und globalem Netz. flow (Netz, Konto) kommt aus der Aktion.
-  const submitSignedTx = async (type, prepare, collectedSigners, flow) => {
+  // Gesendet wird nach den Regeln der Sammelzahlung (guardedSubmit): exklusiv pro Netz, gesperrt
+  // bei unklarem Eintrag des Kontos (aus jedem Sendeweg), Eintrag vor dem Submit, Pin der
+  // Sequence nach "nicht ausgefuehrt". Freigabe nur ueber Horizon, nie durch einen Knopf.
+  // actionText: Beschreibung der Aktion fuer die Anzeige des unklaren Eintrags.
+  const submitSignedTx = async (type, prepare, collectedSigners, flow, actionText = '') => {
     if (!flow?.network || !flow?.accountId) throw new Error('submitTransaction.failed:trustlines.invalidInput');
     const server = getHorizonServerForNetwork(flow.network);
     const signers = Array.isArray(collectedSigners) ? collectedSigners : [];
@@ -795,10 +821,45 @@ export default function AssetSearch() {
         throw Object.assign(new Error('submitTransaction.failed:multisig.insufficientWeight'), { required, current });
       }
     };
-    const { tx } = await prepare({ server, flow, checkAccount });
-    // Nach den Horizon-Aufrufen: passt die Transaktion zur Aktion, gilt das Netz noch?
-    assertTxMatchesFlow(tx, flow, 'createAccount:networkChanged.funderAborted');
-    return submitTransactionSafely(server, signTransactionWithCollectedSigners(tx, signers));
+    const { res } = await guardedSubmit({
+      network: flow.network,
+      account: flow.accountId,
+      server,
+      networkPassphrase: passphraseFor(flow.network),
+      buildTx: async ({ adjustAccount }) => {
+        const { tx } = await prepare({ server, flow, checkAccount, adjustAccount, timeoutSeconds: TRADING_SUBMIT_TIMEOUT_SECONDS });
+        // Nach den Horizon-Aufrufen: passt die Transaktion zur Aktion, gilt das Netz noch?
+        assertTxMatchesFlow(tx, flow, 'createAccount:networkChanged.funderAborted');
+        return { tx: signTransactionWithCollectedSigners(tx, signers) };
+      },
+      entryData: () => ({ origin: 'trade', summary: { action: actionText } }),
+    });
+    return res;
+  };
+
+  // Fehler eines Sendeversuchs: unklarer Ausgang oder Schutz (Eintrag steht, der Kasten oben
+  // zeigt Status und Ausweg) bzw. eindeutiger Fehler (Meldung im Dialog).
+  const handleSubmitFailure = (error) => {
+    if (error instanceof AmbiguousSubmitResultError) {
+      setShowSecretModal(false);
+      setPendingAction(null);
+      sendGuard.bump();
+      return;
+    }
+    if (error instanceof SendBlockedError) {
+      const msg = t(`common:payment.send.ambiguousResult.blockedReason.${error.reason}`);
+      setModalError(msg);
+      setActionMessage(msg);
+      if (error.reason === 'blocked' || error.reason === 'pinConsumed' || error.reason === 'badSeq') {
+        setShowSecretModal(false);
+        setPendingAction(null);
+      }
+      sendGuard.bump();
+      return;
+    }
+    const formatted = formatErrorForUi(t, error);
+    setModalError(formatted);
+    setActionMessage(formatted);
   };
 
   // Zusammenfassung fuer Auswahl und Ergebnis der Multisig-Wege. Jedes Asset mit Code und
@@ -1047,20 +1108,12 @@ export default function AssetSearch() {
       const stellarAsset = new Asset(selectedAsset.assetCode, selectedAsset.assetIssuer);
       const limit = normalizeTrustlineLimit(trustlineLimit);
       if (!limit) throw new Error(t('trading:assetSearch.trustlineFlow.invalidLimit'));
-      await submitSignedTx('trustline', (opts) => prepareChangeTrustTx({ ...opts, asset: stellarAsset, limit }), collectedSigners, flow);
+      await submitSignedTx('trustline', (opts) => prepareChangeTrustTx({ ...opts, asset: stellarAsset, limit }), collectedSigners, flow, describeTradingAction('trustline'));
       setActionMessage(t('trading:assetSearch.trustlineStatus.added'));
       setShowSecretModal(false);
       setTrustlineRefreshToken((value) => value + 1);
     } catch (error) {
-      if (error instanceof AmbiguousSubmitResultError) {
-        setPendingAmbiguousSubmission({ hash: error.hash });
-        setShowSecretModal(false);
-        setPendingAction(null);
-      } else {
-        const formatted = formatErrorForUi(t, error);
-        setModalError(formatted);
-        setActionMessage(formatted);
-      }
+      handleSubmitFailure(error);
     } finally {
       setIsSubmittingTrustline(false);
     }
@@ -1071,7 +1124,7 @@ export default function AssetSearch() {
       setIsSubmittingSwap(true);
       setModalError('');
       setActionMessage('');
-      const result = await submitSignedTx('swap', prepareSwapTx, collectedSigners, flow);
+      const result = await submitSignedTx('swap', prepareSwapTx, collectedSigners, flow, describeTradingAction('swap'));
       const hash = result?.hash || result?.id || '';
       setActionMessage(hash
         ? `${t('trading:assetSearch.swapPreview.success')} ${hash}`
@@ -1081,15 +1134,7 @@ export default function AssetSearch() {
       setSwapPreview({ loading: false, error: '', path: null, loadedAt: null, refreshComparison: null });
       setTrustlineRefreshToken((value) => value + 1);
     } catch (error) {
-      if (error instanceof AmbiguousSubmitResultError) {
-        setPendingAmbiguousSubmission({ hash: error.hash });
-        setShowSecretModal(false);
-        setPendingAction(null);
-      } else {
-        const formatted = formatErrorForUi(t, error);
-        setModalError(formatted);
-        setActionMessage(formatted);
-      }
+      handleSubmitFailure(error);
     } finally {
       setIsSubmittingSwap(false);
     }
@@ -1100,7 +1145,7 @@ export default function AssetSearch() {
       setIsSubmittingSwap(true);
       setModalError('');
       setActionMessage('');
-      const result = await submitSignedTx('trustlineSwap', prepareTrustlineAndSwapTx, collectedSigners, flow);
+      const result = await submitSignedTx('trustlineSwap', prepareTrustlineAndSwapTx, collectedSigners, flow, describeTradingAction('trustlineSwap'));
       const hash = result?.hash || result?.id || '';
       setActionMessage(hash
         ? `${t('trading:assetSearch.trustlineFlow.combinedSuccess')} ${hash}`
@@ -1110,15 +1155,7 @@ export default function AssetSearch() {
       setSwapPreview({ loading: false, error: '', path: null, loadedAt: null, refreshComparison: null });
       setTrustlineRefreshToken((value) => value + 1);
     } catch (error) {
-      if (error instanceof AmbiguousSubmitResultError) {
-        setPendingAmbiguousSubmission({ hash: error.hash });
-        setShowSecretModal(false);
-        setPendingAction(null);
-      } else {
-        const formatted = formatErrorForUi(t, error);
-        setModalError(formatted);
-        setActionMessage(formatted);
-      }
+      handleSubmitFailure(error);
     } finally {
       setIsSubmittingSwap(false);
     }
@@ -1135,7 +1172,8 @@ export default function AssetSearch() {
         offer.type === 'cancel' ? 'cancelOffer' : 'offer',
         (opts) => prepareManageSellOfferTx({ ...opts, ...offer }),
         collectedSigners,
-        flow
+        flow,
+        describeTradingAction(offer.type === 'cancel' ? 'cancelOffer' : 'offer', offer)
       );
       const hash = result?.hash || result?.id || '';
       const successKey = pendingOfferAction.type === 'cancel'
@@ -1150,15 +1188,7 @@ export default function AssetSearch() {
       setLimitOfferRefreshToken((value) => value + 1);
       setTrustlineRefreshToken((value) => value + 1);
     } catch (error) {
-      if (error instanceof AmbiguousSubmitResultError) {
-        setPendingAmbiguousSubmission({ hash: error.hash });
-        setShowSecretModal(false);
-        setPendingAction(null);
-      } else {
-        const formatted = formatErrorForUi(t, error);
-        setModalError(formatted);
-        setActionMessage(formatted);
-      }
+      handleSubmitFailure(error);
     } finally {
       setIsSubmittingOffer(false);
     }
@@ -1225,11 +1255,24 @@ export default function AssetSearch() {
         parsedQuery={parsedQuery}
         describeSearchMode={describeSearchMode}
         assetError={assetError}
-        pendingAmbiguousSubmission={pendingAmbiguousSubmission}
-        onAcknowledgeAmbiguous={() => setPendingAmbiguousSubmission(null)}
         actionMessage={actionMessage}
         modalError={modalError}
       />
+      <SendAmbiguousPanel
+        guard={sendGuard}
+        t={t}
+        language={i18n.language}
+        networkLabel={getNetworkConfig(network).label}
+        explorerLinks={(hash) => {
+          const list = explorers || [];
+          const find = (key) => list.find((exp) => (exp.key || exp.id) === key) || null;
+          return [
+            { href: buildExplorerUrl(find('stellar_expert'), hash, network, { type: 'tx' }), label: t('common:balance.explorer.expert', 'stellar.expert') },
+            { href: buildExplorerUrl(find('stellarchain'), hash, network, { type: 'tx' }), label: t('common:balance.explorer.stellarchain', 'Stellarchain.io') },
+          ].filter((l) => l.href);
+        }}
+      />
+      <SendResolvedNotice notice={sendGuard.notice} t={t} onDismiss={sendGuard.dismissNotice} />
 
       <AssetResultsTable
         assetResults={assetResults}

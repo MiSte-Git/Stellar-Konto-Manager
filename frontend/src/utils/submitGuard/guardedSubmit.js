@@ -55,7 +55,6 @@ export async function guardedSubmit({
 }) {
   const source = String(account || '').trim();
   if (!isStorageWritable()) throw new SendBlockedError('storageUnavailable');
-  pruneAccountEntries();
   try {
     return await withSendLock(network, async (lock) => {
       if (findAccountSendBlock(network, source)) throw new SendBlockedError('blocked');
@@ -63,6 +62,9 @@ export async function guardedSubmit({
       const earlier = before?.status === 'notApplied' ? before : null;
       // Pins des Kontos aus beiden Sendewegen (gilt fuer das Konto, nicht fuer den Weg).
       const pins = findAccountPins(network, source);
+      // Aufraeumen erst nach dem Lesen der Pins: Ein Pin, den dieses Senden noch braucht, wird
+      // nie vorher entfernt (N1). Die Frist zaehlt ab Vergabe des Pins (settledAt).
+      pruneAccountEntries(Date.now(), pins.filter((p) => p.store === 'account').map((p) => p.key));
       const ownPin = pins.find((p) => p.store === 'account') || null;
       let pinned = false;
       const adjustAccount = pins.length ? (loaded) => {

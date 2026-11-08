@@ -23,8 +23,6 @@ export default function AssetSearchForm({
   parsedQuery,
   describeSearchMode,
   assetError,
-  pendingAmbiguousSubmission,
-  onAcknowledgeAmbiguous,
   actionMessage,
   modalError,
 }) {
@@ -81,25 +79,6 @@ export default function AssetSearchForm({
           </div>
         )}
       </form>
-
-      {pendingAmbiguousSubmission && (
-        <div className="rounded-sm border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-100">
-          <div className="font-semibold">{t('trading:assetSearch.ambiguousResult.title', 'Status unklar – nicht erneut senden')}</div>
-          <div className="mt-1 text-xs">
-            {t('trading:assetSearch.ambiguousResult.body', 'Die letzte Transaktion konnte serverseitig nicht eindeutig bestätigt werden (Zeitüberschreitung oder Serverfehler). Bitte prüfen Sie den Transaktions-Hash im Explorer, bevor Sie es erneut versuchen.')}
-          </div>
-          {pendingAmbiguousSubmission.hash && (
-            <div className="mt-1 break-all font-mono text-xs">{pendingAmbiguousSubmission.hash}</div>
-          )}
-          <button
-            type="button"
-            className="mt-2 rounded-sm border border-amber-400 px-2 py-1 text-xs font-semibold hover:bg-amber-100 dark:hover:bg-amber-900"
-            onClick={onAcknowledgeAmbiguous}
-          >
-            {t('trading:assetSearch.ambiguousResult.acknowledge', 'Status geprüft – Aktionen wieder freigeben')}
-          </button>
-        </div>
-      )}
 
       {actionMessage && (
         <div className={`rounded-sm border px-3 py-2 text-sm ${

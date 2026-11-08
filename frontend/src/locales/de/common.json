@@ -501,6 +501,7 @@
         "missing": "Der gespeicherte Eintrag fehlt (z. B. Website-Daten gelöscht). SKM nutzt die Angaben aus diesem Tab, hat den Eintrag wiederhergestellt und prüft bei Horizon.",
         "sentAt": "Gesendet um {{time}}",
         "payment": "Zahlung: {{amount}} {{asset}} an {{recipient}}",
+        "action": "Aktion: {{action}}",
         "countdown": "Status unklar. SKM prüft automatisch erneut in {{time}}. Bis dahin ist Senden von diesem Konto gesperrt, auch in der Sammelzahlung.",
         "unreadable": "Der gespeicherte Eintrag zu einem früheren Senden von diesem Konto ist unlesbar. Der Ausgang ist offen, Senden ist gesperrt. SKM prüft bei Horizon, ob eine damals gesendete Transaktion noch ankommen kann.",
         "resend": "Erneut senden (dieselbe Transaktion)",

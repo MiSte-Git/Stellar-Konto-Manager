@@ -24,7 +24,7 @@
 // die Pruefung ueber Horizon ihn nach Ablauf jeder moeglichen Gueltigkeit freigeben kann.
 import { StrKey, hash as sha256 } from '@stellar/stellar-sdk';
 import {
-  BATCH_SENT_PREFIX, NOT_APPLIED_RETENTION_MS, containsSecretKey, listSentEntryKeys, readSentEntryByKey,
+  BATCH_SENT_PREFIX, NOT_APPLIED_RETENTION_MS, containsSecretKey, listSentEntryKeys, notAppliedSince, readSentEntryByKey,
   sanitizeSentEntry, writeSentEntryByKey,
 } from '../batchPayment/batchPaymentStore.js';
 import {
@@ -37,7 +37,7 @@ export const PENDING_TX_PREFIX = 'skm_pending_tx_v1:';
 // unveraendert stehen): skm_unreadable_seen_v1:<Schluessel des Eintrags>.
 export const UNREADABLE_SEEN_PREFIX = 'skm_unreadable_seen_v1:';
 // Herkunft eines Eintrags (welcher Sendeweg). Weitere Wege (z.B. 'trade') hier ergaenzen.
-const ORIGINS = ['payment'];
+const ORIGINS = ['payment', 'trade'];
 const CAUSE_KINDS = ['network', 'timeout', 'server'];
 // Warum ein frueher als nicht ausgefuehrt gefuehrter Eintrag wieder unklar ist.
 const RECHECK_REASONS = ['pinConsumed', 'badSeq'];
@@ -45,7 +45,7 @@ const HASH_RE = /^[0-9a-f]{64}$/i;
 const MAX_TEXT = 200;
 const SUCCESS_RETENTION_MS = 7 * 24 * 60 * 60 * 1000;
 const PAYMENT_FIELDS = ['dest', 'amount', 'assetKey', 'memoType', 'memoVal'];
-const SUMMARY_FIELDS = ['recipient', 'recipientFederation', 'recipientLabel', 'sourceFederation', 'sourceLabel', 'amountDisplay', 'asset', 'memo'];
+const SUMMARY_FIELDS = ['action', 'recipient', 'recipientFederation', 'recipientLabel', 'sourceFederation', 'sourceLabel', 'amountDisplay', 'asset', 'memo'];
 
 function hex(bytes) {
   return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
@@ -562,10 +562,37 @@ async function settleUnreadable({
 }
 
 /**
- * Entfernt erfolgreiche Eintraege nach 7 Tagen und nicht ausgefuehrte (auch mit Pin) nach
- * 30 Tagen (wie in der Sammelzahlung). Unklare und unlesbare bleiben.
+ * Entfernt verwaiste Seitenvermerke unlesbarer Eintraege der Sammelzahlung (N5): Nur wenn der
+ * Eintrag, zu dem der Vermerk gehoert, im Speicher nicht mehr existiert. Ein Vermerk neben
+ * einem noch vorhandenen Eintrag bleibt immer stehen (im Zweifel behalten).
  */
-export function pruneAccountEntries(now = Date.now()) {
+export function pruneUnreadableSeen() {
+  try {
+    const sideKeys = [];
+    for (let i = 0; i < window.localStorage.length; i += 1) {
+      const k = window.localStorage.key(i);
+      if (k && k.startsWith(UNREADABLE_SEEN_PREFIX)) sideKeys.push(k);
+    }
+    for (const sideKey of sideKeys) {
+      const entryKey = sideKey.slice(UNREADABLE_SEEN_PREFIX.length);
+      // Nur Vermerke zu Schluesseln der Sammelzahlung, deren Eintrag sicher fehlt.
+      if (entryKey.startsWith(BATCH_SENT_PREFIX) && window.localStorage.getItem(entryKey) === null) {
+        window.localStorage.removeItem(sideKey);
+      }
+    }
+  } catch { /* noop */ }
+}
+
+/**
+ * Entfernt erfolgreiche Eintraege nach 7 Tagen und nicht ausgefuehrte (auch mit Pin) nach
+ * 30 Tagen ab Klaerung bzw. Vergabe des Pins (wie in der Sammelzahlung). Unklare und unlesbare
+ * bleiben. keepKeys: Schluessel, die nie entfernt werden (die Pins, die das laufende Senden
+ * eben gelesen hat: sie muessen bis zum Ende dieses Sendens, auch zur erneuten Pruefung,
+ * erhalten bleiben).
+ */
+export function pruneAccountEntries(now = Date.now(), keepKeys = []) {
+  pruneUnreadableSeen();
+  const keep = new Set(keepKeys);
   try {
     const keys = [];
     for (let i = 0; i < window.localStorage.length; i += 1) {
@@ -573,11 +600,12 @@ export function pruneAccountEntries(now = Date.now()) {
       if (k && k.startsWith(PENDING_TX_PREFIX)) keys.push(k);
     }
     for (const k of keys) {
+      if (keep.has(k)) continue;
       let entry = null;
       try { entry = sanitizeSentEntry(JSON.parse(window.localStorage.getItem(k) || 'null')); } catch { /* bleibt */ }
       if (!entry) continue;
       if (entry.status === 'success' && now - entry.at > SUCCESS_RETENTION_MS) window.localStorage.removeItem(k);
-      else if (entry.status === 'notApplied' && now - entry.at > NOT_APPLIED_RETENTION_MS) window.localStorage.removeItem(k);
+      else if (entry.status === 'notApplied' && now - notAppliedSince(entry) > NOT_APPLIED_RETENTION_MS) window.localStorage.removeItem(k);
     }
   } catch { /* noop */ }
 }

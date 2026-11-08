@@ -1504,3 +1504,33 @@ describe('BatchPaymentDialog: Pin und Sperre pro Konto (F1, F2)', () => {
     expect(screen.queryByTestId('batch-unreadable-banner')).toBeNull();
   });
 });
+
+// N4 (Buendel 4a): Abbruch der Pruefung. Die Klaerung unklarer Eintraege laeuft seriell, bis ca.
+// 32 s je Eintrag; ein Abbruch durch die Nutzerin beendet sie, ohne etwas freizugeben.
+describe('BatchPaymentDialog: Pruefung abbrechen (N4)', () => {
+  it('Abbrechen mitten in der Klaerung: zurueck zur Liste, Eintrag bleibt unklar und gesperrt', async () => {
+    const { resetAccountSendGuardMemory } = await import('../../../utils/submitGuard/accountSendGuard.js');
+    resetAccountSendGuardMemory();
+    const maxTime = Math.floor(Date.now() / 1000) - 1000;
+    // Anderer unklarer Eintrag desselben Senders; seine Sequence liegt weit unter der des Kontos
+    // (100): strenger Pfad mit 30 s Wartezeit zwischen zwei Abfragen.
+    const other = { hash: 'd'.repeat(64), at: Date.now() - 2000 * 1000, status: 'ambiguous', maxTime, seq: '50', source: SENDER.publicKey() };
+    writeSentEntry('PUBLIC', 'andere-zahlung', other);
+    hoisted.ledgerClosedAt.value = new Date((maxTime + 65) * 1000).toISOString();
+    saveBatchRows('PUBLIC', [rowA()]);
+    renderDialog();
+    fireEvent.click(screen.getByRole('button', { name: 'Prüfen' }));
+    const cancel = await screen.findByTestId('batch-check-cancel');
+    // Etwas warten, damit die Klaerung in der 30-s-Wartezeit steckt.
+    await new Promise((r) => setTimeout(r, 200));
+    const started = Date.now();
+    fireEvent.click(cancel);
+    await screen.findByText(/Prüfung abgebrochen/);
+    expect(Date.now() - started).toBeLessThan(5000);
+    expect(screen.getByRole('button', { name: 'Prüfen' })).toBeEnabled();
+    expect(screen.queryByTestId('batch-check-cancel')).toBeNull();
+    // Nichts freigegeben, nichts veraendert: der Eintrag steht weiter als unklar im Protokoll.
+    expect(readSentEntry('PUBLIC', 'andere-zahlung')).toMatchObject({ status: 'ambiguous', hash: other.hash });
+    expect(hoisted.submitMock).not.toHaveBeenCalled();
+  });
+});

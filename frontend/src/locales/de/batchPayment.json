@@ -33,6 +33,7 @@
     "moveDown": "Nach unten",
     "check": "Prüfen",
     "checking": "Wird geprüft …",
+    "cancelCheck": "Prüfung abbrechen",
     "back": "Zurück zur Liste",
     "backToList": "Zurück zur Liste",
     "send_one": "1 Zahlung senden",
@@ -85,6 +86,7 @@
     "forAccount": "Secret Key für Sender {{label}}: {{account}}"
   },
   "errors": {
+    "checkCancelled": "Prüfung abgebrochen. Unklare Zahlungen bleiben gesperrt, bis Horizon den Ausgang zeigt; beim nächsten Prüfen werden sie erneut geklärt.",
     "sourceMissing": "Bitte einen Sender angeben.",
     "sourceInvalid": "Der Sender muss eine G-Adresse sein.",
     "destMissing": "Bitte einen Empfänger angeben.",

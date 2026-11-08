@@ -31,10 +31,10 @@ import {
   validateRowInput,
 } from '../../utils/batchPayment/batchPaymentLogic.js';
 import { withSendLock } from '../../utils/batchPayment/sendLock.js';
-import { settleAmbiguousEntry } from '../../utils/submitGuard/ambiguousResolve.js';
+import { settleAmbiguousEntry, throwIfAborted } from '../../utils/submitGuard/ambiguousResolve.js';
 import {
   accountEntryBlocks, applyAccountPins, batchAccountBlock, batchUnreadableInfo, findAccountPins, listUnreadableBatchKeys,
-  markPinRecheck, recordUnreadableLedgerSeen, releasePins, settleBatchUnreadable,
+  markPinRecheck, pruneUnreadableSeen, recordUnreadableLedgerSeen, releasePins, settleBatchUnreadable,
 } from '../../utils/submitGuard/accountSendGuard.js';
 import { AmbiguousStatus } from '../AmbiguousSubmitStatus.jsx';
 import { AMBER_BOX_CLS, autoCheckDue, diagnosticsLines, formatClearTime, safeDiagText } from '../../utils/submitGuard/ambiguousDisplay.js';
@@ -159,6 +159,8 @@ export default function BatchPaymentDialog({ onClose, onNetworkChangeClose }) {
   );
 
   const mountedRef = useRef(true);
+  // Abbruch der Pruefung (N4): Klaerung unklarer Eintraege laeuft seriell, bis ca. 32 s je Eintrag.
+  const checkAbortRef = useRef(null);
   // Offene Key-Abfrage beim Unmount mit null aufloesen, damit der Lauf sauber endet.
   const secretResolveRef = useRef(null);
   // Abbruch des Wartens auf einen anderen laufenden Sendevorgang (Button oder Unmount).
@@ -311,13 +313,13 @@ export default function BatchPaymentDialog({ onClose, onNetworkChangeClose }) {
   // Hash nur einmal bei Horizon pruefen.
   // Sequence einer Transaktion im Ledger verbraucht: Pins des Kontos mit ihr sind erledigt.
   const onConsumed = (e) => { if (e?.seq && e?.source) releasePins(network, e.source, e.seq); };
-  const resolveKey = (key, cache = null) => settleAmbiguousEntry({
-    server, cache, onConsumed,
+  const resolveKey = (key, cache = null, signal = null) => settleAmbiguousEntry({
+    server, cache, onConsumed, signal,
     read: () => readSentEntryByKey(key),
     write: (e) => writeSentEntryByKey(key, e),
     resolve: resolveAmbiguousDetailed,
   });
-  const resolveEntry = (fp, cache = null) => resolveKey(sentEntryKey(network, fp), cache);
+  const resolveEntry = (fp, cache = null, signal = null) => resolveKey(sentEntryKey(network, fp), cache, signal);
   const ownKeysOf = (item) => {
     const routeFp = item.fp ? routingFingerprint({ network, row: item.row, destination: item.destination }) : null;
     return [item.fp ? sentEntryKey(network, item.fp) : '', routeFp ? sentEntryKey(network, routeFp) : ''];
@@ -339,11 +341,18 @@ export default function BatchPaymentDialog({ onClose, onNetworkChangeClose }) {
 
     setPhase('checking');
     pruneSentLog();
+    pruneUnreadableSeen();
+    // Abbruch durch die Nutzerin: beendet die Klaerung, ohne Eintraege freizugeben oder zu
+    // veraendern (geschrieben wird nur, wenn eine Klaerung vollstaendig fertig ist).
+    const controller = new AbortController();
+    checkAbortRef.current = controller;
+    const { signal } = controller;
     try {
       const snapshot = rows.map((r) => ({ ...r }));
       const accounts = new Map();
       const sourceCodes = new Map();
       for (const source of new Set(snapshot.map((r) => r.source.trim()))) {
+        throwIfAborted(signal);
         try {
           const acc = await server.loadAccount(source);
           accounts.set(source, acc);
@@ -370,6 +379,7 @@ export default function BatchPaymentDialog({ onClose, onNetworkChangeClose }) {
       const seen = new Set();
       const seenRoutes = new Set();
       for (const row of snapshot) {
+        throwIfAborted(signal);
         // Unklare Einzelzahlung ("Zahlung senden") von diesem Sender: sperrt jede Zahlung des Kontos.
         const sourceCode = sourceCodes.get(row.source.trim()) || (accountEntryBlocks(network, row.source) ? 'accountAmbiguous' : null);
         let check = sourceCode ? { code: sourceCode } : await checkRowOnNetwork({ server, row });
@@ -386,14 +396,14 @@ export default function BatchPaymentDialog({ onClose, onNetworkChangeClose }) {
           } else {
             seen.add(fp);
             const checkedAt = Date.now();
-            const mainResolved = await resolveEntry(fp, resolveCache);
+            const mainResolved = await resolveEntry(fp, resolveCache, signal);
             recent = recentSendOf(mainResolved.entry);
             let lastOutcome = mainResolved.outcome;
             let routeResolved = null;
             if (!recent) {
               // Gleiche Zahlung in anderer Form (M-Adresse gegen G plus Memo ID)? Gesendet:
               // Warnung. Unklar: Sperre wie beim Haupteintrag.
-              routeResolved = routeFpCheck ? await resolveEntry(routeFpCheck, resolveCache) : null;
+              routeResolved = routeFpCheck ? await resolveEntry(routeFpCheck, resolveCache, signal) : null;
               similar = routeResolved ? recentSendOf(routeResolved.entry) : null;
               if (routeResolved?.outcome) lastOutcome = routeResolved.outcome;
             }
@@ -413,6 +423,7 @@ export default function BatchPaymentDialog({ onClose, onNetworkChangeClose }) {
               } else {
                 const nowMs = Number.isFinite(ledgerClosedSec) ? ledgerClosedSec * 1000 : Date.now();
                 const hit = await findRecentMatchingPayment({ server, row, destination: check.destination, nowMs });
+                throwIfAborted(signal);
                 if (hit.status === 'found') {
                   writeSentEntry(network, fp, { hash: hit.hash, at: hit.at, status: 'success' });
                   recent = recentSendOf(readSentEntry(network, fp)) || { hash: hit.hash, at: hit.at, status: 'success' };
@@ -421,7 +432,7 @@ export default function BatchPaymentDialog({ onClose, onNetworkChangeClose }) {
                   if (remembered.hash) {
                     const pin = !!(remembered.seq && remembered.source);
                     writeSentEntry(network, fp, {
-                      hash: remembered.hash, at: Number(remembered.at) || Date.now(), status: 'notApplied',
+                      hash: remembered.hash, at: Number(remembered.at) || Date.now(), status: 'notApplied', settledAt: Date.now(),
                       maxTime: remembered.maxTime, seq: remembered.seq, source: remembered.source, prev: remembered.prev, pin,
                     });
                   }
@@ -462,8 +473,9 @@ export default function BatchPaymentDialog({ onClose, onNetworkChangeClose }) {
       const listSources = new Set(snapshot.map((r) => r.source.trim()));
       for (const key of listSentEntryKeys(network)) {
         const e = readSentEntryByKey(key);
-        if (e?.status === 'ambiguous' && !e.unreadable && listSources.has(e.source)) await resolveKey(key, resolveCache);
+        if (e?.status === 'ambiguous' && !e.unreadable && listSources.has(e.source)) await resolveKey(key, resolveCache, signal);
       }
+      throwIfAborted(signal);
       for (const item of items) {
         if (item.code || item.recent?.status === 'ambiguous' || item.similar?.status === 'ambiguous') continue;
         const reason = batchAccountBlock(network, item.row.source, ownKeysOf(item));
@@ -481,8 +493,12 @@ export default function BatchPaymentDialog({ onClose, onNetworkChangeClose }) {
       setPhase('review');
     } catch (e) {
       if (!mountedRef.current) return;
-      setGeneralError(String(e?.message || e));
+      // Abgebrochen: zurueck zur Liste. Unklare Zahlungen bleiben gesperrt, bis Horizon den
+      // Ausgang zeigt; beim naechsten Pruefen werden sie erneut geklaert.
+      setGeneralError(e?.name === 'AbortError' ? errorText('checkCancelled') : String(e?.message || e));
       setPhase('edit');
+    } finally {
+      if (checkAbortRef.current === controller) checkAbortRef.current = null;
     }
   };
 
@@ -1120,9 +1136,16 @@ export default function BatchPaymentDialog({ onClose, onNetworkChangeClose }) {
             </div>
             <div className="flex flex-wrap justify-between gap-2">
               <button type="button" className={btnCls} onClick={addRow} disabled={locked || rows.length >= MAX_ROWS}>{t('batchPayment:actions.addRow')}</button>
-              <button type="button" className={primaryBtnCls} onClick={handleCheck} disabled={locked}>
-                {phase === 'checking' ? t('batchPayment:actions.checking') : t('batchPayment:actions.check')}
-              </button>
+              <div className="flex gap-2">
+                {phase === 'checking' && (
+                  <button type="button" className={btnCls} onClick={() => checkAbortRef.current?.abort()} data-testid="batch-check-cancel">
+                    {t('batchPayment:actions.cancelCheck')}
+                  </button>
+                )}
+                <button type="button" className={primaryBtnCls} onClick={handleCheck} disabled={locked}>
+                  {phase === 'checking' ? t('batchPayment:actions.checking') : t('batchPayment:actions.check')}
+                </button>
+              </div>
             </div>
           </>
         )}

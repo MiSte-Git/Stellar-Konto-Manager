@@ -24,6 +24,13 @@ const SENT_LOG_RETENTION_MS = 7 * 24 * 60 * 60 * 1000;
 // Laut Horizon nicht ausgefuehrte (auch fehlgeschlagene) Eintraege, auch mit Pin, werden
 // danach entfernt (gemeinsam mit "Zahlung senden", siehe utils/submitGuard/accountSendGuard.js).
 export const NOT_APPLIED_RETENTION_MS = 30 * 24 * 60 * 60 * 1000;
+
+/**
+ * Beginn der Aufbewahrung eines nicht ausgefuehrten Eintrags: Zeitpunkt der Klaerung bzw. der
+ * Vergabe des Pins (settledAt), sonst (alte Eintraege) der Zeitpunkt des Sendens (at). Ein
+ * Pin, der erst nach vielen Tagen geklaert wird, lebt so volle 30 Tage (N1).
+ */
+export const notAppliedSince = (entry) => Number(entry?.settledAt) || Number(entry?.at) || 0;
 const MAX_FIELD_LENGTH = 200;
 
 let idCounter = 0;
@@ -201,6 +208,9 @@ export function sanitizeSentEntry(raw) {
     const prev = raw.prev.map((h) => String(h || '').toLowerCase()).filter((h) => HASH_RE.test(h) && h !== entry.hash);
     if (prev.length) entry.prev = [...new Set(prev)].slice(0, MAX_PREV_HASHES);
   }
+  // Zeitpunkt, ab dem der Eintrag als nicht ausgefuehrt gilt (Beginn der Aufbewahrung, N1).
+  const settledAt = Number(raw.settledAt);
+  if (status === 'notApplied' && Number.isFinite(settledAt) && settledAt > 0) entry.settledAt = settledAt;
   if (status === 'notApplied' && raw.pin === true) {
     // Ohne Sequence kein Pin moeglich: dann ist der Eintrag nicht sicher lesbar.
     if (!entry.seq) return null;
@@ -298,7 +308,7 @@ export function pruneSentLog(now = Date.now()) {
       let entry = null;
       try { entry = sanitizeSentEntry(JSON.parse(window.localStorage.getItem(k) || 'null')); } catch { /* unlesbar: bleibt */ }
       if (entry && entry.status === 'success' && now - entry.at > SENT_LOG_RETENTION_MS) window.localStorage.removeItem(k);
-      else if (entry && entry.status === 'notApplied' && now - entry.at > NOT_APPLIED_RETENTION_MS) window.localStorage.removeItem(k);
+      else if (entry && entry.status === 'notApplied' && now - notAppliedSince(entry) > NOT_APPLIED_RETENTION_MS) window.localStorage.removeItem(k);
     }
   } catch { /* noop */ }
 }

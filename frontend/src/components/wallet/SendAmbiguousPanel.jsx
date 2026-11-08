@@ -52,9 +52,13 @@ export default function SendAmbiguousPanel({ guard, t, language, networkLabel, e
   const isBatch = block.kind === 'batch' || block.kind === 'batchUnreadable';
   const showCause = !isBatch && !entry.unreadable && !entry.recheck;
   const summary = entry.summary || null;
-  const paymentLine = summary?.recipient
-    ? t(`${K}.payment`, { amount: summary.amountDisplay || '?', asset: summary.asset || '', recipient: summary.recipient })
-    : '';
+  // Zahlung (Empfaenger) oder Aktion des Tradings (Swap, Trustline, Limit-Order).
+  let paymentLine = '';
+  if (summary?.recipient) {
+    paymentLine = t(`${K}.payment`, { amount: summary.amountDisplay || '?', asset: summary.asset || '', recipient: summary.recipient });
+  } else if (summary?.action) {
+    paymentLine = t(`${K}.action`, { action: summary.action });
+  }
   const sentAt = Number(entry.at) > 0 ? formatTime(entry.at, language) : '';
   const links = entry.hash ? explorerLinks(entry.hash) : [];
 
