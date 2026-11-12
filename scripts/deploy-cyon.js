@@ -38,6 +38,19 @@ function git(root, args) {
   return result.stdout.trimEnd();
 }
 
+// Meldung bei HEAD != origin/main mit der naechsten Handlung. ahead: Commits nur lokal, behind: nur auf origin.
+function describeHeadMismatch({ head, remote, ahead, behind }) {
+  const hashes = `HEAD ${head.slice(0, 7)}, origin/main ${remote.slice(0, 7)}`;
+  const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
+  if (ahead > 0 && behind === 0) {
+    return `Noch nicht gepusht: ${plural(ahead, "Commit liegt", "Commits liegen")} nur lokal (${hashes}). Erst "git push", dann erneut deployen.`;
+  }
+  if (behind > 0 && ahead === 0) {
+    return `Lokal veraltet: origin/main hat ${plural(behind, "neueren Commit", "neuere Commits")} (${hashes}). Erst "git pull", dann erneut deployen.`;
+  }
+  return `Lokal und origin/main sind auseinandergelaufen: ${ahead} Commits nur lokal, ${behind} nur auf origin (${hashes}). Erst klaeren ("git pull --rebase", dann "git push"), dann erneut deployen.`;
+}
+
 // Im Dry-Run wird nichts hochgeladen, Git-Abweichungen sind dort nur Warnungen.
 function checkGit(root, { dryRun, fetch }) {
   const problems = [];
@@ -51,7 +64,11 @@ function checkGit(root, { dryRun, fetch }) {
   const head = git(root, ["rev-parse", "HEAD"]);
   const remote = git(root, ["rev-parse", "origin/main"]);
   if (head !== remote) {
-    problems.push(`HEAD (${head.slice(0, 7)}) ist nicht origin/main (${remote.slice(0, 7)})`);
+    // rev-list --left-right --count origin/main...HEAD liefert "<nur remote> <nur lokal>".
+    const [behind, ahead] = git(root, ["rev-list", "--left-right", "--count", "origin/main...HEAD"])
+      .split(/\s+/)
+      .map(Number);
+    problems.push(describeHeadMismatch({ head, remote, ahead, behind }));
   }
   for (const problem of problems) {
     if (!dryRun) {
@@ -391,4 +408,4 @@ function createDeploy({ root, frontendDir, run, npmCmd, dryRun }) {
   return { beforeBuild, afterBuild };
 }
 
-module.exports = { createDeploy };
+module.exports = { createDeploy, checkGit, describeHeadMismatch };
