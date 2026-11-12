@@ -7,7 +7,7 @@ Drei Ebenen. Jede hat einen festen Zweck und eine feste Auslösung.
 | Backend (Node) | `npm test` | Sekunden | bei jedem Deploy (`test:report`) |
 | Backend (PHP) | `for f in test/*.test.php; do php "$f" \|\| break; done` | Sekunden | bei jeder Backend-Änderung |
 | Frontend (Vitest) | `cd frontend && npm test` | Sekunden bis Minuten | bei jedem Deploy |
-| E2E gegen Testnet (Playwright) | `npm run test:e2e` | mehrere Minuten | auf Wunsch beim Deploy (`e`), vor größeren Releases |
+| E2E gegen Testnet (Playwright) | `npm run test:e2e` | ca. 1–3 Minuten | automatisch bei jedem Frontend-Deploy |
 
 ## E2E-Tests (Testnet)
 
@@ -30,9 +30,9 @@ danach direkt bei Horizon. Sie sind die Wiederholung der manuellen Online-Tests.
   der erst im zweiten Versuch besteht, ist „flaky“: meist Netz oder Friendbot, bei Wiederholung im Verlauf prüfen.
 - **Netz:** Horizon und Friendbot müssen erreichbar sein. Bei Friendbot-Problemen den Lauf später wiederholen,
   kein Fehler der App.
-- **Deploy:** Bei Frontend-Änderungen zeigt der Deploy den Stand des letzten E2E-Laufs und fragt:
-  `j` = lokal durchgeklickt, `e` = E2E jetzt starten (bei Fehler Abbruch), Enter = Abbruch. E2E ist bewusst
-  nicht Pflicht, damit kleine Fixes schnell bleiben.
+- **Deploy:** Bei Frontend-Änderungen startet der Deploy die E2E-Tests automatisch (Testnet, ca. 1–3 Minuten).
+  Bei Rot bricht der Deploy ab. Notausgang für Notfälle (z. B. Friendbot down): `SKIP_E2E=1 npm run deploy ...`;
+  der Deploy zeigt dann den Stand des letzten Laufs. Das ersetzt die frühere Frage „durchgeklickt?“.
 
 ### Abdeckung
 
@@ -48,6 +48,7 @@ dass jede Spec in dieser Tabelle steht und jede genannte Datei existiert.
 | Konto erstellen: Guards für ungesicherte Schlüssel, Netzwechsel | `e2e/specs/accountGuards.spec.mjs` |
 | Einstellungen: Verläufe löschen, Scam-Statistik zurücksetzen | `e2e/specs/settings.spec.mjs` |
 | Sendesperre über Tabs, Warten abbrechen | `e2e/specs/sendLock.spec.mjs` |
+| Smoke-Crawl: jeder Menüpunkt öffnet ohne Absturz (Konto mit Trustlines/Pool-Shares und Konto mit Offers) | `e2e/specs/smoke.spec.mjs` |
 
 ### Noch nicht abgedeckt (bewusst, bei Bedarf ergänzen)
 

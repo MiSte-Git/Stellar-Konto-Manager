@@ -187,29 +187,8 @@ function e2eStatusLine(root) {
   }
 }
 
-// Frage vor dem Upload von Frontend-Aenderungen: j = lokal durchgeklickt, e = erst E2E-Tests
-// laufen lassen (Testnet, mehrere Minuten, bei Fehlern Abbruch), Enter/N = Abbruch.
-function askFrontendCheck(root) {
-  console.log(e2eStatusLine(root));
-  const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
-  return new Promise((resolve) => {
-    let answered = false;
-    rl.question("Frontend-Aenderungen geprueft? [j = lokal durchgeklickt, e = E2E-Tests jetzt starten, N = Abbruch] ", (answer) => {
-      answered = true;
-      rl.close();
-      resolve(answer.trim().toLowerCase());
-    });
-    rl.on("close", () => {
-      if (!answered) {
-        process.stdout.write("\n");
-        resolve("");
-      }
-    });
-  });
-}
-
 function runE2e(root) {
-  console.log("\n[deploy] Starte E2E-Tests gegen das Testnet (kann einige Minuten dauern) ...");
+  console.log("\n[deploy] Starte E2E-Tests gegen das Testnet (ca. 1-3 Minuten) ...");
   const result = spawnSync(process.execPath, ["scripts/run-e2e.js"], { cwd: root, stdio: "inherit" });
   return result.status === 0;
 }
@@ -379,11 +358,11 @@ function createDeploy({ root, frontendDir, run, npmCmd, dryRun }) {
       (line) => !BUILD_META_FILES.has(itemizedPath(line))
     );
     if (frontendCodeChanged) {
-      const choice = await askFrontendCheck(root);
-      if (choice === "e") {
-        if (!runE2e(root)) fail("Abbruch: E2E-Tests fehlgeschlagen (Details oben, Trace unter test-results/).");
-      } else if (choice !== "j") {
-        fail("Abbruch: Frontend-Aenderungen nicht geprueft.");
+      // E2E laeuft automatisch (ca. 1-3 Minuten). Notausgang: SKIP_E2E=1 npm run deploy ...
+      if (process.env.SKIP_E2E === "1") {
+        console.log("[deploy] SKIP_E2E=1: E2E-Tests uebersprungen. " + e2eStatusLine(root));
+      } else if (!runE2e(root)) {
+        fail("Abbruch: E2E-Tests fehlgeschlagen (Details oben, Bericht: npx playwright show-report e2e/.results/report). Notfall: SKIP_E2E=1.");
       }
     }
     verifyDistHashes(distDir);
