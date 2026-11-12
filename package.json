@@ -15,7 +15,8 @@
     "test:trade": "node --test --test-isolation=none test/tradeService.test.js",
     "i18n:extract-glossary-keys": "node scripts/dev/extractGlossaryKeys.js",
     "i18n:sync-glossary": "node scripts/dev/syncGlossaryNamespace.mjs",
-    "i18n:sync-learn": "node scripts/dev/syncLearnNamespace.mjs"
+    "i18n:sync-learn": "node scripts/dev/syncLearnNamespace.mjs",
+    "test:e2e": "node scripts/run-e2e.js"
   },
   "dependencies": {
     "@stellar/stellar-sdk": "^17.4.0",
@@ -30,6 +31,7 @@
     "axios": "^1.15.2"
   },
   "devDependencies": {
+    "@playwright/test": "^1.65.0",
     "concurrently": "^9.2.0",
     "dotenv": "^16.0.0",
     "open": "^9.0.0"

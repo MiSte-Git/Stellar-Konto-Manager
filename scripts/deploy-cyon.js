@@ -170,6 +170,50 @@ function ask(question) {
   });
 }
 
+// Stand des letzten vollstaendigen E2E-Laufs (scripts/run-e2e.js schreibt e2e/.last-run.json).
+function e2eStatusLine(root) {
+  const file = path.join(root, "e2e", ".last-run.json");
+  if (!fs.existsSync(file)) return "E2E-Tests: noch nie gelaufen (npm run test:e2e).";
+  try {
+    const last = JSON.parse(fs.readFileSync(file, "utf8"));
+    const head = git(root, ["rev-parse", "--short", "HEAD"]).trim();
+    const behind = last.commit ? git(root, ["rev-list", "--count", `${last.commit}..HEAD`]).trim() : "?";
+    const same = last.commit === head && !last.dirty;
+    const state = last.ok ? "gruen" : "FEHLGESCHLAGEN";
+    const age = new Date(last.at).toLocaleString("de-CH");
+    return `E2E-Tests: zuletzt ${state} am ${age} auf ${last.commit || "?"}${last.dirty ? " (mit lokalen Aenderungen)" : ""}, ${same ? "entspricht dem aktuellen Stand" : `${behind} Commit(s) hinter dem aktuellen Stand`}.`;
+  } catch {
+    return "E2E-Tests: letzter Lauf nicht lesbar.";
+  }
+}
+
+// Frage vor dem Upload von Frontend-Aenderungen: j = lokal durchgeklickt, e = erst E2E-Tests
+// laufen lassen (Testnet, mehrere Minuten, bei Fehlern Abbruch), Enter/N = Abbruch.
+function askFrontendCheck(root) {
+  console.log(e2eStatusLine(root));
+  const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+  return new Promise((resolve) => {
+    let answered = false;
+    rl.question("Frontend-Aenderungen geprueft? [j = lokal durchgeklickt, e = E2E-Tests jetzt starten, N = Abbruch] ", (answer) => {
+      answered = true;
+      rl.close();
+      resolve(answer.trim().toLowerCase());
+    });
+    rl.on("close", () => {
+      if (!answered) {
+        process.stdout.write("\n");
+        resolve("");
+      }
+    });
+  });
+}
+
+function runE2e(root) {
+  console.log("\n[deploy] Starte E2E-Tests gegen das Testnet (kann einige Minuten dauern) ...");
+  const result = spawnSync(process.execPath, ["scripts/run-e2e.js"], { cwd: root, stdio: "inherit" });
+  return result.status === 0;
+}
+
 async function fetchOk(url, method = "GET") {
   try {
     const response = await fetch(url, { method });
@@ -334,11 +378,13 @@ function createDeploy({ root, frontendDir, run, npmCmd, dryRun }) {
     const frontendCodeChanged = frontendChanges.some(
       (line) => !BUILD_META_FILES.has(itemizedPath(line))
     );
-    if (
-      frontendCodeChanged &&
-      !(await ask("Frontend-Aenderungen lokal im Browser durchgeklickt (npm run dev oder preview)?"))
-    ) {
-      fail("Abbruch: Frontend-Aenderungen nicht lokal geprueft.");
+    if (frontendCodeChanged) {
+      const choice = await askFrontendCheck(root);
+      if (choice === "e") {
+        if (!runE2e(root)) fail("Abbruch: E2E-Tests fehlgeschlagen (Details oben, Trace unter test-results/).");
+      } else if (choice !== "j") {
+        fail("Abbruch: Frontend-Aenderungen nicht geprueft.");
+      }
     }
     verifyDistHashes(distDir);
 

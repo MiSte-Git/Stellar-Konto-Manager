@@ -79,3 +79,9 @@ content_backups/
 
 # Lokale Kopie des Servers (enthaelt _config.php mit Zugangsdaten)
 _server_backup/
+
+# E2E: Fixtures mit Testnet-Keys und letzter Lauf, Playwright-Ausgabe
+e2e/.fixtures/
+e2e/.last-run.json
+test-results/
+playwright-report/

@@ -156,7 +156,7 @@ SKM funktioniert vollständig im Stellar-Testnet. Damit lässt sich alles gefahr
   1. Git sauber und `HEAD` gleich `origin/main` (im Dry-Run nur Warnung), `npm test` im Root und in `frontend/` grün. Das Deploy-Skript ruft sie als `npm run test:report` (Root, dieselben Tests mit zusätzlichem Reporter `scripts/node-failures-reporter.js`) und `npm test -- --reporter=default --reporter=json` (Frontend) auf; die Ausgabe läuft wie gewohnt live. Scheitert ein Lauf, bricht das Skript wie bisher ab und gibt vorher eine Zusammenfassung aus (Datei, Testname, erste Zeilen der Fehlermeldung), erzeugt von `scripts/print-test-failures.js` aus einer Temp-Datei, die danach gelöscht wird. `npm test` selbst ist unverändert.
   2. Build mit `VITE_BASE=/` ohne `VITE_CSP_REPORT_ONLY`, Prüfung von `dist/.htaccess` und `index.html`, danach `gen-build-info.mjs` und `hash-dist.mjs`.
   3. rsync-Dry-Run mit `--checksum`, Rohausgabe getrennt für Frontend und `api/`.
-  4. Abfrage „Frontend-Aenderungen lokal im Browser durchgeklickt (npm run dev oder preview)?“, nur wenn der Frontend-Dry-Run außer `SHA256SUMS` und `build-info.json` weitere Dateien zeigt. Nicht `preview:csp` verwenden, das baut neu. Danach muss `frontend/dist` exakt zu `SHA256SUMS` passen.
+  4. Abfrage „Frontend-Aenderungen geprueft?“ mit `j` (lokal im Browser durchgeklickt, `npm run dev` oder `preview`), `e` (erst die E2E-Tests gegen das Testnet starten, bei Fehlern Abbruch) oder Enter (Abbruch), nur wenn der Frontend-Dry-Run außer `SHA256SUMS` und `build-info.json` weitere Dateien zeigt. Vor der Frage steht der Stand des letzten E2E-Laufs (grün/fehlgeschlagen, Zeitpunkt, Commits hinter dem aktuellen Stand, aus `e2e/.last-run.json`). Nicht `preview:csp` verwenden, das baut neu. Danach muss `frontend/dist` exakt zu `SHA256SUMS` passen.
   5. Frontend-Upload nach eigener j/N-Abfrage, mit `--delete` nur unterhalb von `assets/`. Danach Smoke-Test: `index.html` vom Server laden, Commit in `build-info.json` prüfen und alle in `index.html` referenzierten JS-/CSS-Assets per HEAD abfragen (jedes muss HTTP 200 liefern, sonst Fehler mit Liste der fehlenden Dateien).
   6. `api/` nur, wenn der Dry-Run Unterschiede zeigt, nach eigener j/N-Abfrage, ohne `--delete`, danach Health-Check `api/health.php`.
   7. Eine Zeile in `deploy.log` (Zeitpunkt in lokaler Zeit mit Offset, Ziel, Commit, Ergebnis; gitignored).
@@ -175,8 +175,11 @@ SKM funktioniert vollständig im Stellar-Testnet. Damit lässt sich alles gefahr
   npm test            # Node-Test-Runner, Arbeitsverzeichnis: Projekt-Root
   npm run test:trade  # nur tradeService-Tests, Arbeitsverzeichnis: Projekt-Root
   cd frontend && npx vitest   # Frontend-Unit-Tests (kein eigener npm-Skript-Eintrag)
+  npm run test:e2e    # E2E gegen das Testnet (Playwright), einmalig: npx playwright install chromium
+  npm run test:e2e -- sendLock   # nur passende Specs; E2E_OFFLINE=1 lässt nur die Specs ohne Testnet laufen
   for f in test/*.test.php; do php "$f" || break; done   # PHP-Tests, Arbeitsverzeichnis: Projekt-Root
   ```
+  Die E2E-Tests (`e2e/`, Fixtures mit frischen Testnet-Konten pro Lauf, Specs, Abdeckungstabelle) sind in [docs/testing.md](docs/testing.md) beschrieben; `test/e2eCoverage.test.js` prüft, dass Specs und Tabelle zusammenpassen. Die Testnet-Keys der Fixtures stehen nur in `e2e/.fixtures/run.json` (nicht versioniert).
   Die Federation-Fälle liegen gemeinsam in `test/assets/federationCases.json` und laufen gegen Node und PHP.
   `test/helpers/horizonAccountsMock.js` ersetzt in Node-HTTP-Tests `loadAccount` (per `node --require` vor `server.js`, Konten aus der Datei in `SKM_TEST_HORIZON_ACCOUNTS`), damit die Live-Prüfung der Signer offline läuft; PHP-Tests belegen dafür `signers_cache.json` vor.
 

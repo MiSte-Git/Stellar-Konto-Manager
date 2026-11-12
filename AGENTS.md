@@ -17,6 +17,7 @@ bedient Hilfsfunktionen, kann aber nie selbst signieren.
 | Sicherheitsmodell, bewusste Entscheidungen, Hinweise für Reviews | [docs/SECURITY.md](docs/SECURITY.md) |
 | Übersetzungen und Pipeline | [docs/i18n-pipeline.md](docs/i18n-pipeline.md) |
 | Aufbau, Abläufe, wo was liegt | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) |
+| Tests, E2E-Abdeckung und Pflege | [docs/testing.md](docs/testing.md) |
 | Entscheidungen mit Begründung | [docs/adr/](docs/adr/README.md) |
 | Vorlage für Reviews | [docs/review-briefing.md](docs/review-briefing.md) |
 
@@ -47,6 +48,9 @@ Vor einem Security-Review ist `docs/SECURITY.md` Pflicht. Dort steht, was gewoll
    (siehe [CLAUDE.md](CLAUDE.md)).
 7. **Tests** zu jeder Änderung an Logik. Bestehende Tests nicht abschwächen, um sie grün zu bekommen.
 8. **Keine Abhängigkeiten** ohne Rückfrage hinzufügen oder per `npm audit fix --force` ändern.
+9. **E2E-Tests pflegen** ([docs/testing.md](docs/testing.md)). Ein von Hand gefundener Fehler bekommt zuerst einen
+   Regressionstest. Ändert sich ein Ablauf oder UI-Text, den ein Spec in `e2e/specs/` benutzt, wird das Spec im selben
+   Commit angepasst. Neue Funktion mit Geld- oder Schlüsselbezug: Eintrag in der Abdeckungstabelle und mindestens ein Spec.
 
 ## Befehle
 
@@ -55,6 +59,7 @@ npm run dev                         # lokal: Backend und Frontend
 npm test                            # Node-Backend-Tests
 for f in test/*.test.php; do php "$f" || break; done   # PHP-Tests
 cd frontend && npm test             # Frontend-Tests (Vitest)
+npm run test:e2e                    # E2E gegen das Testnet (Playwright), siehe docs/testing.md
 cd frontend && npm run lint
 node scripts/i18n_ci_check.js       # i18n-Prüfung
 ```
