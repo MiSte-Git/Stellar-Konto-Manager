@@ -1199,6 +1199,8 @@ export default function AssetSearch() {
       setLimitOfferPrice('');
       setLimitOfferRefreshToken((value) => value + 1);
       setTrustlineRefreshToken((value) => value + 1);
+      // Horizon liefert die Offers-Liste manchmal erst nach dem Submit-Ergebnis: einmal nachladen.
+      setTimeout(() => setLimitOfferRefreshToken((value) => value + 1), 3000);
     } catch (error) {
       handleSubmitFailure(error);
     } finally {

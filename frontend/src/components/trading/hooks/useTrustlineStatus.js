@@ -54,7 +54,9 @@ export default function useTrustlineStatus({ accountId, network, accountInput, s
 
     setTrustlineStatus({ loading: true, state: 'loading', error: '', balance: null, limit: null, isAuthorized: null, isAuthorizedToMaintainLiabilities: null });
     const server = getHorizonServer(horizonUrlFor(network));
-    loadTrustlines(accountId, server, { includeOps: false, ttlMs: 10000 })
+    // Nach einer Aktion (trustlineRefreshToken > 0) ohne Zwischenspeicher lesen: Sonst zeigt das Panel
+    // bis zu 10 s lang noch den Stand vor der Trustline ("Trustline fehlt").
+    loadTrustlines(accountId, server, { includeOps: false, ttlMs: trustlineRefreshToken > 0 ? 0 : 10000 })
       .then((trustlines) => {
         if (cancelled) return;
         const match = trustlines.find((tl) =>

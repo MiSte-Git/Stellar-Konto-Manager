@@ -150,8 +150,8 @@
       "send": "Du sendest",
       "receive": "Geschätzt erhältst du",
       "minimum": "Garantiertes Minimum",
-      "source": "Quelle",
-      "destination": "Ziel",
+      "source": "Gesendetes Asset (mit Issuer)",
+      "destination": "Erhaltenes Asset (mit Issuer)",
       "routeRefresh": "Die Route wird direkt vor dem Signieren erneut geprüft. Wenn die frische Quote unter dem hier bestätigten Minimum liegt, wird nicht signiert.",
       "continue": "Weiter zur Signatur"
     },

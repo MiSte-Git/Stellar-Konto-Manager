@@ -44,8 +44,10 @@ vi.mock('../../../utils/stellar/stellarUtils.js', async (importOriginal) => (awa
     submitTransaction: hoisted.submitTransactionMock,
     offers: () => ({
       forAccount: () => ({
-        limit: () => ({
-          call: async () => ({ records: hoisted.offersRecords.value }),
+        order: () => ({
+          limit: () => ({
+            call: async () => ({ records: hoisted.offersRecords.value }),
+          }),
         }),
       }),
     }),

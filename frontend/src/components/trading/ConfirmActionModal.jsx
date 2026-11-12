@@ -1,6 +1,12 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { formatAssetLabel, formatAssetLabelWithIssuer, formatAssetPath, formatDetailedAssetPath, normalizeAmount } from './assetSearchUtils.js';
+import { formatAssetLabel, formatAssetLabelWithIssuer, formatAssetPath, formatDetailedAssetPath, getAssetCode, getAssetIssuer, normalizeAmount } from './assetSearchUtils.js';
+
+// Asset mit vollem Issuer fuer die Pruefansicht. XLM hat keinen Issuer.
+function assetWithFullIssuer(asset) {
+  const issuer = getAssetIssuer(asset);
+  return issuer ? `${getAssetCode(asset)}: ${issuer}` : 'XLM';
+}
 import TokenFactsSummary from './TokenFactsSummary.jsx';
 
 /**
@@ -152,14 +158,12 @@ export default function ConfirmActionModal({
           </div>
           <div className="grid gap-1">
             <dt className="font-semibold">{t('trading:assetSearch.swapConfirm.source')}</dt>
-            <dd className="break-all font-mono">{selectedAsset.assetIssuer}</dd>
+            <dd className="break-all font-mono" data-testid="swap-confirm-source">{assetWithFullIssuer(swapSourceAsset)}</dd>
           </div>
-          {swapDirection === 'token-to-token' && targetStellarAsset && (
-            <div className="grid gap-1">
-              <dt className="font-semibold">{t('trading:assetSearch.swapConfirm.destination')}</dt>
-              <dd className="break-all font-mono">{targetStellarAsset.issuer}</dd>
-            </div>
-          )}
+          <div className="grid gap-1">
+            <dt className="font-semibold">{t('trading:assetSearch.swapConfirm.destination')}</dt>
+            <dd className="break-all font-mono" data-testid="swap-confirm-destination">{assetWithFullIssuer(swapDestinationAsset)}</dd>
+          </div>
           <div className="grid gap-1">
             <dt className="font-semibold">{t('trading:assetSearch.swapPreview.route')}</dt>
             <dd className="font-mono">{formatAssetPath(swapPreview.path.path, swapSourceAsset, swapDestinationAsset)}</dd>

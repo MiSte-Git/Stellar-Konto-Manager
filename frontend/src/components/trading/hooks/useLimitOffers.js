@@ -40,7 +40,9 @@ export default function useLimitOffers({ selectedAsset, accountId, network }) {
       setLimitOfferStatus((current) => ({ ...current, loading: true, error: '' }));
       try {
         const server = getHorizonServer(horizonUrlFor(network));
-        const response = await server.offers().forAccount(accountId).limit(30).call();
+        // Neueste zuerst und bis 200: Ohne order('desc') liefert Horizon aufsteigend, bei mehr als 30
+        // offenen Offers fehlte das gerade platzierte.
+        const response = await server.offers().forAccount(accountId).order('desc').limit(200).call();
         if (!cancelled) {
           setLimitOfferStatus({
             loading: false,

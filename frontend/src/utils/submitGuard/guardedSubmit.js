@@ -15,6 +15,7 @@ import {
   AmbiguousSubmitResultError, SubmittedTransactionFailedError, submitTransactionSafely,
 } from '../stellar/submitTransactionSafely.js';
 import { txHashHex } from '../stellar/txHash.js';
+import { requestHeaderBalanceRefresh } from '../balanceRefresh.js';
 import { withSendLock } from './sendLock.js';
 import { runWithLoadTimeout } from './loadTimeout.js';
 import { classifySubmitCause, isBadSeqError } from './ambiguousResolve.js';
@@ -138,6 +139,10 @@ export async function guardedSubmit({
           // Sequence durch diese Transaktion verbraucht: Pins mit ihr sind erledigt.
           releasePins(network, source, seq);
           forgetSignedTx(network, source);
+          // Kopfzeilen-Saldo neu lesen (gilt fuer alle Sendewege ueber diesen Schutz). Horizon liefert
+          // den neuen Stand manchmal erst kurz nach dem Ergebnis: einmal spaeter nochmals.
+          requestHeaderBalanceRefresh(source);
+          setTimeout(() => requestHeaderBalanceRefresh(source), 3000);
           return { res, built, hash };
         } catch (err) {
           if (err instanceof AmbiguousSubmitResultError) {
