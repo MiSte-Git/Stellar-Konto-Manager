@@ -17,5 +17,6 @@ alten ersetzt, statt den alten still umzuschreiben.
 | [0009](0009-fachbegriffe-englisch.md) | Stellar-Fachbegriffe bleiben englisch | akzeptiert |
 | [0010](0010-on-off-ramp-architektur.md) | Architektur für On-/Off-Ramp | akzeptiert, nicht umgesetzt |
 | [0011](0011-kein-swap-als-multisig-job.md) | Kein Swap als Multisig-Job | akzeptiert |
+| [0012](0012-signer-typen-zentral-quantensicher-vorbereiten.md) | Signer-Typen zentral behandeln, quantensichere Signer vorbereiten | vorgeschlagen |
 
 Neue Einträge nach [template.md](template.md), fortlaufend nummeriert.
