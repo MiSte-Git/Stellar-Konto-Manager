@@ -214,6 +214,35 @@ describe('matchesFilters: Memo enthaelt nicht', () => {
   });
 });
 
+describe('matchesFilters: falsches Memo (genauer Vergleich)', () => {
+  const f = build({ notExactMemosText: 'GF-1234' });
+  it('nur das genau passende Memo ist richtig, jede Abweichung ist falsch', () => {
+    expect(matchesFilters(row({}, 'GF-1234'), f)).toBe(false);
+    for (const wrong of ['gf-1234', 'GF-1243', 'GF-123', 'GF-12345', 'GF-1234 extra', ' x GF-1234', '']) {
+      expect(matchesFilters(row({}, wrong), f)).toBe(true);
+    }
+  });
+  it('unsichtbare Zeichen und Leerraum am Rand zaehlen nicht als Abweichung', () => {
+    expect(matchesFilters(row({}, '\u200BGF-1234 '), f)).toBe(false);
+  });
+  it('mehrere erwartete Memos sind ODER: passt eines genau, ist das Memo richtig', () => {
+    const two = build({ notExactMemosText: 'A1\nB2' });
+    expect(matchesFilters(row({}, 'A1'), two)).toBe(false);
+    expect(matchesFilters(row({}, 'B2'), two)).toBe(false);
+    expect(matchesFilters(row({}, 'C3'), two)).toBe(true);
+  });
+  it('unterscheidet sich von Memo enthaelt nicht: Zusatztext bleibt dort ausgeschlossen, hier falsch', () => {
+    const contains = build({ notMemosText: 'GF-1234' });
+    expect(matchesFilters(row({}, 'GF-1234 extra'), contains)).toBe(false);
+    expect(matchesFilters(row({}, 'GF-1234 extra'), f)).toBe(true);
+  });
+  it('wirkt zusammen mit Richtung Eingang und Empfaenger als UND', () => {
+    const g = build({ notExactMemosText: 'GF-1234', direction: 'in' });
+    expect(matchesFilters(row({ from: A, to: ME }, 'x'), g)).toBe(true);
+    expect(matchesFilters(row({ from: ME, to: A }, 'x'), g)).toBe(false);
+  });
+});
+
 describe('parseRecipient', () => {
   it('erkennt G, M, Secret Key und Unsinn, ohne den Secret Key preiszugeben', () => {
     const secret = Keypair.random().secret();

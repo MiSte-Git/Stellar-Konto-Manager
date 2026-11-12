@@ -43,6 +43,7 @@
     "menu": {
       "recipient": "Empfänger",
       "amount": "Betrag",
+      "wrongMemo": "Falsches Memo",
       "notMemo": "Memo enthält nicht"
     },
     "editor": {
@@ -56,14 +57,17 @@
       "assetCustom": "Anderes Asset",
       "code": "Asset-Code",
       "issuer": "Issuer",
-      "amountHint": "Grenzen sind inklusive, Dezimalkomma ist erlaubt (höchstens 7 Nachkommastellen). Bei Tausch zählt der gesendete Betrag."
+      "amountHint": "Grenzen sind inklusive, Dezimalkomma ist erlaubt (höchstens 7 Nachkommastellen). Bei Tausch zählt der gesendete Betrag.",
+      "wrongMemoPlaceholder": "Erwartetes Memo, genau so geschrieben",
+      "wrongMemoHint": "Zeigt alle Operationen, deren Memo nicht genau diesem Text entspricht: andere Schreibweise, Tippfehler, Zusatztext oder leeres Memo. Die Richtung wird auf Eingang gestellt."
     },
     "chips": {
       "memo": "Memo: {{value}}",
       "notMemo": "Ohne Memo: {{value}}",
       "recipient": "An: {{value}}",
       "amount": "Betrag {{from}} – {{to}} {{asset}}",
-      "remove": "Filter entfernen: {{label}}"
+      "remove": "Filter entfernen: {{label}}",
+      "wrongMemo": "Falsch (erwartet: {{value}})"
     },
     "direction": {
       "label": "Richtung",
@@ -105,7 +109,8 @@
       "sumLine": "{{amount}} {{asset}} ({{count}})",
       "capped": "Angezeigt werden die ersten {{shown}} von {{total}} Treffern. Die CSV enthält alle.",
       "csv": "CSV herunterladen",
-      "reset": "Filter zurücksetzen"
+      "reset": "Filter zurücksetzen",
+      "wallets": "Wallets: {{n}}"
     }
   },
   "summary": {

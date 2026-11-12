@@ -197,4 +197,54 @@ describe('Transaktionen durchsuchen', () => {
     await waitFor(() => expect(screen.getByRole('alert').textContent).toMatch(/konnten nicht geladen werden/));
     expect(screen.queryByRole('searchbox')).toBeNull();
   });
+
+  it('Filter-Menue schliesst bei Klick daneben und mit Escape, nicht nur ueber den Knopf', async () => {
+    wrap(<XlmByMemoPanel publicKey={PK} />);
+    await load();
+    const button = screen.getByRole('button', { name: /Filter$/ });
+    fireEvent.click(button);
+    expect(screen.getByRole('menu')).toBeTruthy();
+    fireEvent.mouseDown(document.body);
+    expect(screen.queryByRole('menu')).toBeNull();
+    fireEvent.click(button);
+    expect(screen.getByRole('menu')).toBeTruthy();
+    fireEvent.keyDown(document, { key: 'Escape' });
+    expect(screen.queryByRole('menu')).toBeNull();
+    fireEvent.click(button);
+    fireEvent.mouseDown(screen.getByRole('menu'));
+    expect(screen.getByRole('menu')).toBeTruthy();
+  });
+
+  it('Falsches Memo: zeigt alle Eingaenge, deren Memo nicht genau stimmt, und stellt Eingang ein', async () => {
+    const createdAt = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+    const inc = (id, from) => ({
+      id, type: 'payment', from, to: PK, amount: '1.0000000', asset_type: 'native', created_at: createdAt, transaction_hash: `h${id}`,
+    });
+    hoisted.operations.mockReturnValue({ records: [inc('1', A), inc('2', B), inc('3', C), inc('4', A), inc('5', B)] });
+    hoisted.transactions.mockReturnValue({ records: [
+      { hash: 'h1', created_at: createdAt, memo: 'GF-1234' },
+      { hash: 'h2', created_at: createdAt, memo: 'gf-1234' },
+      { hash: 'h3', created_at: createdAt, memo: 'GF-1243' },
+      { hash: 'h4', created_at: createdAt, memo: 'GF-1234 extra' },
+      // h5: Transaktion ohne Memo
+    ] });
+    wrap(<XlmByMemoPanel publicKey={PK} />);
+    await load(5);
+    addFilter('Falsches Memo');
+    const input = screen.getByRole('textbox', { name: 'Falsches Memo' });
+    fireEvent.change(input, { target: { value: 'GF-1234' } });
+    fireEvent.keyDown(input, { key: 'Enter' });
+    await screen.findByText('Treffer: 4 von 5');
+    expect(screen.getByText('Falsch (erwartet: GF-1234)')).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Eingang' }).getAttribute('aria-pressed')).toBe('true');
+    expect(screen.getByText('Wallets: 3')).toBeTruthy();
+    // Memo enthaelt nicht ist etwas anderes: 'GF-1234 extra' ist dort ausgeschlossen, hier aber falsch (3 statt 4)
+    fireEvent.click(screen.getByRole('button', { name: 'Filter zurücksetzen' }));
+    await screen.findByText('Treffer: 5 von 5');
+    addFilter('Memo enthält nicht');
+    const input2 = screen.getByRole('textbox', { name: 'Memo enthält nicht' });
+    fireEvent.change(input2, { target: { value: 'GF-1234' } });
+    fireEvent.keyDown(input2, { key: 'Enter' });
+    await screen.findByText('Treffer: 3 von 5');
+  });
 });

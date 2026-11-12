@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { formatLocalDateTime } from '../utils/datetime';
 import { memoLooksLikeUrl, sanitizeMemo } from '../utils/stellar/activity.js';
@@ -72,6 +72,7 @@ export default function TransactionSearchSection({ rows, incomplete, memoIncompl
   const [memoDraft, setMemoDraft] = useState('');
   const [memos, setMemos] = useState([]);
   const [notMemos, setNotMemos] = useState([]);
+  const [wrongMemos, setWrongMemos] = useState([]);
   const [recipients, setRecipients] = useState([]);
   const [amount, setAmount] = useState(null);
   const [direction, setDirection] = useState('all');
@@ -81,15 +82,33 @@ export default function TransactionSearchSection({ rows, incomplete, memoIncompl
   const [amountDraft, setAmountDraft] = useState(EMPTY_AMOUNT);
   const [editorErrors, setEditorErrors] = useState([]);
   const [sort, setSort] = useState({ key: 'created_at', dir: 'desc' });
+  const menuRef = useRef(null);
+
+  // Das Filter-Menue schliesst auch bei Klick daneben, Tab-Wechsel im Menue und Escape.
+  useEffect(() => {
+    if (!menuOpen) return undefined;
+    const onDown = (e) => { if (menuRef.current && !menuRef.current.contains(e.target)) setMenuOpen(false); };
+    const onKey = (e) => { if (e.key === 'Escape') setMenuOpen(false); };
+    const onFocus = (e) => { if (menuRef.current && !menuRef.current.contains(e.target)) setMenuOpen(false); };
+    document.addEventListener('mousedown', onDown);
+    document.addEventListener('keydown', onKey);
+    document.addEventListener('focusin', onFocus);
+    return () => {
+      document.removeEventListener('mousedown', onDown);
+      document.removeEventListener('keydown', onKey);
+      document.removeEventListener('focusin', onFocus);
+    };
+  }, [menuOpen]);
 
   const built = useMemo(() => buildSearchFilters({
     memosText: [...memos, memoDraft].join('\n'),
     notMemosText: notMemos.join('\n'),
+    notExactMemosText: wrongMemos.join('\n'),
     recipientsText: recipients.map((r) => r.value).join(' '),
     amountAsset: amount?.asset, assetCode: amount?.code, assetIssuer: amount?.issuer,
     amountMin: amount?.min, amountMax: amount?.max,
     direction,
-  }), [memos, memoDraft, notMemos, recipients, amount, direction]);
+  }), [memos, memoDraft, notMemos, wrongMemos, recipients, amount, direction]);
 
   const matches = useMemo(() => {
     if (!built.ok) return rows;
@@ -97,8 +116,9 @@ export default function TransactionSearchSection({ rows, incomplete, memoIncompl
   }, [rows, built]);
   const sorted = useMemo(() => sortRows(matches, sort), [matches, sort]);
   const sums = useMemo(() => sumByAsset(matches), [matches]);
+  const wallets = useMemo(() => new Set(matches.map((r) => r.from).filter(Boolean)).size, [matches]);
 
-  const anyFilter = memos.length || notMemos.length || recipients.length || amount || memoDraft.trim() || direction !== 'all';
+  const anyFilter = memos.length || notMemos.length || wrongMemos.length || recipients.length || amount || memoDraft.trim() || direction !== 'all';
 
   const closeEditor = () => { setEditor(null); setEditorText(''); setEditorErrors([]); };
   const openEditor = (kind) => {
@@ -117,9 +137,12 @@ export default function TransactionSearchSection({ rows, incomplete, memoIncompl
   };
 
   const commitText = () => {
-    if (editor === 'notMemo') {
+    if (editor === 'notMemo' || editor === 'wrongMemo') {
       const m = cleanMemo(editorText);
-      if (m) setNotMemos((prev) => (prev.includes(m) || prev.length >= MAX_FILTER_ENTRIES ? prev : [...prev, m]));
+      const setList = editor === 'notMemo' ? setNotMemos : setWrongMemos;
+      if (m) setList((prev) => (prev.includes(m) || prev.length >= MAX_FILTER_ENTRIES ? prev : [...prev, m]));
+      // Falsche Memos gibt es nur bei Eingaengen: Richtung sichtbar auf Eingang stellen
+      if (m && editor === 'wrongMemo') setDirection((d) => (d === 'all' ? 'in' : d));
       closeEditor();
       return;
     }
@@ -155,7 +178,7 @@ export default function TransactionSearchSection({ rows, incomplete, memoIncompl
   };
 
   const resetAll = () => {
-    setMemoDraft(''); setMemos([]); setNotMemos([]); setRecipients([]); setAmount(null); setDirection('all'); closeEditor();
+    setMemoDraft(''); setMemos([]); setNotMemos([]); setWrongMemos([]); setRecipients([]); setAmount(null); setDirection('all'); closeEditor();
   };
 
   const toggleSort = (key) => setSort((s) => (s.key === key ? { key, dir: s.dir === 'asc' ? 'desc' : 'asc' } : { key, dir: 'desc' }));
@@ -182,7 +205,7 @@ export default function TransactionSearchSection({ rows, incomplete, memoIncompl
           onChange={(e) => setMemoDraft(e.target.value)}
           onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addMemoFromDraft(); } }}
         />
-        <div className="relative">
+        <div className="relative" ref={menuRef}>
           <button
             type="button"
             className="px-3 py-2 rounded-sm border text-sm"
@@ -194,7 +217,7 @@ export default function TransactionSearchSection({ rows, incomplete, memoIncompl
           </button>
           {menuOpen && (
             <div role="menu" className="absolute right-0 z-20 mt-1 min-w-[12rem] rounded-sm border bg-gray-800 text-white shadow-lg" onKeyDown={(e) => { if (e.key === 'Escape') setMenuOpen(false); }}>
-              {['recipient', 'amount', 'notMemo'].map((k) => (
+              {['recipient', 'amount', 'wrongMemo', 'notMemo'].map((k) => (
                 <button key={k} role="menuitem" type="button" className="block w-full !rounded-none !border-0 !bg-transparent text-left text-sm hover:!bg-gray-700" onClick={() => openEditor(k)}>
                   {t(`xlmByMemo:search.menu.${k}`)}
                 </button>
@@ -223,13 +246,14 @@ export default function TransactionSearchSection({ rows, incomplete, memoIncompl
                 autoFocus
                 spellCheck={false}
                 aria-label={t(`xlmByMemo:search.menu.${editor}`)}
-                placeholder={t(editor === 'recipient' ? 'xlmByMemo:search.editor.recipientPlaceholder' : 'xlmByMemo:search.editor.notMemoPlaceholder')}
+                placeholder={t(`xlmByMemo:search.editor.${editor}Placeholder`)}
                 value={editorText}
                 onChange={(e) => setEditorText(e.target.value)}
                 onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); commitText(); } if (e.key === 'Escape') closeEditor(); }}
               />
               <button type="button" className="px-3 py-2 rounded-sm bg-blue-600 text-white text-sm" onClick={commitText}>{t('xlmByMemo:search.editor.add')}</button>
               <button type="button" className="px-3 py-2 rounded-sm border text-sm" onClick={closeEditor}>{t('common:progress.cancel')}</button>
+              {editor === 'wrongMemo' && <p className="basis-full text-xs text-gray-500">{t('xlmByMemo:search.editor.wrongMemoHint')}</p>}
             </div>
           ) : (
             <div className="space-y-2">
@@ -271,11 +295,15 @@ export default function TransactionSearchSection({ rows, incomplete, memoIncompl
         </div>
       )}
 
-      {(memos.length > 0 || notMemos.length > 0 || recipients.length > 0 || amount) && (
+      {(memos.length > 0 || notMemos.length > 0 || wrongMemos.length > 0 || recipients.length > 0 || amount) && (
         <div className="mt-2 flex flex-wrap gap-2">
           {memos.map((m) => {
             const label = t('xlmByMemo:search.chips.memo', { value: sanitizeMemo(m) });
             return <Chip key={`m-${m}`} label={label} removeLabel={t('xlmByMemo:search.chips.remove', { label })} onRemove={() => setMemos((p) => p.filter((x) => x !== m))} />;
+          })}
+          {wrongMemos.map((m) => {
+            const label = t('xlmByMemo:search.chips.wrongMemo', { value: sanitizeMemo(m) });
+            return <Chip key={`w-${m}`} label={label} removeLabel={t('xlmByMemo:search.chips.remove', { label })} onRemove={() => setWrongMemos((p) => p.filter((x) => x !== m))} />;
           })}
           {notMemos.map((m) => {
             const label = t('xlmByMemo:search.chips.notMemo', { value: sanitizeMemo(m) });
@@ -293,6 +321,7 @@ export default function TransactionSearchSection({ rows, incomplete, memoIncompl
 
       <div className="mt-3 flex flex-wrap items-baseline gap-x-4 gap-y-1 text-sm">
         <span className="font-medium">{t('xlmByMemo:search.result.count', { shown: matches.length, total: rows.length })}</span>
+        <span className="text-xs text-gray-500">{t('xlmByMemo:search.result.wallets', { n: wallets })}</span>
         {sums.length > 0 && (
           <span className="text-xs">
             <span className="text-gray-500">{t('xlmByMemo:search.result.sums')} </span>

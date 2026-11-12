@@ -1,7 +1,7 @@
 // Filtersuche ueber Operationen eines Kontos (Menue: Transaktionen durchsuchen).
 // Reine Logik: Operationen einmal laden und vereinheitlichen, danach beliebig oft filtern und sortieren.
 // Verknuepfung: ODER innerhalb einer Gruppe (mehrere Memos, mehrere Empfaenger), UND zwischen
-// den Gruppen Memo, Memo nicht, Empfaenger, Betrag und Richtung. Leere Gruppen zaehlen nicht.
+// den Gruppen Memo, Memo nicht, falsches Memo, Empfaenger, Betrag und Richtung. Leere Gruppen zaehlen nicht.
 import { StrKey } from '@stellar/stellar-sdk';
 import { cleanMemo, withRetry } from './queryUtils.js';
 
@@ -72,14 +72,16 @@ export function parseRecipient(token) {
   return { error: 'recipientInvalid', value: safeEcho(tok) };
 }
 
-// raw: { memosText, notMemosText, recipientsText, amountAsset: 'native'|'custom', assetCode, assetIssuer,
+// raw: { memosText, notMemosText, notExactMemosText, recipientsText, amountAsset: 'native'|'custom', assetCode, assetIssuer,
 //        amountMin, amountMax, direction: 'all'|'in'|'out' }
 // Ergebnis: { ok: true, filters } oder { ok: false, errors: [{ key, params }] }
 export function buildSearchFilters(raw = {}) {
   const errors = [];
   const memos = splitList(raw.memosText, /\r?\n/).map(cleanMemo).filter(Boolean);
   const notMemos = splitList(raw.notMemosText, /\r?\n/).map(cleanMemo).filter(Boolean);
-  if (memos.length > MAX_FILTER_ENTRIES || notMemos.length > MAX_FILTER_ENTRIES) {
+  // Erwartete Memos fuer "falsches Memo": jede Abweichung zaehlt (Gross-/Kleinschreibung, Tippfehler, leer)
+  const notExactMemos = splitList(raw.notExactMemosText, /\r?\n/).map(cleanMemo).filter(Boolean);
+  if (memos.length > MAX_FILTER_ENTRIES || notMemos.length > MAX_FILTER_ENTRIES || notExactMemos.length > MAX_FILTER_ENTRIES) {
     errors.push({ key: 'tooManyMemos', params: { max: MAX_FILTER_ENTRIES } });
   }
 
@@ -117,11 +119,11 @@ export function buildSearchFilters(raw = {}) {
   if (errors.length) return { ok: false, errors };
 
   const amount = (min !== null || max !== null) ? { assetKey, min, max } : null;
-  return { ok: true, filters: { memos, notMemos, recipients, amount, direction } };
+  return { ok: true, filters: { memos, notMemos, notExactMemos, recipients, amount, direction } };
 }
 
 export function hasAnyFilter(filters) {
-  return !!(filters && (filters.memos.length || filters.notMemos.length || filters.recipients.length || filters.amount || filters.direction !== 'all'));
+  return !!(filters && (filters.memos.length || filters.notMemos.length || filters.notExactMemos.length || filters.recipients.length || filters.amount || filters.direction !== 'all'));
 }
 
 function assetKeyOf(r, prefix = '') {
@@ -196,6 +198,11 @@ export function matchesFilters(row, filters) {
     // leeres Memo enthaelt nichts und besteht diesen Filter
     const memo = cleanMemo(row.memo);
     if (memo && filters.notMemos.some((q) => memo.includes(q))) return false;
+  }
+  if (filters.notExactMemos.length) {
+    // Mehrere erwartete Memos sind ODER: Stimmt das Memo genau mit einem ueberein, ist es nicht falsch
+    const memo = cleanMemo(row.memo);
+    if (filters.notExactMemos.some((q) => memo === q)) return false;
   }
   if (filters.recipients.length) {
     const hit = filters.recipients.some((f) => row.recipients.some((x) => (f.kind === 'M' ? x.m === f.value : x.g === f.value)));
