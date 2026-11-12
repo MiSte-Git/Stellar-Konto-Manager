@@ -25,6 +25,10 @@ async function openTradingWithSkma(page, fx) {
   await loadAccount(page, fx.main.public);
   await page.locator('header button').first().click();
   await page.locator('[data-nav-id="tradingAssets"]').first().evaluate((el) => el.click());
+  // Der Drawer bleibt nach dem DOM-Klick offen und deckt die Seite ab: schliessen.
+  const overlay = page.getByTestId('sidebar-overlay');
+  if (await overlay.count()) await page.getByRole('button', { name: 'Navigation schließen' }).first().click();
+  await expect(overlay).toHaveCount(0);
   await page.getByPlaceholder('USDC, G... oder USDC:G...').fill(`SKMA:${fx.issuer.public}`);
   await page.getByRole('button', { name: 'Suchen', exact: true }).click();
   await page.getByRole('button', { name: 'Details', exact: true }).first().click();
