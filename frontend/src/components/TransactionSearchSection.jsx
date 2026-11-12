@@ -72,7 +72,7 @@ export default function TransactionSearchSection({ rows, incomplete, memoIncompl
   const [memoDraft, setMemoDraft] = useState('');
   const [memos, setMemos] = useState([]);
   const [notMemos, setNotMemos] = useState([]);
-  const [wrongMemos, setWrongMemos] = useState([]);
+  const [wrongMode, setWrongMode] = useState(false); // Memo-Suchfeld als erwartetes Memo: zeigt alles, was nicht exakt passt
   const [recipients, setRecipients] = useState([]);
   const [amount, setAmount] = useState(null);
   const [direction, setDirection] = useState('all');
@@ -101,14 +101,14 @@ export default function TransactionSearchSection({ rows, incomplete, memoIncompl
   }, [menuOpen]);
 
   const built = useMemo(() => buildSearchFilters({
-    memosText: [...memos, memoDraft].join('\n'),
+    memosText: wrongMode ? '' : [...memos, memoDraft].join('\n'),
     notMemosText: notMemos.join('\n'),
-    notExactMemosText: wrongMemos.join('\n'),
+    notExactMemosText: wrongMode ? [...memos, memoDraft].join('\n') : '',
     recipientsText: recipients.map((r) => r.value).join(' '),
     amountAsset: amount?.asset, assetCode: amount?.code, assetIssuer: amount?.issuer,
     amountMin: amount?.min, amountMax: amount?.max,
     direction,
-  }), [memos, memoDraft, notMemos, wrongMemos, recipients, amount, direction]);
+  }), [memos, memoDraft, wrongMode, notMemos, recipients, amount, direction]);
 
   const matches = useMemo(() => {
     if (!built.ok) return rows;
@@ -118,7 +118,8 @@ export default function TransactionSearchSection({ rows, incomplete, memoIncompl
   const sums = useMemo(() => sumByAsset(matches), [matches]);
   const wallets = useMemo(() => new Set(matches.map((r) => r.from).filter(Boolean)).size, [matches]);
 
-  const anyFilter = memos.length || notMemos.length || wrongMemos.length || recipients.length || amount || memoDraft.trim() || direction !== 'all';
+  const anyFilter = memos.length || notMemos.length || wrongMode || recipients.length || amount || memoDraft.trim() || direction !== 'all';
+  const wrongMemoEmpty = wrongMode && memos.length === 0 && !cleanMemo(memoDraft);
 
   const closeEditor = () => { setEditor(null); setEditorText(''); setEditorErrors([]); };
   const openEditor = (kind) => {
@@ -137,12 +138,9 @@ export default function TransactionSearchSection({ rows, incomplete, memoIncompl
   };
 
   const commitText = () => {
-    if (editor === 'notMemo' || editor === 'wrongMemo') {
+    if (editor === 'notMemo') {
       const m = cleanMemo(editorText);
-      const setList = editor === 'notMemo' ? setNotMemos : setWrongMemos;
-      if (m) setList((prev) => (prev.includes(m) || prev.length >= MAX_FILTER_ENTRIES ? prev : [...prev, m]));
-      // Falsche Memos gibt es nur bei Eingaengen: Richtung sichtbar auf Eingang stellen
-      if (m && editor === 'wrongMemo') setDirection((d) => (d === 'all' ? 'in' : d));
+      if (m) setNotMemos((prev) => (prev.includes(m) || prev.length >= MAX_FILTER_ENTRIES ? prev : [...prev, m]));
       closeEditor();
       return;
     }
@@ -178,7 +176,7 @@ export default function TransactionSearchSection({ rows, incomplete, memoIncompl
   };
 
   const resetAll = () => {
-    setMemoDraft(''); setMemos([]); setNotMemos([]); setWrongMemos([]); setRecipients([]); setAmount(null); setDirection('all'); closeEditor();
+    setMemoDraft(''); setMemos([]); setNotMemos([]); setWrongMode(false); setRecipients([]); setAmount(null); setDirection('all'); closeEditor();
   };
 
   const toggleSort = (key) => setSort((s) => (s.key === key ? { key, dir: s.dir === 'asc' ? 'desc' : 'asc' } : { key, dir: 'desc' }));
@@ -200,7 +198,7 @@ export default function TransactionSearchSection({ rows, incomplete, memoIncompl
           className={`${inputCls} flex-1 min-w-[12rem]`}
           type="search"
           aria-label={t('xlmByMemo:search.memoLabel')}
-          placeholder={t('xlmByMemo:search.placeholder')}
+          placeholder={t(wrongMode ? 'xlmByMemo:search.placeholderWrong' : 'xlmByMemo:search.placeholder')}
           value={memoDraft}
           onChange={(e) => setMemoDraft(e.target.value)}
           onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addMemoFromDraft(); } }}
@@ -217,7 +215,7 @@ export default function TransactionSearchSection({ rows, incomplete, memoIncompl
           </button>
           {menuOpen && (
             <div role="menu" className="absolute right-0 z-20 mt-1 min-w-[12rem] rounded-sm border bg-gray-800 text-white shadow-lg" onKeyDown={(e) => { if (e.key === 'Escape') setMenuOpen(false); }}>
-              {['recipient', 'amount', 'wrongMemo', 'notMemo'].map((k) => (
+              {['recipient', 'amount', 'notMemo'].map((k) => (
                 <button key={k} role="menuitem" type="button" className="block w-full !rounded-none !border-0 !bg-transparent text-left text-sm hover:!bg-gray-700" onClick={() => openEditor(k)}>
                   {t(`xlmByMemo:search.menu.${k}`)}
                 </button>
@@ -237,6 +235,23 @@ export default function TransactionSearchSection({ rows, incomplete, memoIncompl
         />
       </div>
 
+      <div className="mt-2">
+        <label className="inline-flex items-center gap-2 text-sm cursor-pointer">
+          <input
+            type="checkbox"
+            checked={wrongMode}
+            onChange={(e) => {
+              setWrongMode(e.target.checked);
+              // Falsche Memos gibt es nur bei Eingaengen: Richtung sichtbar auf Eingang stellen
+              if (e.target.checked) setDirection((d) => (d === 'all' ? 'in' : d));
+            }}
+          />
+          {t('xlmByMemo:search.wrongMode.label')}
+        </label>
+        {wrongMode && !wrongMemoEmpty && <p className="text-xs text-gray-500 mt-1">{t('xlmByMemo:search.wrongMode.hint')}</p>}
+        {wrongMemoEmpty && <p className="text-sm text-amber-500 mt-1" role="alert">{t('xlmByMemo:search.wrongMode.empty')}</p>}
+      </div>
+
       {editor && (
         <div className="mt-2 rounded-sm border p-2" role="group" aria-label={t(`xlmByMemo:search.menu.${editor}`)}>
           {editor !== 'amount' ? (
@@ -253,7 +268,6 @@ export default function TransactionSearchSection({ rows, incomplete, memoIncompl
               />
               <button type="button" className="px-3 py-2 rounded-sm bg-blue-600 text-white text-sm" onClick={commitText}>{t('xlmByMemo:search.editor.add')}</button>
               <button type="button" className="px-3 py-2 rounded-sm border text-sm" onClick={closeEditor}>{t('common:progress.cancel')}</button>
-              {editor === 'wrongMemo' && <p className="basis-full text-xs text-gray-500">{t('xlmByMemo:search.editor.wrongMemoHint')}</p>}
             </div>
           ) : (
             <div className="space-y-2">
@@ -295,15 +309,11 @@ export default function TransactionSearchSection({ rows, incomplete, memoIncompl
         </div>
       )}
 
-      {(memos.length > 0 || notMemos.length > 0 || wrongMemos.length > 0 || recipients.length > 0 || amount) && (
+      {(memos.length > 0 || notMemos.length > 0 || recipients.length > 0 || amount) && (
         <div className="mt-2 flex flex-wrap gap-2">
           {memos.map((m) => {
-            const label = t('xlmByMemo:search.chips.memo', { value: sanitizeMemo(m) });
+            const label = t(wrongMode ? 'xlmByMemo:search.chips.wrongMemo' : 'xlmByMemo:search.chips.memo', { value: sanitizeMemo(m) });
             return <Chip key={`m-${m}`} label={label} removeLabel={t('xlmByMemo:search.chips.remove', { label })} onRemove={() => setMemos((p) => p.filter((x) => x !== m))} />;
-          })}
-          {wrongMemos.map((m) => {
-            const label = t('xlmByMemo:search.chips.wrongMemo', { value: sanitizeMemo(m) });
-            return <Chip key={`w-${m}`} label={label} removeLabel={t('xlmByMemo:search.chips.remove', { label })} onRemove={() => setWrongMemos((p) => p.filter((x) => x !== m))} />;
           })}
           {notMemos.map((m) => {
             const label = t('xlmByMemo:search.chips.notMemo', { value: sanitizeMemo(m) });

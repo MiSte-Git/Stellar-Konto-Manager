@@ -65,7 +65,7 @@ const rowAmounts = () => [...document.querySelectorAll('section .font-mono')]
 describe('Transaktionen durchsuchen', () => {
   it('vor dem Laden: nur Hinweis, keine Suche, nichts bei Horizon abgefragt', () => {
     wrap(<XlmByMemoPanel publicKey={PK} />);
-    expect(screen.getByText(/Lade zuerst die Operationen/)).toBeTruthy();
+    expect(screen.getByText(/Wähle einen Zeitraum/)).toBeTruthy();
     expect(screen.queryByRole('searchbox')).toBeNull();
     expect(hoisted.operations).not.toHaveBeenCalled();
   });
@@ -187,7 +187,7 @@ describe('Transaktionen durchsuchen', () => {
     fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'Miete' } });
     view.rerender(<I18nextProvider i18n={i18n}><XlmByMemoPanel publicKey={A} /></I18nextProvider>);
     await waitFor(() => expect(screen.queryByRole('searchbox')).toBeNull());
-    expect(screen.getByText(/Lade zuerst die Operationen/)).toBeTruthy();
+    expect(screen.getByText(/Wähle einen Zeitraum/)).toBeTruthy();
   });
 
   it('Ladefehler: Meldung statt Absturz, keine Suche', async () => {
@@ -230,14 +230,23 @@ describe('Transaktionen durchsuchen', () => {
     ] });
     wrap(<XlmByMemoPanel publicKey={PK} />);
     await load(5);
-    addFilter('Falsches Memo');
-    const input = screen.getByRole('textbox', { name: 'Falsches Memo' });
+    // Ohne erwartetes Memo: Warnung, keine Filterung
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Falsches Memo' }));
+    expect(screen.getByRole('alert').textContent).toMatch(/erwartete Memo/);
+    expect(screen.getByText('Treffer: 5 von 5')).toBeTruthy();
+    // Das normale Suchfeld ist das erwartete Memo
+    const input = screen.getByRole('searchbox');
     fireEvent.change(input, { target: { value: 'GF-1234' } });
-    fireEvent.keyDown(input, { key: 'Enter' });
     await screen.findByText('Treffer: 4 von 5');
+    expect(screen.queryByRole('alert')).toBeNull();
+    fireEvent.keyDown(input, { key: 'Enter' });
     expect(screen.getByText('Falsch (erwartet: GF-1234)')).toBeTruthy();
+    expect(screen.getByText('Treffer: 4 von 5')).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Eingang' }).getAttribute('aria-pressed')).toBe('true');
     expect(screen.getByText('Wallets: 3')).toBeTruthy();
+    // Ausschalten: wieder normale Suche (enthaelt), GF-1234 trifft dann 2 (exakt und mit Zusatz)
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Falsches Memo' }));
+    await screen.findByText('Treffer: 2 von 5');
     // Memo enthaelt nicht ist etwas anderes: 'GF-1234 extra' ist dort ausgeschlossen, hier aber falsch (3 statt 4)
     fireEvent.click(screen.getByRole('button', { name: 'Filter zurücksetzen' }));
     await screen.findByText('Treffer: 5 von 5');
@@ -246,5 +255,18 @@ describe('Transaktionen durchsuchen', () => {
     fireEvent.change(input2, { target: { value: 'GF-1234' } });
     fireEvent.keyDown(input2, { key: 'Enter' });
     await screen.findByText('Treffer: 3 von 5');
+  });
+
+  it('Schnellwahl laedt sofort den Zeitraum, ohne den Laden-Knopf', async () => {
+    hoisted.operations.mockClear();
+    wrap(<XlmByMemoPanel publicKey={PK} />);
+    expect(hoisted.operations).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole('button', { name: 'Letzte 7 Tage' }));
+    await screen.findByText('Treffer: 3 von 3');
+    expect(hoisted.operations).toHaveBeenCalled();
+    // Die Felder zeigen jetzt den gewaehlten Zeitraum (7 Tage = 8 Kalendertage hoechstens)
+    const from = new Date(Date.now() - 7 * 24 * 3600 * 1000);
+    const pad = (n) => String(n).padStart(2, '0');
+    expect(document.querySelector('summary').textContent).toContain(`${from.getFullYear()}-${pad(from.getMonth() + 1)}-${pad(from.getDate())}`);
   });
 });

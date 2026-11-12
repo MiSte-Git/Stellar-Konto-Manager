@@ -167,6 +167,16 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = NETWORKS.PUBLIC
     return new Date(new Date(iso).getTime() + 1000).toISOString();
   }
 
+  // Schnellwahl: letzte X Stunden bis jetzt (unabhaengig von der Zeitzone), Felder in Ortszeit setzen und sofort laden.
+  const handleQuick = (hours) => {
+    const now = new Date();
+    const from = new Date(now.getTime() - hours * 3600 * 1000);
+    setTz('local');
+    setFromDate(localDateStr(from)); setFromTime(localTimeStr(from, true));
+    setToDate(localDateStr(now)); setToTime(localTimeStr(now, true));
+    handleLoad({ fromISO: from.toISOString(), toISOExc: plus1sIso(now.toISOString()) });
+  };
+
   const onProgress = useCallback((info = {}) => { setProg((p) => ({ ...p, ...info })); }, []);
 
   const windowIso = () => {
@@ -180,14 +190,14 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = NETWORKS.PUBLIC
   };
 
   /** Laedt die Operationen des Kontos im Zeitraum einmal; gefiltert wird danach im Browser. */
-  const handleLoad = async () => {
+  const handleLoad = async (override) => {
     setIsLoading(true);
     setErrorKey('');
     setLoaded(null);
     try {
       abortRef.current = new AbortController();
       startedAtRef.current = Date.now();
-      const { fromISO, toISOExc } = windowIso();
+      const { fromISO, toISOExc } = override?.fromISO ? override : windowIso();
       setProg({ phase: 'scan', progress: 0, etaMs: estimateEtaMs(fromISO, toISOExc), page: 0 });
       const res = await loadOperations({
         server, accountId: publicKey, fromISO, toISO: toISOExc, onProgress, signal: abortRef.current.signal,
@@ -401,6 +411,14 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = NETWORKS.PUBLIC
 
   return (
     <div className="p-4 rounded-xl border">
+      <div className="flex flex-wrap items-center gap-2 mb-2" role="group" aria-label={t('xlmByMemo:quick.label')}>
+        <span className="text-sm text-gray-500">{t('xlmByMemo:quick.label')}</span>
+        {[['h24', 24], ['d7', 24 * 7], ['d30', 24 * 30]].map(([key, hours]) => (
+          <button key={key} type="button" className="px-3 py-1 rounded-sm border text-sm disabled:opacity-50" disabled={isBusy} onClick={() => handleQuick(hours)}>
+            {t(`xlmByMemo:quick.${key}`)}
+          </button>
+        ))}
+      </div>
       <div className="flex flex-wrap items-start gap-2">
         <details className="flex-1 min-w-[16rem] border rounded-sm">
           <summary className="cursor-pointer p-2 text-sm">
@@ -448,7 +466,7 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = NETWORKS.PUBLIC
         </details>
         <button
           className="px-4 py-2 rounded-sm bg-blue-600 text-white disabled:opacity-50"
-          onClick={handleLoad}
+          onClick={() => handleLoad()}
           disabled={isBusy}
         >
           {isLoading ? t('xlmByMemo:load.loading') : (loaded ? t('xlmByMemo:load.reload') : t('xlmByMemo:load.button'))}

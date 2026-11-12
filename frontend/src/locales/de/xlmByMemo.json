@@ -43,7 +43,6 @@
     "menu": {
       "recipient": "Empfänger",
       "amount": "Betrag",
-      "wrongMemo": "Falsches Memo",
       "notMemo": "Memo enthält nicht"
     },
     "editor": {
@@ -57,9 +56,7 @@
       "assetCustom": "Anderes Asset",
       "code": "Asset-Code",
       "issuer": "Issuer",
-      "amountHint": "Grenzen sind inklusive, Dezimalkomma ist erlaubt (höchstens 7 Nachkommastellen). Bei Tausch zählt der gesendete Betrag.",
-      "wrongMemoPlaceholder": "Erwartetes Memo, genau so geschrieben",
-      "wrongMemoHint": "Zeigt alle Operationen, deren Memo nicht genau diesem Text entspricht: andere Schreibweise, Tippfehler, Zusatztext oder leeres Memo. Die Richtung wird auf Eingang gestellt."
+      "amountHint": "Grenzen sind inklusive, Dezimalkomma ist erlaubt (höchstens 7 Nachkommastellen). Bei Tausch zählt der gesendete Betrag."
     },
     "chips": {
       "memo": "Memo: {{value}}",
@@ -111,6 +108,12 @@
       "csv": "CSV herunterladen",
       "reset": "Filter zurücksetzen",
       "wallets": "Wallets: {{n}}"
+    },
+    "placeholderWrong": "Erwartetes Memo, genau so geschrieben (Eingabetaste merkt es)",
+    "wrongMode": {
+      "label": "Falsches Memo",
+      "hint": "Zeigt alle Operationen, deren Memo nicht genau dem eingegebenen Text entspricht: andere Schreibweise, Tippfehler, Zusatztext oder leeres Memo.",
+      "empty": "Gib oben das erwartete Memo ein. Ohne Memo kann nichts als falsch erkannt werden."
     }
   },
   "summary": {
@@ -165,10 +168,16 @@
     "button": "Laden",
     "reload": "Neu laden",
     "loading": "Lade…",
-    "hint": "Lade zuerst die Operationen des Kontos im gewählten Zeitraum. Danach kannst du darin suchen und filtern.",
+    "hint": "Wähle einen Zeitraum (Schnellwahl oder Zeitfilter), dann werden die Operationen des Kontos geladen. Danach kannst du darin suchen und filtern.",
     "failed": "Die Operationen konnten nicht geladen werden. Bitte später erneut versuchen."
   },
   "window": {
     "label": "Zeitraum:"
+  },
+  "quick": {
+    "label": "Laden:",
+    "h24": "Letzte 24 Stunden",
+    "d7": "Letzte 7 Tage",
+    "d30": "Letzte 30 Tage"
   }
 }
