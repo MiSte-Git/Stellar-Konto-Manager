@@ -1650,7 +1650,7 @@ export default function AssetSearch() {
               // Merken (Haken im Dialog) erst nach erfolgreichem Senden, wie bei Claimable Balances.
               if (done === true && remember) {
                 try {
-                  await rememberSessionSecrets(flowRef.current?.accountId || accountId, collected);
+                  await rememberSessionSecrets(flowRef.current?.accountId || accountId, collected, flowRef.current?.network || network);
                 } catch (rememberErr) {
                   if (rememberErr instanceof InsecureCryptoContextError) {
                     setActionMessage((prev) => `${prev} ${t('secretKey:remember.insecureContextError')}`.trim());

@@ -18,10 +18,15 @@
 // JS) and, via the inactivity timeout below, shortens how long a forgotten,
 // unattended tab keeps a usable secret around at all.
 
+import { readStoredNetworkId, normalizeNetworkId } from '../config/networks.js';
 import { clearSendPaymentDraft } from './sendPaymentDraft.js';
 
+// Gemerkte Keys sind ans Netz gebunden: Der Speicherschluessel lautet
+// stm.session.secrets.<NETZ>.<Konto>. Ein auf Testnet gemerkter Key ist auf Mainnet
+// unsichtbar (und umgekehrt), bei jedem Lesen, Suchen und Zaehlen. Das Netz ist das
+// globale Netz (SKM_NETWORK), gelesen im Moment des Aufrufs.
 const MAP_PREFIX = 'stm.session.secrets.';
-const LEGACY_PREFIX = 'stm.session.secret.';
+const LEGACY_PREFIX = 'stm.session.secret.'; // nur noch zum Loeschen alter Eintraege
 const ENC_PREFIX = 'enc1:';
 const INACTIVITY_TIMEOUT_MS = 15 * 60 * 1000;
 
@@ -102,6 +107,14 @@ async function decryptSecret(stored) {
   }
 }
 
+function currentNetwork() {
+  return readStoredNetworkId();
+}
+
+function mapKeyFor(network, accountPublicKey) {
+  return `${MAP_PREFIX}${network}.${accountPublicKey}`;
+}
+
 function readRawMap(key) {
   try {
     const raw = sessionStorage.getItem(key);
@@ -117,14 +130,7 @@ function readRawMap(key) {
 /** Returns the stored map of signerPublicKey -> encrypted secret, without decrypting anything. */
 function readEncryptedMap(accountPublicKey) {
   if (!accountPublicKey) return {};
-  const mapKey = `${MAP_PREFIX}${accountPublicKey}`;
-  const fromMap = readRawMap(mapKey);
-  if (fromMap) return fromMap;
-  try {
-    const legacy = sessionStorage.getItem(`${LEGACY_PREFIX}${accountPublicKey}`);
-    if (legacy) return { [accountPublicKey]: legacy };
-  } catch { /* noop */ }
-  return {};
+  return readRawMap(mapKeyFor(currentNetwork(), accountPublicKey)) || {};
 }
 
 // Informs UI (status chip in the top bar, Main) that stored secrets changed.
@@ -135,15 +141,14 @@ function emitSecretChanged(publicKey) {
   } catch { /* noop */ }
 }
 
-/** Public keys of all accounts that have an entry in sessionStorage (names only, no content check). */
+/** Public keys of all accounts with an entry for the CURRENT network (names only, no content check). */
 function listStoredAccounts() {
   const accounts = new Set();
+  const prefix = `${MAP_PREFIX}${currentNetwork()}.`;
   try {
     for (let i = 0; i < sessionStorage.length; i += 1) {
       const key = sessionStorage.key(i);
-      if (!key) continue;
-      if (key.startsWith(MAP_PREFIX)) accounts.add(key.slice(MAP_PREFIX.length));
-      else if (key.startsWith(LEGACY_PREFIX)) accounts.add(key.slice(LEGACY_PREFIX.length));
+      if (key && key.startsWith(prefix)) accounts.add(key.slice(prefix.length));
     }
   } catch { /* noop */ }
   accounts.delete('');
@@ -207,22 +212,26 @@ export function getUsableSignerKeys(accountPublicKey) {
   return [...signers];
 }
 
-export async function setSessionSecrets(accountPublicKey, secretsMap) {
+// network (optional): das Netz, in dem der Ablauf begann. Ist das globale Netz beim Speichern
+// ein anderes, wird nichts gespeichert (false), damit ein Key nie unter dem falschen Netz landet.
+export async function setSessionSecrets(accountPublicKey, secretsMap, network) {
   if (!accountPublicKey) return false;
+  const net = currentNetwork();
+  if (network !== undefined && normalizeNetworkId(network) !== net) return false;
   const entries = Object.entries(secretsMap || {}).filter(([pk, sec]) => pk && sec);
-  const mapKey = `${MAP_PREFIX}${accountPublicKey}`;
+  const mapKey = mapKeyFor(net, accountPublicKey);
   try {
     if (!entries.length) {
       sessionStorage.removeItem(mapKey);
-      sessionStorage.removeItem(`${LEGACY_PREFIX}${accountPublicKey}`);
       emitSecretChanged(accountPublicKey);
       return false;
     }
     const encryptedEntries = await Promise.all(
       entries.map(async ([pk, sec]) => [pk, await encryptSecret(sec)])
     );
+    // Das Verschluesseln ist asynchron: Netz zwischenzeitlich gewechselt, dann nichts speichern.
+    if (currentNetwork() !== net) return false;
     sessionStorage.setItem(mapKey, JSON.stringify(Object.fromEntries(encryptedEntries)));
-    sessionStorage.removeItem(`${LEGACY_PREFIX}${accountPublicKey}`);
     emitSecretChanged(accountPublicKey);
     return true;
   } catch (e) {
@@ -233,8 +242,9 @@ export async function setSessionSecrets(accountPublicKey, secretsMap) {
   }
 }
 
-export async function rememberSessionSecrets(accountPublicKey, collected) {
+export async function rememberSessionSecrets(accountPublicKey, collected, network) {
   if (!accountPublicKey) return false;
+  if (network !== undefined && normalizeNetworkId(network) !== currentNetwork()) return false;
   const next = {};
   for (const entry of (collected || [])) {
     const kp = entry?.keypair;
@@ -244,7 +254,7 @@ export async function rememberSessionSecrets(accountPublicKey, collected) {
   }
   if (!Object.keys(next).length) return false;
   const current = await getSessionSecrets(accountPublicKey);
-  return setSessionSecrets(accountPublicKey, { ...current, ...next });
+  return setSessionSecrets(accountPublicKey, { ...current, ...next }, network);
 }
 
 // Number of accounts that currently have at least one secret remembered in this

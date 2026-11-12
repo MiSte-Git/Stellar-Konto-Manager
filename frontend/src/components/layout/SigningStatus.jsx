@@ -10,6 +10,7 @@ import {
 import NavIcon from './NavIcon.jsx';
 
 const SECRET_CHANGED_EVENT = 'stm-session-secret-changed';
+const NETWORK_EVENT = 'stm-network-changed';
 
 // Gleiche Suche wie getSessionSecret(): Signer des Kontos plus der eigene Key des
 // Kontos, auch wenn er unter einem anderen Konto gemerkt wurde (Multisig-Jobs).
@@ -55,7 +56,12 @@ export default function SigningStatus() {
   React.useEffect(() => {
     const refresh = () => setStatus(readStatus(publicKey));
     window.addEventListener(SECRET_CHANGED_EVENT, refresh);
-    return () => window.removeEventListener(SECRET_CHANGED_EVENT, refresh);
+    // Gemerkte Keys gelten je Netz: nach einem Netzwechsel den Status neu lesen.
+    window.addEventListener(NETWORK_EVENT, refresh);
+    return () => {
+      window.removeEventListener(SECRET_CHANGED_EVENT, refresh);
+      window.removeEventListener(NETWORK_EVENT, refresh);
+    };
   }, [publicKey]);
 
   React.useEffect(() => () => clearTimeout(lockedTimer.current), []);

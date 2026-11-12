@@ -1,5 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
+  clearAllSessionSecrets,
+  getSessionSecretAccountCount,
   getSessionSecret,
   getSessionSecretCount,
   getSessionSecrets,
@@ -28,7 +30,7 @@ afterEach(() => {
 describe('sessionSecrets (hardened storage)', () => {
   it('encrypts the value at rest - the raw sessionStorage entry never contains the plaintext secret', async () => {
     await setSessionSecrets(ACCOUNT, { [SIGNER]: SECRET });
-    const raw = sessionStorage.getItem(`stm.session.secrets.${ACCOUNT}`);
+    const raw = sessionStorage.getItem(`stm.session.secrets.PUBLIC.${ACCOUNT}`);
     expect(raw).toBeTruthy();
     expect(raw).not.toContain(SECRET);
     expect(raw).toContain('enc1:');
@@ -62,12 +64,12 @@ describe('sessionSecrets (hardened storage)', () => {
   });
 
   it('treats a legacy plaintext map entry as pass-through (pre-encryption migration)', async () => {
-    sessionStorage.setItem(`stm.session.secrets.${ACCOUNT}`, JSON.stringify({ [SIGNER]: SECRET }));
+    sessionStorage.setItem(`stm.session.secrets.PUBLIC.${ACCOUNT}`, JSON.stringify({ [SIGNER]: SECRET }));
     expect(await getSessionSecret(ACCOUNT, SIGNER)).toBe(SECRET);
   });
 
   it('fails safe (returns empty) for undecryptable/corrupted entries instead of throwing', async () => {
-    sessionStorage.setItem(`stm.session.secrets.${ACCOUNT}`, JSON.stringify({ [SIGNER]: 'enc1:not-valid-base64-iv:not-valid-ciphertext' }));
+    sessionStorage.setItem(`stm.session.secrets.PUBLIC.${ACCOUNT}`, JSON.stringify({ [SIGNER]: 'enc1:not-valid-base64-iv:not-valid-ciphertext' }));
     await expect(getSessionSecret(ACCOUNT, SIGNER)).resolves.toBe('');
   });
 
@@ -92,7 +94,7 @@ describe('sessionSecrets (hardened storage)', () => {
 
     it('setSessionSecrets throws InsecureCryptoContextError instead of storing the secret in plaintext', async () => {
       await expect(setSessionSecrets(ACCOUNT, { [SIGNER]: SECRET })).rejects.toBeInstanceOf(InsecureCryptoContextError);
-      expect(sessionStorage.getItem(`stm.session.secrets.${ACCOUNT}`)).toBeNull();
+      expect(sessionStorage.getItem(`stm.session.secrets.PUBLIC.${ACCOUNT}`)).toBeNull();
     });
 
     it('rememberSessionSecrets propagates the same error instead of silently no-op-ing', async () => {
@@ -112,9 +114,9 @@ describe('sessionSecrets (lock / status helpers)', () => {
     await setSessionSecrets(ACCOUNT, { [SIGNER]: SECRET });
     await setSessionSecrets(OTHER, { [OTHER]: SECRET });
     expect(getSessionSecretAccountCount()).toBe(2);
-    // legacy key counts too
+    // Alter Eintrag ohne Netz zaehlt nicht (wird beim Laden ohnehin geloescht)
     sessionStorage.setItem('stm.session.secret.GLEGACY', 'x');
-    expect(getSessionSecretAccountCount()).toBe(3);
+    expect(getSessionSecretAccountCount()).toBe(2);
   });
 
   it('clearAllSessionSecrets wipes every account and leaves unrelated keys alone', async () => {
@@ -192,7 +194,7 @@ describe('sessionSecrets (page load)', () => {
   });
 
   it('purges leftover secrets from a previous load (reload, duplicated tab, legacy plaintext)', async () => {
-    sessionStorage.setItem(`stm.session.secrets.${ACCOUNT}`, JSON.stringify({ [SIGNER]: 'enc1:AAAA:BBBB' }));
+    sessionStorage.setItem(`stm.session.secrets.PUBLIC.${ACCOUNT}`, JSON.stringify({ [SIGNER]: 'enc1:AAAA:BBBB' }));
     sessionStorage.setItem(`stm.session.secret.${ACCOUNT}`, SECRET);
     sessionStorage.setItem('SKM_PREV_PATH', '/de/');
     vi.resetModules();
@@ -201,5 +203,83 @@ describe('sessionSecrets (page load)', () => {
     expect(fresh.getSessionSecretAccountCount()).toBe(0);
     expect(await fresh.getSessionSecret(ACCOUNT, ACCOUNT)).toBe('');
     expect(sessionStorage.getItem('SKM_PREV_PATH')).toBe('/de/');
+  });
+});
+
+describe('sessionSecrets (Bindung ans Netz)', () => {
+  const OTHER = 'GD5KJP276E7CZT43PAI5KAEXCUDZMFFMV4X5AGFKBR7Q7IAZZ5BXZVKM';
+  const useNet = (id) => localStorage.setItem('SKM_NETWORK', id);
+
+  beforeEach(() => { localStorage.setItem('SKM_NETWORK', 'PUBLIC'); });
+  afterEach(() => { localStorage.removeItem('SKM_NETWORK'); vi.restoreAllMocks(); });
+
+  it('ein auf Testnet gemerkter Key ist auf Mainnet unsichtbar und danach wieder da', async () => {
+    useNet('TESTNET');
+    await setSessionSecrets(ACCOUNT, { [SIGNER]: SECRET });
+    expect(sessionStorage.getItem(`stm.session.secrets.TESTNET.${ACCOUNT}`)).toBeTruthy();
+
+    useNet('PUBLIC');
+    expect(await getSessionSecret(ACCOUNT, SIGNER)).toBe('');
+    expect(await getSessionSecrets(ACCOUNT)).toEqual({});
+    expect(hasSessionSecrets(ACCOUNT)).toBe(false);
+    expect(getSessionSecretCount(ACCOUNT)).toBe(0);
+    expect(getUsableSignerKeys(ACCOUNT)).toEqual([]);
+    expect(getSessionSecretAccountCount()).toBe(0);
+
+    useNet('TESTNET');
+    expect(await getSessionSecret(ACCOUNT, SIGNER)).toBe(SECRET);
+    expect(getSessionSecretAccountCount()).toBe(1);
+  });
+
+  it('gleiches Konto, zwei Netze: die Keys bleiben getrennt', async () => {
+    useNet('PUBLIC');
+    await setSessionSecrets(ACCOUNT, { [SIGNER]: SECRET });
+    useNet('TESTNET');
+    expect(hasSessionSecrets(ACCOUNT)).toBe(false);
+    await setSessionSecrets(ACCOUNT, { [OTHER]: SECRET });
+    expect(Object.keys(await getSessionSecrets(ACCOUNT))).toEqual([OTHER]);
+    useNet('PUBLIC');
+    expect(Object.keys(await getSessionSecrets(ACCOUNT))).toEqual([SIGNER]);
+  });
+
+  it('die Suche ueber andere Konten (Master unter fremdem Konto gemerkt) gilt nur im selben Netz', async () => {
+    useNet('TESTNET');
+    await setSessionSecrets(OTHER, { [ACCOUNT]: SECRET });
+    expect(await getSessionSecret(ACCOUNT, ACCOUNT)).toBe(SECRET);
+    expect(getUsableSignerKeys(ACCOUNT)).toEqual([ACCOUNT]);
+    useNet('PUBLIC');
+    expect(await getSessionSecret(ACCOUNT, ACCOUNT)).toBe('');
+    expect(getUsableSignerKeys(ACCOUNT)).toEqual([]);
+  });
+
+  it('Merken mit anderem Ablaufnetz als dem globalen Netz speichert nichts', async () => {
+    useNet('PUBLIC');
+    expect(await rememberSessionSecrets(ACCOUNT, [{ keypair: fakeKeypair(SIGNER, SECRET) }], 'TESTNET')).toBe(false);
+    expect(await setSessionSecrets(ACCOUNT, { [SIGNER]: SECRET }, 'TESTNET')).toBe(false);
+    expect(sessionStorage.length).toBe(0);
+    // passendes Netz speichert
+    expect(await rememberSessionSecrets(ACCOUNT, [{ keypair: fakeKeypair(SIGNER, SECRET) }], 'PUBLIC')).toBe(true);
+    expect(hasSessionSecrets(ACCOUNT)).toBe(true);
+  });
+
+  it('Netzwechsel waehrend des Verschluesselns: nichts wird gespeichert', async () => {
+    useNet('PUBLIC');
+    const realEncrypt = crypto.subtle.encrypt.bind(crypto.subtle);
+    vi.spyOn(crypto.subtle, 'encrypt').mockImplementation(async (...args) => {
+      useNet('TESTNET');
+      return realEncrypt(...args);
+    });
+    expect(await setSessionSecrets(ACCOUNT, { [SIGNER]: SECRET })).toBe(false);
+    expect(sessionStorage.length).toBe(0);
+  });
+
+  it('Sperren loescht die Keys beider Netze', async () => {
+    useNet('PUBLIC');
+    await setSessionSecrets(ACCOUNT, { [SIGNER]: SECRET });
+    useNet('TESTNET');
+    await setSessionSecrets(ACCOUNT, { [SIGNER]: SECRET });
+    expect(clearAllSessionSecrets()).toBe(true);
+    expect(sessionStorage.getItem(`stm.session.secrets.PUBLIC.${ACCOUNT}`)).toBeNull();
+    expect(sessionStorage.getItem(`stm.session.secrets.TESTNET.${ACCOUNT}`)).toBeNull();
   });
 });

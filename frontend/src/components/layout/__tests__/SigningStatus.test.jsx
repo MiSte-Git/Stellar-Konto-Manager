@@ -41,6 +41,27 @@ describe('SigningStatus', () => {
     expect(screen.queryByTestId('signing-status-lock')).toBeNull();
   });
 
+  it('Netzwechsel: ein auf Testnet gemerkter Key zeigt auf Mainnet Nur ansehen, zurueck wieder Signieren moeglich', async () => {
+    localStorage.setItem('SKM_NETWORK', 'TESTNET');
+    renderIt();
+    act(() => publishActiveAccount(ACCOUNT));
+    await act(async () => { await setSessionSecrets(ACCOUNT, { [ACCOUNT]: SECRET }); });
+    expect(screen.getByTestId('signing-status-chip')).toHaveAttribute('data-state', 'canSign');
+
+    act(() => {
+      localStorage.setItem('SKM_NETWORK', 'PUBLIC');
+      window.dispatchEvent(new CustomEvent('stm-network-changed', { detail: 'PUBLIC' }));
+    });
+    expect(screen.getByTestId('signing-status-chip')).toHaveAttribute('data-state', 'viewOnly');
+
+    act(() => {
+      localStorage.setItem('SKM_NETWORK', 'TESTNET');
+      window.dispatchEvent(new CustomEvent('stm-network-changed', { detail: 'TESTNET' }));
+    });
+    expect(screen.getByTestId('signing-status-chip')).toHaveAttribute('data-state', 'canSign');
+    localStorage.removeItem('SKM_NETWORK');
+  });
+
   it('wechselt auf Signieren moeglich nach dem Change-Event und sperrt alle Konten', async () => {
     renderIt();
     act(() => publishActiveAccount(ACCOUNT));

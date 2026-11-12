@@ -75,7 +75,8 @@ Folgen daraus:
 - Abgefragt wird ein Secret Key **erst, wenn signiert werden muss**, nicht beim Öffnen eines Kontos.
 - „Für diese Sitzung merken“: AES-GCM-verschlüsselt in `sessionStorage`. Der Schlüssel liegt nur im Arbeitsspeicher
   und wird bei jedem Neuladen neu erzeugt, ein Reload macht also alle gemerkten Secrets unbrauchbar. Löschung nach
-  15 Minuten Inaktivität und beim Schließen des Tabs. Code: `frontend/src/utils/sessionSecrets.js`.
+  15 Minuten Inaktivität und beim Schließen des Tabs. Gemerkte Keys sind ans Netz gebunden (Speicherschlüssel mit
+  Netz): Ein auf Testnet gemerkter Key signiert nie auf Mainnet. Code: `frontend/src/utils/sessionSecrets.js`.
 - Eingegebene Secrets werden in Entwürfen und Listen nicht gespeichert (`containsSecretKey` in
   `frontend/src/utils/batchPayment/`).
 

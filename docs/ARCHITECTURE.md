@@ -43,7 +43,7 @@ React mit Vite, Tailwind CSS v4, framer-motion, i18next.
 | `src/utils/stellar/` | Stellar-Logik ohne UI: Transaktionen bauen, Gebühren, Adresstypen, Claimable Balances, Liquidity Pools, Groupfund-Auswertung |
 | `src/utils/multisig/` | Job-Prüfung (`verifyJobTransaction.js`), Anzeige (`describeTransaction.js`, `describeOperations.js`), Widerruf, Signierstatus |
 | `src/utils/multisigApi.js` | Client für die Multisig-Endpunkte, inkl. Challenge-Signatur mit Zweck |
-| `src/utils/sessionSecrets.js` | Gemerkte Secret Keys, verschlüsselt, mit Inaktivitäts-Timeout |
+| `src/utils/sessionSecrets.js` | Gemerkte Secret Keys, verschlüsselt, je Netz getrennt, mit Inaktivitäts-Timeout |
 | `src/utils/batchPayment/` | Sammelzahlung |
 | `src/utils/submitGuard/` | Unklarer Sendestatus, gemeinsam für Sammelzahlung, „Zahlung senden“, Trading, Liquidity, Claimable Balances und Sammel-Tausch (Hinweiskasten: `components/wallet/AccountSendGuardNotice.jsx`): Auflösung über Horizon, Sperre pro Konto, Send-Lock pro Netz, geschützter Submit (`guardedSubmit`), Bauen von Job und XDR unter derselben Sperre (`guardedUnsignedBuild`), Zeitlimit für Laden und Bauen im Lock (`loadTimeout.js`), React-Hook |
 | `src/utils/db/indexedDbClient.js` | Lokaler Cache für Zahlungen je Konto (IndexedDB) |
