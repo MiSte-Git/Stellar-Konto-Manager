@@ -2,7 +2,7 @@
 // sendet nichts. Der Lock wird per Web Lock gehalten, wie ihn ein zweiter Tab halten wuerde.
 import { test, expect } from '@playwright/test';
 import { readFixtures, accountBalances, xlmOf } from '../setup/fixtures.mjs';
-import { openApp, loadAccount, openMenuItem, inputAfterLabel } from '../helpers.mjs';
+import { openApp, loadAccount, openMenuItem, inputAfterLabel, signWithKey } from '../helpers.mjs';
 
 test('Warten auf belegte Sendesperre abbrechen sendet nichts', async ({ page }) => {
   const fx = readFixtures();
@@ -21,6 +21,8 @@ test('Warten auf belegte Sendesperre abbrechen sendet nichts', async ({ page }) 
   await page.getByPlaceholder('G... oder user*domain').fill(fx.main.public);
   await inputAfterLabel(page, 'Betrag').fill('1');
   await page.getByRole('button', { name: 'Senden', exact: true }).click();
+  // Ohne geladenen Secret Key fragt die App zuerst nach dem Key, danach folgt "Transaktion bestaetigen".
+  await signWithKey(page, fx.main.secret);
   await page.getByRole('button', { name: 'Bist du sicher?' }).click();
 
   await expect(page.getByText(/Wartet auf einen anderen Sendevorgang/)).toBeVisible();
