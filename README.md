@@ -179,7 +179,7 @@ SKM funktioniert vollständig im Stellar-Testnet. Damit lässt sich alles gefahr
   npm run test:e2e -- sendLock   # nur passende Specs; E2E_OFFLINE=1 lässt nur die Specs ohne Testnet laufen
   for f in test/*.test.php; do php "$f" || break; done   # PHP-Tests, Arbeitsverzeichnis: Projekt-Root
   ```
-  Die E2E-Tests (`e2e/`, Fixtures mit frischen Testnet-Konten pro Lauf, Specs, Abdeckungstabelle) sind in [docs/testing.md](docs/testing.md) beschrieben; `test/e2eCoverage.test.js` prüft, dass Specs und Tabelle zusammenpassen. Die Testnet-Keys der Fixtures stehen nur in `e2e/.fixtures/run.json` (nicht versioniert).
+  Die E2E-Tests (`e2e/`, Fixtures mit frischen Testnet-Konten pro Lauf, Specs, Abdeckungstabelle) sind in [docs/testing.md](docs/testing.md) beschrieben; `test/e2eCoverage.test.js` prüft, dass Specs und Tabelle zusammenpassen. Die Testnet-Keys der Fixtures stehen nur in `e2e/.fixtures/run.json` (nicht versioniert). Jeder Lauf endet mit einer Konsolen-Zusammenfassung (Dauer, langsamste Tests, Fehler); Verlauf, HTML-Bericht und Traces liegen unter `e2e/.results/` (nicht versioniert).
   Die Federation-Fälle liegen gemeinsam in `test/assets/federationCases.json` und laufen gegen Node und PHP.
   `test/helpers/horizonAccountsMock.js` ersetzt in Node-HTTP-Tests `loadAccount` (per `node --require` vor `server.js`, Konten aus der Datei in `SKM_TEST_HORIZON_ACCOUNTS`), damit die Live-Prüfung der Signer offline läuft; PHP-Tests belegen dafür `signers_cache.json` vor.
 

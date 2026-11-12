@@ -22,6 +22,12 @@ danach direkt bei Horizon. Sie sind die Wiederholung der manuellen Online-Tests.
   abschwächen.
 - **Start:** `npm run test:e2e` (alle Specs, schreibt `e2e/.last-run.json`) oder `npm run test:e2e -- sendLock`
   (nur passende Specs, zählt nicht als Stand für den Deploy). Einmalig `npx playwright install chromium`.
+- **Log und Bericht:** Nach jedem Lauf gibt es eine Zusammenfassung in der Konsole (ok/rot, Gesamtdauer, die drei
+  langsamsten Tests, Fehler mit erster Meldungszeile, flaky Tests). Dauerhaft liegt alles unter `e2e/.results/`
+  (nicht versioniert): `history.log` (eine Zeile je Test und Lauf: Zeit, Commit, Ergebnis, Dauer, Versuche, Datei,
+  Name, bei Fehlern die erste Meldung), `report/` (HTML, `npx playwright show-report e2e/.results/report`) und
+  `artifacts/` (Screenshots und Traces fehlgeschlagener Tests, `npx playwright show-trace <trace.zip>`). Ein Test,
+  der erst im zweiten Versuch besteht, ist „flaky“: meist Netz oder Friendbot, bei Wiederholung im Verlauf prüfen.
 - **Netz:** Horizon und Friendbot müssen erreichbar sein. Bei Friendbot-Problemen den Lauf später wiederholen,
   kein Fehler der App.
 - **Deploy:** Bei Frontend-Änderungen zeigt der Deploy den Stand des letzten E2E-Laufs und fragt:

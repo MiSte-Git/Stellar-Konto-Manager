@@ -85,3 +85,4 @@ e2e/.fixtures/
 e2e/.last-run.json
 test-results/
 playwright-report/
+e2e/.results/
