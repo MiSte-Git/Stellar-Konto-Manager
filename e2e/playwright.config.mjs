@@ -5,7 +5,7 @@ import { defineConfig, devices } from '@playwright/test';
 // Ergebnisse, Bericht und Traces liegen unter e2e/.results/ (nicht versioniert).
 const RESULTS = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '.results');
 
-// E2E gegen das Testnet (siehe docs/testing.md). Frontend lokal, Backend wird nicht gebraucht.
+// E2E gegen das Testnet (siehe docs/testing.md). Frontend lokal, Backend wird nicht gebraucht (die Asset-Suche im Trading wird in trading.spec.mjs nachgebildet).
 // Start:  npm run test:e2e   (legt Fixtures an, startet Vite falls noetig, schreibt e2e/.last-run.json)
 export default defineConfig({
   testDir: './specs',

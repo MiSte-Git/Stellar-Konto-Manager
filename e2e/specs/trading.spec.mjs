@@ -19,8 +19,33 @@ async function skmaOf(publicKey) {
   return Number(b?.balance || 0);
 }
 
+// Der E2E-Lauf startet nur Vite, kein Backend. Die Asset-Suche des Trading ruft aber das Backend
+// (trade/assets/search, facts, expert): diese drei Aufrufe liefern hier feste Antworten fuer SKMA.
+// Alles andere (Horizon, Signieren, Senden) laeuft echt gegen das Testnet.
+async function mockAssetBackend(page, fx) {
+  const json = (body) => ({ status: 200, contentType: 'application/json', body: JSON.stringify(body) });
+  await page.route('**/api/trade/assets/search*', (route) => route.fulfill(json({
+    items: [{
+      assetCode: 'SKMA',
+      assetIssuer: fx.issuer.public,
+      amount: '1000',
+      numAccounts: 2,
+      claimableBalancesAmount: '',
+      liquidityPoolsAmount: '',
+      contractsAmount: '',
+      pagingToken: `SKMA_${fx.issuer.public}_credit_alphanum4`,
+    }],
+  })));
+  await page.route('**/api/trade/assets/facts*', (route) => route.fulfill(json({
+    issuerAccount: { homeDomain: '' },
+    toml: { status: 'notChecked', url: '', currencies: [], matches: [], error: '' },
+  })));
+  await page.route('**/api/trade/assets/expert*', (route) => route.fulfill(json({ status: 'unavailable' })));
+}
+
 // Konto laden, Trading oeffnen, SKMA suchen und auswaehlen.
 async function openTradingWithSkma(page, fx) {
+  await mockAssetBackend(page, fx);
   await openApp(page);
   await loadAccount(page, fx.main.public);
   await page.locator('header button').first().click();
