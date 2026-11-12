@@ -11,6 +11,7 @@ import { sumIncomingXLMByMemoNoCacheExact_Hybrid as sumIncomingXLMByMemoNoCacheE
 import { getNewestCreatedAt } from '../utils/db/indexedDbClient';
 import { memoLooksLikeUrl, sanitizeMemo } from '../utils/stellar/activity.js';
 import { UrlBadge } from './wallet/ActivityWarnings.jsx';
+import TransactionSearchSection from './TransactionSearchSection.jsx';
 
 // Lokales Datum (YYYY-MM-DD) und lokale Uhrzeit (HH:MM oder HH:MM:SS, immer 24 Stunden).
 // toISOString liefert das UTC-Datum und toLocaleTimeString je nach Sprache 12 Stunden mit
@@ -86,6 +87,7 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = NETWORKS.PUBLIC
   // Neuer Bereich: Top 20-Eingänge (für dieses Memo)
   const [topRows, setTopRows] = useState([]);
   const [topLoading, setTopLoading] = useState(false);
+  const [searchLoading, setSearchLoading] = useState(false);
   const [showTop, setShowTop] = useState(false);
   // Memo-Vergleich: entferne unsichtbare Zeichen + trim (Case-sensitiv wie in queryUtils.cleanMemo)
   const cleanMemo = useCallback((s) => String(s ?? '').replace(/[\u200B-\u200D\uFEFF]/g, '').trim(), []);
@@ -286,7 +288,7 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = NETWORKS.PUBLIC
       const toISOExc = plus1sIso(toUTCISO(toDate, toTime, tz, ROLE.TO));
       const windowMs = Math.max(0, new Date(toISOExc) - new Date(fromISO));
       const etaMs = Math.min(180000, Math.max(15000, Math.floor(windowMs / 20)));
-      setProg(p => ({ ...p, phase: 'scan', progress: 0, etaMs, page: 0 }));
+      setProg(p => ({ ...p, kind: 'memo', phase: 'scan', progress: 0, etaMs, page: 0 }));
       const rangeInfo = { fromISO, toISO: toISOExc, memo: memoQuery };
 
       // Zeilenspeicher vor Lauf leeren
@@ -762,6 +764,7 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = NETWORKS.PUBLIC
     setExportLoading(false);
     setWrongLoading(false);
     setTopLoading(false);
+    setSearchLoading(false);
     setProg((p) => ({ ...p, phase: 'finalize', progress: 1, etaMs: 0 }));
     startedAtRef.current = 0;
   };
@@ -770,7 +773,32 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = NETWORKS.PUBLIC
   // läuft, werden alle 4 Buttons deaktiviert - verhindert parallele Scans,
   // die sich sonst dieselbe Fortschrittsanzeige/denselben Abort-Controller
   // streitig machen würden.
-  const isBusy = isLoading || exportLoading || wrongLoading || topLoading;
+  const isBusy = isLoading || exportLoading || wrongLoading || topLoading || searchLoading;
+
+  // Filtersuche (TransactionSearchSection): Zeitfenster, Lauf-Steuerung und CSV kommen vom Panel.
+  const getSearchWindow = () => ({
+    fromISO: toUTCISO(fromDate, fromTime, tz, ROLE.FROM),
+    toISO: toDate ? plus1sIso(toUTCISO(toDate, toTime, tz, ROLE.TO)) : undefined,
+  });
+  const beginSearchRun = () => {
+    abortRef.current = new AbortController();
+    startedAtRef.current = Date.now();
+    setErrorKey('');
+    setSearchLoading(true);
+    const { fromISO, toISO } = getSearchWindow();
+    const windowMs = Math.max(0, (toISO ? new Date(toISO) : new Date()) - (fromISO ? new Date(fromISO) : new Date(0)));
+    const etaMs = Math.min(180000, Math.max(15000, Math.floor(windowMs / 20)));
+    setProg((p) => ({ ...p, kind: 'search', phase: 'scan', progress: 0, etaMs, page: 0 }));
+    return abortRef.current.signal;
+  };
+  const endSearchRun = () => {
+    setSearchLoading(false);
+    setProg((p) => ({ ...p, phase: 'finalize', progress: 1, etaMs: 0, durationMs: Date.now() - (startedAtRef.current || Date.now()) }));
+  };
+  const downloadSearchCsv = (rows, headers) => {
+    const fn = buildDefaultFilename({ publicKey, menuLabel: t('xlmByMemo:title'), ext: 'csv' });
+    downloadCsv(fn, toCsv(rows, headers));
+  };
 
   return (
     <div className="p-4 rounded-xl border">
@@ -819,7 +847,7 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = NETWORKS.PUBLIC
       </div>
 
       {/* Kompakte Summary */}
-      {prog.phase === 'finalize' && (
+      {prog.phase === 'finalize' && prog.kind !== 'search' && (
         <div className="text-gray-500 mb-2 text-sm text-center">
           <span className="inline-block mx-2">
             {t('xlmByMemo:summary.correctCount', { n: prog.matches ?? 0 })}
@@ -834,7 +862,7 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = NETWORKS.PUBLIC
       )}
 
       {/* Vergleich: alle Eingänge ohne Memo-Filter */}
-      {prog.phase === 'finalize' && prog.incomingOverview && (
+      {prog.phase === 'finalize' && prog.kind !== 'search' && prog.incomingOverview && (
         <div className="mt-1 text-sm text-center opacity-90">
           <span className="inline-block mx-2">
             {t('xlmByMemo:summary.label')}
@@ -1073,6 +1101,17 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = NETWORKS.PUBLIC
           </div>
         </div>
       )}
+
+      <TransactionSearchSection
+        publicKey={publicKey}
+        server={server}
+        getWindow={getSearchWindow}
+        beginRun={beginSearchRun}
+        endRun={endSearchRun}
+        busy={isBusy}
+        onDownloadCsv={downloadSearchCsv}
+        onProgress={onProgress}
+      />
 
       {errorKey && <div className="mt-3 text-red-600">{t(errorKey)}</div>}
 

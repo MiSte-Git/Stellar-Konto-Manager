@@ -35,6 +35,72 @@
     "label": "Gesamtsumme:",
     "value": "{{amount}} XLM"
   },
+  "search": {
+    "title": "Filtersuche (Ein- und Ausgänge)",
+    "intro": "Durchsucht Zahlungen, Kontoerstellungen, Account-Merges und Claimable Balances des geladenen Kontos im oben gewählten Zeitraum. Zwischen den Gruppen gilt UND, innerhalb einer Gruppe ODER. Leere Gruppen zählen nicht.",
+    "memos": {
+      "label": "Memo enthält (eine Zeile je Memo, ODER)",
+      "hint": "Teilstring, Groß-/Kleinschreibung beachten. Dieses Feld ist unabhängig vom Memo-Suchtext oben."
+    },
+    "recipients": {
+      "label": "Empfänger (G- oder M-Adressen, ODER)",
+      "hint": "Eine G-Adresse findet auch Zahlungen an ihre M-Adressen, eine M-Adresse nur genau diese. Mehrere Adressen durch Leerzeichen, Komma oder Zeilenumbruch trennen."
+    },
+    "amount": {
+      "title": "Betrag (Grenzen inklusive)",
+      "from": "Von",
+      "to": "Bis",
+      "asset": "Asset",
+      "native": "XLM",
+      "custom": "Anderes Asset",
+      "code": "Asset-Code",
+      "issuer": "Issuer",
+      "hint": "Verglichen wird je Asset getrennt, bei Tausch der gesendete Betrag. Ohne Von/Bis wird nicht nach Betrag gefiltert. Dezimalkomma ist erlaubt, höchstens 7 Nachkommastellen."
+    },
+    "direction": {
+      "label": "Richtung",
+      "all": "Eingang und Ausgang",
+      "in": "Nur Eingang",
+      "out": "Nur Ausgang",
+      "hint": "Zahlungen vom Konto an sich selbst zählen in beiden Richtungen."
+    },
+    "dir": {
+      "in": "Eingang",
+      "out": "Ausgang",
+      "self": "an sich selbst"
+    },
+    "button": "Suchen",
+    "searching": "Suche läuft…",
+    "failed": "Die Suche ist fehlgeschlagen. Bitte später erneut versuchen.",
+    "errors": {
+      "recipientInvalid": "Keine gültige G- oder M-Adresse: {{value}}",
+      "recipientSecretKey": "Im Feld Empfänger steht ein Secret Key. Bitte entfernen: Secret Keys gehören nie in eine Suche.",
+      "tooManyMemos": "Zu viele Memos (höchstens {{max}}).",
+      "tooManyRecipients": "Zu viele Empfänger (höchstens {{max}}).",
+      "amountInvalid": "Ungültiger Betrag: {{value}} (höchstens 7 Nachkommastellen)",
+      "amountRange": "Der Betrag Von ist größer als Bis.",
+      "assetCodeInvalid": "Ungültiger Asset-Code (1 bis 12 Buchstaben oder Ziffern).",
+      "assetIssuerInvalid": "Ungültiger Issuer (G-Adresse erwartet)."
+    },
+    "columns": {
+      "created_at": "Erstellt am",
+      "from": "Von",
+      "to": "An",
+      "amount": "Betrag",
+      "memo": "Memo",
+      "tx_hash": "Transaktions-Hash"
+    },
+    "result": {
+      "title": "Treffer: {{count}}",
+      "none": "Keine Treffer im gewählten Zeitraum.",
+      "incomplete": "Treffermenge unvollständig: Es wurde nur bis {{date}} geladen (Ladegrenze). Zeitraum verkleinern, um alles zu erfassen.",
+      "memoIncomplete": "Die Memos konnten nicht für alle Treffer geladen werden (Ladegrenze).",
+      "sums": "Summen je Asset:",
+      "sumLine": "{{amount}} {{asset}} ({{count}})",
+      "capped": "Angezeigt werden die ersten {{shown}} von {{total}} Treffern. Die CSV enthält alle.",
+      "csv": "CSV herunterladen"
+    }
+  },
   "summary": {
     "amount": "Summe: {{amount}} XLM",
     "correctCount": "Eingänge mit korrektem Memo: {{n}}",
