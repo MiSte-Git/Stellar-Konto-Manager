@@ -21,6 +21,7 @@ Local-first Stellar Wallet & Account Manager: Trustlines, Zahlungen, Muxed Accou
 
 ### B. Trustlines
 - Trustlines anzeigen, hinzufügen, löschen (chunked), Limits berücksichtigen.
+- Pool-Share-Salden (`liquidity_pool_shares`) erscheinen nicht in der Trustline-Liste, sondern unter „Liquidity Pools“ (`loadTrustlines` filtert sie heraus; Regressionstest `utils/stellar/__tests__/loadTrustlines.test.js`).
 - Vergleich zweier Konten (Duplikate erkennen, keine Alt/Neu-Vergleiche).
 - Multisig-Prepare-Flow für ChangeTrust möglich.
 

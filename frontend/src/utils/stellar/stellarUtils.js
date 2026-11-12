@@ -268,7 +268,9 @@ export async function loadTrustlines(publicKey, serverOverride, options = {}) {
     const server = serverOverride || getHorizonServer();
     // Apply gentle retry/backoff for rate limits
     const account = await loadAccountCached(server, publicKey, { ttlMs });
-    const balances = account.balances.filter(b => b.asset_type !== 'native');
+    // Pool-Share-Salden (liquidity_pool_shares) sind keine Asset-Trustlines: Sie haben weder asset_code
+    // noch asset_issuer und gehören auf die Liquidity-Pool-Seite. Sonst bricht das Sortieren ab.
+    const balances = account.balances.filter(b => b.asset_type !== 'native' && b.asset_type !== 'liquidity_pool_shares');
 
     // Optional: Hole zusätzlich die Change-Trust-Operationen für createdAt (mit Retry, kleinere Page) – best effort
     let changeTrustOps = [];
