@@ -1,16 +1,14 @@
-// SKM_VER:XlmByMemoPanel.jsx@2025-09-10
-import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
+// SKM_VER:XlmByMemoPanel.jsx@2026-11-12
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { NETWORKS } from '../config/networks.js';
 import { useTranslation } from "react-i18next";
 import { getHorizonServer } from "../utils/stellar/stellarUtils";
 import ProgressBar from "../components/ProgressBar.jsx";
-import { formatLocalDateTime, formatElapsedMmSs } from '../utils/datetime';
+import { formatElapsedMmSs } from '../utils/datetime';
 import { buildDefaultFilename } from '../utils/filename';
 import { csvLine } from '../utils/csvEscape.js';
-import { sumIncomingXLMByMemoNoCacheExact_Hybrid as sumIncomingXLMByMemoNoCacheExact, withRetry } from "../utils/stellar/queryUtils";
-import { getNewestCreatedAt } from '../utils/db/indexedDbClient';
-import { memoLooksLikeUrl, sanitizeMemo } from '../utils/stellar/activity.js';
-import { UrlBadge } from './wallet/ActivityWarnings.jsx';
+import { withRetry } from "../utils/stellar/queryUtils";
+import { loadOperations } from '../utils/stellar/transactionSearch.js';
 import TransactionSearchSection from './TransactionSearchSection.jsx';
 
 // Lokales Datum (YYYY-MM-DD) und lokale Uhrzeit (HH:MM oder HH:MM:SS, immer 24 Stunden).
@@ -26,82 +24,41 @@ function localTimeStr(d, withSeconds = false) {
   return withSeconds ? `${hm}:${pad2(d.getSeconds())}` : hm;
 }
 
-// Message queryUtils.js/handleCancel use to signal a user-initiated abort -
-// never shown as an error, in any of the 4 scan operations.
-// Memos stammen von Absendern: nur bereinigt als Text zeigen, Webadressen markieren.
-function MemoCell({ memo }) {
-  const shown = sanitizeMemo(memo);
-  return (
-    <div className="font-mono break-all">
-      {shown || '(leer)'}
-      {memoLooksLikeUrl(shown) && <div><UrlBadge /></div>}
-    </div>
-  );
-}
-
 const ABORT_MESSAGE = 'submitTransaction.failed:cache.backfill.aborted';
 const isAbortError = (e) => e?.message === ABORT_MESSAGE;
 
-// Erlaubte Payment-Operationen (Modulweit; stabil für Hooks)
-const PAY_TYPES = new Set([
-  'payment',
-  'path_payment',
-  'path_payment_strict_receive',
-  'path_payment_strict_send',
-]);
 
 /**
- * Panel: Eingabe für Memo + optionales Zeitfenster und Anzeige der XLM-Summe.
- * - Alle sichtbaren Texte via t()
- * - Errors werden als i18n-Key angezeigt
+ * Transaktionen durchsuchen: Zeitraum waehlen, die Operationen des geladenen Kontos einmal laden
+ * und danach in TransactionSearchSection filtern. Ein Kontowechsel verwirft die geladene Liste.
+ * Der Export aller Operationen (CSV) laeuft unabhaengig davon direkt gegen Horizon.
  */
-export default function XlmByMemoPanel({ publicKey, horizonUrl = NETWORKS.PUBLIC.horizonUrl , onBack: ON_BACK }) {
+export default function XlmByMemoPanel({ publicKey, horizonUrl = NETWORKS.PUBLIC.horizonUrl }) {
   const { t } = useTranslation(['xlmByMemo', 'common']);
-  void ON_BACK;
-  const [memoQuery, setMemoQuery] = useState("");
-  const [memoHistory, setMemoHistory] = useState([]);
-  // Datum + Zeit getrennt, damit wir sauber TZ anwenden können
+  // Datum + Zeit getrennt, damit wir sauber TZ anwenden koennen
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
   const [fromTime, setFromTime] = useState("00:00");
   const [toTime, setToTime] = useState(() => localTimeStr(new Date()));
-  // Zeitzone: 'local' | 'utc' | 'cst' | 'cdt'
+  // Zeitzone: 'local' | 'utc' | 'cst' | 'cdt' | 'europe_zurich'
   const [tz, setTz] = useState("local");
 
   const [isLoading, setIsLoading] = useState(false);
-  const [, setResult] = useState(null);
+  const [exportLoading, setExportLoading] = useState(false);
   const [errorKey, setErrorKey] = useState("");
+  const [loaded, setLoaded] = useState(null);
   const ROLE = { FROM: 'from', TO: 'to' };
-  const [prog, setProg] = useState({ progress: null, phase: 'idle', page: 0, etaMs: 0, oldest: '' });
+  const [prog, setProg] = useState({ progress: null, phase: 'idle', page: 0, etaMs: 0 });
   const abortRef = useRef(null);
   const heartbeatRef = useRef(null);
   const startedAtRef = useRef(0);
   const [elapsedMs, setElapsedMs] = useState(0);
-  const [resultAmount, setResultAmount] = useState(null);
-  const [lastPaymentISO, setLastPaymentISO] = useState(null);
-  const rowsRef = useRef([]); // Trefferzeilen für Export „Treffer (Memo)“
-  const [exportLoading, setExportLoading] = useState(false);
-  // Für Extra-Auswertung: Zahlungen mit falschem/leerem Memo
-  const [wrongRows, setWrongRows] = useState([]);
-  const [wrongLoading, setWrongLoading] = useState(false);
-  // Neuer Bereich: Top 20-Eingänge (für dieses Memo)
-  const [topRows, setTopRows] = useState([]);
-  const [topLoading, setTopLoading] = useState(false);
-  const [searchLoading, setSearchLoading] = useState(false);
-  const [showTop, setShowTop] = useState(false);
-  // Memo-Vergleich: entferne unsichtbare Zeichen + trim (Case-sensitiv wie in queryUtils.cleanMemo)
-  const cleanMemo = useCallback((s) => String(s ?? '').replace(/[\u200B-\u200D\uFEFF]/g, '').trim(), []);
-  const [showWrong, setShowWrong] = useState(false);
-  const [wrongSummary, setWrongSummary] = useState({ count: 0, sum: 0, unique: 0 });
-  // Sortierung für Tabellen
-  const [wrongSort, setWrongSort] = useState({ key: 'created_at', dir: 'desc' });
-  const [topSort, setTopSort] = useState({ key: 'amount', dir: 'desc' });
 
   // Horizon-Server (Projektvorgabe: immer Horizon)
   const server = getHorizonServer(horizonUrl);
 
   useEffect(() => {
-    // Sekündlicher Heartbeat, solange wir "aktiv" sind
+    // Sekuendlicher Heartbeat, solange wir "aktiv" sind
     if (prog.phase !== 'idle' && prog.phase !== 'finalize') {
       if (!heartbeatRef.current) {
         heartbeatRef.current = setInterval(() => {
@@ -122,35 +79,25 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = NETWORKS.PUBLIC
     return () => { if (heartbeatRef.current) { clearInterval(heartbeatRef.current); heartbeatRef.current = null; } };
   }, [prog.phase]);
 
-  // Setze Default-Zeitraum: gestern → heute
+  // Standard-Zeitraum: gestern bis heute
   useEffect(() => {
     const now = new Date();
-    const today = localDateStr(now);
-    const yesterday = localDateStr(new Date(now.getTime() - 24 * 60 * 60 * 1000));
-    setFromDate(yesterday);
-    setToDate(today);
+    setFromDate(localDateStr(new Date(now.getTime() - 24 * 60 * 60 * 1000)));
+    setToDate(localDateStr(now));
   }, []);
 
-  // Load memo history from localStorage
+  // Kontowechsel: laufende Abfrage abbrechen und die geladene Liste verwerfen
+  const firstAccountRef = useRef(publicKey);
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem('xlmByMemo.memoHistory');
-      if (raw) {
-        const arr = JSON.parse(raw);
-        if (Array.isArray(arr)) setMemoHistory(arr.filter(x => typeof x === 'string'));
-      }
-    } catch { /* noop */ }
-  }, []);
-
-  function saveMemoToHistory(memo) {
-    const m = String(memo || '').trim();
-    if (!m) return;
-    setMemoHistory(prev => {
-      const next = [m, ...prev.filter(x => x !== m)].slice(0, 20);
-      try { localStorage.setItem('xlmByMemo.memoHistory', JSON.stringify(next)); } catch { /* noop */ }
-      return next;
-    });
-  }
+    if (firstAccountRef.current === publicKey) return;
+    firstAccountRef.current = publicKey;
+    try { abortRef.current?.abort(); } catch { void 0; }
+    setLoaded(null);
+    setErrorKey('');
+    setIsLoading(false);
+    setExportLoading(false);
+    setProg({ progress: null, phase: 'idle', page: 0, etaMs: 0 });
+  }, [publicKey]);
 
   /**
    * Konvertiert Date+Time + gewählte TZ in eine UTC-ISO-Zeit (String).
@@ -220,124 +167,38 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = NETWORKS.PUBLIC
     return new Date(new Date(iso).getTime() + 1000).toISOString();
   }
 
-  // Vereinheitlicht Progress-Updates und merged nested Felder korrekt.
-  const onProgress = useCallback((info = {}) => {
-      setProg((p) => ({
-        ...p,
-        ...info,
-        incomingOverview: {
-          ...(p.incomingOverview || {}),
-          ...(info.incomingOverview || {}),
-        },
-      }));
-  }, []);
+  const onProgress = useCallback((info = {}) => { setProg((p) => ({ ...p, ...info })); }, []);
 
-  // Hilfsfunktion: Sortierung
-  const sortRows = useCallback((arr, sort) => {
-    const { key, dir } = sort || {};
-    const mul = dir === 'asc' ? 1 : -1;
-    return [...(arr || [])].sort((a, b) => {
-      const va = a?.[key];
-      const vb = b?.[key];
-      if (key === 'amount') {
-        const na = parseFloat(va || '0');
-        const nb = parseFloat(vb || '0');
-        return (na - nb) * mul;
-      }
-      if (key === 'created_at') {
-        // ISO-Strings sind lexikographisch vergleichbar
-        if (va === vb) return 0;
-        return (va > vb ? 1 : -1) * mul;
-      }
-      const sa = String(va ?? '');
-      const sb = String(vb ?? '');
-      return sa.localeCompare(sb) * mul;
-    });
-  }, []);
+  const windowIso = () => {
+    const fromISO = toUTCISO(fromDate, fromTime, tz, ROLE.FROM);
+    const toISOExc = toDate ? plus1sIso(toUTCISO(toDate, toTime, tz, ROLE.TO)) : undefined;
+    return { fromISO, toISOExc };
+  };
+  const estimateEtaMs = (fromISO, toISOExc) => {
+    const windowMs = Math.max(0, (toISOExc ? new Date(toISOExc) : new Date()) - (fromISO ? new Date(fromISO) : new Date(0)));
+    return Math.min(180000, Math.max(15000, Math.floor(windowMs / 20)));
+  };
 
-  const sortedWrongRows = useMemo(() => sortRows(wrongRows, wrongSort), [wrongRows, wrongSort, sortRows]);
-  const sortedTopRows = useMemo(() => sortRows(topRows, topSort), [topRows, topSort, sortRows]);
-
-  const handleWrongSort = useCallback((key) => {
-    setWrongSort((s) => (s.key === key ? { key, dir: s.dir === 'asc' ? 'desc' : 'asc' } : { key, dir: 'desc' }));
-  }, [setWrongSort]);
-  const handleTopSort = useCallback((key) => {
-    setTopSort((s) => (s.key === key ? { key, dir: s.dir === 'asc' ? 'desc' : 'asc' } : { key, dir: 'desc' }));
-  }, [setTopSort]);
-  const sortArrow = useCallback((state, key) => (state.key === key ? (state.dir === 'asc' ? ' ▲' : ' ▼') : ''), []);
-
-  /**
-   * Startet die Summierung mit optionalem Datum-Filter.
-   * rowsRef.current wird dabei mit Trefferzeilen befüllt.
-   */
-  const handleCalculate = async () => {
+  /** Laedt die Operationen des Kontos im Zeitraum einmal; gefiltert wird danach im Browser. */
+  const handleLoad = async () => {
     setIsLoading(true);
-    setErrorKey("");
-    setResult(null);
-    setResultAmount(0);
-    setLastPaymentISO(null);
-
-    // store memo to history
-    saveMemoToHistory(memoQuery);
+    setErrorKey('');
+    setLoaded(null);
     try {
       abortRef.current = new AbortController();
       startedAtRef.current = Date.now();
-
-      // Zeitgrenzen (UTC, obere Grenze exklusiv)
-      const fromISO = toUTCISO(fromDate, fromTime, tz, ROLE.FROM);
-      const toISOExc = plus1sIso(toUTCISO(toDate, toTime, tz, ROLE.TO));
-      const windowMs = Math.max(0, new Date(toISOExc) - new Date(fromISO));
-      const etaMs = Math.min(180000, Math.max(15000, Math.floor(windowMs / 20)));
-      setProg(p => ({ ...p, kind: 'memo', phase: 'scan', progress: 0, etaMs, page: 0 }));
-      const rangeInfo = { fromISO, toISO: toISOExc, memo: memoQuery };
-
-      // Zeilenspeicher vor Lauf leeren
-      rowsRef.current = [];
-
-      // Live, Tx-First (bewährt, liefert sicher ein Ergebnis)
-      const res = await sumIncomingXLMByMemoNoCacheExact({
-        server,
-        accountId: publicKey,
-        memoQuery,
-          fromISO,
-          toISO: toISOExc,
-        onProgress,
-        collectRow: (r) => { rowsRef.current.push({ ...r, memo: String(r?.memo ?? r?.transaction_memo ?? '') }); },
-        signal: abortRef.current.signal,
+      const { fromISO, toISOExc } = windowIso();
+      setProg({ phase: 'scan', progress: 0, etaMs: estimateEtaMs(fromISO, toISOExc), page: 0 });
+      const res = await loadOperations({
+        server, accountId: publicKey, fromISO, toISO: toISOExc, onProgress, signal: abortRef.current.signal,
       });
-
-      setResult({ total: res.amount, rangeInfo });
-      setResultAmount(res.amount);
-
-      const newestISO = await getNewestCreatedAt(publicKey);
-      setLastPaymentISO(newestISO);
-      setProg((p) => ({
-        ...p,
-        progress: 1,
-        phase: 'finalize',
-        etaMs: 0,
-        durationMs: Date.now() - (startedAtRef.current || Date.now()),
-        newestPaymentISO: newestISO,
-        matches: res.hits,
-        incomingOverview: res.incomingOverview || p.incomingOverview
-      }));
+      setLoaded(res);
     } catch (e) {
-      // User-initiated cancellation (handleCancel) is not an error - show
-      // nothing instead of leaking queryUtils.js's internal, untranslated
-      // abort message (was previously displayed raw to the user).
-      setErrorKey(isAbortError(e) ? '' : (e?.message || 'error.xlmByMemo.paymentsFetch'));
-      const newestISO = await getNewestCreatedAt(publicKey);
-      setLastPaymentISO(newestISO);
-      setProg((p) => ({
-        ...p,
-        progress: 1,
-        phase: 'finalize',
-        etaMs: 0,
-        durationMs: Date.now() - (startedAtRef.current || Date.now()),
-        newestPaymentISO: newestISO,
-      }));
+      // Abbruch durch den Nutzer ist kein Fehler
+      setErrorKey(isAbortError(e) ? '' : 'xlmByMemo:load.failed');
     } finally {
       setIsLoading(false);
+      setProg((p) => ({ ...p, phase: 'finalize', progress: 1, etaMs: 0 }));
     }
   };
 
@@ -369,10 +230,6 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = NETWORKS.PUBLIC
       window.requestAnimationFrame(click);
     }
   }
-
-  // Export 1: Treffer (exaktes Memo im Zeitraum) – wenn keine Trefferliste vorhanden ist,
-  // werden nur die Treffer (mit passendem Memo) aus dem Cache gezogen. Exportiert wird aber immer die vorhandene Trefferliste unverändert.
-  // Hinweis: Export der exakten Treffer ist derzeit nicht über einen Button erreichbar.
 
   // Export: Alle eingehenden nativen Payments im Zeitraum (inkl. memo) mit robustem Nachladen
   const handleExportCsv = useCallback(async () => {
@@ -523,599 +380,110 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = NETWORKS.PUBLIC
     }
   }, [fromDate, fromTime, toDate, toTime, tz, publicKey, server, ROLE.FROM, ROLE.TO, t]);
 
-  // Optional: Beide auf einmal exportieren
-
-  // Scan: Eingehende native Zahlungen mit falschem/leerem Memo im Zeitraum
-  const handleShowWrongMemos = useCallback(async () => {
-    try {
-      setWrongLoading(true);
-      abortRef.current = new AbortController();
-      const { signal } = abortRef.current;
-      setProg(p => ({ ...p, phase: 'scan', progress: 0, page: 0 }));
-      setShowWrong(false);
-      setWrongRows([]);
-      setWrongSummary({ count: 0, sum: 0, unique: 0 });
-
-      const fromISO = toUTCISO(fromDate, fromTime, tz, ROLE.FROM);
-      const toISOExc = plus1sIso(toUTCISO(toDate, toTime, tz, ROLE.TO));
-      const q = String(memoQuery || '');
-
-      // 1) Transaktions-Memos im Zeitfenster vorab einsammeln (Hash -> Memo)
-      const txMemo = new Map();
-      let txPage = await withRetry(() => server
-        .transactions()
-        .forAccount(publicKey)
-        .order('desc')
-        .limit(200)
-        .call());
-      let txStop = false;
-      while (!txStop) {
-        if (signal.aborted) throw new Error(ABORT_MESSAGE);
-        const trecs = txPage?.records || [];
-        for (const tr of trecs) {
-          const created = tr.created_at || '';
-          if (toISOExc && created >= toISOExc) continue;
-          if (fromISO && created < fromISO) { txStop = true; break; }
-          txMemo.set(tr.hash, tr?.memo != null ? String(tr.memo) : '');
-        }
-        if (txStop || !txPage.next) break;
-        txPage = await withRetry(() => txPage.next());
-      }
-
-      // 2) Scan über payments; Memo aus txMemo-Map beziehen
-      const rows = [];
-      const uniq = new Set();
-      const qClean = cleanMemo(q);
-
-      let page = await withRetry(() => server
-        .payments()
-        .forAccount(publicKey)
-        .order('desc')
-        .limit(200)
-        .call());
-
-      let stop = false;
-      let pages = 0;
-      while (!stop) {
-        if (signal.aborted) throw new Error(ABORT_MESSAGE);
-        const recs = page?.records || [];
-        for (const r of recs) {
-          const created = r.created_at || '';
-          if (toISOExc && created >= toISOExc) continue; // obere Grenze exklusiv
-          if (fromISO && created < fromISO) { stop = true; break; }
-
-          const t = String(r.type || '');
-          let amountStr = '';
-          let fromAddr = '';
-          let toAddr = '';
-
-          if (t === 'payment' || t.startsWith('path_payment')) {
-            if ((r.asset_type || 'native') !== 'native') continue;
-            if (r.to !== publicKey) continue;
-            amountStr = r.amount || '0';
-            fromAddr = r.from || '';
-            toAddr = r.to || publicKey;
-          } else if (t === 'create_account') {
-            if (r.account !== publicKey) continue;
-            amountStr = r.starting_balance || '0';
-            fromAddr = r.funder || '';
-            toAddr = r.account || publicKey;
-          } else {
-            continue;
-          }
-
-          const amt = parseFloat(amountStr);
-          if (!Number.isFinite(amt) || amt <= 0) continue;
-
-          const memoRaw = txMemo.get(r.transaction_hash) ?? '';
-          const memoClean = cleanMemo(memoRaw);
-
-          if (qClean && memoClean.includes(qClean)) continue; // korrektes Memo (Teilstring) → nicht in Liste
-
-          rows.push({
-            created_at: r.created_at,
-            from: fromAddr,
-            to: toAddr,
-            amount: amountStr,
-            memo: memoRaw,
-            tx_hash: r.transaction_hash,
-          });
-          if (fromAddr) uniq.add(fromAddr);
-        }
-        if (stop || !page.next) break;
-        pages += 1;
-        if (pages % 3 === 0) setProg(p => ({ ...p, phase: 'scan', page: pages }));
-        page = await withRetry(() => page.next());
-      }
-
-      const sum = rows.reduce((a, r) => a + (parseFloat(r.amount) || 0), 0);
-      setWrongRows(rows);
-      setWrongSummary({ count: rows.length, sum, unique: uniq.size });
-      setShowWrong(true);
-      setProg(p => ({ ...p, phase: 'finalize', progress: 1 }));
-    } catch (e) {
-      setErrorKey(isAbortError(e) ? '' : 'xlmByMemo.wrongMemos.failed');
-    } finally {
-      setWrongLoading(false);
-    }
-  }, [fromDate, fromTime, toDate, toTime, tz, memoQuery, publicKey, server, ROLE.FROM, ROLE.TO, cleanMemo]);
-
-  // Scan: Top 20 eingehende nativen Zahlungen mit passendem Memo (Teilstring) im Zeitraum
-  const handleShowTopLargest = useCallback(async () => {
-   try {
-   setTopLoading(true);
-   abortRef.current = new AbortController();
-   const { signal } = abortRef.current;
-   setProg(p => ({ ...p, phase: 'scan', progress: 0, page: 0 }));
-   setShowTop(false);
-   setTopRows([]);
-
-      const fromISO = toUTCISO(fromDate, fromTime, tz, ROLE.FROM);
-      const toISOExc = plus1sIso(toUTCISO(toDate, toTime, tz, ROLE.TO));
-      const q = String(memoQuery || '');
-      const qClean = cleanMemo(q);
-
-      // 1) Transaktions-Memos im Zeitfenster einsammeln (Hash -> Memo)
-      const txMemo = new Map();
-      let txPage = await withRetry(() => server
-        .transactions()
-        .forAccount(publicKey)
-        .order('desc')
-        .limit(200)
-        .call());
-      let txStop = false;
-      while (!txStop) {
-        if (signal.aborted) throw new Error(ABORT_MESSAGE);
-        const trecs = txPage?.records || [];
-        for (const tr of trecs) {
-          const created = tr.created_at || '';
-          if (toISOExc && created >= toISOExc) continue;
-          if (fromISO && created < fromISO) { txStop = true; break; }
-          txMemo.set(tr.hash, tr?.memo != null ? String(tr.memo) : '');
-        }
-        if (txStop || !txPage.next) break;
-        txPage = await withRetry(() => txPage.next());
-      }
-
-      // 2) Zahlungen scannen, passende Memos sammeln
-      let page = await withRetry(() => server
-        .payments()
-        .forAccount(publicKey)
-        .order('desc')
-        .limit(200)
-        .call());
-
-      const rows = [];
-      let stop = false;
-      let pages = 0;
-      while (!stop) {
-        if (signal.aborted) throw new Error(ABORT_MESSAGE);
-        const recs = page?.records || [];
-        for (const r of recs) {
-          const created = r.created_at || '';
-          if (toISOExc && created >= toISOExc) continue; // obere Grenze exklusiv
-          if (fromISO && created < fromISO) { stop = true; break; }
-
-          const t = String(r.type || '');
-          let amountStr = '';
-          let fromAddr = '';
-          let toAddr = '';
-
-          if (t === 'payment' || t.startsWith('path_payment')) {
-            if ((r.asset_type || 'native') !== 'native') continue;
-            if (r.to !== publicKey) continue;
-            amountStr = r.amount || '0';
-            fromAddr = r.from || '';
-            toAddr = r.to || publicKey;
-          } else if (t === 'create_account') {
-            if (r.account !== publicKey) continue;
-            amountStr = r.starting_balance || '0';
-            fromAddr = r.funder || '';
-            toAddr = r.account || publicKey;
-          } else {
-            continue;
-          }
-
-          const amt = parseFloat(amountStr);
-          if (!Number.isFinite(amt) || amt <= 0) continue;
-
-          const memoRaw = txMemo.get(r.transaction_hash) ?? '';
-          const memoClean = cleanMemo(memoRaw);
-          if (!qClean || !memoClean.includes(qClean)) continue; // nur passende Memos
-
-          rows.push({
-            created_at: r.created_at,
-            from: fromAddr,
-            to: toAddr,
-            amount: amountStr,
-            memo: memoRaw,
-            tx_hash: r.transaction_hash,
-          });
-        }
-        if (stop || !page.next) break;
-        pages += 1;
-        if (pages % 3 === 0) setProg(p => ({ ...p, phase: 'scan', page: pages }));
-        page = await withRetry(() => page.next());
-      }
-
-      // 3) Top 20 nach Betrag
-      rows.sort((a, b) => (parseFloat(b.amount || '0') - parseFloat(a.amount || '0')));
-      const top20 = rows.slice(0, 20);
-
-      setTopRows(top20);
-      setShowTop(true);
-      setProg(p => ({ ...p, phase: 'finalize', progress: 1 }));
-    } catch (e) {
-      setErrorKey(isAbortError(e) ? '' : 'error.xlmByMemo.failedUnknown');
-    } finally {
-      setTopLoading(false);
-    }
-  }, [fromDate, fromTime, toDate, toTime, tz, memoQuery, publicKey, server, cleanMemo, ROLE.FROM, ROLE.TO]);
-
-  // Bricht laufende Requests ab und beendet die UI sauber. Da immer nur eine
-  // der 4 Scan-Operationen gleichzeitig laufen kann (siehe isBusy unten),
-  // gehört der abgebrochene Lauf immer zu genau einem dieser Flags - alle
-  // vier hier sofort zurückzusetzen ist harmlos und macht den Button sofort
-  // wieder nutzbar, statt auf den asynchronen Abbruch der Schleife zu warten.
-  // Sichtbarer Text kommt aus i18n (progress.canceled).
+  // Bricht laufende Requests ab und beendet die UI sauber.
   const handleCancel = () => {
-    try { abortRef.current?.abort(); } catch {void 0;}
+    try { abortRef.current?.abort(); } catch { void 0; }
     setIsLoading(false);
     setExportLoading(false);
-    setWrongLoading(false);
-    setTopLoading(false);
-    setSearchLoading(false);
     setProg((p) => ({ ...p, phase: 'finalize', progress: 1, etaMs: 0 }));
     startedAtRef.current = 0;
   };
 
-  // Gegenseitige Sperre (Fund #11-8): solange irgendeine der 4 Operationen
-  // läuft, werden alle 4 Buttons deaktiviert - verhindert parallele Scans,
-  // die sich sonst dieselbe Fortschrittsanzeige/denselben Abort-Controller
-  // streitig machen würden.
-  const isBusy = isLoading || exportLoading || wrongLoading || topLoading || searchLoading;
-
-  // Filtersuche (TransactionSearchSection): Zeitfenster, Lauf-Steuerung und CSV kommen vom Panel.
-  const getSearchWindow = () => ({
-    fromISO: toUTCISO(fromDate, fromTime, tz, ROLE.FROM),
-    toISO: toDate ? plus1sIso(toUTCISO(toDate, toTime, tz, ROLE.TO)) : undefined,
-  });
-  const beginSearchRun = () => {
-    abortRef.current = new AbortController();
-    startedAtRef.current = Date.now();
-    setErrorKey('');
-    setSearchLoading(true);
-    const { fromISO, toISO } = getSearchWindow();
-    const windowMs = Math.max(0, (toISO ? new Date(toISO) : new Date()) - (fromISO ? new Date(fromISO) : new Date(0)));
-    const etaMs = Math.min(180000, Math.max(15000, Math.floor(windowMs / 20)));
-    setProg((p) => ({ ...p, kind: 'search', phase: 'scan', progress: 0, etaMs, page: 0 }));
-    return abortRef.current.signal;
-  };
-  const endSearchRun = () => {
-    setSearchLoading(false);
-    setProg((p) => ({ ...p, phase: 'finalize', progress: 1, etaMs: 0, durationMs: Date.now() - (startedAtRef.current || Date.now()) }));
-  };
   const downloadSearchCsv = (rows, headers) => {
     const fn = buildDefaultFilename({ publicKey, menuLabel: t('xlmByMemo:title'), ext: 'csv' });
     downloadCsv(fn, toCsv(rows, headers));
   };
 
+  // Laden und Export schliessen sich gegenseitig aus (gemeinsame Fortschrittsanzeige und Abbruch).
+  const isBusy = isLoading || exportLoading;
+  const running = prog.phase !== 'idle' && prog.phase !== 'finalize';
+  const rangeText = `${fromDate || '…'} ${fromTime} – ${toDate || '…'} ${toTime} · ${t(`xlmByMemo:tz.${tz}`)}`;
+
   return (
     <div className="p-4 rounded-xl border">
-      {/* Kopf: 3-Spalten-Grid */}
-      <div className="grid grid-cols-3 items-start mb-2">
-        {/* Links: Titel */}
-        <div className="col-span-1">
-          <h3 className="font-semibold">{t('xlmByMemo:title')}</h3>
-        </div>
-
-        {/* Mitte: Progressbar (zentriert), Summe drunter, Abbrechen drunter */}
-        <div className="col-span-1 flex flex-col items-center">
-          <div className="w-full max-w-[260px]">
-            <ProgressBar {...prog} />
-          </div>
-          <div className="text-xs text-gray-500 mt-1">
-            {t('common:progress.elapsed', { time: formatElapsedMmSs(elapsedMs) })}
-          </div>
-          {prog.phase === 'finalize' && lastPaymentISO && (
-            <div className="text-xs mt-1 opacity-80">
-              {t('common:cache.lastPaymentAt', { val: formatLocalDateTime(lastPaymentISO) })}
+      <div className="flex flex-wrap items-start gap-2">
+        <details className="flex-1 min-w-[16rem] border rounded-sm">
+          <summary className="cursor-pointer p-2 text-sm">
+            <span className="text-gray-500">{t('xlmByMemo:window.label')} </span>{rangeText}
+          </summary>
+          <div className="p-3 border-t">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label className="block text-sm mb-1">{t("xlmByMemo:date.from")}</label>
+                <input type="date" className="w-full border rounded-sm p-2" value={fromDate} onChange={(e) => setFromDate(e.target.value)} />
+                <input type="time" step="1" className="mt-2 w-full border rounded-sm p-2" value={fromTime} onChange={(e) => setFromTime(e.target.value)} />
+              </div>
+              <div>
+                <label className="block text-sm mb-1">{t("xlmByMemo:date.to")}</label>
+                <input type="date" className="w-full border rounded-sm p-2" value={toDate} onChange={(e) => setToDate(e.target.value)} />
+                <input type="time" step="1" className="mt-2 w-full border rounded-sm p-2" value={toTime} onChange={(e) => setToTime(e.target.value)} />
+                <div className="text-right">
+                  <button
+                    type="button"
+                    onClick={handleSetToNow}
+                    className="px-2 py-1 text-sm rounded-sm border bg-gray-600 hover:bg-gray-500 mt-1"
+                    title={t('xlmByMemo:time.setToNowHint')}
+                  >
+                    {t('xlmByMemo:time.setToNow')}
+                  </button>
+                </div>
+              </div>
             </div>
-          )}
-
-          {/* Summe unter der Progressbar */}
-          {typeof resultAmount === 'number' && (
-            <div className="text-sm font-medium mt-1">
-              {t('xlmByMemo:result.value', { amount: resultAmount.toFixed(7) })}
+            <label className="block text-sm mt-3 mb-1" htmlFor="xlm-tz">{t("xlmByMemo:tz.label")}</label>
+            <select id="xlm-tz" className="w-full border rounded-sm p-2" value={tz} onChange={(e) => setTz(e.target.value)}>
+              <option value="cst">{t("xlmByMemo:tz.cst")}</option>
+              <option value="cdt">{t("xlmByMemo:tz.cdt")}</option>
+              <option value="utc">{t("xlmByMemo:tz.utc")}</option>
+              <option value="europe_zurich">{t("xlmByMemo:tz.europe_zurich")}</option>
+              <option value="local">{t("xlmByMemo:tz.local")}</option>
+            </select>
+            <p className="text-xs text-gray-500 mt-1">{t("xlmByMemo:tz.note")}</p>
+            <div className="mt-1 text-xs text-gray-500">
+              {t('xlmByMemo:tz.window', {
+                from: fromDate ? toUTCISO(fromDate, fromTime, tz, ROLE.FROM) : '—',
+                to: toDate ? plus1sIso(toUTCISO(toDate, toTime, tz, ROLE.TO)) : '—',
+              })}
             </div>
-          )}
-
-          {/* Abbrechen-Button unter der Progressbar */}
-          {prog.phase !== 'idle' && prog.phase !== 'finalize' && (
-            <button
-              className="text-sm px-2 py-1 rounded-sm bg-gray-500 text-white mt-2"
-              onClick={handleCancel}
-              disabled={prog.phase === 'finalize'}
-            >
-              {t('common:progress.cancel')}
-            </button>
-          )}
-        </div>
-
-        {/* Rechts: (frei) */}
-        <div className="col-span-1" />
-      </div>
-
-      {/* Kompakte Summary */}
-      {prog.phase === 'finalize' && prog.kind !== 'search' && (
-        <div className="text-gray-500 mb-2 text-sm text-center">
-          <span className="inline-block mx-2">
-            {t('xlmByMemo:summary.correctCount', { n: prog.matches ?? 0 })}
-          </span>
-          <span className="inline-block mx-2">
-            {t('xlmByMemo:summary.otherCount', { n: Math.max(0, (prog.incomingOverview?.total ?? 0) - (prog.matches ?? 0)) })}
-          </span>
-          <span className="inline-block mx-2">
-            {t('xlmByMemo:summary.uniqueWallets', { n: prog.incomingOverview?.unique ?? 0 })}
-          </span>
-        </div>
-      )}
-
-      {/* Vergleich: alle Eingänge ohne Memo-Filter */}
-      {prog.phase === 'finalize' && prog.kind !== 'search' && prog.incomingOverview && (
-        <div className="mt-1 text-sm text-center opacity-90">
-          <span className="inline-block mx-2">
-            {t('xlmByMemo:summary.label')}
-          </span>
-          <span className="inline-block mx-2">
-            {t('xlmByMemo:summary.count', { n: prog.incomingOverview.total ?? 0 })}
-          </span>
-          <span className="inline-block mx-2">
-            {t('xlmByMemo:summary.amount', {
-              amount: (prog.incomingOverview.totalAmount ?? 0).toFixed(7)
-            })}
-          </span>
-          <span className="inline-block mx-2">
-            {t('xlmByMemo:summary.unique', { n: prog.incomingOverview?.uniqueAll ?? 0 })}
-          </span>
-        </div>
-      )}
-
-      {/* Memo mit History */}
-      <label className="block text-sm mb-1">{t("xlmByMemo:memo.label")}</label>
-      <input
-        className="w-full border rounded-sm p-2 mb-1"
-        placeholder={t("xlmByMemo:memo.placeholder")}
-        value={memoQuery}
-        onChange={(e) => setMemoQuery(e.target.value)}
-        list="memo-history"
-      />
-      <datalist id="memo-history">
-        {memoHistory.map((m, i) => (
-          <option key={i} value={m} />
-        ))}
-      </datalist>
-
-      {/* Datum & Zeit (optional) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <div>
-          <label className="block text-sm mb-1">{t("xlmByMemo:date.from")}</label>
-          <input
-            type="date"
-            className="w-full border rounded-sm p-2"
-            value={fromDate}
-            onChange={(e) => setFromDate(e.target.value)}
-          />
-          <input
-            type="time"
-            step="1"
-            className="mt-2 w-full border rounded-sm p-2"
-            value={fromTime}
-            onChange={(e) => setFromTime(e.target.value)}
-          />
-        </div>
-        <div>
-          <label className="block text-sm mb-1">{t("xlmByMemo:date.to")}</label>
-          <input
-            type="date"
-            className="w-full border rounded-sm p-2"
-            value={toDate}
-            onChange={(e) => setToDate(e.target.value)}
-          />
-          <input
-            type="time"
-            step="1"
-            className="mt-2 w-full border rounded-sm p-2"
-            value={toTime}
-            onChange={(e) => setToTime(e.target.value)}
-          />
-          <div className="text-right">
-            <button
-              type="button"
-              onClick={handleSetToNow}
-              className="ml-2 px-2 py-1 text-sm rounded-sm border bg-gray-600 hover:bg-gray-500 mt-1"
-              title={t('xlmByMemo:time.setToNowHint')}
-            >
-              {t('xlmByMemo:time.setToNow')}
-            </button>
-          </div>       
-        </div>
-      </div>
-
-      {/* Zeitzone */}
-      <div className="mt-3">
-        <label className="block text-sm mb-1">{t("xlmByMemo:tz.label")}</label>
-        <select
-          className="w-full border rounded-sm p-2"
-          value={tz}
-          onChange={(e) => setTz(e.target.value)}
+          </div>
+        </details>
+        <button
+          className="px-4 py-2 rounded-sm bg-blue-600 text-white disabled:opacity-50"
+          onClick={handleLoad}
+          disabled={isBusy}
         >
-          <option value="cst">{t("xlmByMemo:tz.cst")}</option>
-          <option value="cdt">{t("xlmByMemo:tz.cdt")}</option>
-          <option value="utc">{t("xlmByMemo:tz.utc")}</option>
-          <option value="europe_zurich">{t("xlmByMemo:tz.europe_zurich")}</option>
-          <option value="local">{t("xlmByMemo:tz.local")}</option>
-        </select>
-        <p className="text-xs text-gray-500 mt-1">{t("xlmByMemo:tz.note")}</p>
-        <div className="mt-1 text-xs text-gray-500">
-          {t('xlmByMemo:tz.window', {
-            from: fromDate ? toUTCISO(fromDate, fromTime, tz, ROLE.FROM) : '—',
-            to: toDate ? plus1sIso(toUTCISO(toDate, toTime, tz, ROLE.TO)) : '—'
-          })}
-        </div>
-      </div>
-
-
-      <button
-        className="mt-4 px-4 py-2 rounded-sm bg-blue-600 text-white disabled:opacity-50"
-        onClick={handleCalculate}
-        disabled={isBusy || !memoQuery}
-      >
-        {isLoading ? t("xlmByMemo:action.loading") : t("xlmByMemo:action.calculate")}
-      </button>
-
-      {/* Export */}
-      <div className="mt-2 flex items-start gap-3">
+          {isLoading ? t('xlmByMemo:load.loading') : (loaded ? t('xlmByMemo:load.reload') : t('xlmByMemo:load.button'))}
+        </button>
         <button onClick={handleExportCsv} className="btn btn-secondary disabled:opacity-50" disabled={isBusy}>
           {t('xlmByMemo:export.csvAll')}
         </button>
-        <button
-          onClick={handleShowWrongMemos}
-          className="px-2 py-1 text-sm rounded-sm border bg-amber-600 text-white hover:bg-amber-500 disabled:opacity-50"
-          disabled={isBusy || !memoQuery}
-          title={t('xlmByMemo:wrongMemos.hint')}
-        >
-          {t('xlmByMemo:wrongMemos.button')}
-        </button>
-        {wrongLoading && <span className="text-xs opacity-80">{t('xlmByMemo:wrongMemos.scanning')}</span>}
-        {/* Neuer Button: Top 20 Eingänge für dieses Memo */}
-        <button
-          onClick={handleShowTopLargest}
-          className="px-2 py-1 text-sm rounded-sm border bg-emerald-700 text-white hover:bg-emerald-600 disabled:opacity-50"
-          disabled={isBusy || !memoQuery}
-        >
-          {t('xlmByMemo:topLargest.button')}
-        </button>
-        {topLoading && <span className="text-xs opacity-80">{t('xlmByMemo:topLargest.scanning')}</span>}
       </div>
 
-      {/* Ergebnis: falsche/leer Memos */}
-      {showWrong && (
-        <div className="mt-3 border rounded-sm p-2">
-          <div className="text-sm font-medium mb-1">{t('xlmByMemo:wrongMemos.title')}</div>
-          <div className="text-xs text-gray-600 mb-2">
-            {t('xlmByMemo:wrongMemos.summary', { count: wrongSummary.count, sum: Number(wrongSummary.sum).toFixed(7), unique: wrongSummary.unique })}
+      {running && (
+        <div className="mt-3 max-w-sm">
+          <ProgressBar {...prog} />
+          <div className="text-xs text-gray-500 mt-1">
+            {t('common:progress.elapsed', { time: formatElapsedMmSs(elapsedMs) })}
           </div>
-          <div className="overflow-auto max-h-64 text-xs">
-            <div className="grid grid-cols-5 gap-2 font-semibold sticky top-0 bg-gray z-10 py-1">
-              <div className="cursor-pointer select-none" onClick={() => handleWrongSort('created_at')}>{t('xlmByMemo:wrongMemos.columns.created_at')}{sortArrow(wrongSort,'created_at')}</div>
-              <div className="cursor-pointer select-none" onClick={() => handleWrongSort('from')}>{t('xlmByMemo:wrongMemos.columns.from')}{sortArrow(wrongSort,'from')}</div>
-              <div className="cursor-pointer select-none" onClick={() => handleWrongSort('amount')}>{t('xlmByMemo:wrongMemos.columns.amount')}{sortArrow(wrongSort,'amount')}</div>
-              <div className="cursor-pointer select-none" onClick={() => handleWrongSort('memo')}>{t('xlmByMemo:wrongMemos.columns.memo')}{sortArrow(wrongSort,'memo')}</div>
-              <div className="cursor-pointer select-none" onClick={() => handleWrongSort('tx_hash')}>{t('xlmByMemo:wrongMemos.columns.tx_hash')}{sortArrow(wrongSort,'tx_hash')}</div>
-            </div>
-            <div className="mt-1">
-              {sortedWrongRows.map((r, i) => (
-                <div key={i} className="grid grid-cols-5 gap-2 py-0.5">
-                  <div className="font-mono">{r.created_at}</div>
-                  <div className="font-mono break-all">{r.from}</div>
-                  <div className="font-mono">{r.amount}</div>
-                  <MemoCell memo={r.memo} />
-                  <div className="font-mono break-all">{r.tx_hash}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="mt-2 flex gap-2">
-            <button
-              className="px-2 py-1 text-sm rounded-sm border bg-gray-600 text-white hover:bg-gray-500"
-              onClick={() => {
-                const headers = ['created_at','from','to','amount','memo','tx_hash'];
-                const csv = toCsv(wrongRows, headers);
-                const fn = buildDefaultFilename({ publicKey, menuLabel: t('xlmByMemo:title'), ext: 'csv' });
-                downloadCsv(fn, csv);
-              }}
-            >
-              {t('xlmByMemo:wrongMemos.csv')}
-            </button>
-            <button
-              className="px-2 py-1 text-sm rounded-sm border"
-              onClick={async () => {
-                const header = `${t('xlmByMemo:wrongMemos.columns.created_at')}\t${t('xlmByMemo:wrongMemos.columns.from')}\t${t('xlmByMemo:wrongMemos.columns.amount')}\t${t('xlmByMemo:wrongMemos.columns.memo')}\t${t('xlmByMemo:wrongMemos.columns.tx_hash')}`;
-                const lines = [header, ...wrongRows.map(r => `${r.created_at}\t${r.from}\t${r.amount}\t${r.memo || '(leer)'}\t${r.tx_hash}`)].join('\n');
-                try { await navigator.clipboard.writeText(lines); } catch { /* noop */ }
-              }}
-            >
-              {t('xlmByMemo:wrongMemos.clipboard')}
-            </button>
-          </div>
+          <button className="text-sm px-2 py-1 rounded-sm bg-gray-500 text-white mt-2" onClick={handleCancel}>
+            {t('common:progress.cancel')}
+          </button>
         </div>
       )}
 
-      {/* Ergebnis: Top 20 Eingänge für dieses Memo */}
-      {showTop && (
-        <div className="mt-3 border rounded-sm p-2">
-          <div className="text-sm font-medium mb-1">{t('xlmByMemo:topLargest.title')}</div>
-          <div className="overflow-auto max-h-64 text-xs">
-            <div className="grid grid-cols-5 gap-2 font-semibold sticky top-0 bg-gray z-10 py-1">
-              <div className="cursor-pointer select-none" onClick={() => handleTopSort('created_at')}>{t('xlmByMemo:wrongMemos.columns.created_at')}{sortArrow(topSort,'created_at')}</div>
-              <div className="cursor-pointer select-none" onClick={() => handleTopSort('from')}>{t('xlmByMemo:wrongMemos.columns.from')}{sortArrow(topSort,'from')}</div>
-              <div className="cursor-pointer select-none" onClick={() => handleTopSort('amount')}>{t('xlmByMemo:wrongMemos.columns.amount')}{sortArrow(topSort,'amount')}</div>
-              <div className="cursor-pointer select-none" onClick={() => handleTopSort('memo')}>{t('xlmByMemo:wrongMemos.columns.memo')}{sortArrow(topSort,'memo')}</div>
-              <div className="cursor-pointer select-none" onClick={() => handleTopSort('tx_hash')}>{t('xlmByMemo:wrongMemos.columns.tx_hash')}{sortArrow(topSort,'tx_hash')}</div>
-            </div>
-            <div className="mt-1">
-              {sortedTopRows.map((r, i) => (
-                <div key={i} className="grid grid-cols-5 gap-2 py-0.5">
-                  <div className="font-mono">{r.created_at}</div>
-                  <div className="font-mono break-all">{r.from}</div>
-                  <div className="font-mono">{r.amount}</div>
-                  <MemoCell memo={r.memo} />
-                  <div className="font-mono break-all">{r.tx_hash}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="mt-2 flex gap-2">
-            <button
-              className="px-2 py-1 text-sm rounded-sm border bg-gray-600 text-white hover:bg-gray-500"
-              onClick={() => {
-                const headers = ['created_at','from','to','amount','memo','tx_hash'];
-                const csv = toCsv(sortedTopRows, headers);
-                const fn = buildDefaultFilename({ publicKey, menuLabel: t('xlmByMemo:title'), ext: 'csv' });
-                downloadCsv(fn, csv);
-              }}
-            >
-              {t('xlmByMemo:topLargest.csv')}
-            </button>
-            <button
-              className="px-2 py-1 text-sm rounded-sm border"
-              onClick={async () => {
-                const header = `${t('xlmByMemo:wrongMemos.columns.created_at')}\t${t('xlmByMemo:wrongMemos.columns.from')}\t${t('xlmByMemo:wrongMemos.columns.amount')}\t${t('xlmByMemo:wrongMemos.columns.memo')}\t${t('xlmByMemo:wrongMemos.columns.tx_hash')}`;
-                const lines = [header, ...sortedTopRows.map(r => `${r.created_at}\t${r.from}\t${r.amount}\t${r.memo || '(leer)'}\t${r.tx_hash}`)].join('\n');
-                try { await navigator.clipboard.writeText(lines); } catch { /* noop */ }
-              }}
-            >
-              {t('xlmByMemo:topLargest.clipboard')}
-            </button>
-          </div>
-        </div>
+      {loaded ? (
+        <TransactionSearchSection
+          rows={loaded.rows}
+          incomplete={loaded.incomplete}
+          memoIncomplete={loaded.memoIncomplete}
+          oldestLoaded={loaded.oldestLoaded}
+          busy={isBusy}
+          onDownloadCsv={downloadSearchCsv}
+        />
+      ) : (
+        !running && <p className="mt-4 text-sm text-gray-500">{t('xlmByMemo:load.hint')}</p>
       )}
 
-      <TransactionSearchSection
-        publicKey={publicKey}
-        server={server}
-        getWindow={getSearchWindow}
-        beginRun={beginSearchRun}
-        endRun={endSearchRun}
-        busy={isBusy}
-        onDownloadCsv={downloadSearchCsv}
-        onProgress={onProgress}
-      />
-
-      {errorKey && <div className="mt-3 text-red-600">{t(errorKey)}</div>}
-
+      {errorKey && <div className="mt-3 text-red-600" role="alert">{t(errorKey)}</div>}
     </div>
   );
 }
-

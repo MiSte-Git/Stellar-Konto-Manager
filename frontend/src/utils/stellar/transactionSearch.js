@@ -1,7 +1,7 @@
 // Filtersuche ueber Operationen eines Kontos (Menue: Transaktionen durchsuchen).
-// Reine Logik: Eingaben pruefen, Horizon-Operationen vereinheitlichen, Filter anwenden, laden.
+// Reine Logik: Operationen einmal laden und vereinheitlichen, danach beliebig oft filtern und sortieren.
 // Verknuepfung: ODER innerhalb einer Gruppe (mehrere Memos, mehrere Empfaenger), UND zwischen
-// den Gruppen Memo, Empfaenger, Betrag und Richtung. Leere Gruppen zaehlen nicht.
+// den Gruppen Memo, Memo nicht, Empfaenger, Betrag und Richtung. Leere Gruppen zaehlen nicht.
 import { StrKey } from '@stellar/stellar-sdk';
 import { cleanMemo, withRetry } from './queryUtils.js';
 
@@ -62,13 +62,26 @@ function splitList(text, separator) {
   return out;
 }
 
-// raw: { memosText, recipientsText, amountAsset: 'native'|'custom', assetCode, assetIssuer,
+// Ein Empfaenger-Eintrag: G- oder M-Adresse. Ergebnis { kind, value } oder { error, value }.
+// Secret Keys werden nie zurueckgegeben (weder als value noch in params).
+export function parseRecipient(token) {
+  const tok = String(token ?? '').trim();
+  if (StrKey.isValidEd25519PublicKey(tok)) return { kind: 'G', value: tok };
+  if (StrKey.isValidMed25519PublicKey(tok)) return { kind: 'M', value: tok };
+  if (StrKey.isValidEd25519SecretSeed(tok)) return { error: 'recipientSecretKey' };
+  return { error: 'recipientInvalid', value: safeEcho(tok) };
+}
+
+// raw: { memosText, notMemosText, recipientsText, amountAsset: 'native'|'custom', assetCode, assetIssuer,
 //        amountMin, amountMax, direction: 'all'|'in'|'out' }
 // Ergebnis: { ok: true, filters } oder { ok: false, errors: [{ key, params }] }
 export function buildSearchFilters(raw = {}) {
   const errors = [];
   const memos = splitList(raw.memosText, /\r?\n/).map(cleanMemo).filter(Boolean);
-  if (memos.length > MAX_FILTER_ENTRIES) errors.push({ key: 'tooManyMemos', params: { max: MAX_FILTER_ENTRIES } });
+  const notMemos = splitList(raw.notMemosText, /\r?\n/).map(cleanMemo).filter(Boolean);
+  if (memos.length > MAX_FILTER_ENTRIES || notMemos.length > MAX_FILTER_ENTRIES) {
+    errors.push({ key: 'tooManyMemos', params: { max: MAX_FILTER_ENTRIES } });
+  }
 
   const recipients = [];
   const recipientTokens = splitList(raw.recipientsText, /[\s,;]+/);
@@ -76,10 +89,9 @@ export function buildSearchFilters(raw = {}) {
     errors.push({ key: 'tooManyRecipients', params: { max: MAX_FILTER_ENTRIES } });
   }
   for (const tok of recipientTokens) {
-    if (StrKey.isValidEd25519PublicKey(tok)) recipients.push({ kind: 'G', value: tok });
-    else if (StrKey.isValidMed25519PublicKey(tok)) recipients.push({ kind: 'M', value: tok });
-    else if (StrKey.isValidEd25519SecretSeed(tok)) errors.push({ key: 'recipientSecretKey', params: {} });
-    else errors.push({ key: 'recipientInvalid', params: { value: safeEcho(tok) } });
+    const res = parseRecipient(tok);
+    if (res.error) errors.push({ key: res.error, params: res.error === 'recipientInvalid' ? { value: res.value } : {} });
+    else recipients.push(res);
   }
 
   const minText = String(raw.amountMin ?? '').trim();
@@ -105,11 +117,11 @@ export function buildSearchFilters(raw = {}) {
   if (errors.length) return { ok: false, errors };
 
   const amount = (min !== null || max !== null) ? { assetKey, min, max } : null;
-  return { ok: true, filters: { memos, recipients, amount, direction } };
+  return { ok: true, filters: { memos, notMemos, recipients, amount, direction } };
 }
 
 export function hasAnyFilter(filters) {
-  return !!(filters && (filters.memos.length || filters.recipients.length || filters.amount || filters.direction !== 'all'));
+  return !!(filters && (filters.memos.length || filters.notMemos.length || filters.recipients.length || filters.amount || filters.direction !== 'all'));
 }
 
 function assetKeyOf(r, prefix = '') {
@@ -180,6 +192,11 @@ export function matchesFilters(row, filters) {
     const memo = cleanMemo(row.memo);
     if (!memo || !filters.memos.some((q) => memo.includes(q))) return false;
   }
+  if (filters.notMemos.length) {
+    // leeres Memo enthaelt nichts und besteht diesen Filter
+    const memo = cleanMemo(row.memo);
+    if (memo && filters.notMemos.some((q) => memo.includes(q))) return false;
+  }
   if (filters.recipients.length) {
     const hit = filters.recipients.some((f) => row.recipients.some((x) => (f.kind === 'M' ? x.m === f.value : x.g === f.value)));
     if (!hit) return false;
@@ -242,18 +259,13 @@ export async function loadTxMemos({ server, accountId, fromISO, toISO, signal, n
   }
 }
 
-// Laedt die Operationen des Kontos im Zeitfenster (neueste zuerst) und filtert sie.
-// Ergebnis: { rows, incomplete, oldestLoaded, scanned }. incomplete = Ladegrenze erreicht.
-export async function searchOperations({ server, accountId, filters, fromISO, toISO, signal, onProgress, maxPages = MAX_PAGES }) {
-  let incomplete = false;
-  let txMemos = null;
-  if (filters.memos.length) {
-    const res = await loadTxMemos({ server, accountId, fromISO, toISO, signal, maxPages });
-    txMemos = res.memos;
-    incomplete = res.incomplete;
-  }
-
+// Laedt einmal alle suchbaren Operationen des Kontos im Zeitfenster (neueste zuerst), jeweils mit dem
+// Memo der Transaktion. Gefiltert wird danach im Browser mit matchesFilters.
+// Ergebnis: { rows, incomplete, memoIncomplete, oldestLoaded, scanned }. incomplete = Ladegrenze erreicht.
+export async function loadOperations({ server, accountId, fromISO, toISO, signal, onProgress, maxPages = MAX_PAGES }) {
+  const txRes = await loadTxMemos({ server, accountId, fromISO, toISO, signal, maxPages });
   const rows = [];
+  let incomplete = false;
   let scanned = 0;
   let oldestLoaded = '';
   let page = await retry(() => server.operations().forAccount(accountId).order('desc').limit(200).call(), signal);
@@ -269,8 +281,8 @@ export async function searchOperations({ server, accountId, filters, fromISO, to
       oldestLoaded = created;
       const row = normalizeOperation(r, accountId);
       if (!row) continue;
-      if (txMemos) row.memo = txMemos.get(row.tx_hash) ?? '';
-      if (matchesFilters(row, filters)) rows.push(row);
+      row.memo = txRes.memos.get(row.tx_hash) ?? '';
+      rows.push(row);
     }
     if (reachedStart || !page.next || !(page.records || []).length) break;
     if (pages >= maxPages) { incomplete = true; break; }
@@ -278,15 +290,20 @@ export async function searchOperations({ server, accountId, filters, fromISO, to
     page = await retry(() => page.next(), signal);
     pages += 1;
   }
+  // Memos der Transaktionen sind nur in einem Teil des Fensters geladen: Memo-Filter waeren unvollstaendig
+  return { rows, incomplete, memoIncomplete: txRes.incomplete, oldestLoaded, scanned };
+}
 
-  // Memos fuer die Anzeige nachladen (nur fuer Treffer), wenn nicht schon geladen
-  let memoIncomplete = false;
-  if (!txMemos && rows.length) {
-    const need = new Set(rows.map((r) => r.tx_hash).filter(Boolean));
-    const res = await loadTxMemos({ server, accountId, fromISO, toISO, signal, need, maxPages });
-    memoIncomplete = res.incomplete && [...need].some((h) => !res.memos.has(h));
-    for (const r of rows) r.memo = res.memos.get(r.tx_hash) ?? '';
-  }
-
-  return { rows, incomplete, memoIncomplete, oldestLoaded, scanned };
+// Sortierung fuer die Anzeige. key: 'created_at' | 'amount'. Zeilen ohne Betrag kommen bei amount ans Ende.
+export function sortRows(rows, { key = 'created_at', dir = 'desc' } = {}) {
+  const mul = dir === 'asc' ? 1 : -1;
+  return [...rows].sort((a, b) => {
+    if (key === 'amount') {
+      if (a.stroops == null && b.stroops == null) return 0;
+      if (a.stroops == null) return 1;
+      if (b.stroops == null) return -1;
+      return a.stroops === b.stroops ? 0 : (a.stroops > b.stroops ? 1 : -1) * mul;
+    }
+    return a.created_at === b.created_at ? 0 : (a.created_at > b.created_at ? 1 : -1) * mul;
+  });
 }

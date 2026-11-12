@@ -83,6 +83,13 @@ select:-webkit-autofill:focus {
     font-family: inherit;
   }
 
+  /* Dropdown-Listen: Das Popup kann hell sein, waehrend die Schrift vom dunklen Seitenstil erbt.
+     Optionen bekommen deshalb immer Hintergrund und Schrift passend zum Seitenstil. */
+  select option {
+    background-color: #242424;
+    color: rgba(255, 255, 255, 0.87);
+  }
+
   :root {
     font-family: Arial, sans-serif;
     line-height: 1.5;
@@ -128,6 +135,10 @@ select:-webkit-autofill:focus {
   }
 
   @media (prefers-color-scheme: light) {
+    select option {
+      background-color: #ffffff;
+      color: #213547;
+    }
     :root {
       color: #213547;
       background-color: #ffffff;

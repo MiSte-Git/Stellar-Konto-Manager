@@ -3,7 +3,7 @@ import { describe, it, expect } from 'vitest';
 import { Account, Keypair, MuxedAccount } from '@stellar/stellar-sdk';
 import {
   parseStroops, formatStroops, buildSearchFilters, normalizeOperation, matchesFilters,
-  sumByAsset, searchOperations, SEARCH_ABORT_MESSAGE,
+  sumByAsset, loadOperations, sortRows, parseRecipient, SEARCH_ABORT_MESSAGE,
 } from '../transactionSearch.js';
 
 const ME = Keypair.random().publicKey();
@@ -198,35 +198,83 @@ function fakeServer({ ops, txs }) {
 }
 const op = (n, o = {}) => pay({ id: String(n), transaction_hash: `h${n}`, created_at: `2026-11-0${n}T00:00:00Z`, amount: `${n}.0000000`, ...o });
 
-describe('searchOperations', () => {
+describe('matchesFilters: Memo enthaelt nicht', () => {
+  it('schliesst Treffer aus, leeres Memo besteht den Filter (wie die frueheren falschen/leeren Memos)', () => {
+    const f = build({ notMemosText: 'Miete' });
+    expect(matchesFilters(row({}, 'Miete Nov'), f)).toBe(false);
+    expect(matchesFilters(row({}, 'Danke'), f)).toBe(true);
+    expect(matchesFilters(row({}, ''), f)).toBe(true);
+  });
+  it('mehrere Eintraege sind ODER (ein Treffer reicht zum Ausschluss) und wirken UND mit Memo enthaelt', () => {
+    const f = build({ memosText: 'Abo', notMemosText: 'alt\nstorno' });
+    expect(matchesFilters(row({}, 'Abo neu'), f)).toBe(true);
+    expect(matchesFilters(row({}, 'Abo alt'), f)).toBe(false);
+    expect(matchesFilters(row({}, 'Abo storno'), f)).toBe(false);
+    expect(matchesFilters(row({}, 'neu'), f)).toBe(false);
+  });
+});
+
+describe('parseRecipient', () => {
+  it('erkennt G, M, Secret Key und Unsinn, ohne den Secret Key preiszugeben', () => {
+    const secret = Keypair.random().secret();
+    expect(parseRecipient(` ${A} `)).toEqual({ kind: 'G', value: A });
+    expect(parseRecipient(M1)).toEqual({ kind: 'M', value: M1 });
+    expect(parseRecipient(secret)).toEqual({ error: 'recipientSecretKey' });
+    expect(parseRecipient('hallo')).toEqual({ error: 'recipientInvalid', value: 'hallo' });
+  });
+});
+
+describe('sortRows', () => {
+  const r = (id, created_at, amount) => ({ id, created_at, stroops: amount == null ? null : parseStroops(amount) });
+  const rows = [r('a', '2026-11-01', '5'), r('b', '2026-11-03', '20'), r('c', '2026-11-02', null), r('d', '2026-11-04', '1,5')];
+  it('nach Datum auf- und absteigend', () => {
+    expect(sortRows(rows, { key: 'created_at', dir: 'desc' }).map((x) => x.id)).toEqual(['d', 'b', 'c', 'a']);
+    expect(sortRows(rows, { key: 'created_at', dir: 'asc' }).map((x) => x.id)).toEqual(['a', 'c', 'b', 'd']);
+  });
+  it('nach Betrag exakt, Zeilen ohne Betrag immer am Ende (Top-Liste)', () => {
+    expect(sortRows(rows, { key: 'amount', dir: 'desc' }).map((x) => x.id)).toEqual(['b', 'a', 'd', 'c']);
+    expect(sortRows(rows, { key: 'amount', dir: 'asc' }).map((x) => x.id)).toEqual(['d', 'a', 'b', 'c']);
+  });
+  it('veraendert das Eingabe-Array nicht', () => {
+    const copy = rows.map((x) => x.id);
+    sortRows(rows, { key: 'amount', dir: 'desc' });
+    expect(rows.map((x) => x.id)).toEqual(copy);
+  });
+});
+
+const WIDE = { fromISO: '2026-10-01T00:00:00Z', toISO: '2026-12-01T00:00:00Z' };
+
+describe('loadOperations', () => {
   it('begrenzt auf das Zeitfenster (von inklusive, bis exklusiv) und liest ueber Seitengrenzen', async () => {
-    const server = fakeServer({ ops: [[op(6), op(5)], [op(4), op(3)], [op(2), op(1)]], txs: [[]] });
-    const res = await searchOperations({
-      server, accountId: ME, filters: build({}),
-      fromISO: '2026-11-03T00:00:00Z', toISO: '2026-11-06T00:00:00Z',
-    });
+    const server = fakeServer({ ops: [[op(6), op(5)], [op(4), op(3)], [op(2), op(1)]] });
+    const res = await loadOperations({ server, accountId: ME, fromISO: '2026-11-03T00:00:00Z', toISO: '2026-11-06T00:00:00Z' });
     expect(res.rows.map((r) => r.id)).toEqual(['5', '4', '3']);
     expect(res.incomplete).toBe(false);
   });
-  it('Memo-Filter nutzt die Transaktions-Memos, Anzeige-Memos werden fuer Treffer nachgeladen', async () => {
+  it('liefert alle suchbaren Zeilen mit dem Memo ihrer Transaktion, andere Operationstypen fehlen', async () => {
     const txs = [[{ hash: 'h2', created_at: '2026-11-02T00:00:00Z', memo: 'Abo' }, { hash: 'h1', created_at: '2026-11-01T00:00:00Z', memo: 'x' }]];
-    const server = fakeServer({ ops: [[op(2), op(1)]], txs });
-    const withMemo = await searchOperations({ server, accountId: ME, filters: build({ memosText: 'Abo' }), fromISO: '2026-10-01T00:00:00Z', toISO: '2026-12-01T00:00:00Z' });
-    expect(withMemo.rows.map((r) => [r.id, r.memo])).toEqual([['2', 'Abo']]);
-    const noMemo = await searchOperations({ server, accountId: ME, filters: build({ amountMin: '1' }), fromISO: '2026-10-01T00:00:00Z', toISO: '2026-12-01T00:00:00Z' });
-    expect(noMemo.rows.map((r) => [r.id, r.memo])).toEqual([['2', 'Abo'], ['1', 'x']]);
+    const server = fakeServer({ ops: [[op(2), { id: '9', type: 'change_trust', created_at: '2026-11-02T00:00:00Z', transaction_hash: 'h9' }, op(1)]], txs });
+    const res = await loadOperations({ server, accountId: ME, ...WIDE });
+    expect(res.rows.map((r) => [r.id, r.memo])).toEqual([['2', 'Abo'], ['1', 'x']]);
+    expect(res.memoIncomplete).toBe(false);
   });
   it('meldet die Treffermenge als unvollstaendig, wenn die Seitengrenze erreicht ist', async () => {
     const server = fakeServer({ ops: [[op(6), op(5)], [op(4), op(3)], [op(2), op(1)]] });
-    const res = await searchOperations({ server, accountId: ME, filters: build({}), fromISO: '2026-10-01T00:00:00Z', toISO: '2026-12-01T00:00:00Z', maxPages: 2 });
+    const res = await loadOperations({ server, accountId: ME, ...WIDE, maxPages: 2 });
     expect(res.incomplete).toBe(true);
     expect(res.oldestLoaded).toBe('2026-11-03T00:00:00Z');
     expect(res.rows).toHaveLength(4);
+  });
+  it('meldet unvollstaendige Memos, wenn die Transaktionen die Ladegrenze erreichen', async () => {
+    const tx = (n) => ({ hash: `h${n}`, created_at: `2026-11-0${n}T00:00:00Z`, memo: `m${n}` });
+    const server = fakeServer({ ops: [[op(4), op(3)]], txs: [[tx(4)], [tx(3)], [tx(2)]] });
+    const res = await loadOperations({ server, accountId: ME, ...WIDE, maxPages: 2 });
+    expect(res.memoIncomplete).toBe(true);
   });
   it('bricht bei Abbruch mit der bekannten Abbruchmeldung ab', async () => {
     const ctrl = new AbortController();
     ctrl.abort();
     const server = fakeServer({ ops: [[op(1)]] });
-    await expect(searchOperations({ server, accountId: ME, filters: build({}), signal: ctrl.signal })).rejects.toThrow(SEARCH_ABORT_MESSAGE);
+    await expect(loadOperations({ server, accountId: ME, signal: ctrl.signal })).rejects.toThrow(SEARCH_ABORT_MESSAGE);
   });
 });

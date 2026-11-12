@@ -4,11 +4,13 @@ import { formatLocalDateTime } from '../utils/datetime';
 import { memoLooksLikeUrl, sanitizeMemo } from '../utils/stellar/activity.js';
 import { UrlBadge } from './wallet/ActivityWarnings.jsx';
 import {
-  SEARCH_ABORT_MESSAGE, assetLabel, buildSearchFilters, searchOperations, sumByAsset,
+  MAX_FILTER_ENTRIES, assetLabel, buildSearchFilters, matchesFilters, parseRecipient, sortRows, sumByAsset,
 } from '../utils/stellar/transactionSearch.js';
+import { cleanMemo } from '../utils/stellar/queryUtils.js';
 
 const MAX_SHOWN = 500;
 const CSV_HEADERS = ['created_at', 'tx_hash', 'op_id', 'type', 'dir', 'from', 'to', 'amount', 'asset_code', 'asset_issuer', 'memo'];
+const EMPTY_AMOUNT = { min: '', max: '', asset: 'native', code: '', issuer: '' };
 
 // Memos stammen von Absendern: nur bereinigt als Text zeigen, Webadressen markieren.
 function MemoCell({ memo }) {
@@ -29,201 +31,326 @@ function csvRowOf(r) {
   };
 }
 
+function Chip({ label, title, onEdit, onRemove, removeLabel }) {
+  return (
+    <span className="inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs max-w-full" title={title || label}>
+      {onEdit ? (
+        <button type="button" className="!p-0 !border-0 !bg-transparent truncate max-w-[18rem]" onClick={onEdit}>{label}</button>
+      ) : (
+        <span className="truncate max-w-[18rem]">{label}</span>
+      )}
+      <button type="button" className="!p-0 !border-0 !bg-transparent leading-none" aria-label={removeLabel} onClick={onRemove}>×</button>
+    </span>
+  );
+}
+
+function Seg({ value, options, onChange, ariaLabel }) {
+  return (
+    <div className="inline-flex rounded-sm border overflow-hidden" role="group" aria-label={ariaLabel}>
+      {options.map((o) => (
+        <button
+          key={o.value}
+          type="button"
+          aria-pressed={value === o.value}
+          onClick={() => onChange(o.value)}
+          className={`!rounded-none !border-0 px-2 py-1 text-xs ${value === o.value ? '!bg-blue-600 text-white' : '!bg-transparent'}`}
+        >
+          {o.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 /**
- * Filtersuche ueber Ein- und Ausgaenge des Kontos im Zeitraum des Panels.
- * Panel liefert Zeitfenster, Lauf-Steuerung (Fortschritt, Abbruch, Sperre) und den CSV-Download.
- * Props:
- *  - getWindow(): { fromISO, toISO } im Panel gewaehlt (toISO exklusiv)
- *  - beginRun(): startet Fortschritt/Sperre und gibt das AbortSignal zurueck
- *  - endRun(): beendet den Lauf
- *  - onDownloadCsv(rows, headers)
+ * Suche in der geladenen Liste (Variante C): Suchfeld fuer Memo, Filter-Chips fuer Empfaenger, Betrag und
+ * "Memo enthaelt nicht", Richtung als Umschalter. Gleiche Chips wirken als ODER, verschiedene als UND.
+ * Gefiltert wird live im Browser, die Liste kommt fertig geladen vom Panel.
  */
-export default function TransactionSearchSection({ publicKey, server, getWindow, beginRun, endRun, busy, onDownloadCsv, onProgress }) {
+export default function TransactionSearchSection({ rows, incomplete, memoIncomplete, oldestLoaded, busy, onDownloadCsv }) {
   const { t } = useTranslation(['xlmByMemo', 'common']);
-  const [memosText, setMemosText] = useState('');
-  const [recipientsText, setRecipientsText] = useState('');
-  const [amountAsset, setAmountAsset] = useState('native');
-  const [assetCode, setAssetCode] = useState('');
-  const [assetIssuer, setAssetIssuer] = useState('');
-  const [amountMin, setAmountMin] = useState('');
-  const [amountMax, setAmountMax] = useState('');
+  const [memoDraft, setMemoDraft] = useState('');
+  const [memos, setMemos] = useState([]);
+  const [notMemos, setNotMemos] = useState([]);
+  const [recipients, setRecipients] = useState([]);
+  const [amount, setAmount] = useState(null);
   const [direction, setDirection] = useState('all');
-  const [running, setRunning] = useState(false);
-  const [errors, setErrors] = useState([]);
-  const [failed, setFailed] = useState(false);
-  const [result, setResult] = useState(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [editor, setEditor] = useState(null); // null | 'recipient' | 'notMemo' | 'amount'
+  const [editorText, setEditorText] = useState('');
+  const [amountDraft, setAmountDraft] = useState(EMPTY_AMOUNT);
+  const [editorErrors, setEditorErrors] = useState([]);
+  const [sort, setSort] = useState({ key: 'created_at', dir: 'desc' });
 
-  const sums = useMemo(() => (result ? sumByAsset(result.rows) : []), [result]);
+  const built = useMemo(() => buildSearchFilters({
+    memosText: [...memos, memoDraft].join('\n'),
+    notMemosText: notMemos.join('\n'),
+    recipientsText: recipients.map((r) => r.value).join(' '),
+    amountAsset: amount?.asset, assetCode: amount?.code, assetIssuer: amount?.issuer,
+    amountMin: amount?.min, amountMax: amount?.max,
+    direction,
+  }), [memos, memoDraft, notMemos, recipients, amount, direction]);
 
-  const handleSearch = async () => {
-    setFailed(false);
-    const built = buildSearchFilters({ memosText, recipientsText, amountAsset, assetCode, assetIssuer, amountMin, amountMax, direction });
-    if (!built.ok) {
-      // Ein eingefuegter Secret Key wird sofort aus dem Feld entfernt, er soll nicht stehen bleiben.
-      if (built.errors.some((e) => e.key === 'recipientSecretKey')) setRecipientsText('');
-      setErrors(built.errors);
-      return;
-    }
-    setErrors([]);
-    setResult(null);
-    setRunning(true);
-    const signal = beginRun();
-    try {
-      const { fromISO, toISO } = getWindow();
-      const res = await searchOperations({
-        server, accountId: publicKey, filters: built.filters, fromISO, toISO, signal, onProgress,
-      });
-      setResult(res);
-    } catch (e) {
-      if (e?.message !== SEARCH_ABORT_MESSAGE) setFailed(true);
-    } finally {
-      setRunning(false);
-      endRun();
-    }
+  const matches = useMemo(() => {
+    if (!built.ok) return rows;
+    return rows.filter((r) => matchesFilters(r, built.filters));
+  }, [rows, built]);
+  const sorted = useMemo(() => sortRows(matches, sort), [matches, sort]);
+  const sums = useMemo(() => sumByAsset(matches), [matches]);
+
+  const anyFilter = memos.length || notMemos.length || recipients.length || amount || memoDraft.trim() || direction !== 'all';
+
+  const closeEditor = () => { setEditor(null); setEditorText(''); setEditorErrors([]); };
+  const openEditor = (kind) => {
+    setMenuOpen(false);
+    setEditorErrors([]);
+    setEditorText('');
+    if (kind === 'amount') setAmountDraft(amount || EMPTY_AMOUNT);
+    setEditor(kind);
   };
 
+  const addMemoFromDraft = () => {
+    const m = cleanMemo(memoDraft);
+    if (!m) return;
+    setMemos((prev) => (prev.includes(m) || prev.length >= MAX_FILTER_ENTRIES ? prev : [...prev, m]));
+    setMemoDraft('');
+  };
+
+  const commitText = () => {
+    if (editor === 'notMemo') {
+      const m = cleanMemo(editorText);
+      if (m) setNotMemos((prev) => (prev.includes(m) || prev.length >= MAX_FILTER_ENTRIES ? prev : [...prev, m]));
+      closeEditor();
+      return;
+    }
+    // Empfaenger: mehrere Adressen durch Leerzeichen, Komma oder Zeilenumbruch
+    const tokens = [...new Set(editorText.split(/[\s,;]+/).map((x) => x.trim()).filter(Boolean))];
+    const parsed = tokens.map(parseRecipient);
+    const errs = parsed.filter((p) => p.error).map((p) => ({ key: p.error, params: p.error === 'recipientInvalid' ? { value: p.value } : {} }));
+    if (errs.length) {
+      // Ein eingefuegter Secret Key wird sofort aus dem Feld entfernt, er soll nicht stehen bleiben.
+      if (errs.some((e) => e.key === 'recipientSecretKey')) setEditorText('');
+      setEditorErrors(errs);
+      return;
+    }
+    setRecipients((prev) => {
+      const next = [...prev];
+      for (const p of parsed) {
+        if (next.length < MAX_FILTER_ENTRIES && !next.some((x) => x.value === p.value)) next.push(p);
+      }
+      return next;
+    });
+    closeEditor();
+  };
+
+  const commitAmount = () => {
+    const d = amountDraft;
+    if (!String(d.min).trim() && !String(d.max).trim()) { setEditorErrors([{ key: 'amountEmpty', params: {} }]); return; }
+    const res = buildSearchFilters({
+      amountAsset: d.asset, assetCode: d.code, assetIssuer: d.issuer, amountMin: d.min, amountMax: d.max,
+    });
+    if (!res.ok) { setEditorErrors(res.errors); return; }
+    setAmount({ ...d, min: String(d.min).trim(), max: String(d.max).trim(), code: String(d.code).trim(), issuer: String(d.issuer).trim() });
+    closeEditor();
+  };
+
+  const resetAll = () => {
+    setMemoDraft(''); setMemos([]); setNotMemos([]); setRecipients([]); setAmount(null); setDirection('all'); closeEditor();
+  };
+
+  const toggleSort = (key) => setSort((s) => (s.key === key ? { key, dir: s.dir === 'asc' ? 'desc' : 'asc' } : { key, dir: 'desc' }));
+  const arrow = (key) => (sort.key === key ? (sort.dir === 'asc' ? ' ▲' : ' ▼') : '');
   const dirLabel = (d) => (d ? t(`xlmByMemo:search.dir.${d}`) : '');
-  const shown = result ? result.rows.slice(0, MAX_SHOWN) : [];
-  const inputCls = 'w-full border rounded-sm p-2';
+  const shown = sorted.slice(0, MAX_SHOWN);
+  const amountLabel = amount
+    ? t('xlmByMemo:search.chips.amount', {
+      from: amount.min || '…', to: amount.max || '…',
+      asset: amount.asset === 'custom' ? amount.code : 'XLM',
+    })
+    : '';
+  const inputCls = 'border rounded-sm p-2 text-sm';
 
   return (
-    <section className="mt-6 pt-4 border-t" aria-labelledby="tx-search-title">
-      <h4 id="tx-search-title" className="font-semibold">{t('xlmByMemo:search.title')}</h4>
-      <p className="text-xs text-gray-500 mb-3">{t('xlmByMemo:search.intro')}</p>
-
-      <label className="block text-sm mb-1" htmlFor="tx-search-memos">{t('xlmByMemo:search.memos.label')}</label>
-      <textarea
-        id="tx-search-memos" rows={2} className={`${inputCls} font-mono`} value={memosText}
-        onChange={(e) => setMemosText(e.target.value)} disabled={busy}
-      />
-      <p className="text-xs text-gray-500 mb-3">{t('xlmByMemo:search.memos.hint')}</p>
-
-      <label className="block text-sm mb-1" htmlFor="tx-search-recipients">{t('xlmByMemo:search.recipients.label')}</label>
-      <textarea
-        id="tx-search-recipients" rows={2} className={`${inputCls} font-mono`} value={recipientsText}
-        onChange={(e) => setRecipientsText(e.target.value)} disabled={busy} spellCheck={false}
-      />
-      <p className="text-xs text-gray-500 mb-3">{t('xlmByMemo:search.recipients.hint')}</p>
-
-      <div className="text-sm mb-1">{t('xlmByMemo:search.amount.title')}</div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <div>
-          <label className="block text-xs mb-1" htmlFor="tx-search-min">{t('xlmByMemo:search.amount.from')}</label>
-          <input id="tx-search-min" className={inputCls} inputMode="decimal" value={amountMin} onChange={(e) => setAmountMin(e.target.value)} disabled={busy} />
-        </div>
-        <div>
-          <label className="block text-xs mb-1" htmlFor="tx-search-max">{t('xlmByMemo:search.amount.to')}</label>
-          <input id="tx-search-max" className={inputCls} inputMode="decimal" value={amountMax} onChange={(e) => setAmountMax(e.target.value)} disabled={busy} />
-        </div>
-      </div>
-      <div className="mt-2">
-        <label className="block text-xs mb-1" htmlFor="tx-search-asset">{t('xlmByMemo:search.amount.asset')}</label>
-        <select id="tx-search-asset" className={inputCls} value={amountAsset} onChange={(e) => setAmountAsset(e.target.value)} disabled={busy}>
-          <option value="native">{t('xlmByMemo:search.amount.native')}</option>
-          <option value="custom">{t('xlmByMemo:search.amount.custom')}</option>
-        </select>
-      </div>
-      {amountAsset === 'custom' && (
-        <div className="mt-2 grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <div>
-            <label className="block text-xs mb-1" htmlFor="tx-search-code">{t('xlmByMemo:search.amount.code')}</label>
-            <input id="tx-search-code" className={inputCls} value={assetCode} onChange={(e) => setAssetCode(e.target.value)} disabled={busy} />
-          </div>
-          <div className="sm:col-span-2">
-            <label className="block text-xs mb-1" htmlFor="tx-search-issuer">{t('xlmByMemo:search.amount.issuer')}</label>
-            <input id="tx-search-issuer" className={`${inputCls} font-mono`} value={assetIssuer} onChange={(e) => setAssetIssuer(e.target.value)} disabled={busy} spellCheck={false} />
-          </div>
-        </div>
-      )}
-      <p className="text-xs text-gray-500 mb-3">{t('xlmByMemo:search.amount.hint')}</p>
-
-      <label className="block text-sm mb-1" htmlFor="tx-search-direction">{t('xlmByMemo:search.direction.label')}</label>
-      <select id="tx-search-direction" className={inputCls} value={direction} onChange={(e) => setDirection(e.target.value)} disabled={busy}>
-        <option value="all">{t('xlmByMemo:search.direction.all')}</option>
-        <option value="in">{t('xlmByMemo:search.direction.in')}</option>
-        <option value="out">{t('xlmByMemo:search.direction.out')}</option>
-      </select>
-      <p className="text-xs text-gray-500">{t('xlmByMemo:search.direction.hint')}</p>
-
-      {errors.length > 0 && (
-        <ul className="mt-3 text-red-600 text-sm list-disc pl-5" role="alert">
-          {errors.map((e, i) => <li key={i}>{t(`xlmByMemo:search.errors.${e.key}`, e.params)}</li>)}
-        </ul>
-      )}
-
-      <button
-        className="mt-4 px-4 py-2 rounded-sm bg-blue-600 text-white disabled:opacity-50"
-        onClick={handleSearch}
-        disabled={busy}
-      >
-        {running ? t('xlmByMemo:search.searching') : t('xlmByMemo:search.button')}
-      </button>
-
-      {failed && <div className="mt-3 text-red-600" role="alert">{t('xlmByMemo:search.failed')}</div>}
-
-      {result && (
-        <div className="mt-4 border rounded-sm p-2">
-          <div className="text-sm font-medium mb-1">{t('xlmByMemo:search.result.title', { count: result.rows.length })}</div>
-          {result.incomplete && (
-            <div className="text-xs text-amber-500 mb-2" role="status">
-              {t('xlmByMemo:search.result.incomplete', { date: result.oldestLoaded ? formatLocalDateTime(result.oldestLoaded) : '–' })}
+    <section className="mt-4" aria-label={t('xlmByMemo:search.title')}>
+      <div className="flex flex-wrap items-center gap-2">
+        <input
+          className={`${inputCls} flex-1 min-w-[12rem]`}
+          type="search"
+          aria-label={t('xlmByMemo:search.memoLabel')}
+          placeholder={t('xlmByMemo:search.placeholder')}
+          value={memoDraft}
+          onChange={(e) => setMemoDraft(e.target.value)}
+          onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addMemoFromDraft(); } }}
+        />
+        <div className="relative">
+          <button
+            type="button"
+            className="px-3 py-2 rounded-sm border text-sm"
+            aria-haspopup="menu"
+            aria-expanded={menuOpen}
+            onClick={() => setMenuOpen((o) => !o)}
+          >
+            + {t('xlmByMemo:search.addFilter')}
+          </button>
+          {menuOpen && (
+            <div role="menu" className="absolute right-0 z-20 mt-1 min-w-[12rem] rounded-sm border bg-gray-800 text-white shadow-lg" onKeyDown={(e) => { if (e.key === 'Escape') setMenuOpen(false); }}>
+              {['recipient', 'amount', 'notMemo'].map((k) => (
+                <button key={k} role="menuitem" type="button" className="block w-full !rounded-none !border-0 !bg-transparent text-left text-sm hover:!bg-gray-700" onClick={() => openEditor(k)}>
+                  {t(`xlmByMemo:search.menu.${k}`)}
+                </button>
+              ))}
             </div>
           )}
-          {result.memoIncomplete && (
-            <div className="text-xs text-amber-500 mb-2" role="status">{t('xlmByMemo:search.result.memoIncomplete')}</div>
-          )}
-          {result.rows.length === 0 ? (
-            <div className="text-sm text-gray-500">{t('xlmByMemo:search.result.none')}</div>
+        </div>
+        <Seg
+          value={direction}
+          onChange={setDirection}
+          ariaLabel={t('xlmByMemo:search.direction.label')}
+          options={[
+            { value: 'all', label: t('xlmByMemo:search.direction.all') },
+            { value: 'in', label: t('xlmByMemo:search.direction.in') },
+            { value: 'out', label: t('xlmByMemo:search.direction.out') },
+          ]}
+        />
+      </div>
+
+      {editor && (
+        <div className="mt-2 rounded-sm border p-2" role="group" aria-label={t(`xlmByMemo:search.menu.${editor}`)}>
+          {editor !== 'amount' ? (
+            <div className="flex flex-wrap gap-2">
+              <input
+                className={`${inputCls} flex-1 min-w-[12rem] ${editor === 'recipient' ? 'font-mono' : ''}`}
+                autoFocus
+                spellCheck={false}
+                aria-label={t(`xlmByMemo:search.menu.${editor}`)}
+                placeholder={t(editor === 'recipient' ? 'xlmByMemo:search.editor.recipientPlaceholder' : 'xlmByMemo:search.editor.notMemoPlaceholder')}
+                value={editorText}
+                onChange={(e) => setEditorText(e.target.value)}
+                onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); commitText(); } if (e.key === 'Escape') closeEditor(); }}
+              />
+              <button type="button" className="px-3 py-2 rounded-sm bg-blue-600 text-white text-sm" onClick={commitText}>{t('xlmByMemo:search.editor.add')}</button>
+              <button type="button" className="px-3 py-2 rounded-sm border text-sm" onClick={closeEditor}>{t('common:progress.cancel')}</button>
+            </div>
           ) : (
-            <>
-              {sums.length > 0 && (
-                <div className="text-xs mb-2">
-                  <span className="font-semibold">{t('xlmByMemo:search.result.sums')} </span>
-                  {sums.map((s) => (
-                    <span key={s.assetKey} className="inline-block mr-3">
-                      {t('xlmByMemo:search.result.sumLine', { amount: s.amount, asset: s.label, count: s.count })}
-                    </span>
-                  ))}
+            <div className="space-y-2">
+              <div className="flex flex-wrap items-center gap-2">
+                <input className={`${inputCls} w-28`} inputMode="decimal" autoFocus aria-label={t('xlmByMemo:search.editor.from')} placeholder={t('xlmByMemo:search.editor.from')}
+                  value={amountDraft.min} onChange={(e) => setAmountDraft((d) => ({ ...d, min: e.target.value }))}
+                  onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); commitAmount(); } }} />
+                <span aria-hidden="true">–</span>
+                <input className={`${inputCls} w-28`} inputMode="decimal" aria-label={t('xlmByMemo:search.editor.to')} placeholder={t('xlmByMemo:search.editor.to')}
+                  value={amountDraft.max} onChange={(e) => setAmountDraft((d) => ({ ...d, max: e.target.value }))}
+                  onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); commitAmount(); } }} />
+                <Seg
+                  value={amountDraft.asset}
+                  onChange={(v) => setAmountDraft((d) => ({ ...d, asset: v }))}
+                  ariaLabel={t('xlmByMemo:search.editor.asset')}
+                  options={[{ value: 'native', label: 'XLM' }, { value: 'custom', label: t('xlmByMemo:search.editor.assetCustom') }]}
+                />
+              </div>
+              {amountDraft.asset === 'custom' && (
+                <div className="flex flex-wrap gap-2">
+                  <input className={`${inputCls} w-28`} aria-label={t('xlmByMemo:search.editor.code')} placeholder={t('xlmByMemo:search.editor.code')}
+                    value={amountDraft.code} onChange={(e) => setAmountDraft((d) => ({ ...d, code: e.target.value }))} />
+                  <input className={`${inputCls} flex-1 min-w-[12rem] font-mono`} spellCheck={false} aria-label={t('xlmByMemo:search.editor.issuer')} placeholder={t('xlmByMemo:search.editor.issuer')}
+                    value={amountDraft.issuer} onChange={(e) => setAmountDraft((d) => ({ ...d, issuer: e.target.value }))} />
                 </div>
               )}
-              <div className="overflow-auto max-h-96 text-xs">
-                <div className="grid grid-cols-6 gap-2 font-semibold sticky top-0 bg-gray z-10 py-1">
-                  <div>{t('xlmByMemo:search.columns.created_at')}</div>
-                  <div>{t('xlmByMemo:search.columns.from')}</div>
-                  <div>{t('xlmByMemo:search.columns.to')}</div>
-                  <div>{t('xlmByMemo:search.columns.amount')}</div>
-                  <div>{t('xlmByMemo:search.columns.memo')}</div>
-                  <div>{t('xlmByMemo:search.columns.tx_hash')}</div>
-                </div>
-                {shown.map((r, i) => (
-                  <div key={`${r.id}-${i}`} className="grid grid-cols-6 gap-2 py-0.5">
-                    <div>
-                      <div className="font-mono">{r.created_at}</div>
-                      <div className="text-gray-500">{[dirLabel(r.dir), r.type].filter(Boolean).join(' · ')}</div>
-                    </div>
-                    <div className="font-mono break-all">{r.from}</div>
-                    <div className="font-mono break-all">{r.to}</div>
-                    <div className="font-mono">{r.amount ? `${r.amount} ${assetLabel(r.assetKey)}` : '–'}</div>
-                    <MemoCell memo={r.memo} />
-                    <div className="font-mono break-all">{r.tx_hash}</div>
-                  </div>
-                ))}
+              <p className="text-xs text-gray-500">{t('xlmByMemo:search.editor.amountHint')}</p>
+              <div className="flex gap-2">
+                <button type="button" className="px-3 py-2 rounded-sm bg-blue-600 text-white text-sm" onClick={commitAmount}>{t('xlmByMemo:search.editor.apply')}</button>
+                <button type="button" className="px-3 py-2 rounded-sm border text-sm" onClick={closeEditor}>{t('common:progress.cancel')}</button>
               </div>
-              {result.rows.length > MAX_SHOWN && (
-                <div className="text-xs text-gray-500 mt-1">{t('xlmByMemo:search.result.capped', { shown: MAX_SHOWN, total: result.rows.length })}</div>
-              )}
-              <div className="mt-2">
-                <button
-                  className="px-2 py-1 text-sm rounded-sm border bg-gray-600 text-white hover:bg-gray-500 disabled:opacity-50"
-                  onClick={() => onDownloadCsv(result.rows.map(csvRowOf), CSV_HEADERS)}
-                  disabled={busy}
-                >
-                  {t('xlmByMemo:search.result.csv')}
-                </button>
-              </div>
-            </>
+            </div>
+          )}
+          {editorErrors.length > 0 && (
+            <ul className="mt-2 text-red-600 text-sm list-disc pl-5" role="alert">
+              {editorErrors.map((e, i) => <li key={i}>{t(`xlmByMemo:search.errors.${e.key}`, e.params)}</li>)}
+            </ul>
           )}
         </div>
+      )}
+
+      {(memos.length > 0 || notMemos.length > 0 || recipients.length > 0 || amount) && (
+        <div className="mt-2 flex flex-wrap gap-2">
+          {memos.map((m) => {
+            const label = t('xlmByMemo:search.chips.memo', { value: sanitizeMemo(m) });
+            return <Chip key={`m-${m}`} label={label} removeLabel={t('xlmByMemo:search.chips.remove', { label })} onRemove={() => setMemos((p) => p.filter((x) => x !== m))} />;
+          })}
+          {notMemos.map((m) => {
+            const label = t('xlmByMemo:search.chips.notMemo', { value: sanitizeMemo(m) });
+            return <Chip key={`n-${m}`} label={label} removeLabel={t('xlmByMemo:search.chips.remove', { label })} onRemove={() => setNotMemos((p) => p.filter((x) => x !== m))} />;
+          })}
+          {recipients.map((r) => {
+            const label = t('xlmByMemo:search.chips.recipient', { value: `${r.value.slice(0, 6)}…${r.value.slice(-6)}` });
+            return <Chip key={`r-${r.value}`} label={label} title={r.value} removeLabel={t('xlmByMemo:search.chips.remove', { label })} onRemove={() => setRecipients((p) => p.filter((x) => x.value !== r.value))} />;
+          })}
+          {amount && (
+            <Chip label={amountLabel} removeLabel={t('xlmByMemo:search.chips.remove', { label: amountLabel })} onEdit={() => openEditor('amount')} onRemove={() => setAmount(null)} />
+          )}
+        </div>
+      )}
+
+      <div className="mt-3 flex flex-wrap items-baseline gap-x-4 gap-y-1 text-sm">
+        <span className="font-medium">{t('xlmByMemo:search.result.count', { shown: matches.length, total: rows.length })}</span>
+        {sums.length > 0 && (
+          <span className="text-xs">
+            <span className="text-gray-500">{t('xlmByMemo:search.result.sums')} </span>
+            {sums.map((s) => (
+              <span key={s.assetKey} className="inline-block mr-3">{t('xlmByMemo:search.result.sumLine', { amount: s.amount, asset: s.label, count: s.count })}</span>
+            ))}
+          </span>
+        )}
+        {anyFilter && <button type="button" className="!p-0 !border-0 !bg-transparent text-xs underline" onClick={resetAll}>{t('xlmByMemo:search.result.reset')}</button>}
+      </div>
+      {incomplete && (
+        <div className="mt-1 text-xs text-amber-500" role="status">
+          {t('xlmByMemo:search.result.incomplete', { date: oldestLoaded ? formatLocalDateTime(oldestLoaded) : '–' })}
+        </div>
+      )}
+      {memoIncomplete && <div className="mt-1 text-xs text-amber-500" role="status">{t('xlmByMemo:search.result.memoIncomplete')}</div>}
+
+      {sorted.length === 0 ? (
+        <div className="mt-3 text-sm text-gray-500">{t(rows.length === 0 ? 'xlmByMemo:search.result.noneLoaded' : 'xlmByMemo:search.result.none')}</div>
+      ) : (
+        <>
+          <div className="mt-2 overflow-auto max-h-[28rem] text-xs">
+            <div className="grid grid-cols-6 gap-2 font-semibold sticky top-0 bg-gray z-10 py-1">
+              <button type="button" className="!p-0 !border-0 !bg-transparent text-left font-semibold" onClick={() => toggleSort('created_at')}>{t('xlmByMemo:search.columns.created_at')}{arrow('created_at')}</button>
+              <div>{t('xlmByMemo:search.columns.from')}</div>
+              <div>{t('xlmByMemo:search.columns.to')}</div>
+              <button type="button" className="!p-0 !border-0 !bg-transparent text-left font-semibold" onClick={() => toggleSort('amount')}>{t('xlmByMemo:search.columns.amount')}{arrow('amount')}</button>
+              <div>{t('xlmByMemo:search.columns.memo')}</div>
+              <div>{t('xlmByMemo:search.columns.tx_hash')}</div>
+            </div>
+            {shown.map((r, i) => (
+              <div key={`${r.id}-${i}`} className="grid grid-cols-6 gap-2 py-0.5">
+                <div>
+                  <div className="font-mono">{r.created_at}</div>
+                  <div className="text-gray-500">{[dirLabel(r.dir), r.type].filter(Boolean).join(' · ')}</div>
+                </div>
+                <div className="font-mono break-all">{r.from}</div>
+                <div className="font-mono break-all">{r.to}</div>
+                <div className="font-mono">{r.amount ? `${r.amount} ${assetLabel(r.assetKey)}` : '–'}</div>
+                <MemoCell memo={r.memo} />
+                <div className="font-mono break-all">{r.tx_hash}</div>
+              </div>
+            ))}
+          </div>
+          {sorted.length > MAX_SHOWN && (
+            <div className="text-xs text-gray-500 mt-1">{t('xlmByMemo:search.result.capped', { shown: MAX_SHOWN, total: sorted.length })}</div>
+          )}
+          <div className="mt-2">
+            <button
+              type="button"
+              className="px-2 py-1 text-sm rounded-sm border bg-gray-600 text-white hover:bg-gray-500 disabled:opacity-50"
+              onClick={() => onDownloadCsv(sorted.map(csvRowOf), CSV_HEADERS)}
+              disabled={busy}
+            >
+              {t('xlmByMemo:search.result.csv')}
+            </button>
+          </div>
+        </>
       )}
     </section>
   );

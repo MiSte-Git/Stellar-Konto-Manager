@@ -1,7 +1,7 @@
-// Filtersuche im Panel Transaktionen durchsuchen: Fehleranzeige ohne Secret Key, Treffer mit
-// ODER/UND-Filtern, Anzeige fremder Memos und CSV-Formelschutz (F1/F6 wie bei den anderen Panels).
+// Transaktionen durchsuchen: Operationen einmal laden, danach live filtern (Suchfeld, Chips, Richtung),
+// sortieren, Konto-Wechsel verwirft die Liste, Secret Keys werden abgelehnt, CSV mit Formelschutz.
 import React from 'react';
-import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { I18nextProvider } from 'react-i18next';
 import { Keypair } from '@stellar/stellar-sdk';
 import i18n from '../../i18n.js';
@@ -51,67 +51,150 @@ beforeEach(() => {
 afterEach(() => { vi.unstubAllGlobals(); vi.restoreAllMocks(); });
 
 const wrap = (ui) => render(<I18nextProvider i18n={i18n}>{ui}</I18nextProvider>);
-const search = () => fireEvent.click(screen.getByRole('button', { name: 'Suchen' }));
+const load = async (total = 3) => {
+  fireEvent.click(screen.getByRole('button', { name: 'Laden' }));
+  await screen.findByText(`Treffer: ${total} von ${total}`);
+};
+const addFilter = (kind) => {
+  fireEvent.click(screen.getByRole('button', { name: /Filter$/ }));
+  fireEvent.click(screen.getByRole('menuitem', { name: kind }));
+};
+const rowAmounts = () => [...document.querySelectorAll('section .font-mono')]
+  .map((n) => n.textContent).filter((x) => /^\d+\.\d{7} XLM$/.test(x));
 
-describe('Filtersuche (Transaktionen durchsuchen)', () => {
-  it('Secret Key im Empfaengerfeld: Fehler ohne den Key, keine Abfrage bei Horizon', () => {
-    const secret = Keypair.random().secret();
+describe('Transaktionen durchsuchen', () => {
+  it('vor dem Laden: nur Hinweis, keine Suche, nichts bei Horizon abgefragt', () => {
     wrap(<XlmByMemoPanel publicKey={PK} />);
-    fireEvent.change(screen.getByLabelText(/^Empfänger/), { target: { value: secret } });
-    search();
-    const alert = screen.getByRole('alert');
-    expect(alert.textContent).toMatch(/Secret Key/);
-    expect(document.body.textContent).not.toContain(secret);
+    expect(screen.getByText(/Lade zuerst die Operationen/)).toBeTruthy();
+    expect(screen.queryByRole('searchbox')).toBeNull();
     expect(hoisted.operations).not.toHaveBeenCalled();
   });
 
-  it('Empfaenger A ODER B, UND Betrag von bis: zeigt genau die passenden Zeilen und die Summe', async () => {
+  it('Memo-Suchfeld filtert live, ohne neue Abfrage bei Horizon', async () => {
     wrap(<XlmByMemoPanel publicKey={PK} />);
-    fireEvent.change(screen.getByLabelText(/^Empfänger/), { target: { value: `${A}\n${B}` } });
-    fireEvent.change(screen.getByLabelText('Von', { selector: '#tx-search-min' }), { target: { value: '5' } });
-    fireEvent.change(screen.getByLabelText('Bis', { selector: '#tx-search-max' }), { target: { value: '20,5' } });
-    search();
-    await screen.findByText('Treffer: 1');
-    // A (10 XLM) trifft, B (3 XLM) liegt unter der Grenze, C ist kein Empfaenger
-    expect(screen.getByText(`${'10.0000000'} XLM`)).toBeTruthy();
-    expect(screen.queryByText('3.0000000 XLM')).toBeNull();
-    expect(screen.queryByText('12.0000000 XLM')).toBeNull();
-    expect(screen.getByText('10.0000000 XLM (1)')).toBeTruthy();
+    await load();
+    const calls = hoisted.operations.mock.calls.length;
+    fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'Miete' } });
+    await screen.findByText('Treffer: 1 von 3');
+    expect(rowAmounts()).toEqual(['3.0000000 XLM']);
+    expect(hoisted.operations.mock.calls.length).toBe(calls);
   });
 
-  it('Memo-Filter: Webadresse im Memo wird markiert, Treffer ohne Memo-Filter zeigen das Memo trotzdem', async () => {
+  it('Eingabetaste macht aus dem Memo einen Chip, zwei Memo-Chips sind ODER', async () => {
     wrap(<XlmByMemoPanel publicKey={PK} />);
-    fireEvent.change(screen.getByLabelText(/^Memo enthält/), { target: { value: 'https://' } });
-    search();
-    await screen.findByText('Treffer: 1');
-    expect(screen.getByText(/https:\/\/example\.org/)).toBeTruthy();
+    await load();
+    const box = screen.getByRole('searchbox');
+    fireEvent.change(box, { target: { value: 'Miete' } });
+    fireEvent.keyDown(box, { key: 'Enter' });
+    expect(box.value).toBe('');
+    expect(screen.getByText('Memo: Miete')).toBeTruthy();
+    fireEvent.change(box, { target: { value: '=1+1' } });
+    fireEvent.keyDown(box, { key: 'Enter' });
+    await screen.findByText('Treffer: 2 von 3');
+    fireEvent.click(screen.getByRole('button', { name: 'Filter entfernen: Memo: Miete' }));
+    await screen.findByText('Treffer: 1 von 3');
   });
 
-  it('CSV: Memo =1+1 bekommt ein \', Spalten laufen durch csvLine', async () => {
+  it('Empfaenger-Chip: Secret Key wird abgelehnt und aus dem Feld entfernt, G-Adresse filtert', async () => {
+    const secret = Keypair.random().secret();
     wrap(<XlmByMemoPanel publicKey={PK} />);
-    fireEvent.change(screen.getByLabelText(/^Empfänger/), { target: { value: A } });
-    search();
-    await screen.findByText('Treffer: 1');
+    await load();
+    addFilter('Empfänger');
+    const input = screen.getByRole('textbox', { name: 'Empfänger' });
+    fireEvent.change(input, { target: { value: secret } });
+    fireEvent.keyDown(input, { key: 'Enter' });
+    expect(screen.getByRole('alert').textContent).toMatch(/Secret Key/);
+    expect(document.body.innerHTML).not.toContain(secret);
+    expect(input.value).toBe('');
+
+    fireEvent.change(input, { target: { value: `${A} ${B}` } });
+    fireEvent.keyDown(input, { key: 'Enter' });
+    await screen.findByText('Treffer: 2 von 3');
+    expect(rowAmounts().sort()).toEqual(['10.0000000 XLM', '3.0000000 XLM']);
+  });
+
+  it('Empfaenger-Chip mit ungueltiger Adresse zeigt einen Fehler und aendert nichts', async () => {
+    wrap(<XlmByMemoPanel publicKey={PK} />);
+    await load();
+    addFilter('Empfänger');
+    const input = screen.getByRole('textbox', { name: 'Empfänger' });
+    fireEvent.change(input, { target: { value: 'hallo' } });
+    fireEvent.keyDown(input, { key: 'Enter' });
+    expect(screen.getByRole('alert').textContent).toMatch(/Keine gültige G- oder M-Adresse: hallo/);
+    expect(screen.getByText('Treffer: 3 von 3')).toBeTruthy();
+  });
+
+  it('Betrag-Chip: Von bis, Summe je Asset; ungueltig oder leer wird nicht uebernommen', async () => {
+    wrap(<XlmByMemoPanel publicKey={PK} />);
+    await load();
+    addFilter('Betrag');
+    fireEvent.click(screen.getByRole('button', { name: 'Übernehmen' }));
+    expect(screen.getByRole('alert').textContent).toMatch(/Von oder Bis/);
+    fireEvent.change(screen.getByRole('textbox', { name: 'Von' }), { target: { value: '5' } });
+    fireEvent.change(screen.getByRole('textbox', { name: 'Bis' }), { target: { value: '20,5' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Übernehmen' }));
+    await screen.findByText('Treffer: 2 von 3');
+    expect(screen.getByText('Betrag 5 – 20,5 XLM')).toBeTruthy();
+    expect(screen.getByText('22.0000000 XLM (2)')).toBeTruthy();
+  });
+
+  it('Memo enthaelt nicht: schliesst Treffer aus, Operationen ohne Memo bleiben', async () => {
+    wrap(<XlmByMemoPanel publicKey={PK} />);
+    await load();
+    addFilter('Memo enthält nicht');
+    const input = screen.getByRole('textbox', { name: 'Memo enthält nicht' });
+    fireEvent.change(input, { target: { value: 'Miete' } });
+    fireEvent.keyDown(input, { key: 'Enter' });
+    await screen.findByText('Treffer: 2 von 3');
+    expect(rowAmounts()).not.toContain('3.0000000 XLM');
+  });
+
+  it('Richtung: alle Zahlungen im Test gehen vom Konto aus, Eingang zeigt keine Treffer', async () => {
+    wrap(<XlmByMemoPanel publicKey={PK} />);
+    await load();
+    fireEvent.click(screen.getByRole('button', { name: 'Eingang' }));
+    await screen.findByText('Treffer: 0 von 3');
+    expect(screen.getByText('Keine Treffer. Passe die Filter an.')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'Filter zurücksetzen' }));
+    await screen.findByText('Treffer: 3 von 3');
+  });
+
+  it('Sortierung nach Betrag ersetzt die Top-Liste: groesster Betrag zuerst, zweiter Klick dreht um', async () => {
+    wrap(<XlmByMemoPanel publicKey={PK} />);
+    await load();
+    fireEvent.click(screen.getByRole('button', { name: /^Betrag/ }));
+    expect(rowAmounts()).toEqual(['12.0000000 XLM', '10.0000000 XLM', '3.0000000 XLM']);
+    fireEvent.click(screen.getByRole('button', { name: /^Betrag/ }));
+    expect(rowAmounts()).toEqual(['3.0000000 XLM', '10.0000000 XLM', '12.0000000 XLM']);
+  });
+
+  it('CSV: exportiert die gefilterte Liste, Memo =1+1 bekommt ein \'', async () => {
+    wrap(<XlmByMemoPanel publicKey={PK} />);
+    await load();
+    fireEvent.change(screen.getByRole('searchbox'), { target: { value: '=1' } });
+    await screen.findByText('Treffer: 1 von 3');
     fireEvent.click(screen.getByRole('button', { name: 'CSV herunterladen' }));
     expect(exported).toHaveLength(1);
     const lines = exported[0].replace(/^\uFEFF/, '').split('\n');
+    expect(lines).toHaveLength(2);
     expect(lines[0]).toBe('created_at;tx_hash;op_id;type;dir;from;to;amount;asset_code;asset_issuer;memo');
     expect(lines[1].endsWith(';10.0000000;XLM;;\'=1+1')).toBe(true);
   });
 
-  it('keine Treffer: Hinweis statt leerer Tabelle', async () => {
-    wrap(<XlmByMemoPanel publicKey={PK} />);
-    fireEvent.change(screen.getByLabelText(/^Memo enthält/), { target: { value: 'gibt es nicht' } });
-    search();
-    await screen.findByText('Treffer: 0');
-    expect(screen.getByText('Keine Treffer im gewählten Zeitraum.')).toBeTruthy();
-    expect(within(document.body).queryByRole('button', { name: 'CSV herunterladen' })).toBeNull();
+  it('Kontowechsel verwirft die geladene Liste', async () => {
+    const view = wrap(<XlmByMemoPanel publicKey={PK} />);
+    await load();
+    fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'Miete' } });
+    view.rerender(<I18nextProvider i18n={i18n}><XlmByMemoPanel publicKey={A} /></I18nextProvider>);
+    await waitFor(() => expect(screen.queryByRole('searchbox')).toBeNull());
+    expect(screen.getByText(/Lade zuerst die Operationen/)).toBeTruthy();
   });
 
-  it('Fehler beim Laden: Meldung statt Absturz', async () => {
+  it('Ladefehler: Meldung statt Absturz, keine Suche', async () => {
     hoisted.operations.mockImplementation(() => { throw Object.assign(new Error('boom'), { status: 400 }); });
     wrap(<XlmByMemoPanel publicKey={PK} />);
-    search();
-    await waitFor(() => expect(screen.getByText('Die Suche ist fehlgeschlagen. Bitte später erneut versuchen.')).toBeTruthy());
+    fireEvent.click(screen.getByRole('button', { name: 'Laden' }));
+    await waitFor(() => expect(screen.getByRole('alert').textContent).toMatch(/konnten nicht geladen werden/));
+    expect(screen.queryByRole('searchbox')).toBeNull();
   });
 });
