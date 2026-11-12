@@ -48,11 +48,12 @@ dass jede Spec in dieser Tabelle steht und jede genannte Datei existiert.
 | Konto erstellen: Guards für ungesicherte Schlüssel, Netzwechsel | `e2e/specs/accountGuards.spec.mjs` |
 | Einstellungen: Verläufe löschen, Scam-Statistik zurücksetzen | `e2e/specs/settings.spec.mjs` |
 | Sendesperre über Tabs, Warten abbrechen | `e2e/specs/sendLock.spec.mjs` |
+| Trading mit gemerktem Session-Key: Limit-Order und Swap ohne Key-Dialog, ohne Haken Merken fragt der Dialog wieder | `e2e/specs/trading.spec.mjs` |
 | Smoke-Crawl: jeder Menüpunkt öffnet ohne Absturz (Konto mit Trustlines/Pool-Shares und Konto mit Offers) | `e2e/specs/smoke.spec.mjs` |
 
 ### Noch nicht abgedeckt (bewusst, bei Bedarf ergänzen)
 
-- Zahlung senden und Sammelzahlung mit Ergebnis, unklarer Status (Netz sperren), Trading/Swap, Multisig-Job mit
+- Zahlung senden und Sammelzahlung mit Ergebnis, unklarer Status (Netz sperren), Trading mit Multisig, Multisig-Job mit
   zweitem Signer, Xdr-Export, Bugreport (sendet echte Mail), Mainnet (nie automatisch).
 - Memo-Pflicht und Fee-Bump-Ablehnung sind als Unit-Tests abgedeckt (`memoRequired.test.js`, Multisig-Tests).
 

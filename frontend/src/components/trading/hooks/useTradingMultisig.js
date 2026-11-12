@@ -9,6 +9,8 @@ import { getRequiredThreshold } from '../../../utils/getRequiredThreshold.js';
 import { needsMultipleSignatures } from '../../../utils/stellar/isMultisigAccount.js';
 import { useSettings } from '../../../utils/useSettings.js';
 import { formatErrorForUi } from '../../../utils/formatErrorForUi.js';
+import { findSessionSigner } from '../../../utils/sessionSigner.js';
+import { getUsableSignerKeys } from '../../../utils/sessionSecrets.js';
 import { SendBlockedError, guardedUnsignedBuild } from '../../../utils/submitGuard/guardedSubmit.js';
 
 // Aktionen des Trading und ihre Operationen (Namen wie im SDK). changeTrust,
@@ -94,15 +96,52 @@ export default function useTradingMultisig({ network, accountId, accountInfo, be
     setOptions(action);
   }, []);
 
+  // Direkter Weg: Ein gemerkter Session-Key, der die Schwelle allein erreicht, signiert ohne
+  // Key-Dialog (die Bestaetigung der Aktion ist schon erfolgt). Kein solcher Key: Dialog wie bisher.
+  // Nur der direkte Weg: Auswahl, "Alle Signaturen lokal", Job und XDR bleiben wie sie sind.
+  const startingRef = useRef(false);
   const start = useCallback((action) => {
     setError('');
     setLocalAction(null);
-    if (!needsMultipleSignatures(accountInfo, requiredWeightFor(action.type, accountInfo?.thresholds))) {
+    const required = requiredWeightFor(action.type, accountInfo?.thresholds);
+    if (needsMultipleSignatures(accountInfo, required)) {
+      openOptions(action);
+      return;
+    }
+    // Nichts gemerkt (synchron geprueft, ohne etwas zu entschluesseln): Dialog sofort wie bisher.
+    if (!getUsableSignerKeys(action.accountId).length) {
       beginAction(action.type, action.payload, action.execute);
       return;
     }
-    openOptions(action);
-  }, [accountInfo, beginAction, openOptions]);
+    // Doppelklick waehrend der Key gelesen wird oder gesendet wird: ein zweiter Start zaehlt nicht.
+    if (startingRef.current) return;
+    startingRef.current = true;
+    void (async () => {
+      try {
+        let signer = [];
+        try {
+          signer = await findSessionSigner({ accountId: action.accountId, signers: accountInfo?.signers, requiredWeight: required });
+        } catch {
+          signer = [];
+        }
+        if (!mountedRef.current) return;
+        // Netz oder Konto wechselten, waehrend der Key gelesen wurde: nichts signieren.
+        if (!contextMatches(action)) {
+          setError(t(FLOW_CONTEXT_CHANGED));
+          return;
+        }
+        if (signer.length) {
+          await action.execute(signer);
+          return;
+        }
+        beginAction(action.type, action.payload, action.execute);
+      } catch (err) {
+        if (mountedRef.current) setError(formatErrorForUi(t, err));
+      } finally {
+        startingRef.current = false;
+      }
+    })();
+  }, [accountInfo, beginAction, contextMatches, openOptions, t]);
 
   // Job und XDR: Netz und Konto ausschliesslich aus der Aktion.
   const runUnsigned = useCallback(async (action, mode) => {

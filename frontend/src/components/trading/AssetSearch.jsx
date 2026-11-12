@@ -5,6 +5,7 @@ import { Asset } from '@stellar/stellar-sdk';
 import { getHorizonServerForNetwork, loadTrustlines } from '../../utils/stellar/stellarUtils.js';
 import { assertTxMatchesFlow } from '../../utils/multisig/unsignedTx.js';
 import SecretKeyModal from '../SecretKeyModal.jsx';
+import { rememberSessionSecrets, InsecureCryptoContextError } from '../../utils/sessionSecrets.js';
 import { formatErrorForUi } from '../../utils/formatErrorForUi.js';
 import { apiUrl } from '../../utils/apiBase.js';
 import {
@@ -73,7 +74,7 @@ import { resolveFeePerOp } from '../../utils/stellar/fees.js';
 const TRADING_SUBMIT_TIMEOUT_SECONDS = 60;
 
 export default function AssetSearch() {
-  const { t, i18n } = useTranslation(['trading', 'common', 'liquidity']);
+  const { t, i18n } = useTranslation(['trading', 'common', 'liquidity', 'secretKey']);
   const [tokenFactsExpanded, setTokenFactsExpanded] = useState(false);
   const {
     accountInput,
@@ -1124,6 +1125,7 @@ export default function AssetSearch() {
       setActionMessage(t('trading:assetSearch.trustlineStatus.added'));
       setShowSecretModal(false);
       setTrustlineRefreshToken((value) => value + 1);
+      return true;
     } catch (error) {
       handleSubmitFailure(error);
     } finally {
@@ -1145,6 +1147,7 @@ export default function AssetSearch() {
       setPendingAction(null);
       setSwapPreview({ loading: false, error: '', path: null, loadedAt: null, refreshComparison: null });
       setTrustlineRefreshToken((value) => value + 1);
+      return true;
     } catch (error) {
       handleSubmitFailure(error);
     } finally {
@@ -1166,6 +1169,7 @@ export default function AssetSearch() {
       setPendingAction(null);
       setSwapPreview({ loading: false, error: '', path: null, loadedAt: null, refreshComparison: null });
       setTrustlineRefreshToken((value) => value + 1);
+      return true;
     } catch (error) {
       handleSubmitFailure(error);
     } finally {
@@ -1201,6 +1205,7 @@ export default function AssetSearch() {
       setTrustlineRefreshToken((value) => value + 1);
       // Horizon liefert die Offers-Liste manchmal erst nach dem Submit-Ergebnis: einmal nachladen.
       setTimeout(() => setLimitOfferRefreshToken((value) => value + 1), 3000);
+      return true;
     } catch (error) {
       handleSubmitFailure(error);
     } finally {
@@ -1618,8 +1623,21 @@ export default function AssetSearch() {
       />
       {showSecretModal && (
         <SecretKeyModal
-          onConfirm={(collected) => {
-            if (pendingAction?.execute) return pendingAction.execute(collected);
+          onConfirm={async (collected, remember) => {
+            if (pendingAction?.execute) {
+              const done = await pendingAction.execute(collected);
+              // Merken (Haken im Dialog) erst nach erfolgreichem Senden, wie bei Claimable Balances.
+              if (done === true && remember) {
+                try {
+                  await rememberSessionSecrets(accountId, collected);
+                } catch (rememberErr) {
+                  if (rememberErr instanceof InsecureCryptoContextError) {
+                    setActionMessage((prev) => `${prev} ${t('secretKey:remember.insecureContextError')}`.trim());
+                  }
+                }
+              }
+              return done;
+            }
             // No/unknown pendingAction (e.g. a stale re-render) must not silently
             // fall through to a trustline change the user never confirmed.
             const message = t('errors:unknown', 'Unbekannter Fehler');

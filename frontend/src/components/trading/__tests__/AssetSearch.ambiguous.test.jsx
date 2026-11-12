@@ -140,6 +140,7 @@ function submitSecretModal() {
 }
 
 beforeEach(() => {
+  window.sessionStorage.clear();
   vi.stubGlobal('fetch', mockFetch());
   window.localStorage.clear();
   window.localStorage.setItem('SKM_LAST_ACCOUNT', ACCOUNT.publicKey);
@@ -152,7 +153,11 @@ beforeEach(() => {
   hoisted.pathRecords.value = [{ destination_amount: '100.0000000', path: [], source_asset_type: 'native' }];
 });
 
-afterEach(() => {
+afterEach(async () => {
+  // Das Merken des Keys laeuft nach dem Senden asynchron: erst abwarten, dann leeren, sonst
+  // taucht der Key im naechsten Test auf.
+  await new Promise((resolve) => setTimeout(resolve, 30));
+  window.sessionStorage.clear();
   vi.unstubAllGlobals();
 });
 

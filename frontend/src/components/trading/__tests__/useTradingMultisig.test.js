@@ -1,6 +1,7 @@
-import { act, renderHook } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import { Account, Asset, Keypair, Networks, Operation, TransactionBuilder } from '@stellar/stellar-sdk';
 import useTradingMultisig, { requiredWeightFor } from '../hooks/useTradingMultisig.js';
+import { setSessionSecrets } from '../../../utils/sessionSecrets.js';
 import { getRequiredThreshold } from '../../../utils/getRequiredThreshold.js';
 import { readAccountEntry, resetAccountSendGuardMemory, writeAccountEntry } from '../../../utils/submitGuard/accountSendGuard.js';
 
@@ -217,5 +218,125 @@ describe('requiredWeightFor (T-4)', () => {
   });
   it('Gegenprobe: payment haette high verlangt', () => {
     expect(getRequiredThreshold('payment', thresholds)).toBe(3);
+  });
+});
+
+// Direkter Weg: ein gemerkter Session-Key, der die Schwelle allein erreicht, signiert ohne Key-Dialog.
+describe('useTradingMultisig - start mit gemerktem Session-Key', () => {
+  const master = Keypair.random();
+  const cosigner = Keypair.random();
+  const ACC = master.publicKey();
+  const ed = (kp, weight) => ({ key: kp.publicKey(), weight, type: 'ed25519_public_key' });
+  const single = { signers: [ed(master, 1)], thresholds: { low_threshold: 0, med_threshold: 1, high_threshold: 1 } };
+  const twoOfTwo = { signers: [ed(master, 1), ed(cosigner, 1)], thresholds: { low_threshold: 0, med_threshold: 2, high_threshold: 2 } };
+  const oneOfTwo = { signers: [ed(master, 1), ed(cosigner, 1)], thresholds: { low_threshold: 0, med_threshold: 1, high_threshold: 2 } };
+  const act1 = (overrides = {}) => makeAction({ accountId: ACC, execute: vi.fn(async () => true), ...overrides });
+  const render = (accountInfo, props = {}) => renderMultisig({ accountId: ACC, accountInfo, ...props });
+
+  beforeEach(() => { sessionStorage.clear(); });
+  afterEach(() => { sessionStorage.clear(); });
+
+  it('Key gemerkt und reicht allein: execute mit genau diesem Signer, kein Key-Dialog', async () => {
+    await setSessionSecrets(ACC, { [ACC]: master.secret() });
+    const beginAction = vi.fn();
+    const { result } = render(single, { beginAction });
+    const action = act1();
+    await act(async () => { result.current.start(action); });
+    await waitFor(() => expect(action.execute).toHaveBeenCalledTimes(1));
+    const [collected] = action.execute.mock.calls[0];
+    expect(collected).toHaveLength(1);
+    expect(collected[0].keypair.publicKey()).toBe(ACC);
+    expect(beginAction).not.toHaveBeenCalled();
+    expect(result.current.options).toBeNull();
+  });
+
+  it('Gegenprobe: nichts gemerkt: sofort (synchron) der Key-Dialog, kein execute', () => {
+    const beginAction = vi.fn();
+    const { result } = render(single, { beginAction });
+    const action = act1();
+    act(() => { result.current.start(action); });
+    expect(beginAction).toHaveBeenCalledTimes(1);
+    expect(beginAction).toHaveBeenCalledWith(action.type, action.payload, action.execute);
+    expect(action.execute).not.toHaveBeenCalled();
+  });
+
+  it('Gegenprobe: Key gemerkt, aber sein Gewicht reicht nicht (ein anderer Signer mit 3 schon): Key-Dialog, kein execute', async () => {
+    await setSessionSecrets(ACC, { [ACC]: master.secret() });
+    const beginAction = vi.fn();
+    const info = { signers: [ed(master, 1), ed(cosigner, 3)], thresholds: { low_threshold: 0, med_threshold: 3, high_threshold: 3 } };
+    const { result } = render(info, { beginAction });
+    const action = act1();
+    await act(async () => { result.current.start(action); });
+    await waitFor(() => expect(beginAction).toHaveBeenCalledTimes(1));
+    expect(action.execute).not.toHaveBeenCalled();
+    expect(result.current.options).toBeNull();
+  });
+
+  it('Mehrere Signer, aber einer reicht (1 von 2): auch hier signiert der gemerkte Key allein', async () => {
+    await setSessionSecrets(ACC, { [ACC]: master.secret() });
+    const beginAction = vi.fn();
+    const { result } = render(oneOfTwo, { beginAction });
+    const action = act1();
+    await act(async () => { result.current.start(action); });
+    await waitFor(() => expect(action.execute).toHaveBeenCalledTimes(1));
+    expect(beginAction).not.toHaveBeenCalled();
+  });
+
+  it('Multisig 2 von 2 bleibt unveraendert: Auswahl Job/lokal/XDR, kein Auto-Signieren trotz gemerktem Key', async () => {
+    await setSessionSecrets(ACC, { [ACC]: master.secret() });
+    const beginAction = vi.fn();
+    const { result } = render(twoOfTwo, { beginAction });
+    const action = act1();
+    await act(async () => { result.current.start(action); });
+    expect(result.current.options).toBe(action);
+    expect(action.execute).not.toHaveBeenCalled();
+    expect(beginAction).not.toHaveBeenCalled();
+  });
+
+  it('Lokaler Multisig-Weg bleibt unveraendert: Dialog statt Auto-Signatur', async () => {
+    await setSessionSecrets(ACC, { [ACC]: master.secret() });
+    const beginAction = vi.fn();
+    const { result } = render(twoOfTwo, { beginAction });
+    const action = act1();
+    await act(async () => { result.current.start(action); });
+    act(() => { result.current.setChoice('local'); });
+    act(() => { result.current.proceed(); });
+    expect(beginAction).toHaveBeenCalledTimes(1);
+    expect(action.execute).not.toHaveBeenCalled();
+  });
+
+  it('Netz oder Konto wechseln, waehrend der Key gelesen wird: nichts signiert, Hinweis, kein Dialog', async () => {
+    await setSessionSecrets(ACC, { [ACC]: master.secret() });
+    const beginAction = vi.fn();
+    const { result, rerender } = render(single, { beginAction });
+    const action = act1();
+    await act(async () => {
+      result.current.start(action);
+      rerender({ accountId: Keypair.random().publicKey(), accountInfo: single, beginAction });
+    });
+    await waitFor(() => expect(result.current.error).toBe('trading:assetSearch.multisig.contextChanged'));
+    expect(action.execute).not.toHaveBeenCalled();
+    expect(beginAction).not.toHaveBeenCalled();
+  });
+
+  it('Doppelstart waehrend der Key gelesen wird: genau ein execute', async () => {
+    await setSessionSecrets(ACC, { [ACC]: master.secret() });
+    const { result } = render(single);
+    const action = act1();
+    await act(async () => { result.current.start(action); result.current.start(action); });
+    await waitFor(() => expect(action.execute).toHaveBeenCalled());
+    await act(async () => { await new Promise((r) => setTimeout(r, 20)); });
+    expect(action.execute).toHaveBeenCalledTimes(1);
+  });
+
+  it('wirft execute, kommt eine Meldung statt eines Absturzes; danach ist ein neuer Start moeglich', async () => {
+    await setSessionSecrets(ACC, { [ACC]: master.secret() });
+    const { result } = render(single);
+    const bad = act1({ execute: vi.fn(async () => { throw new Error('boom'); }) });
+    await act(async () => { result.current.start(bad); });
+    await waitFor(() => expect(result.current.error).not.toBe(''));
+    const good = act1();
+    await act(async () => { result.current.start(good); });
+    await waitFor(() => expect(good.execute).toHaveBeenCalledTimes(1));
   });
 });

@@ -5,6 +5,7 @@ import { Account, Keypair, Networks, TransactionBuilder } from '@stellar/stellar
 import i18n from '../../../i18n.js';
 import AssetSearch from '../AssetSearch.jsx';
 import { resetServerNetworkCalls, serverNetworkCalls } from '../../../test/horizonMock.js';
+import { hasSessionSecrets, setSessionSecrets } from '../../../utils/sessionSecrets.js';
 
 // Same well-known testnet-style keypairs used in tradingTransactions.test.js, so a
 // human scanning both files recognizes the same fixture accounts.
@@ -138,6 +139,7 @@ function submitSecretModal() {
 }
 
 beforeEach(() => {
+  window.sessionStorage.clear();
   vi.stubGlobal('fetch', mockFetch());
   window.localStorage.clear();
   window.localStorage.setItem('SKM_LAST_ACCOUNT', ACCOUNT.publicKey);
@@ -150,7 +152,11 @@ beforeEach(() => {
   hoisted.pathRecords.value = [{ destination_amount: '100.0000000', path: [], source_asset_type: 'native' }];
 });
 
-afterEach(() => {
+afterEach(async () => {
+  // Das Merken des Keys laeuft nach dem Senden asynchron: erst abwarten, dann leeren, sonst
+  // taucht der Key im naechsten Test auf.
+  await new Promise((resolve) => setTimeout(resolve, 30));
+  window.sessionStorage.clear();
   vi.unstubAllGlobals();
 });
 
@@ -669,6 +675,118 @@ describe('AssetSearch - Multisig-Ablauf', () => {
     expect(tx.signatures).toHaveLength(0);
     expect(tx.operations[0].type).toBe('manageSellOffer');
     expect(tx.operations[0].amount).toBe('50.0000000');
+    expect(hoisted.submitTransactionMock).not.toHaveBeenCalled();
+  });
+});
+
+// Gemerkter Session-Key: Trading signiert nach der Bestaetigung damit, der Key-Dialog kommt nur,
+// wenn kein passender Key gemerkt ist.
+describe('AssetSearch - gemerkter Session-Key', () => {
+  const REMEMBER = 'Secret Key für diese Sitzung merken';
+
+  async function placeOffer(limitSection) {
+    const [amountInput, priceInput] = within(limitSection).getAllByRole('textbox');
+    fireEvent.change(amountInput, { target: { value: '50' } });
+    fireEvent.change(priceInput, { target: { value: '0.75' } });
+    fireEvent.click(within(limitSection).getByRole('button', { name: 'Limit-Order platzieren' }));
+    await screen.findByText('Limit-Order bestätigen');
+    fireEvent.click(screen.getByRole('button', { name: 'Weiter zur Signatur' }));
+  }
+  const limitSectionOf = () => screen.getByText('Limit-Orders').closest('section');
+
+  it('Merken im Dialog (Standard): die zweite Limit-Order signiert ohne Key-Dialog', async () => {
+    renderPage();
+    await searchAndSelectAsset();
+    await placeOffer(limitSectionOf());
+    typeSecret(ACCOUNT.secret);
+    submitSecretModal();
+    await screen.findByText(/Limit-Order wurde platziert\. Transaktion:/);
+    await waitFor(() => expect(hasSessionSecrets(ACCOUNT.publicKey)).toBe(true));
+
+    await placeOffer(limitSectionOf());
+    await waitFor(() => expect(hoisted.submitTransactionMock).toHaveBeenCalledTimes(2));
+    expect(document.querySelector('input[type="password"]')).toBeNull();
+    const tx = hoisted.submitTransactionMock.mock.calls[1][0];
+    expect(tx.operations[0].type).toBe('manageSellOffer');
+    expect(tx.signatures).toHaveLength(1);
+  });
+
+  it('Gegenprobe: Haken Merken aus: nichts gespeichert, die zweite Limit-Order fragt den Key wieder ab', async () => {
+    renderPage();
+    await searchAndSelectAsset();
+    await placeOffer(limitSectionOf());
+    fireEvent.click(screen.getByLabelText(REMEMBER));
+    typeSecret(ACCOUNT.secret);
+    submitSecretModal();
+    await screen.findByText(/Limit-Order wurde platziert\. Transaktion:/);
+    await act(async () => { await new Promise((r) => setTimeout(r, 50)); });
+    expect(hasSessionSecrets(ACCOUNT.publicKey)).toBe(false);
+
+    await placeOffer(limitSectionOf());
+    expect(document.querySelector('input[type="password"]')).not.toBeNull();
+    expect(hoisted.submitTransactionMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('Gegenprobe: schlaegt das Senden fehl, wird der Key nicht gemerkt', async () => {
+    hoisted.submitTransactionMock.mockReset().mockRejectedValue(Object.assign(new Error('tx_failed: op_underfunded'), {
+      response: { status: 400, data: { extras: { result_codes: { operations: ['op_underfunded'] } } } },
+    }));
+    renderPage();
+    await searchAndSelectAsset();
+    await placeOffer(limitSectionOf());
+    typeSecret(ACCOUNT.secret);
+    submitSecretModal();
+    await screen.findByText(/op_underfunded/);
+    await act(async () => { await new Promise((r) => setTimeout(r, 50)); });
+    expect(hasSessionSecrets(ACCOUNT.publicKey)).toBe(false);
+  });
+
+  it('bereits gemerkter Key: Limit-Order geht nach der Bestaetigung direkt raus, ohne Key-Dialog', async () => {
+    await setSessionSecrets(ACCOUNT.publicKey, { [ACCOUNT.publicKey]: ACCOUNT.secret });
+    renderPage();
+    await searchAndSelectAsset();
+    await placeOffer(limitSectionOf());
+    await screen.findByText(/Limit-Order wurde platziert\. Transaktion:/);
+    expect(document.querySelector('input[type="password"]')).toBeNull();
+    expect(hoisted.submitTransactionMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('bereits gemerkter Key: Swap signiert nach der Bestaetigung ohne Key-Dialog', async () => {
+    await setSessionSecrets(ACCOUNT.publicKey, { [ACCOUNT.publicKey]: ACCOUNT.secret });
+    renderPage();
+    await searchAndSelectAsset();
+    const swapSection = screen.getByText('Swap-Preview').closest('section');
+    const [amountInput, slippageInput] = within(swapSection).getAllByRole('textbox');
+    fireEvent.change(amountInput, { target: { value: '20' } });
+    fireEvent.change(slippageInput, { target: { value: '2' } });
+    fireEvent.click(within(swapSection).getByRole('button', { name: 'Preis prüfen' }));
+    await within(swapSection).findByText(/98\s*FOO/);
+    fireEvent.click(within(swapSection).getByRole('button', { name: 'Swap ausführen' }));
+    fireEvent.click(await screen.findByRole('button', { name: 'Weiter zur Signatur' }));
+    await screen.findByText(/Swap wurde ausgeführt\. Transaktion:/);
+    expect(document.querySelector('input[type="password"]')).toBeNull();
+    expect(hoisted.submitTransactionMock.mock.calls[0][0].operations[0].type).toBe('pathPaymentStrictSend');
+  });
+
+  it('Fehler bei der automatischen Signatur wird angezeigt, kein stilles Scheitern', async () => {
+    await setSessionSecrets(ACCOUNT.publicKey, { [ACCOUNT.publicKey]: ACCOUNT.secret });
+    hoisted.submitTransactionMock.mockReset().mockRejectedValue(Object.assign(new Error('tx_failed: op_underfunded'), {
+      response: { status: 400, data: { extras: { result_codes: { operations: ['op_underfunded'] } } } },
+    }));
+    renderPage();
+    await searchAndSelectAsset();
+    await placeOffer(limitSectionOf());
+    expect((await screen.findAllByText(/op_underfunded/)).length).toBeGreaterThan(0);
+    expect(document.querySelector('input[type="password"]')).toBeNull();
+  });
+
+  it('gemerkter Key eines anderen Kontos wird nicht genommen: Key-Dialog', async () => {
+    const stranger = Keypair.random();
+    await setSessionSecrets(stranger.publicKey(), { [stranger.publicKey()]: stranger.secret() });
+    renderPage();
+    await searchAndSelectAsset();
+    await placeOffer(limitSectionOf());
+    expect(document.querySelector('input[type="password"]')).not.toBeNull();
     expect(hoisted.submitTransactionMock).not.toHaveBeenCalled();
   });
 });
