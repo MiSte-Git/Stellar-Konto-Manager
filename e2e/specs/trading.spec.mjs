@@ -47,19 +47,20 @@ async function placeOffer(page) {
 
 test('Key im Dialog merken: Limit-Order und Swap danach ohne Key-Dialog', async ({ page }) => {
   const fx = readFixtures();
+  const offersBefore = await offerCount(fx.main.public);
   await openTradingWithSkma(page, fx);
 
   // Erste Limit-Order: Key-Dialog, Merken ist vorbelegt.
   await placeOffer(page);
   await signWithKey(page, fx.main.secret);
   await expect(page.getByText(/Limit-Order wurde platziert/)).toBeVisible({ timeout: 40000 });
-  await pollUntil(async () => (await offerCount(fx.main.public)) >= 1);
+  await pollUntil(async () => (await offerCount(fx.main.public)) >= offersBefore + 1);
 
   // Zweite Limit-Order: kein Key-Dialog, das Netz zeigt zwei Offers.
   await placeOffer(page);
   await expect(page.getByText(/Limit-Order wurde platziert/)).toBeVisible({ timeout: 40000 });
   await expect(page.locator(PASSWORD)).toHaveCount(0);
-  await pollUntil(async () => (await offerCount(fx.main.public)) >= 2);
+  await pollUntil(async () => (await offerCount(fx.main.public)) >= offersBefore + 2);
 
   // Swap Token -> XLM: ebenfalls ohne Key-Dialog, SKMA sinkt um den gesendeten Betrag.
   const before = await skmaOf(fx.main.public);

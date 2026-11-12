@@ -4,6 +4,7 @@ import { I18nextProvider } from 'react-i18next';
 import { Account, Keypair, Networks, TransactionBuilder } from '@stellar/stellar-sdk';
 import i18n from '../../../i18n.js';
 import AssetSearch from '../AssetSearch.jsx';
+import { hasSessionSecrets } from '../../../utils/sessionSecrets.js';
 import { readAccountEntry, resetAccountSendGuardMemory, writeAccountEntry } from '../../../utils/submitGuard/accountSendGuard.js';
 import { txHashHex } from '../../../utils/stellar/txHash.js';
 import { readSentEntry, writeSentEntry } from '../../../utils/batchPayment/batchPaymentStore.js';
@@ -29,7 +30,14 @@ const hoisted = vi.hoisted(() => ({
   offersRecords: { value: [] },
   pathRecords: { value: [] },
   createJob: vi.fn(),
+  pendingRemember: [],
 }));
+
+vi.mock('../../../utils/sessionSecrets.js', async (importOriginal) => {
+  const actual = await importOriginal();
+  // Das Merken laeuft nach dem Senden asynchron: mitzaehlen, damit die Tests es abwarten koennen.
+  return { ...actual, rememberSessionSecrets: (...args) => { const p = actual.rememberSessionSecrets(...args); hoisted.pendingRemember.push(p); return p; } };
+});
 
 vi.mock('../../../utils/multisigApi.js', async (importOriginal) => ({
   ...(await importOriginal()),
@@ -154,9 +162,10 @@ beforeEach(() => {
 });
 
 afterEach(async () => {
-  // Das Merken des Keys laeuft nach dem Senden asynchron: erst abwarten, dann leeren, sonst
-  // taucht der Key im naechsten Test auf.
-  await new Promise((resolve) => setTimeout(resolve, 30));
+  // Offenes Merken abwarten (erst Makrotask, dann die Promises), erst dann leeren: sonst taucht der
+  // Key im naechsten Test auf.
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  await Promise.allSettled(hoisted.pendingRemember.splice(0));
   window.sessionStorage.clear();
   vi.unstubAllGlobals();
 });
@@ -204,6 +213,15 @@ describe('AssetSearch - unklarer Sendestatus (Sendeschutz wie Zahlung senden)', 
     // Freigabe nur ueber Horizon ("Status jetzt pruefen"), nie manuell.
     expect(within(panel).getByTestId('send-ambiguous-check')).toBeInTheDocument();
     expect(hoisted.submitTransactionMock).toHaveBeenCalledTimes(1);
+  }, 40000);
+
+  it('unklarer Ausgang: der Key wird trotz Haken Merken nicht gemerkt', async () => {
+    hoisted.submitTransactionMock.mockReset().mockRejectedValue(new TypeError('Failed to fetch'));
+    const limitSection = await openLimitOrder();
+    await sendLimitOrder(limitSection);
+    await screen.findByTestId('send-ambiguous', {}, { timeout: 20000 });
+    await act(async () => { await new Promise((r) => setTimeout(r, 50)); });
+    expect(hasSessionSecrets(ACCOUNT.publicKey)).toBe(false);
   }, 40000);
 
   it('unklarer Eintrag aus "Zahlung senden" sperrt das Trading fuer dieses Konto', async () => {

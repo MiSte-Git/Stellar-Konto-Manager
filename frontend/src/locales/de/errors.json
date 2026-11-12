@@ -86,7 +86,8 @@
         "op_trust_line_missing": "Für die Pool-Trustline fehlt die Trustline eines der beiden Assets (op_trust_line_missing).",
         "op_not_aut_maintain_liabilities": "Eine Asset-Trustline ist nicht ausreichend autorisiert, um die Pool-Trustline anzulegen (op_not_aut_maintain_liabilities).",
         "op_trustline_frozen": "Eine für diese Pool-Operation benötigte Trustline ist eingefroren (op_trustline_frozen)."
-      }
+      },
+      "sessionLocked": "Die Sitzung wurde gesperrt, nachdem du die Aktion bestätigt hast. Es wurde nichts gesendet. Bitte starte die Aktion neu."
     }
   },
   "sync": {

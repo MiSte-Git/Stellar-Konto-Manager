@@ -5,7 +5,7 @@ import { Account, Keypair, Networks, TransactionBuilder } from '@stellar/stellar
 import i18n from '../../../i18n.js';
 import AssetSearch from '../AssetSearch.jsx';
 import { resetServerNetworkCalls, serverNetworkCalls } from '../../../test/horizonMock.js';
-import { hasSessionSecrets, setSessionSecrets } from '../../../utils/sessionSecrets.js';
+import { hasSessionSecrets, setSessionSecrets, SESSION_LOCKED_EVENT } from '../../../utils/sessionSecrets.js';
 
 // Same well-known testnet-style keypairs used in tradingTransactions.test.js, so a
 // human scanning both files recognizes the same fixture accounts.
@@ -28,7 +28,14 @@ const hoisted = vi.hoisted(() => ({
   offersRecords: { value: [] },
   pathRecords: { value: [] },
   createJob: vi.fn(),
+  pendingRemember: [],
 }));
+
+vi.mock('../../../utils/sessionSecrets.js', async (importOriginal) => {
+  const actual = await importOriginal();
+  // Das Merken laeuft nach dem Senden asynchron: mitzaehlen, damit die Tests es abwarten koennen.
+  return { ...actual, rememberSessionSecrets: (...args) => { const p = actual.rememberSessionSecrets(...args); hoisted.pendingRemember.push(p); return p; } };
+});
 
 vi.mock('../../../utils/multisigApi.js', async (importOriginal) => ({
   ...(await importOriginal()),
@@ -153,9 +160,10 @@ beforeEach(() => {
 });
 
 afterEach(async () => {
-  // Das Merken des Keys laeuft nach dem Senden asynchron: erst abwarten, dann leeren, sonst
-  // taucht der Key im naechsten Test auf.
-  await new Promise((resolve) => setTimeout(resolve, 30));
+  // Offenes Merken abwarten (erst Makrotask, dann die Promises), erst dann leeren: sonst taucht der
+  // Key im naechsten Test auf.
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  await Promise.allSettled(hoisted.pendingRemember.splice(0));
   window.sessionStorage.clear();
   vi.unstubAllGlobals();
 });
@@ -780,6 +788,16 @@ describe('AssetSearch - gemerkter Session-Key', () => {
     expect(document.querySelector('input[type="password"]')).toBeNull();
   });
 
+  it('Fremd-Key unter dem eigenen Konto abgelegt, aber kein Signer des Kontos: Key-Dialog, nichts gesendet', async () => {
+    const stranger = Keypair.random();
+    await setSessionSecrets(ACCOUNT.publicKey, { [stranger.publicKey()]: stranger.secret() });
+    renderPage();
+    await searchAndSelectAsset();
+    await placeOffer(limitSectionOf());
+    await waitFor(() => expect(document.querySelector('input[type="password"]')).not.toBeNull());
+    expect(hoisted.submitTransactionMock).not.toHaveBeenCalled();
+  });
+
   it('gemerkter Key eines anderen Kontos wird nicht genommen: Key-Dialog', async () => {
     const stranger = Keypair.random();
     await setSessionSecrets(stranger.publicKey(), { [stranger.publicKey()]: stranger.secret() });
@@ -788,5 +806,72 @@ describe('AssetSearch - gemerkter Session-Key', () => {
     await placeOffer(limitSectionOf());
     expect(document.querySelector('input[type="password"]')).not.toBeNull();
     expect(hoisted.submitTransactionMock).not.toHaveBeenCalled();
+  });
+
+  it('Sperre nach der Bestaetigung: nichts signiert, nichts gesendet, Hinweis', async () => {
+    await setSessionSecrets(ACCOUNT.publicKey, { [ACCOUNT.publicKey]: ACCOUNT.secret });
+    renderPage();
+    await searchAndSelectAsset();
+    // Das Laden des Kontos im Ablauf haelt an, bis die Sperre ausgeloest ist.
+    let release;
+    const gate = new Promise((resolve) => { release = resolve; });
+    hoisted.loadAccountMock.mockImplementation(async () => { await gate; return makeFundedAccount(ACCOUNT.publicKey); });
+    await placeOffer(limitSectionOf());
+    await act(async () => { window.dispatchEvent(new CustomEvent(SESSION_LOCKED_EVENT)); });
+    await act(async () => { release(); await new Promise((r) => setTimeout(r, 20)); });
+    expect((await screen.findAllByText(/Die Sitzung wurde gesperrt/)).length).toBeGreaterThan(0);
+    expect(hoisted.submitTransactionMock).not.toHaveBeenCalled();
+  });
+
+  it('Gegenprobe: Sperre VOR der Bestaetigung bricht nichts ab (neue Aktion signiert normal)', async () => {
+    await setSessionSecrets(ACCOUNT.publicKey, { [ACCOUNT.publicKey]: ACCOUNT.secret });
+    renderPage();
+    await searchAndSelectAsset();
+    await act(async () => { window.dispatchEvent(new CustomEvent(SESSION_LOCKED_EVENT)); });
+    // Die Sperre loescht hier nur das Event, der Key bleibt (Test): die Aktion laeuft durch.
+    await placeOffer(limitSectionOf());
+    await screen.findByText(/Limit-Order wurde platziert\. Transaktion:/);
+    expect(hoisted.submitTransactionMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('Veraltete Kontodaten (Konto ist inzwischen 2-von-2): Fehler wird gezeigt, Konto neu geladen, naechster Versuch zeigt die Auswahl', async () => {
+    const cosigner = Keypair.random();
+    await setSessionSecrets(ACCOUNT.publicKey, { [ACCOUNT.publicKey]: ACCOUNT.secret });
+    let twoOfTwo = false;
+    hoisted.loadAccountMock.mockImplementation(async () => {
+      const acct = makeFundedAccount(ACCOUNT.publicKey);
+      if (twoOfTwo) {
+        acct.thresholds = { low_threshold: 0, med_threshold: 2, high_threshold: 2 };
+        acct.signers = [
+          { key: ACCOUNT.publicKey, weight: 1, type: 'ed25519_public_key' },
+          { key: cosigner.publicKey(), weight: 1, type: 'ed25519_public_key' },
+        ];
+      }
+      return acct;
+    });
+    renderPage();
+    await searchAndSelectAsset();
+    await act(async () => { await new Promise((r) => setTimeout(r, 0)); });
+    twoOfTwo = true; // das Konto aendert sich, die Seite weiss es noch nicht
+    await placeOffer(limitSectionOf());
+    expect((await screen.findAllByText(/reichen nicht aus/)).length).toBeGreaterThan(0);
+    expect(hoisted.submitTransactionMock).not.toHaveBeenCalled();
+    // Konto wurde neu geladen: der zweite Versuch signiert nicht wieder automatisch, sondern zeigt die Auswahl.
+    await act(async () => { await new Promise((r) => setTimeout(r, 50)); });
+    await placeOffer(limitSectionOf());
+    expect(await screen.findByText('Option wählen')).toBeInTheDocument();
+    expect(hoisted.submitTransactionMock).not.toHaveBeenCalled();
+  });
+
+  it('Merken in unsicherer Umgebung (kein crypto.subtle): gesendet wird, nichts wird gespeichert, Hinweis erscheint', async () => {
+    vi.stubGlobal('crypto', { getRandomValues: (a) => globalThis.crypto.getRandomValues(a), subtle: undefined });
+    renderPage();
+    await searchAndSelectAsset();
+    await placeOffer(limitSectionOf());
+    typeSecret(ACCOUNT.secret);
+    submitSecretModal();
+    await screen.findByText(/Limit-Order wurde platziert/);
+    expect((await screen.findAllByText(/konnte nicht gespeichert werden/)).length).toBeGreaterThan(0);
+    expect(hasSessionSecrets(ACCOUNT.publicKey)).toBe(false);
   });
 });

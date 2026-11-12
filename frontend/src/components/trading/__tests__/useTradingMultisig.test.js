@@ -329,6 +329,41 @@ describe('useTradingMultisig - start mit gemerktem Session-Key', () => {
     expect(action.execute).toHaveBeenCalledTimes(1);
   });
 
+  it('Zweiter Start (andere Aktion) waehrend einer laufenden automatischen Signatur: Hinweis statt stillem Verwerfen', async () => {
+    await setSessionSecrets(ACC, { [ACC]: master.secret() });
+    const { result } = render(single);
+    let finish;
+    const slow = act1({ execute: vi.fn(() => new Promise((resolve) => { finish = resolve; })) });
+    const other = act1({ type: 'swap' });
+    await act(async () => { result.current.start(slow); });
+    await waitFor(() => expect(slow.execute).toHaveBeenCalled());
+    await act(async () => { result.current.start(other); });
+    expect(result.current.error).toBe('trading:assetSearch.multisig.busy');
+    expect(other.execute).not.toHaveBeenCalled();
+    await act(async () => { finish(true); });
+    // danach ist ein neuer Start wieder moeglich
+    await act(async () => { result.current.start(other); });
+    await waitFor(() => expect(other.execute).toHaveBeenCalledTimes(1));
+  });
+
+  it('Geladene Kontodaten gehoeren zu einem anderen Konto: kein Auto-Signieren, Key-Dialog', async () => {
+    await setSessionSecrets(ACC, { [ACC]: master.secret() });
+    const beginAction = vi.fn();
+    const { result } = render({ ...single, account_id: Keypair.random().publicKey() }, { beginAction });
+    const action = act1();
+    await act(async () => { result.current.start(action); });
+    expect(beginAction).toHaveBeenCalledTimes(1);
+    expect(action.execute).not.toHaveBeenCalled();
+  });
+
+  it('Gegenprobe: Kontodaten gehoeren zum Konto der Aktion (account_id gleich): Auto-Signatur', async () => {
+    await setSessionSecrets(ACC, { [ACC]: master.secret() });
+    const { result } = render({ ...single, account_id: ACC });
+    const action = act1();
+    await act(async () => { result.current.start(action); });
+    await waitFor(() => expect(action.execute).toHaveBeenCalledTimes(1));
+  });
+
   it('wirft execute, kommt eine Meldung statt eines Absturzes; danach ist ein neuer Start moeglich', async () => {
     await setSessionSecrets(ACC, { [ACC]: master.secret() });
     const { result } = render(single);

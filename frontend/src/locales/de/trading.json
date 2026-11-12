@@ -392,7 +392,8 @@
         "amount": "Menge",
         "price": "Preis",
         "offerId": "Offer-ID"
-      }
+      },
+      "busy": "Es läuft gerade ein Sendevorgang. Bitte warte, bis er abgeschlossen ist."
     }
   },
   "assetPicker": {

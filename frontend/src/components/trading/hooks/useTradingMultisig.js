@@ -108,13 +108,19 @@ export default function useTradingMultisig({ network, accountId, accountInfo, be
       openOptions(action);
       return;
     }
-    // Nichts gemerkt (synchron geprueft, ohne etwas zu entschluesseln): Dialog sofort wie bisher.
-    if (!getUsableSignerKeys(action.accountId).length) {
+    // Nichts gemerkt (synchron geprueft, ohne etwas zu entschluesseln) oder die geladenen Kontodaten
+    // gehoeren zu einem anderen Konto: Dialog sofort wie bisher.
+    const loadedId = accountInfo?.account_id || accountInfo?.id;
+    if (!getUsableSignerKeys(action.accountId).length || (loadedId && loadedId !== action.accountId)) {
       beginAction(action.type, action.payload, action.execute);
       return;
     }
-    // Doppelklick waehrend der Key gelesen wird oder gesendet wird: ein zweiter Start zaehlt nicht.
-    if (startingRef.current) return;
+    // Es liest oder sendet schon eine automatische Signatur: Doppelklick wird ignoriert, ein anderer
+    // Start bekommt einen Hinweis (kein stilles Verwerfen).
+    if (startingRef.current) {
+      setError(t('trading:assetSearch.multisig.busy'));
+      return;
+    }
     startingRef.current = true;
     void (async () => {
       try {

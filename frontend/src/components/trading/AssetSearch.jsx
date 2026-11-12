@@ -5,7 +5,7 @@ import { Asset } from '@stellar/stellar-sdk';
 import { getHorizonServerForNetwork, loadTrustlines } from '../../utils/stellar/stellarUtils.js';
 import { assertTxMatchesFlow } from '../../utils/multisig/unsignedTx.js';
 import SecretKeyModal from '../SecretKeyModal.jsx';
-import { rememberSessionSecrets, InsecureCryptoContextError } from '../../utils/sessionSecrets.js';
+import { rememberSessionSecrets, InsecureCryptoContextError, SESSION_LOCKED_EVENT } from '../../utils/sessionSecrets.js';
 import { formatErrorForUi } from '../../utils/formatErrorForUi.js';
 import { apiUrl } from '../../utils/apiBase.js';
 import {
@@ -117,6 +117,16 @@ export default function AssetSearch() {
   // Multisig-Ablauf (ADR 0007): Auswahl Job/lokal/XDR nur, wenn kein einzelner Signer reicht
   const bumpGuardRef = useRef(null);
   const submitInFlightRef = useRef(false);
+  // Sperren (Schloss, Inaktivitaet) zaehlt hoch: Eine Aktion, die vor der Sperre bestaetigt wurde,
+  // signiert danach nicht mehr (siehe submitSignedTx). flowRef: Netz und Konto der letzten Bestaetigung,
+  // unter diesem Konto wird der Key gemerkt.
+  const lockEpochRef = useRef(0);
+  const flowRef = useRef(null);
+  useEffect(() => {
+    const onLocked = () => { lockEpochRef.current += 1; };
+    window.addEventListener(SESSION_LOCKED_EVENT, onLocked);
+    return () => window.removeEventListener(SESSION_LOCKED_EVENT, onLocked);
+  }, []);
   const multisig = useTradingMultisig({
     onBlocked: () => bumpGuardRef.current?.(),
     network,
@@ -833,6 +843,10 @@ export default function AssetSearch() {
         const { tx } = await prepare({ server, flow, checkAccount, adjustAccount, timeoutSeconds: TRADING_SUBMIT_TIMEOUT_SECONDS });
         // Nach den Horizon-Aufrufen: passt die Transaktion zur Aktion, gilt das Netz noch?
         assertTxMatchesFlow(tx, flow, 'createAccount:networkChanged.funderAborted');
+        // Gesperrt seit der Bestaetigung: nichts signieren (der Key kam vor der Sperre aus der Sitzung).
+        if (flow.lockEpoch !== undefined && flow.lockEpoch !== lockEpochRef.current) {
+          throw new Error('submitTransaction.failed:sessionLocked');
+        }
         return { tx: signTransactionWithCollectedSigners(tx, signers) };
       },
       entryData: () => ({ origin: 'trade', summary: { action: actionText } }),
@@ -859,6 +873,12 @@ export default function AssetSearch() {
       }
       sendGuard.bump();
       return;
+    }
+    // Gewicht reicht laut frisch geladenem Konto nicht (oder kein Signer): die Kontodaten der Seite
+    // waren veraltet. Neu laden, damit der naechste Versuch Dialog bzw. Auswahl zeigt statt wieder
+    // automatisch zu signieren.
+    if (/multisig\.(insufficientWeight|noKeysProvided)$/.test(String(error?.message || ''))) {
+      setTrustlineRefreshToken((value) => value + 1);
     }
     const formatted = formatErrorForUi(t, error);
     setModalError(formatted);
@@ -936,7 +956,8 @@ export default function AssetSearch() {
   // Netz und Konto der Bestaetigung gehen in die Aktion; alle Wege (direkt, lokal, Job, XDR)
   // bauen und pruefen nur gegen diese Werte.
   const startTradingAction = (type, payload, execute, prepare) => {
-    const flow = { network, accountId };
+    const flow = { network, accountId, lockEpoch: lockEpochRef.current };
+    flowRef.current = flow;
     const description = describeTradingAction(type, payload);
     const details = describeTradingDetails(type, payload);
     multisig.start({
@@ -1629,7 +1650,7 @@ export default function AssetSearch() {
               // Merken (Haken im Dialog) erst nach erfolgreichem Senden, wie bei Claimable Balances.
               if (done === true && remember) {
                 try {
-                  await rememberSessionSecrets(accountId, collected);
+                  await rememberSessionSecrets(flowRef.current?.accountId || accountId, collected);
                 } catch (rememberErr) {
                   if (rememberErr instanceof InsecureCryptoContextError) {
                     setActionMessage((prev) => `${prev} ${t('secretKey:remember.insecureContextError')}`.trim());
