@@ -39,11 +39,18 @@ export async function openMenuItem(page, name) {
 }
 
 // Secret-Key-Dialog: Key eintragen und "Senden". Nur fuer Testnet-Keys aus den Fixtures.
+// "Senden" gibt es auf der Seite mehrfach: gewaehlt wird der Button im naechsten Container um das Key-Feld.
 export async function signWithKey(page, secret) {
   const input = page.locator('input[type=password]').first();
   await expect(input).toBeVisible({ timeout: 15000 });
   await input.fill(secret);
-  await page.getByRole('button', { name: 'Senden', exact: true }).click();
+  const dialog = input.locator('xpath=ancestor::*[.//button[normalize-space(.)="Senden"]][1]');
+  await dialog.getByRole('button', { name: 'Senden', exact: true }).click();
+}
+
+// Eingabefeld hinter einer Beschriftung (die Labels der App sind nicht mit den Feldern verknuepft).
+export function inputAfterLabel(page, text) {
+  return page.getByText(text, { exact: true }).first().locator('xpath=following::input[1]');
 }
 
 export async function expectNoCrash(page) {

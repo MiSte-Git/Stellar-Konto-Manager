@@ -1,7 +1,7 @@
 // Liquidity Pools: Pool per ID laden, einzahlen, abheben (100 %), Pool-Trustline wird entfernt.
 import { test, expect } from '@playwright/test';
 import { readFixtures, accountBalances } from '../setup/fixtures.mjs';
-import { openApp, loadAccount, openMenuItem, signWithKey, pollUntil } from '../helpers.mjs';
+import { openApp, loadAccount, openMenuItem, signWithKey, pollUntil, inputAfterLabel } from '../helpers.mjs';
 
 test.describe.configure({ mode: 'serial' });
 
@@ -14,14 +14,14 @@ test('Einzahlen und Abheben im Pool XLM/SKMA', async ({ page }) => {
   await openMenuItem(page, 'Liquidity Pools');
 
   // Pool per Pool-ID laden.
-  await page.getByRole('button', { name: 'Pool-ID', exact: true }).click();
+  await page.getByRole('tab', { name: 'Pool-ID', exact: true }).click();
   await page.locator('input[type=text]').last().fill(fx.poolId);
   await page.getByRole('button', { name: 'Pool laden' }).click();
   await expect(page.getByText(/Pool-Fakten: XLM \/ SKMA/)).toBeVisible({ timeout: 20000 });
 
   // Einzahlen: Vorschau, dann signieren.
   await page.getByRole('button', { name: 'Einzahlen', exact: true }).last().click();
-  await page.getByLabel('Betrag XLM').fill('5');
+  await inputAfterLabel(page, 'Betrag XLM').fill('5');
   await expect(page.getByText(/Erwartete Pool Shares/)).toBeVisible();
   await page.getByRole('button', { name: 'Operationen prüfen' }).click();
   await expect(page.getByText(/Liquidität einzahlen in Pool/)).toBeVisible();

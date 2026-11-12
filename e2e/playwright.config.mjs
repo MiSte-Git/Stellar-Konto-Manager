@@ -26,6 +26,8 @@ export default defineConfig({
     baseURL: process.env.E2E_BASE_URL || 'http://localhost:5173',
     viewport: { width: 900, height: 1000 },
     locale: 'de-DE',
+    // Fehlende Elemente schlagen nach 15 s fehl statt erst am Test-Timeout (2 min).
+    actionTimeout: 15000,
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
   },

@@ -2,7 +2,7 @@
 // sendet nichts. Der Lock wird per Web Lock gehalten, wie ihn ein zweiter Tab halten wuerde.
 import { test, expect } from '@playwright/test';
 import { readFixtures, accountBalances, xlmOf } from '../setup/fixtures.mjs';
-import { openApp, loadAccount, openMenuItem } from '../helpers.mjs';
+import { openApp, loadAccount, openMenuItem, inputAfterLabel } from '../helpers.mjs';
 
 test('Warten auf belegte Sendesperre abbrechen sendet nichts', async ({ page }) => {
   const fx = readFixtures();
@@ -19,7 +19,7 @@ test('Warten auf belegte Sendesperre abbrechen sendet nichts', async ({ page }) 
   });
 
   await page.getByPlaceholder('G... oder user*domain').fill(fx.main.public);
-  await page.getByLabel('Betrag').first().fill('1');
+  await inputAfterLabel(page, 'Betrag').fill('1');
   await page.getByRole('button', { name: 'Senden', exact: true }).click();
   await page.getByRole('button', { name: 'Bist du sicher?' }).click();
 
