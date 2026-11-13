@@ -17,7 +17,7 @@ import {
   toggleTrustlineSelection
 } from '../utils/stellar/trustlineUtils.js';
 import ProgressBar from "../components/ProgressBar.jsx";
-import { formatElapsedMmSs } from '../utils/datetime';
+import { formatElapsedMmSs, formatLocalDateTime } from '../utils/datetime';
 import { useSettings } from '../utils/useSettings';
 import { formatErrorForUi } from '../utils/formatErrorForUi.js';
 import { getRequiredThreshold } from '../utils/getRequiredThreshold.js';
@@ -254,9 +254,9 @@ function ListTrustlines({
       } else if (sortColumn === 'assetIssuer') {
         return a.assetIssuer.localeCompare(b.assetIssuer) * isAsc;
       } else if (sortColumn === 'createdAt') {
-        const dateA = new Date(a.createdAt || 0).getTime();
-        const dateB = new Date(b.createdAt || 0).getTime();
-        return (dateA - dateB) * isAsc;
+        // Unbekannte oder ungueltige Daten (z. B. Text unknown) zaehlen als 0, nicht als NaN
+        const timeOf = (tl) => { const n = new Date(tl.createdAt || 0).getTime(); return Number.isNaN(n) ? 0 : n; };
+        return (timeOf(a) - timeOf(b)) * isAsc;
       }
       // Ignore 'selected' sort to avoid jumping rows
       return 0;
@@ -743,7 +743,7 @@ function ListTrustlines({
               <td className="px-4 py-2">{tl.assetCode}</td>
               <td className="px-4 py-2">{balanceFmt.format(Number(tl.assetBalance || 0))}</td>
               <td className="px-4 py-2">{tl.assetIssuer}</td>
-              <td className="px-4 py-2">{tl.createdAt ? new Date(tl.createdAt).toLocaleString() : t('errors:asset.creationDateUnknown', 'Unknown creation date')}</td>
+              <td className="px-4 py-2">{formatLocalDateTime(tl.createdAt) || t('errors:asset.creationDateUnknown', 'Unknown creation date')}</td>
             </tr>
           ))}
         </tbody>
