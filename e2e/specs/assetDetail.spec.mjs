@@ -58,6 +58,8 @@ test('Wallet: Pool-Anteile mit Gegenwert, Filter nach Code', async ({ page }) =>
   if (await page.getByTestId('wallet-home-assets-collapsed').count()) {
     await assets.locator('button[aria-controls="wallet-home-asset-list"]').click();
   }
+  // Eigene Pool-Karte, auch ohne aufgeklappte Assets sichtbar (13.11.)
+  await expect(page.getByTestId('wallet-home-pools').getByText('Pool XLM / SKMA')).toBeVisible({ timeout: 30000 });
   // main haelt Pool Shares XLM/SKMA (Fixture): Paar und Gegenwert beider Assets. Der Text steht
   // auch in der Aktivitaet (Einzahlung der Fixture), deshalb auf die Asset-Liste eingrenzen.
   const list = page.locator('#wallet-home-asset-list');
@@ -91,10 +93,14 @@ test('Token suchen und handeln: Kontoliste mit Filter, Handeln oeffnet die Detai
   await page.getByTestId('account-tokens-filter').fill('skmb');
   await expect(tokens.getByTestId('account-token-code')).toHaveText(['SKMB']);
   await page.getByTestId('account-tokens-filter').fill('');
-  // Ausblenden mit SCAM (Expert im Spec: nicht verfuegbar) blendet nichts aus
-  await page.getByTestId('account-tokens-hide').check();
+  // Ausblenden mit Warn-Tag (Expert im Spec: nicht verfuegbar) blendet nichts aus,
+  // Nur diese zeigen zeigt dann nichts (nicht pruefbar ist kein Treffer)
+  await page.getByTestId('account-tokens-mode-hide').click();
   await expect(tokens.getByTestId('account-token-code')).toHaveText(['SKMA', 'SKMB']);
-  await page.getByTestId('account-tokens-hide').uncheck();
+  await page.getByTestId('account-tokens-mode-only').click();
+  await expect(tokens.getByTestId('account-token-code')).toHaveCount(0);
+  await page.getByTestId('account-tokens-mode-all').click();
+  await expect(tokens.getByTestId('account-token-code')).toHaveText(['SKMA', 'SKMB']);
 
   await page.getByRole('button', { name: 'SKMA handeln', exact: true }).click();
   await expect(page.getByText('Trustline vorhanden').first()).toBeVisible({ timeout: 30000 });

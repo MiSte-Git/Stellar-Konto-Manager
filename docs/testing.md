@@ -49,7 +49,7 @@ dass jede Spec in dieser Tabelle steht und jede genannte Datei existiert.
 | Einstellungen: Verläufe löschen, Scam-Statistik zurücksetzen | `e2e/specs/settings.spec.mjs` |
 | Sendesperre über Tabs, Warten abbrechen | `e2e/specs/sendLock.spec.mjs` |
 | Trading mit gemerktem Session-Key: Limit-Order und Swap ohne Key-Dialog, ohne Haken Merken fragt der Dialog wieder (die Asset-Suche des Backends ist im Spec nachgebildet, Senden läuft echt gegen Testnet) | `e2e/specs/trading.spec.mjs` |
-| Wallet-Assets: Pool-Anteile mit Paar und Gegenwert, Filter nach Code. Asset-Detailseite: Wallet → Details zeigt Saldo und Fakten, Handeln öffnet Token suchen und handeln mit vorbelegtem Asset, kaputter Link zeigt Hinweis. Token suchen und handeln: Kontoliste (Modus Im Konto) mit Filter und Ausblenden, Handeln öffnet die Detailansicht (Asset-Suche, Fakten und StellarExpert des Backends nachgebildet) | `e2e/specs/assetDetail.spec.mjs` |
+| Wallet-Assets: Pool-Anteile mit Paar und Gegenwert, Filter nach Code. Asset-Detailseite: Wallet → Details zeigt Saldo und Fakten, Handeln öffnet Token suchen und handeln mit vorbelegtem Asset, kaputter Link zeigt Hinweis. Token suchen und handeln: Kontoliste (Modus Im Konto) mit Filter und den Modi Alle zeigen, Ausblenden, Nur diese zeigen, Pool-Karte ohne Aufklappen, Handeln öffnet die Detailansicht (Asset-Suche, Fakten und StellarExpert des Backends nachgebildet) | `e2e/specs/assetDetail.spec.mjs` |
 | Smoke-Crawl: jeder Menüpunkt öffnet ohne Absturz (Konto mit Trustlines/Pool-Shares und Konto mit Offers) | `e2e/specs/smoke.spec.mjs` |
 
 ### Noch nicht abgedeckt (bewusst, bei Bedarf ergänzen)

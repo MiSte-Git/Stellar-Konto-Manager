@@ -477,10 +477,17 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
 
       {noTrust.length > 0 && (
         <div className="mt-2 border-t border-gray-100 dark:border-gray-700/70">
-          <div className="flex items-center justify-between gap-3 px-5 py-2.5">
-            <span className="text-xs font-semibold text-gray-700 dark:text-gray-200">{t('wallet:claimable.noTrustTitle', { count: noTrust.length })}</span>
-            <button type="button" className={linkBtnCls} aria-expanded={showNoTrust} onClick={() => setShowNoTrust((v) => !v)}>
-              {showNoTrust ? t('wallet:claimable.noTrustHide') : t('wallet:claimable.noTrustShow')}
+          <div className="px-5 py-2.5">
+            {/* Aufklappen per Pfeil wie bei den Assets (Wunsch Michael 13.11.) */}
+            <button
+              type="button"
+              aria-expanded={showNoTrust}
+              onClick={() => setShowNoTrust((v) => !v)}
+              className="inline-flex items-center gap-2 rounded-md border-0 bg-transparent p-0 text-xs font-semibold text-gray-700 hover:text-blue-700 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-gray-200 dark:hover:text-blue-300"
+              data-testid="claimable-notrust-toggle"
+            >
+              <span aria-hidden="true" className={`inline-block transition-transform ${showNoTrust ? 'rotate-90' : ''}`}>▸</span>
+              {t('wallet:claimable.noTrustTitle', { count: noTrust.length })}
             </button>
           </div>
           {showNoTrust && (

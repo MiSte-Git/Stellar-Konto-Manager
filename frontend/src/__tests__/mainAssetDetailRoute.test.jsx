@@ -68,4 +68,20 @@ describe('main.jsx: Asset-Detailseite', () => {
     await waitFor(() => expect(window.location.pathname).toBe('/'));
     await waitFor(() => expect(screen.queryByTestId('stub-asset-detail')).toBeNull());
   });
+  it('Netzwechsel fuehrt von einer Konto-Ansicht zur Wallet-Startseite (13.11.)', async () => {
+    window.localStorage.clear();
+    window.localStorage.setItem('SKM_NET_INIT', '1');
+    window.localStorage.setItem('SKM_NETWORK', 'PUBLIC');
+    window.history.replaceState({}, '', `/assets/LDEX-${ISSUER}`);
+    document.body.innerHTML = '<div id="root"></div>';
+    vi.resetModules();
+    await act(async () => { await import('../main.jsx'); });
+    await screen.findByTestId('stub-asset-detail', {}, { timeout: 20000 });
+    await act(async () => {
+      window.localStorage.setItem('SKM_NETWORK', 'TESTNET');
+      window.dispatchEvent(new CustomEvent('stm-network-changed', { detail: 'TESTNET' }));
+    });
+    await waitFor(() => expect(window.location.pathname).toBe('/'));
+    await waitFor(() => expect(screen.queryByTestId('stub-asset-detail')).toBeNull());
+  });
 });

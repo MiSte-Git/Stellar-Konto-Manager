@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { I18nextProvider } from 'react-i18next';
 import i18n from '../../i18n.js';
 
@@ -39,6 +39,7 @@ describe('WalletHome', () => {
 
   beforeEach(() => {
     loadAccount.mockReset();
+    poolCall.mockReset();
     window.localStorage.clear();
   });
 
@@ -134,24 +135,39 @@ describe('WalletHome', () => {
     window.localStorage.setItem('skm.wallet.assetsOpen', '1');
     const onOpenRoute = vi.fn();
     renderHome({ publicKey: PK, onOpenRoute });
-    // 250 von 1000 Shares = ein Viertel der Reserven
-    const value = await screen.findByText(/Gegenwert ≈ 50 XLM \+ 1.?000.?000 LDEX/);
-    expect(value).toHaveAttribute('data-testid', 'wallet-home-pool-value');
-    expect(screen.getByText('Pool XLM / LDEX')).toBeInTheDocument();
+    // 250 von 1000 Shares = ein Viertel der Reserven, in der Asset-Liste ...
+    const value = await screen.findByTestId('wallet-home-pool-value');
+    await waitFor(() => expect(value).toHaveTextContent(/Gegenwert ≈ 50 XLM \+ 1.?000.?000 LDEX/));
+    expect(within(screen.getByTestId('wallet-home-assets')).getByText('Pool XLM / LDEX')).toBeInTheDocument();
+    // ... und in der eigenen Karte
+    const card = screen.getByTestId('wallet-home-pools');
+    expect(within(card).getByText('Pool XLM / LDEX')).toBeInTheDocument();
+    expect(within(card).getByText(/Gegenwert ≈ 50 XLM/)).toBeInTheDocument();
+    expect(poolCall).toHaveBeenCalledTimes(1);
     expect(poolCall).toHaveBeenCalledWith(poolId);
     fireEvent.click(screen.getByTestId('wallet-home-pool-details'));
     expect(onOpenRoute).toHaveBeenCalledWith(`trading/pools?pool=${poolId}`);
   });
 
-  it('eingeklappte Assets laden keine Pools', async () => {
+  it('Pool-Karte ist auch bei eingeklappten Assets sichtbar (Entscheidung 13.11.)', async () => {
     loadAccount.mockResolvedValue({
       subentry_count: 1,
       balances: [{ asset_type: 'native', balance: '10' }, { asset_type: 'liquidity_pool_shares', liquidity_pool_id: 'ab'.repeat(32), balance: '1' }],
     });
-    poolCall.mockReset();
+    poolCall.mockReset().mockRejectedValue(new Error('offline'));
     renderHome({ publicKey: PK });
     await screen.findByTestId('wallet-home-xlm');
-    expect(poolCall).not.toHaveBeenCalled();
+    expect(screen.getByTestId('wallet-home-assets-collapsed')).toBeInTheDocument();
+    const card = screen.getByTestId('wallet-home-pools');
+    await waitFor(() => expect(within(card).getByText('Gegenwert nicht verfügbar')).toBeInTheDocument());
+    expect(poolCall).toHaveBeenCalledTimes(1);
+  });
+
+  it('ohne Pool-Anteile keine Pool-Karte, im Identitaetsmodus keine Pool-Abfrage', async () => {
+    loadAccount.mockResolvedValue({ subentry_count: 0, balances: [{ asset_type: 'native', balance: '10' }] });
+    renderHome({ publicKey: PK });
+    await screen.findByTestId('wallet-home-xlm');
+    expect(screen.queryByTestId('wallet-home-pools')).toBeNull();
   });
   it('Filter blendet nicht passende Assets aus, zaehlt Treffer und laesst sich leeren', async () => {
     const OTHER = 'GD5KJP276E7CZT43PAI5KAEXCUDZMFFMV4X5AGFKBR7Q7IAZZ5BXZVKM';

@@ -174,6 +174,13 @@ const isDev = import.meta.env.MODE !== 'production';
 // bookmarking, never a second place that independently decides what to render.
 const MANAGED_MENU_SELECTIONS = ['settings', 'tradingAssets', 'liquidityPools', 'multisigJobs', 'assetDetail'];
 
+// Ansichten, die nur das geladene Konto zeigen: Konto laden (auch dasselbe erneut) oder ein
+// Netzwechsel fuehrt von dort zur Wallet-Startseite (Entscheidung 13.11.). Zahlung senden,
+// Sammelzahlung und die uebrigen Seiten behalten Ansicht und Eingaben wie bisher.
+const HOME_ON_ACCOUNT_CHANGE = Object.freeze([
+  'tradingAssets', 'assetDetail', 'liquidityPools', 'balance', 'listAll', 'compare', 'deleteAll', 'deleteByIssuer',
+]);
+
 function readMenuStateFromUrl() {
   if (typeof window === 'undefined') return { menuSelection: null, activeJobId: null, activeJobToken: null };
   const pathname = window.location.pathname;
@@ -469,9 +476,15 @@ function Main() {
   }, [persistRecent]);
 
 
+  // Konto-Ansicht verlassen (HOME_ON_ACCOUNT_CHANGE). Ueber setMenuSelection, also mit Waechter.
+  const leaveAccountView = () => {
+    if (HOME_ON_ACCOUNT_CHANGE.includes(menuSelectionRef.current)) setMenuSelection(null);
+  };
+
   async function handleHeaderApply(inputOverride) {
     const input = (inputOverride ?? walletHeaderInput ?? '').trim();
     if (!input) return;
+    leaveAccountView();
     const requestId = ++walletOpRequestRef.current;
     setIsLoading(true);
     setError('', 'account');
@@ -616,6 +629,7 @@ function Main() {
     const handler = (e) => {
       // Gleiche Auswertung wie useGlobalNetwork (Netz-Anzeige, Neues Konto erstellen)
       setDevTestnet(networkFromEvent(e) === 'TESTNET');
+      if (HOME_ON_ACCOUNT_CHANGE.includes(menuSelectionRef.current)) setMenuSelection(null);
       setInfoMessage('');
       // Fehler des vorherigen Netzes (z. B. Konto nicht gefunden) gilt nach dem Wechsel nicht mehr
       setError('', 'all');
@@ -629,7 +643,7 @@ function Main() {
     // Initialize once from storage without emitting
     setDevTestnet(readStoredNetworkId() === 'TESTNET');
     return () => window.removeEventListener('stm-network-changed', handler);
-  }, [revalidateActiveWallet, setError]);
+  }, [revalidateActiveWallet, setError, setMenuSelection]);
 
   // Navigation consolidation (finding #8): reacts to the URL changing outside
   // of this component's own control - browser back/forward, or App.jsx's own

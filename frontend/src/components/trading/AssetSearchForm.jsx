@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import ClearInputButton from '../ClearInputButton.jsx';
 
 /**
  * Asset search form: active-account/network info, the search input itself,
@@ -53,13 +54,19 @@ export default function AssetSearchForm({
           {t('trading:assetSearch.form.query.label')}
         </label>
         <div className="flex flex-col gap-3 sm:flex-row">
-          <input
-            id="asset-query-input"
-            className="w-full rounded-sm border border-gray-300 px-3 py-2 font-mono text-sm dark:border-gray-700 dark:bg-gray-900"
-            value={assetQuery}
-            onChange={(e) => onQueryChange(e.target.value)}
-            placeholder={t('trading:assetSearch.form.query.placeholder', 'USDC, G... oder USDC:G...')}
-          />
+          <div className="relative w-full">
+            <input
+              id="asset-query-input"
+              className="w-full rounded-sm border border-gray-300 px-3 py-2 pr-9 font-mono text-sm dark:border-gray-700 dark:bg-gray-900"
+              value={assetQuery}
+              onChange={(e) => onQueryChange(e.target.value)}
+              placeholder={t('trading:assetSearch.form.query.placeholder', 'USDC, G... oder USDC:G...')}
+              autoCapitalize="off"
+              autoCorrect="off"
+              spellCheck={false}
+            />
+            {assetQuery && <ClearInputButton onClick={() => onQueryChange('')} />}
+          </div>
           <button
             type="submit"
             disabled={assetLoading}

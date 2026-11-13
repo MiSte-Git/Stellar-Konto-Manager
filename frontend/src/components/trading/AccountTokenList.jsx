@@ -16,14 +16,15 @@ const btnCls = 'rounded-sm border border-gray-300 px-2 py-1 text-xs font-medium 
  * Ausblende-Filter (Saldo 0, kein Marktpreis gegen XLM, SCAM-Eintrag bei StellarExpert) ist
  * standardmaessig aus; geprueft wird erst, wenn er an ist. Nur Anzeige, sendet nichts.
  */
-export default function AccountTokenList({ account, accountId, accountLoading = false, network, onTrade, onOpenDetails }) {
+export default function AccountTokenList({ account, accountId, accountLoading = false, accountError = '', network, onTrade, onOpenDetails }) {
   const { t, i18n } = useTranslation(['trading', 'common']);
   const [query, setQuery] = useState('');
   const [hide, setHide] = useState(DEFAULT_HIDE_OPTIONS);
+  const active = hide.mode !== 'all';
   const tokens = useMemo(() => tokensFromAccount(account), [account]);
   const flags = useTokenFlags(tokens, network, {
-    scam: hide.enabled && hide.scam,
-    market: hide.enabled && hide.noMarket,
+    scam: active && hide.scam,
+    market: active && hide.noMarket,
   });
 
   const nf = useMemo(() => {
@@ -34,7 +35,7 @@ export default function AccountTokenList({ account, accountId, accountLoading = 
   const matching = useMemo(() => tokens.filter((tk) => matchesAssetQuery(tk, query)), [tokens, query]);
   const visible = useMemo(() => matching.filter((tk) => !isTokenHidden(tk, hide, flags)), [matching, hide, flags]);
   const hiddenCount = matching.length - visible.length;
-  const pending = hide.enabled && [
+  const pending = active && [
     ...(hide.scam ? Object.values(flags.scam) : []),
     ...(hide.noMarket ? Object.values(flags.market) : []),
   ].filter((v) => v === 'loading').length;
@@ -43,6 +44,15 @@ export default function AccountTokenList({ account, accountId, accountLoading = 
     return (
       <p className="text-sm text-gray-600 dark:text-gray-300" data-testid="account-tokens-noaccount">
         {t('trading:accountTokens.noAccount', 'Kein Konto geladen. Lade oben ein Konto oder suche auf der Blockchain.')}
+      </p>
+    );
+  }
+  if (!account && accountError) {
+    return (
+      <p className={`text-sm ${accountError === 'notFound' ? 'text-gray-600 dark:text-gray-300' : 'text-red-700 dark:text-red-400'}`} data-testid="account-tokens-error" role={accountError === 'notFound' ? undefined : 'alert'}>
+        {accountError === 'notFound'
+          ? t('trading:accountTokens.notFound', 'Dieses Konto existiert in diesem Netz nicht. Suche auf der Blockchain oder wähle ein anderes Konto.')
+          : t('trading:accountTokens.loadError', 'Token des Kontos konnten nicht geladen werden.')}
       </p>
     );
   }
@@ -76,11 +86,28 @@ export default function AccountTokenList({ account, accountId, accountLoading = 
       </div>
 
       <div className="rounded-sm border border-gray-200 px-3 py-2 text-xs dark:border-gray-700">
-        <label className="inline-flex items-center gap-2 font-semibold">
-          <input type="checkbox" checked={hide.enabled} onChange={setOpt('enabled')} data-testid="account-tokens-hide" />
-          {t('trading:accountTokens.hide.toggle', 'Token ausblenden')}
-        </label>
-        {hide.enabled && (
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="font-semibold">{t('trading:accountTokens.hide.modeLabel', 'Filter')}:</span>
+          <div className="inline-flex rounded-sm border border-gray-300 p-0.5 dark:border-gray-600" role="group" aria-label={t('trading:accountTokens.hide.modeLabel', 'Filter')}>
+            {[
+              ['all', t('trading:accountTokens.hide.modeAll', 'Alle zeigen')],
+              ['hide', t('trading:accountTokens.hide.modeHide', 'Ausblenden')],
+              ['only', t('trading:accountTokens.hide.modeOnly', 'Nur diese zeigen')],
+            ].map(([mode, label]) => (
+              <button
+                key={mode}
+                type="button"
+                aria-pressed={hide.mode === mode}
+                onClick={() => setHide((prev) => ({ ...prev, mode }))}
+                data-testid={`account-tokens-mode-${mode}`}
+                className={`rounded-sm px-2 py-0.5 font-medium ${hide.mode === mode ? 'bg-blue-600 text-white' : 'text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800'}`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+        {active && (
           <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
             <label className="inline-flex items-center gap-1">
               <input type="checkbox" checked={hide.scam} onChange={setOpt('scam')} data-testid="account-tokens-hide-scam" />
@@ -96,20 +123,24 @@ export default function AccountTokenList({ account, accountId, accountLoading = 
             </label>
           </div>
         )}
-        {hide.enabled && pending > 0 && (
+        {active && pending > 0 && (
           <p className="mt-1 text-gray-600 dark:text-gray-300" data-testid="account-tokens-pending">
             {t('trading:accountTokens.hide.pending', { count: pending, defaultValue: 'Prüfe noch {{count}} Einträge …' })}
           </p>
         )}
-        {hide.enabled && (
+        {active && (
           <p className="mt-1 text-gray-500 dark:text-gray-400">
-            {t('trading:accountTokens.hide.note', 'Ausgeblendet wird nur bei sicherem Befund. Nicht prüfbare Token bleiben sichtbar. Der StellarExpert-Eintrag ist ein Hinweis eines Drittanbieters, kein Echtheitsbeweis.')}
+            {hide.mode === 'only'
+              ? t('trading:accountTokens.hide.noteOnly', 'Gezeigt werden nur Token mit sicherem Befund. Nicht prüfbare Token fehlen hier. Der StellarExpert-Eintrag ist ein Hinweis eines Drittanbieters, kein Echtheitsbeweis.')
+              : t('trading:accountTokens.hide.note', 'Ausgeblendet wird nur bei sicherem Befund. Nicht prüfbare Token bleiben sichtbar. Der StellarExpert-Eintrag ist ein Hinweis eines Drittanbieters, kein Echtheitsbeweis.')}
           </p>
         )}
       </div>
 
       <p className="text-xs text-gray-600 dark:text-gray-300" data-testid="account-tokens-count">
-        {hiddenCount > 0
+        {hide.mode === 'only'
+          ? t('trading:accountTokens.countOnly', { shown: visible.length, total: tokens.length, defaultValue: '{{shown}} von {{total}} Token passen zum Filter' })
+          : hiddenCount > 0
           ? t('trading:accountTokens.countHidden', { shown: visible.length, total: tokens.length, hidden: hiddenCount, defaultValue: '{{shown}} von {{total}} Token, {{hidden}} ausgeblendet' })
           : t('trading:accountTokens.count', { shown: visible.length, total: tokens.length, defaultValue: '{{shown}} von {{total}} Token' })}
       </p>

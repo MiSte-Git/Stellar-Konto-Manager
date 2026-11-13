@@ -116,7 +116,7 @@ describe('ClaimableBalancesPanel (P1.5)', () => {
     await screen.findByText('Claimable Balances');
     expect(screen.getAllByTestId('claimable-item')).toHaveLength(3);
     expect(screen.queryByText('BAR')).not.toBeInTheDocument();
-    fireEvent.click(screen.getByRole('button', { name: 'Anzeigen' }));
+    fireEvent.click(screen.getByTestId('claimable-notrust-toggle'));
     expect(await screen.findByText('BAR')).toBeInTheDocument();
     expect(screen.getByText(/Für diese Assets besteht keine Trustline/)).toBeInTheDocument();
     expect(screen.queryByText(/Betrugsversuche/)).not.toBeInTheDocument();
@@ -175,7 +175,7 @@ describe('ClaimableBalancesPanel (P1.5)', () => {
   it('legt beim Einloesen ohne Trustline die Trustline in derselben Transaktion an', async () => {
     renderPanel();
     await screen.findByText('Claimable Balances');
-    fireEvent.click(screen.getByRole('button', { name: 'Anzeigen' }));
+    fireEvent.click(screen.getByTestId('claimable-notrust-toggle'));
     await screen.findByText('BAR');
     await claim(3);
     await waitFor(() => expect(hoisted.submitMock).toHaveBeenCalledTimes(1));
@@ -186,7 +186,7 @@ describe('ClaimableBalancesPanel (P1.5)', () => {
   it('verhindert das Einloesen ohne Trustline, wenn die Reserve nicht reicht', async () => {
     renderPanel({ available: 0.2 });
     await screen.findByText('Claimable Balances');
-    fireEvent.click(screen.getByRole('button', { name: 'Anzeigen' }));
+    fireEvent.click(screen.getByTestId('claimable-notrust-toggle'));
     await screen.findByText('BAR');
     fireEvent.click(within(itemById(3)).getByRole('button', { name: 'Einlösen' }));
     await screen.findByText(/werden 0.5 XLM Reserve benötigt/);

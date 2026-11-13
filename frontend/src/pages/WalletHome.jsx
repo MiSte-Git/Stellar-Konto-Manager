@@ -193,7 +193,9 @@ export default function WalletHome({ publicKey, muxedAddress, onAction, onOpenRo
   };
   const { loading, error, notFound, account, network } = useAccountOverview(publicKey, reloadToken);
   const summary = React.useMemo(() => computeWalletSummary(account), [account]);
-  const poolValues = useWalletPoolValues(account, network, assetsOpen && !muxedAddress);
+  // Pool-Anteile stehen in einer eigenen, immer sichtbaren Karte (Entscheidung 13.11.): immer laden
+  const poolValues = useWalletPoolValues(account, network, !muxedAddress);
+  const poolAssets = React.useMemo(() => (summary?.assets || []).filter((a) => a.isPool), [summary]);
   const [assetQuery, setAssetQuery] = React.useState('');
   const shownAssets = React.useMemo(() => (summary?.assets || []).filter((asset) => matchesAssetQuery({
     ...asset,
@@ -369,6 +371,76 @@ export default function WalletHome({ publicKey, muxedAddress, onAction, onOpenRo
           <p className="mt-2 text-xs text-gray-600 dark:text-gray-300" data-testid="identity-actions-hint">{t('wallet:home.actions.identityHint')}</p>
         )}
       </section>
+
+      {/* Liquidity Pools: eigene Karte, immer sichtbar */}
+      {summary && !muxedAddress && poolAssets.length > 0 && (
+        <section className={`${cardCls} mt-4 overflow-hidden`} data-testid="wallet-home-pools">
+          <div className="flex items-center justify-between gap-3 border-b border-gray-200 px-5 py-3 dark:border-gray-700">
+            <h2 className="flex items-center gap-2 text-sm font-semibold text-gray-900 dark:text-white">
+              {t('wallet:home.poolsTitle', 'Liquidity Pools')}
+              <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600 dark:bg-gray-700 dark:text-gray-300">{poolAssets.length}</span>
+            </h2>
+            <button
+              type="button"
+              onClick={() => onAction?.('liquidityPools')}
+              className="rounded-md border-0 bg-transparent px-2 py-1 text-xs font-medium text-blue-700 hover:bg-blue-50 hover:text-blue-800 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-blue-300 dark:hover:bg-gray-700 dark:hover:text-blue-200"
+            >
+              {t('wallet:home.poolsManage', 'Liquidity Pools öffnen')}
+            </button>
+          </div>
+          <ul className="divide-y divide-gray-100 dark:divide-gray-700/70">
+            {poolAssets.map((asset) => {
+              const v = poolValues[asset.issuer];
+              const loaded = v?.status === 'loaded';
+              const sides = loaded ? [v.pool.assetA, v.pool.assetB] : [];
+              const fake = sides.some((a) => looksLikeNativeCode({ code: getAssetCode(a), isNative: a.isNative() }));
+              return (
+                <li key={asset.key} className="flex items-center gap-3 px-5 py-3" data-testid="wallet-home-pool-card-row">
+                  <AssetAvatar label="LP" />
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-x-2 text-sm font-semibold text-gray-900 dark:text-white">
+                      <span>
+                        {loaded
+                          ? t('wallet:home.poolPair', { pair: sides.map(getAssetCode).join(' / '), defaultValue: 'Pool {{pair}}' })
+                          : t('wallet:home.poolShares', 'Liquiditätspool-Anteile')}
+                      </span>
+                      {fake && (
+                        <span className="rounded-sm bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-900 dark:bg-amber-400/15 dark:text-amber-200">
+                          {t('wallet:activity.fakeNative', 'Token, kein natives XLM')}
+                        </span>
+                      )}
+                    </div>
+                    <div className="text-xs tabular-nums text-gray-600 dark:text-gray-300">
+                      {loaded
+                        ? t('wallet:home.poolValue', {
+                          a: `${fmt(Number(fromStroops(v.position.amountA)), { min: 0, max: 7 })} ${getAssetCode(v.pool.assetA)}`,
+                          b: `${fmt(Number(fromStroops(v.position.amountB)), { min: 0, max: 7 })} ${getAssetCode(v.pool.assetB)}`,
+                          defaultValue: 'Gegenwert ≈ {{a}} + {{b}}',
+                        })
+                        : v?.status === 'error'
+                          ? t('wallet:home.poolValueUnavailable', 'Gegenwert nicht verfügbar')
+                          : t('wallet:home.poolValueLoading', 'Gegenwert wird geladen …')}
+                    </div>
+                  </div>
+                  <div className="text-right text-sm font-semibold tabular-nums text-gray-900 dark:text-white">
+                    {fmt(asset.balance, { min: 0, max: 7 })}
+                    <div className="text-xs font-medium text-gray-500 dark:text-gray-400">{t('wallet:home.poolSharesUnit', 'Shares')}</div>
+                  </div>
+                  {onOpenRoute && (
+                    <button
+                      type="button"
+                      onClick={() => onOpenRoute(`trading/pools?pool=${encodeURIComponent(asset.issuer)}`)}
+                      className="shrink-0 rounded-md border-0 bg-transparent px-2 py-1 text-xs font-medium text-blue-700 hover:bg-blue-50 hover:text-blue-800 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-blue-300 dark:hover:bg-gray-700 dark:hover:text-blue-200"
+                    >
+                      {t('wallet:home.assetDetails', 'Details')}
+                    </button>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      )}
 
       {/* Assets */}
       {summary && (

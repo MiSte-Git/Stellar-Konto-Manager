@@ -997,4 +997,18 @@ describe('AssetSearch - Modus Im Konto (Teil C, 13.11.)', () => {
     expect(screen.queryByRole('button', { name: `${ASSET_CODE} handeln` })).toBeNull();
     expect(screen.getByText('Token des Kontos werden geladen …')).toBeInTheDocument();
   });
+  it('Konto im Netz nicht gefunden: Kontoliste zeigt Hinweis statt endlosem Laden', async () => {
+    hoisted.loadAccountMock.mockImplementation(async () => { throw Object.assign(new Error('Not Found'), { response: { status: 404 } }); });
+    renderPage();
+    expect(await screen.findByTestId('account-tokens-error')).toHaveTextContent('existiert in diesem Netz nicht');
+  });
+
+  it('Blockchain-Suche hat einen Loeschen-Button', async () => {
+    renderPage();
+    switchToBlockchain();
+    const input = screen.getByPlaceholderText('USDC, G... oder USDC:G...');
+    fireEvent.change(input, { target: { value: 'LDEX' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Eingabe löschen' }));
+    expect(input.value).toBe('');
+  });
 });

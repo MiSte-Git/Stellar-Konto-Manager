@@ -61,13 +61,17 @@ describe('accountTokens', () => {
     expect(tokensFromAccount(account).map((t) => t.code)).toEqual(['DUSTCOIN', 'LDEX', 'OFFL', 'USDC']);
   });
   it('Standard: Schalter aus, SCAM vorausgewaehlt; nur sichere Befunde blenden aus', () => {
-    expect(DEFAULT_HIDE_OPTIONS).toEqual({ enabled: false, scam: true, zero: false, noMarket: false });
+    expect(DEFAULT_HIDE_OPTIONS).toEqual({ mode: 'all', scam: true, zero: false, noMarket: false });
     const tk = { code: 'LDEX', issuer: BAD, balance: '0' };
     const flags = { scam: { [BAD]: 'yes' }, market: { [`LDEX:${BAD}`]: 'no' } };
     expect(isTokenHidden(tk, DEFAULT_HIDE_OPTIONS, flags)).toBe(false);
-    expect(isTokenHidden(tk, { ...DEFAULT_HIDE_OPTIONS, enabled: true }, flags)).toBe(true);
-    expect(isTokenHidden(tk, { enabled: true, scam: true }, { scam: { [BAD]: 'unknown' } })).toBe(false);
-    expect(isTokenHidden(tk, { enabled: true, scam: true }, { scam: { [BAD]: 'loading' } })).toBe(false);
+    expect(isTokenHidden(tk, { ...DEFAULT_HIDE_OPTIONS, mode: 'hide' }, flags)).toBe(true);
+    expect(isTokenHidden(tk, { mode: 'hide', scam: true }, { scam: { [BAD]: 'unknown' } })).toBe(false);
+    expect(isTokenHidden(tk, { mode: 'hide', scam: true }, { scam: { [BAD]: 'loading' } })).toBe(false);
+    // Nur diese zeigen: nur sichere Treffer bleiben
+    expect(isTokenHidden(tk, { mode: 'only', scam: true }, flags)).toBe(false);
+    expect(isTokenHidden(tk, { mode: 'only', scam: true }, { scam: { [BAD]: 'unknown' } })).toBe(true);
+    expect(isTokenHidden({ ...tk, issuer: GOOD, balance: '1' }, { mode: 'only', scam: true }, { scam: { [GOOD]: 'no' } })).toBe(true);
   });
 });
 
@@ -83,7 +87,7 @@ describe('AccountTokenList', () => {
 
   it('Ausblenden an: SCAM wird nach Pruefung ausgeblendet, nicht pruefbarer Issuer bleibt sichtbar', async () => {
     renderList();
-    fireEvent.click(screen.getByTestId('account-tokens-hide'));
+    fireEvent.click(screen.getByTestId('account-tokens-mode-hide'));
     expect(screen.getByTestId('account-tokens-hide-scam')).toBeChecked();
     await waitFor(() => expect(codes()).toEqual(['DUSTCOIN', 'OFFL', 'USDC']));
     expect(screen.getByTestId('account-tokens-count')).toHaveTextContent('3 von 4 Token, 1 ausgeblendet');
@@ -94,7 +98,7 @@ describe('AccountTokenList', () => {
 
   it('Saldo 0 und kein Marktpreis', async () => {
     renderList();
-    fireEvent.click(screen.getByTestId('account-tokens-hide'));
+    fireEvent.click(screen.getByTestId('account-tokens-mode-hide'));
     fireEvent.click(screen.getByTestId('account-tokens-hide-scam'));
     fireEvent.click(screen.getByTestId('account-tokens-hide-zero'));
     await waitFor(() => expect(codes()).toEqual(['LDEX', 'OFFL', 'USDC']));
@@ -106,7 +110,7 @@ describe('AccountTokenList', () => {
   it('Marktpruefung mit Fehler blendet nicht aus', async () => {
     hoisted.paths.mockImplementation(async (code) => { if (code === 'OFFL') throw new Error('down'); return { records: [] }; });
     renderList();
-    fireEvent.click(screen.getByTestId('account-tokens-hide'));
+    fireEvent.click(screen.getByTestId('account-tokens-mode-hide'));
     fireEvent.click(screen.getByTestId('account-tokens-hide-scam'));
     fireEvent.click(screen.getByTestId('account-tokens-hide-market'));
     await waitFor(() => expect(codes()).toEqual(['OFFL']));
@@ -134,5 +138,20 @@ describe('AccountTokenList', () => {
   it('W2: Token mit dem Code XLM bekommt die Warnung', () => {
     renderList({ account: { balances: [{ asset_type: 'credit_alphanum4', asset_code: 'XLM', asset_issuer: BAD, balance: '1' }] } });
     expect(screen.getByTestId('activity-fake-native')).toBeInTheDocument();
+  });
+  it('Nur diese zeigen: nur Token mit Warn-Tag, nicht pruefbare fehlen', async () => {
+    renderList();
+    fireEvent.click(screen.getByTestId('account-tokens-mode-only'));
+    expect(screen.getByTestId('account-tokens-mode-only')).toHaveAttribute('aria-pressed', 'true');
+    await waitFor(() => expect(codes()).toEqual(['LDEX']));
+    expect(screen.getByTestId('account-tokens-count')).toHaveTextContent('1 von 4 Token passen zum Filter');
+    fireEvent.click(screen.getByTestId('account-tokens-mode-all'));
+    expect(codes()).toEqual(['DUSTCOIN', 'LDEX', 'OFFL', 'USDC']);
+  });
+
+  it('Konto im Netz nicht vorhanden: Hinweis statt endlosem Laden', () => {
+    renderList({ account: null, accountError: 'notFound' });
+    expect(screen.getByTestId('account-tokens-error')).toHaveTextContent('existiert in diesem Netz nicht');
+    expect(screen.queryByText('Token des Kontos werden geladen …')).toBeNull();
   });
 });

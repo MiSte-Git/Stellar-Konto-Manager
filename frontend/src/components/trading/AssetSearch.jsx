@@ -358,24 +358,31 @@ export default function AssetSearch() {
   // Netz- oder Kontowechsel: alte Kontodaten sofort verwerfen, sonst zeigt die Kontoliste kurz
   // Token des alten Netzes (Review W4). Ein Neuladen nach einer Aktion behaelt sie bis zur Antwort.
   const accountInfoKeyRef = useRef('');
+  const [accountLoadError, setAccountLoadError] = useState('');
   useEffect(() => {
     let cancelled = false;
     const infoKey = `${network}|${accountId}`;
     if (accountInfoKeyRef.current !== infoKey) {
       accountInfoKeyRef.current = infoKey;
       setAccountInfo(null);
+      setAccountLoadError('');
     }
     if (!accountId) {
       setAccountInfo(null);
       return () => { cancelled = true; };
     }
     const server = getHorizonServerForNetwork(network);
+    setAccountLoadError('');
     server.loadAccount(accountId)
       .then((account) => {
         if (!cancelled) setAccountInfo(account);
       })
-      .catch(() => {
-        if (!cancelled) setAccountInfo(null);
+      .catch((err) => {
+        if (cancelled) return;
+        setAccountInfo(null);
+        // Kontoliste: 404 (Konto im Netz nicht vorhanden) statt endlos "wird geladen" (13.11.)
+        const status = err?.response?.status || err?.status;
+        setAccountLoadError(status === 404 || err?.name === 'NotFoundError' ? 'notFound' : 'error');
       });
     return () => { cancelled = true; };
   }, [accountId, network, trustlineRefreshToken, setAccountInfo]);
@@ -1367,6 +1374,7 @@ export default function AssetSearch() {
           account={accountInfo}
           accountId={accountId}
           accountLoading={accountStatus.loading}
+          accountError={accountLoadError}
           network={network}
           onTrade={(tk) => setSelectedAsset({ assetCode: tk.code, assetIssuer: tk.issuer })}
           onOpenDetails={(tk) => navigateToPath(assetDetailSubpath(tk.code, tk.issuer))}

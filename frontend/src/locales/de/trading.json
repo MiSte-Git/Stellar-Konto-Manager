@@ -423,12 +423,16 @@
     "filterPlaceholder": "Token im Konto filtern: Code, Issuer oder CODE:ISSUER",
     "filterLabel": "Token im Konto filtern",
     "hide": {
-      "toggle": "Token ausblenden",
       "scam": "Mit Warn-Tag bei StellarExpert (malicious oder unsafe)",
       "zero": "Saldo 0",
       "noMarket": "Kein Pfad nach XLM (kein Marktpreis)",
       "pending": "Prüfe noch {{count}} Einträge …",
-      "note": "Ausgeblendet wird nur bei sicherem Befund. Nicht prüfbare Token bleiben sichtbar. Der StellarExpert-Eintrag ist ein Hinweis eines Drittanbieters, kein Echtheitsbeweis."
+      "note": "Ausgeblendet wird nur bei sicherem Befund. Nicht prüfbare Token bleiben sichtbar. Der StellarExpert-Eintrag ist ein Hinweis eines Drittanbieters, kein Echtheitsbeweis.",
+      "modeLabel": "Filter",
+      "modeAll": "Alle zeigen",
+      "modeHide": "Ausblenden",
+      "modeOnly": "Nur diese zeigen",
+      "noteOnly": "Gezeigt werden nur Token mit sicherem Befund. Nicht prüfbare Token fehlen hier. Der StellarExpert-Eintrag ist ein Hinweis eines Drittanbieters, kein Echtheitsbeweis."
     },
     "count": "{{shown}} von {{total}} Token",
     "countHidden": "{{shown}} von {{total}} Token, {{hidden}} ausgeblendet",
@@ -441,6 +445,9 @@
     "details": "Details",
     "detailsAria": "Details zu {{code}}",
     "trade": "Handeln",
-    "tradeAria": "{{code}} handeln"
+    "tradeAria": "{{code}} handeln",
+    "countOnly": "{{shown}} von {{total}} Token passen zum Filter",
+    "notFound": "Dieses Konto existiert in diesem Netz nicht. Suche auf der Blockchain oder wähle ein anderes Konto.",
+    "loadError": "Token des Kontos konnten nicht geladen werden."
   }
 }
