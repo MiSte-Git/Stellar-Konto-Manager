@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTrustedWallets } from '../utils/useTrustedWallets.js';
+import AddressKindTag from './AddressKindTag.jsx';
 
 /**
  * Button plus popover that lets the user pick an address from the trusted
@@ -133,6 +134,8 @@ export default function AccountListPicker({
                     >
                       {e.label && <div className="font-medium break-all">{e.label}</div>}
                       <div className="font-mono text-xs break-all text-gray-700 dark:text-gray-300">{e.address}</div>
+                      {/* C- und W-Adressen nie wie ein normales Konto zeigen (ADR 0012, K6, Review B-2) */}
+                      <AddressKindTag address={e.address} className="mt-0.5 inline-block" />
                       {(e.isTestnet || e.compromised || e.deactivated) && (
                         <div className="mt-0.5 flex flex-wrap gap-1 text-xs">
                           {e.isTestnet && (

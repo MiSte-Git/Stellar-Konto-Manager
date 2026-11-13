@@ -19,7 +19,7 @@ const { createChallenge, consumeChallenge, verifyChallengeSignature } = require(
 const { createChallengeLimiter } = require('./services/challengeRateLimit.js');
 const { filterValidSignatures, requiredWeightForOperations, signatureKey, txSourceBaseAccount } = require('./services/txSignatures.js');
 const { isLocalRequest } = require('./services/network.js');
-const { isClassicAccount } = require('./services/addressKind.js');
+const { asciiTrim, isClassicAccount } = require('./services/addressKind.js');
 const stellarNetworks = require('./services/stellarNetworks.js');
 const { computeMultisigLifecycleStatus, extractMaxTimeUnix, mapSubmitResultCodeToLifecycleStatus, isMultisigTimeboundWithinCap, MULTISIG_JOB_MAX_TIMEBOUND_SECONDS } = require('./services/multisigLifecycle.js');
 const { applyDecline, dropDeclinesOfCollected } = require('./services/multisigDecline.js');
@@ -724,7 +724,7 @@ app.post('/api/multisig/jobs', async (req, res) => {
     // Nur ein String ist ein Netz: Array, Zahl, Objekt ergeben 400 invalid_network (wie PHP, nie 200/500).
     const net = normalizeNetwork(typeof network === 'string' ? network : null);
     if (!net) return res.status(400).json({ ok: false, error: 'invalid_network' });
-    if (typeof accountId !== 'string' || !isClassicAccount(accountId.trim())) {
+    if (typeof accountId !== 'string' || !isClassicAccount(asciiTrim(accountId))) {
       return res.status(400).json({ ok: false, error: 'invalid_account' });
     }
     if (!txXdr || typeof txXdr !== 'string') return res.status(400).json({ ok: false, error: 'invalid_xdr' });
@@ -734,7 +734,7 @@ app.post('/api/multisig/jobs', async (req, res) => {
     } catch (e) {
       return res.status(400).json(parseErrorBody(e));
     }
-    if (txSourceBaseAccount(parsed.tx) !== accountId.trim()) {
+    if (txSourceBaseAccount(parsed.tx) !== asciiTrim(accountId)) {
       return res.status(400).json(ACCOUNT_MISMATCH_BODY);
     }
 
@@ -749,7 +749,7 @@ app.post('/api/multisig/jobs', async (req, res) => {
     let account = null;
     let signerMeta = { signers: [], thresholds: { low: 0, med: 0, high: 0 } };
     try {
-      account = await loadAccount(horizonServerForNet(net), accountId.trim());
+      account = await loadAccount(horizonServerForNet(net), asciiTrim(accountId));
       signerMeta = extractSignerMeta(account);
     } catch (e) {
       // Best-effort fallback: allow job creation even if account lookup fails (no blocking)
@@ -765,7 +765,7 @@ app.post('/api/multisig/jobs', async (req, res) => {
       id: newJobId(),
       accessToken: newAccessToken(),
       network: net,
-      accountId: accountId.trim(),
+      accountId: asciiTrim(accountId),
       txHash: parsed.hashHex,
       txXdrOriginal: txXdr,
       txXdrCurrent: txXdr,

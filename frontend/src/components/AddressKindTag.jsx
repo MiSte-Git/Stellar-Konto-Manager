@@ -23,8 +23,11 @@ export default function AddressKindTag({ address, kind, className = '' }) {
     'Contract-Adresse (C oder W): gehört zu einem Smart Contract, nicht zu einem normalen Stellar-Konto.'
   );
   return (
-    <span className={`${tagCls} ${className}`.trim()} title={hint} aria-label={hint} data-testid="address-kind-contract">
+    // Hinweis fuer Screenreader als versteckter Text statt aria-label auf einem span ohne Rolle
+    // (Review B-4); title bleibt fuer die Maus.
+    <span className={`${tagCls} ${className}`.trim()} title={hint} data-testid="address-kind-contract">
       {t('common:addressKind.contractTag', 'Contract')}
+      <span className="sr-only">: {hint}</span>
     </span>
   );
 }

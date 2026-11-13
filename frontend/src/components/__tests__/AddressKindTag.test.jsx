@@ -27,7 +27,10 @@ describe('AddressKindTag', () => {
     renderTag({ address });
     const tag = screen.getByTestId('address-kind-contract');
     expect(tag).toHaveTextContent('Contract');
-    expect(tag.getAttribute('aria-label')).toMatch(/Smart Contract/);
+    // B-4: Hinweis als versteckter Text, kein aria-label auf dem span
+    expect(tag.hasAttribute('aria-label')).toBe(false);
+    expect(tag.querySelector('.sr-only')).toHaveTextContent(/Smart Contract/);
+    expect(tag.getAttribute('title')).toMatch(/Smart Contract/);
     expect(tag.className).not.toMatch(/amber|red|yellow|orange/);
   });
 

@@ -11,6 +11,7 @@ const path = require('path');
 const { Account, Keypair, MuxedAccount, Networks, Operation, StrKey, TransactionBuilder } = require('@stellar/stellar-sdk');
 const {
   ADDRESS_KINDS,
+  asciiTrim,
   baseAccountOf,
   classifyAddress,
   isClassicAccount,
@@ -107,4 +108,17 @@ test('txSourceBaseAccount mit echten Transaktionen (G und M als Quelle)', () => 
       assert.equal(txSourceBaseAccount(tx), OLD.txSourceBaseAccount(tx));
     }
   }
+});
+
+// Review B-1: asciiTrim entfernt genau die Zeichen von trim() in PHP (Standard " \t\n\r\0\x0B").
+test('asciiTrim trimmt wie trim() in PHP', () => {
+  const g = fixture.cases.find((c) => c.label === 'G').address;
+  for (const ch of [' ', '\t', '\n', '\r', '\0', '\x0B']) {
+    assert.equal(asciiTrim(ch + g + ch), g, JSON.stringify(ch));
+  }
+  for (const ch of ['\u00A0', '\uFEFF', '\u2028', '\f']) {
+    assert.equal(asciiTrim(ch + g + ch), ch + g + ch, JSON.stringify(ch));
+    assert.equal(isClassicAccount(asciiTrim(ch + g)), false, JSON.stringify(ch));
+  }
+  assert.equal(asciiTrim(''), '');
 });

@@ -245,6 +245,42 @@
       "isClassicAccountSyntax": false
     },
     {
+      "label": "G-Praefix mit Versionsbyte 49 und gueltiger Pruefsumme",
+      "address": "GGFIRY65OQE7DFP5KLNS2PF2LVZMUZYJX4OZIEQ36N2IQANUB5XVZZN4",
+      "kind": "invalid",
+      "baseAccountId": null,
+      "muxedId": null,
+      "isClassicAccount": false,
+      "isClassicAccountSyntax": true
+    },
+    {
+      "label": "W mit falscher Pruefsumme",
+      "address": "WADQOBYHA4DQOBYHA4DQOBYHA4DQOBYHA4DQOBYHA4DQOBYHA4DQOAAAAAAAAAAAFIHAU",
+      "kind": "invalid",
+      "baseAccountId": null,
+      "muxedId": null,
+      "isClassicAccount": false,
+      "isClassicAccountSyntax": false
+    },
+    {
+      "label": "W nicht kanonisch (Fuellbit gesetzt)",
+      "address": "WADQOBYHA4DQOBYHA4DQOBYHA4DQOBYHA4DQOBYHA4DQOBYHA4DQOAAAAAAAAAAAFIH4V",
+      "kind": "invalid",
+      "baseAccountId": null,
+      "muxedId": null,
+      "isClassicAccount": false,
+      "isClassicAccountSyntax": false
+    },
+    {
+      "label": "W mit \\n am Ende",
+      "address": "WADQOBYHA4DQOBYHA4DQOBYHA4DQOBYHA4DQOBYHA4DQOBYHA4DQOAAAAAAAAAAAFIH4U\n",
+      "kind": "invalid",
+      "baseAccountId": null,
+      "muxedId": null,
+      "isClassicAccount": false,
+      "isClassicAccountSyntax": false
+    },
+    {
       "label": "leer",
       "address": "",
       "kind": "invalid",

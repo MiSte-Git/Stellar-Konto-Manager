@@ -57,8 +57,16 @@ function isClassicAccountSyntax(input) {
   return CLASSIC_ACCOUNT_SYNTAX_RE.test(input);
 }
 
+// Gleiche Zeichen wie trim() in PHP (Leerzeichen, \t, \n, \r, NUL, \x0B), damit beide Backends
+// Adressen gleich trimmen. Unicode-Leerzeichen (NBSP, BOM, U+2028) und \f bleiben stehen und machen
+// die Adresse ungueltig, wie in PHP. Vorher in services/federationService.js (Review B-1).
+function asciiTrim(value) {
+  return String(value).replace(/^[ \t\n\r\0\x0B]+|[ \t\n\r\0\x0B]+$/g, '');
+}
+
 module.exports = {
   ADDRESS_KINDS,
+  asciiTrim,
   classifyAddress,
   baseAccountOf,
   isClassicAccount,

@@ -38,7 +38,7 @@ test('the create route precomputes and stores maxTimeUnix (reusing the cap-check
 test('G5 stage 2: the create route rejects a timebound beyond the cap before any Horizon lookup', () => {
   const capCheckIndex = createBlock.indexOf('const maxTimeUnix = extractMaxTimeUnix(parsed.tx);');
   const capRejectIndex = createBlock.indexOf("error: 'timebound_too_long'");
-  const horizonFetchIndex = createBlock.indexOf('loadAccount(horizonServerForNet(net), accountId.trim())');
+  const horizonFetchIndex = createBlock.indexOf('loadAccount(horizonServerForNet(net), asciiTrim(accountId))');
   assert.ok(capCheckIndex > -1, 'the create route must compute maxTimeUnix right after parsing the tx');
   assert.ok(capRejectIndex > -1, 'the create route must reject with timebound_too_long');
   assert.ok(horizonFetchIndex > -1, 'sanity: the create route still loads the account from Horizon');

@@ -120,6 +120,22 @@ test('Create: accountId muss eine gueltige G-Adresse sein', async () => {
   }
 });
 
+// Review B-1: Node trimmt accountId wie PHP (nur " \t\n\r\0\x0B"), gleicher Statuscode in beiden.
+test('Create: accountId mit Randzeichen wird wie in PHP behandelt', async () => {
+  for (const ch of ['\u00A0', '\uFEFF', '\f']) {
+    const kp = Keypair.random();
+    const { status, body } = await createJob(kp.publicKey() + ch, paymentTx(new Account(kp.publicKey(), '100')));
+    assert.equal(status, 400, JSON.stringify(ch));
+    assert.equal(body.error, 'invalid_account', JSON.stringify(ch));
+  }
+  for (const ch of ['\0', ' ', '\n']) {
+    const kp = Keypair.random();
+    const { status, body } = await createJob(ch + kp.publicKey() + ch, paymentTx(new Account(kp.publicKey(), '100')));
+    assert.equal(status, 200, JSON.stringify(ch));
+    assert.equal(body.accountId, kp.publicKey(), JSON.stringify(ch));
+  }
+});
+
 test('Create: M-Adresse als Quelle mit gleichem Basiskonto wird angenommen', async () => {
   const base = Keypair.random().publicKey();
   const { status, body } = await createJob(base, paymentTx(new MuxedAccount(new Account(base, '100'), '7')));

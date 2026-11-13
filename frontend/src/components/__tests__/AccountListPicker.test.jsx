@@ -152,4 +152,22 @@ describe('MultisigConfigForm signer warnings', () => {
     expect(screen.getAllByText(/als deaktiviert markiert/)).toHaveLength(1);
     expect(screen.getAllByRole('button', { name: 'Aus Konten-Liste wählen' })).toHaveLength(3);
   });
+
+  // Review B-2: eine selbst eingetragene C-Adresse erscheint nie wie ein normales Konto
+  it('kennzeichnet eine C-Adresse in der Konten-Liste als Contract, G-Adressen nicht', () => {
+    const ADDR_C = 'CADQOBYHA4DQOBYHA4DQOBYHA4DQOBYHA4DQOBYHA4DQOBYHA4DQP5KR';
+    seedWallets([
+      { address: ADDR_MAIN, label: 'Haupt' },
+      { address: ADDR_C, label: 'Vertrag' },
+    ]);
+    renderWithI18n(<Field />);
+    openPicker();
+    const picker = screen.getByTestId('account-list-picker');
+    const options = within(picker).getAllByRole('option');
+    const withC = options.find((o) => o.textContent.includes(ADDR_C));
+    const withG = options.find((o) => o.textContent.includes(ADDR_MAIN));
+    expect(within(withC).getByTestId('address-kind-contract')).toHaveTextContent('Contract');
+    expect(within(withG).queryByTestId('address-kind-contract')).toBeNull();
+  });
 });
+

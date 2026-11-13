@@ -2,6 +2,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTrustedWallets } from '../utils/useTrustedWallets.js';
+import AddressKindTag from './AddressKindTag.jsx';
 import { useSettings } from '../utils/useSettings.js';
 import { buildDefaultFilename } from '../utils/filename';
 
@@ -240,6 +241,8 @@ export default function SettingsPanel({
                         onChange={(e) => updateCell(idx, 'address', e.target.value)}
                         placeholder="G..."
                       />
+                      {/* Review B-2: C- und W-Adressen gekennzeichnet, gespeichert werden sie wie bisher */}
+                      <AddressKindTag address={(r.address || '').trim()} className="mt-0.5 inline-block" />
                     </td>
                     <td className="px-2 py-1">
                       <input

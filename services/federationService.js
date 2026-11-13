@@ -25,7 +25,7 @@
 //    account_id.
 // Any failed step means "no result" - never an error the UI has to show.
 const { assertSafeScheme, readTextWithLimit, ssrfSafeAgent } = require('./tradeService.js');
-const { isClassicAccount, isContractAddress } = require('./addressKind.js');
+const { asciiTrim, isClassicAccount, isContractAddress } = require('./addressKind.js');
 
 const FEDERATION_FETCH_TIMEOUT_MS = 5000;
 const MAX_TOML_BYTES = 256 * 1024;
@@ -45,10 +45,7 @@ const HOSTNAME_RE = /^(?=.{1,253}$)(?:(?!-)[a-z0-9-]{1,63}(?<!-)\.)+[a-z]{2,63}$
 const NAME_RE = /^[\x21-\x29\x2b-\x3d\x3f-\x7e]+$/;
 const PRINTABLE_ASCII_RE = /^[\x21-\x7e]+$/;
 
-// Same characters as PHP's trim() default, so both backends trim identically.
-function asciiTrim(value) {
-  return value.replace(/^[ \t\n\r\0\x0B]+|[ \t\n\r\0\x0B]+$/g, '');
-}
+// asciiTrim: gleiche Zeichen wie trim() in PHP, Regel in services/addressKind.js.
 const MEMO_TYPES = new Set(['text', 'id', 'hash']);
 // Sent on every outbound federation request. An incoming /api/federation
 // request carrying it came from a backend (ours or a twin) and is refused,
