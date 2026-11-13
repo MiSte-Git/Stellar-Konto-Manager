@@ -46,3 +46,13 @@ quantensicherer Signer wird erst eingebaut, wenn der CAP, Horizon und beide SDKs
 - Offen: Format des Signer-Typs, Signaturgröße im XDR, Signaturobergrenze, Verhalten ruhender Konten (Entscheidung liegt
   bei SDF und Community).
 - Beobachtet werden: CAP, SDK-Unterstützung, Horizon, Testnet-Aktivierung, Aktivierungsdatum von Stage 3.
+
+## C-Konten vorbereiten (Ergaenzung 13.11.2026)
+
+Contract-Konten (C-Adressen) werden jetzt nicht als eigenes Produkt gebaut. SKM soll aber darauf vorbereitet sein. Die Signer-Buendelung beachtet deshalb, ohne neue Funktion fuer Nutzer:
+
+- Kontotyp zentral: eine Stelle bestimmt G, M oder C. Kontenliste, Verlauf und Multisig-Jobs fuehren den Kontotyp mit. C-Adressen werden weiter mit verstaendlichem Hinweis abgelehnt, wo SKM sie nicht unterstuetzt.
+- Signer-Abstraktion offen halten: neben Ed25519-Signern muss spaeter Autorisierung per Soroban-Auth-Eintrag einhaengbar sein (Contract-Konto, Passkey mit secp256r1, ML-DSA). Keine Annahmen, die das verbauen, etwa Signatur immer 64 Byte oder Signer immer G-Adresse.
+- Anzeige: C-Adressen ueberall klar als Contract kennzeichnen, nie als normales Konto. Der Verlauf wird so aufgebaut, dass Transfers von und an C-Adressen (SAC ueber invoke_host_function) spaeter einsortiert werden koennen.
+- Senden an C-Adressen kommt erst mit dem Signieren von Contract-Aufrufen (Smart Contracts Stufe 2).
+- Beobachtung: Die monatliche Pruefung umfasst auch Smart-Wallet- und Passkey-Standards, ML-DSA-Pruefung in Contracts und die Lieferung von C-Adressen durch Horizon und RPC.
