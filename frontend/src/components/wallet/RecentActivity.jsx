@@ -18,6 +18,7 @@ import {
 import { shortenAddress } from '../../utils/stellar/walletSummary.js';
 import { readHideDust, writeHideDust } from '../../utils/stellar/dustPreference.js';
 import { ActivityNotices, DustBadge, FakeNativeBadge, LookalikeBadge, UrlBadge } from './ActivityWarnings.jsx';
+import AddressKindTag from '../AddressKindTag.jsx';
 import { useSettings } from '../../utils/useSettings.js';
 import { loadClaimableActivity, mergeActivityRecords } from '../../utils/stellar/claimableActivity.js';
 
@@ -213,6 +214,7 @@ export default function RecentActivity({ publicKey, muxedAddress, network, reloa
                   {item.counterparty && item.direction !== 'self' && (
                     <div className="truncate font-mono text-xs text-gray-500 dark:text-gray-400" title={item.counterparty}>
                       {incoming ? t('wallet:activity.from', 'von') : t('wallet:activity.to', 'an')} {shortenAddress(item.counterparty, 6, 6)}
+                      <AddressKindTag kind={item.counterpartyKind} className="ml-1.5" />
                     </div>
                   )}
                   {item.poolAmounts && (

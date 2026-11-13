@@ -573,6 +573,10 @@
     "muxedAddress": "Muxed-Adresse",
     "muxedActivationInfo": "Muxed-Adressen sind Alias-Adressen. Sie müssen nicht separat aktiviert werden."
   },
+  "addressKind": {
+    "contractTag": "Contract",
+    "contractHint": "Contract-Adresse (C oder W): gehört zu einem Smart Contract, nicht zu einem normalen Stellar-Konto."
+  },
   "muxed": {
     "seo": {
       "title": "M-Adresse erstellen/verwalten",

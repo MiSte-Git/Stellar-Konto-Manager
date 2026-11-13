@@ -138,4 +138,26 @@ describe('RecentActivity', () => {
     expect(await screen.findByText('In Pool eingezahlt')).toBeInTheDocument();
     expect(screen.getByTestId('activity-fake-native')).toBeInTheDocument();
   });
+
+  // K6 (ADR 0012): Contract-Gegenpartei als Contract gekennzeichnet, G und M unveraendert
+  it('kennzeichnet eine Contract-Gegenpartei, G und M bleiben ohne Etikett', async () => {
+    const C = 'CADQOBYHA4DQOBYHA4DQOBYHA4DQOBYHA4DQOBYHA4DQOBYHA4DQP5KR';
+    const M = 'MCFIRY65OQE7DFP5KLNS2PF2LVZMUZYJX4OZIEQ36N2IQANUB5XVYAAAAAAAAAAAACE3C';
+    call.mockResolvedValue({ records: [
+      { id: 'c1', type: 'payment', from: C, to: ME, amount: '4', asset_type: 'native', transaction_hash: H('1'), created_at: '2026-10-15T10:00:00Z', transaction: { memo_type: 'none' } },
+      { id: 'c2', type: 'payment', from: ME, to: FRIEND, amount: '5', asset_type: 'native', transaction_hash: H('2'), created_at: '2026-10-14T10:00:00Z', transaction: { memo_type: 'none' } },
+      { id: 'c3', type: 'payment', from: M, to: ME, amount: '6', asset_type: 'native', transaction_hash: H('3'), created_at: '2026-10-13T10:00:00Z', transaction: { memo_type: 'none' } },
+    ] });
+    renderIt();
+    const items = await screen.findAllByTestId('activity-item');
+    expect(items).toHaveLength(3);
+    const tags = screen.getAllByTestId('address-kind-contract');
+    expect(tags).toHaveLength(1);
+    expect(tags[0]).toHaveTextContent('Contract');
+    expect(within(items[0]).getByTestId('address-kind-contract')).toBeInTheDocument();
+    expect(within(items[1]).queryByTestId('address-kind-contract')).toBeNull();
+    expect(within(items[2]).queryByTestId('address-kind-contract')).toBeNull();
+    // Reine Typangabe: keine Warnfarbe
+    expect(tags[0].className).not.toMatch(/amber|red|yellow|orange/);
+  });
 });

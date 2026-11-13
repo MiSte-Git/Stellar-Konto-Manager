@@ -15,6 +15,7 @@ import {
 } from '../utils/stellar/activity.js';
 import { readHideDust, writeHideDust } from '../utils/stellar/dustPreference.js';
 import { ActivityNotices, DustBadge, FakeNativeBadge, LookalikeBadge, UrlBadge } from '../components/wallet/ActivityWarnings.jsx';
+import AddressKindTag from '../components/AddressKindTag.jsx';
 import { loadClaimableActivity, mergeActivityRecords } from '../utils/stellar/claimableActivity.js';
 
 
@@ -655,6 +656,7 @@ const muxedId = useMemo(() => {
                       </td>
                       <td className="py-1 pr-2 break-all">
                         {poolAmounts ? t('wallet:activity.poolLabel', { pair: poolAmounts.map((p) => p.asset.code).join(' / '), defaultValue: 'Pool {{pair}}' }) : counterparty}
+                        {!poolAmounts && counterparty && <AddressKindTag address={counterparty} className="ml-1.5" />}
                         {suspicious && <div><LookalikeBadge /></div>}
                       </td>
                       <td className="py-1 pr-2 break-all">

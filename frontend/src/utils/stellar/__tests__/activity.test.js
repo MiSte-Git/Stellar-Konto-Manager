@@ -103,4 +103,24 @@ describe('activity', () => {
     expect(isDustAmount(xlm, 'abc')).toBe(false);
     expect(isDustAmount({ code: 'XLM', issuer: 'GX', isNative: false }, '0.0000001')).toBe(false);
   });
+
+  // K6 (ADR 0012): Kontotyp der Gegenpartei, aus der Adresse abgeleitet
+  it('liefert counterpartyKind fuer G, M, C und W, leer ohne Gegenpartei', () => {
+    const pay = (from) => normalizeActivity({ id: 'k', type: 'payment', from, to: ME, amount: '1', asset_type: 'native' }, ME);
+    expect(pay(FRIEND).counterpartyKind).toBe('account');
+    expect(pay('MCFIRY65OQE7DFP5KLNS2PF2LVZMUZYJX4OZIEQ36N2IQANUB5XVYAAAAAAAAAAAACE3C').counterpartyKind).toBe('muxed');
+    expect(pay('CADQOBYHA4DQOBYHA4DQOBYHA4DQOBYHA4DQOBYHA4DQOBYHA4DQP5KR').counterpartyKind).toBe('contract');
+    expect(pay('WADQOBYHA4DQOBYHA4DQOBYHA4DQOBYHA4DQOBYHA4DQOBYHA4DQOAAAAAAAAAAAFIH4U').counterpartyKind).toBe('muxedContract');
+    expect(pay('kaputt').counterpartyKind).toBe('invalid');
+    const pool = normalizeActivity({ id: 'p', type: 'liquidity_pool_deposit', pool_reserves: [] }, ME);
+    expect(pool.counterparty).toBe('');
+    expect(pool.counterpartyKind).toBe('');
+  });
+
+  it('laesst die uebrigen Felder durch counterpartyKind unveraendert', () => {
+    const item = normalizeActivity({ id: 'u', type: 'payment', from: FRIEND, to: ME, amount: '2', asset_type: 'native', transaction: { memo_type: 'none' } }, ME);
+    const { counterpartyKind, ...rest } = item;
+    expect(counterpartyKind).toBe('account');
+    expect(Object.keys(rest).sort()).toEqual(['amount', 'asset', 'counterparty', 'createdAt', 'direction', 'hash', 'id', 'kind', 'memo', 'memoType', 'successful']);
+  });
 });

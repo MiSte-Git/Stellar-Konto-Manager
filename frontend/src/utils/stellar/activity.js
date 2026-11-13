@@ -1,6 +1,7 @@
 // Aufbereitung der Horizon-Payments fuer den Aktivitaetsverlauf (ohne Netzwerkzugriff).
 // Sicherheitsrelevant: Memos sind Fremdtext, Gegenparteien koennen Lookalike-Adressen
 // sein (Address Poisoning), Kleinstzahlungen werden oft fuer Spam/Phishing genutzt.
+import { classifyStellarAddress } from './addressType.js';
 
 /** Eingehende XLM-Zahlungen unter diesem Betrag gelten als Kleinstzahlung (Spam-Verdacht). */
 export const DUST_THRESHOLD_XLM = 0.01;
@@ -82,9 +83,17 @@ function memoOf(record) {
  * Liefert null fuer Operationen, die nicht dargestellt werden.
  * @returns {null | { id: string, hash: string, createdAt: string, kind: string, direction: 'in'|'out'|'self',
  *   amount: number|null, asset: {code: string, issuer: string, isNative: boolean}, counterparty: string,
- *   memo: string, memoType: string, successful: boolean }}
+ *   counterpartyKind: string, memo: string, memoType: string, successful: boolean }}
  */
 export function normalizeActivity(record, publicKey) {
+  const item = normalizeActivityRecord(record, publicKey);
+  if (!item) return null;
+  // Kontotyp der Gegenpartei, aus der Adresse abgeleitet und nie gespeichert (ADR 0012):
+  // account, muxed, contract, muxedContract oder invalid; '' ohne Gegenpartei.
+  return { ...item, counterpartyKind: item.counterparty ? classifyStellarAddress(item.counterparty) : '' };
+}
+
+function normalizeActivityRecord(record, publicKey) {
   if (!record || !publicKey) return null;
   const base = {
     id: String(record.id || record.paging_token || ''),
