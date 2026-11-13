@@ -4,6 +4,8 @@ import TokenFactsSummary from '../components/trading/TokenFactsSummary.jsx';
 import useAssetFacts from '../components/trading/hooks/useAssetFacts.js';
 import { getHorizonServerForNetwork } from '../utils/stellar/stellarUtils.js';
 import { parseAssetDetailPath } from '../utils/assetDetailRoute.js';
+import { looksLikeNativeCode } from '../utils/stellar/activity.js';
+import { FakeNativeBadge } from '../components/wallet/ActivityWarnings.jsx';
 
 /**
  * Asset-Detailseite (/assets/CODE-ISSUER), verlinkbar.
@@ -149,6 +151,7 @@ export default function AssetDetailPage({ publicKey = '', network = 'PUBLIC', on
             {t('wallet:assetDetail.title', 'Asset-Details')} · {netLabel}
           </div>
           <h1 className="mt-1 text-2xl font-bold text-gray-900 dark:text-white" data-testid="asset-detail-code">{code}</h1>
+          {looksLikeNativeCode({ code, isNative: false }) && <div className="mt-1"><FakeNativeBadge /></div>}
           <div className="mt-1 flex flex-wrap items-center gap-2">
             <span className="break-all font-mono text-xs text-gray-600 dark:text-gray-300" data-testid="asset-detail-issuer">{issuer}</span>
             <button type="button" onClick={handleCopy} className="rounded-sm border border-gray-300 px-2 py-0.5 text-xs dark:border-gray-600">

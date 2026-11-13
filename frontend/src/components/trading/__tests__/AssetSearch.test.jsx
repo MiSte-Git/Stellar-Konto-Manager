@@ -969,4 +969,32 @@ describe('AssetSearch - Modus Im Konto (Teil C, 13.11.)', () => {
     expect(screen.getByRole('button', { name: 'Auf der Blockchain' })).toHaveAttribute('aria-pressed', 'true');
     expect(screen.getByPlaceholderText('USDC, G... oder USDC:G...')).toBeInTheDocument();
   });
+  it('W1: Vorbelegung waehlt bei USDC und usdc desselben Issuers genau die richtige Schreibweise', async () => {
+    fetch.mockImplementation(async (url) => {
+      const u = String(url);
+      if (u.includes('trade/assets/search')) {
+        return { ok: true, json: async () => ({ items: [{ assetCode: ASSET_CODE.toLowerCase(), assetIssuer: ISSUER_PK }, ASSET_SEARCH_RESULT] }) };
+      }
+      return { ok: true, json: async () => ({ issuerAccount: { home_domain: '', flags: {} }, toml: { status: 'notChecked', currencies: [], matches: [] } }) };
+    });
+    const { setPendingTradingAsset } = await import('../../../utils/appNavigation.js');
+    setPendingTradingAsset({ code: ASSET_CODE, issuer: ISSUER_PK });
+    renderPage();
+    // PRESENT_TRUSTLINE ist FOO: nur bei exakter Auswahl erscheint Trustline vorhanden
+    await waitFor(() => expect(screen.getAllByText('Trustline vorhanden').length).toBeGreaterThan(0));
+    expect(screen.queryByText('Trustline fehlt')).toBeNull();
+  });
+
+  it('W4: Netzwechsel verwirft die Token des alten Netzes sofort', async () => {
+    withFooTrustline();
+    renderPage();
+    expect(await screen.findByRole('button', { name: `${ASSET_CODE} handeln` })).toBeInTheDocument();
+    hoisted.loadAccountMock.mockImplementation(() => new Promise(() => {})); // neues Netz antwortet noch nicht
+    await act(async () => {
+      window.localStorage.setItem('SKM_NETWORK', 'TESTNET');
+      window.dispatchEvent(new CustomEvent('stm-network-changed', { detail: 'TESTNET' }));
+    });
+    expect(screen.queryByRole('button', { name: `${ASSET_CODE} handeln` })).toBeNull();
+    expect(screen.getByText('Token des Kontos werden geladen …')).toBeInTheDocument();
+  });
 });

@@ -4,6 +4,7 @@ import { I18nextProvider } from 'react-i18next';
 import i18n from '../../../i18n.js';
 import AccountTokenList from '../AccountTokenList.jsx';
 import { DEFAULT_HIDE_OPTIONS, isTokenHidden, tokensFromAccount } from '../accountTokens.js';
+import { resetTokenFlagCache } from '../hooks/useTokenFlags.js';
 
 const ME = 'GATHPDLDMA5UAHHUUBFAQNW7B3573IUMEGPZGXMT25CNUPY4BOYFAV7F';
 const GOOD = 'GD5KJP276E7CZT43PAI5KAEXCUDZMFFMV4X5AGFKBR7Q7IAZZ5BXZVKM';
@@ -49,6 +50,7 @@ const codes = () => screen.queryAllByTestId('account-token-code').map((el) => el
 
 beforeAll(async () => { await i18n.changeLanguage('de'); });
 beforeEach(() => {
+  resetTokenFlagCache();
   vi.stubGlobal('fetch', expertFetch());
   hoisted.paths.mockReset().mockImplementation(async (code) => ({ records: code === 'USDC' ? [{ destination_amount: '0.1' }] : [] }));
 });
@@ -128,5 +130,9 @@ describe('AccountTokenList', () => {
   it('ohne Konto ein Hinweis', () => {
     renderList({ accountId: '', account: null });
     expect(screen.getByTestId('account-tokens-noaccount')).toBeInTheDocument();
+  });
+  it('W2: Token mit dem Code XLM bekommt die Warnung', () => {
+    renderList({ account: { balances: [{ asset_type: 'credit_alphanum4', asset_code: 'XLM', asset_issuer: BAD, balance: '1' }] } });
+    expect(screen.getByTestId('activity-fake-native')).toBeInTheDocument();
   });
 });

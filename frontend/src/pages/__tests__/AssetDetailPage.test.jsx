@@ -92,4 +92,9 @@ describe('AssetDetailPage', () => {
     await waitFor(() => expect(hoisted.loadAccount).not.toHaveBeenCalled());
     expect(fetch).not.toHaveBeenCalled();
   });
+  it('W2: Asset mit dem Code XLM zeigt die Warnung', async () => {
+    hoisted.loadAccount.mockResolvedValue(account([]));
+    renderAt(`/assets/XLM-${ISSUER}`);
+    expect(screen.getByTestId('activity-fake-native')).toBeInTheDocument();
+  });
 });

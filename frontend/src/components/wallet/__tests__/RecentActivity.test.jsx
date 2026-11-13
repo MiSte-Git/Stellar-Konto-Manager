@@ -121,6 +121,21 @@ describe('RecentActivity', () => {
     expect(await screen.findByText('In Pool eingezahlt')).toBeInTheDocument();
     expect(screen.getByTestId('activity-pool-label')).toHaveTextContent('Pool XLM / LDEX');
     const amounts = screen.getAllByTestId('activity-pool-amount').map((el) => el.textContent);
-    expect(amounts).toEqual(['−32.9 XLM', '−3197655.5217 LDEX']);
+    expect(amounts[0]).toBe('−32.9 XLM');
+    // Nicht-XLM-Seiten mit gekuerztem Issuer (Review W2)
+    expect(amounts[1]).toBe(`−3197655.5217 LDEX${FRIEND.slice(0, 6)}…${FRIEND.slice(-6)}`);
+    expect(screen.queryByTestId('activity-fake-native')).toBeNull();
+  });
+  it('Pool mit einem Token namens XLM zeigt die Warnung, auch wenn das Token auf der zweiten Seite steht (W2)', async () => {
+    call.mockResolvedValue({ records: [] });
+    opsCall.mockResolvedValueOnce({ records: [{
+      id: '10', paging_token: '10', type: 'liquidity_pool_deposit', source_account: ME, created_at: '2026-11-13T08:13:57Z',
+      transaction_hash: H('f'), transaction_successful: true, liquidity_pool_id: 'cd'.repeat(32),
+      reserves_deposited: [{ asset: `USDC:${FRIEND}`, amount: '5' }, { asset: `XLM:${FAKE}`, amount: '100' }],
+      shares_received: '1',
+    }] });
+    renderIt();
+    expect(await screen.findByText('In Pool eingezahlt')).toBeInTheDocument();
+    expect(screen.getByTestId('activity-fake-native')).toBeInTheDocument();
   });
 });

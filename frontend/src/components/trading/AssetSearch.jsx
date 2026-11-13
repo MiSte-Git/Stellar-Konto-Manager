@@ -355,8 +355,16 @@ export default function AssetSearch() {
   // network (owned by useTradingAccount) together, which would make either
   // hook depend on the other's output - a real cycle. Coordinating effects
   // that straddle two hooks' state belong at the composition level.
+  // Netz- oder Kontowechsel: alte Kontodaten sofort verwerfen, sonst zeigt die Kontoliste kurz
+  // Token des alten Netzes (Review W4). Ein Neuladen nach einer Aktion behaelt sie bis zur Antwort.
+  const accountInfoKeyRef = useRef('');
   useEffect(() => {
     let cancelled = false;
+    const infoKey = `${network}|${accountId}`;
+    if (accountInfoKeyRef.current !== infoKey) {
+      accountInfoKeyRef.current = infoKey;
+      setAccountInfo(null);
+    }
     if (!accountId) {
       setAccountInfo(null);
       return () => { cancelled = true; };
@@ -623,7 +631,9 @@ export default function AssetSearch() {
       setSwapTargetResults(items);
       if (query.mode === 'exact') {
         const exact = items.find((item) =>
-          String(item.assetCode || '').toUpperCase() === String(query.code || '').toUpperCase() &&
+          // Codes sind auf Stellar case-sensitiv (USDC und usdc sind verschiedene Assets),
+          // das Backend sucht aber ohne Schreibweise: exakt vergleichen (Review W1).
+          String(item.assetCode || '') === String(query.code || '') &&
           item.assetIssuer === query.issuer
         );
         if (exact) setSelectedSwapTargetAsset(exact);
@@ -1270,7 +1280,9 @@ export default function AssetSearch() {
       setAssetResults(items);
       if (selectExact && query.mode === 'exact') {
         const exact = items.find((item) =>
-          String(item.assetCode || '').toUpperCase() === String(query.code || '').toUpperCase() &&
+          // Codes sind auf Stellar case-sensitiv (USDC und usdc sind verschiedene Assets),
+          // das Backend sucht aber ohne Schreibweise: exakt vergleichen (Review W1).
+          String(item.assetCode || '') === String(query.code || '') &&
           item.assetIssuer === query.issuer
         );
         if (exact) setSelectedAsset(exact);

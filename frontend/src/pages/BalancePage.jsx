@@ -633,7 +633,7 @@ const muxedId = useMemo(() => {
                   const urlInMemo = memoLooksLikeUrl(shownMemo);
                   const dust = isDust(item);
                   const suspicious = item?.direction === 'in' && lookalikes.has(item.counterparty);
-                  const fakeNative = looksLikeNativeCode(item?.asset);
+                  const fakeNative = item?.poolAmounts ? item.poolHasFakeNative : looksLikeNativeCode(item?.asset);
                   const txUrl = txUrlFor(op.transaction_hash);
                   return (
                     <tr key={i} className="border-b last:border-0">
@@ -641,7 +641,12 @@ const muxedId = useMemo(() => {
                       <td className="py-1 pr-2">{direction}</td>
                       <td className="py-1 pr-2">{op.type}</td>
                       <td className="py-1 pr-2">
-                        {poolAmounts ? poolAmounts.map((p, idx) => <div key={idx}>{p.asset.code}</div>) : asset}
+                        {poolAmounts ? poolAmounts.map((p, idx) => (
+                          <div key={idx}>
+                            {p.asset.code}
+                            {!p.asset.isNative && p.asset.issuer && <span className="block font-mono text-[10px] break-all">{p.asset.issuer}</span>}
+                          </div>
+                        )) : asset}
                         {fakeNative && <div><FakeNativeBadge /></div>}
                       </td>
                       <td className="py-1 pr-2">

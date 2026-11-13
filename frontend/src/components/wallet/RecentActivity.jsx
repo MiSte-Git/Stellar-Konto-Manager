@@ -182,7 +182,7 @@ export default function RecentActivity({ publicKey, muxedAddress, network, reloa
             const parsedDate = item.createdAt ? new Date(item.createdAt) : null;
             const date = parsedDate && dateFmt && !Number.isNaN(parsedDate.getTime()) ? dateFmt.format(parsedDate) : '';
             const urlInMemo = memoLooksLikeUrl(item.memo);
-            const fakeNative = looksLikeNativeCode(item.asset);
+            const fakeNative = item.poolAmounts ? item.poolHasFakeNative : looksLikeNativeCode(item.asset);
             const warn = suspicious || dust || urlInMemo || fakeNative;
             const sign = incoming ? '+' : item.direction === 'out' ? '−' : '';
             return (
@@ -256,6 +256,11 @@ export default function RecentActivity({ publicKey, muxedAddress, network, reloa
                       <div key={idx} data-testid="activity-pool-amount">
                         {p.amount != null ? `${sign}${fmt(p.amount, { min: 0, max: 7 })}` : '—'}{' '}
                         <span className="text-xs font-medium text-gray-500 dark:text-gray-400">{p.asset.code}</span>
+                        {!p.asset.isNative && p.asset.issuer && (
+                          <span className="block font-mono text-[10px] font-medium text-gray-500 dark:text-gray-400" title={p.asset.issuer}>
+                            {shortenAddress(p.asset.issuer, 6, 6)}
+                          </span>
+                        )}
                       </div>
                     ))
                   ) : (

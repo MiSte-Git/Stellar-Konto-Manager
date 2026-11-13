@@ -159,6 +159,8 @@ export function normalizeActivity(record, publicKey) {
         // Fuer Warnungen (z. B. Token mit XLM-Code) zaehlt das Nicht-XLM-Asset des Pools
         asset: (poolAmounts.find((p) => !p.asset.isNative) || poolAmounts[0] || { asset: { code: '', issuer: '', isNative: false } }).asset,
         poolAmounts,
+        // Jede Seite pruefen: ein Token mit XLM-Code kann auf beiden Seiten stehen (Review W2)
+        poolHasFakeNative: poolAmounts.some((p) => looksLikeNativeCode(p.asset)),
         poolId: String(record.liquidity_pool_id || ''),
         shares: num(record.shares),
         counterparty: '',

@@ -424,9 +424,9 @@
     "filterLabel": "Token im Konto filtern",
     "hide": {
       "toggle": "Token ausblenden",
-      "scam": "Mit Warnung bei StellarExpert (SCAM, unsicher)",
+      "scam": "Mit Warn-Tag bei StellarExpert (malicious oder unsafe)",
       "zero": "Saldo 0",
-      "noMarket": "Kein Marktpreis gegen XLM",
+      "noMarket": "Kein Pfad nach XLM (kein Marktpreis)",
       "pending": "Prüfe noch {{count}} Einträge …",
       "note": "Ausgeblendet wird nur bei sicherem Befund. Nicht prüfbare Token bleiben sichtbar. Der StellarExpert-Eintrag ist ein Hinweis eines Drittanbieters, kein Echtheitsbeweis."
     },
@@ -435,8 +435,8 @@
     "none": "Dieses Konto hat noch keine Token. Suche auf der Blockchain, um einen zu finden.",
     "noMatch": "Kein Token passt zum Filter.",
     "badge": {
-      "scam": "Warnung StellarExpert",
-      "noMarket": "Kein Marktpreis"
+      "scam": "Warn-Tag bei StellarExpert",
+      "noMarket": "Kein Pfad nach XLM"
     },
     "details": "Details",
     "detailsAria": "Details zu {{code}}",

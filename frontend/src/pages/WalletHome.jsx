@@ -413,6 +413,10 @@ export default function WalletHome({ publicKey, muxedAddress, onAction, onOpenRo
                 placeholder={t('wallet:home.assetSearch.placeholder', 'Assets filtern: Code, Issuer oder CODE:ISSUER')}
                 aria-label={t('wallet:home.assetSearch.label', 'Assets filtern')}
                 data-testid="wallet-home-asset-search"
+                autoCapitalize="off"
+                autoCorrect="off"
+                spellCheck={false}
+                enterKeyHint="search"
                 className="w-full rounded-md border border-gray-300 bg-white px-3 py-1.5 pr-9 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100"
               />
               {assetQuery && <ClearInputButton onClick={() => setAssetQuery('')} />}
@@ -454,7 +458,10 @@ export default function WalletHome({ publicKey, muxedAddress, onAction, onOpenRo
                           : t('wallet:home.poolShares', 'Liquiditätspool-Anteile'))
                         : asset.code}
                     </span>
-                    {looksLikeNativeCode({ code: asset.code, isNative: false }) && !asset.isPool && (
+                    {(asset.isPool
+                      ? poolValues[asset.issuer]?.status === 'loaded' && [poolValues[asset.issuer].pool.assetA, poolValues[asset.issuer].pool.assetB]
+                        .some((a) => looksLikeNativeCode({ code: getAssetCode(a), isNative: a.isNative() }))
+                      : looksLikeNativeCode({ code: asset.code, isNative: false })) && (
                       <span
                         className="rounded-sm bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-900 dark:bg-amber-400/15 dark:text-amber-200"
                         title={t('wallet:activity.fakeNativeHint', 'Das ist ein Token eines Herausgebers, nicht das native XLM des Netzwerks.')}

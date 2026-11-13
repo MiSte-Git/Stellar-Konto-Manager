@@ -5,6 +5,8 @@ import { matchesAssetQuery } from '../../utils/stellar/assetFilter.js';
 import { DEFAULT_HIDE_OPTIONS, isTokenHidden, tokenKey, tokensFromAccount } from './accountTokens.js';
 import useTokenFlags from './hooks/useTokenFlags.js';
 import { shortenKey } from './assetSearchUtils.js';
+import { looksLikeNativeCode } from '../../utils/stellar/activity.js';
+import { FakeNativeBadge } from '../wallet/ActivityWarnings.jsx';
 
 const btnCls = 'rounded-sm border border-gray-300 px-2 py-1 text-xs font-medium hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-800';
 
@@ -64,6 +66,10 @@ export default function AccountTokenList({ account, accountId, accountLoading = 
           placeholder={t('trading:accountTokens.filterPlaceholder', 'Token im Konto filtern: Code, Issuer oder CODE:ISSUER')}
           aria-label={t('trading:accountTokens.filterLabel', 'Token im Konto filtern')}
           data-testid="account-tokens-filter"
+          autoCapitalize="off"
+          autoCorrect="off"
+          spellCheck={false}
+          enterKeyHint="search"
           className="w-full rounded-sm border border-gray-300 px-3 py-2 pr-9 font-mono text-sm dark:border-gray-700 dark:bg-gray-900"
         />
         {query && <ClearInputButton onClick={() => setQuery('')} />}
@@ -78,7 +84,7 @@ export default function AccountTokenList({ account, accountId, accountLoading = 
           <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
             <label className="inline-flex items-center gap-1">
               <input type="checkbox" checked={hide.scam} onChange={setOpt('scam')} data-testid="account-tokens-hide-scam" />
-              {t('trading:accountTokens.hide.scam', 'Mit Warnung bei StellarExpert (SCAM, unsicher)')}
+              {t('trading:accountTokens.hide.scam', 'Mit Warn-Tag bei StellarExpert (malicious oder unsafe)')}
             </label>
             <label className="inline-flex items-center gap-1">
               <input type="checkbox" checked={hide.zero} onChange={setOpt('zero')} data-testid="account-tokens-hide-zero" />
@@ -86,7 +92,7 @@ export default function AccountTokenList({ account, accountId, accountLoading = 
             </label>
             <label className="inline-flex items-center gap-1">
               <input type="checkbox" checked={hide.noMarket} onChange={setOpt('noMarket')} data-testid="account-tokens-hide-market" />
-              {t('trading:accountTokens.hide.noMarket', 'Kein Marktpreis gegen XLM')}
+              {t('trading:accountTokens.hide.noMarket', 'Kein Pfad nach XLM (kein Marktpreis)')}
             </label>
           </div>
         )}
@@ -126,14 +132,15 @@ export default function AccountTokenList({ account, accountId, accountLoading = 
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2 font-semibold">
                     <span data-testid="account-token-code">{tk.code}</span>
+                    {looksLikeNativeCode({ code: tk.code, isNative: false }) && <FakeNativeBadge />}
                     {scamFlag && (
                       <span className="rounded-sm bg-red-100 px-1.5 py-0.5 text-[10px] font-semibold text-red-700 dark:bg-red-500/15 dark:text-red-300">
-                        {t('trading:accountTokens.badge.scam', 'Warnung StellarExpert')}
+                        {t('trading:accountTokens.badge.scam', 'Warn-Tag bei StellarExpert')}
                       </span>
                     )}
                     {noMarket && (
                       <span className="rounded-sm bg-gray-100 px-1.5 py-0.5 text-[10px] font-semibold text-gray-700 dark:bg-gray-700 dark:text-gray-200">
-                        {t('trading:accountTokens.badge.noMarket', 'Kein Marktpreis')}
+                        {t('trading:accountTokens.badge.noMarket', 'Kein Pfad nach XLM')}
                       </span>
                     )}
                   </div>
