@@ -29,6 +29,7 @@ function readNetwork() {
 }
 
 const ASSETS_OPEN_KEY = 'skm.wallet.assetsOpen';
+const POOLS_OPEN_KEY = 'skm.wallet.poolsOpen';
 
 const EMPTY_STATE = { loading: false, error: '', notFound: false, account: null };
 
@@ -184,6 +185,18 @@ export default function WalletHome({ publicKey, muxedAddress, onAction, onOpenRo
   const [assetsOpen, setAssetsOpen] = React.useState(() => {
     try { return window.localStorage?.getItem(ASSETS_OPEN_KEY) === '1'; } catch { return false; }
   });
+  // Pool-Karte: bei mehreren Pools per Pfeil aufklappbar wie Assets und Claimable Balances.
+  // Standard offen (die Karte soll Pools sichtbar machen), Wahl pro Browser gemerkt.
+  const [poolsOpen, setPoolsOpen] = React.useState(() => {
+    try { return window.localStorage?.getItem(POOLS_OPEN_KEY) !== '0'; } catch { return true; }
+  });
+  const togglePools = () => {
+    setPoolsOpen((prev) => {
+      const next = !prev;
+      try { window.localStorage?.setItem(POOLS_OPEN_KEY, next ? '1' : '0'); } catch { /* noop */ }
+      return next;
+    });
+  };
   const toggleAssets = () => {
     setAssetsOpen((prev) => {
       const next = !prev;
@@ -377,8 +390,25 @@ export default function WalletHome({ publicKey, muxedAddress, onAction, onOpenRo
         <section className={`${cardCls} mt-4 overflow-hidden`} data-testid="wallet-home-pools">
           <div className="flex items-center justify-between gap-3 border-b border-gray-200 px-5 py-3 dark:border-gray-700">
             <h2 className="flex items-center gap-2 text-sm font-semibold text-gray-900 dark:text-white">
-              {t('wallet:home.poolsTitle', 'Liquidity Pools')}
-              <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600 dark:bg-gray-700 dark:text-gray-300">{poolAssets.length}</span>
+              {poolAssets.length > 1 ? (
+                <button
+                  type="button"
+                  onClick={togglePools}
+                  aria-expanded={poolsOpen}
+                  aria-controls="wallet-home-pool-list"
+                  data-testid="wallet-home-pools-toggle"
+                  className="inline-flex items-center gap-2 rounded-md border-0 bg-transparent p-0 text-sm font-semibold text-gray-900 hover:text-blue-700 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-white dark:hover:text-blue-300"
+                >
+                  <span aria-hidden="true" className={`inline-block transition-transform ${poolsOpen ? 'rotate-90' : ''}`}>▸</span>
+                  {t('wallet:home.poolsTitle', 'Liquidity Pools')}
+                  <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600 dark:bg-gray-700 dark:text-gray-300">{poolAssets.length}</span>
+                </button>
+              ) : (
+                <>
+                  {t('wallet:home.poolsTitle', 'Liquidity Pools')}
+                  <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600 dark:bg-gray-700 dark:text-gray-300">{poolAssets.length}</span>
+                </>
+              )}
             </h2>
             <button
               type="button"
@@ -388,7 +418,13 @@ export default function WalletHome({ publicKey, muxedAddress, onAction, onOpenRo
               {t('wallet:home.poolsManage', 'Liquidity Pools öffnen')}
             </button>
           </div>
-          <ul className="divide-y divide-gray-100 dark:divide-gray-700/70">
+          {poolAssets.length > 1 && !poolsOpen && (
+            <p className="px-5 py-3 text-xs text-gray-600 dark:text-gray-300" data-testid="wallet-home-pools-collapsed">
+              {t('wallet:home.poolsCollapsed', { count: poolAssets.length, defaultValue: '{{count}} Pools. Zum Anzeigen aufklappen.' })}
+            </p>
+          )}
+          {(poolAssets.length === 1 || poolsOpen) && (
+          <ul id="wallet-home-pool-list" className="divide-y divide-gray-100 dark:divide-gray-700/70">
             {poolAssets.map((asset) => {
               const v = poolValues[asset.issuer];
               const loaded = v?.status === 'loaded';
@@ -439,6 +475,7 @@ export default function WalletHome({ publicKey, muxedAddress, onAction, onOpenRo
               );
             })}
           </ul>
+          )}
         </section>
       )}
 

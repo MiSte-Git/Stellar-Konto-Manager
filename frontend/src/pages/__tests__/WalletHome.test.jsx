@@ -196,4 +196,41 @@ describe('WalletHome', () => {
     expect(list().textContent).toContain('USDC');
     expect(list().textContent).toContain('Stellar Lumens');
   });
+  it('Pool-Karte: bei mehreren Pools aufklappbar per Pfeil, Wahl gemerkt; ein Pool ohne Pfeil', async () => {
+    poolCall.mockRejectedValue(new Error('offline'));
+    loadAccount.mockResolvedValue({
+      subentry_count: 2,
+      balances: [
+        { asset_type: 'native', balance: '10' },
+        { asset_type: 'liquidity_pool_shares', liquidity_pool_id: 'ab'.repeat(32), balance: '1' },
+        { asset_type: 'liquidity_pool_shares', liquidity_pool_id: 'cd'.repeat(32), balance: '2' },
+      ],
+    });
+    const first = renderHome({ publicKey: PK });
+    await screen.findByTestId('wallet-home-xlm');
+    const toggle = screen.getByTestId('wallet-home-pools-toggle');
+    expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    expect(screen.getAllByTestId('wallet-home-pool-card-row')).toHaveLength(2);
+    fireEvent.click(toggle);
+    expect(screen.queryAllByTestId('wallet-home-pool-card-row')).toHaveLength(0);
+    expect(screen.getByTestId('wallet-home-pools-collapsed')).toHaveTextContent('2 Pools. Zum Anzeigen aufklappen.');
+    expect(window.localStorage.getItem('skm.wallet.poolsOpen')).toBe('0');
+    first.unmount();
+    renderHome({ publicKey: PK });
+    await screen.findByTestId('wallet-home-xlm');
+    expect(screen.getByTestId('wallet-home-pools-toggle')).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  it('Pool-Karte mit einem Pool: kein Pfeil, Pool immer sichtbar, auch wenn zugeklappt gemerkt', async () => {
+    poolCall.mockRejectedValue(new Error('offline'));
+    window.localStorage.setItem('skm.wallet.poolsOpen', '0');
+    loadAccount.mockResolvedValue({
+      subentry_count: 1,
+      balances: [{ asset_type: 'native', balance: '10' }, { asset_type: 'liquidity_pool_shares', liquidity_pool_id: 'ab'.repeat(32), balance: '1' }],
+    });
+    renderHome({ publicKey: PK });
+    await screen.findByTestId('wallet-home-xlm');
+    expect(screen.queryByTestId('wallet-home-pools-toggle')).toBeNull();
+    expect(screen.getAllByTestId('wallet-home-pool-card-row')).toHaveLength(1);
+  });
 });

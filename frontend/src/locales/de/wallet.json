@@ -68,7 +68,8 @@
       "empty": "Kein Asset passt zum Filter."
     },
     "poolsTitle": "Liquidity Pools",
-    "poolsManage": "Liquidity Pools öffnen"
+    "poolsManage": "Liquidity Pools öffnen",
+    "poolsCollapsed": "{{count}} Pools. Zum Anzeigen aufklappen."
   },
   "receive": {
     "title": "Empfangen",
