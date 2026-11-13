@@ -87,12 +87,13 @@ import { confirmAutoClear } from './utils/confirmAutoClear.js';
 import ActivateAccountPrompt from './components/ActivateAccountPrompt.jsx';
 import AccountGate from './components/AccountGate.jsx';
 import { ACCOUNT_FREE_PAGES, MAIN_MENU_NAV } from './config/mainNavigation.js';
+import { isAssetDetailPath } from './utils/assetDetailRoute.js';
 import { installCrossTabNetworkSync, networkFromEvent, setGlobalNetwork } from './utils/globalNetwork.js';
 import { emitAccountSelected } from './utils/accountBus.js';
 
 import { takeMultisigJobToken } from './components/multisig/multisigNavigation.js';
 import IdentityHeaderRows from './components/groupfund/IdentityHeaderRows.jsx';
-import { consumePendingMainView, consumePendingTrustlineAsset, navigateToPath, publishActiveAccount, publishActiveMainView, setMainMounted } from './utils/appNavigation.js';
+import { consumePendingMainView, consumePendingTradingAsset, consumePendingTrustlineAsset, navigateToPath, setPendingTradingAsset, publishActiveAccount, publishActiveMainView, setMainMounted } from './utils/appNavigation.js';
 import ListTrustlines from './components/ListTrustlines';
 import ResultDisplay from './components/ResultDisplay';
 import CompareTrustlines from './components/CompareTrustlines';
@@ -128,6 +129,7 @@ const MultisigJobList    = lazy(() => import('./pages/MultisigJobList.jsx'));
 const MultisigJobDetail  = lazy(() => import('./pages/MultisigJobDetail.jsx'));
 const TradingAssetsPage  = lazy(() => import('./pages/TradingAssetsPage.jsx'));
 const LiquidityPoolsPage = lazy(() => import('./pages/LiquidityPoolsPage.jsx'));
+const AssetDetailPage = lazy(() => import('./pages/AssetDetailPage.jsx'));
 
 
 migrateLegacyStorageKeys();
@@ -170,7 +172,7 @@ const isDev = import.meta.env.MODE !== 'production';
 // reflection at all). This component is now the single source of truth for
 // those 3 features; the URL is only mirrored for deep-linking/back-forward/
 // bookmarking, never a second place that independently decides what to render.
-const MANAGED_MENU_SELECTIONS = ['settings', 'tradingAssets', 'liquidityPools', 'multisigJobs'];
+const MANAGED_MENU_SELECTIONS = ['settings', 'tradingAssets', 'liquidityPools', 'multisigJobs', 'assetDetail'];
 
 function readMenuStateFromUrl() {
   if (typeof window === 'undefined') return { menuSelection: null, activeJobId: null, activeJobToken: null };
@@ -191,6 +193,9 @@ function readMenuStateFromUrl() {
   if (isLiquidityPoolsPath(pathname)) {
     return { menuSelection: 'liquidityPools', activeJobId: null, activeJobToken: null };
   }
+  if (isAssetDetailPath(pathname)) {
+    return { menuSelection: 'assetDetail', activeJobId: null, activeJobToken: null };
+  }
   return { menuSelection: null, activeJobId: null, activeJobToken: null };
 }
 
@@ -200,6 +205,11 @@ function pathForMenuState(menuSelection, activeJobId) {
   if (menuSelection === 'tradingAssets') return buildPath('trading/assets');
   if (menuSelection === 'liquidityPools') return buildPath('trading/pools');
   if (menuSelection === 'multisigJobs') return buildPath('multisig/jobs');
+  // Das Asset steht nur im Pfad: aktuellen Pfad behalten, solange er eine Asset-Detailseite ist
+  if (menuSelection === 'assetDetail') {
+    const current = typeof window !== 'undefined' ? window.location.pathname : '';
+    return isAssetDetailPath(current) ? current : buildPath('');
+  }
   return null;
 }
 
@@ -534,6 +544,7 @@ function Main() {
 
   const closeIdentityGuard = useCallback(() => {
     consumePendingTrustlineAsset();
+    consumePendingTradingAsset();
     setIdentityGuard({ open: false, nextAction: '' });
   }, []);
 
@@ -1232,6 +1243,18 @@ function Main() {
           />
         </div>
       )}
+      {menuSelection === 'assetDetail' && (
+        <AssetDetailPage
+          publicKey={sourcePublicKey}
+          network={devTestnet ? 'TESTNET' : 'PUBLIC'}
+          onBack={() => setMenuSelection(null)}
+          onTrade={(asset) => {
+            setPendingTradingAsset(asset);
+            handleMenuSelect('tradingAssets');
+          }}
+          onManageTrustlines={() => handleMenuSelect('listAll')}
+        />
+      )}
       {/* Wallet-Startseite: ohne Unteransicht */}
       {!menuSelection && (
         <WalletHome
@@ -1301,7 +1324,7 @@ function Main() {
       )}
        
        {menuSelection &&
-       !['listAll','compare','deleteAll','deleteByIssuer','xlmByMemo','groupfund','payments','tradingAssets','liquidityPools','settings','createAccount','multisigEdit','multisigJobs','balance','sendPayment','receive','feedback','muxed'].includes(menuSelection) && (
+       !['listAll','compare','deleteAll','deleteByIssuer','xlmByMemo','groupfund','payments','tradingAssets','liquidityPools','assetDetail','settings','createAccount','multisigEdit','multisigJobs','balance','sendPayment','receive','feedback','muxed'].includes(menuSelection) && (
          <div className="p-3 text-sm text-red-600">
            {t('menu:unknown', { value: String(menuSelection) }, 'Unbekannte Menüauswahl')}
          </div>

@@ -53,6 +53,23 @@ export function consumePendingTrustlineAsset() {
   return next;
 }
 
+let pendingTradingAsset = null;
+
+/**
+ * Merkt ein Asset ({ code, issuer }) vor, das Token suchen und handeln beim naechsten
+ * Oeffnen direkt sucht und auswaehlt (Handeln aus der Asset-Detailseite).
+ */
+export function setPendingTradingAsset(asset) {
+  pendingTradingAsset = asset && asset.code && asset.issuer ? { code: String(asset.code), issuer: String(asset.issuer) } : null;
+}
+
+/** Liefert das vorgemerkte Trading-Asset genau einmal. */
+export function consumePendingTradingAsset() {
+  const next = pendingTradingAsset;
+  pendingTradingAsset = null;
+  return next;
+}
+
 /** Von Main aufgerufen, wenn sich menuSelection aendert. */
 export function publishActiveMainView(selection) {
   activeMainView = selection || null;

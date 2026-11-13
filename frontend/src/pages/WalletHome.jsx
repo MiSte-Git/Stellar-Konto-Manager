@@ -12,6 +12,7 @@ import { looksLikeNativeCode } from '../utils/stellar/activity.js';
 import { useSettings } from '../utils/useSettings.js';
 import { loadGroupfundPrefs, saveGroupfundPrefs } from '../utils/groupfundPrefs.js';
 import { useXlmPriceData } from '../utils/xlmPriceContext.js';
+import { assetDetailSubpath } from '../utils/assetDetailRoute.js';
 
 
 function readNetwork() {
@@ -427,6 +428,17 @@ export default function WalletHome({ publicKey, muxedAddress, onAction, onOpenRo
                 <div className="text-right text-sm font-semibold tabular-nums text-gray-900 dark:text-white">
                   {fmt(asset.balance, { min: 0, max: 7 })}
                 </div>
+                {!asset.isPool && onOpenRoute && (
+                  <button
+                    type="button"
+                    onClick={() => onOpenRoute(assetDetailSubpath(asset.code, asset.issuer))}
+                    data-testid="wallet-home-asset-details"
+                    aria-label={t('wallet:home.assetDetailsAria', { code: asset.code, defaultValue: 'Details zu {{code}}' })}
+                    className="shrink-0 rounded-md border-0 bg-transparent px-2 py-1 text-xs font-medium text-blue-700 hover:bg-blue-50 hover:text-blue-800 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-blue-300 dark:hover:bg-gray-700 dark:hover:text-blue-200"
+                  >
+                    {t('wallet:home.assetDetails', 'Details')}
+                  </button>
+                )}
               </li>
             ))}
           </ul>

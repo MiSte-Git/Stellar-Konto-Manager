@@ -875,3 +875,41 @@ describe('AssetSearch - gemerkter Session-Key', () => {
     expect(hasSessionSecrets(ACCOUNT.publicKey)).toBe(false);
   });
 });
+
+describe('AssetSearch - Vorbelegtes Asset (Handeln aus der Asset-Detailseite)', () => {
+  afterEach(() => {
+    window.history.replaceState({}, '', '/');
+  });
+
+  it('sucht das vorgemerkte Asset exakt und oeffnet die Detailansicht, ohne zu senden', async () => {
+    const { setPendingTradingAsset } = await import('../../../utils/appNavigation.js');
+    setPendingTradingAsset({ code: ASSET_CODE, issuer: ISSUER_PK });
+    renderPage();
+    await waitFor(() => expect(screen.getAllByText('Trustline vorhanden').length).toBeGreaterThan(0));
+    const searchCall = fetch.mock.calls.map(([u]) => String(u)).find((u) => u.includes('trade/assets/search'));
+    expect(searchCall).toContain(`code=${ASSET_CODE}`);
+    expect(searchCall).toContain(`issuer=${ISSUER_PK}`);
+    expect(screen.getByPlaceholderText('USDC, G... oder USDC:G...').value).toBe(`${ASSET_CODE}:${ISSUER_PK}`);
+    expect(hoisted.submitTransactionMock).not.toHaveBeenCalled();
+  });
+
+  it('liest ?asset=CODE:ISSUER aus der URL, ein ungueltiger Wert loest keine Suche aus', async () => {
+    window.history.replaceState({}, '', `/trading/assets?asset=${ASSET_CODE}:${ISSUER_PK}`);
+    const first = renderPage();
+    await waitFor(() => expect(screen.getAllByText('Trustline vorhanden').length).toBeGreaterThan(0));
+    first.unmount();
+
+    fetch.mockClear();
+    window.history.replaceState({}, '', `/trading/assets?asset=${ASSET_CODE}:GKAPUTT`);
+    renderPage();
+    await act(async () => { await new Promise((r) => setTimeout(r, 0)); });
+    expect(fetch.mock.calls.some(([u]) => String(u).includes('trade/assets/search'))).toBe(false);
+  });
+
+  it('ohne Vorbelegung bleibt die Suche leer', async () => {
+    renderPage();
+    await act(async () => { await new Promise((r) => setTimeout(r, 0)); });
+    expect(fetch.mock.calls.some(([u]) => String(u).includes('trade/assets/search'))).toBe(false);
+    expect(screen.getByPlaceholderText('USDC, G... oder USDC:G...').value).toBe('');
+  });
+});

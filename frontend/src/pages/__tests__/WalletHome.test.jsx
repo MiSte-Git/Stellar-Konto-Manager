@@ -88,4 +88,24 @@ describe('WalletHome', () => {
     expect(screen.queryByTestId('wallet-home-assets-collapsed')).not.toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Assets/ })).toHaveAttribute('aria-expanded', 'true');
   });
+
+  it('Details je Token oeffnet die Asset-Detailseite, Pool-Anteile haben keinen Details-Button', async () => {
+    loadAccount.mockResolvedValue({
+      subentry_count: 2,
+      balances: [
+        { asset_type: 'native', balance: '10' },
+        { asset_type: 'credit_alphanum4', asset_code: 'LDEX', asset_issuer: PK, balance: '127165.150949' },
+        { asset_type: 'liquidity_pool_shares', liquidity_pool_id: 'ab'.repeat(32), balance: '1' },
+      ],
+    });
+    window.localStorage.setItem('skm.wallet.assetsOpen', '1');
+    const onOpenRoute = vi.fn();
+    renderHome({ publicKey: PK, onOpenRoute });
+    await screen.findByTestId('wallet-home-xlm');
+    const buttons = screen.getAllByTestId('wallet-home-asset-details');
+    expect(buttons).toHaveLength(1);
+    expect(buttons[0]).toHaveAccessibleName('Details zu LDEX');
+    fireEvent.click(buttons[0]);
+    expect(onOpenRoute).toHaveBeenCalledWith(`assets/LDEX-${PK}`);
+  });
 });

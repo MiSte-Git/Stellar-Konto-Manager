@@ -63,6 +63,8 @@ import useTrustlineStatus from './hooks/useTrustlineStatus.js';
 import useAssetFacts from './hooks/useAssetFacts.js';
 import useExchangeRate from './hooks/useExchangeRate.js';
 import useAssetSearch from './hooks/useAssetSearch.js';
+import { consumePendingTradingAsset } from '../../utils/appNavigation.js';
+import { readTradingAssetFromSearch } from '../../utils/assetDetailRoute.js';
 import useTradingAccount from './hooks/useTradingAccount.js';
 import useTradingSubmit from './hooks/useTradingSubmit.js';
 import useTradingMultisig, { JOB_DISABLED_TYPES, requiredWeightFor } from './hooks/useTradingMultisig.js';
@@ -1234,9 +1236,10 @@ export default function AssetSearch() {
     }
   };
 
-  const handleAssetSearch = async (e) => {
-    e.preventDefault();
-    const query = parseAssetSearchQuery(assetQuery);
+  // Sucht nach rawQuery. selectExact: bei CODE:ISSUER den exakten Treffer direkt auswaehlen
+  // (Handeln aus der Asset-Detailseite oder Link mit ?asset=).
+  const runAssetSearch = async (rawQuery, { selectExact = false } = {}) => {
+    const query = parseAssetSearchQuery(rawQuery);
     if (query.error) {
       setAssetError(translateInputError(query.error));
       return;
@@ -1259,7 +1262,15 @@ export default function AssetSearch() {
         const message = data?.error || 'assetSearch.failed:generic';
         throw new Error(message);
       }
-      setAssetResults(Array.isArray(data?.items) ? data.items : []);
+      const items = Array.isArray(data?.items) ? data.items : [];
+      setAssetResults(items);
+      if (selectExact && query.mode === 'exact') {
+        const exact = items.find((item) =>
+          String(item.assetCode || '').toUpperCase() === String(query.code || '').toUpperCase() &&
+          item.assetIssuer === query.issuer
+        );
+        if (exact) setSelectedAsset(exact);
+      }
     } catch (err) {
       const msg = err?.message || '';
       if (msg.startsWith('assetSearch.invalidInput:queryMissing')) {
@@ -1275,6 +1286,24 @@ export default function AssetSearch() {
       setAssetLoading(false);
     }
   };
+
+  const handleAssetSearch = async (e) => {
+    e.preventDefault();
+    await runAssetSearch(assetQuery);
+  };
+
+  // Vorbelegtes Asset (aus der Asset-Detailseite oder per ?asset=CODE:ISSUER) einmal beim Oeffnen
+  // suchen und auswaehlen. Oeffnet nur den Detail-Dialog, sendet nichts.
+  const runAssetSearchRef = useRef(runAssetSearch);
+  runAssetSearchRef.current = runAssetSearch;
+  useEffect(() => {
+    const initial = consumePendingTradingAsset() || readTradingAssetFromSearch();
+    if (!initial) return;
+    const raw = `${initial.code}:${initial.issuer}`;
+    setAssetQuery(raw);
+    runAssetSearchRef.current(raw, { selectExact: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // 'available' | 'unavailable' | 'notChecked' - passed to TokenFactsSummary's
   // includeRoute block instead of it reading swapPreview directly.

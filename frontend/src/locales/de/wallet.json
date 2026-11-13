@@ -53,7 +53,9 @@
         "cta": "Los geht’s"
       }
     },
-    "assetsBase": "Assets des Basiskontos"
+    "assetsBase": "Assets des Basiskontos",
+    "assetDetails": "Details",
+    "assetDetailsAria": "Details zu {{code}}"
   },
   "receive": {
     "title": "Empfangen",
@@ -148,11 +150,11 @@
     "until": "Einlösbar bis {{date}}.",
     "fromDate": "Einlösbar ab {{date}}.",
     "notClaimable": "Derzeit nicht einlösbar.",
-  "noDeadline": "Einlösbar ohne Frist.",
-  "complexConditions": "Es gelten besondere Bedingungen, siehe Details.",
-  "conditionsDetails": "Bedingungen anzeigen",
-  "senderReclaimAny": "Der Absender ist selbst Claimant und kann die Balance jederzeit selbst einlösen.",
-  "senderReclaimLater": "Der Absender ist selbst Claimant und kann die Balance nach Ablauf der Frist zurückholen.",
+    "noDeadline": "Einlösbar ohne Frist.",
+    "complexConditions": "Es gelten besondere Bedingungen, siehe Details.",
+    "conditionsDetails": "Bedingungen anzeigen",
+    "senderReclaimAny": "Der Absender ist selbst Claimant und kann die Balance jederzeit selbst einlösen.",
+    "senderReclaimLater": "Der Absender ist selbst Claimant und kann die Balance nach Ablauf der Frist zurückholen.",
     "withTrustline": "Legt beim Einlösen eine Trustline für {{code}} an.",
     "noTrustTitle": "Für Assets ohne Trustline ({{count}})",
     "noTrustShow": "Anzeigen",
@@ -271,6 +273,32 @@
       "invalidMemo": "Die Zahlungsanfrage enthält ein ungültiges Memo.",
       "networkMismatch": "Die Zahlungsanfrage ist für ein anderes Netzwerk als das gewählte. Wechsle zuerst das Netzwerk.",
       "contractAddress": "Der Code enthält eine Contract-Adresse (C… oder W…). Klassische Zahlungen an Contract-Adressen sind nicht möglich."
+    }
+  },
+  "assetDetail": {
+    "title": "Asset-Details",
+    "invalid": "Dieser Link enthält kein gültiges Asset (erwartet: CODE-ISSUER).",
+    "back": "Zurück zur Wallet",
+    "copyIssuer": "Issuer kopieren",
+    "copied": "Kopiert",
+    "trade": "Handeln (kaufen oder verkaufen)",
+    "manageTrustlines": "Trustlines verwalten",
+    "facts": "Fakten zum Asset",
+    "account": {
+      "title": "In deinem Konto",
+      "noAccount": "Kein Konto geladen. Lade oben ein Konto, um deinen Bestand zu sehen.",
+      "loading": "Konto wird geladen …",
+      "notFound": "Dieses Konto existiert in diesem Netz noch nicht.",
+      "loadError": "Kontodaten konnten nicht geladen werden.",
+      "noTrustline": "Dein Konto hat keine Trustline für dieses Asset.",
+      "balance": "Saldo",
+      "available": "Verfügbar (Saldo minus Verkaufsaufträge)",
+      "sellingLiabilities": "In Verkaufsaufträgen gebunden",
+      "buyingLiabilities": "In Kaufaufträgen reserviert",
+      "limit": "Trustline-Limit",
+      "authorized": "Vom Issuer autorisiert",
+      "yes": "Ja",
+      "no": "Nein"
     }
   }
 }
