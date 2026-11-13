@@ -54,6 +54,8 @@ async function openTradingWithSkma(page, fx) {
   const overlay = page.getByTestId('sidebar-overlay');
   if (await overlay.count()) await page.getByRole('button', { name: 'Navigation schließen' }).first().click();
   await expect(overlay).toHaveCount(0);
+  // Seit 13.11. startet die Seite mit Konto im Modus Im Konto: fuer die Suche umschalten
+  await page.getByRole('button', { name: 'Auf der Blockchain', exact: true }).click();
   await page.getByPlaceholder('USDC, G... oder USDC:G...').fill(`SKMA:${fx.issuer.public}`);
   await page.getByRole('button', { name: 'Suchen', exact: true }).click();
   await page.getByRole('button', { name: 'Details', exact: true }).first().click();

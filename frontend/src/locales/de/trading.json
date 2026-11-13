@@ -413,5 +413,34 @@
     "trustlineCountUnknown": "Trustlines: —",
     "trustlineCountTitle": "Anzahl Konten mit Trustline für dieses Asset",
     "selectedMark": "gewählt"
+  },
+  "accountTokens": {
+    "modeLabel": "Wo suchen",
+    "modeAccount": "Im Konto",
+    "modeBlockchain": "Auf der Blockchain",
+    "noAccount": "Kein Konto geladen. Lade oben ein Konto oder suche auf der Blockchain.",
+    "loading": "Token des Kontos werden geladen …",
+    "filterPlaceholder": "Token im Konto filtern: Code, Issuer oder CODE:ISSUER",
+    "filterLabel": "Token im Konto filtern",
+    "hide": {
+      "toggle": "Token ausblenden",
+      "scam": "Mit Warnung bei StellarExpert (SCAM, unsicher)",
+      "zero": "Saldo 0",
+      "noMarket": "Kein Marktpreis gegen XLM",
+      "pending": "Prüfe noch {{count}} Einträge …",
+      "note": "Ausgeblendet wird nur bei sicherem Befund. Nicht prüfbare Token bleiben sichtbar. Der StellarExpert-Eintrag ist ein Hinweis eines Drittanbieters, kein Echtheitsbeweis."
+    },
+    "count": "{{shown}} von {{total}} Token",
+    "countHidden": "{{shown}} von {{total}} Token, {{hidden}} ausgeblendet",
+    "none": "Dieses Konto hat noch keine Token. Suche auf der Blockchain, um einen zu finden.",
+    "noMatch": "Kein Token passt zum Filter.",
+    "badge": {
+      "scam": "Warnung StellarExpert",
+      "noMarket": "Kein Marktpreis"
+    },
+    "details": "Details",
+    "detailsAria": "Details zu {{code}}",
+    "trade": "Handeln",
+    "tradeAria": "{{code}} handeln"
   }
 }

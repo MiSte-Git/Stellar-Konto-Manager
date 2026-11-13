@@ -25,13 +25,17 @@ export default function AssetSearchForm({
   assetError,
   actionMessage,
   modalError,
+  showSearch = true,
+  modeToggle = null,
 }) {
   const { t } = useTranslation(['trading', 'common']);
   return (
     <>
+      {showSearch && (
       <p className="text-sm text-gray-600 dark:text-gray-300">
         {t('trading:assetSearch.description', 'Suche nach Asset-Code, Issuer-Adresse oder CODE:ISSUER.')}
       </p>
+      )}
       <div className="rounded-sm border border-gray-200 bg-gray-50 px-3 py-2 text-xs text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300">
         <div>
           <span className="font-semibold">{t('trading:assetSearch.account.active', 'Active account')}:</span>{' '}
@@ -42,6 +46,8 @@ export default function AssetSearchForm({
           <span>{network}</span>
         </div>
       </div>
+      {modeToggle}
+      {showSearch && (
       <form className="space-y-3" onSubmit={onSubmit}>
         <label className="block text-sm font-semibold" htmlFor="asset-query-input">
           {t('trading:assetSearch.form.query.label')}
@@ -79,6 +85,7 @@ export default function AssetSearchForm({
           </div>
         )}
       </form>
+      )}
 
       {actionMessage && (
         <div className={`rounded-sm border px-3 py-2 text-sm ${

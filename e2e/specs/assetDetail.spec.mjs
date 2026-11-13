@@ -73,6 +73,35 @@ test('Wallet: Pool-Anteile mit Gegenwert, Filter nach Code', async ({ page }) =>
   await expectNoCrash(page);
 });
 
+test('Token suchen und handeln: Kontoliste mit Filter, Handeln oeffnet die Detailansicht', async ({ page }) => {
+  const fx = readFixtures();
+  const errors = [];
+  page.on('pageerror', (e) => errors.push(e.message));
+  await mockAssetBackend(page, fx);
+  await openApp(page);
+  await loadAccount(page, fx.main.public);
+  await page.locator('header button').first().click();
+  await page.locator('[data-nav-id="tradingAssets"]').first().evaluate((el) => el.click());
+  const overlay = page.getByTestId('sidebar-overlay');
+  if (await overlay.count()) await page.getByRole('button', { name: 'Navigation schließen' }).first().click();
+
+  await expect(page.getByRole('button', { name: 'Im Konto', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  const tokens = page.getByTestId('account-tokens');
+  await expect(tokens.getByTestId('account-token-code')).toHaveText(['SKMA', 'SKMB'], { timeout: 30000 });
+  await page.getByTestId('account-tokens-filter').fill('skmb');
+  await expect(tokens.getByTestId('account-token-code')).toHaveText(['SKMB']);
+  await page.getByTestId('account-tokens-filter').fill('');
+  // Ausblenden mit SCAM (Expert im Spec: nicht verfuegbar) blendet nichts aus
+  await page.getByTestId('account-tokens-hide').check();
+  await expect(tokens.getByTestId('account-token-code')).toHaveText(['SKMA', 'SKMB']);
+  await page.getByTestId('account-tokens-hide').uncheck();
+
+  await page.getByRole('button', { name: 'SKMA handeln', exact: true }).click();
+  await expect(page.getByText('Trustline vorhanden').first()).toBeVisible({ timeout: 30000 });
+  await expectNoCrash(page);
+  expect(errors).toEqual([]);
+});
+
 test('Kaputter Asset-Link zeigt einen Hinweis', async ({ page }) => {
   await openApp(page);
   await page.goto('/assets/SKMA-GKAPUTT');

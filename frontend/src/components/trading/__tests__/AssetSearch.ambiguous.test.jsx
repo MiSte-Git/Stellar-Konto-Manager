@@ -126,7 +126,14 @@ function renderPage() {
 // into the given badge text ("Trustline vorhanden" by default). Note the same
 // text can also appear as the (disabled) row action label once selected, so we
 // assert on "at least one" rather than a single unique match.
+// Seit Teil C (13.11.) startet die Seite mit Konto im Modus Im Konto: fuer die Suche umschalten.
+function switchToBlockchain() {
+  const toggle = screen.queryByRole('button', { name: 'Auf der Blockchain' });
+  if (toggle && toggle.getAttribute('aria-pressed') !== 'true') fireEvent.click(toggle);
+}
+
 async function searchAndSelectAsset(expectedTrustlineLabel = 'Trustline vorhanden') {
+  switchToBlockchain();
   fireEvent.change(screen.getByPlaceholderText('USDC, G... oder USDC:G...'), {
     target: { value: ASSET_CODE },
   });

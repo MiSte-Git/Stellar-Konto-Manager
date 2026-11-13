@@ -24,6 +24,7 @@ import {
   EMPTY_ASSET_FACTS,
   assetResultKey,
   parseAssetSearchQuery,
+  getStoredAccountInput,
   normalizeAmount,
   calculateMinimumDestinationAmount,
   normalizeTrustlineLimit,
@@ -63,8 +64,9 @@ import useTrustlineStatus from './hooks/useTrustlineStatus.js';
 import useAssetFacts from './hooks/useAssetFacts.js';
 import useExchangeRate from './hooks/useExchangeRate.js';
 import useAssetSearch from './hooks/useAssetSearch.js';
-import { consumePendingTradingAsset } from '../../utils/appNavigation.js';
-import { readTradingAssetFromSearch } from '../../utils/assetDetailRoute.js';
+import { assetDetailSubpath, readTradingAssetFromSearch } from '../../utils/assetDetailRoute.js';
+import { consumePendingTradingAsset, navigateToPath } from '../../utils/appNavigation.js';
+import AccountTokenList from './AccountTokenList.jsx';
 import useTradingAccount from './hooks/useTradingAccount.js';
 import useTradingSubmit from './hooks/useTradingSubmit.js';
 import useTradingMultisig, { JOB_DISABLED_TYPES, requiredWeightFor } from './hooks/useTradingMultisig.js';
@@ -78,6 +80,8 @@ const TRADING_SUBMIT_TIMEOUT_SECONDS = 60;
 export default function AssetSearch() {
   const { t, i18n } = useTranslation(['trading', 'common', 'liquidity', 'secretKey']);
   const [tokenFactsExpanded, setTokenFactsExpanded] = useState(false);
+  // Modus der Seite: Token des Kontos (Standard mit Konto) oder Suche auf der Blockchain
+  const [searchMode, setSearchMode] = useState(() => (getStoredAccountInput() ? 'account' : 'blockchain'));
   const {
     accountInput,
     accountId,
@@ -1300,6 +1304,7 @@ export default function AssetSearch() {
     const initial = consumePendingTradingAsset() || readTradingAssetFromSearch();
     if (!initial) return;
     const raw = `${initial.code}:${initial.issuer}`;
+    setSearchMode('blockchain');
     setAssetQuery(raw);
     runAssetSearchRef.current(raw, { selectExact: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1326,9 +1331,37 @@ export default function AssetSearch() {
         assetError={assetError}
         actionMessage={actionMessage}
         modalError={modalError}
+        showSearch={searchMode === 'blockchain'}
+        modeToggle={(
+          <div className="inline-flex rounded-sm border border-gray-300 p-0.5 text-sm dark:border-gray-600" role="group" aria-label={t('trading:accountTokens.modeLabel', 'Wo suchen')}>
+            {[['account', t('trading:accountTokens.modeAccount', 'Im Konto')], ['blockchain', t('trading:accountTokens.modeBlockchain', 'Auf der Blockchain')]].map(([mode, label]) => (
+              <button
+                key={mode}
+                type="button"
+                aria-pressed={searchMode === mode}
+                onClick={() => setSearchMode(mode)}
+                className={`rounded-sm px-3 py-1 font-medium ${searchMode === mode ? 'bg-blue-600 text-white' : 'text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800'}`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        )}
       />
       <AccountSendGuardNotice guard={sendGuard} network={network} />
 
+      {searchMode === 'account' && (
+        <AccountTokenList
+          account={accountInfo}
+          accountId={accountId}
+          accountLoading={accountStatus.loading}
+          network={network}
+          onTrade={(tk) => setSelectedAsset({ assetCode: tk.code, assetIssuer: tk.issuer })}
+          onOpenDetails={(tk) => navigateToPath(assetDetailSubpath(tk.code, tk.issuer))}
+        />
+      )}
+
+      {searchMode === 'blockchain' && (
       <AssetResultsTable
         assetResults={assetResults}
         assetError={assetError}
@@ -1341,6 +1374,7 @@ export default function AssetSearch() {
         formatTrustlineCount={formatTrustlineCount}
         onSelectAsset={setSelectedAsset}
       />
+      )}
 
       {selectedAsset && (
         <div className="fixed inset-0 z-40 flex items-start justify-center overflow-y-auto bg-black/50 p-4">

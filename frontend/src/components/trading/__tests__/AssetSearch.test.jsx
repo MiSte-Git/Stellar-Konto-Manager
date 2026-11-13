@@ -124,7 +124,14 @@ function renderPage() {
 // into the given badge text ("Trustline vorhanden" by default). Note the same
 // text can also appear as the (disabled) row action label once selected, so we
 // assert on "at least one" rather than a single unique match.
+// Seit Teil C (13.11.) startet die Seite mit Konto im Modus Im Konto: fuer die Suche umschalten.
+function switchToBlockchain() {
+  const toggle = screen.queryByRole('button', { name: 'Auf der Blockchain' });
+  if (toggle && toggle.getAttribute('aria-pressed') !== 'true') fireEvent.click(toggle);
+}
+
 async function searchAndSelectAsset(expectedTrustlineLabel = 'Trustline vorhanden') {
+  switchToBlockchain();
   fireEvent.change(screen.getByPlaceholderText('USDC, G... oder USDC:G...'), {
     target: { value: ASSET_CODE },
   });
@@ -403,6 +410,7 @@ describe('AssetSearch - Ergebnisliste nur mit Details', () => {
   });
 
   async function search() {
+    switchToBlockchain();
     fireEvent.change(screen.getByPlaceholderText('USDC, G... oder USDC:G...'), { target: { value: ASSET_CODE } });
     fireEvent.click(screen.getByRole('button', { name: 'Suchen' }));
     return screen.findByRole('button', { name: 'Details' });
@@ -910,6 +918,55 @@ describe('AssetSearch - Vorbelegtes Asset (Handeln aus der Asset-Detailseite)', 
     renderPage();
     await act(async () => { await new Promise((r) => setTimeout(r, 0)); });
     expect(fetch.mock.calls.some(([u]) => String(u).includes('trade/assets/search'))).toBe(false);
+    switchToBlockchain();
     expect(screen.getByPlaceholderText('USDC, G... oder USDC:G...').value).toBe('');
+  });
+});
+
+describe('AssetSearch - Modus Im Konto (Teil C, 13.11.)', () => {
+  afterEach(() => {
+    window.history.replaceState({}, '', '/');
+  });
+
+  function withFooTrustline() {
+    hoisted.loadAccountMock.mockImplementation(async () => {
+      const account = makeFundedAccount(ACCOUNT.publicKey);
+      account.balances = [
+        ...account.balances,
+        { asset_type: 'credit_alphanum4', asset_code: ASSET_CODE, asset_issuer: ISSUER_PK, balance: '1000.0000000' },
+      ];
+      return account;
+    });
+  }
+
+  it('startet mit Konto im Modus Im Konto und zeigt dessen Token, ohne Suche im Backend', async () => {
+    withFooTrustline();
+    renderPage();
+    expect(screen.getByRole('button', { name: 'Im Konto' })).toHaveAttribute('aria-pressed', 'true');
+    expect(await screen.findByRole('button', { name: `${ASSET_CODE} handeln` })).toBeInTheDocument();
+    expect(screen.queryByPlaceholderText('USDC, G... oder USDC:G...')).toBeNull();
+    expect(fetch.mock.calls.some(([u]) => String(u).includes('trade/assets/search'))).toBe(false);
+  });
+
+  it('Handeln oeffnet die Detailansicht des Tokens, ohne zu senden', async () => {
+    withFooTrustline();
+    renderPage();
+    fireEvent.click(await screen.findByRole('button', { name: `${ASSET_CODE} handeln` }));
+    await waitFor(() => expect(screen.getAllByText('Trustline vorhanden').length).toBeGreaterThan(0));
+    expect(hoisted.submitTransactionMock).not.toHaveBeenCalled();
+  });
+
+  it('Details oeffnet die Asset-Detailseite', async () => {
+    withFooTrustline();
+    renderPage();
+    fireEvent.click(await screen.findByRole('button', { name: `Details zu ${ASSET_CODE}` }));
+    expect(window.location.pathname).toBe(`/assets/${ASSET_CODE}-${ISSUER_PK}`);
+  });
+
+  it('ohne Konto startet die Seite mit der Suche auf der Blockchain', () => {
+    window.localStorage.removeItem('SKM_LAST_ACCOUNT');
+    renderPage();
+    expect(screen.getByRole('button', { name: 'Auf der Blockchain' })).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.getByPlaceholderText('USDC, G... oder USDC:G...')).toBeInTheDocument();
   });
 });
