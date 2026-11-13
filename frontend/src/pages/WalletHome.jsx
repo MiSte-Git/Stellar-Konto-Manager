@@ -407,7 +407,7 @@ export default function WalletHome({ publicKey, muxedAddress, onAction, onOpenRo
           <div className="border-b border-gray-100 px-5 py-2 dark:border-gray-700/70">
             <div className="relative">
               <input
-                type="search"
+                type="text"
                 value={assetQuery}
                 onChange={(e) => setAssetQuery(e.target.value)}
                 placeholder={t('wallet:home.assetSearch.placeholder', 'Assets filtern: Code, Issuer oder CODE:ISSUER')}

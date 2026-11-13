@@ -58,7 +58,7 @@ export default function AccountTokenList({ account, accountId, accountLoading = 
     <section className="space-y-3" data-testid="account-tokens">
       <div className="relative">
         <input
-          type="search"
+          type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder={t('trading:accountTokens.filterPlaceholder', 'Token im Konto filtern: Code, Issuer oder CODE:ISSUER')}
