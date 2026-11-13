@@ -3,6 +3,7 @@
 // Verknuepfung: ODER innerhalb einer Gruppe (mehrere Memos, mehrere Empfaenger), UND zwischen
 // den Gruppen Memo, Memo nicht, falsches Memo, Empfaenger, Betrag und Richtung. Leere Gruppen zaehlen nicht.
 import { StrKey } from '@stellar/stellar-sdk';
+import { ADDRESS_KINDS, classifyStellarAddress } from './addressType.js';
 import { cleanMemo, withRetry } from './queryUtils.js';
 
 export const SEARCH_ABORT_MESSAGE = 'submitTransaction.failed:cache.backfill.aborted';
@@ -66,8 +67,9 @@ function splitList(text, separator) {
 // Secret Keys werden nie zurueckgegeben (weder als value noch in params).
 export function parseRecipient(token) {
   const tok = String(token ?? '').trim();
-  if (StrKey.isValidEd25519PublicKey(tok)) return { kind: 'G', value: tok };
-  if (StrKey.isValidMed25519PublicKey(tok)) return { kind: 'M', value: tok };
+  const addressKind = classifyStellarAddress(tok);
+  if (addressKind === ADDRESS_KINDS.ACCOUNT) return { kind: 'G', value: tok };
+  if (addressKind === ADDRESS_KINDS.MUXED) return { kind: 'M', value: tok };
   if (StrKey.isValidEd25519SecretSeed(tok)) return { error: 'recipientSecretKey' };
   return { error: 'recipientInvalid', value: safeEcho(tok) };
 }

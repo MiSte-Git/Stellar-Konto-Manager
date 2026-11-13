@@ -12,6 +12,7 @@
 // Secret Keys werden nie gespeichert: Jeder Wert, in dem etwas wie ein Secret Key steckt
 // (auch mit Praefix, Suffix oder Leerzeichen), wird beim Speichern und Laden verworfen.
 import { StrKey, hash as sha256 } from '@stellar/stellar-sdk';
+import { isClassicAccount, isPaymentDestination } from '../stellar/addressType.js';
 
 export const BATCH_PAYMENT_STORAGE_KEY = 'skm_batch_payment_v1';
 export const BATCH_SENT_PREFIX = 'skm_batch_sent_v1:';
@@ -50,10 +51,10 @@ const FEDERATION_RE = /^([^*\s]+)\*([A-Za-z0-9.-]+\.[A-Za-z]{2,})$/;
 
 function stripPublicKeys(text) {
   return text.replace(PUBLIC_KEY_RE, (t) => {
-    if (StrKey.isValidEd25519PublicKey(t) || StrKey.isValidMed25519PublicKey(t)) return ' ';
+    if (isPaymentDestination(t)) return ' ';
     // Laengerer Treffer (Adresse plus angehaengte Buchstaben): gueltige G-Adresse am Anfang?
     const g = t.slice(0, 56);
-    return StrKey.isValidEd25519PublicKey(g) ? ` ${t.slice(56)}` : t;
+    return isClassicAccount(g) ? ` ${t.slice(56)}` : t;
   });
 }
 

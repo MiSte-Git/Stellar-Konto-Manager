@@ -5,8 +5,8 @@
 // here is verbatim what used to live at module scope in that file.
 import { Asset } from '@stellar/stellar-sdk';
 import { readStoredNetworkId } from '../../config/networks.js';
+import { isClassicAccountSyntax } from '../../utils/stellar/addressType.js';
 
-export const STELLAR_PUBLIC_KEY_RE = /^G[A-Z2-7]{55}$/;
 export const ASSET_CODE_RE = /^[A-Za-z0-9]{1,12}$/;
 export const AMOUNT_RE = /^\d+(?:\.\d{1,7})?$/;
 export const DEFAULT_TRUSTLINE_LIMIT = '1000000';
@@ -51,11 +51,11 @@ export function parseAssetSearchQuery(raw) {
     if (parts.length !== 2) return { error: 'queryInvalid' };
     const [code, issuer] = parts;
     if (!ASSET_CODE_RE.test(code)) return { error: 'codeInvalid' };
-    if (!STELLAR_PUBLIC_KEY_RE.test(issuer)) return { error: 'issuerInvalid' };
+    if (!isClassicAccountSyntax(issuer)) return { error: 'issuerInvalid' };
     return { code, issuer, mode: 'exact' };
   }
 
-  if (STELLAR_PUBLIC_KEY_RE.test(value)) {
+  if (isClassicAccountSyntax(value)) {
     return { issuer: value, mode: 'issuer' };
   }
 

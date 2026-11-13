@@ -9,7 +9,8 @@
 //
 // Nebenwirkung: Jede andere vorbereitete Transaktion dieses Kontos mit Sequence <= S wird
 // ebenfalls ungueltig. bumpSequence ist eine Low-Threshold-Operation.
-import { Operation, TransactionBuilder, StrKey } from '@stellar/stellar-sdk';
+import { Operation, TransactionBuilder } from '@stellar/stellar-sdk';
+import { baseAccountOf } from '../stellar/addressType.js';
 
 export const REVOCATION_TX_TIMEOUT_SECONDS = 60;
 
@@ -18,12 +19,9 @@ export const REVOCATION_TX_TIMEOUT_SECONDS = 60;
 export function getJobSequenceInfo(tx) {
   const inner = tx?.innerTransaction || tx;
   if (!inner?.sequence || !inner?.source) return null;
-  let source = String(inner.source);
-  if (StrKey.isValidMed25519PublicKey(source)) {
-    const raw = StrKey.decodeMed25519PublicKey(source);
-    source = StrKey.encodeEd25519PublicKey(raw.subarray(0, -8));
-  }
-  if (!StrKey.isValidEd25519PublicKey(source)) return null;
+  // M-Adresse zaehlt zu ihrem Basiskonto; alles ausser G und M: null.
+  const source = baseAccountOf(String(inner.source));
+  if (!source) return null;
   return { sourceAccountId: source, sequence: String(inner.sequence) };
 }
 

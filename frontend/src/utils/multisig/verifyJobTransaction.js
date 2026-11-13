@@ -3,7 +3,8 @@
 // Konto, Hash und Netz im Job-Datensatz sind Server-Angaben. Gezeigt und signiert wird aber
 // die Transaktion aus dem XDR, und das Netz prueft die Signaturen gegen deren Quelle. Passt
 // beides nicht zusammen, wuerde der Signer etwas anderes autorisieren, als der Job behauptet.
-import { StrKey, TransactionBuilder } from '@stellar/stellar-sdk';
+import { TransactionBuilder } from '@stellar/stellar-sdk';
+import { ADDRESS_KINDS, classifyStellarAddress } from '../stellar/addressType.js';
 import { passphraseFor } from '../../config/networks.js';
 import { txHashHex } from '../stellar/txHash.js';
 import { getJobSequenceInfo, parseJobNetwork } from './jobRevocation.js';
@@ -33,7 +34,7 @@ export function verifyJobTransaction(job, decodedTx) {
   const sourceAccountId = seqInfo?.sourceAccountId || '';
   const feeBump = !!decodedTx?.innerTransaction;
   const rawSource = String((decodedTx?.innerTransaction || decodedTx)?.source || '');
-  const muxedSource = StrKey.isValidMed25519PublicKey(rawSource) ? rawSource : '';
+  const muxedSource = classifyStellarAddress(rawSource) === ADDRESS_KINDS.MUXED ? rawSource : '';
 
   const issues = [];
   if (!seqInfo) issues.push({ code: 'undecodable' });

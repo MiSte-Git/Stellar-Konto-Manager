@@ -11,9 +11,9 @@ import {
   handleSourceSubmit as submitSourceInput,
   getHorizonServer,
   resolveOrValidateAccount,
-  extractBasePublicKeyFromMuxed,
   extractMuxedIdFromAddress
  } from './utils/stellar/stellarUtils.js';
+import { loadRecentWalletsFromStorage, normalizeStoredWallet, walletLookupKey } from './utils/recentWallets.js';
 import { useTrustedWallets } from './utils/useTrustedWallets.js';
 import { createWalletInfoMap, findWalletInfo } from './utils/walletInfo.js';
 import AddressDropdown from './components/AddressDropdown.jsx';
@@ -63,25 +63,6 @@ function migrateLegacyStorageKeys() {
   }
 }
 
-function normalizeStoredWallet(entry) {
-  if (typeof entry === 'string') {
-    return { publicKey: entry, isTestnet: false };
-  }
-  if (!entry || typeof entry !== 'object') return null;
-  const pk = entry.publicKey || entry.address || entry.value || '';
-  if (!pk) return null;
-  return { publicKey: pk, isTestnet: typeof entry.isTestnet === 'boolean' ? entry.isTestnet : undefined };
-}
-
-function loadRecentWalletsFromStorage() {
-  try {
-    const raw = JSON.parse(localStorage.getItem('recentWallets') || '[]');
-    if (!Array.isArray(raw)) return [];
-    return raw.map(normalizeStoredWallet).filter(Boolean);
-  } catch {
-    return [];
-  }
-}
 import App from './App.jsx';
 import { confirmAutoClear } from './utils/confirmAutoClear.js';
 import ActivateAccountPrompt from './components/ActivateAccountPrompt.jsx';
@@ -309,14 +290,8 @@ function Main() {
   const walletInfoMap = useMemo(() => createWalletInfoMap(wallets), [wallets]);
   const trimmedHeaderInput = (walletHeaderInput || '').trim();
   const headerLookupKey = useMemo(() => {
-    if (trimmedHeaderInput && trimmedHeaderInput.startsWith('M')) {
-      try {
-        return extractBasePublicKeyFromMuxed(trimmedHeaderInput);
-      } catch {
-        return trimmedHeaderInput;
-      }
-    }
-    return trimmedHeaderInput || sourcePublicKey;
+    // M-Adresse: Label des Basiskontos; sonst die Eingabe wie eingegeben.
+    return trimmedHeaderInput ? walletLookupKey(trimmedHeaderInput) : sourcePublicKey;
   }, [trimmedHeaderInput, sourcePublicKey]);
   const headerWalletInfo = findWalletInfo(walletInfoMap, headerLookupKey) || findWalletInfo(walletInfoMap, sourcePublicKey);
   const accountMode = useMemo(
@@ -336,15 +311,7 @@ function Main() {
       .map((entry) => {
         const publicKey = entry?.publicKey || '';
         if (!publicKey) return null;
-        let lookupKey = publicKey;
-        if (lookupKey.startsWith('M')) {
-          try {
-            lookupKey = extractBasePublicKeyFromMuxed(lookupKey);
-          } catch {
-            lookupKey = publicKey;
-          }
-        }
-        const info = findWalletInfo(walletInfoMap, lookupKey) || {};
+        const info = findWalletInfo(walletInfoMap, walletLookupKey(publicKey)) || {};
         return {
           value: publicKey,
           label: info.label || '',
@@ -438,14 +405,7 @@ function Main() {
         const annotated = await Promise.all(recentWallets.map(async (entry) => {
           if (!entry || typeof entry.isTestnet !== 'undefined') return entry;
           let isTestnet = false;
-          let baseKey = entry.publicKey;
-          if (baseKey && baseKey.startsWith('M')) {
-            try {
-              baseKey = extractBasePublicKeyFromMuxed(baseKey);
-            } catch {
-              baseKey = entry.publicKey;
-            }
-          }
+          const baseKey = walletLookupKey(entry.publicKey);
           try {
             isTestnet = await isTestnetAccount(baseKey);
           } catch {

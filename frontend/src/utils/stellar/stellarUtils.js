@@ -2,7 +2,15 @@ import { resolveFeePerOp } from './fees.js';
 import { NETWORKS, horizonUrlFor, normalizeNetworkId, passphraseFor, readStoredNetworkId } from '../../config/networks.js';
 import { apiUrl } from '../apiBase.js';
 import { isFlowNetworkCurrent, NETWORK_CHANGED_CODE } from '../globalNetwork.js';
-import { CONTRACT_ADDRESS_ERROR, isContractAddress } from './addressType.js';
+import {
+  ADDRESS_KINDS,
+  CONTRACT_ADDRESS_ERROR,
+  INVALID_ADDRESS_ERROR,
+  hasClassicAccountPrefix,
+  isContractAddress,
+  isPaymentDestination,
+  parseStellarAddress,
+} from './addressType.js';
 import {
   Horizon,
   StrKey,
@@ -350,31 +358,26 @@ export async function resolveOrValidatePublicKey(input) {
   return resolved.accountId;
 }
 
+// Duenne Wrapper um addressType.js (Kontotyp zentral). Rueckgabe, Fehlerschluessel und
+// Wurfverhalten wie vor der Buendelung.
 export function isValidAccountId(input) {
   if (!input) return false;
-  return StrKey.isValidEd25519PublicKey(input) || StrKey.isValidMed25519PublicKey(input);
+  return isPaymentDestination(input);
+}
+
+// Nur M-Adressen, sonst Error('resolveOrValidatePublicKey.invalid').
+function parseMuxedOrThrow(muxedAddress) {
+  const parsed = parseStellarAddress(muxedAddress);
+  if (parsed.kind !== ADDRESS_KINDS.MUXED) throw new Error(INVALID_ADDRESS_ERROR);
+  return parsed;
 }
 
 export function extractBasePublicKeyFromMuxed(muxedAddress) {
-  if (!StrKey.isValidMed25519PublicKey(muxedAddress)) {
-    throw new Error('resolveOrValidatePublicKey.invalid');
-  }
-  const raw = StrKey.decodeMed25519PublicKey(muxedAddress);
-  const ed25519 = raw.subarray(0, -8);
-  return StrKey.encodeEd25519PublicKey(ed25519);
+  return parseMuxedOrThrow(muxedAddress).baseAccountId;
 }
 
 export function extractMuxedIdFromAddress(muxedAddress) {
-  if (!StrKey.isValidMed25519PublicKey(muxedAddress)) {
-    throw new Error('resolveOrValidatePublicKey.invalid');
-  }
-  const raw = StrKey.decodeMed25519PublicKey(muxedAddress);
-  const idBytes = raw.subarray(-8);
-  let id = 0n;
-  for (const b of idBytes) {
-    id = (id << 8n) + BigInt(b);
-  }
-  return id.toString(10);
+  return parseMuxedOrThrow(muxedAddress).muxedId;
 }
 
 export async function resolveOrValidateAccount(input) {
@@ -731,7 +734,7 @@ export async function sumIncomingXLMByMemo({
   if (!server || !(server instanceof Horizon.Server)) {
     throw new Error('error.xlmByMemo.serverInvalid');
   }
-  if (!accountId || !accountId.startsWith('G')) {
+  if (!accountId || !hasClassicAccountPrefix(accountId)) {
     throw new Error('error.xlmByMemo.accountInvalid');
   }
   if (typeof memoQuery !== 'string' || memoQuery.length === 0) {

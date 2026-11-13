@@ -2,33 +2,13 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTrustedWallets } from './useTrustedWallets.js';
 import { createWalletInfoMap, findWalletInfo } from './walletInfo.js';
 import { isTestnetAccount } from './stellar/accountUtils.js';
-import { extractBasePublicKeyFromMuxed } from './stellar/stellarUtils.js';
+import { loadRecentWalletsFromStorage, normalizeStoredWallet, walletLookupKey } from './recentWallets.js';
 import {
   INPUT_HISTORY_CHANGED_EVENT,
   RECENT_WALLETS_KEY,
   clearHistoryKey,
   removeRecentWallet,
 } from './inputHistory.js';
-
-function normalizeStoredWallet(entry) {
-  if (typeof entry === 'string') {
-    return { publicKey: entry, isTestnet: false };
-  }
-  if (!entry || typeof entry !== 'object') return null;
-  const pk = entry.publicKey || entry.address || entry.value || '';
-  if (!pk) return null;
-  return { publicKey: pk, isTestnet: typeof entry.isTestnet === 'boolean' ? entry.isTestnet : undefined };
-}
-
-function loadRecentWalletsFromStorage() {
-  try {
-    const raw = JSON.parse(localStorage.getItem('recentWallets') || '[]');
-    if (!Array.isArray(raw)) return [];
-    return raw.map(normalizeStoredWallet).filter(Boolean);
-  } catch {
-    return [];
-  }
-}
 
 export function useRecentWalletOptions() {
   const { wallets } = useTrustedWallets();
@@ -60,14 +40,7 @@ export function useRecentWalletOptions() {
         const annotated = await Promise.all(recentWallets.map(async (entry) => {
           if (!entry || typeof entry.isTestnet !== 'undefined') return entry;
           let isTestnet = false;
-          let baseKey = entry.publicKey;
-          if (baseKey && baseKey.startsWith('M')) {
-            try {
-              baseKey = extractBasePublicKeyFromMuxed(baseKey);
-            } catch {
-              baseKey = entry.publicKey;
-            }
-          }
+          const baseKey = walletLookupKey(entry.publicKey);
           try {
             isTestnet = await isTestnetAccount(baseKey);
           } catch {
