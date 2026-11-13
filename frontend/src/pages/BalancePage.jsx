@@ -624,6 +624,11 @@ const muxedId = useMemo(() => {
                   const memo = txMemo || (op.memo ? String(op.memo) : '') || (op.transaction?.memo_type && op.transaction.memo_type !== 'none' ? op.transaction.memo_type : '');
                   const date = op.created_at || '';
                   const item = normalizedByOp.get(op);
+                  // Pool-Einzahlung/-Abhebung: zwei Assets, Richtung und Betraege aus normalizeActivity
+                  const poolAmounts = item?.poolAmounts || null;
+                  if (poolAmounts) {
+                    direction = item.direction === 'in' ? t('common:balance.payments.incoming') : t('common:balance.payments.outgoing');
+                  }
                   const shownMemo = sanitizeMemo(memo);
                   const urlInMemo = memoLooksLikeUrl(shownMemo);
                   const dust = isDust(item);
@@ -636,15 +641,15 @@ const muxedId = useMemo(() => {
                       <td className="py-1 pr-2">{direction}</td>
                       <td className="py-1 pr-2">{op.type}</td>
                       <td className="py-1 pr-2">
-                        {asset}
+                        {poolAmounts ? poolAmounts.map((p, idx) => <div key={idx}>{p.asset.code}</div>) : asset}
                         {fakeNative && <div><FakeNativeBadge /></div>}
                       </td>
                       <td className="py-1 pr-2">
-                        {fmt(amount)}
+                        {poolAmounts ? poolAmounts.map((p, idx) => <div key={idx}>{fmt(p.amount ?? '')}</div>) : fmt(amount)}
                         {dust && <div><DustBadge /></div>}
                       </td>
                       <td className="py-1 pr-2 break-all">
-                        {counterparty}
+                        {poolAmounts ? t('wallet:activity.poolLabel', { pair: poolAmounts.map((p) => p.asset.code).join(' / '), defaultValue: 'Pool {{pair}}' }) : counterparty}
                         {suspicious && <div><LookalikeBadge /></div>}
                       </td>
                       <td className="py-1 pr-2 break-all">

@@ -55,7 +55,18 @@
     },
     "assetsBase": "Assets des Basiskontos",
     "assetDetails": "Details",
-    "assetDetailsAria": "Details zu {{code}}"
+    "assetDetailsAria": "Details zu {{code}}",
+    "poolPair": "Pool {{pair}}",
+    "poolValue": "Gegenwert ≈ {{a}} + {{b}}",
+    "poolValueLoading": "Gegenwert wird geladen …",
+    "poolValueUnavailable": "Gegenwert nicht verfügbar",
+    "poolSharesUnit": "Shares",
+    "assetSearch": {
+      "placeholder": "Assets filtern: Code, Issuer oder CODE:ISSUER",
+      "label": "Assets filtern",
+      "count": "{{shown}} von {{total}} Assets",
+      "empty": "Kein Asset passt zum Filter."
+    }
   },
   "receive": {
     "title": "Empfangen",
@@ -122,7 +133,9 @@
       "mergeIn": "Konto zusammengeführt",
       "mergeOut": "Konto aufgelöst",
       "claimableCreated": "Claimable Balance angelegt",
-      "claimableClaimed": "Claimable Balance eingelöst"
+      "claimableClaimed": "Claimable Balance eingelöst",
+      "poolDeposit": "In Pool eingezahlt",
+      "poolWithdraw": "Aus Pool abgehoben"
     },
     "dustHidden_one": "{{count}} Kleinstzahlung ausgeblendet (oft Spam).",
     "dustHidden_other": "{{count}} Kleinstzahlungen ausgeblendet (oft Spam).",
@@ -133,7 +146,8 @@
     "url": "Enthält Webadresse",
     "urlHint": "Das Memo enthält eine Webadresse. Für eine Zahlung ist das nicht nötig. Öffne den Link nicht.",
     "fakeNative": "Token, kein natives XLM",
-    "fakeNativeHint": "Das ist ein Token eines Herausgebers, nicht das native XLM des Netzwerks."
+    "fakeNativeHint": "Das ist ein Token eines Herausgebers, nicht das native XLM des Netzwerks.",
+    "poolLabel": "Pool {{pair}}"
   },
   "claimable": {
     "title": "Claimable Balances",

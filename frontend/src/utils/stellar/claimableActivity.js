@@ -1,4 +1,5 @@
-// Anlegen und Einloesen von Claimable Balances fuer den Verlauf.
+// Anlegen und Einloesen von Claimable Balances sowie Liquidity-Pool-Einzahlungen und -Abhebungen
+// fuer den Verlauf (beides fehlt in Horizon /payments).
 //
 // Horizon /payments enthaelt diese Operationen nicht. Sie kommen aus /operations und werden
 // hier in das Format von /payments-Datensaetzen gebracht (from, to, amount, asset_*), damit
@@ -70,7 +71,29 @@ export function claimedToPaymentRecord(op, publicKey, effects = []) {
 }
 
 /**
- * Laedt die letzten Operationen des Kontos und liefert Anlegen/Einloesen als Zahlungs-Datensaetze.
+ * Wandelt eine Liquidity-Pool-Einzahlung oder -Abhebung des Kontos um. Beide Betraege stehen
+ * direkt in der Operation (reserves_deposited bzw. reserves_received), kein Effekt noetig.
+ * pool_reserves: [{ asset, amount }] im Horizon-Format (native oder CODE:ISSUER).
+ */
+export function poolToPaymentRecord(op, publicKey) {
+  const deposit = op?.type === 'liquidity_pool_deposit';
+  if ((!deposit && op?.type !== 'liquidity_pool_withdraw') || op.source_account !== publicKey) return null;
+  const reserves = Array.isArray(deposit ? op.reserves_deposited : op.reserves_received)
+    ? (deposit ? op.reserves_deposited : op.reserves_received)
+    : [];
+  return {
+    ...baseFields(op),
+    from: deposit ? publicKey : '',
+    to: deposit ? '' : publicKey,
+    liquidity_pool_id: String(op.liquidity_pool_id || ''),
+    shares: String((deposit ? op.shares_received : op.shares) || ''),
+    pool_reserves: reserves.map((r) => ({ asset: String(r?.asset || ''), amount: String(r?.amount || '') })),
+  };
+}
+
+/**
+ * Laedt die letzten Operationen des Kontos und liefert Anlegen/Einloesen von Claimable Balances
+ * sowie Liquidity-Pool-Einzahlungen und -Abhebungen als Zahlungs-Datensaetze.
  * Fehler beim Nachladen der Effekte einer einzelnen Einloesung lassen nur diesen Eintrag weg.
  * @param {import('@stellar/stellar-sdk').Horizon.Server} server
  * @param {string} publicKey
@@ -82,6 +105,7 @@ export async function loadClaimableActivity(server, publicKey, { limit = 50 } = 
   const ops = Array.isArray(page?.records) ? page.records : [];
   const out = await Promise.all(ops.map(async (op) => {
     if (op?.type === 'create_claimable_balance') return createdToPaymentRecord(op, publicKey);
+    if (op?.type === 'liquidity_pool_deposit' || op?.type === 'liquidity_pool_withdraw') return poolToPaymentRecord(op, publicKey);
     if (op?.type === 'claim_claimable_balance' && (op.claimant || op.source_account) === publicKey) {
       try {
         const fx = await server.effects().forOperation(op.id).limit(20).call();

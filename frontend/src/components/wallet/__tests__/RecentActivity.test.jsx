@@ -109,4 +109,18 @@ describe('RecentActivity', () => {
     expect(first).toHaveTextContent('Claimable Balance eingelöst');
     expect(first).toHaveTextContent('75');
   });
+  it('zeigt eine Pool-Einzahlung mit beiden Betraegen statt einer namenlosen Aktion', async () => {
+    call.mockResolvedValue({ records: [] });
+    opsCall.mockResolvedValueOnce({ records: [{
+      id: '9', paging_token: '9', type: 'liquidity_pool_deposit', source_account: ME, created_at: '2026-11-13T08:13:57Z',
+      transaction_hash: H('e'), transaction_successful: true, liquidity_pool_id: 'ab'.repeat(32),
+      reserves_deposited: [{ asset: 'native', amount: '32.9' }, { asset: `LDEX:${FRIEND}`, amount: '3197655.5217' }],
+      shares_received: '10255.9',
+    }] });
+    renderIt();
+    expect(await screen.findByText('In Pool eingezahlt')).toBeInTheDocument();
+    expect(screen.getByTestId('activity-pool-label')).toHaveTextContent('Pool XLM / LDEX');
+    const amounts = screen.getAllByTestId('activity-pool-amount').map((el) => el.textContent);
+    expect(amounts).toEqual(['−32.9 XLM', '−3197655.5217 LDEX']);
+  });
 });

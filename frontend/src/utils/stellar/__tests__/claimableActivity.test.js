@@ -76,3 +76,63 @@ describe('claimableActivity', () => {
     expect(mergeActivityRecords(a, []).map((r) => r.id)).toEqual(['1', '2']);
   });
 });
+
+// Regression 13.11.: LP-Einzahlung erschien in der Aktivitaet gar nicht bzw. im Explorer nur als
+// Aktion ohne Betrag. Jetzt mit beiden Betraegen.
+const POOL = 'ab'.repeat(32);
+const depositOp = (o = {}) => ({
+  id: '300', paging_token: '300', type: 'liquidity_pool_deposit', source_account: ME,
+  created_at: '2026-11-13T08:13:57Z', transaction_hash: 'c'.repeat(64), transaction_successful: true,
+  liquidity_pool_id: POOL,
+  reserves_max: [{ asset: 'native', amount: '100.0000000' }, { asset: `LDEX:${ISSUER}`, amount: '4000000.0000000' }],
+  reserves_deposited: [{ asset: 'native', amount: '32.9000000' }, { asset: `LDEX:${ISSUER}`, amount: '3197655.5217000' }],
+  shares_received: '10255.9000000',
+  ...o,
+});
+const withdrawOp = (o = {}) => ({
+  id: '400', paging_token: '400', type: 'liquidity_pool_withdraw', source_account: ME,
+  created_at: '2026-11-13T09:00:00Z', transaction_hash: 'd'.repeat(64), transaction_successful: true,
+  liquidity_pool_id: POOL, shares: '100.0000000',
+  reserves_received: [{ asset: 'native', amount: '0.3600000' }, { asset: `LDEX:${ISSUER}`, amount: '37140.0000000' }],
+  ...o,
+});
+
+describe('Liquidity-Pool-Aktivitaet', () => {
+  it('Einzahlung: ausgehend, beide eingezahlten Betraege, nicht die Hoechstwerte', async () => {
+    const { poolToPaymentRecord } = await import('../claimableActivity.js');
+    const item = normalizeActivity(poolToPaymentRecord(depositOp(), ME), ME);
+    expect(item).toMatchObject({ kind: 'poolDeposit', direction: 'out', amount: null, poolId: POOL, shares: 10255.9 });
+    expect(item.poolAmounts).toEqual([
+      { amount: 32.9, asset: { code: 'XLM', issuer: '', isNative: true } },
+      { amount: 3197655.5217, asset: { code: 'LDEX', issuer: ISSUER, isNative: false } },
+    ]);
+    expect(item.asset).toEqual({ code: 'LDEX', issuer: ISSUER, isNative: false });
+  });
+
+  it('Abhebung: eingehend mit den erhaltenen Betraegen', async () => {
+    const { poolToPaymentRecord } = await import('../claimableActivity.js');
+    const item = normalizeActivity(poolToPaymentRecord(withdrawOp(), ME), ME);
+    expect(item).toMatchObject({ kind: 'poolWithdraw', direction: 'in', shares: 100 });
+    expect(item.poolAmounts.map((p) => p.amount)).toEqual([0.36, 37140]);
+  });
+
+  it('fremde Pool-Operation wird nicht uebernommen, fehlende Betraege brechen nicht', async () => {
+    const { poolToPaymentRecord } = await import('../claimableActivity.js');
+    expect(poolToPaymentRecord(depositOp({ source_account: OTHER }), ME)).toBeNull();
+    const item = normalizeActivity(poolToPaymentRecord(depositOp({ reserves_deposited: undefined, transaction_successful: false }), ME), ME);
+    expect(item).toMatchObject({ kind: 'poolDeposit', successful: false, poolAmounts: [] });
+  });
+
+  it('loadClaimableActivity liefert Pool-Operationen ohne Effekt-Abfrage', async () => {
+    const forOperation = vi.fn();
+    const server = {
+      operations: () => ({ forAccount: () => ({ order: () => ({ limit: () => ({ join: () => ({ call: async () => ({
+        records: [withdrawOp(), depositOp()],
+      }) }) }) }) }) }),
+      effects: () => ({ forOperation }),
+    };
+    const recs = await loadClaimableActivity(server, ME);
+    expect(recs.map((r) => r.type)).toEqual(['liquidity_pool_withdraw', 'liquidity_pool_deposit']);
+    expect(forOperation).not.toHaveBeenCalled();
+  });
+});

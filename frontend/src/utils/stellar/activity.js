@@ -145,9 +145,36 @@ export function normalizeActivity(record, publicKey) {
         counterparty: String(incoming ? record.account || '' : record.into || ''),
       };
     }
+    // Pseudo-Datensaetze aus claimableActivity.js (poolToPaymentRecord): zwei Assets je Eintrag
+    case 'liquidity_pool_deposit':
+    case 'liquidity_pool_withdraw': {
+      const deposit = record.type === 'liquidity_pool_deposit';
+      const poolAmounts = (Array.isArray(record.pool_reserves) ? record.pool_reserves : [])
+        .map((r) => ({ amount: num(r.amount), asset: assetOf(horizonAssetFields(r.asset)) }));
+      return {
+        ...base,
+        kind: deposit ? 'poolDeposit' : 'poolWithdraw',
+        direction: deposit ? 'out' : 'in',
+        amount: null,
+        // Fuer Warnungen (z. B. Token mit XLM-Code) zaehlt das Nicht-XLM-Asset des Pools
+        asset: (poolAmounts.find((p) => !p.asset.isNative) || poolAmounts[0] || { asset: { code: '', issuer: '', isNative: false } }).asset,
+        poolAmounts,
+        poolId: String(record.liquidity_pool_id || ''),
+        shares: num(record.shares),
+        counterparty: '',
+      };
+    }
     default:
       return null;
   }
+}
+
+// Horizon-Asset-String (native oder CODE:ISSUER) in die Felder eines /payments-Datensatzes.
+function horizonAssetFields(value) {
+  const v = String(value || '');
+  const idx = v.indexOf(':');
+  if (!v || v === 'native' || idx <= 0) return { asset_type: 'native' };
+  return { asset_type: 'credit', asset_code: v.slice(0, idx), asset_issuer: v.slice(idx + 1) };
 }
 
 /** Filtert auf eine Muxed-Identitaet (nur Datensaetze, die diese M-Adresse betreffen). */

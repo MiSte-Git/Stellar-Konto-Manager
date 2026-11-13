@@ -13,6 +13,11 @@ import { useSettings } from '../utils/useSettings.js';
 import { loadGroupfundPrefs, saveGroupfundPrefs } from '../utils/groupfundPrefs.js';
 import { useXlmPriceData } from '../utils/xlmPriceContext.js';
 import { assetDetailSubpath } from '../utils/assetDetailRoute.js';
+import useWalletPoolValues from '../components/wallet/useWalletPoolValues.js';
+import { matchesAssetQuery } from '../utils/stellar/assetFilter.js';
+import ClearInputButton from '../components/ClearInputButton.jsx';
+import { fromStroops } from '../utils/stellar/liquidityPools.js';
+import { getAssetCode } from '../components/trading/assetSearchUtils.js';
 
 
 function readNetwork() {
@@ -188,6 +193,15 @@ export default function WalletHome({ publicKey, muxedAddress, onAction, onOpenRo
   };
   const { loading, error, notFound, account, network } = useAccountOverview(publicKey, reloadToken);
   const summary = React.useMemo(() => computeWalletSummary(account), [account]);
+  const poolValues = useWalletPoolValues(account, network, assetsOpen && !muxedAddress);
+  const [assetQuery, setAssetQuery] = React.useState('');
+  const shownAssets = React.useMemo(() => (summary?.assets || []).filter((asset) => matchesAssetQuery({
+    ...asset,
+    pairCodes: asset.isPool && poolValues[asset.issuer]?.status === 'loaded'
+      ? [getAssetCode(poolValues[asset.issuer].pool.assetA), getAssetCode(poolValues[asset.issuer].pool.assetB)]
+      : [],
+  }, assetQuery)), [summary, poolValues, assetQuery]);
+  const showXlmRow = matchesAssetQuery({ code: 'XLM', issuer: '', isNative: true }, assetQuery);
 
   const locale = price?.locale || i18n.language || undefined;
   const fmt = React.useCallback((value, { min = 0, max = 7 } = {}) => {
@@ -390,7 +404,27 @@ export default function WalletHome({ publicKey, muxedAddress, onAction, onOpenRo
           )}
           {assetsOpen && (
           <>
+          <div className="border-b border-gray-100 px-5 py-2 dark:border-gray-700/70">
+            <div className="relative">
+              <input
+                type="search"
+                value={assetQuery}
+                onChange={(e) => setAssetQuery(e.target.value)}
+                placeholder={t('wallet:home.assetSearch.placeholder', 'Assets filtern: Code, Issuer oder CODE:ISSUER')}
+                aria-label={t('wallet:home.assetSearch.label', 'Assets filtern')}
+                data-testid="wallet-home-asset-search"
+                className="w-full rounded-md border border-gray-300 bg-white px-3 py-1.5 pr-9 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100"
+              />
+              {assetQuery && <ClearInputButton onClick={() => setAssetQuery('')} />}
+            </div>
+            {assetQuery.trim() && (
+              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400" data-testid="wallet-home-asset-search-count">
+                {t('wallet:home.assetSearch.count', { shown: shownAssets.length + (showXlmRow ? 1 : 0), total: summary.assets.length + 1, defaultValue: '{{shown}} von {{total}} Assets' })}
+              </p>
+            )}
+          </div>
           <ul id="wallet-home-asset-list" className="divide-y divide-gray-100 dark:divide-gray-700/70">
+            {showXlmRow && (
             <li className="flex items-center gap-3 px-5 py-3">
               <AssetAvatar label="XLM" native />
               <div className="min-w-0 flex-1">
@@ -404,12 +438,22 @@ export default function WalletHome({ publicKey, muxedAddress, onAction, onOpenRo
                 )}
               </div>
             </li>
-            {summary.assets.map((asset) => (
+            )}
+            {shownAssets.map((asset) => (
               <li key={asset.key} className="flex items-center gap-3 px-5 py-3">
                 <AssetAvatar label={asset.isPool ? 'LP' : asset.code} />
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-x-2 text-sm font-semibold text-gray-900 dark:text-white">
-                    <span className="truncate">{asset.isPool ? t('wallet:home.poolShares', 'Liquiditätspool-Anteile') : asset.code}</span>
+                    <span className="truncate">
+                      {asset.isPool
+                        ? (poolValues[asset.issuer]?.status === 'loaded'
+                          ? t('wallet:home.poolPair', {
+                            pair: `${getAssetCode(poolValues[asset.issuer].pool.assetA)} / ${getAssetCode(poolValues[asset.issuer].pool.assetB)}`,
+                            defaultValue: 'Pool {{pair}}',
+                          })
+                          : t('wallet:home.poolShares', 'Liquiditätspool-Anteile'))
+                        : asset.code}
+                    </span>
                     {looksLikeNativeCode({ code: asset.code, isNative: false }) && !asset.isPool && (
                       <span
                         className="rounded-sm bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-900 dark:bg-amber-400/15 dark:text-amber-200"
@@ -424,10 +468,36 @@ export default function WalletHome({ publicKey, muxedAddress, onAction, onOpenRo
                       ? `${t('wallet:home.pool', 'Pool')} ${shortenAddress(asset.issuer, 6, 6)}`
                       : `${t('wallet:home.issuer', 'Herausgeber')} ${shortenAddress(asset.issuer)}`}
                   </div>
+                  {asset.isPool && poolValues[asset.issuer] && (
+                    <div className="text-xs tabular-nums text-gray-600 dark:text-gray-300" data-testid="wallet-home-pool-value">
+                      {poolValues[asset.issuer].status === 'loaded'
+                        ? t('wallet:home.poolValue', {
+                          a: `${fmt(Number(fromStroops(poolValues[asset.issuer].position.amountA)), { min: 0, max: 7 })} ${getAssetCode(poolValues[asset.issuer].pool.assetA)}`,
+                          b: `${fmt(Number(fromStroops(poolValues[asset.issuer].position.amountB)), { min: 0, max: 7 })} ${getAssetCode(poolValues[asset.issuer].pool.assetB)}`,
+                          defaultValue: 'Gegenwert ≈ {{a}} + {{b}}',
+                        })
+                        : poolValues[asset.issuer].status === 'loading'
+                          ? t('wallet:home.poolValueLoading', 'Gegenwert wird geladen …')
+                          : t('wallet:home.poolValueUnavailable', 'Gegenwert nicht verfügbar')}
+                    </div>
+                  )}
                 </div>
                 <div className="text-right text-sm font-semibold tabular-nums text-gray-900 dark:text-white">
                   {fmt(asset.balance, { min: 0, max: 7 })}
+                  {asset.isPool && (
+                    <div className="text-xs font-medium text-gray-500 dark:text-gray-400">{t('wallet:home.poolSharesUnit', 'Shares')}</div>
+                  )}
                 </div>
+                {asset.isPool && onOpenRoute && (
+                  <button
+                    type="button"
+                    onClick={() => onOpenRoute(`trading/pools?pool=${encodeURIComponent(asset.issuer)}`)}
+                    data-testid="wallet-home-pool-details"
+                    className="shrink-0 rounded-md border-0 bg-transparent px-2 py-1 text-xs font-medium text-blue-700 hover:bg-blue-50 hover:text-blue-800 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-blue-300 dark:hover:bg-gray-700 dark:hover:text-blue-200"
+                  >
+                    {t('wallet:home.assetDetails', 'Details')}
+                  </button>
+                )}
                 {!asset.isPool && onOpenRoute && (
                   <button
                     type="button"
@@ -442,6 +512,11 @@ export default function WalletHome({ publicKey, muxedAddress, onAction, onOpenRo
               </li>
             ))}
           </ul>
+          {assetQuery.trim() && shownAssets.length === 0 && !showXlmRow && (
+            <p className="px-5 py-3 text-xs text-gray-500 dark:text-gray-400" data-testid="wallet-home-asset-search-empty">
+              {t('wallet:home.assetSearch.empty', 'Kein Asset passt zum Filter.')}
+            </p>
+          )}
           {summary.assets.length === 0 && (
             <p className="border-t border-gray-100 px-5 py-3 text-xs text-gray-500 dark:border-gray-700/70 dark:text-gray-400">
               {t('wallet:home.noTrustlines', 'Noch keine Trustlines. Um andere Token zu halten, brauchst du zuerst eine Trustline dafür.')}

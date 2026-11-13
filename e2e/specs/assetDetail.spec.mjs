@@ -1,4 +1,4 @@
-// Asset-Detailseite: Wallet -> Details zu SKMA zeigt Saldo und Fakten, Handeln oeffnet Token suchen
+// Wallet-Assets: Pool-Anteile mit Gegenwert, Filter. Asset-Detailseite: Wallet -> Details zu SKMA zeigt Saldo und Fakten, Handeln oeffnet Token suchen
 // und handeln mit vorbelegtem SKMA (Detailansicht offen, nichts gesendet). Ein kaputter Link zeigt
 // einen Hinweis statt eines Absturzes. Das Backend fehlt im E2E-Lauf: Asset-Suche und Fakten sind
 // wie in trading.spec.mjs nachgebildet, das Konto kommt echt vom Testnet.
@@ -47,6 +47,30 @@ test('Wallet: Details zu SKMA, dann Handeln mit vorbelegtem Asset', async ({ pag
   await expect(page.getByText('Trustline vorhanden').first()).toBeVisible({ timeout: 30000 });
   await expectNoCrash(page);
   expect(errors).toEqual([]);
+});
+
+test('Wallet: Pool-Anteile mit Gegenwert, Filter nach Code', async ({ page }) => {
+  const fx = readFixtures();
+  await openApp(page);
+  await loadAccount(page, fx.main.public);
+  const assets = page.getByTestId('wallet-home-assets');
+  await expect(assets).toBeVisible({ timeout: 30000 });
+  if (await page.getByTestId('wallet-home-assets-collapsed').count()) {
+    await assets.locator('button[aria-controls="wallet-home-asset-list"]').click();
+  }
+  // main haelt Pool Shares XLM/SKMA (Fixture): Paar und Gegenwert beider Assets. Der Text steht
+  // auch in der Aktivitaet (Einzahlung der Fixture), deshalb auf die Asset-Liste eingrenzen.
+  const list = page.locator('#wallet-home-asset-list');
+  await expect(list.getByText('Pool XLM / SKMA')).toBeVisible({ timeout: 30000 });
+  // Die Einzahlung der Fixture erscheint in der Aktivitaet mit Paar statt als namenlose Aktion
+  await expect(page.getByText('In Pool eingezahlt').first()).toBeVisible({ timeout: 30000 });
+  await expect(page.getByTestId('activity-pool-label').first()).toHaveText('Pool XLM / SKMA');
+  await expect(page.getByTestId('wallet-home-pool-value').first()).toContainText(/Gegenwert ≈ .* XLM \+ .* SKMA/);
+  await page.getByTestId('wallet-home-asset-search').fill('SKMB');
+  await expect(list).toContainText('SKMB');
+  await expect(list).not.toContainText('Stellar Lumens');
+  await expect(list).not.toContainText('Pool XLM / SKMA');
+  await expectNoCrash(page);
 });
 
 test('Kaputter Asset-Link zeigt einen Hinweis', async ({ page }) => {

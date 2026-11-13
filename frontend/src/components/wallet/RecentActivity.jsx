@@ -123,6 +123,8 @@ export default function RecentActivity({ publicKey, muxedAddress, network, reloa
     }
     if (item.kind === 'claimableCreated') return t('wallet:activity.kind.claimableCreated', 'Claimable Balance angelegt');
     if (item.kind === 'claimableClaimed') return t('wallet:activity.kind.claimableClaimed', 'Claimable Balance eingelöst');
+    if (item.kind === 'poolDeposit') return t('wallet:activity.kind.poolDeposit', 'In Pool eingezahlt');
+    if (item.kind === 'poolWithdraw') return t('wallet:activity.kind.poolWithdraw', 'Aus Pool abgehoben');
     if (item.direction === 'self') return t('wallet:activity.kind.self', 'An dich selbst');
     if (item.kind === 'pathPayment') {
       return item.direction === 'in'
@@ -213,6 +215,11 @@ export default function RecentActivity({ publicKey, muxedAddress, network, reloa
                       {incoming ? t('wallet:activity.from', 'von') : t('wallet:activity.to', 'an')} {shortenAddress(item.counterparty, 6, 6)}
                     </div>
                   )}
+                  {item.poolAmounts && (
+                    <div className="truncate text-xs text-gray-500 dark:text-gray-400" title={item.poolId} data-testid="activity-pool-label">
+                      {t('wallet:activity.poolLabel', { pair: item.poolAmounts.map((p) => p.asset.code).join(' / '), defaultValue: 'Pool {{pair}}' })}
+                    </div>
+                  )}
                   <div className="mt-0.5 flex flex-wrap items-center gap-x-2 text-xs text-gray-500 dark:text-gray-400">
                     {date && <span>{date}</span>}
                     {item.memo && (
@@ -244,15 +251,26 @@ export default function RecentActivity({ publicKey, muxedAddress, network, reloa
                         : 'text-gray-900 dark:text-white'
                   }`}
                 >
-                  {item.amount != null ? `${sign}${fmt(item.amount, { min: 0, max: 7 })}` : '—'}
-                  <div className="text-xs font-medium text-gray-500 dark:text-gray-400">
-                    {item.asset.code}
-                    {!item.asset.isNative && item.asset.issuer && (
-                      <span className="block font-mono text-[10px]" title={item.asset.issuer}>
-                        {shortenAddress(item.asset.issuer, 6, 6)}
-                      </span>
-                    )}
-                  </div>
+                  {item.poolAmounts ? (
+                    item.poolAmounts.map((p, idx) => (
+                      <div key={idx} data-testid="activity-pool-amount">
+                        {p.amount != null ? `${sign}${fmt(p.amount, { min: 0, max: 7 })}` : '—'}{' '}
+                        <span className="text-xs font-medium text-gray-500 dark:text-gray-400">{p.asset.code}</span>
+                      </div>
+                    ))
+                  ) : (
+                    <>
+                      {item.amount != null ? `${sign}${fmt(item.amount, { min: 0, max: 7 })}` : '—'}
+                      <div className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                        {item.asset.code}
+                        {!item.asset.isNative && item.asset.issuer && (
+                          <span className="block font-mono text-[10px]" title={item.asset.issuer}>
+                            {shortenAddress(item.asset.issuer, 6, 6)}
+                          </span>
+                        )}
+                      </div>
+                    </>
+                  )}
                 </div>
               </li>
             );
