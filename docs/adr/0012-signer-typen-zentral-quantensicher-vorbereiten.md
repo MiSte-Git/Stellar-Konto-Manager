@@ -1,6 +1,6 @@
 # 0012: Signer-Typen zentral behandeln, quantensichere Signer vorbereiten
 
-- **Status:** vorgeschlagen
+- **Status:** akzeptiert
 - **Datum:** 2026-11
 
 ## Kontext
@@ -51,8 +51,8 @@ quantensicherer Signer wird erst eingebaut, wenn der CAP, Horizon und beide SDKs
 
 Contract-Konten (C-Adressen) werden jetzt nicht als eigenes Produkt gebaut. SKM soll aber darauf vorbereitet sein. Die Signer-Buendelung beachtet deshalb, ohne neue Funktion fuer Nutzer:
 
-- Kontotyp zentral: eine Stelle bestimmt G, M oder C. Kontenliste, Verlauf und Multisig-Jobs fuehren den Kontotyp mit. C-Adressen werden weiter mit verstaendlichem Hinweis abgelehnt, wo SKM sie nicht unterstuetzt.
+- Kontotyp zentral: eine Stelle bestimmt G, M oder C. Kontenliste, Verlauf und Multisig-Jobs leiten den Kontotyp aus der Adresse ab und speichern ihn nicht, denn er folgt eindeutig aus dem Praefix der Adresse. Gespeichert wird nur der Signer-Typ, wie Horizon ihn liefert, weil kuenftige Signer-Typen nicht sicher aus der Adresse ableitbar sind. C-Adressen werden weiter mit verstaendlichem Hinweis abgelehnt, wo SKM sie nicht unterstuetzt.
 - Signer-Abstraktion offen halten: neben Ed25519-Signern muss spaeter Autorisierung per Soroban-Auth-Eintrag einhaengbar sein (Contract-Konto, Passkey mit secp256r1, ML-DSA). Keine Annahmen, die das verbauen, etwa Signatur immer 64 Byte oder Signer immer G-Adresse.
-- Anzeige: C-Adressen ueberall klar als Contract kennzeichnen, nie als normales Konto. Der Verlauf wird so aufgebaut, dass Transfers von und an C-Adressen (SAC ueber invoke_host_function) spaeter einsortiert werden koennen.
+- Anzeige: C-Adressen ueberall klar als Contract kennzeichnen, nie als normales Konto. Das ist Teil des ersten Schritts der Buendelung (Kontotyp zentral), nicht spaeterer Arbeit. Der Verlauf wird so aufgebaut, dass Transfers von und an C-Adressen (SAC ueber invoke_host_function) spaeter einsortiert werden koennen.
 - Senden an C-Adressen kommt erst mit dem Signieren von Contract-Aufrufen (Smart Contracts Stufe 2).
 - Beobachtung: Die monatliche Pruefung umfasst auch Smart-Wallet- und Passkey-Standards, ML-DSA-Pruefung in Contracts und die Lieferung von C-Adressen durch Horizon und RPC.
