@@ -11,6 +11,7 @@ declare(strict_types=1);
 require __DIR__ . '/cors.php';
 require __DIR__ . '/ssrfGuard.php';
 require_once __DIR__ . '/stellarNetworks.php';
+require_once __DIR__ . '/addressKind.php';
 
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
@@ -26,7 +27,6 @@ if (strtoupper((string)($_SERVER['REQUEST_METHOD'] ?? 'GET')) === 'OPTIONS') {
 }
 
 const ASSET_CODE_RE = '/^[A-Za-z0-9]{1,12}$/';
-const STELLAR_PUBLIC_KEY_RE = '/^G[A-Z2-7]{55}$/';
 
 function json_out(array $payload, int $status = 200): void {
     http_response_code($status);
@@ -55,7 +55,7 @@ function normalize_asset_search_input(): array {
     if ($code !== '' && !preg_match(ASSET_CODE_RE, $code)) {
         json_out(['ok' => false, 'error' => 'assetSearch.invalidInput:codeInvalid'], 400);
     }
-    if ($issuer !== '' && !preg_match(STELLAR_PUBLIC_KEY_RE, $issuer)) {
+    if ($issuer !== '' && !skm_is_classic_account_syntax($issuer)) {
         json_out(['ok' => false, 'error' => 'assetSearch.invalidInput:issuerInvalid'], 400);
     }
 
@@ -74,7 +74,7 @@ function normalize_asset_identity(): array {
     if ($code === '' || !preg_match(ASSET_CODE_RE, $code)) {
         json_out(['ok' => false, 'error' => 'assetSearch.invalidInput:codeInvalid'], 400);
     }
-    if ($issuer === '' || !preg_match(STELLAR_PUBLIC_KEY_RE, $issuer)) {
+    if ($issuer === '' || !skm_is_classic_account_syntax($issuer)) {
         json_out(['ok' => false, 'error' => 'assetSearch.invalidInput:issuerInvalid'], 400);
     }
 
@@ -367,7 +367,7 @@ function asset_facts(): void {
 // legitimacy, nor a missing listing as a scam indicator.
 function expert_directory(): void {
     $issuer = trim((string)($_GET['issuer'] ?? ''));
-    if ($issuer === '' || !preg_match(STELLAR_PUBLIC_KEY_RE, $issuer)) {
+    if ($issuer === '' || !skm_is_classic_account_syntax($issuer)) {
         json_out(['ok' => false, 'error' => 'assetSearch.invalidInput:issuerInvalid'], 400);
     }
     $entry = ['issuer' => $issuer, 'status' => 'notChecked', 'name' => '', 'domain' => '', 'tags' => []];

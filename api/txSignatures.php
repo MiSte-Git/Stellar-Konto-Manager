@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/stellarNetworks.php';
+require_once __DIR__ . '/addressKind.php';
 
 use Soneso\StellarSDK\AbstractOperation;
 use Soneso\StellarSDK\AbstractTransaction;
@@ -30,7 +31,7 @@ const MAX_TX_SIGNATURES = 20; // Stellar XDR: Signatures is DecoratedSignature<2
 // vorher abgelehnt) und haben hier keine Quelle: null, nie eine geliehene innere Quelle.
 // Pendant: txSourceBaseAccount() in services/txSignatures.js.
 function txSourceBaseAccount(AbstractTransaction $tx): ?string {
-    return $tx instanceof Transaction ? $tx->getSourceAccount()->getEd25519AccountId() : null;
+    return $tx instanceof Transaction ? skm_base_account_of($tx->getSourceAccount()->getAccountId()) : null;
 }
 
 // Stellar's protocol assigns each operation type to a threshold category

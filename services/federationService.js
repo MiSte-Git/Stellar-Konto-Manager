@@ -24,8 +24,8 @@
 //    same domain's FEDERATION_SERVER) and must yield exactly the same
 //    account_id.
 // Any failed step means "no result" - never an error the UI has to show.
-const StellarSdk = require('@stellar/stellar-sdk');
 const { assertSafeScheme, readTextWithLimit, ssrfSafeAgent } = require('./tradeService.js');
+const { isClassicAccount, isContractAddress } = require('./addressKind.js');
 
 const FEDERATION_FETCH_TIMEOUT_MS = 5000;
 const MAX_TOML_BYTES = 256 * 1024;
@@ -194,10 +194,9 @@ async function queryFederationServer(serverUrl, q, type, fetchText) {
 }
 
 // C... und W... (SEP-23 muxed contract, Protocol 30 / CAP-84) per SDK, inkl. Checksumme.
-// Gleiche Regel in api/federationService.php.
+// Regel in services/addressKind.js; gleiche Regel in api/federationService.php.
 function isContractAddressId(id) {
-  if (typeof id !== 'string') return false;
-  return StellarSdk.StrKey.isValidContract(id) || StellarSdk.StrKey.isValidMuxedContract(id);
+  return isContractAddress(id);
 }
 
 function isValidMemo(type, memo) {
@@ -214,7 +213,7 @@ function isValidMemo(type, memo) {
  */
 function validateNameRecord(data) {
   const accountId = data?.account_id;
-  if (typeof accountId !== 'string' || !StellarSdk.StrKey.isValidEd25519PublicKey(accountId)) return null;
+  if (typeof accountId !== 'string' || !isClassicAccount(accountId)) return null;
   const record = { account_id: accountId };
   const hasType = data.memo_type !== undefined && data.memo_type !== null && data.memo_type !== '';
   const hasMemo = data.memo !== undefined && data.memo !== null && data.memo !== '';
@@ -248,7 +247,7 @@ async function resolveFederationName(rawAddress, { fetchText = safeFetchText } =
  */
 async function reverseFederationLookup(accountId, { loadHomeDomain, fetchText = safeFetchText }) {
   const id = typeof accountId === 'string' ? asciiTrim(accountId) : '';
-  if (!StellarSdk.StrKey.isValidEd25519PublicKey(id)) throw new FederationError('invalidInput');
+  if (!isClassicAccount(id)) throw new FederationError('invalidInput');
   const none = { found: false };
   try {
     const homeDomain = normalizeDomain(await loadHomeDomain(id), MAX_HOME_DOMAIN_LENGTH);

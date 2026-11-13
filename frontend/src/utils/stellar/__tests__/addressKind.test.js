@@ -3,6 +3,9 @@
 // unten sind die Implementierungen vor der Umstellung (Stand 420c8fb), wortgleich, und die
 // neuen Funktionen muessen fuer jede Eingabe dasselbe liefern bzw. denselben Fehler werfen.
 import { describe, it, expect } from 'vitest';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { Keypair, StrKey } from '@stellar/stellar-sdk';
 import {
   ADDRESS_KINDS,
@@ -240,5 +243,29 @@ describe('assertSupportedAddress mit erlaubten Typen', () => {
 
   it('Contract ausdruecklich erlaubt', () => {
     expect(assertSupportedAddress(C, ['contract'])).toEqual({ kind: 'contract', address: C, baseAccountId: null, muxedId: null });
+  });
+});
+
+// Gemeinsame Fixture mit beiden Backends (test/assets/address-kinds.json, Schritt b2): Frontend,
+// services/addressKind.js und api/addressKind.php muessen jede Adresse gleich einordnen.
+const here = path.dirname(fileURLToPath(import.meta.url));
+const sharedFixture = JSON.parse(fs.readFileSync(path.join(here, '..', '..', '..', '..', '..', 'test', 'assets', 'address-kinds.json'), 'utf8'));
+
+describe('gemeinsame Fixture mit den Backends', () => {
+  it('ist geladen und deckt alle Typen ab', () => {
+    expect(new Set(sharedFixture.cases.map((c) => c.kind))).toEqual(new Set(Object.values(ADDRESS_KINDS)));
+  });
+
+  it.each(sharedFixture.cases.map((c) => [c.label, c]))('%s', (_label, c) => {
+    expect(classifyStellarAddress(c.address)).toBe(c.kind);
+    expect(parseStellarAddress(c.address)).toEqual({
+      kind: c.kind,
+      address: c.kind === 'invalid' ? '' : c.address,
+      baseAccountId: c.baseAccountId,
+      muxedId: c.muxedId,
+    });
+    expect(baseAccountOf(c.address)).toBe(c.baseAccountId);
+    expect(isClassicAccount(c.address)).toBe(c.isClassicAccount);
+    expect(isClassicAccountSyntax(c.address)).toBe(c.isClassicAccountSyntax);
   });
 });

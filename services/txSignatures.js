@@ -10,7 +10,8 @@
 // (the exact same hint+verify check collectSignersForTx already does per
 // signer, just applied per individual signature here so invalid ones can be
 // dropped instead of merely not counted), then caps whatever remains at 20.
-const { Keypair, StrKey } = require('@stellar/stellar-sdk');
+const { Keypair } = require('@stellar/stellar-sdk');
+const { baseAccountOf } = require('./addressKind.js');
 
 const MAX_TX_SIGNATURES = 20; // Stellar XDR: Signatures is DecoratedSignature<20>
 
@@ -19,11 +20,7 @@ const MAX_TX_SIGNATURES = 20; // Stellar XDR: Signatures is DecoratedSignature<2
 // vorher abgelehnt); hat eine keine eigene Quelle, kommt null (nie eine geliehene innere Quelle).
 // Pendant: txSourceBaseAccount() in api/txSignatures.php.
 function txSourceBaseAccount(tx) {
-  const source = String(tx?.source || '');
-  if (StrKey.isValidMed25519PublicKey(source)) {
-    return StrKey.encodeEd25519PublicKey(StrKey.decodeMed25519PublicKey(source).subarray(0, 32));
-  }
-  return StrKey.isValidEd25519PublicKey(source) ? source : null;
+  return baseAccountOf(String(tx?.source || ''));
 }
 
 // --- SDK-Versionsunabhaengiger Zugriff auf DecoratedSignature -----------------

@@ -26,6 +26,7 @@ if (file_exists($autoload)) {
 require __DIR__ . '/challengeStore.php';
 require __DIR__ . '/rateLimit.php';
 require_once __DIR__ . '/stellarNetworks.php';
+require_once __DIR__ . '/addressKind.php';
 require __DIR__ . '/txSignatures.php';
 require __DIR__ . '/multisigJobsGuard.php';
 require __DIR__ . '/multisigLifecycle.php';
@@ -36,7 +37,6 @@ use Soneso\StellarSDK\AbstractTransaction;
 use Soneso\StellarSDK\FeeBumpTransaction;
 use Soneso\StellarSDK\Network;
 use Soneso\StellarSDK\Crypto\KeyPair;
-use Soneso\StellarSDK\Crypto\StrKey;
 use Soneso\StellarSDK\Xdr\XdrDecoratedSignature;
 use phpseclib3\Math\BigInteger;
 
@@ -504,7 +504,7 @@ if ($method === 'POST' && $path === '/api/multisig/jobs') {
         $accountId = is_string($body['accountId'] ?? null) ? trim($body['accountId']) : '';
         $txXdr = $body['txXdr'] ?? '';
         if (!$net) return sendJson(['ok' => false, 'error' => 'invalid_network'], 400);
-        if (!StrKey::isValidAccountId($accountId)) return sendJson(['ok' => false, 'error' => 'invalid_account'], 400);
+        if (!skm_is_classic_account($accountId)) return sendJson(['ok' => false, 'error' => 'invalid_account'], 400);
         // Kein String (Zahl, Array, null) ist ungueltiges XDR (400), nie ein TypeError (500). Wie Node.
         if (!is_string($txXdr) || $txXdr === '') return sendJson(['ok' => false, 'error' => 'invalid_xdr'], 400);
 

@@ -1,9 +1,9 @@
-const StellarSdk = require('@stellar/stellar-sdk');
 const toml = require('toml');
 const dns = require('dns');
 const net = require('net');
 const { Agent } = require('undici');
 const { networkFromQuery } = require('./stellarNetworks.js');
+const { isClassicAccount } = require('./addressKind.js');
 
 const ASSET_CODE_RE = /^[A-Za-z0-9]{1,12}$/;
 const TOML_FETCH_TIMEOUT_MS = 6000;
@@ -140,7 +140,7 @@ function normalizeAssetSearchInput({ assetCode, issuer, limit }) {
   if (code && !ASSET_CODE_RE.test(code)) {
     throw new Error('assetSearch.invalidInput:codeInvalid');
   }
-  if (assetIssuer && !StellarSdk.StrKey.isValidEd25519PublicKey(assetIssuer)) {
+  if (assetIssuer && !isClassicAccount(assetIssuer)) {
     throw new Error('assetSearch.invalidInput:issuerInvalid');
   }
 
@@ -154,7 +154,7 @@ function normalizeAssetIdentity({ assetCode, issuer }) {
   if (!code || !ASSET_CODE_RE.test(code)) {
     throw new Error('assetSearch.invalidInput:codeInvalid');
   }
-  if (!assetIssuer || !StellarSdk.StrKey.isValidEd25519PublicKey(assetIssuer)) {
+  if (!assetIssuer || !isClassicAccount(assetIssuer)) {
     throw new Error('assetSearch.invalidInput:issuerInvalid');
   }
 
@@ -470,7 +470,7 @@ function normalizeExpertTags(rawTags) {
 
 async function fetchExpertDirectoryEntry({ issuer, network }) {
   const accountId = String(issuer || '').trim();
-  if (!accountId || !StellarSdk.StrKey.isValidEd25519PublicKey(accountId)) {
+  if (!accountId || !isClassicAccount(accountId)) {
     throw new Error('assetSearch.invalidInput:issuerInvalid');
   }
 

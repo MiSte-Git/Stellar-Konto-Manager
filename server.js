@@ -19,6 +19,7 @@ const { createChallenge, consumeChallenge, verifyChallengeSignature } = require(
 const { createChallengeLimiter } = require('./services/challengeRateLimit.js');
 const { filterValidSignatures, requiredWeightForOperations, signatureKey, txSourceBaseAccount } = require('./services/txSignatures.js');
 const { isLocalRequest } = require('./services/network.js');
+const { isClassicAccount } = require('./services/addressKind.js');
 const stellarNetworks = require('./services/stellarNetworks.js');
 const { computeMultisigLifecycleStatus, extractMaxTimeUnix, mapSubmitResultCodeToLifecycleStatus, isMultisigTimeboundWithinCap, MULTISIG_JOB_MAX_TIMEBOUND_SECONDS } = require('./services/multisigLifecycle.js');
 const { applyDecline, dropDeclinesOfCollected } = require('./services/multisigDecline.js');
@@ -723,7 +724,7 @@ app.post('/api/multisig/jobs', async (req, res) => {
     // Nur ein String ist ein Netz: Array, Zahl, Objekt ergeben 400 invalid_network (wie PHP, nie 200/500).
     const net = normalizeNetwork(typeof network === 'string' ? network : null);
     if (!net) return res.status(400).json({ ok: false, error: 'invalid_network' });
-    if (typeof accountId !== 'string' || !StellarSdk.StrKey.isValidEd25519PublicKey(accountId.trim())) {
+    if (typeof accountId !== 'string' || !isClassicAccount(accountId.trim())) {
       return res.status(400).json({ ok: false, error: 'invalid_account' });
     }
     if (!txXdr || typeof txXdr !== 'string') return res.status(400).json({ ok: false, error: 'invalid_xdr' });

@@ -1,0 +1,266 @@
+{
+  "_comment": "Gemeinsame Adressfaelle fuer den Kontotyp (ADR 0012, Plan Signer-Buendelung b2). Gelesen von test/addressKind.test.js, test/addressKind.test.php und frontend/src/utils/stellar/__tests__/addressKind.test.js. Erwartete Werte aus dem JS-SDK (@stellar/stellar-sdk) erzeugt; isClassicAccountSyntax ist die Regex /^G[A-Z2-7]{55}$/ ohne Pruefsumme.",
+  "cases": [
+    {
+      "label": "G",
+      "address": "GCFIRY65OQE7DFP5KLNS2PF2LVZMUZYJX4OZIEQ36N2IQANUB5XVYOJR",
+      "kind": "account",
+      "baseAccountId": "GCFIRY65OQE7DFP5KLNS2PF2LVZMUZYJX4OZIEQ36N2IQANUB5XVYOJR",
+      "muxedId": null,
+      "isClassicAccount": true,
+      "isClassicAccountSyntax": true
+    },
+    {
+      "label": "M mit ID 0",
+      "address": "MCFIRY65OQE7DFP5KLNS2PF2LVZMUZYJX4OZIEQ36N2IQANUB5XVYAAAAAAAAAAAACE3C",
+      "kind": "muxed",
+      "baseAccountId": "GCFIRY65OQE7DFP5KLNS2PF2LVZMUZYJX4OZIEQ36N2IQANUB5XVYOJR",
+      "muxedId": "0",
+      "isClassicAccount": false,
+      "isClassicAccountSyntax": false
+    },
+    {
+      "label": "M mit ID 7",
+      "address": "MCFIRY65OQE7DFP5KLNS2PF2LVZMUZYJX4OZIEQ36N2IQANUB5XVYAAAAAAAAAAAA5XMC",
+      "kind": "muxed",
+      "baseAccountId": "GCFIRY65OQE7DFP5KLNS2PF2LVZMUZYJX4OZIEQ36N2IQANUB5XVYOJR",
+      "muxedId": "7",
+      "isClassicAccount": false,
+      "isClassicAccountSyntax": false
+    },
+    {
+      "label": "M mit maximaler ID",
+      "address": "MCFIRY65OQE7DFP5KLNS2PF2LVZMUZYJX4OZIEQ36N2IQANUB5XVZ7777777777775UBO",
+      "kind": "muxed",
+      "baseAccountId": "GCFIRY65OQE7DFP5KLNS2PF2LVZMUZYJX4OZIEQ36N2IQANUB5XVYOJR",
+      "muxedId": "18446744073709551615",
+      "isClassicAccount": false,
+      "isClassicAccountSyntax": false
+    },
+    {
+      "label": "C",
+      "address": "CADQOBYHA4DQOBYHA4DQOBYHA4DQOBYHA4DQOBYHA4DQOBYHA4DQP5KR",
+      "kind": "contract",
+      "baseAccountId": null,
+      "muxedId": null,
+      "isClassicAccount": false,
+      "isClassicAccountSyntax": false
+    },
+    {
+      "label": "W",
+      "address": "WADQOBYHA4DQOBYHA4DQOBYHA4DQOBYHA4DQOBYHA4DQOBYHA4DQOAAAAAAAAAAAFIH4U",
+      "kind": "muxedContract",
+      "baseAccountId": null,
+      "muxedId": null,
+      "isClassicAccount": false,
+      "isClassicAccountSyntax": false
+    },
+    {
+      "label": "S (Secret Key)",
+      "address": "SAAQCAIBAEAQCAIBAEAQCAIBAEAQCAIBAEAQCAIBAEAQCAIBAEAQC5MY",
+      "kind": "invalid",
+      "baseAccountId": null,
+      "muxedId": null,
+      "isClassicAccount": false,
+      "isClassicAccountSyntax": false
+    },
+    {
+      "label": "T (Pre-Auth)",
+      "address": "TABAEAQCAIBAEAQCAIBAEAQCAIBAEAQCAIBAEAQCAIBAEAQCAIBAFUFR",
+      "kind": "invalid",
+      "baseAccountId": null,
+      "muxedId": null,
+      "isClassicAccount": false,
+      "isClassicAccountSyntax": false
+    },
+    {
+      "label": "X (Hash)",
+      "address": "XABQGAYDAMBQGAYDAMBQGAYDAMBQGAYDAMBQGAYDAMBQGAYDAMBQH7YK",
+      "kind": "invalid",
+      "baseAccountId": null,
+      "muxedId": null,
+      "isClassicAccount": false,
+      "isClassicAccountSyntax": false
+    },
+    {
+      "label": "P (Signed Payload)",
+      "address": "PCFIRY65OQE7DFP5KLNS2PF2LVZMUZYJX4OZIEQ36N2IQANUB5XVYAAAAACASCIJBELNM",
+      "kind": "invalid",
+      "baseAccountId": null,
+      "muxedId": null,
+      "isClassicAccount": false,
+      "isClassicAccountSyntax": false
+    },
+    {
+      "label": "G mit falscher Pruefsumme",
+      "address": "GCFIRY65OQE7DFP5KLNS2PF2LVZMUZYJX4OZIEQ36N2IQANUB5XVYOJA",
+      "kind": "invalid",
+      "baseAccountId": null,
+      "muxedId": null,
+      "isClassicAccount": false,
+      "isClassicAccountSyntax": true
+    },
+    {
+      "label": "M mit falscher Pruefsumme",
+      "address": "MCFIRY65OQE7DFP5KLNS2PF2LVZMUZYJX4OZIEQ36N2IQANUB5XVYAAAAAAAAAAAA5XMA",
+      "kind": "invalid",
+      "baseAccountId": null,
+      "muxedId": null,
+      "isClassicAccount": false,
+      "isClassicAccountSyntax": false
+    },
+    {
+      "label": "M nicht kanonisch (Fuellbit gesetzt)",
+      "address": "MCFIRY65OQE7DFP5KLNS2PF2LVZMUZYJX4OZIEQ36N2IQANUB5XVYAAAAAAAAAAAA5XMD",
+      "kind": "invalid",
+      "baseAccountId": null,
+      "muxedId": null,
+      "isClassicAccount": false,
+      "isClassicAccountSyntax": false
+    },
+    {
+      "label": "C mit falscher Pruefsumme",
+      "address": "CADQOBYHA4DQOBYHA4DQOBYHA4DQOBYHA4DQOBYHA4DQOBYHA4DQP5KA",
+      "kind": "invalid",
+      "baseAccountId": null,
+      "muxedId": null,
+      "isClassicAccount": false,
+      "isClassicAccountSyntax": false
+    },
+    {
+      "label": "G kleingeschrieben",
+      "address": "gcfiry65oqe7dfp5klns2pf2lvzmuzyjx4ozieq36n2iqanub5xvyojr",
+      "kind": "invalid",
+      "baseAccountId": null,
+      "muxedId": null,
+      "isClassicAccount": false,
+      "isClassicAccountSyntax": false
+    },
+    {
+      "label": "M kleingeschrieben",
+      "address": "mcfiry65oqe7dfp5klns2pf2lvzmuzyjx4ozieq36n2iqanub5xvyaaaaaaaaaaaa5xmc",
+      "kind": "invalid",
+      "baseAccountId": null,
+      "muxedId": null,
+      "isClassicAccount": false,
+      "isClassicAccountSyntax": false
+    },
+    {
+      "label": "G mit Leerzeichen vorne",
+      "address": " GCFIRY65OQE7DFP5KLNS2PF2LVZMUZYJX4OZIEQ36N2IQANUB5XVYOJR",
+      "kind": "invalid",
+      "baseAccountId": null,
+      "muxedId": null,
+      "isClassicAccount": false,
+      "isClassicAccountSyntax": false
+    },
+    {
+      "label": "G mit Leerzeichen hinten",
+      "address": "GCFIRY65OQE7DFP5KLNS2PF2LVZMUZYJX4OZIEQ36N2IQANUB5XVYOJR ",
+      "kind": "invalid",
+      "baseAccountId": null,
+      "muxedId": null,
+      "isClassicAccount": false,
+      "isClassicAccountSyntax": false
+    },
+    {
+      "label": "G plus 55 A (Syntax ohne Pruefsumme)",
+      "address": "GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+      "kind": "invalid",
+      "baseAccountId": null,
+      "muxedId": null,
+      "isClassicAccount": false,
+      "isClassicAccountSyntax": true
+    },
+    {
+      "label": "G zu kurz",
+      "address": "GCFIRY65OQE7DFP5KLNS2PF2LVZMUZYJX4OZIEQ36N2IQANUB5XVYOJ",
+      "kind": "invalid",
+      "baseAccountId": null,
+      "muxedId": null,
+      "isClassicAccount": false,
+      "isClassicAccountSyntax": false
+    },
+    {
+      "label": "G zu lang",
+      "address": "GCFIRY65OQE7DFP5KLNS2PF2LVZMUZYJX4OZIEQ36N2IQANUB5XVYOJRA",
+      "kind": "invalid",
+      "baseAccountId": null,
+      "muxedId": null,
+      "isClassicAccount": false,
+      "isClassicAccountSyntax": false
+    },
+    {
+      "label": "G mit \\n am Ende",
+      "address": "GCFIRY65OQE7DFP5KLNS2PF2LVZMUZYJX4OZIEQ36N2IQANUB5XVYOJR\n",
+      "kind": "invalid",
+      "baseAccountId": null,
+      "muxedId": null,
+      "isClassicAccount": false,
+      "isClassicAccountSyntax": false
+    },
+    {
+      "label": "G mit \\r\\n am Ende",
+      "address": "GCFIRY65OQE7DFP5KLNS2PF2LVZMUZYJX4OZIEQ36N2IQANUB5XVYOJR\r\n",
+      "kind": "invalid",
+      "baseAccountId": null,
+      "muxedId": null,
+      "isClassicAccount": false,
+      "isClassicAccountSyntax": false
+    },
+    {
+      "label": "M mit \\n am Ende",
+      "address": "MCFIRY65OQE7DFP5KLNS2PF2LVZMUZYJX4OZIEQ36N2IQANUB5XVYAAAAAAAAAAAA5XMC\n",
+      "kind": "invalid",
+      "baseAccountId": null,
+      "muxedId": null,
+      "isClassicAccount": false,
+      "isClassicAccountSyntax": false
+    },
+    {
+      "label": "M mit \\r\\n am Ende",
+      "address": "MCFIRY65OQE7DFP5KLNS2PF2LVZMUZYJX4OZIEQ36N2IQANUB5XVYAAAAAAAAAAAA5XMC\r\n",
+      "kind": "invalid",
+      "baseAccountId": null,
+      "muxedId": null,
+      "isClassicAccount": false,
+      "isClassicAccountSyntax": false
+    },
+    {
+      "label": "C mit \\n am Ende",
+      "address": "CADQOBYHA4DQOBYHA4DQOBYHA4DQOBYHA4DQOBYHA4DQOBYHA4DQP5KR\n",
+      "kind": "invalid",
+      "baseAccountId": null,
+      "muxedId": null,
+      "isClassicAccount": false,
+      "isClassicAccountSyntax": false
+    },
+    {
+      "label": "C mit \\r\\n am Ende",
+      "address": "CADQOBYHA4DQOBYHA4DQOBYHA4DQOBYHA4DQOBYHA4DQOBYHA4DQP5KR\r\n",
+      "kind": "invalid",
+      "baseAccountId": null,
+      "muxedId": null,
+      "isClassicAccount": false,
+      "isClassicAccountSyntax": false
+    },
+    {
+      "label": "leer",
+      "address": "",
+      "kind": "invalid",
+      "baseAccountId": null,
+      "muxedId": null,
+      "isClassicAccount": false,
+      "isClassicAccountSyntax": false
+    },
+    {
+      "label": "Muell",
+      "address": "hallo",
+      "kind": "invalid",
+      "baseAccountId": null,
+      "muxedId": null,
+      "isClassicAccount": false,
+      "isClassicAccountSyntax": false
+    }
+  ]
+}

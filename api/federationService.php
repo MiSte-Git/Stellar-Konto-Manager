@@ -10,6 +10,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/ssrfGuard.php';
+require_once __DIR__ . '/addressKind.php';
 
 const FEDERATION_FETCH_TIMEOUT_SECONDS = 5;
 const FEDERATION_MAX_TOML_BYTES = 256 * 1024;
@@ -36,57 +37,19 @@ final class FederationException extends RuntimeException {
     }
 }
 
-function federation_crc16_xmodem(string $data): int {
-    $crc = 0x0000;
-    $len = strlen($data);
-    for ($i = 0; $i < $len; $i++) {
-        $crc ^= ord($data[$i]) << 8;
-        for ($bit = 0; $bit < 8; $bit++) {
-            $crc = ($crc & 0x8000) ? (($crc << 1) ^ 0x1021) : ($crc << 1);
-            $crc &= 0xFFFF;
-        }
-    }
-    return $crc;
-}
-
 // G... strkey with version byte and CRC16 checksum, like
-// StrKey.isValidEd25519PublicKey() in the JS SDK.
+// StrKey.isValidEd25519PublicKey() in the JS SDK. Regel in api/addressKind.php.
 function federation_is_valid_account_id($id): bool {
-    return federation_is_valid_strkey32($id, 'G', 6 << 3);
+    return skm_is_classic_account($id);
 }
 
 // C-/W-Adressen (Contract, muxed Contract seit Protocol 30 / CAP-84) sind fuer
 // klassische Zahlungen kein gueltiges Ziel. Beide mit Checksumme wie
 // StrKey.isValidContract() / StrKey.isValidMuxedContract() (W: 32 Byte
-// Contract-ID + 8 Byte Mux-ID). Gleiche Regel wie isContractAddressId() im JS-Zwilling.
+// Contract-ID + 8 Byte Mux-ID). Gleiche Regel wie isContractAddressId() im JS-Zwilling,
+// beide ueber addressKind (api/addressKind.php, services/addressKind.js).
 function federation_is_contract_address($id): bool {
-    if (!is_string($id)) return false;
-    return federation_is_valid_strkey32($id, 'C', 2 << 3) || federation_is_valid_strkey($id, 'W', 22 << 3, 40);
-}
-
-// 56-char strkey over a 32-byte payload: prefix, version byte, CRC16 checksum.
-function federation_is_valid_strkey32($id, string $prefix, int $versionByte): bool {
-    return federation_is_valid_strkey($id, $prefix, $versionByte, 32);
-}
-
-// Strkey (SEP-23) mit beliebiger Nutzlast: Versionsbyte + Nutzlast + CRC16 (little-endian),
-// Base32 ohne Padding. Ueberzaehlige Bits im letzten Zeichen muessen 0 sein (kanonisch),
-// wie in StrKey des SDK.
-function federation_is_valid_strkey($id, string $prefix, int $versionByte, int $payloadLength): bool {
-    $byteLength = 1 + $payloadLength + 2;
-    $charLength = intdiv($byteLength * 8 + 4, 5);
-    if (!is_string($id) || !preg_match('/^' . $prefix . '[A-Z2-7]{' . ($charLength - 1) . '}$/', $id)) return false;
-    $alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
-    $bits = '';
-    for ($i = 0; $i < $charLength; $i++) {
-        $bits .= str_pad(decbin(strpos($alphabet, $id[$i])), 5, '0', STR_PAD_LEFT);
-    }
-    if (strpos(substr($bits, $byteLength * 8), '1') !== false) return false;
-    $bytes = '';
-    foreach (str_split(substr($bits, 0, $byteLength * 8), 8) as $byte) $bytes .= chr(bindec($byte));
-    if (strlen($bytes) !== $byteLength || ord($bytes[0]) !== $versionByte) return false;
-    $checksum = ord($bytes[$byteLength - 2]) | (ord($bytes[$byteLength - 1]) << 8); // little-endian
-    return federation_crc16_xmodem(substr($bytes, 0, $byteLength - 2)) === $checksum;
+    return skm_is_contract_address($id);
 }
 
 function federation_normalize_domain($raw, int $maxLength = 253): ?string {
