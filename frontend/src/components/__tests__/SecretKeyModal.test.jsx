@@ -3,6 +3,8 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { I18nextProvider } from 'react-i18next';
 import i18n from '../../i18n.js';
 import SecretKeyModal from '../SecretKeyModal.jsx';
+import { Buffer } from 'buffer';
+import { StrKey } from '@stellar/stellar-sdk';
 
 // Two well-known valid testnet-style keypairs (also used by tradingTransactions.test.js).
 const SIGNER_A = {
@@ -106,5 +108,112 @@ describe('SecretKeyModal: Konto, fuer das signiert wird', () => {
   it('zeigt keinen zweiten Kontohinweis, wenn ein subtitle gesetzt ist', () => {
     renderModal({ accountId: SIGNER_A.publicKey, subtitle: 'Secret Key fuer Sender' });
     expect(screen.queryByTestId('secret-modal-account')).toBeNull();
+  });
+});
+
+// Korrektur K2 und K7 (ADR 0012, Signer-Buendelung): Typfilter und eine Definition von Multisig-Konto.
+describe('SecretKeyModal: Signer-Regeln aus signerRules.js (K2, K7)', () => {
+  beforeAll(async () => { await i18n.changeLanguage('de'); });
+
+  const ed = (publicKey, weight) => ({ key: publicKey, weight, type: 'ed25519_public_key' });
+  const secretInputs = () => document.querySelectorAll('input[type="password"]');
+  const infoButton = () => screen.queryByText(i18n.t('secretKey:showMultisigInfo'));
+  const signerLabel = () => screen.queryByText(`${i18n.t('secretKey:multisigInfo.signers')}:`);
+  const backButton = () => screen.queryByRole('button', { name: i18n.t('common:option.back') });
+  const thresholdHint = (threshold, requiredSigners) => screen.queryByText(
+    i18n.t('secretKey:multipleSignersThresholdInfo', { threshold, requiredSigners }),
+  );
+
+  describe('K2: nur interaktive Signer zaehlen', () => {
+    const HASH_SIGNER = StrKey.encodeSha256Hash(Buffer.alloc(32, 7));
+
+    it('Hash-Signer mit hohem Gewicht zaehlt nicht in die Zahl der Eingabefelder', () => {
+      renderModal({
+        signers: [
+          ed(SIGNER_A.publicKey, 1),
+          ed(SIGNER_B_ZERO_WEIGHT.publicKey, 1),
+          { key: HASH_SIGNER, weight: 5, type: 'sha256_hash' },
+        ],
+        thresholds: { low_threshold: 1, med_threshold: 2, high_threshold: 2 },
+        requiredThreshold: 2,
+      });
+      // Zwei Ed25519-Signer mit Gewicht 1 sind noetig; der Hash-Signer (5) erreicht die Schwelle nie allein.
+      expect(secretInputs()).toHaveLength(2);
+    });
+
+    it('Gegenprobe: ohne Hash-Signer bleibt es bei zwei Eingabefeldern', () => {
+      renderModal({
+        signers: [ed(SIGNER_A.publicKey, 1), ed(SIGNER_B_ZERO_WEIGHT.publicKey, 1)],
+        thresholds: { low_threshold: 1, med_threshold: 2, high_threshold: 2 },
+        requiredThreshold: 2,
+      });
+      expect(secretInputs()).toHaveLength(2);
+    });
+  });
+
+  describe('K7: Regel A gilt (signers > 1 oder high > 1)', () => {
+    it('F1: ein Signer, Schwellen 1/1/1: keine Multisig-Anzeige', () => {
+      renderModal({
+        signers: [ed(SIGNER_A.publicKey, 1)],
+        thresholds: { low_threshold: 1, med_threshold: 1, high_threshold: 1 },
+        requiredThreshold: 1,
+        onBackToSelection: () => {},
+      });
+      expect(backButton()).toBeNull();
+      expect(infoButton()).toBeNull();
+      expect(signerLabel()).toBeNull();
+      expect(thresholdHint(1, 1)).toBeNull();
+    });
+
+    it('F2: ein Signer, med 0 und high 2: alle vier Anzeigen erscheinen', () => {
+      renderModal({
+        signers: [ed(SIGNER_A.publicKey, 2)],
+        thresholds: { low_threshold: 0, med_threshold: 0, high_threshold: 2 },
+        requiredThreshold: 2,
+        onBackToSelection: () => {},
+      });
+      expect(backButton()).not.toBeNull();
+      expect(infoButton()).not.toBeNull();
+      expect(signerLabel()).not.toBeNull();
+      expect(thresholdHint(2, 1)).not.toBeNull();
+    });
+
+    it('F2 ohne onBackToSelection: kein Zurueck-Knopf, die uebrigen Anzeigen bleiben', () => {
+      renderModal({
+        signers: [ed(SIGNER_A.publicKey, 2)],
+        thresholds: { low_threshold: 0, med_threshold: 0, high_threshold: 2 },
+        requiredThreshold: 2,
+      });
+      expect(backButton()).toBeNull();
+      expect(infoButton()).not.toBeNull();
+    });
+
+    it('Gegenprobe: echtes Multisig-Konto (zwei Signer, 1/2/2) zeigt dieselben Anzeigen wie vorher', () => {
+      renderModal({
+        signers: [ed(SIGNER_A.publicKey, 1), ed(SIGNER_B_ZERO_WEIGHT.publicKey, 1)],
+        thresholds: { low_threshold: 1, med_threshold: 2, high_threshold: 2 },
+        requiredThreshold: 2,
+        onBackToSelection: () => {},
+      });
+      expect(backButton()).not.toBeNull();
+      expect(infoButton()).not.toBeNull();
+      expect(signerLabel()).not.toBeNull();
+      expect(thresholdHint(2, 2)).not.toBeNull();
+    });
+
+    it.each([
+      ['F1', { low_threshold: 1, med_threshold: 1, high_threshold: 1 }, 1],
+      ['F2', { low_threshold: 0, med_threshold: 0, high_threshold: 2 }, 2],
+    ])('%s: die Pruefung der eingegebenen Keys bleibt unveraendert', (_name, thresholds, weight) => {
+      const onConfirm = vi.fn();
+      renderModal({ onConfirm, signers: [ed(SIGNER_A.publicKey, weight)], thresholds, requiredThreshold: weight });
+      typeSecret(NOT_A_SIGNER_SECRET);
+      submit();
+      expect(onConfirm).not.toHaveBeenCalled();
+      typeSecret(SIGNER_A.secret);
+      submit();
+      expect(onConfirm).toHaveBeenCalledTimes(1);
+      expect(onConfirm.mock.calls[0][0][0].publicKey).toBe(SIGNER_A.publicKey);
+    });
   });
 });

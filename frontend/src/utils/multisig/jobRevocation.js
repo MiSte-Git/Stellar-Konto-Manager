@@ -10,6 +10,7 @@
 // Nebenwirkung: Jede andere vorbereitete Transaktion dieses Kontos mit Sequence <= S wird
 // ebenfalls ungueltig. bumpSequence ist eine Low-Threshold-Operation.
 import { Operation, TransactionBuilder } from '@stellar/stellar-sdk';
+import { isInteractiveSigner, signerKeyOf } from '../signers/signerRules.js';
 import { baseAccountOf } from '../stellar/addressType.js';
 
 export const REVOCATION_TX_TIMEOUT_SECONDS = 60;
@@ -84,9 +85,8 @@ export async function assertHorizonNetwork(server, expectedPassphrase) {
 export function collectEffectiveSigners(collected, horizonSigners) {
   const weights = new Map();
   (Array.isArray(horizonSigners) ? horizonSigners : []).forEach((s) => {
-    const key = s?.key || s?.public_key || s?.publicKey;
-    const type = String(s?.type || 'ed25519_public_key');
-    if (key && type.includes('ed25519')) weights.set(key, Number(s.weight || 0));
+    const key = signerKeyOf(s);
+    if (key && isInteractiveSigner(s)) weights.set(key, Number(s.weight || 0));
   });
   const seen = new Set();
   const signers = [];

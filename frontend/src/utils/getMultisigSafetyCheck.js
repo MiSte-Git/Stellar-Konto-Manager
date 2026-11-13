@@ -1,4 +1,4 @@
-import { StrKey } from '@stellar/stellar-sdk';
+import { isInteractiveSigner, isValidSignerKey } from './signers/signerRules.js';
 
 function clampByte(n) {
   const v = Number(n);
@@ -26,11 +26,11 @@ export function getMultisigSafetyCheck({
       key: (s?.key || '').trim(),
       weight: clampByte(s?.weight || 0),
     })),
-  ].filter((s) => s.key && StrKey.isValidEd25519PublicKey(s.key) && s.weight > 0);
+  ].filter((s) => s.key && isValidSignerKey(s.key) && s.weight > 0);
   const plannedEd25519Weight = plannedEd25519.reduce((acc, s) => acc + s.weight, 0);
   const plannedEd25519Count = plannedEd25519.length;
   const specialSigners = (currentAccount?.signers || [])
-    .filter((s) => s?.type && String(s.type) !== 'ed25519_public_key' && Number(s.weight || 0) > 0)
+    .filter((s) => !isInteractiveSigner(s) && Number(s?.weight || 0) > 0)
     .map((s) => ({ type: s.type, weight: clampByte(s.weight || 0) }));
   const specialWeight = specialSigners.reduce((acc, s) => acc + s.weight, 0);
   const totalWeightAll = plannedEd25519Weight + specialWeight;

@@ -12,7 +12,7 @@ import { getMultisigTxTimeout } from '../utils/getMultisigTxTimeout.js';
 import { validateMultisigConfig } from '../utils/validateMultisigConfig.js';
 import { getMultisigSafetyCheck } from '../utils/getMultisigSafetyCheck.js';
 import { Keypair, Operation, TransactionBuilder, StrKey } from '@stellar/stellar-sdk';
-import { findInvalidSignerKey, isValidSignerKey } from '../utils/multisig/signerKeys.js';
+import { findInvalidSignerKey, isInteractiveSigner, isValidSignerKey } from '../utils/signers/signerRules.js';
 import { apiUrl } from '../utils/apiBase.js';
 import { backendErrorMessage } from '../utils/multisigErrors.js';
 import { useRecentWalletOptions } from '../utils/useRecentWalletOptions.js';
@@ -155,7 +155,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
       if (loadRequestRef.current !== requestId) return;
       setCurrentAccount(acct);
       const ms = (acct.signers || []).find(s => s.key === pk);
-      const others = (acct.signers || []).filter(s => s.key !== pk && s.type && s.type.includes('ed25519'));
+      const others = (acct.signers || []).filter(s => s.key !== pk && isInteractiveSigner(s));
       setMasterWeight(clampByte(ms?.weight ?? 1));
       setSigners(others.map(s => ({ key: s.key, weight: clampByte(s.weight || 0) })));
       // Immer die tatsächlichen On-Chain-Werte anzeigen (neues Konto: 0/0/0), kein Fallback.
@@ -258,7 +258,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
 
     const currentMaster = (acct.signers || []).find(s => s.key === pk)?.weight ?? 1;
     const currentMap = new Map();
-    (acct.signers || []).forEach(s => { if (s.key !== pk && s.type && s.type.includes('ed25519')) currentMap.set(s.key, s.weight); });
+    (acct.signers || []).forEach(s => { if (s.key !== pk && isInteractiveSigner(s)) currentMap.set(s.key, s.weight); });
     const plannedMap = new Map();
     (signers || []).forEach(s => { const k = (s.key || '').trim(); if (k && isValidSignerKey(k)) plannedMap.set(k, clampByte(s.weight)); });
     const plannedMaster = clampByte(masterWeight);
@@ -361,7 +361,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
         ...signers.map((s) => ({ key: (s.key || '').trim(), weight: clampByte(s.weight) })).filter((s) => s.key),
       ];
       const specialSigners = (currentAccount?.signers || [])
-        .filter((s) => s?.type && String(s.type) !== 'ed25519_public_key')
+        .filter((s) => !isInteractiveSigner(s))
         .map((s) => ({ key: s.key, weight: clampByte(s.weight || 0), type: s.type }));
       setCurrentAccount({
         account_id: pk,

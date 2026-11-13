@@ -1,5 +1,6 @@
 import { Keypair } from '@stellar/stellar-sdk';
 import { getSessionSecret, getSessionSecrets } from './sessionSecrets.js';
+import { isInteractiveSigner, signerKeyOf } from './signers/signerRules.js';
 
 /**
  * Sucht unter den fuer dieses Konto gemerkten Session-Keys einen, der die Schwelle allein erreicht.
@@ -13,7 +14,7 @@ import { getSessionSecret, getSessionSecrets } from './sessionSecrets.js';
 export async function findSessionSigner({ accountId, signers, requiredWeight }) {
   if (!accountId) return [];
   const known = (Array.isArray(signers) ? signers : [])
-    .filter((s) => s && (!s.type || s.type === 'ed25519_public_key'));
+    .filter(isInteractiveSigner);
   if (!known.length) return [];
   const required = Number(requiredWeight) || 0;
 
@@ -30,7 +31,7 @@ export async function findSessionSigner({ accountId, signers, requiredWeight }) 
       continue; // unlesbarer Eintrag: kein Absturz, der Dialog fragt dann
     }
     const publicKey = keypair.publicKey();
-    const match = known.find((s) => (s.key || s.public_key || s.publicKey) === publicKey);
+    const match = known.find((s) => signerKeyOf(s) === publicKey);
     const weight = Number(match?.weight || 0);
     if (weight > 0 && weight >= required) return [{ publicKey, weight, keypair }];
   }

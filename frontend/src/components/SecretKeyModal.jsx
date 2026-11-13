@@ -3,6 +3,7 @@ import React, { useMemo, useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Keypair } from '@stellar/stellar-sdk';
 import { validateSecretKey } from '../utils/stellar/stellarUtils';
+import { isInteractiveSigner, isMultisigAccount as isMultisigAccountRule } from '../utils/signers/signerRules.js';
 import { formatErrorForUi } from '../utils/formatErrorForUi.js';
 import SendLockWaiting from './wallet/SendLockWaiting.jsx';
 
@@ -69,8 +70,10 @@ function SecretKeyModal({
     return Number(master?.weight || 0);
   }, [sortedSigners]);
   const effectiveSigners = useMemo(() => {
+    // Nur Signer, die interaktiv signieren koennen: Hash- und Pre-Auth-Signer zaehlen weder fuer die
+    // Zahl der Eingabefelder noch fuer das Gewicht (signerRules.js).
     const base = allSigners
-      .filter((s) => !!(s?.public_key || s?.key || s?.publicKey))
+      .filter((s) => !!(s?.public_key || s?.key || s?.publicKey) && isInteractiveSigner(s))
       .map((s) => ({ public_key: s.public_key || s.key || s.publicKey, weight: Number(s.weight || 0) }))
       .filter((s) => (s.weight || 0) > 0);
     let filtered = base;
@@ -94,11 +97,8 @@ function SecretKeyModal({
     return Math.max(1, count || 1);
   }, [forceSignerCount, requiredThreshold, effectiveSigners]);
 
-  const isMultisigAccount = useMemo(() => {
-    const signerCount = Array.isArray(accountData?.signers) ? accountData.signers.length : 0;
-    const medThreshold = Number(accountData?.thresholds?.med_threshold ?? 0);
-    return signerCount > 1 || medThreshold > 0;
-  }, [accountData]);
+  // Eine Definition von Multisig-Konto fuer die ganze App (signerRules.js, Regel A).
+  const isMultisigAccount = useMemo(() => isMultisigAccountRule(accountData), [accountData]);
 
   const showBackToSelection = useMemo(() => {
     return isMultisigAccount === true && typeof onBackToSelection === 'function';
