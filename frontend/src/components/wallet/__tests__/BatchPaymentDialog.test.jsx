@@ -937,6 +937,9 @@ describe('BatchPaymentDialog: Countdown und Diagnose bei unklarem Status', () =>
   };
   // Zeitpunkt der automatischen Pruefung: maxTime + 60 s Puffer + 10 s Marge
   const dueOf = (maxTime) => (maxTime + 60) * 1000 + 10 * 1000;
+  // Unter Last (voller Lauf im Deploy) braucht der erste Render mit Pruefung mehr als die
+  // Standard-Sekunde von waitFor (Flake 13.11.): grosszuegiges Zeitlimit, Echtzeit laeuft mit.
+  const WAIT = { timeout: 8000 };
   const fake = () => vi.useFakeTimers({
     shouldAdvanceTime: true, toFake: ['setTimeout', 'clearTimeout', 'setInterval', 'clearInterval', 'Date'],
   });
@@ -951,7 +954,7 @@ describe('BatchPaymentDialog: Countdown und Diagnose bei unklarem Status', () =>
       saveBatchRows('PUBLIC', [a]);
       const first = renderDialog();
       fireEvent.click(screen.getByRole('button', { name: 'Prüfen' }));
-      await waitFor(() => expect(screen.getByTestId('batch-ambiguous-countdown')).toBeInTheDocument());
+      await waitFor(() => expect(screen.getByTestId('batch-ambiguous-countdown')).toBeInTheDocument(), WAIT);
       const box = screen.getByTestId('batch-ambiguous-countdown');
       expect(box.textContent).toMatch(/^Status unklar\. SKM prüft automatisch erneut in \d\d:\d\d\. Vorher nicht erneut senden, auch nicht als Einzelzahlung\.$/);
       expect(box.className).toContain('bg-amber-50');
@@ -969,7 +972,7 @@ describe('BatchPaymentDialog: Countdown und Diagnose bei unklarem Status', () =>
       await act(async () => { await vi.advanceTimersByTimeAsync(30 * 1000); });
       renderDialog();
       fireEvent.click(screen.getByRole('button', { name: 'Prüfen' }));
-      await waitFor(() => expect(screen.getByTestId('batch-ambiguous-countdown')).toBeInTheDocument());
+      await waitFor(() => expect(screen.getByTestId('batch-ambiguous-countdown')).toBeInTheDocument(), WAIT);
       const afterReload = countdownSeconds();
       expect(Math.abs(afterReload - (expected0 - 60))).toBeLessThanOrEqual(1);
       expect(afterReload).toBeLessThan(expected0 - 50); // Gegenprobe: kein Neustart bei vollem Wert
@@ -982,10 +985,10 @@ describe('BatchPaymentDialog: Countdown und Diagnose bei unklarem Status', () =>
       // Nach Ablauf: "Wird geprueft ...", dann Ergebnis (abgelaufen -> nicht gesendet)
       hoisted.ledgerClosedAt.value = isoAt(maxTime + 65);
       await act(async () => { await vi.advanceTimersByTimeAsync(6 * 1000); });
-      await waitFor(() => expect(screen.getByTestId('batch-ambiguous-countdown').textContent).toBe('Status unklar. Wird geprüft …'));
+      await waitFor(() => expect(screen.getByTestId('batch-ambiguous-countdown').textContent).toBe('Status unklar. Wird geprüft …'), WAIT);
       expect(hoisted.txLookupMock.mock.calls.length).toBe(lookupsBefore + 1);
       await act(async () => { await vi.advanceTimersByTimeAsync(3000); });
-      await waitFor(() => expect(screen.getByTestId('batch-resolved-not-sent')).toBeInTheDocument());
+      await waitFor(() => expect(screen.getByTestId('batch-resolved-not-sent')).toBeInTheDocument(), WAIT);
       expect(readSentEntry('PUBLIC', fpOf(a, DEST_A))).toMatchObject({ status: 'notApplied', pin: true });
     } finally {
       vi.useRealTimers();
@@ -1002,10 +1005,10 @@ describe('BatchPaymentDialog: Countdown und Diagnose bei unklarem Status', () =>
       saveBatchRows('PUBLIC', [a]);
       renderDialog();
       fireEvent.click(screen.getByRole('button', { name: 'Prüfen' }));
-      await waitFor(() => expect(screen.getByTestId('batch-ambiguous-countdown').textContent).toMatch(/erneut in/));
+      await waitFor(() => expect(screen.getByTestId('batch-ambiguous-countdown').textContent).toMatch(/erneut in/), WAIT);
       hoisted.txLookupMock.mockImplementation(async () => { throw new TypeError('Failed to fetch'); });
       await act(async () => { await vi.advanceTimersByTimeAsync(80 * 1000); });
-      await waitFor(() => expect(screen.getByTestId('batch-ambiguous-countdown').textContent).toMatch(/Horizon war nicht erreichbar/));
+      await waitFor(() => expect(screen.getByTestId('batch-ambiguous-countdown').textContent).toMatch(/Horizon war nicht erreichbar/), WAIT);
       expect(screen.getByRole('checkbox')).toBeDisabled();
     } finally {
       vi.useRealTimers();
@@ -1037,9 +1040,9 @@ describe('BatchPaymentDialog: Countdown und Diagnose bei unklarem Status', () =>
     renderDialog();
     await checkAndWait(2);
     fireEvent.click(screen.getByRole('button', { name: '2 Zahlungen senden' }));
-    await waitFor(() => expect(screen.getByTestId('batch-summary')).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByTestId('batch-summary')).toBeInTheDocument(), WAIT);
     fireEvent.click(screen.getByRole('button', { name: 'Details kopieren' }));
-    await waitFor(() => expect(writeText).toHaveBeenCalled());
+    await waitFor(() => expect(writeText).toHaveBeenCalled(), WAIT);
     const text = writeText.mock.calls[0][0];
     expect(text).toContain('Diagnose');
     expect(text).toContain('Request: POST https://horizon.stellar.org/transactions');
@@ -1070,9 +1073,9 @@ describe('BatchPaymentDialog: Countdown und Diagnose bei unklarem Status', () =>
     renderDialog();
     await checkAndWait(1);
     fireEvent.click(screen.getByRole('button', { name: '1 Zahlung senden' }));
-    await waitFor(() => expect(screen.getByTestId('batch-summary').textContent).toContain('1 von 1'));
+    await waitFor(() => expect(screen.getByTestId('batch-summary').textContent).toContain('1 von 1'), WAIT);
     fireEvent.click(screen.getByRole('button', { name: 'Details kopieren' }));
-    await waitFor(() => expect(writeText).toHaveBeenCalled());
+    await waitFor(() => expect(writeText).toHaveBeenCalled(), WAIT);
     expect(writeText.mock.calls[0][0]).not.toContain('Diagnose');
   });
 });
