@@ -98,8 +98,10 @@ Endzustände nehmen keine Signaturen mehr an.
 
 - `npm run dev`: Node-Backend und Vite-Frontend lokal.
 - `npm run start-build`: Produktions-Build, erzeugt auch `dist/.htaccess` mit den Security-Headern.
-- `npm run deploy`: Build plus rsync in die Produktion, mit Dry-Run und Rückfragen. Konfiguration des Servers
-  (`api/_config.php`, `api/vendor/`) bleibt manuell.
+- `npm run deploy`: Build plus rsync in die Produktion, mit Dry-Run und Rückfragen. `api/vendor/` lädt der Deploy
+  in einem eigenen Schritt hoch (lokal `composer install --no-dev` nach `composer.lock`, Vergleich über
+  `vendor/composer/installed.json`, Upload nach `vendor_next/`, Tausch, Prüfung, bei Fehler Rücktausch). Manuell
+  bleibt nur `api/_config.php`. `api/composer.json` setzt `config.platform.php` auf die PHP-Version von cyon.
 
 ## Tests
 

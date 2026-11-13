@@ -6,8 +6,11 @@
 # Laufzeitdaten, nur auf dem Server; data/.htaccess kommt aus dem Repo
 + /data/.htaccess
 - /data/*
-# Composer-Abhaengigkeiten, werden manuell hochgeladen
+# Composer-Abhaengigkeiten: eigener Schritt in deploy-cyon.js (Upload nach vendor_next/, dann Tausch),
+# nie ueber den normalen api-Upload. vendor_next/ und vendor_old/ gehoeren nur zu diesem Schritt.
 - /vendor/
+- /vendor_next/
+- /vendor_old/
 - /composer.phar
 - /composer-setup.php
 # Hosting-spezifisch
