@@ -77,6 +77,10 @@ Folgen daraus:
   und wird bei jedem Neuladen neu erzeugt, ein Reload macht also alle gemerkten Secrets unbrauchbar. Löschung nach
   15 Minuten Inaktivität und beim Schließen des Tabs. Gemerkte Keys sind ans Netz gebunden (Speicherschlüssel mit
   Netz): Ein auf Testnet gemerkter Key signiert nie auf Mainnet. Code: `frontend/src/utils/sessionSecrets.js`.
+- Der Haken „Für diese Sitzung merken“ ist in allen Key-Dialogen standardmäßig an, auch in der Sammelzahlung
+  (bewusste Entscheidung 14.11.2026, Opus-Review #11: einheitlich wie in den anderen Abläufen). Die Sammelzahlung merkt
+  den Key schon beim Bestätigen im Dialog, weil sie danach mehrere Zahlungen mit ihm sendet; die anderen Abläufe erst
+  nach erfolgreichem Senden.
 - Eingegebene Secrets werden in Entwürfen und Listen nicht gespeichert (`containsSecretKey` in
   `frontend/src/utils/batchPayment/`).
 - Ausnahme Lernbereich: Der Story-Modus erzeugt ein zufälliges Keypair nur für das Testnet. Dessen Secret liegt
