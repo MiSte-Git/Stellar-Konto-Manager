@@ -1811,3 +1811,15 @@ describe('spaete Ablaeufe nach dem Netzwechsel (N4)', () => {
     expect(hoisted.submitTransactionSafelyMock).not.toHaveBeenCalled();
   });
 });
+
+describe('gemerkter Key ist unlesbar (Review-Punkt 5, c2)', () => {
+  it('zeigt die eigene Meldung fuer einen ungueltigen Secret Key, nicht die des SDK, und sendet nichts', async () => {
+    hoisted.getSessionSecretMock.mockResolvedValue('SKAPUTT');
+    renderPage();
+    fireEvent.change(amountInput(), { target: { value: '10' } });
+    fireEvent.change(destInput(), { target: { value: DEST_PK } });
+    fireEvent.click(screen.getByRole('button', { name: 'Senden' }));
+    expect((await screen.findAllByText(i18n.t('errors:submitTransaction.failed.multisig.invalidSecret'), { exact: false })).length).toBeGreaterThan(0);
+    expect(hoisted.submitTransactionSafelyMock).not.toHaveBeenCalled();
+  });
+});

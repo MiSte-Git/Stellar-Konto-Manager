@@ -19,6 +19,7 @@ import { useNavigationGuard } from '../utils/navigationGuard.js';
 import { SESSION_LOCKED_EVENT } from '../utils/sessionSecrets.js';
 import { keypairFromSecret } from '../utils/signers/keyMaterial.js';
 import { attachSignatures, toCollectedSigner } from '../utils/signers/signTransaction.js';
+import { formatErrorForUi } from '../utils/formatErrorForUi.js';
 import {
   Keypair,
   Operation,
@@ -751,7 +752,8 @@ export default function MultisigCreatePage() {
         );
       }
     } catch (e) {
-      setError(String(e?.message || e));
+      // Schluessel (z. B. signingFailed aus attachSignatures) uebersetzt anzeigen, nicht roh.
+      setError(formatErrorForUi(t, e));
     } finally {
       setBusy(false);
     }

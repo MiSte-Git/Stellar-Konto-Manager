@@ -674,7 +674,8 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
       } else if (String(e?.message || '') === 'account_mismatch') {
         setError(t('multisig:errors.accountMismatch'));
       } else {
-        setError(String(e?.message || 'multisig.jobs.merge_failed'));
+        // Schluessel (z. B. signingFailed aus attachSignatures) uebersetzt anzeigen, nicht roh.
+        setError(formatErrorForUi(t, e?.message ? e : new Error('multisig.jobs.merge_failed')));
       }
     } finally {
       setLoading(false);

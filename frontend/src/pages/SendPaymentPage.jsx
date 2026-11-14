@@ -1907,8 +1907,16 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     const saved = await getSessionSecret(publicKey, publicKey);
     if (!isCurrentEpoch(epoch)) return;
     if (saved) {
+      // Gemerkter Key unlesbar: eigene Meldung statt der des SDK (Review-Punkt 5, c2).
+      let savedKeypair;
       try {
-        openReviewDialog([keypairFromSecret(saved)], preflightResult, epoch);
+        savedKeypair = keypairFromSecret(saved);
+      } catch {
+        setError(t('errors:submitTransaction.failed.multisig.invalidSecret'));
+        return;
+      }
+      try {
+        openReviewDialog([savedKeypair], preflightResult, epoch);
         return;
       } catch (err) {
         setError(err?.message || t('errors:unknown', 'Unbekannter Fehler'));

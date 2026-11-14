@@ -201,6 +201,17 @@ describe('SecretKeyModal: Signer-Regeln aus signerRules.js (K2, K7)', () => {
       expect(thresholdHint(2, 2)).not.toBeNull();
     });
 
+    it('B2: Konto noch nicht geladen (Signer bekannt, keine Schwellen): keine Multisig-Anzeige', () => {
+      // Alle Aufrufer geben Schwellen aus dem geladenen Horizon-Konto; ohne sie gilt Regel A nicht.
+      renderModal({
+        signers: [ed(SIGNER_A.publicKey, 1), ed(SIGNER_B_ZERO_WEIGHT.publicKey, 1)],
+        thresholds: null,
+        onBackToSelection: () => {},
+      });
+      expect(backButton()).toBeNull();
+      expect(infoButton()).toBeNull();
+    });
+
     it.each([
       ['F1', { low_threshold: 1, med_threshold: 1, high_threshold: 1 }, 1],
       ['F2', { low_threshold: 0, med_threshold: 0, high_threshold: 2 }, 2],

@@ -22,7 +22,8 @@ import { formatValidUntil } from '../utils/multisig/formatValidUntil.js';
 import { resolveFeePerOp } from '../utils/stellar/fees.js';
 import { txHashHex } from '../utils/stellar/txHash.js';
 import { keypairFromSecret } from '../utils/signers/keyMaterial.js';
-import { SIGNING_FAILED_ERROR, attachSignatures, toCollectedSigner } from '../utils/signers/signTransaction.js';
+import { attachSignatures, toCollectedSigner } from '../utils/signers/signTransaction.js';
+import { formatErrorForUi } from '../utils/formatErrorForUi.js';
 
 // Same rationale as SendPaymentPage.jsx: a transaction that gets submitted
 // immediately after signing (test-mode direct submit) only needs to survive
@@ -377,11 +378,10 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
       const msg = String(e?.message || e);
       if (msg.includes('tx_bad_auth')) {
         setError(t('errors:submitTransaction.failed.multisig.txBadAuth'));
-      } else if (msg === SIGNING_FAILED_ERROR) {
-        // K3: Signierfehler kommt jetzt vor dem Senden statt als tx_bad_auth vom Netz.
-        setError(t('errors:submitTransaction.failed.signingFailed'));
       } else {
-        setError(msg);
+        // Schluessel mit Praefix submitTransaction.failed: (z. B. signingFailed, insufficientWeight)
+        // uebersetzt anzeigen wie auf den anderen Seiten, nicht als rohen Schluessel.
+        setError(formatErrorForUi(t, e));
       }
     } finally {
       setLoading(false);
@@ -474,14 +474,14 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
         }
         job = data;
       } catch (err) {
-        setError(String(err?.message || err));
+        setError(formatErrorForUi(t, err));
         return;
       }
       const jobId = job?.id || job?.jobId || '';
       const jobHash = job?.txHash || job?.tx_hash || hashHex;
       const jobXdr = job?.txXdrCurrent || job?.tx_xdr_current || xdr;
       if (!jobId) {
-        setError(String('multisig.jobs.create_failed'));
+        setError(formatErrorForUi(t, new Error('multisig.jobs.create_failed')));
         return;
       }
 
@@ -506,7 +506,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
         },
       });
     } catch (err) {
-      setError(String(err?.message || err));
+      setError(formatErrorForUi(t, err));
     } finally {
       setShowConfirmModal(false);
     }

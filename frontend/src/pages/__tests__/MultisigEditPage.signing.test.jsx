@@ -12,7 +12,7 @@ const master = Keypair.random();
 const PK = master.publicKey();
 const OTHER = Keypair.random().publicKey();
 
-const hoisted = vi.hoisted(() => ({ failSigning: false, sessionSecret: '', submits: [] }));
+const hoisted = vi.hoisted(() => ({ failSigning: false, sessionSecret: '', submits: [], thresholds: null }));
 vi.mock('../../utils/signers/signTransaction.js', async (importOriginal) => {
   const orig = await importOriginal();
   return {
@@ -33,7 +33,7 @@ vi.mock('../../utils/stellar/stellarUtils.js', async (importOriginal) => (await 
         { key: pk, weight: 1, type: 'ed25519_public_key' },
         { key: OTHER, weight: 1, type: 'ed25519_public_key' },
       ];
-      acct.thresholds = { low_threshold: 1, med_threshold: 1, high_threshold: 1 };
+      acct.thresholds = hoisted.thresholds || { low_threshold: 1, med_threshold: 1, high_threshold: 1 };
       return acct;
     },
     submitTransaction: async (tx) => { hoisted.submits.push(tx); return { hash: 'h' }; },
@@ -86,6 +86,7 @@ describe('MultisigEditPage: Signieren (Teilschritt 3)', () => {
     hoisted.failSigning = false;
     hoisted.sessionSecret = '';
     hoisted.submits.length = 0;
+    hoisted.thresholds = null;
     globalThis.fetch = vi.fn(async () => ({ ok: true, json: async () => ({ id: 'job-1' }) }));
   });
 
@@ -103,7 +104,7 @@ describe('MultisigEditPage: Signieren (Teilschritt 3)', () => {
     const { body, tx } = await createJob();
     expect(tx.signatures).toHaveLength(0);
     expect(body.clientCollected).toEqual([]);
-    expect(screen.queryByText(i18n.t('errors:submitTransaction.failed.signingFailed'))).toBeNull();
+    expect(screen.queryByText(i18n.t('errors:submitTransaction.failed.signingFailed'), { exact: false })).toBeNull();
     expect(warn).toHaveBeenCalled();
     warn.mockRestore();
   });
@@ -115,7 +116,8 @@ describe('MultisigEditPage: Signieren (Teilschritt 3)', () => {
     const input = document.querySelector('input[type="password"]');
     await act(async () => { fireEvent.change(input, { target: { value: master.secret() } }); });
     await act(async () => { fireEvent.click(screen.getByRole('button', { name: i18n.t('publicKey:submit.button') })); });
-    expect(await screen.findByText(i18n.t('errors:submitTransaction.failed.signingFailed'))).toBeInTheDocument();
+    expect(await screen.findByText(i18n.t('errors:submitTransaction.failed.signingFailed'), { exact: false })).toBeInTheDocument();
+    expect(screen.queryByText(/submitTransaction\.failed/)).toBeNull();
     expect(hoisted.submits).toHaveLength(0);
   });
 
@@ -128,5 +130,21 @@ describe('MultisigEditPage: Signieren (Teilschritt 3)', () => {
     await screen.findByText(i18n.t('common:multisigEdit.saved', { hash: 'h' }));
     expect(hoisted.submits).toHaveLength(1);
     expect(hoisted.submits[0].signatures).toHaveLength(1);
+  });
+
+  it('B1: Fehler mit Praefix (zu wenig Gewicht) erscheinen uebersetzt, nicht als roher Schluessel', async () => {
+    hoisted.thresholds = { low_threshold: 1, med_threshold: 2, high_threshold: 2 };
+    await renderAndChangeLow();
+    // 2 von 2 ohne Redundanz: Risiko bestaetigen, sonst bleibt der Knopf gesperrt.
+    await act(async () => { fireEvent.click(screen.getByLabelText(i18n.t('common:multisigEdit.risk.acknowledge'))); });
+    await act(async () => { fireEvent.click(screen.getByRole('button', { name: i18n.t('multisig:confirm.testModeButton') })); });
+    // Nur der Master-Key (Gewicht 1), High verlangt 2.
+    const input = document.querySelector('input[type="password"]');
+    await act(async () => { fireEvent.change(input, { target: { value: master.secret() } }); });
+    await act(async () => { fireEvent.click(screen.getByRole('button', { name: i18n.t('publicKey:submit.button') })); });
+    const first = i18n.t('errors:submitTransaction.failed.multisig.insufficientWeight').split('{{')[0].trim().slice(0, 20);
+    expect(await screen.findByText(first, { exact: false })).toBeInTheDocument();
+    expect(screen.queryByText(/submitTransaction\.failed/)).toBeNull();
+    expect(hoisted.submits).toHaveLength(0);
   });
 });
