@@ -3,6 +3,8 @@
 // Token-Trust-Prinzip: Hier wird nur nach Fakten sortiert (XLM / vorhandene Trustline /
 // keine Trustline), nie danach, ob ein Token echt oder serioes ist.
 import { Asset, Operation, TransactionBuilder } from '@stellar/stellar-sdk';
+import { isNotFoundError } from './memoRequired.js';
+import { isAccountNotFoundError } from './activationOutcome.js';
 
 export const CLAIMABLE_FETCH_LIMIT = 200;
 export const CLAIM_TX_TIMEOUT_SECONDS = 60;
@@ -14,6 +16,22 @@ export async function fetchClaimableBalances(server, accountId) {
 }
 
 // Horizon: "native" oder "CODE:ISSUER"
+/**
+ * Gibt es diese Claimable Balance noch? Nur ein 404 heisst nein (schon eingeloest oder zurueckgeholt);
+ * dann wuerde ein Einloeseversuch nur die Fee kosten. Jeder andere Fehler (Netz, 5xx, Mock ohne
+ * Methode) ergibt null = unbekannt, der Aufrufer sendet dann wie bisher.
+ * @returns {Promise<boolean|null>}
+ */
+export async function claimableBalanceExists(server, balanceId) {
+  try {
+    await server.claimableBalances().claimableBalance(balanceId).call();
+    return true;
+  } catch (e) {
+    if (isNotFoundError(e) || isAccountNotFoundError(e)) return false;
+    return null;
+  }
+}
+
 export function parseClaimableAsset(assetString) {
   const v = String(assetString || '');
   if (v === 'native') return { isNative: true, code: 'XLM', issuer: '', key: 'XLM' };

@@ -1,7 +1,8 @@
 // @vitest-environment node
 import { describe, it, expect } from 'vitest';
-import { Account, Keypair, Networks } from '@stellar/stellar-sdk';
+import { Account, Keypair, Networks, NotFoundError } from '@stellar/stellar-sdk';
 import {
+  claimableBalanceExists,
   fromStroops, toStroops,
   buildClaimTx, claimJobTimeoutSeconds, classifyClaimableBalances, describePredicateWindow, describeSenderClaimant, evaluatePredicate, parseClaimableAsset,
 } from '../claimableBalances.js';
@@ -181,5 +182,21 @@ describe('describeSenderClaimant', () => {
     const [item] = classifyClaimableBalances([r], { account_id: ME, balances: [] }, 150);
     expect(item.window).toEqual({ from: 100, until: 200 });
     expect(item.senderClaimant).toEqual({ unconditional: false });
+  });
+});
+
+describe('claimableBalanceExists', () => {
+  const serverWith = (call) => ({ claimableBalances: () => ({ claimableBalance: (cbId) => ({ call: () => call(cbId) }) }) });
+  it('vorhanden: true', async () => {
+    expect(await claimableBalanceExists(serverWith(async (cbId) => ({ id: cbId })), 'x')).toBe(true);
+  });
+  it('404 (NotFoundError oder Status 404): false', async () => {
+    expect(await claimableBalanceExists(serverWith(async () => { throw new NotFoundError('nf', { status: 404 }); }), 'x')).toBe(false);
+    expect(await claimableBalanceExists(serverWith(async () => { throw Object.assign(new Error('nf'), { response: { status: 404 } }); }), 'x')).toBe(false);
+  });
+  it('Gegenprobe: anderer Fehler oder fehlende Methode: null (unbekannt)', async () => {
+    expect(await claimableBalanceExists(serverWith(async () => { throw new Error('Network Error'); }), 'x')).toBeNull();
+    expect(await claimableBalanceExists(serverWith(async () => { throw Object.assign(new Error('x'), { response: { status: 503 } }); }), 'x')).toBeNull();
+    expect(await claimableBalanceExists({}, 'x')).toBeNull();
   });
 });

@@ -167,6 +167,7 @@
     "until": "Einlösbar bis {{date}}.",
     "fromDate": "Einlösbar ab {{date}}.",
     "notClaimable": "Derzeit nicht einlösbar.",
+    "alreadyClaimed": "Nichts gesendet: Diese Claimable Balance gibt es nicht mehr, sie wurde vermutlich schon eingelöst.",
     "noDeadline": "Einlösbar ohne Frist.",
     "complexConditions": "Es gelten besondere Bedingungen, siehe Details.",
     "conditionsDetails": "Bedingungen anzeigen",

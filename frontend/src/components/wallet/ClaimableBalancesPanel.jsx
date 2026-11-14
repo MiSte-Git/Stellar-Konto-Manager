@@ -27,6 +27,7 @@ import { getSessionSecrets, rememberSessionSecrets, InsecureCryptoContextError }
 import { assertHorizonNetwork, collectEffectiveSigners } from '../../utils/multisig/jobRevocation.js';
 import {
   buildClaimTx,
+  claimableBalanceExists,
   claimJobTimeoutSeconds,
   classifyClaimableBalances,
   fetchClaimableBalances,
@@ -293,6 +294,11 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
         buildTx: async ({ adjustAccount }) => {
           setLockWaiting(false);
           const fresh = await server.loadAccount(publicKey);
+          // Schon eingeloest (zweiter Versuch, anderer Tab, Absender hat zurueckgeholt)? Dann nicht
+          // senden, sonst kostet der fehlschlagende Versuch nur die Fee (Reste Sendeschutz).
+          if (await claimableBalanceExists(server, claimItem.id) === false) {
+            throw new ClaimAbort(t('wallet:claimable.alreadyClaimed'));
+          }
           const [cur] = classifyClaimableBalances(records.filter((r) => r.id === claimItem.id), fresh);
           if (!cur || !cur.claimableNow || cur.blockedReason) {
             throw new ClaimAbort(t(cur?.blockedReason ? `wallet:claimable.blocked.${cur.blockedReason}` : 'wallet:claimable.notClaimable'));

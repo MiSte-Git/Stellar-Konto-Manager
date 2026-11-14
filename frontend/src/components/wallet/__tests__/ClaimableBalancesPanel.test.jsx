@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, waitFor, fireEvent, within } from '@testing-library/react';
 import { I18nextProvider } from 'react-i18next';
-import { Account, Keypair, Networks, TransactionBuilder } from '@stellar/stellar-sdk';
+import { Account, Keypair, Networks, NotFoundError, TransactionBuilder } from '@stellar/stellar-sdk';
 import { AmbiguousSubmitResultError } from '../../../utils/stellar/submitTransactionSafely.js';
 import i18n from '../../../i18n.js';
 import { resetServerNetworkCalls, serverNetworkCalls } from '../../../test/horizonMock.js';
@@ -18,13 +18,16 @@ const SENDER = Keypair.random().publicKey();
 const id = (n) => `00000000${String(n).padStart(64, '0')}`;
 
 const hoisted = vi.hoisted(() => ({
-  recordsMock: vi.fn(), loadAccountMock: vi.fn(), submitMock: vi.fn(), rememberMock: vi.fn(async () => {}), txLookupMock: vi.fn(), ledgerMock: vi.fn(),
+  recordsMock: vi.fn(), cbLookupMock: vi.fn(), loadAccountMock: vi.fn(), submitMock: vi.fn(), rememberMock: vi.fn(async () => {}), txLookupMock: vi.fn(), ledgerMock: vi.fn(),
 }));
 
 vi.mock('../../../utils/stellar/stellarUtils.js', async (importOriginal) => (await import('../../../test/horizonMock.js')).withNetworkServer({
   ...(await importOriginal()),
   getHorizonServer: () => ({
-    claimableBalances: () => ({ claimant: () => ({ limit: () => ({ call: hoisted.recordsMock }) }) }),
+    claimableBalances: () => ({
+      claimant: () => ({ limit: () => ({ call: hoisted.recordsMock }) }),
+      claimableBalance: (cbId) => ({ call: () => hoisted.cbLookupMock(cbId) }),
+    }),
     loadAccount: hoisted.loadAccountMock,
     root: vi.fn(async () => ({ network_passphrase: 'Test SDF Network ; September 2015' })),
     feeStats: vi.fn(async () => ({ last_ledger_base_fee: '100', fee_charged: { mode: '100' } })),
@@ -104,6 +107,7 @@ beforeEach(() => {
   // Wie in der App: gespeichertes globales Netz = Netz des Panels (Pruefung vor dem Signieren).
   window.localStorage.setItem('SKM_NETWORK', 'TESTNET');
   hoisted.recordsMock.mockResolvedValue({ records: RECORDS });
+  hoisted.cbLookupMock.mockImplementation(async (cbId) => ({ id: cbId }));
   hoisted.loadAccountMock.mockImplementation(async () => makeAccount());
   hoisted.submitMock.mockResolvedValue({ hash: 'claimhash' });
   hoisted.txLookupMock.mockImplementation(async () => { throw Object.assign(new Error('nf'), { response: { status: 404 } }); });
@@ -141,6 +145,24 @@ describe('ClaimableBalancesPanel (P1.5)', () => {
     renderPanel();
     await screen.findByText('Claimable Balances');
     expect(within(itemById(4)).getByRole('button', { name: 'Einlösen' })).toBeDisabled();
+  });
+
+  it('schon eingeloest (404 beim Nachladen): nichts gesendet, Hinweis (Reste Sendeschutz)', async () => {
+    hoisted.cbLookupMock.mockImplementation(async () => { throw new NotFoundError('Not Found', { status: 404 }); });
+    renderPanel();
+    await screen.findByText('Claimable Balances');
+    await claim(1);
+    await screen.findByText(/Diese Claimable Balance gibt es nicht mehr/);
+    expect(hoisted.submitMock).not.toHaveBeenCalled();
+    expect(hoisted.cbLookupMock).toHaveBeenCalledWith(id(1));
+  });
+
+  it('Gegenprobe: Nachladen scheitert ohne 404 (Netz): es wird wie bisher gesendet', async () => {
+    hoisted.cbLookupMock.mockImplementation(async () => { throw new Error('Network Error'); });
+    renderPanel();
+    await screen.findByText('Claimable Balances');
+    await claim(1);
+    await waitFor(() => expect(hoisted.submitMock).toHaveBeenCalledTimes(1));
   });
 
   it('loest XLM mit genau einer claimClaimableBalance-Operation ein', async () => {
