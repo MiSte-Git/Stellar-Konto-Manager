@@ -14,6 +14,8 @@ const { Keypair } = require('@stellar/stellar-sdk');
 const { baseAccountOf } = require('./addressKind.js');
 
 const MAX_TX_SIGNATURES = 20; // Stellar XDR: Signatures is DecoratedSignature<20>
+// Schwelle 0 heisst im Netz: mindestens eine gueltige Signatur eines Signers mit Gewicht > 0.
+const MIN_SIGNED_WEIGHT = 1;
 
 // Basiskonto (G-Adresse) der Transaktionsquelle: Eine M-Adresse zaehlt zu ihrem Basiskonto.
 // Fee-Bump-Transaktionen sind als Job nicht vorgesehen (sie werden beim Anlegen und beim Merge
@@ -133,7 +135,10 @@ function requiredWeightForOperations(operations, thresholds) {
   const categories = new Set(opTypes.map(operationThresholdCategory));
   if (categories.has('high')) return high || med || low || 0;
   if (categories.has('med')) return med || high || low || 0;
-  return med || low || high || 0; // pure low-category transaction
+  // Reine Low-Transaktion (bumpSequence, claimClaimableBalance, ...): das Netz verlangt genau
+  // low_threshold, bei low=0 aber mindestens eine gueltige Signatur, also Gewicht 1. Belegt auf dem
+  // Testnet am 14.11.2026 (scripts/testnet-threshold-probe.mjs). Vorher med || low || high (zu streng).
+  return low > 0 ? low : MIN_SIGNED_WEIGHT;
 }
 
 module.exports = {

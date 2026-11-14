@@ -169,7 +169,8 @@ test('requiredWeightForOperations falls back through the chain when a category t
   assert.equal(requiredWeightForOperations([{ type: 'setOptions' }], { low: 1, med: 2, high: 0 }), 2);
   assert.equal(requiredWeightForOperations([{ type: 'setOptions' }], { low: 1, med: 0, high: 0 }), 1);
   assert.equal(requiredWeightForOperations([{ type: 'payment' }], { low: 1, med: 0, high: 3 }), 3);
-  assert.equal(requiredWeightForOperations([{ type: 'bumpSequence' }], { low: 0, med: 0, high: 3 }), 3);
+  // Reine Low-Transaktion: low, bei low=0 Gewicht 1 (Testnet-Beleg 14.11.2026). Vorher 3 (zu streng).
+  assert.equal(requiredWeightForOperations([{ type: 'bumpSequence' }], { low: 0, med: 0, high: 3 }), 1);
 });
 
 test('requiredWeightForOperations returns 0 for an all-zero threshold set (account has no multisig configured)', () => {
@@ -300,3 +301,18 @@ test('filterValidSignatures akzeptiert signatureHint() als v17-Wrapper', () => {
     Keypair.prototype.signatureHint = original;
   }
 });
+
+// --- Gemeinsame Fixture (Node, PHP, Frontend) -------------------------------------------------
+const opThresholdFixture = JSON.parse(require('fs').readFileSync(require('path').join(__dirname, 'assets', 'op-threshold-categories.json'), 'utf8'));
+
+test('Fixture: Kategorie je Operation wie in PHP und Frontend', () => {
+  for (const op of opThresholdFixture.operations) {
+    assert.equal(operationThresholdCategory(op.type), op.category, op.type);
+  }
+});
+
+for (const c of opThresholdFixture.requiredWeight) {
+  test(`Fixture requiredWeight: ${c.label}`, () => {
+    assert.equal(requiredWeightForOperations(c.ops.map((type) => ({ type })), c.thresholds), c.expected);
+  });
+}

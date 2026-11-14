@@ -284,5 +284,22 @@ check(
     requiredWeightForOperations($feeBumpTx, ['low' => 1, 'med' => 2, 'high' => 3]) === 2
 );
 
+// --- Gemeinsame Fixture (Node, PHP, Frontend) -------------------------------------------------
+$opFixture = json_decode((string)file_get_contents(__DIR__ . '/assets/op-threshold-categories.json'), true);
+check('Fixture op-threshold-categories geladen', is_array($opFixture['operations'] ?? null) && is_array($opFixture['requiredWeight'] ?? null));
+foreach ($opFixture['operations'] as $op) {
+    check("Fixture Kategorie {$op['phpClass']} = {$op['category']}", operationThresholdCategoryForClass($op['phpClass']) === $op['category']);
+}
+$opBuilders = [
+    'bumpSequence' => fn() => (new BumpSequenceOperationBuilder(new BigInteger('101')))->build(),
+    'claimClaimableBalance' => fn() => (new ClaimClaimableBalanceOperationBuilder(str_repeat('0', 8) . str_repeat('ab', 32)))->build(),
+    'setOptions' => fn() => (new SetOptionsOperationBuilder())->setMasterKeyWeight(2)->build(),
+    'payment' => fn() => (new PaymentOperationBuilder(KeyPair::random()->getAccountId(), Asset::native(), '1'))->build(),
+];
+foreach ($opFixture['requiredWeight'] as $c) {
+    $ops = array_map(fn($t) => $opBuilders[$t](), $c['ops']);
+    check("Fixture requiredWeight {$c['label']} = {$c['expected']}", requiredWeightForOperations(buildTxFor($ops), $c['thresholds']) === $c['expected']);
+}
+
 echo "\n{$passed} passed, {$failed} failed\n";
 exit($failed > 0 ? 1 : 0);

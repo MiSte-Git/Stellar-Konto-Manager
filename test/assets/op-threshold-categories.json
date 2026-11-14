@@ -1,0 +1,289 @@
+{
+  "_comment": "Schwellen-Kategorien der Operationen und benoetigtes Gewicht (ADR 0012, Plan Signer-Buendelung 8.2). Gelesen von test/txSignatures.test.js, test/txSignatures.test.php und frontend/src/utils/__tests__/getRequiredThreshold.fixture.test.js. Reine Low-Transaktionen: genau low_threshold, bei low=0 Gewicht 1 (mindestens eine gueltige Signatur), belegt auf dem Testnet am 14.11.2026 mit scripts/testnet-threshold-probe.mjs. Das Frontend liefert bei low=0 den Wert 0 und verlangt die Signatur ueber die Aufrufer (mindestens ein Signer mit Gewicht > 0).",
+  "operations": [
+    {
+      "type": "setOptions",
+      "phpClass": "SetOptionsOperation",
+      "category": "high"
+    },
+    {
+      "type": "accountMerge",
+      "phpClass": "AccountMergeOperation",
+      "category": "high"
+    },
+    {
+      "type": "allowTrust",
+      "phpClass": "AllowTrustOperation",
+      "category": "low"
+    },
+    {
+      "type": "inflation",
+      "phpClass": "InflationOperation",
+      "category": "low"
+    },
+    {
+      "type": "bumpSequence",
+      "phpClass": "BumpSequenceOperation",
+      "category": "low"
+    },
+    {
+      "type": "setTrustLineFlags",
+      "phpClass": "SetTrustLineFlagsOperation",
+      "category": "low"
+    },
+    {
+      "type": "claimClaimableBalance",
+      "phpClass": "ClaimClaimableBalanceOperation",
+      "category": "low"
+    },
+    {
+      "type": "payment",
+      "phpClass": "PaymentOperation",
+      "category": "med"
+    },
+    {
+      "type": "createAccount",
+      "phpClass": "CreateAccountOperation",
+      "category": "med"
+    },
+    {
+      "type": "changeTrust",
+      "phpClass": "ChangeTrustOperation",
+      "category": "med"
+    },
+    {
+      "type": "pathPaymentStrictSend",
+      "phpClass": "PathPaymentStrictSendOperation",
+      "category": "med"
+    },
+    {
+      "type": "manageSellOffer",
+      "phpClass": "ManageSellOfferOperation",
+      "category": "med"
+    },
+    {
+      "type": "liquidityPoolDeposit",
+      "phpClass": "LiquidityPoolDepositOperation",
+      "category": "med"
+    },
+    {
+      "type": "invokeHostFunction",
+      "phpClass": "InvokeHostFunctionOperation",
+      "category": "med"
+    }
+  ],
+  "requiredWeight": [
+    {
+      "label": "Probe A: Low, low=1 med=2",
+      "ops": [
+        "bumpSequence"
+      ],
+      "thresholds": {
+        "low": 1,
+        "med": 2,
+        "high": 2
+      },
+      "expected": 1
+    },
+    {
+      "label": "Probe B: Low, low=0 med=2",
+      "ops": [
+        "claimClaimableBalance"
+      ],
+      "thresholds": {
+        "low": 0,
+        "med": 2,
+        "high": 2
+      },
+      "expected": 1
+    },
+    {
+      "label": "Probe C: Low, alles 0",
+      "ops": [
+        "bumpSequence"
+      ],
+      "thresholds": {
+        "low": 0,
+        "med": 0,
+        "high": 0
+      },
+      "expected": 1
+    },
+    {
+      "label": "Probe D/E: Low, low=2",
+      "ops": [
+        "bumpSequence"
+      ],
+      "thresholds": {
+        "low": 2,
+        "med": 2,
+        "high": 2
+      },
+      "expected": 2
+    },
+    {
+      "label": "Low, low=0 high=3",
+      "ops": [
+        "bumpSequence"
+      ],
+      "thresholds": {
+        "low": 0,
+        "med": 0,
+        "high": 3
+      },
+      "expected": 1
+    },
+    {
+      "label": "zwei Low-Operationen",
+      "ops": [
+        "claimClaimableBalance",
+        "bumpSequence"
+      ],
+      "thresholds": {
+        "low": 1,
+        "med": 2,
+        "high": 3
+      },
+      "expected": 1
+    },
+    {
+      "label": "High",
+      "ops": [
+        "setOptions"
+      ],
+      "thresholds": {
+        "low": 1,
+        "med": 2,
+        "high": 3
+      },
+      "expected": 3
+    },
+    {
+      "label": "Medium",
+      "ops": [
+        "payment"
+      ],
+      "thresholds": {
+        "low": 1,
+        "med": 2,
+        "high": 3
+      },
+      "expected": 2
+    },
+    {
+      "label": "Medium schlaegt Low",
+      "ops": [
+        "bumpSequence",
+        "payment"
+      ],
+      "thresholds": {
+        "low": 1,
+        "med": 2,
+        "high": 3
+      },
+      "expected": 2
+    },
+    {
+      "label": "High schlaegt Medium",
+      "ops": [
+        "payment",
+        "setOptions"
+      ],
+      "thresholds": {
+        "low": 1,
+        "med": 2,
+        "high": 3
+      },
+      "expected": 3
+    },
+    {
+      "label": "High mit high=0 (Fallback, unveraendert)",
+      "ops": [
+        "setOptions"
+      ],
+      "thresholds": {
+        "low": 1,
+        "med": 2,
+        "high": 0
+      },
+      "expected": 2
+    },
+    {
+      "label": "High, alles 0 (unveraendert)",
+      "ops": [
+        "setOptions"
+      ],
+      "thresholds": {
+        "low": 0,
+        "med": 0,
+        "high": 0
+      },
+      "expected": 0
+    }
+  ],
+  "frontend": [
+    {
+      "op": "setOptions",
+      "thresholds": {
+        "low_threshold": 1,
+        "med_threshold": 2,
+        "high_threshold": 3
+      },
+      "expected": 3
+    },
+    {
+      "op": "payment",
+      "thresholds": {
+        "low_threshold": 1,
+        "med_threshold": 2,
+        "high_threshold": 3
+      },
+      "expected": 2
+    },
+    {
+      "op": "changeTrust",
+      "thresholds": {
+        "low_threshold": 1,
+        "med_threshold": 2,
+        "high_threshold": 3
+      },
+      "expected": 2
+    },
+    {
+      "op": "bumpSequence",
+      "thresholds": {
+        "low_threshold": 1,
+        "med_threshold": 2,
+        "high_threshold": 3
+      },
+      "expected": 1
+    },
+    {
+      "op": "claimClaimableBalance",
+      "thresholds": {
+        "low_threshold": 1,
+        "med_threshold": 2,
+        "high_threshold": 3
+      },
+      "expected": 1
+    },
+    {
+      "op": "bumpSequence",
+      "thresholds": {
+        "low_threshold": 0,
+        "med_threshold": 2,
+        "high_threshold": 2
+      },
+      "expected": 0
+    },
+    {
+      "op": "claimClaimableBalance",
+      "thresholds": {
+        "low_threshold": 0,
+        "med_threshold": 2,
+        "high_threshold": 2
+      },
+      "expected": 0
+    }
+  ]
+}

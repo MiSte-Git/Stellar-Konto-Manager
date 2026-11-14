@@ -49,7 +49,11 @@ function classBasename(string $class): string {
 }
 
 function operationThresholdCategory(AbstractOperation $op): string {
-    $class = classBasename(get_class($op));
+    return operationThresholdCategoryForClass(classBasename(get_class($op)));
+}
+
+/** Kategorie nach Klassenname (ohne Namespace). Getrennt, damit die gemeinsame Fixture sie pruefen kann. */
+function operationThresholdCategoryForClass(string $class): string {
     if (in_array($class, HIGH_THRESHOLD_OP_CLASSES, true)) return 'high';
     if (in_array($class, LOW_THRESHOLD_OP_CLASSES, true)) return 'low';
     return 'med';
@@ -76,7 +80,10 @@ function requiredWeightForOperations(AbstractTransaction $tx, array $thresholds)
     $categories = array_unique(array_map('operationThresholdCategory', $operations));
     if (in_array('high', $categories, true)) return $high ?: ($med ?: ($low ?: 0));
     if (in_array('med', $categories, true)) return $med ?: ($high ?: ($low ?: 0));
-    return $med ?: ($low ?: ($high ?: 0)); // pure low-category transaction
+    // Reine Low-Transaktion (bumpSequence, claimClaimableBalance, ...): das Netz verlangt genau
+    // low_threshold, bei low=0 aber mindestens eine gueltige Signatur, also Gewicht 1. Belegt auf dem
+    // Testnet am 14.11.2026 (scripts/testnet-threshold-probe.mjs). Vorher med ?: low ?: high (zu streng).
+    return $low > 0 ? $low : 1;
 }
 
 /**

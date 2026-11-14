@@ -7,7 +7,7 @@ import MultisigPrepareDialog from '../MultisigPrepareDialog.jsx';
 import BatchConvertDialog from './BatchConvertDialog.jsx';
 import { createMultisigJobFromXdr } from '../../utils/multisigApi.js';
 import { assetLabel } from '../../utils/stellar/batchConvert.js';
-import { isMultisigAccount, needsMultipleSignatures } from '../../utils/stellar/isMultisigAccount.js';
+import { needsMultipleSignatures } from '../../utils/stellar/isMultisigAccount.js';
 import { useSettings } from '../../utils/useSettings.js';
 import { getHorizonServer, getHorizonServerForNetwork } from '../../utils/stellar/stellarUtils.js';
 import { assertFlowNetwork, NETWORK_CHANGED_CODE } from '../../utils/globalNetwork.js';
@@ -82,7 +82,12 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
   const [preparedJob, setPreparedJob] = React.useState(null);
   const [showBatch, setShowBatch] = React.useState(false);
   const { multisigTimeoutSeconds } = useSettings();
-  const multisig = isMultisigAccount(account);
+  // Sammel-Tausch (Einloesen, Trustline, Path Payment): Medium-Schwelle. Job-Weg, Fee fuer spaeteres
+  // Einreichen und Job-Hinweise nur, wenn kein einzelner Signer sie erreicht (ADR 0007).
+  const batchMultisig = needsMultipleSignatures(account, Math.max(
+    getRequiredThreshold('claimClaimableBalance', account?.thresholds),
+    getRequiredThreshold('changeTrust', account?.thresholds),
+  ));
   // Unklarer Sendestatus des Kontos (aus jedem Sendeweg, auch nach Neuladen): sperrt das Einloesen
   // und den Sammel-Tausch; Freigabe nur ueber Horizon. Der Sammel-Tausch teilt diese Instanz.
   const sendGuard = useAccountSendBlock({
@@ -299,7 +304,8 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
           );
           const { signers, weight } = collectEffectiveSigners(collected, fresh?.signers);
           if (!signers.length || weight < required) {
-            throw new ClaimAbort(t(multisig ? 'wallet:claimable.insufficientWeightJob' : 'wallet:claimable.insufficientWeight', { required }));
+            // Job-Hinweis nur, wenn fuer diese Balance kein einzelner Signer reicht (Low, mit Trustline Medium).
+            throw new ClaimAbort(t(needsMultipleSignatures(fresh, required) ? 'wallet:claimable.insufficientWeightJob' : 'wallet:claimable.insufficientWeight', { required }));
           }
           const fee = await resolveFeePerOp(server);
           const tx = buildClaimTx({ account: adjustedAccount(fresh, adjustAccount), item: cur, fee, networkPassphrase });
@@ -514,7 +520,7 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
           network={network}
           available={available}
           items={batchItems}
-          multisig={multisig}
+          multisig={batchMultisig}
           multisigTimeoutSeconds={multisigTimeoutSeconds}
           fmt={fmt}
           onClose={() => setShowBatch(false)}
