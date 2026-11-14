@@ -1,7 +1,7 @@
-import { Keypair } from '@stellar/stellar-sdk';
 import { Buffer } from 'buffer';
 import { apiUrl } from './apiBase.js';
 import { backendErrorMessage } from './multisigErrors.js';
+import { keypairFromSecret, signChallengeMessage } from './signers/keyMaterial.js';
 
 function ensureOk(res) {
   if (res.ok) return;
@@ -70,10 +70,10 @@ export function signMultisigJobChallenge(secret, challengeB64, purpose) {
   if (!CHALLENGE_PURPOSES.includes(purpose)) {
     throw new Error(`multisig.jobs.invalid_challenge_purpose: ${purpose || '-'}`);
   }
-  const keypair = Keypair.fromSecret(secret);
+  const keypair = keypairFromSecret(secret);
   const nonceBytes = Buffer.from(String(challengeB64 || ''), 'base64');
   const data = Buffer.concat([Buffer.from(`skm:${purpose}:`, 'utf8'), nonceBytes]);
-  const signature = keypair.sign(data);
+  const signature = signChallengeMessage(keypair, data);
   return Buffer.from(signature).toString('base64');
 }
 

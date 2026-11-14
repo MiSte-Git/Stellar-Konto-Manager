@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState, useRef, useCallback } from 'react'
 import { getNetworkConfig, isNetworkEnabled, normalizeNetworkId, passphraseFor, readStoredNetworkId } from '../config/networks.js';
 import { useTranslation } from 'react-i18next';
 import { getHorizonServerForNetwork, resolveOrValidateAccount, isValidAccountId, extractBasePublicKeyFromMuxed, reverseFederationLookup } from '../utils/stellar/stellarUtils';
-import { Asset, Keypair, Operation, TransactionBuilder, Memo, StrKey } from '@stellar/stellar-sdk';
+import { Asset, Operation, TransactionBuilder, Memo, StrKey } from '@stellar/stellar-sdk';
 import { Buffer } from 'buffer';
 import SecretKeyModal from '../components/SecretKeyModal';
 import MultisigSigningOptions from '../components/multisig/MultisigSigningOptions.jsx';
@@ -54,6 +54,7 @@ import { useAccountSendBlock } from '../utils/submitGuard/useAccountSendBlock.js
 import SendAmbiguousPanel, { SendResolvedNotice } from '../components/wallet/SendAmbiguousPanel.jsx';
 import BatchPaymentDialog from '../components/wallet/BatchPaymentDialog.jsx';
 import { requestHeaderBalanceRefresh } from '../utils/balanceRefresh.js';
+import { keypairFromSecret } from '../utils/signers/keyMaterial.js';
 
 // Immediate local submits (single-sig send, or a multisig job collected and
 // submitted right away) expect a near-term Horizon confirmation, unlike a
@@ -832,7 +833,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     if (requireSigners && !primary) throw new Error('submitTransaction.failed:' + 'multisig.noKeysProvided');
     if (primary) {
       const sec = primary.secret?.();
-      if (sec) Keypair.fromSecret(sec); // validate
+      if (sec) keypairFromSecret(sec); // validate
     }
     // Passphrase aus dem Netz der Seite (wie server), nicht neu aus localStorage: sonst
     // koennten Konto und Transaktion nach einem Wechsel in einem anderen Tab aus
@@ -1363,7 +1364,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       if (!isCurrentEpoch(epoch)) return;
       let storedSigner = null;
       try {
-        storedSigner = saved ? Keypair.fromSecret(saved) : null;
+        storedSigner = saved ? keypairFromSecret(saved) : null;
         if (storedSigner && storedSigner.publicKey() !== publicKey) {
           storedSigner = null; // Nur Secret des geladenen Kontos zulassen
         }
@@ -1907,7 +1908,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     if (!isCurrentEpoch(epoch)) return;
     if (saved) {
       try {
-        openReviewDialog([Keypair.fromSecret(saved)], preflightResult, epoch);
+        openReviewDialog([keypairFromSecret(saved)], preflightResult, epoch);
         return;
       } catch (err) {
         setError(err?.message || t('errors:unknown', 'Unbekannter Fehler'));

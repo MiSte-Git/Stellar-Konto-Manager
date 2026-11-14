@@ -1,6 +1,6 @@
-import { Keypair } from '@stellar/stellar-sdk';
 import { getSessionSecret, getSessionSecrets } from './sessionSecrets.js';
 import { isInteractiveSigner, signerKeyOf } from './signers/signerRules.js';
+import { keypairFromSecret } from './signers/keyMaterial.js';
 
 /**
  * Sucht unter den fuer dieses Konto gemerkten Session-Keys einen, der die Schwelle allein erreicht.
@@ -26,7 +26,7 @@ export async function findSessionSigner({ accountId, signers, requiredWeight }) 
   for (const secret of secrets) {
     let keypair;
     try {
-      keypair = Keypair.fromSecret(secret);
+      keypair = keypairFromSecret(secret);
     } catch {
       continue; // unlesbarer Eintrag: kein Absturz, der Dialog fragt dann
     }

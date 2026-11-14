@@ -1,11 +1,11 @@
 // src/components/SecretKeyModal.jsx
 import React, { useMemo, useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Keypair } from '@stellar/stellar-sdk';
 import { validateSecretKey } from '../utils/stellar/stellarUtils';
 import { isInteractiveSigner, isMultisigAccount as isMultisigAccountRule } from '../utils/signers/signerRules.js';
 import { formatErrorForUi } from '../utils/formatErrorForUi.js';
 import SendLockWaiting from './wallet/SendLockWaiting.jsx';
+import { keypairFromSecret } from '../utils/signers/keyMaterial.js';
 
 function SecretKeyModal({
   onConfirm,
@@ -174,7 +174,7 @@ function SecretKeyModal({
         }
         let kp;
         try {
-          kp = Keypair.fromSecret(sec);
+          kp = keypairFromSecret(sec);
         } catch {
           throw new Error('submitTransaction.failed:' + 'multisig.invalidSecret');
         }
@@ -213,7 +213,7 @@ function SecretKeyModal({
       const sec = (raw || '').trim();
       if (!sec) continue;
       try {
-        const kp = Keypair.fromSecret(sec);
+        const kp = keypairFromSecret(sec);
         const pub = kp.publicKey();
         if (counted.has(pub)) continue;
         counted.add(pub);

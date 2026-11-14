@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Keypair, StrKey } from '@stellar/stellar-sdk';
+import { StrKey } from '@stellar/stellar-sdk';
 import AddressDropdown from '../AddressDropdown.jsx';
 import SecretKeyModal from '../SecretKeyModal.jsx';
 import { passphraseFor, readStoredNetworkId } from '../../config/networks.js';
@@ -38,6 +38,7 @@ import {
 } from '../../utils/submitGuard/accountSendGuard.js';
 import { AmbiguousStatus } from '../AmbiguousSubmitStatus.jsx';
 import { AMBER_BOX_CLS, autoCheckDue, diagnosticsLines, formatClearTime, safeDiagText } from '../../utils/submitGuard/ambiguousDisplay.js';
+import { keypairFromSecret } from '../../utils/signers/keyMaterial.js';
 
 const inputCls = 'border rounded-sm w-full px-2 py-1 text-base md:text-sm bg-white dark:bg-gray-900';
 const btnCls = 'px-3 py-1.5 rounded-sm border text-sm font-medium disabled:opacity-50';
@@ -668,7 +669,7 @@ export default function BatchPaymentDialog({ onClose, onNetworkChangeClose }) {
     try {
       const saved = await getSessionSecret(source, source);
       if (saved) {
-        const kp = Keypair.fromSecret(saved);
+        const kp = keypairFromSecret(saved);
         if (kp.publicKey() === source) return kp;
       }
     } catch { /* dann per Dialog */ }

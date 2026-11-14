@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useCallback, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Keypair } from '@stellar/stellar-sdk';
 import { apiUrl } from '../utils/apiBase.js';
 import { FINAL_JOB_STATUSES, needsSignatureFrom } from '../utils/multisig/jobSigningState.js';
 import { readHiddenJobIds, writeHiddenJobIds } from '../utils/multisig/hiddenJobs.js';
 import { deleteMultisigJob, getMultisigJobChallenge, signMultisigJobChallenge } from '../utils/multisigApi.js';
 import { getSessionSecret } from '../utils/sessionSecrets.js';
+import { keypairFromSecret } from '../utils/signers/keyMaterial.js';
 
 // Eigene Button-Klassen: ohne bg-/px-Klassen greift der globale button-Stil aus index.css
 // (dunkler Hintergrund, grosses Padding) und die Buttons passen nicht zum Rest der App.
@@ -151,7 +151,7 @@ function MultisigJobList({ onBack, publicKey, onOpenDetail, refreshKey = 0 }) {
     const stored = await getSessionSecret(accountId, accountId);
     let kp;
     try {
-      kp = Keypair.fromSecret(stored || deleteInput.trim());
+      kp = keypairFromSecret(stored || deleteInput.trim());
     } catch {
       setDeleteError(t('multisig:detail.unlock.invalid', 'Ungültiger Secret Key.'));
       return;

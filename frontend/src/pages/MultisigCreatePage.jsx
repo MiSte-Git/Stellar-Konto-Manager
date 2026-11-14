@@ -17,6 +17,7 @@ import { classifyFriendbotResponse, classifyHorizonSubmitError, isAccountNotFoun
 import { copyText } from '../utils/clipboard.js';
 import { useNavigationGuard } from '../utils/navigationGuard.js';
 import { SESSION_LOCKED_EVENT } from '../utils/sessionSecrets.js';
+import { keypairFromSecret } from '../utils/signers/keyMaterial.js';
 import {
   Keypair,
   Operation,
@@ -609,7 +610,7 @@ export default function MultisigCreatePage() {
   }
 
   async function activateWithFunderSecret(funderSecret, destPub, startingBalanceXLM = '1') {
-    const funder = Keypair.fromSecret(funderSecret);
+    const funder = keypairFromSecret(funderSecret);
     const funderPub = funder.publicKey();
     const account = await server.loadAccount(funderPub);
     const tx = new TransactionBuilder(account, {
@@ -645,7 +646,7 @@ export default function MultisigCreatePage() {
   // abortMessage: Text, falls das Netz vor dem Signieren gewechselt hat (nach einer schon
   // erfolgten Aktivierung ein anderer als ohne).
   async function setMultisigOnNewAccount(newSecret, { abortMessage = t('createAccount:networkChanged.funderAborted') } = {}) {
-    const newKp = Keypair.fromSecret(newSecret);
+    const newKp = keypairFromSecret(newSecret);
     const newPub = newKp.publicKey();
 
     // Die Signer-Paare sind schon geprueft; hier nur als letzte Sperre vor dem Senden, damit nie

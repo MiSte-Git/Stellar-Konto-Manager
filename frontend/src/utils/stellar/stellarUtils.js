@@ -2,6 +2,7 @@ import { resolveFeePerOp } from './fees.js';
 import { NETWORKS, horizonUrlFor, normalizeNetworkId, passphraseFor, readStoredNetworkId } from '../../config/networks.js';
 import { apiUrl } from '../apiBase.js';
 import { isFlowNetworkCurrent, NETWORK_CHANGED_CODE } from '../globalNetwork.js';
+import { assertKeypairFor, keypairFromSecret } from '../signers/keyMaterial.js';
 import {
   ADDRESS_KINDS,
   CONTRACT_ADDRESS_ERROR,
@@ -14,7 +15,6 @@ import {
 import {
   Horizon,
   StrKey,
-  Keypair,
   Operation,
   TransactionBuilder,
   Asset
@@ -340,11 +340,7 @@ export async function loadTrustlines(publicKey, serverOverride, options = {}) {
  * @throws {Error} - Wenn Schlüssel nicht zusammenpassen
  */
 export function assertKeyPairMatch(secretKey, expectedPublicKey) {
-  const keypair = Keypair.fromSecret(secretKey);
-  const derivedPublicKey = keypair.publicKey();
-  if (derivedPublicKey !== expectedPublicKey) {
-    throw new Error('secretKey.mismatch');
-  }
+  assertKeypairFor(keypairFromSecret(secretKey), expectedPublicKey);
 }
 
 /**

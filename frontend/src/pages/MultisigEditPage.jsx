@@ -11,7 +11,7 @@ import { getRequiredThreshold } from '../utils/getRequiredThreshold.js';
 import { getMultisigTxTimeout } from '../utils/getMultisigTxTimeout.js';
 import { validateMultisigConfig } from '../utils/validateMultisigConfig.js';
 import { getMultisigSafetyCheck } from '../utils/getMultisigSafetyCheck.js';
-import { Keypair, Operation, TransactionBuilder, StrKey } from '@stellar/stellar-sdk';
+import { Operation, TransactionBuilder, StrKey } from '@stellar/stellar-sdk';
 import { findInvalidSignerKey, isInteractiveSigner, isValidSignerKey } from '../utils/signers/signerRules.js';
 import { apiUrl } from '../utils/apiBase.js';
 import { backendErrorMessage } from '../utils/multisigErrors.js';
@@ -21,6 +21,7 @@ import { useSettings } from '../utils/useSettings.js';
 import { formatValidUntil } from '../utils/multisig/formatValidUntil.js';
 import { resolveFeePerOp } from '../utils/stellar/fees.js';
 import { txHashHex } from '../utils/stellar/txHash.js';
+import { keypairFromSecret } from '../utils/signers/keyMaterial.js';
 
 // Same rationale as SendPaymentPage.jsx: a transaction that gets submitted
 // immediately after signing (test-mode direct submit) only needs to survive
@@ -432,7 +433,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
       assertFlowNetwork(network, t('createAccount:networkChanged.funderAborted'));
       if (sessionSecret) {
         try {
-          const kp = Keypair.fromSecret(sessionSecret);
+          const kp = keypairFromSecret(sessionSecret);
           preparedTx.sign(kp);
           initialCollected.push({ publicKey: kp.publicKey(), weight: plannedMaster });
         } catch (e) {

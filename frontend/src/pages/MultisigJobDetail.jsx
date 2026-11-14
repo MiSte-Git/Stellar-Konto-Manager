@@ -22,6 +22,7 @@ import { txHashHex } from '../utils/stellar/txHash.js';
 import { evaluateLiquidityOperation, exactDepositPrices, hasLiquidityPoolOps, resolveLiquidityPoolInfo } from '../utils/multisig/liquidityPoolInfo.js';
 import { jobSubmitResultCodes, liquidityErrorKeyFromResultCodes } from '../utils/stellar/liquidityErrors.js';
 import { formatPoolAmount, formatPrice } from '../components/liquidity/formatPoolAmount.js';
+import { keypairFromSecret } from '../utils/signers/keyMaterial.js';
 
 const FAILED_PREFIX = 'submitTransaction.failed:';
 
@@ -232,7 +233,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
     setUnlockError('');
     let kp;
     try {
-      kp = Keypair.fromSecret(unlockInput.trim());
+      kp = keypairFromSecret(unlockInput.trim());
     } catch {
       setUnlockError(t('multisig:detail.unlock.invalid', 'Ungültiger Secret Key.'));
       return;
@@ -618,7 +619,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
         setError(t('multisig:detail.integrity.title'));
         return;
       }
-      const kp = Keypair.fromSecret(secret);
+      const kp = keypairFromSecret(secret);
       // F2 auch fuer jeden anderen eingegebenen Key: Gehoert er zu einem Konto, das eine
       // Operation ausfuehrt, wuerde die Signatur diese Operation autorisieren.
       const txSource = verifyJobTransaction(job, tx).sourceAccountId;
@@ -741,7 +742,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
     const secret = stored || unlockedKeypairRef.current?.secret() || declineInput.trim();
     let kp;
     try {
-      kp = Keypair.fromSecret(secret);
+      kp = keypairFromSecret(secret);
     } catch {
       setDeclineError(t('multisig:detail.unlock.invalid', 'Ungültiger Secret Key.'));
       return;
