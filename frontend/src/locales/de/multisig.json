@@ -123,6 +123,8 @@
   "jobCreated": "Multisig-Job erstellt (ID: {{id}}). Öffne „Multisig-Jobs“, um den Status zu sehen.",
   "errors": {
     "accountMismatch": "Das Quellkonto der Transaktion stimmt nicht mit dem Konto des Jobs überein. Die Signatur wurde nicht übernommen.",
+    "accountNotFound": "Das Konto ist im Stellar-Netz nicht bekannt (nicht aktiviert). Es wurde kein Job angelegt.",
+    "createHorizonUnavailable": "Das Stellar-Netz (Horizon) ist gerade nicht erreichbar, die Signer des Kontos lassen sich nicht prüfen. Es wurde kein Job angelegt. Bitte später erneut versuchen.",
     "feeBump": "Fee-Bump-Transaktionen sind als Multisig-Job nicht vorgesehen und werden abgelehnt. Bitte die Transaktion ohne Fee-Bump neu erstellen.",
     "mismatchedHash": "Die signierte XDR gehört nicht zu dieser Transaktion.",
     "signersUnavailable": "Die Signer-Liste des Kontos ist bei Horizon gerade nicht abrufbar. Die Signatur wurde nicht übernommen. Bitte in ein paar Sekunden erneut versuchen.",

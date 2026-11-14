@@ -373,6 +373,15 @@ function matchRoute(string $uri, string $pattern): ?array {
 
 /**
  * Enriches a job array with collected/missing signer info and recalculates status if not final.
+ *
+ * F-11 / F-8: Offene Jobs werden beim Lesen live neu berechnet, wenn Horizon antwortet: Signer,
+ * Schwellen und requiredWeight kommen aus dem Konto, collected aus verifyCollected gegen diese Signer,
+ * der Status aus Lebenszyklus bzw. Gewicht. Vorher galt der gespeicherte Stand (z. B. ein inzwischen
+ * entfernter Signer zaehlte weiter, ein bei Horizon-Ausfall angelegter Job blieb bei "noetig: 1").
+ * Antwortet Horizon nicht, bleibt der gespeicherte Stand. Endzustaende: keine Abfrage, gespeicherter
+ * Stand. Auf gespeicherte collectedSigners wird nur bei nicht lesbarem XDR zurueckgegriffen.
+ * Nichts davon wird hier gespeichert (nur Anlegen und Merge speichern). Gleich wie
+ * annotateJobsLifecycleStatus in server.js.
  */
 function summarizeJob(array $job): array {
     $net = $job['network'] ?? 'public';
@@ -381,47 +390,35 @@ function summarizeJob(array $job): array {
 
     $finalStates = ['submitted_success', 'submitted_failed', 'expired', 'obsolete_seq', 'rejected'];
     $isFinal = in_array($job['status'] ?? '', $finalStates, true);
-    $signers = $job['signers'] ?? [];
-    $signersEmpty = !$signers || count($signers) === 0;
 
-    // G5 stage 1 / F2: fetched (cached, short TTL) only when it can actually
-    // change the outcome below - either the stored signers[] snapshot needs
-    // backfilling, or the job isn't final yet and the lifecycle check
-    // further down needs a live account sequence. A final job with an
-    // already-populated signer snapshot never uses $accountSequence (that
-    // branch is itself gated on !$isFinal), so skipping the Horizon
-    // round-trip here is free - avoids a lookup per already-done job on
-    // every list/detail call.
-    $meta = (!$isFinal || $signersEmpty) ? fetchAccountSignersCached($accountId, $net) : null;
-    if ($meta && $signersEmpty) {
-        $signers = $meta['signers'];
-        $job['thresholds'] = $job['thresholds'] ?? $meta['thresholds'];
-    }
-    $accountSequence = ($meta && ($meta['ok'] ?? true) !== false && ($meta['sequence'] ?? null) !== null)
-        ? new BigInteger($meta['sequence'])
-        : null;
-
-    // Parsed once up front (rather than inside the txXdr branch below) so the
-    // requiredWeight fallback can inspect the transaction's actual operations
-    // instead of blindly assuming med_threshold (see requiredWeightForOperations()).
     $parseErr = null;
     $tx = $txXdr ? parseTx($txXdr, $net, $parseErr) : null;
 
-    $requiredWeight = (int)($job['requiredWeight'] ?? ($tx ? requiredWeightForOperations($tx, $job['thresholds'] ?? []) : ($job['thresholds']['med'] ?? 0)));
+    // Nur fuer offene Jobs (gecacht, 30 s). Signer, Schwellen und Sequenz kommen aus accountId:
+    // Seit K1 erzwingen Anlegen und Merge, dass die Quelle der Transaktion (Basiskonto) gleich
+    // accountId ist, die Sequenz von accountId ist also die der Tx-Quelle. Altjobs von vor K1 nehmen
+    // keine Signatur mehr an und laufen ab.
+    $meta = $isFinal ? null : fetchAccountSignersCached($accountId, $net);
+    $live = $meta !== null && ($meta['ok'] ?? true) !== false;
+
+    $signers = $live ? ($meta['signers'] ?? []) : (is_array($job['signers'] ?? null) ? $job['signers'] : []);
+    if ($live) $job['thresholds'] = $meta['thresholds'];
+    if ($live && $tx) {
+        $requiredWeight = requiredWeightForOperations($tx, $meta['thresholds']);
+    } else {
+        $requiredWeight = (int)($job['requiredWeight'] ?? ($tx ? requiredWeightForOperations($tx, $job['thresholds'] ?? []) : ($job['thresholds']['med'] ?? 0)));
+    }
+    $accountSequence = ($live && ($meta['sequence'] ?? null) !== null) ? new BigInteger($meta['sequence']) : null;
     $job['signers'] = $signers;
     $job['requiredWeight'] = $requiredWeight;
 
-    $collected = [];
-    $collectedWeight = 0;
     if ($tx) {
         $collected = verifyCollected($tx, $net, $signers);
-        $collectedWeight = array_reduce($collected, fn($c, $s) => $c + (int)($s['weight'] ?? 0), 0);
+    } else {
+        // Nur bei nicht lesbarem XDR: der gespeicherte Stand (F-11).
+        $collected = is_array($job['collectedSigners'] ?? null) ? array_values($job['collectedSigners']) : [];
     }
-    // Fallback to existing collected info if parsing failed
-    if (!$collected && isset($job['collectedSigners']) && is_array($job['collectedSigners'])) {
-        $collected = array_values($job['collectedSigners']);
-        $collectedWeight = array_reduce($collected, fn($c, $s) => $c + (int)($s['weight'] ?? 0), 0);
-    }
+    $collectedWeight = array_reduce($collected, fn($c, $s) => $c + (int)($s['weight'] ?? 0), 0);
     $collectedMap = [];
     foreach ($collected as $c) {
         $pk = $c['publicKey'] ?? null;
@@ -511,6 +508,14 @@ if ($method === 'POST' && $path === '/api/multisig/jobs') {
         // arbitrary (publicKey, weight) pairs never actually verified against the
         // transaction's signatures; removed.
         $meta = fetchAccountSignersCached($accountId, $net);
+        // F-8: Ohne Signer-Daten kein Job. Frueher entstand bei einem Horizon-Ausfall ein Job mit leeren
+        // Signern, Schwellen 0 und noetigem Gewicht 1, der bis zum ersten Merge falsch angezeigt wurde
+        // und bei ?signer= fuer niemanden sichtbar war. Gleich wie server.js.
+        if (($meta['ok'] ?? true) === false) {
+            return ($meta['notFound'] ?? false)
+                ? sendJson(['ok' => false, 'error' => 'account_not_found'], 400)
+                : sendJson(['ok' => false, 'error' => 'horizon_unavailable'], 503);
+        }
         $signerMeta = $meta['signers'];
         $requiredWeight = requiredWeightForOperations($tx, $meta['thresholds']);
         $collected = verifyCollected($tx, $net, $signerMeta);
@@ -983,6 +988,8 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/merge-
                 $accountSequence = (($meta['ok'] ?? true) !== false && ($meta['sequence'] ?? null) !== null)
                     ? new BigInteger($meta['sequence'])
                     : null;
+                // Sequenz von accountId genuegt: K1 (oben) erzwingt, dass die Tx-Quelle (Basiskonto)
+                // gleich accountId ist.
                 $lifecycleStatus = computeMultisigLifecycleStatus($current, $accountSequence, time());
                 if ($lifecycleStatus !== null) {
                     $j['status'] = $lifecycleStatus;

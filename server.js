@@ -642,8 +642,8 @@ async function fetchAccountMetaCached(net, accountId) {
   } catch (e) {
     // Never cache a failed lookup (same rationale as the PHP version): a
     // transient Horizon hiccup would otherwise be served as "this account
-    // has no signers" for the full TTL.
-    return { ok: false, signers: [], thresholds: { low: 0, med: 0, high: 0 }, sequence: null };
+    // has no signers" for the full TTL. notFound wie in api/multisig.php (Horizon 404 = Konto unbekannt).
+    return { ok: false, signers: [], thresholds: { low: 0, med: 0, high: 0 }, sequence: null, notFound: isAccountNotFound(e) };
   }
   accountMetaCache.set(key, { data, fetchedAt: Date.now() });
   return data;
@@ -658,13 +658,39 @@ function parseJobTx(job) {
   }
 }
 
-// G5 stage 1: ephemeral, read-time lifecycle overlay for the list/detail
-// routes - mirrors the non-final-status branch of api/multisig.php's
-// summarizeJob(), but (deliberately, matching the existing PHP behavior)
-// does NOT persist the result back to multisigDb; only create/merge (which
-// already hold the write lock via saveMultisigDb()) durably update a job's
-// status. A stale-but-still-live job simply gets recomputed fresh on every
-// read - cheap, since fetchAccountMetaCached() is TTL-cached per account.
+// Lesen eines Jobs (Liste, Detail, Ablehnen, Loeschen): Neuberechnung ohne Speichern, gleich wie
+// summarizeJob in api/multisig.php (F-11 / F-8). Offene Jobs mit antwortendem Horizon: Signer,
+// Schwellen und requiredWeight live, collected aus verifyCollected gegen diese Signer, Status aus
+// Lebenszyklus bzw. Gewicht. Antwortet Horizon nicht, gilt der gespeicherte Stand (Signer, Schwellen,
+// requiredWeight), der Status wird daraus berechnet. Endzustaende: keine Abfrage, Status bleibt.
+// Gespeicherte collectedSigners nur bei nicht lesbarem XDR. Dauerhaft aendern nur Anlegen und Merge
+// (unter saveMultisigDb()).
+function recomputeJobState(job, tx, liveMeta, nowUnix) {
+  const isFinal = multisigFinalStatus.has(job.status);
+  const signers = liveMeta ? (liveMeta.signers || []) : (Array.isArray(job.signers) ? job.signers : []);
+  let requiredWeight;
+  if (liveMeta && tx) {
+    requiredWeight = requiredWeightForOperations(tx.operations, liveMeta.thresholds);
+  } else if (job.requiredWeight !== undefined && job.requiredWeight !== null) {
+    requiredWeight = Number(job.requiredWeight);
+  } else {
+    requiredWeight = tx ? requiredWeightForOperations(tx.operations, job.thresholds || {}) : Number(job.thresholds?.med || 0);
+  }
+  const collectedSigners = tx ? verifyCollected(tx, signers) : (Array.isArray(job.collectedSigners) ? job.collectedSigners : []);
+  const collectedWeight = collectedSigners.reduce((acc, s) => acc + Number(s.weight || 0), 0);
+  const out = { ...job, signers, requiredWeight, collectedSigners, collectedWeight };
+  if (liveMeta) out.thresholds = liveMeta.thresholds;
+  if (!isFinal) {
+    // Sequenz von accountId genuegt: K1 erzwingt beim Anlegen und Merge, dass die Tx-Quelle
+    // (Basiskonto) gleich accountId ist. Altjobs von vor K1 nehmen keine Signatur mehr an und laufen ab.
+    const accountSequence = liveMeta ? liveMeta.sequence : null;
+    const lifecycleStatus = tx ? computeMultisigLifecycleStatus(tx, accountSequence, nowUnix) : null;
+    out.status = lifecycleStatus || ((requiredWeight > 0 && collectedWeight >= requiredWeight) ? 'ready_to_submit' : 'pending_signatures');
+  }
+  return out;
+}
+
+// Name historisch (G5): berechnet inzwischen den ganzen Lesestand neu, siehe recomputeJobState.
 async function annotateJobsLifecycleStatus(items) {
   const nowUnix = Math.floor(Date.now() / 1000);
   const liveKeys = new Set();
@@ -679,13 +705,8 @@ async function annotateJobsLifecycleStatus(items) {
     metaByKey.set(key, await fetchAccountMetaCached(net, accountId));
   }));
   return items.map((j) => {
-    if (multisigFinalStatus.has(j.status)) return j;
-    const meta = metaByKey.get(`${j.network}::${j.accountId}`);
-    const tx = parseJobTx(j);
-    if (!tx) return j;
-    const accountSequence = meta && meta.ok ? meta.sequence : null;
-    const lifecycleStatus = computeMultisigLifecycleStatus(tx, accountSequence, nowUnix);
-    return lifecycleStatus ? { ...j, status: lifecycleStatus } : j;
+    const meta = multisigFinalStatus.has(j.status) ? null : metaByKey.get(`${j.network}::${j.accountId}`);
+    return recomputeJobState(j, parseJobTx(j), meta && meta.ok ? meta : null, nowUnix);
   });
 }
 
@@ -731,14 +752,13 @@ app.post('/api/multisig/jobs', async (req, res) => {
       return res.status(400).json({ ok: false, error: 'timebound_too_long', maxAllowedSeconds: MULTISIG_JOB_MAX_TIMEBOUND_SECONDS });
     }
 
-    let account = null;
-    let signerMeta = { signers: [], thresholds: { low: 0, med: 0, high: 0 } };
-    try {
-      account = await loadAccount(horizonServerForNet(net), asciiTrim(accountId));
-      signerMeta = extractSignerMeta(account);
-    } catch (e) {
-      // Best-effort fallback: allow job creation even if account lookup fails (no blocking)
-      console.warn('multisig.jobs.account_load_failed', e?.message || e);
+    // F-8: Ohne Signer-Daten kein Job (wie api/multisig.php). Frueher entstand bei einem
+    // Horizon-Ausfall ein Job mit leeren Signern und noetigem Gewicht 1.
+    const signerMeta = await fetchAccountMetaCached(net, asciiTrim(accountId));
+    if (!signerMeta.ok) {
+      return signerMeta.notFound
+        ? res.status(400).json({ ok: false, error: 'account_not_found' })
+        : res.status(503).json({ ok: false, error: 'horizon_unavailable' });
     }
     const requiredWeight = requiredWeightForOperations(parsed.tx.operations, signerMeta.thresholds);
     const signers = signerMeta.signers || [];
@@ -990,7 +1010,9 @@ app.post('/api/multisig/jobs/:id/decline', (req, res) => withMultisigJobLock(req
 
     const [current] = await annotateJobsLifecycleStatus([job]);
     if (multisigFinalStatus.has(current.status)) return res.status(409).json({ ok: false, error: current.status });
-    if ((job.collectedSigners || []).some((c) => c.publicKey === signerPk)) {
+    // Aus dem neu berechneten Stand (F-11), wie summarizeJob in PHP: zaehlt auch eine Signatur im XDR,
+    // die der gespeicherte Stand nicht kennt (z. B. Job bei Horizon-Ausfall angelegt).
+    if ((current.collectedSigners || []).some((c) => c.publicKey === signerPk)) {
       return res.status(409).json({ ok: false, error: 'already_signed' });
     }
 
@@ -1118,6 +1140,11 @@ app.post('/api/multisig/jobs/:id/merge-signed-xdr', (req, res) => withMultisigJo
     // sequence number regardless of whether the stored signer snapshot is
     // already populated.
     const meta = await fetchAccountMetaCached(net, job.accountId);
+    // F-9: Antwortet Horizon nicht, wird nichts geaendert und nichts gesendet (wie api/multisig.php).
+    // Frueher rechnete Node mit dem gespeicherten Signer-Stand weiter und sendete gegebenenfalls.
+    if (!meta.ok) {
+      return res.status(502).json({ ok: false, error: 'signers_unavailable' });
+    }
     let signers = Array.isArray(job.signers) ? job.signers : [];
     // Fail closed on an empty signer list: filterValidSignatures() below would
     // otherwise wipe every previously collected signature from txXdrCurrent -
@@ -1139,6 +1166,7 @@ app.post('/api/multisig/jobs/:id/merge-signed-xdr', (req, res) => withMultisigJo
     // another transaction, or its timebound has passed. Checked before
     // touching any signature state so a doomed merge attempt never gets
     // recorded as if it mattered.
+    // Sequenz von accountId genuegt: K1 (oben) erzwingt, dass die Tx-Quelle (Basiskonto) gleich accountId ist.
     const accountSequence = meta.ok ? meta.sequence : null;
     const lifecycleStatus = computeMultisigLifecycleStatus(current.tx, accountSequence, Math.floor(Date.now() / 1000));
     if (lifecycleStatus) {

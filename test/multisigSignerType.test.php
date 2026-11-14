@@ -61,7 +61,10 @@ function paymentTx(KeyPair $owner, int $now): \Soneso\StellarSDK\Transaction {
         ->build();
 }
 
-$oldTx = paymentTx($owner, $now);
+// Konto des Altjobs: Horizon nicht erreichbar (Cache-Eintrag ok => false). Offene Jobs werden sonst beim
+// Lesen live neu berechnet (F-11); der gespeicherte Stand ohne Typ gilt nur bei Ausfall.
+$legacyOwner = KeyPair::random();
+$oldTx = paymentTx($legacyOwner, $now);
 $oldXdr = $oldTx->toEnvelopeXdrBase64();
 
 $apiDir = sys_get_temp_dir() . '/skm-signertype-' . bin2hex(random_bytes(4));
@@ -71,10 +74,10 @@ symlink(realpath(__DIR__ . '/../api/vendor'), $apiDir . '/vendor');
 
 // Altjob ohne Signer-Typ (Stand vor Teilschritt 5)
 file_put_contents($apiDir . '/data/multisig_jobs.json', json_encode(['items' => [[
-    'id' => 'altjob', 'accessToken' => 'tok-alt', 'network' => 'testnet', 'accountId' => $owner->getAccountId(),
+    'id' => 'altjob', 'accessToken' => 'tok-alt', 'network' => 'testnet', 'accountId' => $legacyOwner->getAccountId(),
     'txHash' => bin2hex($oldTx->hash(Network::testnet())), 'txXdrOriginal' => $oldXdr, 'txXdrCurrent' => $oldXdr,
     'status' => 'pending_signatures', 'createdAt' => gmdate('c'), 'maxTimeUnix' => $now + 3600,
-    'signers' => [['publicKey' => $owner->getAccountId(), 'weight' => 1], ['publicKey' => $x, 'weight' => 1]],
+    'signers' => [['publicKey' => $legacyOwner->getAccountId(), 'weight' => 1], ['publicKey' => $x, 'weight' => 1]],
     'thresholds' => ['low' => 1, 'med' => 2, 'high' => 2],
     'requiredWeight' => 2, 'collectedSigners' => [], 'collectedWeight' => 0,
 ]]]));
@@ -86,6 +89,10 @@ $liveSigners = [
 file_put_contents($apiDir . '/data/signers_cache_v2.json', json_encode([
     'testnet:' . $owner->getAccountId() => [
         'data' => ['ok' => true, 'signers' => $liveSigners, 'thresholds' => ['low' => 1, 'med' => 2, 'high' => 2], 'sequence' => '100'],
+        'fetchedAt' => time() + 3600,
+    ],
+    'testnet:' . $legacyOwner->getAccountId() => [
+        'data' => ['ok' => false, 'signers' => [], 'thresholds' => ['low' => 0, 'med' => 0, 'high' => 0], 'sequence' => null, 'notFound' => false],
         'fetchedAt' => time() + 3600,
     ],
 ]));
@@ -132,7 +139,7 @@ try {
 
     $alt = request('GET', BASE_URL . '/altjob', ['x-job-token: tok-alt']);
     $missingAlt = array_column($alt['body']['missingSigners'] ?? [], 'publicKey');
-    check('Altjob ohne Signer-Typ: gelesen, Typ aus dem Schluessel, X-Signer fehlt nicht', $alt['status'] === 200 && $missingAlt === [$owner->getAccountId()]);
+    check('Altjob ohne Signer-Typ (gespeicherter Stand bei Horizon-Ausfall): gelesen, Typ aus dem Schluessel, X-Signer fehlt nicht', $alt['status'] === 200 && $missingAlt === [$legacyOwner->getAccountId()]);
 } finally {
     proc_terminate($server);
     proc_close($server);

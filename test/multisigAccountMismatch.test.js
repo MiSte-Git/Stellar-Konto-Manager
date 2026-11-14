@@ -1,8 +1,9 @@
 // K1: Die Quelle eines Multisig-Jobs muss der Transaktion entsprechen.
 // Laeuft als echter HTTP-Test gegen server.js in einem eigenen Prozess mit
 // eigenem Datenordner (Pendant: test/multisigAccountMismatch.test.php).
-// Alle Konten sind zufaellig und existieren nicht: Die Konto-Abfrage schlaegt online
-// wie offline fehl. Die Pruefungen brauchen Horizon nicht, und das Anlegen geht weiter.
+// Alle Konten sind zufaellig. Horizon per test/helpers/horizonAccountsMock.js mit Eintrag "*": jedes
+// Konto existiert mit sich selbst als Signer (Gewicht 1, Schwelle 2, es wird also nie gesendet). Seit
+// F-8 legt das Anlegen ohne Signer-Daten keinen Job mehr an.
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { spawn } = require('child_process');
@@ -67,9 +68,11 @@ test.before(async () => {
   dataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'skm-k1-'));
   const dbPath = path.join(dataDir, 'multisig_jobs.json');
   fs.writeFileSync(dbPath, JSON.stringify({ items: [legacyJob, legacyFeeBumpJob] }));
-  server = spawn(process.execPath, ['server.js'], {
+  const accountsPath = path.join(dataDir, 'horizon_accounts.json');
+  fs.writeFileSync(accountsPath, JSON.stringify({ '*': { thresholds: { low_threshold: 2, med_threshold: 2, high_threshold: 2 }, sequence: '100' } }));
+  server = spawn(process.execPath, ['--require', './test/helpers/horizonAccountsMock.js', 'server.js'], {
     cwd: path.join(__dirname, '..'),
-    env: { ...process.env, PORT: String(PORT), BUG_DB_DIR: dataDir, MULTISIG_DB_PATH: dbPath },
+    env: { ...process.env, PORT: String(PORT), BUG_DB_DIR: dataDir, MULTISIG_DB_PATH: dbPath, SKM_TEST_HORIZON_ACCOUNTS: accountsPath },
     stdio: 'ignore',
   });
   for (let i = 0; i < 100; i += 1) {
@@ -171,9 +174,10 @@ test('Merge: passender Job kommt an der Pruefung vorbei', async () => {
   const signed = TransactionBuilder.fromXDR(tx.toXDR(), Networks.TESTNET);
   signed.sign(owner);
   const { status, body } = await post(`${BASE}/${created.body.id}/merge-signed-xdr`, { signedXdr: signed.toXDR() }, { 'x-job-token': created.body.accessToken });
-  // Das Konto existiert nicht, der Merge endet deshalb erst bei der Signer-Abfrage.
-  assert.equal(status, 502);
-  assert.equal(body.error, 'signers_unavailable');
+  // Die Signatur wird uebernommen (Gewicht 1 von 2, nicht gesendet).
+  assert.equal(status, 200);
+  assert.equal(body.status, 'pending_signatures');
+  assert.equal(body.collectedWeight, 1);
 });
 
 test('Merge: mismatched_hash kommt vor account_mismatch', async () => {

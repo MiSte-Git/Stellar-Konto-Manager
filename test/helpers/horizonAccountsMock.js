@@ -4,6 +4,7 @@
 //
 // SKM_TEST_HORIZON_ACCOUNTS zeigt auf eine JSON-Datei { "<accountId>": { signers:
 // [{ key, weight }], thresholds: { low_threshold, med_threshold, high_threshold }, sequence } }.
+// Ein Eintrag "*" gilt fuer jedes sonst unbekannte Konto (Signer: das Konto selbst, Gewicht 1).
 // Die Datei wird bei jedem Aufruf neu gelesen, ein Test kann Signer also waehrend des Laufs
 // entfernen. Fehlt das Konto, wirft loadAccount wie Horizon bei einem Fehler (ohne HTTP-Status,
 // also "Horizon nicht erreichbar"). Ein Eintrag { "notFound": true } wirft wie Horizon bei einem
@@ -16,7 +17,10 @@ if (!file) throw new Error('horizonAccountsMock: SKM_TEST_HORIZON_ACCOUNTS fehlt
 
 StellarSdk.Horizon.Server.prototype.loadAccount = async function loadAccount(accountId) {
   const accounts = JSON.parse(fs.readFileSync(file, 'utf8'));
-  const acc = accounts[accountId];
+  // Eintrag "*": jedes sonst unbekannte Konto existiert, mit sich selbst als einzigem Signer (Gewicht 1)
+  // und den Schwellen/der Sequenz aus "*" (fuer Tests mit zufaelligen Konten, F-8).
+  const acc = accounts[accountId]
+    ?? (accounts['*'] ? { ...accounts['*'], signers: [{ key: accountId, weight: 1 }] } : undefined);
   if (!acc) throw new Error('horizon_mock_not_found');
   if (acc.hang) return new Promise(() => {});
   if (acc.notFound) {

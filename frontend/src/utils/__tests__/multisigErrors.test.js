@@ -52,3 +52,34 @@ describe('fee_bump_not_supported (#15)', () => {
       .rejects.toThrow(/Fee-Bump-Transaktionen sind als Multisig-Job nicht vorgesehen/);
   });
 });
+
+// F-8: Ohne Signer-Daten legt kein Backend mehr einen Job an.
+describe('horizon_unavailable und account_not_found beim Anlegen (F-8)', () => {
+  beforeAll(async () => { await i18n.changeLanguage('de'); });
+
+  it('horizon_unavailable: Hinweis, dass Horizon nicht erreichbar ist und kein Job angelegt wurde', () => {
+    const text = backendErrorMessage('horizon_unavailable');
+    expect(text).not.toBe('horizon_unavailable');
+    expect(text).toMatch(/Horizon/);
+    expect(text).toMatch(/kein Job angelegt/);
+  });
+
+  it('account_not_found: Hinweis, dass das Konto im Netz nicht bekannt ist und kein Job angelegt wurde', () => {
+    const text = backendErrorMessage('account_not_found');
+    expect(text).not.toBe('account_not_found');
+    expect(text).toMatch(/nicht bekannt/);
+    expect(text).toMatch(/kein Job angelegt/);
+  });
+
+  it('createMultisigJobFromXdr wirft bei 503 den uebersetzten Hinweis, nicht den Rohcode', async () => {
+    mockResponse(503, { ok: false, error: 'horizon_unavailable' });
+    await expect(createMultisigJobFromXdr({ network: 'testnet', accountId: 'GA', txXdr: 'AAAA' }))
+      .rejects.toThrow(/kein Job angelegt/);
+  });
+
+  it('createMultisigJobFromXdr wirft bei 400 account_not_found den uebersetzten Hinweis', async () => {
+    mockResponse(400, { ok: false, error: 'account_not_found' });
+    await expect(createMultisigJobFromXdr({ network: 'testnet', accountId: 'GA', txXdr: 'AAAA' }))
+      .rejects.toThrow(/nicht bekannt/);
+  });
+});

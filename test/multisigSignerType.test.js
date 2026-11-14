@@ -15,9 +15,12 @@ const BASE = `http://127.0.0.1:${PORT}/api/multisig/jobs`;
 const owner = Keypair.random();
 const b = Keypair.random();
 const X = StrKey.encodeSha256Hash(Buffer.alloc(32, 2));
+// Konto des Altjobs: fehlt im Horizon-Mock (= Horizon nicht erreichbar). Offene Jobs werden sonst
+// beim Lesen live neu berechnet (F-11); der gespeicherte Stand ohne Typ gilt nur bei Ausfall.
+const legacyOwner = Keypair.random();
 
-function buildTx() {
-  return new TransactionBuilder(new Account(owner.publicKey(), '100'), { fee: '1000', networkPassphrase: Networks.TESTNET })
+function buildTx(source = owner) {
+  return new TransactionBuilder(new Account(source.publicKey(), '100'), { fee: '1000', networkPassphrase: Networks.TESTNET })
     .addOperation(Operation.payment({ destination: Keypair.random().publicKey(), asset: Asset.native(), amount: '1' }))
     .setTimeout(3600)
     .build();
@@ -31,13 +34,13 @@ test.before(async () => {
   dataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'skm-signertype-'));
   dbPath = path.join(dataDir, 'multisig_jobs.json');
   const accountsPath = path.join(dataDir, 'horizon_accounts.json');
-  // Altjob ohne Signer-Typ (Stand vor Teilschritt 5)
-  const oldTx = buildTx();
+  // Altjob ohne Signer-Typ (Stand vor Teilschritt 5), Horizon fuer sein Konto nicht erreichbar
+  const oldTx = buildTx(legacyOwner);
   fs.writeFileSync(dbPath, JSON.stringify({ items: [{
-    id: 'altjob', accessToken: 'tok-alt', network: 'testnet', accountId: owner.publicKey(),
+    id: 'altjob', accessToken: 'tok-alt', network: 'testnet', accountId: legacyOwner.publicKey(),
     txHash: Buffer.from(oldTx.hash()).toString('hex'), txXdrOriginal: oldTx.toXDR(), txXdrCurrent: oldTx.toXDR(),
     status: 'pending_signatures', createdAt: new Date().toISOString(), maxTimeUnix: Math.floor(Date.now() / 1000) + 3600,
-    signers: [{ publicKey: owner.publicKey(), weight: 1 }, { publicKey: X, weight: 1 }],
+    signers: [{ publicKey: legacyOwner.publicKey(), weight: 1 }, { publicKey: X, weight: 1 }],
     requiredWeight: 2, collectedSigners: [], collectedWeight: 0,
   }] }));
   fs.writeFileSync(accountsPath, JSON.stringify({
@@ -101,8 +104,8 @@ test('Job anlegen: signers mit Typ aus Horizon gespeichert', async () => {
   assert.deepEqual(item.missingSigners.map((s) => s.publicKey), [b.publicKey()]);
 });
 
-test('Altjob ohne Signer-Typ wird gelesen, der Typ folgt aus dem Schluessel', async () => {
+test('Altjob ohne Signer-Typ wird gelesen (gespeicherter Stand bei Horizon-Ausfall), der Typ folgt aus dem Schluessel', async () => {
   const detail = await (await fetch(`${BASE}/altjob`, { headers: { 'x-job-token': 'tok-alt' } })).json();
-  assert.deepEqual(detail.missingSigners, [{ publicKey: owner.publicKey(), weight: 1 }]);
+  assert.deepEqual(detail.missingSigners, [{ publicKey: legacyOwner.publicKey(), weight: 1 }]);
   assert.equal(detail.missingWeight, 1);
 });

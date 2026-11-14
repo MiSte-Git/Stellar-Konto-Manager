@@ -38,21 +38,18 @@ check('sanity: summarizeJob() exists', $summarizeIdx !== false);
 check('sanity: routing section follows summarizeJob()', $routingIdx !== false && $routingIdx > $summarizeIdx);
 $summarizeBlock = ($summarizeIdx !== false && $routingIdx !== false) ? substr($source, $summarizeIdx, $routingIdx - $summarizeIdx) : '';
 
-// F2: the Horizon meta fetch must be conditioned on actually needing it -
-// either the job isn't final yet (lifecycle check needs a live sequence), or
-// the stored signers[] snapshot is empty (needs backfilling regardless of
-// status). An already-final job with a populated signer snapshot must not
-// trigger a Horizon round-trip it will never use.
+// F2 / F-11: the Horizon meta fetch must be conditioned on actually needing it -
+// only an open (not final) job is recomputed live (signers, thresholds,
+// requiredWeight, lifecycle). A final job never triggers a Horizon round-trip,
+// not even with an empty signer snapshot (Endzustaende: gespeicherter Stand).
 $isFinalIdx = strpos($summarizeBlock, "\$isFinal = in_array(\$job['status'] ?? '', \$finalStates, true);");
-$signersEmptyIdx = strpos($summarizeBlock, '$signersEmpty = !$signers || count($signers) === 0;');
-$conditionedFetchIdx = strpos($summarizeBlock, '$meta = (!$isFinal || $signersEmpty) ? fetchAccountSignersCached($accountId, $net) : null;');
+$conditionedFetchIdx = strpos($summarizeBlock, '$meta = $isFinal ? null : fetchAccountSignersCached($accountId, $net);');
 check('summarizeJob() determines finality up front', $isFinalIdx !== false);
-check('summarizeJob() determines whether the signers snapshot is empty up front', $signersEmptyIdx !== false);
 check(
-    'F2: the account meta fetch is conditioned on (not final) or (signers empty), not unconditional',
-    $conditionedFetchIdx !== false && $isFinalIdx !== false && $signersEmptyIdx !== false
-        && $isFinalIdx < $conditionedFetchIdx && $signersEmptyIdx < $conditionedFetchIdx
+    'F2/F-11: the account meta fetch happens only for open jobs, never for final ones',
+    $conditionedFetchIdx !== false && $isFinalIdx !== false && $isFinalIdx < $conditionedFetchIdx
 );
+check('F2/F-11: there is exactly one Horizon meta fetch in summarizeJob()', substr_count($summarizeBlock, 'fetchAccountSignersCached(') === 1);
 check('summarizeJob() derives a BigInteger account sequence from the fetched meta', strpos($summarizeBlock, "new BigInteger(\$meta['sequence'])") !== false);
 $lifecycleCallIdx = strpos($summarizeBlock, 'computeMultisigLifecycleStatus($tx, $accountSequence, time())');
 $notFinalBranchIdx = strpos($summarizeBlock, 'if (!$isFinal) {');

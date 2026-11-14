@@ -93,13 +93,24 @@ Folgen daraus:
 Ein Job ist eine unsignierte oder teilsignierte Transaktion, die mehrere Signer nacheinander signieren.
 
 - **Anlegen** ist ohne Anmeldung möglich (Rate-Limit). Der Server prüft: XDR dekodierbar, Netz bekannt,
-  Transaktionsquelle = Job-Konto (auch bei M-Adresse über das Basiskonto), Gültigkeitsfenster begrenzt.
+  Transaktionsquelle = Job-Konto (auch bei M-Adresse über das Basiskonto), Gültigkeitsfenster begrenzt. Ohne
+  Signer-Daten aus Horizon entsteht kein Job: Horizon nicht erreichbar ergibt 503 `horizon_unavailable`, Konto
+  unbekannt (Horizon 404) 400 `account_not_found` (beide Backends). Früher entstand dann ein Job mit leeren
+  Signern und nötigem Gewicht 1, der falsch angezeigt wurde (Review Fable, Befund F-8).
+- **Lesen** (Liste, Detail, Ablehnen, Löschen): Offene Jobs werden live neu berechnet, wenn Horizon antwortet
+  (Signer, Schwellen, nötiges Gewicht, gesammeltes Gewicht über `verifyCollected`, Status), nichts davon wird
+  gespeichert. Ein inzwischen entfernter Signer zählt also nicht mehr. Antwortet Horizon nicht, gilt der
+  gespeicherte Stand. Endzustände werden ohne Horizon-Abfrage aus dem gespeicherten Stand gezeigt. Auf gespeicherte
+  `collectedSigners` wird nur bei nicht lesbarem XDR zurückgegriffen (`summarizeJob` in `api/multisig.php`,
+  `recomputeJobState` in `server.js`; Befund F-11). Die Sequenz für den Lebenszyklus kommt von `accountId`; das
+  reicht, weil Anlegen und Merge Quelle = `accountId` erzwingen (K1).
 - **Signatur hinzufügen (Merge):** Der Server übernimmt nur Signaturen von aktuellen Signern des Kontos, je Signer
   höchstens eine (die zuerst vorhandene, also die schon gespeicherte) und insgesamt höchstens 20 Signaturen
   (Stellar-Grenze, `services/txSignatures.js`, `api/txSignatures.php`). Grund für „je Signer eine“: Ed25519 erlaubt
   mehrere verschiedene gültige Signaturen desselben Keys; zwei davon im Envelope lehnt das Netz mit
   `tx_bad_auth_extra` ab, ein Mitsigner könnte den Job so sabotieren (Review Fable, Befund F-5). Merge prüft zuerst
-  den Hash, dann die Quelle.
+  den Hash, dann die Quelle. Antwortet Horizon beim Merge nicht, antworten beide Backends 502 `signers_unavailable`
+  und ändern nichts (Node rechnete früher mit dem gespeicherten Stand weiter und sendete gegebenenfalls, Befund F-9).
 - **Job-Token:** Wer Job-Details lesen will, braucht ein Token (Header `x-job-token`, nie in der URL). Es gibt das
   Token beim Anlegen oder über eine **Challenge**: Der Server erzeugt eine Nonce je Job und Signer (60 s gültig,
   einmalig), der Client signiert sie lokal, der Server prüft die Signatur und ob der Key aktuell Signer des Kontos

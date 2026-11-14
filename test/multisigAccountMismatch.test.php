@@ -3,8 +3,10 @@
 // Echter HTTP-Test gegen api/multisig.php (Pendant: test/multisigAccountMismatch.test.js):
 // multisig.php routet beim Laden und laesst sich nicht direkt einbinden, und sein
 // Datenordner ist fest. Darum laeuft eine Kopie von api/*.php mit eigenem Datenordner
-// im PHP-Entwicklungsserver. Alle Konten sind zufaellig und existieren nicht: Die
-// Konto-Abfrage schlaegt online wie offline fehl, die Pruefungen brauchen Horizon nicht.
+// im PHP-Entwicklungsserver. Alle Konten sind zufaellig. Ein Konto, fuer das ein Job angelegt
+// wird, bekommt vorher einen Eintrag im Signer-Cache (seedAccount: das Konto selbst als Signer,
+// Gewicht 1, Schwelle 2, es wird also nie gesendet). Seit F-8 legt das Anlegen ohne Signer-Daten
+// keinen Job mehr an. Pendant in Node: Eintrag "*" in test/helpers/horizonAccountsMock.js.
 //
 // Run with: php test/multisigAccountMismatch.test.php
 
@@ -60,6 +62,18 @@ function post(string $url, array $body, array $headers = []): array {
     curl_setopt($ch, CURLOPT_TIMEOUT, 30);
     $raw = curl_exec($ch);
     return ['status' => (int)curl_getinfo($ch, CURLINFO_HTTP_CODE), 'body' => json_decode((string)$raw, true) ?? []];
+}
+
+// Konto im Signer-Cache der Testkopie vorbelegen (wird bei jeder Anfrage neu gelesen).
+function seedAccount(string $apiDir, KeyPair $kp): void {
+    $file = $apiDir . '/data/signers_cache_v2.json';
+    $cache = file_exists($file) ? (json_decode((string)file_get_contents($file), true) ?: []) : [];
+    $cache['testnet:' . $kp->getAccountId()] = [
+        'data' => ['ok' => true, 'signers' => [['publicKey' => $kp->getAccountId(), 'weight' => 1, 'type' => 'ed25519_public_key']],
+            'thresholds' => ['low' => 2, 'med' => 2, 'high' => 2], 'sequence' => '100'],
+        'fetchedAt' => time() + 3600,
+    ];
+    file_put_contents($file, json_encode($cache));
 }
 
 function createJob(string $accountId, AbstractTransaction $tx): array {
@@ -147,6 +161,7 @@ try {
     }
 
     $base = KeyPair::random();
+    seedAccount($apiDir, $base);
     $res = createJob($base->getAccountId(), paymentTx($base, 7));
     check('Create: M-Adresse mit gleichem Basiskonto wird angenommen', $res['status'] === 200 && ($res['body']['accountId'] ?? '') === $base->getAccountId());
 
@@ -163,14 +178,15 @@ try {
     check('Merge: Altjob bleibt unveraendert gespeichert', ($legacy['txXdrCurrent'] ?? '') === $victimXdr);
 
     $owner = KeyPair::random();
+    seedAccount($apiDir, $owner);
     $ownerTx = paymentTx($owner);
     $created = createJob($owner->getAccountId(), $ownerTx);
     check('sanity: passender Job wird angelegt', $created['status'] === 200);
     $ownerSigned = AbstractTransaction::fromEnvelopeBase64XdrString($ownerTx->toEnvelopeXdrBase64());
     $ownerSigned->sign($owner, Network::testnet());
     $res = post(BASE_URL . '/' . ($created['body']['id'] ?? '') . '/merge-signed-xdr', ['signedXdr' => $ownerSigned->toEnvelopeXdrBase64()], ['x-job-token: ' . ($created['body']['accessToken'] ?? '')]);
-    // Das Konto existiert nicht, der Merge endet deshalb erst bei der Signer-Abfrage.
-    check('Merge: passender Job kommt an der Pruefung vorbei', $res['status'] === 502 && ($res['body']['error'] ?? '') === 'signers_unavailable');
+    // Die Signatur wird uebernommen (Gewicht 1 von 2, nicht gesendet), wie Node.
+    check('Merge: passender Job kommt an der Pruefung vorbei', $res['status'] === 200 && ($res['body']['status'] ?? '') === 'pending_signatures' && ($res['body']['collectedWeight'] ?? null) === 1);
 
     $res = post(BASE_URL . '/legacy-mismatch/merge-signed-xdr', ['signedXdr' => paymentTx($victim)->toEnvelopeXdrBase64()], ['x-job-token: legacy-token']);
     check('Merge: mismatched_hash kommt vor account_mismatch', $res['status'] === 400 && ($res['body']['error'] ?? '') === 'mismatched_hash');
@@ -178,6 +194,7 @@ try {
     // Fee-Bump ist als Job nicht vorgesehen (#15): ausdruecklich fee_bump_not_supported, vor Quelle und
     // Zeitgrenze, beim Anlegen und beim Merge (Pendant: test/multisigAccountMismatch.test.js).
     $feeOwner = KeyPair::random();
+    seedAccount($apiDir, $feeOwner);
     $feeInner = paymentTx($feeOwner);
     $feeInner->sign($feeOwner, Network::testnet());
     $feeBumpTx = (new FeeBumpTransactionBuilder($feeInner))->setFeeAccount(KeyPair::random()->getAccountId())->setBaseFee(200)->build();
