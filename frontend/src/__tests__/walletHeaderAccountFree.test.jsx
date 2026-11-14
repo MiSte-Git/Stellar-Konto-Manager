@@ -8,6 +8,9 @@ vi.mock('../utils/stellar/stellarUtils.js', async (importOriginal) => {
   return {
     ...orig,
     handleSourceSubmit: (...args) => hoisted.submit(...args),
+    // Kein Live-Horizon: Das Testkonto existiert auf keinem Netz, Horizon antwortet 404. Vorher lief der
+    // Aufruf echt und der Test scheiterte ohne Netz (Backlog, Tests und Qualitaet).
+    loadTrustlines: async () => { throw new Error('error.loadTrustlinesNotFound'); },
     // Kein echter Horizon-Aufruf fuer die Reserve auf Neues Konto erstellen
     getHorizonServer: (...args) => {
       const server = orig.getHorizonServer(...args);
