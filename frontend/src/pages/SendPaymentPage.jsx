@@ -38,6 +38,7 @@ import {
 import { AmbiguousSubmitResultError, PreSubmitCheckError, verifyMemoRequired } from '../utils/stellar/submitTransactionSafely.js';
 import { formatValidUntil } from '../utils/multisig/formatValidUntil.js';
 import { accountRequiresMemo, isAccountRequiresMemoError, isNotFoundError } from '../utils/stellar/memoRequired.js';
+import { isAccountNotFoundError } from '../utils/stellar/activationOutcome.js';
 import { loadWithBackoff } from '../utils/stellar/retryLoad.js';
 import { resolveFeePerOp } from '../utils/stellar/fees.js';
 import QrScanDialog from '../components/wallet/QrScanDialog.jsx';
@@ -232,6 +233,20 @@ function normalizeRecipientHistoryValue(raw) {
   const withoutTestnet = trimmed.replace(/\s*\(Testnet\)\s*/i, '').trim();
   const base = withoutTestnet.split(' - ')[0].trim();
   return base;
+}
+
+// Gibt es das Zielkonto? Nur ein 404 (NotFoundError) heisst "nicht aktiviert". Jeder andere Ladefehler
+// (Netz, Timeout, 5xx) sagt nichts darueber: dann wird nichts gebaut, sonst entstuende ein createAccount
+// fuer ein bestehendes Konto oder eine falsche Meldung "nicht aktiv".
+async function destinationExists(server, accountId, unreachableMessage) {
+  try {
+    await server.loadAccount(accountId);
+    return true;
+  } catch (e) {
+    if (isNotFoundError(e) || isAccountNotFoundError(e)) return false;
+    console.warn('[SKM] destination account could not be loaded', e);
+    throw new Error(unreachableMessage);
+  }
 }
 
 export default function SendPaymentPage({ publicKey, onBack: _onBack, initial }) {
@@ -627,11 +642,13 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
         return nextState;
       }
       const minReserve = (baseReserve || 0.5) * 2;
-      let destExists = true;
+      let destExists;
       try {
-        await server.loadAccount(resolvedAccountId);
-      } catch {
-        destExists = false;
+        destExists = await destinationExists(server, resolvedAccountId, t('errors:submitTransaction.failed.destinationUnreachable'));
+      } catch (e) {
+        nextState = { ...nextState, loading: false, err: e?.message || t('errors:unknown', 'Unbekannter Fehler') };
+        setPreflightIfCurrent(nextState);
+        return nextState;
       }
       if (!destExists) {
         if (assetKey !== 'XLM') {
@@ -868,12 +885,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       assetLabel = code || 'XLM';
     }
 
-    let destExists = true;
-    try {
-      await server.loadAccount(resolvedAccountId);
-    } catch {
-      destExists = false;
-    }
+    const destExists = await destinationExists(server, resolvedAccountId, t('errors:submitTransaction.failed.destinationUnreachable'));
 
     let tx;
     const txTimeout = immediateSubmit

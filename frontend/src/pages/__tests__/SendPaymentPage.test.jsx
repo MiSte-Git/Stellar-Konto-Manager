@@ -1032,15 +1032,25 @@ describe('SEP-29 memo_required preflight before sending (P1.1)', () => {
 
   it('sperrt fail-closed, wenn Horizon das Zielkonto nicht liefert: nichts gesendet, Meldung zum erneuten Versuch', async () => {
     let destLoads = 0;
+    let armed = false;
     hoisted.loadAccountMock.mockImplementation(async (pk) => {
       if (pk === SENDER.publicKey) return makeFundedAccount(pk, { extraBalances: [SENDER_FOO_BALANCE] });
+      // Bis zum Bestaetigen gelingt das Laden (Vorpruefung); faellt Horizon schon dort aus, sperrt bereits
+      // sie (destinationUnreachable, eigener Test). Hier geht es um den Memo-Pfad danach.
+      if (!armed) return makeFundedAccount(pk);
       destLoads += 1;
       const err = new Error('Service Unavailable');
       err.response = { status: 503 };
       throw err;
     });
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
-    await fillAndConfirm();
+    renderPage();
+    fireEvent.change(amountInput(), { target: { value: '10' } });
+    fireEvent.change(destInput(), { target: { value: DEST_PK } });
+    fireEvent.click(screen.getByRole('button', { name: 'Senden' }));
+    await screen.findByText('Transaktion bestätigen');
+    armed = true;
+    fireEvent.click(screen.getByRole('button', { name: 'Bist du sicher?' }));
     const msgs = await screen.findAllByText(/Nichts gesendet: Der Empfänger konnte nicht auf Memo-Pflicht/, {}, { timeout: 10000 });
     expect(msgs.length).toBeGreaterThan(0);
     expect(hoisted.submitTransactionSafelyMock).not.toHaveBeenCalled();
@@ -1821,5 +1831,41 @@ describe('gemerkter Key ist unlesbar (Review-Punkt 5, c2)', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Senden' }));
     expect((await screen.findAllByText(i18n.t('errors:submitTransaction.failed.multisig.invalidSecret'), { exact: false })).length).toBeGreaterThan(0);
     expect(hoisted.submitTransactionSafelyMock).not.toHaveBeenCalled();
+  });
+});
+
+describe('Ziel nicht ladbar: nicht als "nicht aktiviert" werten (Reste Sendeschutz)', () => {
+  const unreachable = () => i18n.t('errors:submitTransaction.failed.destinationUnreachable');
+
+  it('Netzfehler beim Laden des Ziels: Meldung, kein createAccount, nichts gesendet', async () => {
+    hoisted.loadAccountMock.mockImplementation(async (pk) => {
+      if (pk === SENDER.publicKey) return makeFundedAccount(pk, { extraBalances: [SENDER_FOO_BALANCE] });
+      if (pk === DEST_PK) throw new Error('Network Error');
+      return makeFundedAccount(pk);
+    });
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    renderPage();
+    fireEvent.change(amountInput(), { target: { value: '10' } });
+    fireEvent.change(destInput(), { target: { value: DEST_PK } });
+    fireEvent.click(screen.getByRole('button', { name: 'Senden' }));
+    expect((await screen.findAllByText(unreachable(), { exact: false })).length).toBeGreaterThan(0);
+    expect(screen.queryByText('Transaktion bestätigen')).not.toBeInTheDocument();
+    expect(hoisted.submitTransactionSafelyMock).not.toHaveBeenCalled();
+    warnSpy.mockRestore();
+  });
+
+  it('Gegenprobe: echter 404 fuehrt weiter zum Aktivierungsweg (keine Meldung "nicht erreichbar")', async () => {
+    hoisted.loadAccountMock.mockImplementation(async (pk) => {
+      if (pk === SENDER.publicKey) return makeFundedAccount(pk, { extraBalances: [SENDER_FOO_BALANCE] });
+      if (pk === DEST_PK) throw new NotFoundError('Not Found', { status: 404 });
+      return makeFundedAccount(pk);
+    });
+    renderPage();
+    fireEvent.change(amountInput(), { target: { value: '10' } });
+    fireEvent.change(destInput(), { target: { value: DEST_PK } });
+    fireEvent.click(screen.getByRole('button', { name: 'Senden' }));
+    await waitFor(() => expect(hoisted.loadAccountMock).toHaveBeenCalledWith(DEST_PK));
+    await new Promise((r) => setTimeout(r, 300));
+    expect(screen.queryByText(unreachable(), { exact: false })).toBeNull();
   });
 });

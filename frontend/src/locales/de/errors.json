@@ -50,6 +50,7 @@
       "tx_failed": "Transaktion fehlgeschlagen",
       "unknown": "Unbekannter Fehler bei der Transaktion",
       "loadTimeout": "Nichts gesendet: Horizon hat beim Laden nicht rechtzeitig geantwortet. Bitte erneut versuchen.",
+      "destinationUnreachable": "Nichts gesendet: Das Zielkonto konnte nicht geladen werden, Horizon antwortete nicht. Ob es aktiviert ist, ist deshalb unklar. Bitte erneut versuchen.",
       "memoCheck": {
         "unreachable": "Nichts gesendet: Der Empfänger konnte nicht auf Memo-Pflicht (SEP-29) geprüft werden, weil Horizon nicht antwortete. Bitte erneut versuchen."
       },
