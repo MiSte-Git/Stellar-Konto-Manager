@@ -14,9 +14,7 @@ import {
   assertSupportedAddress,
   baseAccountOf,
   classifyStellarAddress,
-  hasClassicAccountPrefix,
   isClassicAccount,
-  isClassicAccountSyntax,
   isPaymentDestination,
   parseStellarAddress,
 } from '../addressType.js';
@@ -98,10 +96,6 @@ const OLD = {
   },
   // components/trading/assetSearchUtils.js
   STELLAR_PUBLIC_KEY_RE: /^G[A-Z2-7]{55}$/,
-  // stellarUtils.js sumIncomingXLMByMemo (nur fuer String-Eingaben, siehe Test unten)
-  xlmByMemoAccountInvalid(accountId) {
-    return !accountId || !accountId.startsWith('G');
-  },
   // jobRevocation.js getJobSequenceInfo (Quellkonto)
   jobSource(rawSource) {
     let source = String(rawSource);
@@ -183,10 +177,6 @@ describe.each(CASES)('%s', (_label, input, kind, base, muxedId) => {
     else expect(result.error).toBe(INVALID_ADDRESS_ERROR);
   });
 
-  it('isClassicAccountSyntax wie die alte Regex', () => {
-    expect(isClassicAccountSyntax(input)).toBe(OLD.STELLAR_PUBLIC_KEY_RE.test(input));
-  });
-
   it('Wrapper in stellarUtils: gleiche Rueckgabe und gleiche Fehler wie vorher', () => {
     expect(outcome(isValidAccountId, input)).toEqual(outcome(OLD.isValidAccountId, input));
     expect(outcome(extractBasePublicKeyFromMuxed, input)).toEqual(outcome(OLD.extractBasePublicKeyFromMuxed, input));
@@ -207,30 +197,12 @@ describe.each(CASES)('%s', (_label, input, kind, base, muxedId) => {
   });
 });
 
-describe('isClassicAccountSyntax', () => {
-  it.each([
-    ['G plus 55 Zeichen ohne Pruefsumme', `G${'A'.repeat(55)}`],
-    ['G plus 54 Zeichen', `G${'A'.repeat(54)}`],
-    ['G plus 56 Zeichen', `G${'A'.repeat(56)}`],
-    ['Ziffer 1 (kein Base32)', `G${'1'.repeat(55)}`],
-    ['nur G', 'G'],
-  ])('%s wie die alte Regex', (_l, input) => {
-    expect(isClassicAccountSyntax(input)).toBe(OLD.STELLAR_PUBLIC_KEY_RE.test(input));
-  });
-
-  it('G mit falscher Pruefsumme bleibt syntaktisch gueltig (wie heute)', () => {
-    expect(isClassicAccountSyntax(G_BAD)).toBe(true);
-  });
-});
-
-describe('hasClassicAccountPrefix (xlmByMemo)', () => {
-  it.each([G, G_BAD, 'G', 'Gxyz', M7, C, '', 'g'])('%s wie startsWith', (input) => {
-    expect(!input || !hasClassicAccountPrefix(input)).toBe(OLD.xlmByMemoAccountInvalid(input));
-  });
-
-  it('kein String ergibt false statt TypeError', () => {
-    expect(hasClassicAccountPrefix(123)).toBe(false);
-    expect(hasClassicAccountPrefix(null)).toBe(false);
+describe('Pruefsumme statt Syntax (Trading-Suche, xlmByMemo, seit c)', () => {
+  it('G mit falscher Pruefsumme und G plus 55 Zeichen sind keine klassischen Konten mehr', () => {
+    expect(OLD.STELLAR_PUBLIC_KEY_RE.test(G_BAD)).toBe(true);
+    expect(isClassicAccount(G_BAD)).toBe(false);
+    expect(isClassicAccount(`G${'A'.repeat(55)}`)).toBe(false);
+    expect(isClassicAccount(G)).toBe(true);
   });
 });
 
@@ -266,6 +238,5 @@ describe('gemeinsame Fixture mit den Backends', () => {
     });
     expect(baseAccountOf(c.address)).toBe(c.baseAccountId);
     expect(isClassicAccount(c.address)).toBe(c.isClassicAccount);
-    expect(isClassicAccountSyntax(c.address)).toBe(c.isClassicAccountSyntax);
   });
 });

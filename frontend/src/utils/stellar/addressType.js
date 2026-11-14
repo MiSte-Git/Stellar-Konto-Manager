@@ -83,20 +83,6 @@ export function isClassicAccount(input) {
   return classifyStellarAddress(input) === ADDRESS_KINDS.ACCOUNT;
 }
 
-// Heutige Syntaxregel der Trading-Suche, ohne Pruefsumme. Nicht auf StrKey umstellen, ohne
-// die Verschaerfung als eigene Aenderung zu behandeln (Plan Signer-Buendelung, Backlog).
-const CLASSIC_ACCOUNT_SYNTAX_RE = /^G[A-Z2-7]{55}$/;
-
-/** G-Adresse nach Syntax (G plus 55 Base32-Zeichen), ohne Pruefsumme. Verhalten wie RegExp.test. */
-export function isClassicAccountSyntax(input) {
-  return CLASSIC_ACCOUNT_SYNTAX_RE.test(input);
-}
-
-/** Beginnt mit G (nur String), ohne weitere Pruefung. Fuer Stellen, die heute nur das Praefix pruefen. */
-export function hasClassicAccountPrefix(input) {
-  return typeof input === 'string' && input.startsWith('G');
-}
-
 /** Ziel einer klassischen Zahlung: G oder M, mit Pruefsumme. */
 export function isPaymentDestination(input) {
   const kind = classifyStellarAddress(input);

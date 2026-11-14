@@ -5,7 +5,11 @@
 // here is verbatim what used to live at module scope in that file.
 import { Asset } from '@stellar/stellar-sdk';
 import { readStoredNetworkId } from '../../config/networks.js';
-import { isClassicAccountSyntax } from '../../utils/stellar/addressType.js';
+import { isClassicAccount } from '../../utils/stellar/addressType.js';
+
+// Sieht aus wie eine G-Adresse (G plus 55 Base32-Zeichen). Nur, um bei falscher Pruefsumme issuerInvalid
+// statt queryInvalid zu melden; gueltig ist eine Adresse nur mit Pruefsumme (isClassicAccount).
+const LOOKS_LIKE_ACCOUNT_RE = /^G[A-Z2-7]{55}$/;
 
 export const ASSET_CODE_RE = /^[A-Za-z0-9]{1,12}$/;
 export const AMOUNT_RE = /^\d+(?:\.\d{1,7})?$/;
@@ -51,12 +55,15 @@ export function parseAssetSearchQuery(raw) {
     if (parts.length !== 2) return { error: 'queryInvalid' };
     const [code, issuer] = parts;
     if (!ASSET_CODE_RE.test(code)) return { error: 'codeInvalid' };
-    if (!isClassicAccountSyntax(issuer)) return { error: 'issuerInvalid' };
+    if (!isClassicAccount(issuer)) return { error: 'issuerInvalid' };
     return { code, issuer, mode: 'exact' };
   }
 
-  if (isClassicAccountSyntax(value)) {
+  if (isClassicAccount(value)) {
     return { issuer: value, mode: 'issuer' };
+  }
+  if (LOOKS_LIKE_ACCOUNT_RE.test(value)) {
+    return { error: 'issuerInvalid' };
   }
 
   if (!ASSET_CODE_RE.test(value)) {

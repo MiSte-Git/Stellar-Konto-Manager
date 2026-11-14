@@ -7,7 +7,7 @@ import {
   ADDRESS_KINDS,
   CONTRACT_ADDRESS_ERROR,
   INVALID_ADDRESS_ERROR,
-  hasClassicAccountPrefix,
+  isClassicAccount,
   isContractAddress,
   isPaymentDestination,
   parseStellarAddress,
@@ -713,7 +713,7 @@ export async function sumIncomingXLMByMemo({
   if (!server || !(server instanceof Horizon.Server)) {
     throw new Error('error.xlmByMemo.serverInvalid');
   }
-  if (!accountId || !hasClassicAccountPrefix(accountId)) {
+  if (!accountId || !isClassicAccount(accountId)) {
     throw new Error('error.xlmByMemo.accountInvalid');
   }
   if (typeof memoQuery !== 'string' || memoQuery.length === 0) {

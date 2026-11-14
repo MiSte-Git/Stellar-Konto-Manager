@@ -15,7 +15,6 @@ const {
   baseAccountOf,
   classifyAddress,
   isClassicAccount,
-  isClassicAccountSyntax,
   isContractAddress,
 } = require('../services/addressKind.js');
 const { txSourceBaseAccount } = require('../services/txSignatures.js');
@@ -62,7 +61,6 @@ for (const c of fixture.cases) {
     assert.equal(classifyAddress(c.address), c.kind);
     assert.equal(baseAccountOf(c.address), c.baseAccountId);
     assert.equal(isClassicAccount(c.address), c.isClassicAccount);
-    assert.equal(isClassicAccountSyntax(c.address), c.isClassicAccountSyntax);
     assert.equal(isContractAddress(c.address), c.kind === 'contract' || c.kind === 'muxedContract');
   });
 
@@ -71,7 +69,6 @@ for (const c of fixture.cases) {
     assert.equal(isContractAddressId(c.address), OLD.isContractAddressId(c.address));
     assert.equal(isClassicAccount(c.address), OLD.isValidEd25519PublicKey(c.address));
     assert.equal(isClassicAccount(c.address.trim()), OLD.isValidEd25519PublicKey(c.address.trim()));
-    assert.equal(isClassicAccountSyntax(c.address), OLD.STELLAR_PUBLIC_KEY_RE.test(c.address));
   });
 }
 
@@ -81,17 +78,18 @@ test('Kein String: invalid, null, false wie vorher', () => {
     assert.equal(baseAccountOf(v), null);
     assert.equal(isClassicAccount(v), OLD.isValidEd25519PublicKey(v));
     assert.equal(isContractAddressId(v), OLD.isContractAddressId(v));
-    assert.equal(isClassicAccountSyntax(v), OLD.STELLAR_PUBLIC_KEY_RE.test(v));
     assert.equal(txSourceBaseAccount({ source: v }), OLD.txSourceBaseAccount({ source: v }));
   }
   assert.equal(txSourceBaseAccount(null), OLD.txSourceBaseAccount(null));
   assert.equal(txSourceBaseAccount({}), OLD.txSourceBaseAccount({}));
 });
 
-test('isClassicAccountSyntax wie die alte Regex, auch ohne Pruefsumme', () => {
-  for (const v of [`G${'A'.repeat(55)}`, `G${'A'.repeat(54)}`, `G${'A'.repeat(56)}`, `G${'1'.repeat(55)}`, 'G', `g${'A'.repeat(55)}`]) {
-    assert.equal(isClassicAccountSyntax(v), OLD.STELLAR_PUBLIC_KEY_RE.test(v), v);
-  }
+test('G mit falscher Pruefsumme ist kein klassisches Konto (frueher nahm die Syntaxregel sie an)', () => {
+  const g = Keypair.random().publicKey();
+  const bad = `${g.slice(0, -1)}${g.endsWith('A') ? 'B' : 'A'}`;
+  assert.equal(OLD.STELLAR_PUBLIC_KEY_RE.test(bad), true);
+  assert.equal(isClassicAccount(bad), false);
+  assert.equal(isClassicAccount(`G${'A'.repeat(55)}`), false);
 });
 
 test('txSourceBaseAccount mit echten Transaktionen (G und M als Quelle)', () => {

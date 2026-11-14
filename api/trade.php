@@ -55,7 +55,7 @@ function normalize_asset_search_input(): array {
     if ($code !== '' && !preg_match(ASSET_CODE_RE, $code)) {
         json_out(['ok' => false, 'error' => 'assetSearch.invalidInput:codeInvalid'], 400);
     }
-    if ($issuer !== '' && !skm_is_classic_account_syntax($issuer)) {
+    if ($issuer !== '' && !skm_is_classic_account($issuer)) {
         json_out(['ok' => false, 'error' => 'assetSearch.invalidInput:issuerInvalid'], 400);
     }
 
@@ -74,7 +74,7 @@ function normalize_asset_identity(): array {
     if ($code === '' || !preg_match(ASSET_CODE_RE, $code)) {
         json_out(['ok' => false, 'error' => 'assetSearch.invalidInput:codeInvalid'], 400);
     }
-    if ($issuer === '' || !skm_is_classic_account_syntax($issuer)) {
+    if ($issuer === '' || !skm_is_classic_account($issuer)) {
         json_out(['ok' => false, 'error' => 'assetSearch.invalidInput:issuerInvalid'], 400);
     }
 
@@ -367,7 +367,7 @@ function asset_facts(): void {
 // legitimacy, nor a missing listing as a scam indicator.
 function expert_directory(): void {
     $issuer = trim((string)($_GET['issuer'] ?? ''));
-    if ($issuer === '' || !skm_is_classic_account_syntax($issuer)) {
+    if ($issuer === '' || !skm_is_classic_account($issuer)) {
         json_out(['ok' => false, 'error' => 'assetSearch.invalidInput:issuerInvalid'], 400);
     }
     $entry = ['issuer' => $issuer, 'status' => 'notChecked', 'name' => '', 'domain' => '', 'tags' => []];

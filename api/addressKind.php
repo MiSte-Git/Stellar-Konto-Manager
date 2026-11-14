@@ -27,7 +27,6 @@ const SKM_STRKEY_ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
 // Syntaxregel ohne Pruefsumme (G plus 55 Base32-Zeichen), wie bisher STELLAR_PUBLIC_KEY_RE in
 // api/trade.php. Eine Verschaerfung auf Pruefsumme waere eine eigene Aenderung.
 // \z statt $: In PHP passt $ auch vor einem abschliessenden Zeilenumbruch, in JS nicht (K8).
-const SKM_CLASSIC_ACCOUNT_SYNTAX_RE = '/^G[A-Z2-7]{55}\z/';
 
 function skm_crc16_xmodem(string $data): int {
     $crc = 0x0000;
@@ -105,9 +104,4 @@ function skm_is_classic_account($input): bool {
 function skm_is_contract_address($input): bool {
     $kind = skm_classify_address($input);
     return $kind === SKM_ADDRESS_KIND_CONTRACT || $kind === SKM_ADDRESS_KIND_MUXED_CONTRACT;
-}
-
-/** G-Adresse nach Syntax, ohne Pruefsumme. Kein String: false. */
-function skm_is_classic_account_syntax($input): bool {
-    return is_string($input) && preg_match(SKM_CLASSIC_ACCOUNT_SYNTAX_RE, $input) === 1;
 }

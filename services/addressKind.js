@@ -3,8 +3,7 @@
 // api/addressKind.php. Beide laufen gegen test/assets/address-kinds.json.
 //
 // Der Kontotyp wird immer aus der Adresse abgeleitet und nie gespeichert. Alle Typen werden
-// ueber StrKey des SDK geprueft, inkl. Checksumme; nur isClassicAccountSyntax prueft bewusst
-// nur die Syntax (bestehende Regel, siehe dort).
+// ueber StrKey des SDK geprueft, inkl. Checksumme.
 const { StrKey } = require('@stellar/stellar-sdk');
 
 const ADDRESS_KINDS = Object.freeze({
@@ -47,16 +46,6 @@ function isContractAddress(input) {
   return kind === ADDRESS_KINDS.CONTRACT || kind === ADDRESS_KINDS.MUXED_CONTRACT;
 }
 
-// Syntaxregel ohne Pruefsumme (G plus 55 Base32-Zeichen), wie die Regex in api/trade.php und
-// isClassicAccountSyntax im Frontend. Eine Verschaerfung auf Pruefsumme waere eine eigene
-// Aenderung (Plan Signer-Buendelung, Backlog).
-const CLASSIC_ACCOUNT_SYNTAX_RE = /^G[A-Z2-7]{55}$/;
-
-/** G-Adresse nach Syntax, ohne Pruefsumme. Verhalten wie RegExp.test. */
-function isClassicAccountSyntax(input) {
-  return CLASSIC_ACCOUNT_SYNTAX_RE.test(input);
-}
-
 // Gleiche Zeichen wie trim() in PHP (Leerzeichen, \t, \n, \r, NUL, \x0B), damit beide Backends
 // Adressen gleich trimmen. Unicode-Leerzeichen (NBSP, BOM, U+2028) und \f bleiben stehen und machen
 // die Adresse ungueltig, wie in PHP. Vorher in services/federationService.js (Review B-1).
@@ -70,6 +59,5 @@ module.exports = {
   classifyAddress,
   baseAccountOf,
   isClassicAccount,
-  isClassicAccountSyntax,
   isContractAddress,
 };

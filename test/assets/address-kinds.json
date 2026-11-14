@@ -1,5 +1,5 @@
 {
-  "_comment": "Gemeinsame Adressfaelle fuer den Kontotyp (ADR 0012, Plan Signer-Buendelung b2). Gelesen von test/addressKind.test.js, test/addressKind.test.php und frontend/src/utils/stellar/__tests__/addressKind.test.js. Erwartete Werte aus dem JS-SDK (@stellar/stellar-sdk) erzeugt; isClassicAccountSyntax ist die Regex /^G[A-Z2-7]{55}$/ ohne Pruefsumme.",
+  "_comment": "Gemeinsame Adressfaelle fuer den Kontotyp (ADR 0012, Plan Signer-Buendelung b2). Gelesen von test/addressKind.test.js, test/addressKind.test.php und frontend/src/utils/stellar/__tests__/addressKind.test.js. Erwartete Werte aus dem JS-SDK (@stellar/stellar-sdk) erzeugt.",
   "cases": [
     {
       "label": "G",
@@ -7,8 +7,7 @@
       "kind": "account",
       "baseAccountId": "GCFIRY65OQE7DFP5KLNS2PF2LVZMUZYJX4OZIEQ36N2IQANUB5XVYOJR",
       "muxedId": null,
-      "isClassicAccount": true,
-      "isClassicAccountSyntax": true
+      "isClassicAccount": true
     },
     {
       "label": "M mit ID 0",
@@ -16,8 +15,7 @@
       "kind": "muxed",
       "baseAccountId": "GCFIRY65OQE7DFP5KLNS2PF2LVZMUZYJX4OZIEQ36N2IQANUB5XVYOJR",
       "muxedId": "0",
-      "isClassicAccount": false,
-      "isClassicAccountSyntax": false
+      "isClassicAccount": false
     },
     {
       "label": "M mit ID 7",
@@ -25,8 +23,7 @@
       "kind": "muxed",
       "baseAccountId": "GCFIRY65OQE7DFP5KLNS2PF2LVZMUZYJX4OZIEQ36N2IQANUB5XVYOJR",
       "muxedId": "7",
-      "isClassicAccount": false,
-      "isClassicAccountSyntax": false
+      "isClassicAccount": false
     },
     {
       "label": "M mit maximaler ID",
@@ -34,8 +31,7 @@
       "kind": "muxed",
       "baseAccountId": "GCFIRY65OQE7DFP5KLNS2PF2LVZMUZYJX4OZIEQ36N2IQANUB5XVYOJR",
       "muxedId": "18446744073709551615",
-      "isClassicAccount": false,
-      "isClassicAccountSyntax": false
+      "isClassicAccount": false
     },
     {
       "label": "C",
@@ -43,8 +39,7 @@
       "kind": "contract",
       "baseAccountId": null,
       "muxedId": null,
-      "isClassicAccount": false,
-      "isClassicAccountSyntax": false
+      "isClassicAccount": false
     },
     {
       "label": "W",
@@ -52,8 +47,7 @@
       "kind": "muxedContract",
       "baseAccountId": null,
       "muxedId": null,
-      "isClassicAccount": false,
-      "isClassicAccountSyntax": false
+      "isClassicAccount": false
     },
     {
       "label": "S (Secret Key)",
@@ -61,8 +55,7 @@
       "kind": "invalid",
       "baseAccountId": null,
       "muxedId": null,
-      "isClassicAccount": false,
-      "isClassicAccountSyntax": false
+      "isClassicAccount": false
     },
     {
       "label": "T (Pre-Auth)",
@@ -70,8 +63,7 @@
       "kind": "invalid",
       "baseAccountId": null,
       "muxedId": null,
-      "isClassicAccount": false,
-      "isClassicAccountSyntax": false
+      "isClassicAccount": false
     },
     {
       "label": "X (Hash)",
@@ -79,8 +71,7 @@
       "kind": "invalid",
       "baseAccountId": null,
       "muxedId": null,
-      "isClassicAccount": false,
-      "isClassicAccountSyntax": false
+      "isClassicAccount": false
     },
     {
       "label": "P (Signed Payload)",
@@ -88,8 +79,7 @@
       "kind": "invalid",
       "baseAccountId": null,
       "muxedId": null,
-      "isClassicAccount": false,
-      "isClassicAccountSyntax": false
+      "isClassicAccount": false
     },
     {
       "label": "G mit falscher Pruefsumme",
@@ -97,8 +87,7 @@
       "kind": "invalid",
       "baseAccountId": null,
       "muxedId": null,
-      "isClassicAccount": false,
-      "isClassicAccountSyntax": true
+      "isClassicAccount": false
     },
     {
       "label": "M mit falscher Pruefsumme",
@@ -106,8 +95,7 @@
       "kind": "invalid",
       "baseAccountId": null,
       "muxedId": null,
-      "isClassicAccount": false,
-      "isClassicAccountSyntax": false
+      "isClassicAccount": false
     },
     {
       "label": "M nicht kanonisch (Fuellbit gesetzt)",
@@ -115,8 +103,7 @@
       "kind": "invalid",
       "baseAccountId": null,
       "muxedId": null,
-      "isClassicAccount": false,
-      "isClassicAccountSyntax": false
+      "isClassicAccount": false
     },
     {
       "label": "C mit falscher Pruefsumme",
@@ -124,8 +111,7 @@
       "kind": "invalid",
       "baseAccountId": null,
       "muxedId": null,
-      "isClassicAccount": false,
-      "isClassicAccountSyntax": false
+      "isClassicAccount": false
     },
     {
       "label": "G kleingeschrieben",
@@ -133,8 +119,7 @@
       "kind": "invalid",
       "baseAccountId": null,
       "muxedId": null,
-      "isClassicAccount": false,
-      "isClassicAccountSyntax": false
+      "isClassicAccount": false
     },
     {
       "label": "M kleingeschrieben",
@@ -142,8 +127,7 @@
       "kind": "invalid",
       "baseAccountId": null,
       "muxedId": null,
-      "isClassicAccount": false,
-      "isClassicAccountSyntax": false
+      "isClassicAccount": false
     },
     {
       "label": "G mit Leerzeichen vorne",
@@ -151,8 +135,7 @@
       "kind": "invalid",
       "baseAccountId": null,
       "muxedId": null,
-      "isClassicAccount": false,
-      "isClassicAccountSyntax": false
+      "isClassicAccount": false
     },
     {
       "label": "G mit Leerzeichen hinten",
@@ -160,8 +143,7 @@
       "kind": "invalid",
       "baseAccountId": null,
       "muxedId": null,
-      "isClassicAccount": false,
-      "isClassicAccountSyntax": false
+      "isClassicAccount": false
     },
     {
       "label": "G plus 55 A (Syntax ohne Pruefsumme)",
@@ -169,8 +151,7 @@
       "kind": "invalid",
       "baseAccountId": null,
       "muxedId": null,
-      "isClassicAccount": false,
-      "isClassicAccountSyntax": true
+      "isClassicAccount": false
     },
     {
       "label": "G zu kurz",
@@ -178,8 +159,7 @@
       "kind": "invalid",
       "baseAccountId": null,
       "muxedId": null,
-      "isClassicAccount": false,
-      "isClassicAccountSyntax": false
+      "isClassicAccount": false
     },
     {
       "label": "G zu lang",
@@ -187,8 +167,7 @@
       "kind": "invalid",
       "baseAccountId": null,
       "muxedId": null,
-      "isClassicAccount": false,
-      "isClassicAccountSyntax": false
+      "isClassicAccount": false
     },
     {
       "label": "G mit \\n am Ende",
@@ -196,8 +175,7 @@
       "kind": "invalid",
       "baseAccountId": null,
       "muxedId": null,
-      "isClassicAccount": false,
-      "isClassicAccountSyntax": false
+      "isClassicAccount": false
     },
     {
       "label": "G mit \\r\\n am Ende",
@@ -205,8 +183,7 @@
       "kind": "invalid",
       "baseAccountId": null,
       "muxedId": null,
-      "isClassicAccount": false,
-      "isClassicAccountSyntax": false
+      "isClassicAccount": false
     },
     {
       "label": "M mit \\n am Ende",
@@ -214,8 +191,7 @@
       "kind": "invalid",
       "baseAccountId": null,
       "muxedId": null,
-      "isClassicAccount": false,
-      "isClassicAccountSyntax": false
+      "isClassicAccount": false
     },
     {
       "label": "M mit \\r\\n am Ende",
@@ -223,8 +199,7 @@
       "kind": "invalid",
       "baseAccountId": null,
       "muxedId": null,
-      "isClassicAccount": false,
-      "isClassicAccountSyntax": false
+      "isClassicAccount": false
     },
     {
       "label": "C mit \\n am Ende",
@@ -232,8 +207,7 @@
       "kind": "invalid",
       "baseAccountId": null,
       "muxedId": null,
-      "isClassicAccount": false,
-      "isClassicAccountSyntax": false
+      "isClassicAccount": false
     },
     {
       "label": "C mit \\r\\n am Ende",
@@ -241,8 +215,7 @@
       "kind": "invalid",
       "baseAccountId": null,
       "muxedId": null,
-      "isClassicAccount": false,
-      "isClassicAccountSyntax": false
+      "isClassicAccount": false
     },
     {
       "label": "G-Praefix mit Versionsbyte 49 und gueltiger Pruefsumme",
@@ -250,8 +223,7 @@
       "kind": "invalid",
       "baseAccountId": null,
       "muxedId": null,
-      "isClassicAccount": false,
-      "isClassicAccountSyntax": true
+      "isClassicAccount": false
     },
     {
       "label": "W mit falscher Pruefsumme",
@@ -259,8 +231,7 @@
       "kind": "invalid",
       "baseAccountId": null,
       "muxedId": null,
-      "isClassicAccount": false,
-      "isClassicAccountSyntax": false
+      "isClassicAccount": false
     },
     {
       "label": "W nicht kanonisch (Fuellbit gesetzt)",
@@ -268,8 +239,7 @@
       "kind": "invalid",
       "baseAccountId": null,
       "muxedId": null,
-      "isClassicAccount": false,
-      "isClassicAccountSyntax": false
+      "isClassicAccount": false
     },
     {
       "label": "W mit \\n am Ende",
@@ -277,8 +247,7 @@
       "kind": "invalid",
       "baseAccountId": null,
       "muxedId": null,
-      "isClassicAccount": false,
-      "isClassicAccountSyntax": false
+      "isClassicAccount": false
     },
     {
       "label": "leer",
@@ -286,8 +255,7 @@
       "kind": "invalid",
       "baseAccountId": null,
       "muxedId": null,
-      "isClassicAccount": false,
-      "isClassicAccountSyntax": false
+      "isClassicAccount": false
     },
     {
       "label": "Muell",
@@ -295,8 +263,7 @@
       "kind": "invalid",
       "baseAccountId": null,
       "muxedId": null,
-      "isClassicAccount": false,
-      "isClassicAccountSyntax": false
+      "isClassicAccount": false
     }
   ]
 }

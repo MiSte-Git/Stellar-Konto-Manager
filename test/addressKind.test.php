@@ -105,7 +105,6 @@ foreach ($fixture['cases'] as $c) {
     check("Fixture {$l}: skm_classify_address = {$c['kind']}", skm_classify_address($a) === $c['kind']);
     check("Fixture {$l}: skm_base_account_of", skm_base_account_of($a) === $c['baseAccountId']);
     check("Fixture {$l}: skm_is_classic_account", skm_is_classic_account($a) === $c['isClassicAccount']);
-    check("Fixture {$l}: skm_is_classic_account_syntax", skm_is_classic_account_syntax($a) === $c['isClassicAccountSyntax']);
     check("Fixture {$l}: skm_is_contract_address", skm_is_contract_address($a) === in_array($c['kind'], ['contract', 'muxedContract'], true));
     // PHP-SDK gegen JS-SDK (Punkt 5): dieselbe Einordnung
     check("Fixture {$l}: PHP-SDK StrKey wie JS-SDK", sdk_classify($a) === $c['kind']);
@@ -123,17 +122,18 @@ foreach ($fixture['cases'] as $c) {
         check("Alt/neu {$l}: federation_is_contract_address", federation_is_contract_address($a) === old_federation_is_contract_address($a));
     }
     check("Alt/neu {$l}: Job anlegen (StrKey::isValidAccountId nach trim)", skm_is_classic_account(trim($a)) === StrKey::isValidAccountId(trim($a)));
-    check("Alt/neu {$l}: trade.php Issuer-Regel", (trim($a) === '' || !skm_is_classic_account_syntax(trim($a))) === old_trade_issuer_invalid(trim($a)));
+    // trade.php prueft den Issuer seit c (Bestandsaufnahme) mit Pruefsumme wie Node (skm_is_classic_account).
+    check("trade.php-Regel {$l}: wie Node mit Pruefsumme", skm_is_classic_account(trim($a)) === StrKey::isValidAccountId(trim($a)));
 }
 
 // --- K8: Zeilenumbruch am Ende ist nie gueltig ----------------------------------------------
 $gSyntax = 'G' . str_repeat('A', 55);
-check('K8: Syntaxfunktion G plus 55 Zeichen ist true', skm_is_classic_account_syntax($gSyntax) === true);
-check('K8: Syntaxfunktion mit \n am Ende ist false', skm_is_classic_account_syntax($gSyntax . "\n") === false);
-check('K8: Syntaxfunktion mit \r\n am Ende ist false', skm_is_classic_account_syntax($gSyntax . "\r\n") === false);
+check('Syntax ohne Pruefsumme ist kein klassisches Konto mehr (trade.php)', skm_is_classic_account($gSyntax) === false);
+check('alte trade.php-Regex nahm G plus 55 Zeichen ohne Pruefsumme an', old_trade_issuer_invalid($gSyntax) === false);
 check('K8: alte trade.php-Regex nahm \n am Ende an (Grund fuer K8)', preg_match(OLD_STELLAR_PUBLIC_KEY_RE, $gSyntax . "\n") === 1);
 $gValid = KeyPair::random()->getAccountId();
 check('K8: skm_base_account_of mit \n am Ende ist null', skm_base_account_of($gValid . "\n") === null);
+check('K8: skm_is_classic_account mit \n oder \r\n am Ende ist false (trade.php)', skm_is_classic_account($gValid) === true && skm_is_classic_account($gValid . "\n") === false && skm_is_classic_account($gValid . "\r\n") === false);
 check('K8: alte Federation-Pruefung nahm \n am Ende an (Grund fuer K8)', old_federation_is_valid_account_id($gValid . "\n") === true);
 
 // --- Kein String ----------------------------------------------------------------------------
@@ -142,7 +142,7 @@ foreach ([null, 123, [], true] as $v) {
     check("kein String {$t}: invalid", skm_classify_address($v) === 'invalid' && skm_base_account_of($v) === null);
     check("kein String {$t}: federation wie vorher", federation_is_valid_account_id($v) === old_federation_is_valid_account_id($v)
         && federation_is_contract_address($v) === old_federation_is_contract_address($v));
-    check("kein String {$t}: Syntax false", skm_is_classic_account_syntax($v) === false);
+    check("kein String {$t}: kein klassisches Konto", skm_is_classic_account($v) === false);
 }
 
 // --- Zufaellige Abwandlungen: eigene Pruefung gegen PHP-SDK und alte Federation-Pruefung -----
