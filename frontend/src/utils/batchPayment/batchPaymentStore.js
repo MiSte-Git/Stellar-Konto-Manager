@@ -41,13 +41,15 @@ function newRowId() {
 }
 
 // Steckt in dem Wert irgendwo ein Secret Key? Nach Unicode-Normalisierung (NFKC, z.B.
-// Vollbreite) werden gueltige G-/M-Adressen aus dem Text entfernt (auch mit Zusatz wie
-// "G... (Konto A)"), danach alle Zeichen ausser A-Z und 0-9 (Trennzeichen, Satzzeichen,
-// unsichtbare Format- und Kombinationszeichen). Die Ziffern 0, 1, 8, 9 kommen in Base32
-// nicht vor und trennen weiter. Bei einer Federation-Adresse name*domain werden Name und
-// jedes Domain-Label einzeln geprueft, damit lange gueltige Domains kein Treffer sind.
+// Vollbreite) und Grossschreibung werden gueltige G-/M-Adressen aus dem Text entfernt (auch mit
+// Zusatz wie "G... (Konto A)"), danach alle Zeichen ausser Base32 (A-Z, 2-7): Trennzeichen,
+// Satzzeichen, unsichtbare Zeichen und die Ziffern 0, 1, 8, 9. So wird auch ein Secret erkannt,
+// das durch Punkt, Bindestrich oder eingefuegte Zeichen getrennt ist (z. B. in einer Federation-
+// Adresse). Jeder Kandidat (S plus 55 Zeichen) wird mit Pruefsumme geprueft
+// (StrKey.isValidEd25519SecretSeed); das verhindert Fehlalarme bei langen Domains oder Texten
+// (Opus-Review S5, umgesetzt 14.11.2026).
 const PUBLIC_KEY_RE = /[GM][A-Z2-7]{55,68}/g;
-const FEDERATION_RE = /^([^*\s]+)\*([A-Za-z0-9.-]+\.[A-Za-z]{2,})$/;
+const SECRET_LENGTH = 56;
 
 function stripPublicKeys(text) {
   return text.replace(PUBLIC_KEY_RE, (t) => {
@@ -59,14 +61,16 @@ function stripPublicKeys(text) {
 }
 
 function hasSecretPattern(text) {
-  return /S[A-Z2-7]{55}/.test(stripPublicKeys(text.toUpperCase()).replace(/[^A-Z0-9]/g, ''));
+  const cleaned = stripPublicKeys(text.toUpperCase()).replace(/[^A-Z2-7]/g, '');
+  for (let i = cleaned.indexOf('S'); i !== -1 && i + SECRET_LENGTH <= cleaned.length; i = cleaned.indexOf('S', i + 1)) {
+    if (StrKey.isValidEd25519SecretSeed(cleaned.slice(i, i + SECRET_LENGTH))) return true;
+  }
+  return false;
 }
 
 export function containsSecretKey(value) {
   const raw = String(value ?? '').normalize('NFKC');
   if (!raw.trim()) return false;
-  const fed = raw.trim().match(FEDERATION_RE);
-  if (fed) return hasSecretPattern(fed[1]) || fed[2].split(/[.-]/).some(hasSecretPattern);
   return hasSecretPattern(raw);
 }
 

@@ -90,6 +90,21 @@ describe('secret key filter', () => {
     expect(containsSecretKey(`Mein Key: ${secret}`)).toBe(true);
   });
 
+  it('S5: findet einen Secret, der durch Punkt, Bindestrich oder eine eingefuegte Ziffer getrennt ist', () => {
+    const mid = 20;
+    expect(containsSecretKey(`alice*${secret.slice(0, mid)}.${secret.slice(mid)}.example.com`)).toBe(true);
+    expect(containsSecretKey(`alice*${secret.slice(0, mid)}-${secret.slice(mid)}.example.com`)).toBe(true);
+    expect(containsSecretKey(`${secret.slice(0, mid)}0${secret.slice(mid)}`)).toBe(true);
+    expect(containsSecretKey(`${secret.slice(0, mid)}1${secret.slice(mid, 40)}9${secret.slice(40)}`)).toBe(true);
+  });
+
+  it('S5 Gegenprobe: S plus 55 Base32-Zeichen ohne gueltige Pruefsumme ist kein Treffer', () => {
+    const bad = `${secret.slice(0, -1)}${secret.endsWith('A') ? 'B' : 'A'}`;
+    expect(containsSecretKey(bad)).toBe(false);
+    expect(containsSecretKey(`S${'A'.repeat(55)}`)).toBe(false);
+    expect(containsSecretKey('Sehr lange Bemerkung zur Zahlung SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS')).toBe(false);
+  });
+
   it('accepts long valid federation addresses but finds a secret inside one', () => {
     expect(containsSecretKey('alice*stellar-federation-service-for-business-payments-and-more.example.com')).toBe(false);
     expect(containsSecretKey('john*lobstr.co')).toBe(false);
