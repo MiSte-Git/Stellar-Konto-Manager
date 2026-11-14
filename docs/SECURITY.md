@@ -114,7 +114,15 @@ Ein Job ist eine unsignierte oder teilsignierte Transaktion, die mehrere Signer 
 - **Job-Token:** Wer Job-Details lesen will, braucht ein Token (Header `x-job-token`, nie in der URL). Es gibt das
   Token beim Anlegen oder über eine **Challenge**: Der Server erzeugt eine Nonce je Job und Signer (60 s gültig,
   einmalig), der Client signiert sie lokal, der Server prüft die Signatur und ob der Key aktuell Signer des Kontos
-  ist.
+  ist. In PHP liegen die Challenges in `api/data/challenges.json`; scheitert dort das Schreiben (Kodieren,
+  Temp-Datei oder Umbenennen), antworten Challenge, Token, Ablehnen und Löschen mit 500 und geben keine Nonce
+  heraus. Vorher wurde der Fehler verschluckt, und eine Nonce ließ sich bis zum Ablauf mehrfach einlösen (F-13).
+  Ein 503 `horizon_unavailable` bei Token, Ablehnen oder Löschen verbraucht die Challenge ebenfalls; der nächste
+  Versuch holt eine neue (bewusst so, B3-7: Verbrauch unabhängig vom Ausgang, kein getrenntes Lesen und Verbrauchen
+  an der Stelle, die die Zweckbindung trägt). Mit gemerktem Key oder einem schon eingegebenen Key im Job-Detail
+  (Entsperren, Ablehnen) geht der nächste Versuch ohne neue Eingabe. Beim Löschen in der Liste mit eingegebenem Key
+  muss der Key danach neu eingegeben werden, weil das Feld nach jedem Lauf geleert wird, auch bei Fehlschlag (kein
+  Secret im Feld stehen lassen).
 - **Zweckbindung:** Signiert wird nie die rohe Nonce, sondern `skm:<zweck>:` plus Nonce (`token`, `decline`,
   `delete`). Grund: Eine Stellar-Transaktionssignatur ist eine Ed25519-Signatur über 32 Bytes (Hash). Würde der Client rohe 32 Bytes
   signieren, könnte ein bösartiges Backend einen Transaktions-Hash als „Challenge“ schicken und bekäme eine gültige

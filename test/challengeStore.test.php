@@ -191,7 +191,51 @@ check(
     $pendingFresh !== null && verifyChallengeSignature($pendingFresh['nonce'], signNonce($kpFresh, $cFresh['challenge']), $kpFresh->getAccountId(), 'token') === true
 );
 
+// --- F-13: Schreibfehler werden gemeldet -------------------------------------
+// Scheitert das Speichern, darf keine Nonce herausgegeben werden: consumeChallenge und
+// createChallenge werfen (die Routen antworten dann 500). Vorher schluckte saveChallenges
+// den Fehler, und dieselbe Nonce liess sich bis zum Ablauf beliebig oft einloesen.
+$throws = function (callable $fn): bool {
+    try { $fn(); return false; } catch (\Throwable $e) { return true; }
+};
+
+// Verzeichnis nicht beschreibbar (0555): Temp-Datei scheitert (Fall [dir] aus den PHP-Proben).
+$roDir = $tmpDir . '/readonly';
+mkdir($roDir, 0775);
+putenv('CHALLENGES_FILE_PATH=' . $roDir . '/challenges.json');
+$cRo = createChallenge('ro-job', 'GROSIGNER');
+chmod($roDir, 0555);
+$roWritable = is_writable($roDir);
+check('sanity: Verzeichnis ist schreibgeschuetzt', !$roWritable);
+$roResults = [];
+for ($i = 0; $i < 3; $i++) {
+    try { $roResults[] = consumeChallenge('ro-job', 'GROSIGNER'); } catch (\Throwable $e) { $roResults[] = 'thrown'; }
+}
+check('Verzeichnis 0555: consumeChallenge wirft bei jedem Versuch', $roResults === ['thrown', 'thrown', 'thrown']);
+check('Verzeichnis 0555: keine Nonce wird herausgegeben', !in_array(true, array_map(fn($r) => is_array($r) && ($r['nonce'] ?? '') === $cRo['challenge'], $roResults), true));
+check('Verzeichnis 0555: createChallenge wirft', $throws(fn() => createChallenge('ro-job', 'GROSIGNER2')));
+chmod($roDir, 0775);
+
+// rename scheitert: Ziel ist ein nicht leeres Verzeichnis, die Temp-Datei laesst sich schreiben.
+$renameDir = $tmpDir . '/rename';
+mkdir($renameDir . '/challenges.json', 0775, true);
+touch($renameDir . '/challenges.json/blocker');
+putenv('CHALLENGES_FILE_PATH=' . $renameDir . '/challenges.json');
+check('rename scheitert: createChallenge wirft', $throws(fn() => createChallenge('rn-job', 'GRNSIGNER')));
+check('rename scheitert: consumeChallenge wirft', $throws(fn() => consumeChallenge('rn-job', 'GRNSIGNER')));
+check('rename scheitert: keine Temp-Datei bleibt liegen', glob($renameDir . '/challenges.json.tmp.*') === []);
+
+// json_encode scheitert (ungueltiges UTF-8 im Schluessel): ebenfalls ein Fehler, kein stilles Verwerfen.
+putenv('CHALLENGES_FILE_PATH=' . $tmpDir . '/challenges.json');
+check('json_encode scheitert: createChallenge wirft', $throws(fn() => createChallenge("bad-\xff-job", 'GBADUTF8')));
+
 // --- cleanup ---------------------------------------------------------------
+@unlink($renameDir . '/challenges.json/blocker');
+@rmdir($renameDir . '/challenges.json');
+array_map('unlink', glob($renameDir . '/*') ?: []);
+array_map('unlink', glob($roDir . '/*') ?: []);
+@rmdir($renameDir);
+@rmdir($roDir);
 array_map('unlink', glob($tmpDir . '/*') ?: []);
 @rmdir($tmpDir);
 

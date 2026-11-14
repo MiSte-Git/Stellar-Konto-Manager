@@ -48,14 +48,23 @@ function loadChallenges(string $file): array {
     return is_array($data) ? $data : [];
 }
 
+// F-13: Jeder Schreibfehler wirft (wie saveJobs in multisig.php). Sonst bliebe ein Verbrauch in
+// consumeChallenge ungespeichert, und dieselbe Nonce liesse sich bis zum Ablauf beliebig oft
+// einloesen. withChallengesLock gibt den Fehler weiter, die Routen antworten 500.
 function saveChallenges(string $file, array $data): void {
     $dir = dirname($file);
     if (!is_dir($dir)) @mkdir($dir, 0775, true);
     $json = json_encode($data);
-    if ($json === false) return; // best-effort; a failed write just means the next request re-derives state
+    if ($json === false) throw new \RuntimeException('challenge_encode_failed');
     $tmp = $file . '.tmp.' . bin2hex(random_bytes(4));
-    if (@file_put_contents($tmp, $json) === false) return;
-    if (!@rename($tmp, $file)) @unlink($tmp);
+    if (@file_put_contents($tmp, $json) === false) {
+        @unlink($tmp);
+        throw new \RuntimeException('challenge_write_failed');
+    }
+    if (!@rename($tmp, $file)) {
+        @unlink($tmp);
+        throw new \RuntimeException('challenge_rename_failed');
+    }
 }
 
 // Drops any entry past its expiry, keyed by absolute unix timestamp.
