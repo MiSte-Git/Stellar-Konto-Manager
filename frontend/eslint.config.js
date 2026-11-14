@@ -42,6 +42,32 @@ export default [
       ],
     },
   },
+  // ADR 0012 (Plan Signer-Buendelung 8.2, Teilschritt 6): Signieren und Schluesselmaterial nur in
+  // src/utils/signers/. Lern- und Demo-Bereiche (Story, Scam-Simulator) signieren nur im Testnet mit
+  // zufaelligen Keys und sind ausgenommen, ebenso Tests.
+  {
+    files: ['src/**/*.{js,jsx}'],
+    ignores: [
+      'src/utils/signers/**',
+      'src/components/story/**',
+      'src/components/scam-simulator/**',
+      '**/__tests__/**',
+      '**/*.{test,spec}.{js,jsx}',
+      'src/test/**',
+    ],
+    rules: {
+      'no-restricted-syntax': ['error',
+        {
+          selector: "CallExpression[callee.property.name=/^(sign|addSignature|addDecoratedSignature|signDecorated|signPayloadDecorated)$/]:not([callee.object.name='Math'])",
+          message: 'Signieren nur ueber utils/signers/ (attachSignatures, signChallengeMessage), ADR 0012.',
+        },
+        {
+          selector: "MemberExpression[property.name='fromSecret']",
+          message: 'Schluesselmaterial nur ueber utils/signers/keyMaterial.js (keypairFromSecret), ADR 0012.',
+        },
+      ],
+    },
+  },
   // Tests: Vitest globals (describe, it, expect, vi, ...)
   {
     files: [

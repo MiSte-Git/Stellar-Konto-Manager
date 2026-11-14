@@ -44,8 +44,8 @@ describe('signMultisigJobChallenge', () => {
 // die Ausgabe hier ist genau das, was test/signerAuth.test.js und .php pruefen.
 describe('signMultisigJobChallenge: fester Vektor fuer die Backends', async () => {
   const fs = await import('node:fs');
-  const path = await import('node:path');
-  const vector = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../../../test/assets/challenge-vector.json'), 'utf8'));
+  const { fileURLToPath } = await import('node:url');
+  const vector = JSON.parse(fs.readFileSync(fileURLToPath(new URL('../../../../test/assets/challenge-vector.json', import.meta.url)), 'utf8'));
   it('liefert genau die Signatur aus dem Vektor (Standard-base64 mit Padding)', () => {
     const sig = signMultisigJobChallenge(vector.secret, vector.nonce, vector.purpose);
     expect(sig).toBe(vector.signature);

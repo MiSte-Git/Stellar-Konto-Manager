@@ -198,8 +198,8 @@ describe('singleSignerSuffices', () => {
 // Gemeinsame Fixture mit Node und PHP (test/assets/signer-types.json, ADR 0003).
 describe('signerTypeOf gegen die gemeinsame Fixture', async () => {
   const fs = await import('node:fs');
-  const path = await import('node:path');
-  const fixture = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../../../../test/assets/signer-types.json'), 'utf8'));
+  const { fileURLToPath } = await import('node:url');
+  const fixture = JSON.parse(fs.readFileSync(fileURLToPath(new URL('../../../../../test/assets/signer-types.json', import.meta.url)), 'utf8'));
   it.each(fixture.cases.map((c) => [c.label, c]))('%s', (_label, c) => {
     const signer = c.type === null ? { key: c.key } : { key: c.key, type: c.type };
     expect(signerTypeOf(signer)).toBe(c.expected);

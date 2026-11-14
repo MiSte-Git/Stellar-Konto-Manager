@@ -1,12 +1,12 @@
 // @vitest-environment node
 import { describe, expect, it } from 'vitest';
 import fs from 'node:fs';
-import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { getRequiredThreshold } from '../getRequiredThreshold.js';
 
 // Gemeinsame Fixture mit Node und PHP (test/assets/op-threshold-categories.json). Das Frontend liefert
 // fuer Low-Operationen low_threshold (bei 0 die 0); die Pflicht-Signatur pruefen die Aufrufer.
-const fixture = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../../../test/assets/op-threshold-categories.json'), 'utf8'));
+const fixture = JSON.parse(fs.readFileSync(fileURLToPath(new URL('../../../../test/assets/op-threshold-categories.json', import.meta.url)), 'utf8'));
 
 describe('getRequiredThreshold gegen die gemeinsame Fixture', () => {
   it.each(fixture.frontend.map((c) => [c.op, JSON.stringify(c.thresholds), c.thresholds, c.expected]))(
