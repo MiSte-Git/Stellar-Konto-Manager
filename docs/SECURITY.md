@@ -79,6 +79,10 @@ Folgen daraus:
   Netz): Ein auf Testnet gemerkter Key signiert nie auf Mainnet. Code: `frontend/src/utils/sessionSecrets.js`.
 - Eingegebene Secrets werden in Entwürfen und Listen nicht gespeichert (`containsSecretKey` in
   `frontend/src/utils/batchPayment/`).
+- Ausnahme Lernbereich: Der Story-Modus erzeugt ein zufälliges Keypair nur für das Testnet. Dessen Secret liegt
+  unverschlüsselt im `sessionStorage` (`stellar_story_keypair`) und endet mit dem Tab, der Fortschritt im
+  `localStorage` enthält keinen Secret. Ältere Einträge mit Secret im `localStorage` werden beim Laden in den
+  `sessionStorage` übernommen und dort entfernt. Code: `frontend/src/components/story/StoryContext.jsx`.
 
 ### Multisig-Jobs
 

@@ -2,15 +2,37 @@ import React, { createContext, useContext, useReducer, useCallback, useEffect } 
 import * as StellarSdk from "@stellar/stellar-sdk";
 import { TOTAL_CHAPTERS } from "./storyChapters.config.js";
 
-// ─── localStorage Persistence ──────────────────────────────────────────────────
+// ─── Persistence ───────────────────────────────────────────────────────────────
+// Fortschritt (Kapitel, XP, ...) im localStorage. Der Secret des Story-Keypairs (zufaellig, nur
+// Testnet) nur im sessionStorage: er endet mit dem Tab und liegt nie dauerhaft im Browser
+// (AGENTS.md Regel 2, Ausnahme in docs/SECURITY.md). Ohne Keypair gilt das Konto als nicht aktiviert,
+// das Kapitel legt dann ein neues an.
 
 const STORAGE_KEY = "stellar_story_progress";
+const SECRET_STORAGE_KEY = "stellar_story_keypair";
+
+function readStorySecret(saved) {
+  let secret = "";
+  try { secret = sessionStorage.getItem(SECRET_STORAGE_KEY) || ""; } catch { /* noop */ }
+  // Altbestand: frueher lag der Secret im localStorage-Eintrag. Einmal in den sessionStorage
+  // uebernehmen; der localStorage-Eintrag wird beim naechsten Speichern ohne Secret geschrieben.
+  if (!secret && typeof saved.keypairSecret === "string" && saved.keypairSecret) {
+    secret = saved.keypairSecret;
+    try { sessionStorage.setItem(SECRET_STORAGE_KEY, secret); } catch { /* noop */ }
+  }
+  return secret;
+}
 
 function loadSavedProgress() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return {};
     const saved = JSON.parse(raw);
+    if (saved && Object.prototype.hasOwnProperty.call(saved, "keypairSecret")) {
+      // Secret sofort aus dem dauerhaften Speicher entfernen, nicht erst beim naechsten Speichern.
+      const { keypairSecret: _legacy, ...rest } = saved;
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(rest)); } catch { /* noop */ }
+    }
     const result = {};
     if (typeof saved.currentChapter === "number") result.currentChapter = saved.currentChapter;
     if (typeof saved.sceneIndex === "number") result.sceneIndex = saved.sceneIndex;
@@ -20,12 +42,14 @@ function loadSavedProgress() {
     if (typeof saved.hearts === "number") result.hearts = saved.hearts;
     if (Array.isArray(saved.completedActions)) result.completedActions = saved.completedActions;
     if (saved.actionResults && typeof saved.actionResults === "object") result.actionResults = saved.actionResults;
-    if (saved.accountFunded === true) result.accountFunded = true;
-    if (typeof saved.keypairSecret === "string" && saved.keypairSecret) {
+    const secret = readStorySecret(saved);
+    if (secret) {
       try {
-        result.keypair = StellarSdk.Keypair.fromSecret(saved.keypairSecret);
+        result.keypair = StellarSdk.Keypair.fromSecret(secret);
       } catch { /* noop */ }
     }
+    // Aktiviert gilt nur mit Keypair: nach dem Schliessen des Tabs fehlt der Secret.
+    if (saved.accountFunded === true && result.keypair) result.accountFunded = true;
     return result;
   } catch {
     return {};
@@ -181,7 +205,7 @@ export function StoryProvider({ children, onExit }) {
     ...loadSavedProgress(),
   }));
 
-  // ── Persist progress to localStorage ─────────────────────────────────────────
+  // ── Persist progress (localStorage) and keypair (sessionStorage) ─────────────
 
   useEffect(() => {
     // When a chapter is completed (but not the last), advance the saved position
@@ -198,9 +222,13 @@ export function StoryProvider({ children, onExit }) {
       completedActions: state.completedActions,
       actionResults: state.actionResults,
       accountFunded: state.accountFunded,
-      keypairSecret: state.keypair?.secret(),
     };
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave)); } catch { /* noop */ }
+    try {
+      const secret = state.keypair?.secret?.();
+      if (secret) sessionStorage.setItem(SECRET_STORAGE_KEY, secret);
+      else sessionStorage.removeItem(SECRET_STORAGE_KEY);
+    } catch { /* noop */ }
   }, [state]);
 
   // ── Navigation ───────────────────────────────────────────────────────────────
@@ -253,6 +281,7 @@ export function StoryProvider({ children, onExit }) {
 
   const reset = useCallback(() => {
     try { localStorage.removeItem(STORAGE_KEY); } catch { /* noop */ }
+    try { sessionStorage.removeItem(SECRET_STORAGE_KEY); } catch { /* noop */ }
     dispatch({ type: A.RESET });
   }, []);
 
