@@ -32,7 +32,7 @@ function check(string $description, bool $condition): void {
     }
 }
 
-const TEST_PORT = 3932;
+const TEST_PORT = 3945;
 const BASE_URL = 'http://127.0.0.1:' . TEST_PORT . '/api/multisig/jobs';
 
 function request(string $method, string $url, array $headers = [], ?array $body = null): array {

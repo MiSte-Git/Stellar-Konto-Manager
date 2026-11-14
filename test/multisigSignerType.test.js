@@ -1,7 +1,7 @@
 // Job-Datenmodell mit Signer-Typ (ADR 0012, Plan Signer-Buendelung 8.2, Teilschritt 5), Node.
 // Jobs speichern signers[].type aus Horizon; missingSigners (Paritaet mit PHP summarizeJob, #16)
 // nennt nur Signer, die signieren koennen. Horizon kommt aus test/helpers/horizonAccountsMock.js.
-// Pendant: test/multisigSignerType.test.php.
+// Pendant: test/multisigSignerType.test.php. Port 3944 (PHP 3945), frei in der Liste der Test-Ports.
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { spawn } = require('child_process');
@@ -10,7 +10,7 @@ const os = require('os');
 const path = require('path');
 const { Account, Asset, Keypair, Networks, Operation, StrKey, TransactionBuilder } = require('@stellar/stellar-sdk');
 
-const PORT = 3931;
+const PORT = 3944;
 const BASE = `http://127.0.0.1:${PORT}/api/multisig/jobs`;
 const owner = Keypair.random();
 const b = Keypair.random();
