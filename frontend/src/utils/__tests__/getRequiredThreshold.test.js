@@ -13,18 +13,24 @@ describe('getRequiredThreshold', () => {
     expect(getRequiredThreshold('setOptions', { low_threshold: 1, med_threshold: 2, high_threshold: 3 })).toBe(3);
   });
 
-  it('setOptions falls back to med, then low, when high is unset', () => {
-    expect(getRequiredThreshold('setOptions', { low_threshold: 1, med_threshold: 2, high_threshold: 0 })).toBe(2);
+  it('setOptions: high 0 faellt nicht auf med zurueck, es gilt max(low, high)', () => {
+    expect(getRequiredThreshold('setOptions', { low_threshold: 1, med_threshold: 2, high_threshold: 0 })).toBe(1);
     expect(getRequiredThreshold('setOptions', { low_threshold: 1, med_threshold: 0, high_threshold: 0 })).toBe(1);
+    expect(getRequiredThreshold('setOptions', { low_threshold: 2, med_threshold: 0, high_threshold: 1 })).toBe(2);
+  });
+
+  it('accountMerge ist High', () => {
+    expect(getRequiredThreshold('accountMerge', { low_threshold: 1, med_threshold: 2, high_threshold: 3 })).toBe(3);
   });
 
   it('payment requires the medium threshold when set', () => {
     expect(getRequiredThreshold('payment', { low_threshold: 1, med_threshold: 2, high_threshold: 3 })).toBe(2);
   });
 
-  it('payment falls back to high, then low, when med is unset', () => {
-    expect(getRequiredThreshold('payment', { low_threshold: 1, med_threshold: 0, high_threshold: 3 })).toBe(3);
+  it('payment: med 0 faellt nicht auf high zurueck, es gilt max(low, med) (Probe G, H)', () => {
+    expect(getRequiredThreshold('payment', { low_threshold: 1, med_threshold: 0, high_threshold: 3 })).toBe(1);
     expect(getRequiredThreshold('payment', { low_threshold: 1, med_threshold: 0, high_threshold: 0 })).toBe(1);
+    expect(getRequiredThreshold('payment', { low_threshold: 2, med_threshold: 1, high_threshold: 1 })).toBe(2);
   });
 
   it('bumpSequence requires exactly the low threshold, including 0', () => {

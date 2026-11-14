@@ -5,7 +5,8 @@
 // festgehalten, was das Netz tatsaechlich annimmt.
 //
 // Nur Testnet. Legt pro Fall frische Konten per Friendbot an. Keine Secrets werden gespeichert.
-// Aufruf: node scripts/testnet-threshold-probe.mjs        (Dauer etwa 1 bis 2 Minuten)
+// Aufruf: node scripts/testnet-threshold-probe.mjs        (Dauer etwa 2 bis 3 Minuten)
+// Seit 14.11. auch Medium (payment) und High (setOptions) mit Schwelle 0 (Faelle G bis K).
 // Ausgabe: Tabelle auf der Konsole und als JSON (letzte Zeile).
 import {
   Asset, Claimant, Horizon, Keypair, Networks, Operation, TransactionBuilder,
@@ -55,8 +56,10 @@ async function claimableIdFor(accountId) {
 }
 
 // Ein Fall: Konto A mit Master-Gewicht 1 und Signer B mit Gewicht 1, Schwellen wie angegeben.
-// Gesendet wird je eine bumpSequence- und eine claimClaimableBalance-Transaktion, signiert mit signWith.
-async function runCase(funder, { name, thresholds, signWith }) {
+// Gesendet wird je eine Transaktion pro Operation in ops (Standard: bumpSequence und
+// claimClaimableBalance), signiert mit signWith. payment (Medium) zahlt 1 XLM an den Funder,
+// setOptions (High) setzt nur die Home-Domain.
+async function runCase(funder, { name, thresholds, signWith, ops = ['bumpSequence', 'claimClaimableBalance'] }) {
   const a = Keypair.random();
   const b = Keypair.random();
   await fund(a);
@@ -84,16 +87,24 @@ async function runCase(funder, { name, thresholds, signWith }) {
   const keys = { master: [a], both: [a, b], none: [] }[signWith];
   const result = { name, thresholds, signWith, weight: keys.length };
 
-  const account = await server.loadAccount(a.publicKey());
-  const bumpTx = await build(a.publicKey(), [Operation.bumpSequence({ bumpTo: account.sequence })]);
-  keys.forEach((k) => bumpTx.sign(k));
-  result.bumpSequence = await trySubmit(bumpTx);
-
-  const balanceId = await claimableIdFor(a.publicKey());
-  const claimTx = await build(a.publicKey(), [Operation.claimClaimableBalance({ balanceId })]);
-  keys.forEach((k) => claimTx.sign(k));
-  result.claimClaimableBalance = await trySubmit(claimTx);
-
+  for (const op of ops) {
+    let operation;
+    if (op === 'bumpSequence') {
+      const account = await server.loadAccount(a.publicKey());
+      operation = Operation.bumpSequence({ bumpTo: account.sequence });
+    } else if (op === 'claimClaimableBalance') {
+      operation = Operation.claimClaimableBalance({ balanceId: await claimableIdFor(a.publicKey()) });
+    } else if (op === 'payment') {
+      operation = Operation.payment({ destination: funder.publicKey(), asset: Asset.native(), amount: '1' });
+    } else if (op === 'setOptions') {
+      operation = Operation.setOptions({ homeDomain: 'probe.example' });
+    } else {
+      throw new Error(`unbekannte Operation ${op}`);
+    }
+    const tx = await build(a.publicKey(), [operation]);
+    keys.forEach((k) => tx.sign(k));
+    result[op] = await trySubmit(tx);
+  }
   return result;
 }
 
@@ -104,6 +115,12 @@ const CASES = [
   { name: 'D low=2 med=2 high=2, Gewicht 1 (Gegenprobe)', thresholds: { low: 2, med: 2, high: 2 }, signWith: 'master' },
   { name: 'E low=2 med=2 high=2, Gewicht 2', thresholds: { low: 2, med: 2, high: 2 }, signWith: 'both' },
   { name: 'F low=0 med=2 high=2, ohne Signatur', thresholds: { low: 0, med: 2, high: 2 }, signWith: 'none' },
+  // Medium und High mit Schwelle 0 (Backend und Frontend nehmen heute die naechste Schwelle)
+  { name: 'G low=1 med=0 high=2, Gewicht 1', thresholds: { low: 1, med: 0, high: 2 }, signWith: 'master', ops: ['payment', 'setOptions'] },
+  { name: 'H low=2 med=0 high=0, Gewicht 1', thresholds: { low: 2, med: 0, high: 0 }, signWith: 'master', ops: ['payment', 'setOptions'] },
+  { name: 'I low=1 med=2 high=0, Gewicht 1', thresholds: { low: 1, med: 2, high: 0 }, signWith: 'master', ops: ['setOptions'] },
+  { name: 'J low=0 med=0 high=0, ohne Signatur', thresholds: { low: 0, med: 0, high: 0 }, signWith: 'none', ops: ['payment', 'setOptions'] },
+  { name: 'K low=1 med=2 high=2, Gewicht 1 (Gegenprobe)', thresholds: { low: 1, med: 2, high: 2 }, signWith: 'master', ops: ['payment', 'setOptions'] },
 ];
 
 async function main() {
@@ -115,7 +132,7 @@ async function main() {
     try {
       const r = await runCase(funder, c);
       results.push(r);
-      console.log(`bumpSequence=${r.bumpSequence} claimClaimableBalance=${r.claimClaimableBalance}`);
+      console.log((c.ops || ['bumpSequence', 'claimClaimableBalance']).map((op) => `${op}=${r[op]}`).join(' '));
     } catch (e) {
       results.push({ name: c.name, error: e.message });
       console.log(`Setup-Fehler: ${e.message}`);

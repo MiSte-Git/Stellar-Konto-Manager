@@ -1,5 +1,5 @@
 {
-  "_comment": "Schwellen-Kategorien der Operationen und benoetigtes Gewicht (ADR 0012, Plan Signer-Buendelung 8.2). Gelesen von test/txSignatures.test.js, test/txSignatures.test.php und frontend/src/utils/__tests__/getRequiredThreshold.fixture.test.js. Reine Low-Transaktionen: genau low_threshold, bei low=0 Gewicht 1 (mindestens eine gueltige Signatur), belegt auf dem Testnet am 14.11.2026 mit scripts/testnet-threshold-probe.mjs. Das Frontend liefert bei low=0 den Wert 0 und verlangt die Signatur ueber die Aufrufer (mindestens ein Signer mit Gewicht > 0).",
+  "_comment": "Schwellen-Kategorien der Operationen und benoetigtes Gewicht (ADR 0012, Plan Signer-Buendelung 8.2). Gelesen von test/txSignatures.test.js, test/txSignatures.test.php und frontend/src/utils/__tests__/getRequiredThreshold.fixture.test.js. Regel: max(low_threshold, Schwellen aller vorkommenden Kategorien, 1), eine Kategorie-Schwelle 0 faellt nicht zurueck. Belegt auf dem Testnet am 14.11.2026 mit scripts/testnet-threshold-probe.mjs (Faelle A bis K). Das Frontend rechnet max(low, Kategorie) ohne die 1 und liefert bei 0 den Wert 0 und verlangt die Signatur ueber die Aufrufer (mindestens ein Signer mit Gewicht > 0).",
   "operations": [
     {
       "type": "setOptions",
@@ -197,7 +197,7 @@
       "expected": 3
     },
     {
-      "label": "High mit high=0 (Fallback, unveraendert)",
+      "label": "High mit high=0: max(low, 0, 1) (Analogie zu Probe G, nicht direkt belegt)",
       "ops": [
         "setOptions"
       ],
@@ -206,10 +206,10 @@
         "med": 2,
         "high": 0
       },
-      "expected": 2
+      "expected": 1
     },
     {
-      "label": "High, alles 0 (unveraendert)",
+      "label": "High, alles 0: mindestens eine Signatur (Probe J)",
       "ops": [
         "setOptions"
       ],
@@ -218,7 +218,80 @@
         "med": 0,
         "high": 0
       },
-      "expected": 0
+      "expected": 1
+    },
+    {
+      "label": "Probe G: Medium mit med=0 low=1",
+      "ops": [
+        "payment"
+      ],
+      "thresholds": {
+        "low": 1,
+        "med": 0,
+        "high": 2
+      },
+      "expected": 1
+    },
+    {
+      "label": "Probe H: low ueber Kategorie (tx-Ebene)",
+      "ops": [
+        "payment"
+      ],
+      "thresholds": {
+        "low": 2,
+        "med": 0,
+        "high": 0
+      },
+      "expected": 2
+    },
+    {
+      "label": "Probe H: High mit low ueber high",
+      "ops": [
+        "setOptions"
+      ],
+      "thresholds": {
+        "low": 2,
+        "med": 0,
+        "high": 1
+      },
+      "expected": 2
+    },
+    {
+      "label": "Probe J: Medium, alles 0",
+      "ops": [
+        "payment"
+      ],
+      "thresholds": {
+        "low": 0,
+        "med": 0,
+        "high": 0
+      },
+      "expected": 1
+    },
+    {
+      "label": "Probe K: Medium, Gegenprobe",
+      "ops": [
+        "payment"
+      ],
+      "thresholds": {
+        "low": 1,
+        "med": 2,
+        "high": 2
+      },
+      "expected": 2
+    },
+    {
+      "label": "Schwellen nicht aufsteigend, gemischt",
+      "ops": [
+        "payment",
+        "setOptions"
+      ],
+      "thresholds": {
+        "low": 1,
+        "med": 3,
+        "high": 2
+      },
+      "expected": 3
     }
   ],
   "frontend": [
@@ -282,6 +355,60 @@
         "low_threshold": 0,
         "med_threshold": 2,
         "high_threshold": 2
+      },
+      "expected": 0
+    },
+    {
+      "op": "payment",
+      "thresholds": {
+        "low_threshold": 1,
+        "med_threshold": 0,
+        "high_threshold": 2
+      },
+      "expected": 1
+    },
+    {
+      "op": "payment",
+      "thresholds": {
+        "low_threshold": 2,
+        "med_threshold": 0,
+        "high_threshold": 0
+      },
+      "expected": 2
+    },
+    {
+      "op": "setOptions",
+      "thresholds": {
+        "low_threshold": 1,
+        "med_threshold": 2,
+        "high_threshold": 0
+      },
+      "expected": 1
+    },
+    {
+      "op": "setOptions",
+      "thresholds": {
+        "low_threshold": 2,
+        "med_threshold": 0,
+        "high_threshold": 1
+      },
+      "expected": 2
+    },
+    {
+      "op": "accountMerge",
+      "thresholds": {
+        "low_threshold": 1,
+        "med_threshold": 2,
+        "high_threshold": 3
+      },
+      "expected": 3
+    },
+    {
+      "op": "payment",
+      "thresholds": {
+        "low_threshold": 0,
+        "med_threshold": 0,
+        "high_threshold": 0
       },
       "expected": 0
     }

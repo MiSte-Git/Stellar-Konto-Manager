@@ -1,6 +1,13 @@
+// Kategorien wie services/txSignatures.js und api/txSignatures.php (developers.stellar.org, List of operations).
+const HIGH_OPS = new Set(['setOptions', 'accountMerge']);
+const LOW_OPS = new Set(['allowTrust', 'inflation', 'bumpSequence', 'setTrustLineFlags', 'claimClaimableBalance']);
+
 /**
- * Liefert den benötigten Threshold für eine Operation.
- * Fallback: med_threshold, sonst high/low, sonst 0.
+ * Liefert das Gewicht, das eine Operation braucht.
+ * Netzregel (Testnet-Probe 14.11.2026, scripts/testnet-threshold-probe.mjs): jede Transaktion
+ * braucht mindestens low_threshold, die Operation zusaetzlich die Schwelle ihrer Kategorie.
+ * Also max(low, Kategorie). Eine Kategorie-Schwelle 0 faellt nicht auf eine andere Schwelle zurueck.
+ * 0 ist ein moeglicher Rueckgabewert; die Aufrufer verlangen ohnehin einen Signer.
  */
 export function getRequiredThreshold(operationType, thresholds) {
   if (!thresholds || typeof thresholds !== 'object') {
@@ -11,11 +18,7 @@ export function getRequiredThreshold(operationType, thresholds) {
   const med = Number(thresholds.med_threshold ?? thresholds.medThreshold ?? thresholds.med ?? 0);
   const high = Number(thresholds.high_threshold ?? thresholds.highThreshold ?? thresholds.high ?? 0);
 
-  if (operationType === 'setOptions') return high || med || low || 0;
-  // bumpSequence ist laut Protokoll eine Low-Threshold-Operation, 0 ist dort ein gueltiger Wert.
-  if (operationType === 'bumpSequence') return low;
-  if (operationType === 'claimClaimableBalance') return low;
-  if (operationType === 'payment') return med || high || low || 0;
-
-  return med || low || high || 0;
+  if (HIGH_OPS.has(operationType)) return Math.max(low, high);
+  if (LOW_OPS.has(operationType)) return low;
+  return Math.max(low, med);
 }

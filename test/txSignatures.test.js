@@ -165,21 +165,30 @@ test('requiredWeightForOperations picks the highest category when operation type
   );
 });
 
-test('requiredWeightForOperations falls back through the chain when a category threshold is 0, mirroring getRequiredThreshold.js', () => {
-  assert.equal(requiredWeightForOperations([{ type: 'setOptions' }], { low: 1, med: 2, high: 0 }), 2);
+test('requiredWeightForOperations: max(low, Kategorie, 1), eine Kategorie-Schwelle 0 faellt nicht zurueck (Testnet-Probe 14.11.2026)', () => {
+  // Vorher Fallback-Kette high -> med -> low (zu streng bei 0, zu locker bei low ueber Kategorie).
+  assert.equal(requiredWeightForOperations([{ type: 'setOptions' }], { low: 1, med: 2, high: 0 }), 1);
   assert.equal(requiredWeightForOperations([{ type: 'setOptions' }], { low: 1, med: 0, high: 0 }), 1);
-  assert.equal(requiredWeightForOperations([{ type: 'payment' }], { low: 1, med: 0, high: 3 }), 3);
-  // Reine Low-Transaktion: low, bei low=0 Gewicht 1 (Testnet-Beleg 14.11.2026). Vorher 3 (zu streng).
+  assert.equal(requiredWeightForOperations([{ type: 'payment' }], { low: 1, med: 0, high: 3 }), 1, 'Probe G');
+  assert.equal(requiredWeightForOperations([{ type: 'payment' }], { low: 2, med: 1, high: 1 }), 2, 'Probe H: tx-Ebene verlangt low');
   assert.equal(requiredWeightForOperations([{ type: 'bumpSequence' }], { low: 0, med: 0, high: 3 }), 1);
+  assert.equal(
+    requiredWeightForOperations([{ type: 'payment' }, { type: 'setOptions' }], { low: 1, med: 3, high: 2 }),
+    3,
+    'nicht aufsteigende Schwellen: jede Operation zaehlt gegen ihre Kategorie'
+  );
 });
 
-test('requiredWeightForOperations returns 0 for an all-zero threshold set (account has no multisig configured)', () => {
-  assert.equal(requiredWeightForOperations([{ type: 'setOptions' }], { low: 0, med: 0, high: 0 }), 0);
+test('requiredWeightForOperations verlangt auch bei Schwellen 0 mindestens eine Signatur (Probe J)', () => {
+  assert.equal(requiredWeightForOperations([{ type: 'setOptions' }], { low: 0, med: 0, high: 0 }), 1);
+  assert.equal(requiredWeightForOperations([{ type: 'payment' }], { low: 0, med: 0, high: 0 }), 1);
 });
 
-test('requiredWeightForOperations falls back to med_threshold when no operations are given (defensive, matches pre-fix behavior)', () => {
+test('requiredWeightForOperations ohne Operationen bleibt streng bei max(low, med, 1)', () => {
   assert.equal(requiredWeightForOperations([], { low: 1, med: 2, high: 3 }), 2);
   assert.equal(requiredWeightForOperations(undefined, { low: 1, med: 2, high: 3 }), 2);
+  assert.equal(requiredWeightForOperations([], { low: 3, med: 2, high: 1 }), 3);
+  assert.equal(requiredWeightForOperations([], { low: 0, med: 0, high: 0 }), 1);
 });
 
 test('requiredWeightForOperations reads real .type values off SDK-built setOptions and payment transactions', () => {

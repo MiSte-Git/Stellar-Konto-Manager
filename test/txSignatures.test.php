@@ -258,16 +258,16 @@ check(
 );
 
 check(
-    'requiredWeightForOperations falls back med -> low -> high when high_threshold is 0',
-    requiredWeightForOperations($setOptionsTx, ['low' => 1, 'med' => 2, 'high' => 0]) === 2
+    'requiredWeightForOperations: high_threshold 0 faellt nicht auf med zurueck, max(low, 0, 1) = 1',
+    requiredWeightForOperations($setOptionsTx, ['low' => 1, 'med' => 2, 'high' => 0]) === 1
 );
 check(
-    'requiredWeightForOperations falls back to low_threshold when both med and high are 0',
+    'requiredWeightForOperations: med und high 0 ergibt low',
     requiredWeightForOperations($setOptionsTx, ['low' => 1, 'med' => 0, 'high' => 0]) === 1
 );
 check(
-    'requiredWeightForOperations returns 0 for an all-zero threshold set (account has no multisig configured)',
-    requiredWeightForOperations($setOptionsTx, ['low' => 0, 'med' => 0, 'high' => 0]) === 0
+    'requiredWeightForOperations verlangt bei Schwellen 0 mindestens eine Signatur (Probe J)',
+    requiredWeightForOperations($setOptionsTx, ['low' => 0, 'med' => 0, 'high' => 0]) === 1
 );
 
 // A FeeBumpTransaction has no getOperations() of its own (it wraps an inner

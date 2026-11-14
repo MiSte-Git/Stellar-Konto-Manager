@@ -134,14 +134,10 @@ function operationThresholdCategory(opType) {
 }
 
 /**
- * Mirrors frontend/src/utils/getRequiredThreshold.js's per-category fallback
- * chains (used when an account leaves a threshold at 0), generalized across
- * every operation in the transaction: each operation is checked on-chain
- * against its own category, so the weight the whole transaction needs is
- * driven by whichever category present demands the most (high > med > low) -
- * a weight that satisfies the highest category automatically satisfies the
- * lower ones too, since thresholds are expected to be non-decreasing
- * (low <= med <= high).
+ * Gewicht, das die ganze Transaktion braucht. Das Netz prueft jede Operation gegen die Schwelle
+ * ihrer Kategorie und die Transaktion selbst gegen low_threshold. Deshalb zaehlt das Maximum ueber
+ * low und alle vorkommenden Kategorien, nicht nur die hoechste Kategorie (Schwellen muessen nicht
+ * aufsteigend sein). Gleich wie frontend/src/utils/getRequiredThreshold.js und api/txSignatures.php.
  * @param {{ type?: string }[]} operations
  * @param {{ low?: number, med?: number, high?: number }} thresholds
  * @returns {number}
@@ -151,15 +147,18 @@ function requiredWeightForOperations(operations, thresholds) {
   const med = Number(thresholds?.med || 0);
   const high = Number(thresholds?.high || 0);
   const opTypes = (operations || []).map((op) => op?.type).filter(Boolean);
-  if (!opTypes.length) return med || 0;
+  // Ohne erkennbare Operationen bewusst streng: mindestens Medium.
+  if (!opTypes.length) return Math.max(low, med, MIN_SIGNED_WEIGHT);
 
-  const categories = new Set(opTypes.map(operationThresholdCategory));
-  if (categories.has('high')) return high || med || low || 0;
-  if (categories.has('med')) return med || high || low || 0;
-  // Reine Low-Transaktion (bumpSequence, claimClaimableBalance, ...): das Netz verlangt genau
-  // low_threshold, bei low=0 aber mindestens eine gueltige Signatur, also Gewicht 1. Belegt auf dem
-  // Testnet am 14.11.2026 (scripts/testnet-threshold-probe.mjs). Vorher med || low || high (zu streng).
-  return low > 0 ? low : MIN_SIGNED_WEIGHT;
+  // Netzregel, belegt auf dem Testnet am 14.11.2026 (scripts/testnet-threshold-probe.mjs, Faelle A bis K):
+  // jede Transaktion braucht mindestens low_threshold (tx-Ebene), jede Operation zusaetzlich die
+  // Schwelle ihrer Kategorie, und mindestens eine gueltige Signatur. Eine Kategorie-Schwelle 0
+  // faellt nicht auf eine andere Schwelle zurueck (Probe G). Also max(low, Schwellen der vorkommenden Kategorien, 1).
+  // Grenze: setOptions ohne Signer-, Gewichts- oder Schwellen-Aenderung zaehlt im Netz als Medium;
+  // hier gilt setOptions immer als High (strenger, SKM baut nur High-setOptions).
+  const byCategory = { low, med, high };
+  const categoryWeights = [...new Set(opTypes.map(operationThresholdCategory))].map((c) => byCategory[c]);
+  return Math.max(low, ...categoryWeights, MIN_SIGNED_WEIGHT);
 }
 
 module.exports = {

@@ -216,8 +216,8 @@ describe('requiredWeightFor (T-4)', () => {
     expect(requiredWeightFor('trustlineSwap', thresholds)).toBe(1);
     expect(requiredWeightFor('offer', thresholds)).toBe(1);
   });
-  it('Gegenprobe: payment haette high verlangt', () => {
-    expect(getRequiredThreshold('payment', thresholds)).toBe(3);
+  it('Gegenprobe: setOptions verlangt high', () => {
+    expect(getRequiredThreshold('setOptions', thresholds)).toBe(3);
   });
 });
 

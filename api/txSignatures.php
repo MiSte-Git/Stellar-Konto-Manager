@@ -60,14 +60,8 @@ function operationThresholdCategoryForClass(string $class): string {
 }
 
 /**
- * Mirrors frontend/src/utils/getRequiredThreshold.js's per-category fallback
- * chains (used when an account leaves a threshold at 0), generalized across
- * every operation in the transaction: each operation is checked on-chain
- * against its own category, so the weight the whole transaction needs is
- * driven by whichever category present demands the most (high > med > low) -
- * a weight that satisfies the highest category automatically satisfies the
- * lower ones too, since thresholds are expected to be non-decreasing
- * (low <= med <= high).
+ * Gewicht, das die ganze Transaktion braucht: Maximum ueber low_threshold und die Schwellen aller
+ * vorkommenden Kategorien, mindestens 1. Gleich wie requiredWeightForOperations in services/txSignatures.js.
  * @param array{low: int, med: int, high: int} $thresholds
  */
 function requiredWeightForOperations(AbstractTransaction $tx, array $thresholds): int {
@@ -75,15 +69,17 @@ function requiredWeightForOperations(AbstractTransaction $tx, array $thresholds)
     $med = (int)($thresholds['med'] ?? 0);
     $high = (int)($thresholds['high'] ?? 0);
     $operations = $tx instanceof Transaction ? $tx->getOperations() : [];
-    if (empty($operations)) return $med ?: 0;
+    // Ohne erkennbare Operationen (z. B. FeeBump) bewusst streng: mindestens Medium.
+    if (empty($operations)) return max($low, $med, 1);
 
+    // Netzregel, belegt auf dem Testnet am 14.11.2026 (scripts/testnet-threshold-probe.mjs, Faelle A bis K):
+    // max(low, Schwellen der vorkommenden Kategorien, 1). Eine Kategorie-Schwelle 0 faellt nicht zurueck.
+    // Grenze: setOptions gilt immer als High (im Netz ohne Signer-/Schwellen-Aenderung nur Medium).
     $categories = array_unique(array_map('operationThresholdCategory', $operations));
-    if (in_array('high', $categories, true)) return $high ?: ($med ?: ($low ?: 0));
-    if (in_array('med', $categories, true)) return $med ?: ($high ?: ($low ?: 0));
-    // Reine Low-Transaktion (bumpSequence, claimClaimableBalance, ...): das Netz verlangt genau
-    // low_threshold, bei low=0 aber mindestens eine gueltige Signatur, also Gewicht 1. Belegt auf dem
-    // Testnet am 14.11.2026 (scripts/testnet-threshold-probe.mjs). Vorher med ?: low ?: high (zu streng).
-    return $low > 0 ? $low : 1;
+    $byCategory = ['low' => $low, 'med' => $med, 'high' => $high];
+    $weights = [$low, 1];
+    foreach ($categories as $c) $weights[] = $byCategory[$c] ?? $med;
+    return max($weights);
 }
 
 /**
