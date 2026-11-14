@@ -35,6 +35,25 @@ StellarSdk.Horizon.Server.prototype.loadAccount = async function loadAccount(acc
 // bleibt das SDK unveraendert.
 if (process.env.SKM_TEST_SUBMIT_HASH) {
   StellarSdk.Horizon.Server.prototype.submitTransaction = async function submitTransaction() {
-    return { hash: process.env.SKM_TEST_SUBMIT_HASH, ledger: 1 };
+    return { hash: process.env.SKM_TEST_SUBMIT_HASH, ledger: 1, envelope_xdr: 'MOCK_ENVELOPE_XDR', result_xdr: 'MOCK_RESULT_XDR' };
+  };
+}
+
+// Optional: SKM_TEST_SUBMIT_REJECT ersetzt submitTransaction durch eine Ablehnung wie Horizon (400
+// mit extras samt envelope_xdr und result_xdr, F-3). Der Wert ist der Transaktions-Code.
+if (process.env.SKM_TEST_SUBMIT_REJECT) {
+  StellarSdk.Horizon.Server.prototype.submitTransaction = async function submitTransaction() {
+    const data = {
+      type: 'https://stellar.org/horizon-errors/transaction_failed',
+      title: 'Transaction Failed',
+      status: 400,
+      detail: 'The transaction failed when submitted to the stellar network.',
+      extras: {
+        envelope_xdr: 'MOCK_ENVELOPE_XDR',
+        result_xdr: 'MOCK_RESULT_XDR',
+        result_codes: { transaction: process.env.SKM_TEST_SUBMIT_REJECT },
+      },
+    };
+    throw Object.assign(new Error('Request failed with status code 400'), { response: { status: 400, data } });
   };
 }

@@ -24,6 +24,7 @@ const stellarNetworks = require('./services/stellarNetworks.js');
 const { computeMultisigLifecycleStatus, extractMaxTimeUnix, mapSubmitResultCodeToLifecycleStatus, isMultisigTimeboundWithinCap, MULTISIG_JOB_MAX_TIMEBOUND_SECONDS } = require('./services/multisigLifecycle.js');
 const { applyDecline, dropDeclinesOfCollected } = require('./services/multisigDecline.js');
 const { withMultisigJobLock } = require('./services/multisigJobLock.js');
+const { submitErrorResult, submitSuccessResult, withSanitizedSubmitResult } = require('./services/submitResult.js');
 const { expireStalePendingJobs } = require('./services/multisigJobsGuard.js');
 
 // Lightweight .env loader (root .env and backend/.env) without extra deps
@@ -771,11 +772,12 @@ app.post('/api/multisig/jobs', async (req, res) => {
         const result = await submitTx(parsed.tx, net);
         job.status = 'submitted_success';
         job.submittedAt = new Date().toISOString();
-        job.submittedResult = { hash: result?.hash || result?.id || null };
+        job.submittedResult = submitSuccessResult(result);
       } catch (submitErr) {
         job.status = 'submitted_failed';
         job.submittedAt = new Date().toISOString();
-        job.submittedResult = { error: submitErr?.response?.data || submitErr?.message || 'submit_failed' };
+        // F-3: nur Fehlertext und result_codes, nie envelope_xdr/result_xdr (die Liste ist ohne Token lesbar).
+        job.submittedResult = submitErrorResult(submitErr);
       }
     }
     multisigDb.items.unshift(job);
@@ -792,7 +794,7 @@ app.post('/api/multisig/jobs', async (req, res) => {
       multisigDb.items = multisigDb.items.filter((j) => j.id !== job.id);
       return res.status(500).json({ ok: false, error: submitAttempted ? SAVE_FAILED_AFTER_SUBMIT : 'multisig.jobs.save_failed' });
     }
-    res.json(responseJob);
+    res.json(withSanitizedSubmitResult(responseJob));
   } catch (e) {
     console.error('multisig.jobs.post.failed', e);
     res.status(500).json({ ok: false, error: submitAttempted ? SAVE_FAILED_AFTER_SUBMIT : 'multisig.jobs.save_failed' });
@@ -863,13 +865,14 @@ app.get('/api/multisig/jobs/:id', async (req, res) => {
 // Paritaet mit summarizeJob in api/multisig.php (#16): Signer, die noch signieren koennen und noch
 // nicht signiert haben (Gewicht > 0, Typ Ed25519). Nur in der Antwort, nicht gespeichert. Altjobs ohne
 // Signer-Typ: Typ aus dem Schluessel (signerTypeOf).
+// F-3: bereinigt dabei auch submittedResult von Altjobs (envelope_xdr/result_xdr fallen weg).
 function withMissingSigners(job) {
   const collected = new Set((Array.isArray(job?.collectedSigners) ? job.collectedSigners : []).map((s) => s?.publicKey).filter(Boolean));
   const missingSigners = (Array.isArray(job?.signers) ? job.signers : []).filter((s) => (
     s?.publicKey && Number(s.weight || 0) > 0 && !collected.has(s.publicKey) && isInteractiveSigner({ key: s.publicKey, type: s.type })
   ));
   const missingWeight = missingSigners.reduce((acc, s) => acc + Number(s.weight || 0), 0);
-  return { ...job, missingSigners, missingWeight };
+  return { ...withSanitizedSubmitResult(job), missingSigners, missingWeight };
 }
 
 function findMultisigJob(id) {
@@ -1105,7 +1108,7 @@ app.post('/api/multisig/jobs/:id/merge-signed-xdr', (req, res) => withMultisigJo
     // used to fall through to the `else` branch below and incorrectly revert
     // a true submitted_success back to pending_signatures.
     if (multisigFinalStatus.has(job.status)) {
-      return res.status(409).json({ ok: false, error: job.status, job });
+      return res.status(409).json({ ok: false, error: job.status, job: withSanitizedSubmitResult(job) });
     }
 
     // Signers/thresholds are always (re-)derived from the real on-chain account
@@ -1142,7 +1145,7 @@ app.post('/api/multisig/jobs/:id/merge-signed-xdr', (req, res) => withMultisigJo
       const dead = { ...job, status: lifecycleStatus };
       multisigDb.items = multisigDb.items.map((j) => (j.id === job.id ? dead : j));
       await saveMultisigDb();
-      return res.status(409).json({ ok: false, error: lifecycleStatus, job: dead });
+      return res.status(409).json({ ok: false, error: lifecycleStatus, job: withSanitizedSubmitResult(dead) });
     }
 
     // signatureKey arbeitet auf rohen Bytes (stellar-sdk v16 und v17). Eine
@@ -1197,7 +1200,7 @@ app.post('/api/multisig/jobs/:id/merge-signed-xdr', (req, res) => withMultisigJo
         const result = await submitTx(current.tx, net);
         updated.status = 'submitted_success';
         updated.submittedAt = new Date().toISOString();
-        updated.submittedResult = { hash: result?.hash || result?.id || null };
+        updated.submittedResult = submitSuccessResult(result);
       } catch (submitErr) {
         // G5 stage 1: a submission that fails specifically because the
         // sequence/timebound died between our pre-merge check above and
@@ -1208,7 +1211,8 @@ app.post('/api/multisig/jobs/:id/merge-signed-xdr', (req, res) => withMultisigJo
         const mapped = mapSubmitResultCodeToLifecycleStatus(resultCode);
         updated.status = mapped || 'submitted_failed';
         updated.submittedAt = new Date().toISOString();
-        updated.submittedResult = { error: submitErr?.response?.data || submitErr?.message || 'submit_failed' };
+        // F-3: wie beim Anlegen nur Fehlertext und result_codes.
+        updated.submittedResult = submitErrorResult(submitErr);
       }
     } else if (added === 0) {
       // No new signature added, keep status
@@ -1223,7 +1227,7 @@ app.post('/api/multisig/jobs/:id/merge-signed-xdr', (req, res) => withMultisigJo
       multisigDb.items = multisigDb.items.map((j) => (j.id === job.id ? job : j));
       return res.status(500).json({ ok: false, error: submitAttempted ? SAVE_FAILED_AFTER_SUBMIT : 'multisig.jobs.merge_failed' });
     }
-    res.json(updated);
+    res.json(withSanitizedSubmitResult(updated));
   } catch (e) {
     console.error('multisig.jobs.merge.failed', e);
     res.status(500).json({ ok: false, error: submitAttempted ? SAVE_FAILED_AFTER_SUBMIT : 'multisig.jobs.merge_failed' });

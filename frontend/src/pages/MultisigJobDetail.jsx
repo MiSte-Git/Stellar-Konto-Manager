@@ -51,7 +51,7 @@ const INTEGRITY_ISSUE_TEXTS = {
   fee_bump: 'multisig:detail.integrity.feeBump',
 };
 
-// Grund aus submittedResult.error: PHP liefert einen String, Node die Horizon-Antwort.
+// Grund aus submittedResult.error: ein String (beide Backends seit F-3); Objekt = altes Node-Format.
 function submitReasonText(submittedResult) {
   const err = submittedResult?.error;
   if (!err) return '';

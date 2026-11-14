@@ -60,7 +60,8 @@ test('the create route runs expireStalePendingJobs() on the full item list befor
 test('F4: the create route responds with the post-guard job object, not the pre-guard reference', () => {
   const guardIndex = createBlock.indexOf('multisigDb.items = expireStalePendingJobs(multisigDb.items);');
   const responseVarIndex = createBlock.indexOf('const responseJob = multisigDb.items.find((j) => j.id === job.id) || job;');
-  const respondIndex = createBlock.indexOf('res.json(responseJob);');
+  // F-3: die Antwort laeuft zusaetzlich durch withSanitizedSubmitResult (ohne envelope_xdr/result_xdr).
+  const respondIndex = createBlock.indexOf('res.json(withSanitizedSubmitResult(responseJob));');
   assert.ok(guardIndex > -1, 'sanity: the guard call exists');
   assert.ok(responseVarIndex > -1 && responseVarIndex > guardIndex, 'the response must be looked up from the guarded item list, after the guard ran');
   assert.ok(respondIndex > -1, 'the route must respond with the post-guard object');

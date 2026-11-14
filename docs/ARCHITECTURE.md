@@ -58,7 +58,7 @@ Zwei Varianten mit gleichem Verhalten ([ADR 0003](adr/0003-dual-backend-paritaet
 
 | Thema | Node (`server.js`, `services/`) | PHP (`api/`) |
 |---|---|---|
-| Multisig-Jobs | `server.js`, `multisigLifecycle.js`, `multisigJobsGuard.js`, `multisigJobLock.js`, `multisigDecline.js` | `multisig.php`, `multisigLifecycle.php`, `multisigJobsGuard.php`, `multisigDecline.php` |
+| Multisig-Jobs | `server.js`, `multisigLifecycle.js`, `multisigJobsGuard.js`, `multisigJobLock.js`, `multisigDecline.js`, `submitResult.js` | `multisig.php`, `multisigLifecycle.php`, `multisigJobsGuard.php`, `multisigDecline.php`, `submitResult.php` |
 | Challenges | `challengeStore.js`, `challengeRateLimit.js` | `challengeStore.php`, `rateLimit.php` |
 | Signaturen | `txSignatures.js` | `txSignatures.php` |
 | Federation | `federationService.js` | `federation.php`, `federationService.php` |

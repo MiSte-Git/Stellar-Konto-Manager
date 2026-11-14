@@ -31,6 +31,7 @@ require __DIR__ . '/txSignatures.php';
 require __DIR__ . '/multisigJobsGuard.php';
 require __DIR__ . '/multisigLifecycle.php';
 require __DIR__ . '/multisigDecline.php';
+require __DIR__ . '/submitResult.php';
 
 use Soneso\StellarSDK\StellarSDK;
 use Soneso\StellarSDK\AbstractTransaction;
@@ -252,44 +253,13 @@ function submitToNetwork(AbstractTransaction $tx, string $net): array {
     }
     $data = json_decode($respBody, true);
     if ($httpCode >= 200 && $httpCode < 300 && isset($data['hash'])) {
-        return [
-          'hash' => $data['hash'],
-          'ledger' => $data['ledger'] ?? null,
-          'envelopeXdr' => $data['envelope_xdr'] ?? null,
-          'resultXdr' => $data['result_xdr'] ?? null,
-        ];
+        // F-3: nur Hash und Ledger speichern (kein envelope_xdr/result_xdr).
+        return skm_submit_success_result($data);
     }
     $extras = [];
     if (is_array($data) && isset($data['extras'])) $extras = $data['extras'];
-    throw new SubmitFailedException($data['detail'] ?? $data['title'] ?? 'submit_failed', $extras);
-}
-
-function getSubmitErrorDetail(\Throwable $e): array {
-    $detail = ['message' => $e->getMessage()];
-    // Try to extract stellar-specific error info if available
-    if (method_exists($e, 'getExtras')) {
-        $detail['extras'] = $e->getExtras();
-    } elseif (property_exists($e, 'extras')) {
-        $detail['extras'] = $e->extras;
-    }
-    if (!isset($detail['extras']) || empty($detail['extras'])) {
-        if (method_exists($e, 'getResultCodes')) {
-            $rc = $e->getResultCodes();
-            if ($rc) {
-                $detail['extras'] = ['result_codes' => $rc];
-            }
-        } elseif (property_exists($e, 'result_codes')) {
-            $detail['extras'] = ['result_codes' => $e->result_codes];
-        }
-    }
-    if ($e instanceof SubmitFailedException) {
-        $ex = $e->getExtras();
-        if ($ex) $detail['extras'] = $ex;
-    }
-    if (!isset($detail['extras'])) {
-        $detail['extras'] = ['result_codes' => 'unknown'];
-    }
-    return $detail;
+    // Fehlertext zuerst title, dann detail, wie Node (submitErrorResult in services/submitResult.js).
+    throw new SubmitFailedException($data['title'] ?? $data['detail'] ?? 'submit_failed', $extras);
 }
 
 function fetchAccountSigners(string $accountId, string $net): array {
@@ -482,7 +452,8 @@ function summarizeJob(array $job): array {
             ?? (($requiredWeight > 0 && $collectedWeight >= $requiredWeight) ? 'ready_to_submit' : 'pending_signatures');
     }
 
-    return $job;
+    // F-3: jede Ausgabe eines Jobs laeuft hier durch; bereinigt auch Altjobs (envelope_xdr/result_xdr fallen weg).
+    return skm_with_sanitized_submit_result($job);
 }
 
 // Routing
@@ -552,7 +523,8 @@ if ($method === 'POST' && $path === '/api/multisig/jobs') {
                 $submittedResult = submitToNetwork($tx, $net);
                 $status = 'submitted_success';
             } catch (\Throwable $submitErr) {
-                $submittedResult = ['error' => $submitErr->getMessage(), 'detail' => getSubmitErrorDetail($submitErr)];
+                // F-3: nur Fehlertext und result_codes, nie envelope_xdr/result_xdr (die Liste ist ohne Token lesbar).
+                $submittedResult = skm_submit_error_result($submitErr);
                 $status = 'submitted_failed';
             }
         }
@@ -1051,10 +1023,10 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/merge-
                         // reported as a generic submitted_failed - safety net for
                         // that TOCTOU gap (the account sequence used above can be
                         // up to 30s cached, see fetchAccountSignersCached()).
-                        $detail = getSubmitErrorDetail($submitErr);
-                        $resultCode = $detail['extras']['result_codes']['transaction'] ?? null;
+                        // F-3: wie beim Anlegen nur Fehlertext und result_codes.
+                        $submittedResult = skm_submit_error_result($submitErr);
+                        $resultCode = skm_submitted_result_tx_code($submittedResult);
                         $mapped = mapSubmitResultCodeToLifecycleStatus($resultCode);
-                        $submittedResult = ['error' => $submitErr->getMessage(), 'detail' => $detail];
                         $status = $mapped ?? 'submitted_failed';
                     }
                 }

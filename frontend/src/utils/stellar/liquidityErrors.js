@@ -54,9 +54,10 @@ export function liquidityErrorKey(err) {
 }
 
 /**
- * Horizon-result_codes aus dem submittedResult eines Multisig-Jobs. Die Backends
- * legen sie unterschiedlich ab: PHP unter detail.extras, Node unter error.extras
- * (error ist dort die Horizon-Antwort). Liefert null, wenn keine Codes vorliegen.
+ * Horizon-result_codes aus dem submittedResult eines Multisig-Jobs. Beide Backends
+ * legen sie unter detail.extras ab (F-3, services/submitResult.js); error.extras ist
+ * das alte Node-Format (error war die ganze Horizon-Antwort) und bleibt lesbar.
+ * Liefert null, wenn keine Codes vorliegen.
  */
 export function jobSubmitResultCodes(submittedResult) {
   const codes = submittedResult?.detail?.extras?.result_codes ?? submittedResult?.error?.extras?.result_codes;

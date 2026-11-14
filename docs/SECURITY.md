@@ -123,6 +123,12 @@ Ein Job ist eine unsignierte oder teilsignierte Transaktion, die mehrere Signer 
   Body ergibt 400 `invalid_json` ohne Stacktrace und ohne Body-Inhalt. Scheitert das Speichern, nachdem beim Anlegen oder
   Merge schon an Horizon gesendet wurde, lautet der Code `multisig.jobs.save_failed_after_submit` (500, beide Backends):
   Die Transaktion kann im Netz sein, ein erneutes Senden wäre falsch; die UI weist darauf hin.
+- **Sendeergebnis (`submittedResult`):** Beide Backends speichern und liefern nur Fehlertext und `result_codes`
+  (Ablehnung) bzw. Hash und Ledger (Erfolg), nie `envelope_xdr` oder `result_xdr` aus der Horizon-Antwort
+  (`services/submitResult.js`, `api/submitResult.php`). Grund: Die Job-Liste ist ohne Token lesbar (G-Adresse reicht);
+  mit dem signierten Envelope könnte ein Dritter eine nur vorläufig abgelehnte Transaktion (z. B.
+  `tx_insufficient_fee`) bis `maxTime` selbst einreichen. Altjobs mit vollständiger Antwort werden bei jeder Ausgabe
+  (Liste, Detail, Merge, Anlegen) bereinigt (Review Fable, Befund F-3).
 - **Nebenläufigkeit:** Node serialisiert Merge, Ablehnen und Löschen je Job (`services/multisigJobLock.js`), PHP
   arbeitet unter Dateilock. Endzustände werden im Lock geprüft.
 - **Anzeige vor dem Signieren** (`frontend/src/utils/multisig/describeTransaction.js`,
