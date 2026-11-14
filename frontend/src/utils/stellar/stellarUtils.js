@@ -2,7 +2,6 @@ import { resolveFeePerOp } from './fees.js';
 import { NETWORKS, horizonUrlFor, normalizeNetworkId, passphraseFor, readStoredNetworkId } from '../../config/networks.js';
 import { apiUrl } from '../apiBase.js';
 import { isFlowNetworkCurrent, NETWORK_CHANGED_CODE } from '../globalNetwork.js';
-import { assertKeypairFor, keypairFromSecret } from '../signers/keyMaterial.js';
 import {
   ADDRESS_KINDS,
   CONTRACT_ADDRESS_ERROR,
@@ -331,16 +330,6 @@ export async function loadTrustlines(publicKey, serverOverride, options = {}) {
     }
     throw new Error('error.loadTrustlines');
   }
-}
-
-/**
- * Prüft, ob ein Secret Key zum erwarteten Public Key gehört
- * @param {string} secretKey - Secret Key (S...)
- * @param {string} expectedPublicKey - Erwarteter öffentlicher Key (G...)
- * @throws {Error} - Wenn Schlüssel nicht zusammenpassen
- */
-export function assertKeyPairMatch(secretKey, expectedPublicKey) {
-  assertKeypairFor(keypairFromSecret(secretKey), expectedPublicKey);
 }
 
 /**

@@ -2,7 +2,7 @@
 import { describe, expect, it } from 'vitest';
 import { Buffer } from 'buffer';
 import { Keypair } from '@stellar/stellar-sdk';
-import { assertKeypairFor, keypairFromSecret, signChallengeMessage } from '../keyMaterial.js';
+import { keypairFromSecret, signChallengeMessage } from '../keyMaterial.js';
 import { signMultisigJobChallenge } from '../../multisigApi.js';
 
 // Fester Testschluessel (auch in SecretKeyModal.test.jsx und tradingTransactions.test.js).
@@ -42,15 +42,6 @@ describe('keypairFromSecret', () => {
     let actual;
     try { keypairFromSecret(input); } catch (e) { actual = e; }
     expect(actual.constructor).toBe(expected.constructor);
-  });
-});
-
-describe('assertKeypairFor', () => {
-  it('passt: wirft nicht', () => {
-    expect(() => assertKeypairFor(keypairFromSecret(SECRET), PUBLIC)).not.toThrow();
-  });
-  it('Gegenprobe anderer Public Key: secretKey.mismatch', () => {
-    expect(() => assertKeypairFor(keypairFromSecret(SECRET), Keypair.random().publicKey())).toThrow('secretKey.mismatch');
   });
 });
 

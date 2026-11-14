@@ -19,17 +19,6 @@ export function keypairFromSecret(secret) {
 }
 
 /**
- * Wirft Error('secretKey.mismatch'), wenn das Keypair nicht zum erwarteten Public Key gehoert.
- * @param {import('@stellar/stellar-sdk').Keypair} keypair
- * @param {string} expectedPublicKey
- */
-export function assertKeypairFor(keypair, expectedPublicKey) {
-  if (keypair.publicKey() !== expectedPublicKey) {
-    throw new Error('secretKey.mismatch');
-  }
-}
-
-/**
  * Rohe Signatur ueber eine Nachricht. Nur fuer Server-Challenges (signMultisigJobChallenge in
  * multisigApi.js), die immer mit dem Zweck-Praefix skm:<zweck>: beginnen (AGENTS.md Regel 3,
  * ADR 0004). Nie fuer Transaktionen; die laufen ueber tx.sign (Teilschritt 3: attachSignatures).
