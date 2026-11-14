@@ -1,0 +1,8 @@
+{
+  "_comment": "Fester Challenge-Vektor (ADR 0004, Korrektur K5). Secret nur fuer Tests, ohne Guthaben. signature ist die Ausgabe von signMultisigJobChallenge (frontend/src/utils/multisigApi.js) fuer secret, nonce und purpose. Gelesen vom Frontend-Test signMultisigJobChallenge.test.js sowie von test/signerAuth.test.js und test/signerAuth.test.php.",
+  "secret": "SADQOBYHA4DQOBYHA4DQOBYHA4DQOBYHA4DQOBYHA4DQOBYHA4DQP54X",
+  "publicKey": "GDVEU3DD4KOFECV66VIHWEZOYX4ZKR3WV27L464SIIPOU2IUI3JCZA57",
+  "nonce": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+  "purpose": "token",
+  "signature": "4U3ZHP91BAQdLXyCz/lMpfB7Kt+MGbcgQ+Rh0s9dssEE8y3yhD4cwkr1z9R+0JDW86pDpo1S/ZFvl/X1cyCaAQ=="
+}

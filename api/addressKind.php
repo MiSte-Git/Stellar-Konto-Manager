@@ -24,10 +24,6 @@ const SKM_STRKEY_VERSION_MUXED_CONTRACT = 22 << 3;
 
 const SKM_STRKEY_ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
 
-// Syntaxregel ohne Pruefsumme (G plus 55 Base32-Zeichen), wie bisher STELLAR_PUBLIC_KEY_RE in
-// api/trade.php. Eine Verschaerfung auf Pruefsumme waere eine eigene Aenderung.
-// \z statt $: In PHP passt $ auch vor einem abschliessenden Zeilenumbruch, in JS nicht (K8).
-
 function skm_crc16_xmodem(string $data): int {
     $crc = 0x0000;
     $len = strlen($data);

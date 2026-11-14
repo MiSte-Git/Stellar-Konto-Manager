@@ -1,0 +1,173 @@
+{
+  "_comment": "Signer-Typen (ADR 0012, Plan Signer-Buendelung 8.2, Regel signerTypeOf). Gelesen von frontend/src/utils/signers/__tests__/signerRules.test.js, test/signerAuth.test.js und test/signerAuth.test.php. Mit Horizon-Typ entscheidet der Typ, der erste Buchstabe des Schluessels muss passen; ohne Typ der Strkey mit Pruefsumme; Widerspruch oder unbekannt ergibt unknown. Nur ed25519_public_key ist interaktiv.",
+  "cases": [
+    {
+      "label": "G mit Typ",
+      "type": "ed25519_public_key",
+      "key": "GBTL47RTFR5EKMZSXWOQU735WBK7LRPPDIDK3JTNTCZZ7NUBBRDTVSK2",
+      "expected": "ed25519_public_key",
+      "interactive": true
+    },
+    {
+      "label": "X mit Typ",
+      "type": "sha256_hash",
+      "key": "XABAEAQCAIBAEAQCAIBAEAQCAIBAEAQCAIBAEAQCAIBAEAQCAIBAEQAI",
+      "expected": "sha256_hash",
+      "interactive": false
+    },
+    {
+      "label": "T mit Typ",
+      "type": "preauth_tx",
+      "key": "TAAQCAIBAEAQCAIBAEAQCAIBAEAQCAIBAEAQCAIBAEAQCAIBAEAQCENW",
+      "expected": "preauth_tx",
+      "interactive": false
+    },
+    {
+      "label": "P mit Typ",
+      "type": "ed25519_signed_payload",
+      "key": "PBTL47RTFR5EKMZSXWOQU735WBK7LRPPDIDK3JTNTCZZ7NUBBRDTUAAAAACASCIJBGM2E",
+      "expected": "ed25519_signed_payload",
+      "interactive": false
+    },
+    {
+      "label": "G ohne Typ",
+      "type": null,
+      "key": "GBTL47RTFR5EKMZSXWOQU735WBK7LRPPDIDK3JTNTCZZ7NUBBRDTVSK2",
+      "expected": "ed25519_public_key",
+      "interactive": true
+    },
+    {
+      "label": "X ohne Typ",
+      "type": null,
+      "key": "XABAEAQCAIBAEAQCAIBAEAQCAIBAEAQCAIBAEAQCAIBAEAQCAIBAEQAI",
+      "expected": "sha256_hash",
+      "interactive": false
+    },
+    {
+      "label": "T ohne Typ",
+      "type": null,
+      "key": "TAAQCAIBAEAQCAIBAEAQCAIBAEAQCAIBAEAQCAIBAEAQCAIBAEAQCENW",
+      "expected": "preauth_tx",
+      "interactive": false
+    },
+    {
+      "label": "P ohne Typ",
+      "type": null,
+      "key": "PBTL47RTFR5EKMZSXWOQU735WBK7LRPPDIDK3JTNTCZZ7NUBBRDTUAAAAACASCIJBGM2E",
+      "expected": "ed25519_signed_payload",
+      "interactive": false
+    },
+    {
+      "label": "G falsche Pruefsumme ohne Typ",
+      "type": null,
+      "key": "GBTL47RTFR5EKMZSXWOQU735WBK7LRPPDIDK3JTNTCZZ7NUBBRDTVSKA",
+      "expected": "unknown",
+      "interactive": false
+    },
+    {
+      "label": "M ohne Typ",
+      "type": null,
+      "key": "MBTL47RTFR5EKMZSXWOQU735WBK7LRPPDIDK3JTNTCZZ7NUBBRDTUAIBAEAQCAIBAHI3O",
+      "expected": "unknown",
+      "interactive": false
+    },
+    {
+      "label": "C ohne Typ",
+      "type": null,
+      "key": "CABQGAYDAMBQGAYDAMBQGAYDAMBQGAYDAMBQGAYDAMBQGAYDAMBQGCK3",
+      "expected": "unknown",
+      "interactive": false
+    },
+    {
+      "label": "leer ohne Typ",
+      "type": null,
+      "key": "",
+      "expected": "unknown",
+      "interactive": false
+    },
+    {
+      "label": "Widerspruch ed25519 mit T",
+      "type": "ed25519_public_key",
+      "key": "TAAQCAIBAEAQCAIBAEAQCAIBAEAQCAIBAEAQCAIBAEAQCAIBAEAQCENW",
+      "expected": "unknown",
+      "interactive": false
+    },
+    {
+      "label": "Widerspruch ed25519 mit X",
+      "type": "ed25519_public_key",
+      "key": "XABAEAQCAIBAEAQCAIBAEAQCAIBAEAQCAIBAEAQCAIBAEAQCAIBAEQAI",
+      "expected": "unknown",
+      "interactive": false
+    },
+    {
+      "label": "Widerspruch ed25519 mit P",
+      "type": "ed25519_public_key",
+      "key": "PBTL47RTFR5EKMZSXWOQU735WBK7LRPPDIDK3JTNTCZZ7NUBBRDTUAAAAACASCIJBGM2E",
+      "expected": "unknown",
+      "interactive": false
+    },
+    {
+      "label": "Widerspruch sha256 mit G",
+      "type": "sha256_hash",
+      "key": "GBTL47RTFR5EKMZSXWOQU735WBK7LRPPDIDK3JTNTCZZ7NUBBRDTVSK2",
+      "expected": "unknown",
+      "interactive": false
+    },
+    {
+      "label": "Widerspruch preauth mit X",
+      "type": "preauth_tx",
+      "key": "XABAEAQCAIBAEAQCAIBAEAQCAIBAEAQCAIBAEAQCAIBAEAQCAIBAEQAI",
+      "expected": "unknown",
+      "interactive": false
+    },
+    {
+      "label": "Widerspruch preauth mit G",
+      "type": "preauth_tx",
+      "key": "GBTL47RTFR5EKMZSXWOQU735WBK7LRPPDIDK3JTNTCZZ7NUBBRDTVSK2",
+      "expected": "unknown",
+      "interactive": false
+    },
+    {
+      "label": "Widerspruch signed_payload mit G",
+      "type": "ed25519_signed_payload",
+      "key": "GBTL47RTFR5EKMZSXWOQU735WBK7LRPPDIDK3JTNTCZZ7NUBBRDTVSK2",
+      "expected": "unknown",
+      "interactive": false
+    },
+    {
+      "label": "ed25519 leer",
+      "type": "ed25519_public_key",
+      "key": "",
+      "expected": "unknown",
+      "interactive": false
+    },
+    {
+      "label": "ed25519 mit M",
+      "type": "ed25519_public_key",
+      "key": "MBTL47RTFR5EKMZSXWOQU735WBK7LRPPDIDK3JTNTCZZ7NUBBRDTUAIBAEAQCAIBAHI3O",
+      "expected": "unknown",
+      "interactive": false
+    },
+    {
+      "label": "ed25519 mit C",
+      "type": "ed25519_public_key",
+      "key": "CABQGAYDAMBQGAYDAMBQGAYDAMBQGAYDAMBQGAYDAMBQGAYDAMBQGCK3",
+      "expected": "unknown",
+      "interactive": false
+    },
+    {
+      "label": "unbekannter Typ ml_dsa_44 mit G",
+      "type": "ml_dsa_44",
+      "key": "GBTL47RTFR5EKMZSXWOQU735WBK7LRPPDIDK3JTNTCZZ7NUBBRDTVSK2",
+      "expected": "unknown",
+      "interactive": false
+    },
+    {
+      "label": "unbekannter Typ gross geschrieben",
+      "type": "ED25519_PUBLIC_KEY",
+      "key": "GBTL47RTFR5EKMZSXWOQU735WBK7LRPPDIDK3JTNTCZZ7NUBBRDTVSK2",
+      "expected": "unknown",
+      "interactive": false
+    }
+  ]
+}

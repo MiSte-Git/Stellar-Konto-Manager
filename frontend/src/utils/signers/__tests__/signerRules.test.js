@@ -194,3 +194,15 @@ describe('singleSignerSuffices', () => {
     expect(singleSignerSuffices(account([]), undefined)).toBe(true);
   });
 });
+
+// Gemeinsame Fixture mit Node und PHP (test/assets/signer-types.json, ADR 0003).
+describe('signerTypeOf gegen die gemeinsame Fixture', async () => {
+  const fs = await import('node:fs');
+  const path = await import('node:path');
+  const fixture = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../../../../test/assets/signer-types.json'), 'utf8'));
+  it.each(fixture.cases.map((c) => [c.label, c]))('%s', (_label, c) => {
+    const signer = c.type === null ? { key: c.key } : { key: c.key, type: c.type };
+    expect(signerTypeOf(signer)).toBe(c.expected);
+    expect(isInteractiveSigner(signer)).toBe(c.interactive);
+  });
+});

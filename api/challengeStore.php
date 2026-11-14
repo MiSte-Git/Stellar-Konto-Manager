@@ -16,8 +16,8 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/signerAuth.php';
 
-use Soneso\StellarSDK\Crypto\KeyPair;
 
 const CHALLENGE_TTL_SECONDS = 60;
 // Obergrenzen, damit challenges.json mit zufaelligen Keys nicht beliebig waechst (C2).
@@ -152,16 +152,11 @@ function consumeChallenge(string $jobId, string $signerPublicKey): ?array {
 // eine gueltige Transaktions-Signatur einsammeln. Ohne $purpose ist keine Nachricht
 // gueltig, eine Signatur fuer das Token gilt nie als Ablehnung und umgekehrt.
 // Gleich in services/challengeStore.js und frontend/src/utils/multisigApi.js.
+// Korrektur K5: Nonce und Signatur strikt als Standard-base64 mit Padding (wie Node). Vorher nahm
+// base64_decode(..., true) auch Eingaben ohne Padding an. Pruefung in signerAuth.php.
 function verifyChallengeSignature(string $nonceB64, string $signatureB64, string $signerPublicKey, string $purpose): bool {
-    try {
-        if ($purpose === '') return false;
-        $nonce = base64_decode($nonceB64, true);
-        $signature = base64_decode($signatureB64, true);
-        if ($nonce === false || $signature === false || $nonce === '' || $signature === '') return false;
-        $data = 'skm:' . $purpose . ':' . $nonce;
-        $kp = KeyPair::fromAccountId($signerPublicKey);
-        return $kp->verifySignature($signature, $data);
-    } catch (\Throwable $e) {
-        return false;
-    }
+    if ($purpose === '') return false;
+    $nonce = skm_decode_strict_base64($nonceB64);
+    if ($nonce === null || $nonce === '') return false;
+    return skm_verify_challenge($signerPublicKey, 'skm:' . $purpose . ':' . $nonce, $signatureB64);
 }

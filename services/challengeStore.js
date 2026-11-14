@@ -13,7 +13,7 @@
 // losing pending challenges on a restart just means the client requests a
 // fresh one, which is a non-issue.
 const crypto = require('crypto');
-const { Keypair } = require('@stellar/stellar-sdk');
+const { decodeStrictBase64, verifyChallenge } = require('./signerAuth.js');
 
 const DEFAULT_TTL_MS = 60_000;
 // Obergrenzen, damit die Map mit zufaelligen Keys nicht beliebig waechst (C2).
@@ -97,21 +97,18 @@ function consumeChallenge(jobId, signerPublicKey) {
 // gueltig, eine Signatur fuer das Token gilt nie als Ablehnung und umgekehrt.
 // Gleich in api/challengeStore.php und frontend/src/utils/multisigApi.js.
 function challengeMessage(nonceB64, purpose) {
-  const nonce = Buffer.from(String(nonceB64 || ''), 'base64');
-  if (!nonce.length || typeof purpose !== 'string' || !purpose) return Buffer.alloc(0);
+  // Strikt wie in PHP (base64_decode strict): die Nonce erzeugt das Backend selbst als Standard-base64.
+  const nonce = decodeStrictBase64(String(nonceB64 || ''));
+  if (!nonce || !nonce.length || typeof purpose !== 'string' || !purpose) return Buffer.alloc(0);
   return Buffer.concat([Buffer.from(`skm:${purpose}:`, 'utf8'), nonce]);
 }
 
+// Korrektur K5: Die Signatur wird strikt als Standard-base64 mit Padding dekodiert (wie PHP);
+// vorher nahm Buffer.from(..., 'base64') auch Fremdzeichen und base64url an. Pruefung in signerAuth.js.
 function verifyChallengeSignature(nonceB64, signatureB64, signerPublicKey, purpose) {
-  try {
-    const keypair = Keypair.fromPublicKey(signerPublicKey);
-    const data = challengeMessage(nonceB64, purpose);
-    const signature = Buffer.from(String(signatureB64 || ''), 'base64');
-    if (!data.length || !signature.length) return false;
-    return keypair.verify(data, signature);
-  } catch {
-    return false;
-  }
+  const data = challengeMessage(nonceB64, purpose);
+  if (!data.length) return false;
+  return verifyChallenge(signerPublicKey, data, String(signatureB64 || ''));
 }
 
 module.exports = {

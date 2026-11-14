@@ -10,8 +10,8 @@
 // (the exact same hint+verify check collectSignersForTx already does per
 // signer, just applied per individual signature here so invalid ones can be
 // dropped instead of merely not counted), then caps whatever remains at 20.
-const { Keypair } = require('@stellar/stellar-sdk');
 const { baseAccountOf } = require('./addressKind.js');
+const { HINT_BYTES, SIGNATURE_BYTES, isInteractiveSigner, signatureMatchesSigner } = require('./signerAuth.js');
 
 const MAX_TX_SIGNATURES = 20; // Stellar XDR: Signatures is DecoratedSignature<20>
 // Schwelle 0 heisst im Netz: mindestens eine gueltige Signatur eines Signers mit Gewicht > 0.
@@ -52,14 +52,9 @@ function readField(obj, name) {
 function decoratedSignatureBytes(sig) {
   const hint = toBytes(readField(sig, 'hint'));
   const signature = toBytes(readField(sig, 'signature'));
-  if (hint.length !== 4 || signature.length > 64) throw new TypeError('malformed decorated signature');
+  // Korrektur K4: Signatur genau SIGNATURE_BYTES (vorher hoechstens 64), wie in PHP.
+  if (hint.length !== HINT_BYTES || signature.length !== SIGNATURE_BYTES) throw new TypeError('malformed decorated signature');
   return { hint, signature };
-}
-
-function bytesEqual(a, b) {
-  if (a.length !== b.length) return false;
-  for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return false;
-  return true;
 }
 
 /** Stabiler Schluessel fuer die Duplikaterkennung beim Signatur-Merge (hint:signature, base64). */
@@ -68,33 +63,59 @@ function signatureKey(sig) {
   return `${Buffer.from(hint).toString('base64')}:${Buffer.from(signature).toString('base64')}`;
 }
 
+// Signer, deren Signaturen zaehlen: Gewicht > 0 und interaktiv (Ed25519). Hash-, Pre-Auth- und
+// Signed-Payload-Signer koennen nicht signieren und fallen hier heraus (ADR 0012).
+function countingSigners(signers) {
+  return (Array.isArray(signers) ? signers : [])
+    .filter((s) => s?.publicKey && Number(s?.weight || 0) > 0 && isInteractiveSigner({ key: s.publicKey, type: s.type }));
+}
+
+function readSignature(sig) {
+  try {
+    return decoratedSignatureBytes(sig);
+  } catch {
+    return null;
+  }
+}
+
 /**
+ * Behaelt nur Signaturen, die zu einem zaehlenden Signer passen, hoechstens MAX_TX_SIGNATURES.
  * @param {import('@stellar/stellar-sdk').Transaction} tx
- * @param {{ publicKey: string, weight: number }[]} signers
+ * @param {{ publicKey: string, weight: number, type?: string }[]} signers
  * @returns {import('@stellar/stellar-sdk').xdr.DecoratedSignature[]}
  */
 function filterValidSignatures(tx, signers = []) {
-  const txHash = Buffer.from(toBytes(tx.hash()));
-  const keypairs = signers
-    .filter((s) => Number(s?.weight || 0) > 0 && s?.publicKey)
-    .map((s) => {
-      try {
-        return Keypair.fromPublicKey(s.publicKey);
-      } catch {
-        return null;
-      }
-    })
-    .filter(Boolean);
-
-  const kept = tx.signatures.filter((sig) => keypairs.some((kp) => {
-    try {
-      const { hint, signature } = decoratedSignatureBytes(sig);
-      return bytesEqual(hint, toBytes(kp.signatureHint())) && kp.verify(txHash, Buffer.from(signature));
-    } catch {
-      return false;
-    }
-  }));
+  const txHash = toBytes(tx.hash());
+  const candidates = countingSigners(signers);
+  const kept = tx.signatures.filter((sig) => {
+    const bytes = readSignature(sig);
+    return !!bytes && candidates.some((s) => signatureMatchesSigner(bytes, s.publicKey, txHash));
+  });
   return kept.slice(0, MAX_TX_SIGNATURES);
+}
+
+/**
+ * Signer mit gueltiger Signatur auf tx, je Konto einmal, mit dem Gewicht laut signers. Einzige Quelle
+ * fuer collectedWeight (gleicher Aufbau wie verifyCollected in api/txSignatures.php). Ersetzt
+ * collectSignersForTx mit WebAuth.verifyTxSignedBy (Plan 8.2, Teilschritt 4). Unterschied zu frueher:
+ * Signer mit Gewicht 0 erscheinen nicht mehr in der Liste (wie in PHP), das Gewicht bleibt gleich.
+ * @param {import('@stellar/stellar-sdk').Transaction} tx
+ * @param {{ publicKey: string, weight: number, type?: string }[]} signers
+ * @returns {{ publicKey: string, weight: number }[]}
+ */
+function verifyCollected(tx, signers = []) {
+  const txHash = toBytes(tx.hash());
+  const sigs = tx.signatures.map(readSignature).filter(Boolean);
+  const seen = new Set();
+  const result = [];
+  for (const s of countingSigners(signers)) {
+    if (seen.has(s.publicKey)) continue;
+    if (sigs.some((bytes) => signatureMatchesSigner(bytes, s.publicKey, txHash))) {
+      seen.add(s.publicKey);
+      result.push({ publicKey: s.publicKey, weight: Number(s.weight) });
+    }
+  }
+  return result;
 }
 
 // Stellar's protocol assigns each operation type to a threshold category
@@ -143,6 +164,7 @@ function requiredWeightForOperations(operations, thresholds) {
 
 module.exports = {
   filterValidSignatures,
+  verifyCollected,
   signatureKey,
   decoratedSignatureBytes,
   MAX_TX_SIGNATURES,

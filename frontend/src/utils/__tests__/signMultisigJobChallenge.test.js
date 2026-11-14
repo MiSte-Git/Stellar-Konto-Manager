@@ -39,3 +39,16 @@ describe('signMultisigJobChallenge', () => {
     expect(() => signMultisigJobChallenge(kp.secret(), challenge, 'Token')).toThrow(/invalid_challenge_purpose/);
   });
 });
+
+// Fester Vektor, den beide Backends annehmen (test/assets/challenge-vector.json, Korrektur K5):
+// die Ausgabe hier ist genau das, was test/signerAuth.test.js und .php pruefen.
+describe('signMultisigJobChallenge: fester Vektor fuer die Backends', async () => {
+  const fs = await import('node:fs');
+  const path = await import('node:path');
+  const vector = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../../../test/assets/challenge-vector.json'), 'utf8'));
+  it('liefert genau die Signatur aus dem Vektor (Standard-base64 mit Padding)', () => {
+    const sig = signMultisigJobChallenge(vector.secret, vector.nonce, vector.purpose);
+    expect(sig).toBe(vector.signature);
+    expect(sig).toMatch(/^[A-Za-z0-9+/]{86}==$/);
+  });
+});

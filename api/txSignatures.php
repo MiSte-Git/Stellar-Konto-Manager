@@ -16,10 +16,10 @@ declare(strict_types=1);
 require_once __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/stellarNetworks.php';
 require_once __DIR__ . '/addressKind.php';
+require_once __DIR__ . '/signerAuth.php';
 
 use Soneso\StellarSDK\AbstractOperation;
 use Soneso\StellarSDK\AbstractTransaction;
-use Soneso\StellarSDK\Crypto\KeyPair;
 use Soneso\StellarSDK\Network;
 use Soneso\StellarSDK\Transaction;
 use Soneso\StellarSDK\Xdr\XdrDecoratedSignature;
@@ -87,7 +87,25 @@ function requiredWeightForOperations(AbstractTransaction $tx, array $thresholds)
 }
 
 /**
- * @param array{publicKey: string, weight: int}[] $signers
+ * Signer, deren Signaturen zaehlen: Gewicht > 0 und interaktiv (Ed25519). Hash-, Pre-Auth- und
+ * Signed-Payload-Signer koennen nicht signieren (ADR 0012). Gleich wie countingSigners in Node.
+ * @param array $signers
+ * @return array{publicKey: string, weight: int}[]
+ */
+function skm_counting_signers(array $signers): array {
+    $out = [];
+    foreach ($signers as $s) {
+        $pub = is_array($s) ? ($s['publicKey'] ?? '') : '';
+        $weight = is_array($s) ? (int)($s['weight'] ?? 0) : 0;
+        if (!is_string($pub) || $pub === '' || $weight <= 0) continue;
+        if (!skm_is_interactive_signer(['key' => $pub, 'type' => $s['type'] ?? null])) continue;
+        $out[] = ['publicKey' => $pub, 'weight' => $weight];
+    }
+    return $out;
+}
+
+/**
+ * @param array{publicKey: string, weight: int, type?: string}[] $signers
  * @return XdrDecoratedSignature[]
  */
 function filterValidSignatures(AbstractTransaction $tx, string $net, array $signers): array {
@@ -100,30 +118,15 @@ function filterValidSignatures(AbstractTransaction $tx, string $net, array $sign
     // was silently always 0, so no PHP-backed job could ever be detected as
     // fully signed no matter how many valid signatures it collected.
     $base = $tx->hash($network);
-
-    $keypairs = [];
-    foreach ($signers as $s) {
-        $pub = $s['publicKey'] ?? null;
-        $weight = (int)($s['weight'] ?? 0);
-        if (!$pub || $weight <= 0) continue;
-        try {
-            $keypairs[] = KeyPair::fromAccountId($pub);
-        } catch (\Throwable $e) {
-            continue;
-        }
-    }
+    $candidates = skm_counting_signers($signers);
 
     $kept = [];
     foreach ($tx->getSignatures() as $sig) {
         if (!$sig instanceof XdrDecoratedSignature) continue;
-        foreach ($keypairs as $kp) {
-            try {
-                if ($sig->getHint() === $kp->getHint() && $kp->verifySignature($sig->getRawSignature(), $base)) {
-                    $kept[] = $sig;
-                    break;
-                }
-            } catch (\Throwable $e) {
-                continue;
+        foreach ($candidates as $s) {
+            if (skm_signature_matches_signer($sig->getHint(), $sig->getRawSignature(), $s['publicKey'], $base)) {
+                $kept[] = $sig;
+                break;
             }
         }
     }
@@ -145,30 +148,15 @@ function verifyCollected(AbstractTransaction $tx, string $net, array $signers): 
     $base = $tx->hash($network);
     $result = [];
     $seen = [];
-    foreach ($signers as $s) {
-        $pub = $s['publicKey'] ?? null;
-        $weight = (int)($s['weight'] ?? 0);
-        if (!$pub || $weight <= 0) continue;
-        try {
-            $kp = KeyPair::fromAccountId($pub);
-        } catch (\Throwable $e) {
-            continue;
-        }
-        $hint = $kp->getHint();
+    foreach (skm_counting_signers($signers) as $s) {
+        $pub = $s['publicKey'];
+        if (isset($seen[$pub])) continue;
         foreach ($tx->getSignatures() as $sig) {
             if (!$sig instanceof XdrDecoratedSignature) continue;
-            if ($sig->getHint() !== $hint) continue;
-            try {
-                if ($kp->verifySignature($sig->getRawSignature(), $base)) {
-                    $accId = $kp->getAccountId();
-                    if (!isset($seen[$accId])) {
-                        $result[] = ['publicKey' => $accId, 'weight' => $weight];
-                        $seen[$accId] = true;
-                    }
-                    break;
-                }
-            } catch (\Throwable $e) {
-                continue;
+            if (skm_signature_matches_signer($sig->getHint(), $sig->getRawSignature(), $pub, $base)) {
+                $result[] = ['publicKey' => $pub, 'weight' => (int)$s['weight']];
+                $seen[$pub] = true;
+                break;
             }
         }
     }

@@ -2,7 +2,6 @@ const express = require('express');
 const session = require('express-session');
 const rateLimit = require('express-rate-limit');
 const StellarSdk = require('@stellar/stellar-sdk');
-const { WebAuth } = require('@stellar/stellar-sdk');
 const { spawn } = require('child_process');
 const os = require('os');
 const path = require('path');
@@ -17,7 +16,7 @@ const { handleFederationRequest, HOP_HEADER: FEDERATION_HOP_HEADER } = require('
 const { writeJsonFileLocked } = require('./services/jsonFileStore.js');
 const { createChallenge, consumeChallenge, verifyChallengeSignature } = require('./services/challengeStore.js');
 const { createChallengeLimiter } = require('./services/challengeRateLimit.js');
-const { filterValidSignatures, requiredWeightForOperations, signatureKey, txSourceBaseAccount } = require('./services/txSignatures.js');
+const { filterValidSignatures, requiredWeightForOperations, signatureKey, txSourceBaseAccount, verifyCollected } = require('./services/txSignatures.js');
 const { isLocalRequest } = require('./services/network.js');
 const { asciiTrim, isClassicAccount } = require('./services/addressKind.js');
 const stellarNetworks = require('./services/stellarNetworks.js');
@@ -697,18 +696,6 @@ async function annotateJobsLifecycleStatus(items) {
 // Gleicher Wortlaut wie in api/multisig.php.
 const ACCOUNT_MISMATCH_BODY = { ok: false, error: 'account_mismatch', detail: 'Transaction source does not match accountId.' };
 
-function collectSignersForTx(tx, signers = []) {
-  const collected = [];
-  for (const s of signers) {
-    try {
-      if (WebAuth.verifyTxSignedBy(tx, s.publicKey)) {
-        collected.push({ publicKey: s.publicKey, weight: Number(s.weight || 0) });
-      }
-    } catch {}
-  }
-  return collected;
-}
-
 async function submitTx(tx, network) {
   const horizon = horizonServerForNet(network);
   const res = await horizon.submitTransaction(tx);
@@ -757,7 +744,7 @@ app.post('/api/multisig/jobs', async (req, res) => {
     }
     const requiredWeight = requiredWeightForOperations(parsed.tx.operations, signerMeta.thresholds);
     const signers = signerMeta.signers || [];
-    const collectedSigners = signers.length ? collectSignersForTx(parsed.tx, signers) : [];
+    const collectedSigners = signers.length ? verifyCollected(parsed.tx, signers) : [];
     const collectedWeight = collectedSigners.reduce((acc, s) => acc + Number(s.weight || 0), 0);
     const nowIso = new Date().toISOString();
     const shouldSubmit = collectedWeight >= requiredWeight && requiredWeight > 0;
@@ -1182,7 +1169,7 @@ app.post('/api/multisig/jobs/:id/merge-signed-xdr', (req, res) => withMultisigJo
     current.tx.signatures.length = 0;
     current.tx.signatures.push(...validSignatures);
     const newXdr = current.tx.toXDR();
-    const collected = collectSignersForTx(current.tx, signers);
+    const collected = verifyCollected(current.tx, signers);
     const collectedWeight = collected.reduce((acc, s) => acc + Number(s.weight || 0), 0);
     const requiredWeight = Number(job.requiredWeight || 0);
 
