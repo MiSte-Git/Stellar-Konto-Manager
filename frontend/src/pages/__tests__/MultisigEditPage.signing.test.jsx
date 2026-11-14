@@ -97,6 +97,30 @@ describe('MultisigEditPage: Signieren (Teilschritt 3)', () => {
     expect(body.clientCollected).toEqual([{ publicKey: PK, weight: 1 }]);
   });
 
+  it('Erstsignatur meldet das Gewicht laut aktuellem Konto, nicht das geplante Master-Gewicht', async () => {
+    hoisted.sessionSecret = master.secret();
+    const view = await (async () => {
+      const v = render(
+        <I18nextProvider i18n={i18n}>
+          <MultisigEditPage defaultPublicKey={PK} />
+        </I18nextProvider>
+      );
+      await screen.findByText(i18n.t('common:multisigEdit.loaded', { count: 1 }));
+      return v;
+    })();
+    // Label und Eingabe sind Geschwister (MultisigConfigForm): erstes input nach dem Label.
+    const masterLabel = Array.from(view.container.querySelectorAll('label'))
+      .find((l) => l.textContent.trim().startsWith(i18n.t('multisigConfig:masterWeight')));
+    const masterInput = masterLabel.parentElement.querySelector('input');
+    await act(async () => { fireEvent.change(masterInput, { target: { value: '3' } }); });
+    await act(async () => { fireEvent.click(screen.getByRole('button', { name: i18n.t('common:multisigEdit.save') })); });
+    await act(async () => { fireEvent.click(screen.getByRole('button', { name: i18n.t('multisig:actions.createMultisigJob') })); });
+    await screen.findByTestId('prepared-hash');
+    const body = JSON.parse(globalThis.fetch.mock.calls[0][1].body);
+    expect(body.clientCollected).toEqual([{ publicKey: PK, weight: 1 }]);
+    expect(body.signers.find((x) => x.publicKey === PK).weight).toBe(3);
+  });
+
   it('Stelle 9: scheitert die Erstsignatur, wird der Job unsigniert angelegt, ohne Fehler in der UI', async () => {
     hoisted.sessionSecret = master.secret();
     hoisted.failSigning = true;

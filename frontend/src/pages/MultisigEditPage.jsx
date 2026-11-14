@@ -343,7 +343,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
         });
       }
     }
-    return { tx, plannedThresholds, plannedMaster, plannedSigners };
+    return { tx, plannedThresholds, plannedMaster, plannedSigners, currentMaster: clampByte(currentMaster) };
   }, [defaultPublicKey, hasSafetyErrors, highT, lowT, masterWeight, medT, multisigTimeoutSeconds, network, passphrase, server, signers, t]);
 
   async function submitChanges(collectedSigners) {
@@ -426,7 +426,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
     }
     if (saveBlockedByRisk) return;
     try {
-      const { tx, plannedThresholds, plannedMaster, plannedSigners } = await buildSetOptionsTx(null, { signTx: false, requireSigners: false });
+      const { tx, plannedThresholds, plannedMaster, plannedSigners, currentMaster } = await buildSetOptionsTx(null, { signTx: false, requireSigners: false });
       const hashHex = txHashHex(tx);
       let preparedTx = tx;
       const pk = (defaultPublicKey || '').trim();
@@ -441,7 +441,9 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
         try {
           const kp = keypairFromSecret(sessionSecret);
           attachSignatures(preparedTx, [toCollectedSigner(kp)]);
-          initialCollected.push({ publicKey: kp.publicKey(), weight: plannedMaster });
+          // Gewicht laut aktuellem Konto, nicht laut Plan: Die Signatur zaehlt fuer die Schwelle von heute
+          // (nur Hinweis ans Backend, das live prueft).
+          initialCollected.push({ publicKey: kp.publicKey(), weight: currentMaster });
         } catch (e) {
           console.warn('Session secret sign failed', e);
         }
