@@ -97,7 +97,7 @@ file_put_contents($apiDir . '/data/multisig_jobs.json', json_encode(['items' => 
     'status' => 'pending_signatures', 'createdAt' => gmdate('c'), 'maxTimeUnix' => $now + 3600,
     'requiredWeight' => 1, 'collectedSigners' => [], 'collectedWeight' => 0,
 ]]]));
-file_put_contents($apiDir . '/data/signers_cache.json', json_encode([
+file_put_contents($apiDir . '/data/signers_cache_v2.json', json_encode([
     'testnet:' . $owner->getAccountId() => [
         'data' => ['ok' => true, 'signers' => [['publicKey' => $owner->getAccountId(), 'weight' => 1]],
             'thresholds' => ['low' => 1, 'med' => 1, 'high' => 1], 'sequence' => '100'],

@@ -1,6 +1,6 @@
 // Nur fuer Tests: ersetzt Horizon.Server#loadAccount im gestarteten server.js, damit die
 // Live-Pruefung der Signer offline laeuft. Wird per `node --require` vor server.js geladen,
-// nie im Produktionscode. Pendant in PHP: vorbelegter data/signers_cache.json.
+// nie im Produktionscode. Pendant in PHP: vorbelegter data/signers_cache_v2.json.
 //
 // SKM_TEST_HORIZON_ACCOUNTS zeigt auf eine JSON-Datei { "<accountId>": { signers:
 // [{ key, weight }], thresholds: { low_threshold, med_threshold, high_threshold }, sequence } }.

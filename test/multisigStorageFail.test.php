@@ -84,7 +84,7 @@ file_put_contents($jobsFile, json_encode(['items' => [
     jobRow('merge-job', 'pending_signatures', $owner->getAccountId(), $unsignedXdr, $hash, $now),
     jobRow('final-job', 'expired', $owner->getAccountId(), $unsignedXdr, $hash, $now),
 ]]));
-file_put_contents($apiDir . '/data/signers_cache.json', json_encode([
+file_put_contents($apiDir . '/data/signers_cache_v2.json', json_encode([
     'testnet:' . $owner->getAccountId() => [
         'data' => ['ok' => true, 'signers' => [
             ['publicKey' => $owner->getAccountId(), 'weight' => 1], ['publicKey' => $b->getAccountId(), 'weight' => 1],

@@ -298,9 +298,11 @@ function fetchAccountSigners(string $accountId, string $net): array {
         $account = $sdk->requestAccount($accountId);
         $signers = [];
         foreach ($account->getSigners() as $s) {
+            // Mit Signer-Typ aus Horizon, gegen den Schluessel geprueft (ADR 0012, Plan 8.2 Teilschritt 5).
             $signers[] = [
                 'publicKey' => $s->getKey(),
                 'weight' => (int)$s->getWeight(),
+                'type' => skm_signer_type_of(['key' => $s->getKey(), 'type' => $s->getType()]),
             ];
         }
         $thr = $account->getThresholds();
@@ -338,7 +340,9 @@ function signerLookupUnavailable(array $meta): bool {
 }
 
 function signersCacheFilePath(): string {
-    return __DIR__ . '/data/signers_cache.json';
+    // v2 seit dem Signer-Typ (ADR 0012): Eintraege der alten Datei hatten keinen Typ und werden nicht
+    // mehr gelesen. Die alte Datei signers_cache.json kann auf dem Server geloescht werden.
+    return __DIR__ . '/data/signers_cache_v2.json';
 }
 
 function loadSignersCache(string $cacheFile): array {
@@ -456,7 +460,9 @@ function summarizeJob(array $job): array {
     $missing = array_values(array_filter($signers, function ($s) use ($collectedMap) {
         $pk = $s['publicKey'] ?? '';
         $weight = (int)($s['weight'] ?? 0);
-        return $pk && $weight > 0 && !isset($collectedMap[$pk]);
+        // Nur Signer, die signieren koennen (Ed25519); Hash-, Pre-Auth- und Signed-Payload-Signer fehlen nie.
+        return $pk && $weight > 0 && !isset($collectedMap[$pk])
+            && skm_is_interactive_signer(['key' => $pk, 'type' => $s['type'] ?? null]);
     }));
     $missingWeight = array_reduce($missing, fn($c, $s) => $c + (int)($s['weight'] ?? 0), 0);
 

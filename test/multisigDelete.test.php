@@ -2,7 +2,7 @@
 // C1: Loeschen einzelner Multisig-Jobs nur fuer aktuelle Signer per signierter Challenge mit
 // Zweck delete (PHP), echter HTTP-Test gegen api/multisig.php wie
 // test/multisigDecline.test.php. Die Konto-Signer kommen aus einem vorbelegten
-// signers_cache.json (ok => false simuliert einen Horizon-Fehler), damit der volle Ablauf
+// signers_cache_v2.json (ok => false simuliert einen Horizon-Fehler), damit der volle Ablauf
 // ohne Netz laeuft. Das Job-Token reicht zum Loeschen nicht mehr.
 // Pendant: test/multisigDelete.test.js.
 //
@@ -98,7 +98,7 @@ file_put_contents($jobsFile, json_encode(['items' => [
     jobRow('fremd', 'expired', $brokenAccount->getAccountId(), $tx, $now),
 ]]));
 
-$cacheFile = $apiDir . '/data/signers_cache.json';
+$cacheFile = $apiDir . '/data/signers_cache_v2.json';
 // fetchedAt in der Zukunft: bleibt fuer die ganze Testdauer frisch, kein Horizon-Aufruf.
 function writeSignersCache(string $file, KeyPair $owner, array $signers, KeyPair $brokenAccount): void {
     file_put_contents($file, json_encode([

@@ -69,7 +69,7 @@ Zwei Varianten mit gleichem Verhalten ([ADR 0003](adr/0003-dual-backend-paritaet
 | Netze | `stellarNetworks.js` | `stellarNetworks.php` |
 
 Daten liegen als JSON-Dateien: Node unter `data/`, PHP unter `api/data/` (`multisig_jobs.json`, `challenges.json`,
-`signers_cache.json`, Bugreports). Beide Ordner sind per `.htaccess` gesperrt und nicht in git.
+`signers_cache_v2.json`, Bugreports). Beide Ordner sind per `.htaccess` gesperrt und nicht in git.
 
 ## Ablauf Multisig-Job
 

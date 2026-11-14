@@ -1,7 +1,7 @@
 <?php
 // R1/R2 (PHP): Token, Ablehnen und Loeschen unterscheiden "Konto unbekannt" (Horizon 404 ->
 // 403 forbidden) von "Horizon nicht erreichbar" (-> 503 horizon_unavailable; vorher beides 403).
-// Der Horizon-Zustand kommt aus einem vorbelegten signers_cache.json (ok => false, notFound
+// Der Horizon-Zustand kommt aus einem vorbelegten signers_cache_v2.json (ok => false, notFound
 // true oder false), damit der Ablauf ohne Netz laeuft. R1: Der Guzzle-Client fuer Horizon hat
 // Timeouts; das wird am Quelltext geprueft, weil sich ein haengendes Horizon im Test nicht
 // ohne Netz erzeugen laesst. Budget: 6 Challenges von 20 je Minute.
@@ -84,7 +84,7 @@ $failure = fn(bool $notFound): array => [
     'data' => ['ok' => false, 'notFound' => $notFound, 'signers' => [], 'thresholds' => ['low' => 0, 'med' => 0, 'high' => 0], 'sequence' => null],
     'fetchedAt' => time() + 3600,
 ];
-file_put_contents($apiDir . '/data/signers_cache.json', json_encode([
+file_put_contents($apiDir . '/data/signers_cache_v2.json', json_encode([
     'testnet:' . $down->getAccountId() => $failure(false),
     'testnet:' . $gone->getAccountId() => $failure(true),
 ]));

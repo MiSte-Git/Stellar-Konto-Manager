@@ -2,7 +2,7 @@
 // C1/R3: Loeschen in allen Endzustaenden (submitted_success, submitted_failed, obsolete_seq),
 // PHP. test/multisigDelete.test.php deckt expired, rejected, offene Jobs und die abgelaufene
 // Challenge ab. Echter HTTP-Test gegen api/multisig.php, Signer aus vorbelegtem
-// signers_cache.json. Budget: 3 Challenges von 20 je Minute.
+// signers_cache_v2.json. Budget: 3 Challenges von 20 je Minute.
 // Pendant: test/multisigDeleteStates.test.js (dort zusaetzlich die abgelaufene Challenge).
 //
 // Run with: php test/multisigDeleteStates.test.php
@@ -79,7 +79,7 @@ $jobsFile = $apiDir . '/data/multisig_jobs.json';
 file_put_contents($jobsFile, json_encode(['items' => [
     $row('gesendet', 'submitted_success'), $row('fehlgeschlagen', 'submitted_failed'), $row('veraltet', 'obsolete_seq'),
 ]]));
-file_put_contents($apiDir . '/data/signers_cache.json', json_encode([
+file_put_contents($apiDir . '/data/signers_cache_v2.json', json_encode([
     'testnet:' . $owner->getAccountId() => [
         'data' => ['ok' => true, 'signers' => [
             ['publicKey' => $owner->getAccountId(), 'weight' => 1], ['publicKey' => $b->getAccountId(), 'weight' => 1],

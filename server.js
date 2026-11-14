@@ -17,6 +17,7 @@ const { writeJsonFileLocked } = require('./services/jsonFileStore.js');
 const { createChallenge, consumeChallenge, verifyChallengeSignature } = require('./services/challengeStore.js');
 const { createChallengeLimiter } = require('./services/challengeRateLimit.js');
 const { filterValidSignatures, requiredWeightForOperations, signatureKey, txSourceBaseAccount, verifyCollected } = require('./services/txSignatures.js');
+const { isInteractiveSigner, normalizeHorizonSigners } = require('./services/signerAuth.js');
 const { isLocalRequest } = require('./services/network.js');
 const { asciiTrim, isClassicAccount } = require('./services/addressKind.js');
 const stellarNetworks = require('./services/stellarNetworks.js');
@@ -597,12 +598,8 @@ function extractSignerMeta(account) {
   const signers = Array.isArray(account?.signers) ? account.signers : [];
   const thresholds = account?.thresholds || {};
   return {
-    signers: signers
-      .map((s) => ({
-        publicKey: s.key || s.public_key || s.ed25519PublicKey || '',
-        weight: Number(s.weight || 0),
-      }))
-      .filter((s) => s.publicKey),
+    // Mit Signer-Typ aus Horizon (ADR 0012, Plan 8.2 Teilschritt 5): wird im Job gespeichert.
+    signers: normalizeHorizonSigners({ signers }),
     thresholds: {
       low: Number(thresholds.low_threshold ?? 0),
       med: Number(thresholds.med_threshold ?? 0),
@@ -842,7 +839,7 @@ app.get('/api/multisig/jobs', async (req, res) => {
     // job's token straight out of the list, defeating the per-job token check
     // below. Clients fetch the token per job via GET /:id/token instead, which
     // verifies the requester's public key against the account's live signers.
-    res.json(items.map(({ txXdrCurrent, txXdrOriginal, accessToken, ...meta }) => meta));
+    res.json(items.map(({ txXdrCurrent, txXdrOriginal, accessToken, ...meta }) => withMissingSigners(meta)));
   } catch (e) {
     console.error('multisig.jobs.list.failed', e);
     res.status(500).json({ ok: false, error: 'multisig.jobs.list_failed' });
@@ -856,12 +853,24 @@ app.get('/api/multisig/jobs/:id', async (req, res) => {
     if (!job) return res.status(404).json({ ok: false, error: 'not_found' });
     if (!hasValidJobToken(job, req)) return res.status(403).json({ ok: false, error: 'forbidden' });
     const [annotated] = await annotateJobsLifecycleStatus([job]);
-    res.json(annotated);
+    res.json(withMissingSigners(annotated));
   } catch (e) {
     console.error('multisig.jobs.get.failed', e);
     res.status(500).json({ ok: false, error: 'multisig.jobs.get_failed' });
   }
 });
+
+// Paritaet mit summarizeJob in api/multisig.php (#16): Signer, die noch signieren koennen und noch
+// nicht signiert haben (Gewicht > 0, Typ Ed25519). Nur in der Antwort, nicht gespeichert. Altjobs ohne
+// Signer-Typ: Typ aus dem Schluessel (signerTypeOf).
+function withMissingSigners(job) {
+  const collected = new Set((Array.isArray(job?.collectedSigners) ? job.collectedSigners : []).map((s) => s?.publicKey).filter(Boolean));
+  const missingSigners = (Array.isArray(job?.signers) ? job.signers : []).filter((s) => (
+    s?.publicKey && Number(s.weight || 0) > 0 && !collected.has(s.publicKey) && isInteractiveSigner({ key: s.publicKey, type: s.type })
+  ));
+  const missingWeight = missingSigners.reduce((acc, s) => acc + Number(s.weight || 0), 0);
+  return { ...job, missingSigners, missingWeight };
+}
 
 function findMultisigJob(id) {
   return multisigDb.items.find((j) => j.id === id);

@@ -1,7 +1,7 @@
 <?php
 // Feature 31.10.: Ablehnen einzelner Multisig-Jobs (PHP; Loeschen: test/multisigDelete.test.php), echter HTTP-Test gegen
 // api/multisig.php wie test/multisigJobToken.test.php. Die Konto-Signer kommen aus einem
-// vorbelegten signers_cache.json, damit der volle Ablauf ohne Horizon laeuft.
+// vorbelegten signers_cache_v2.json, damit der volle Ablauf ohne Horizon laeuft.
 // Pendant: test/multisigDecline.test.js.
 //
 // Run with: php test/multisigDecline.test.php
@@ -121,7 +121,7 @@ $liveSigners = [
     ['publicKey' => $c->getAccountId(), 'weight' => 1],
 ];
 // fetchedAt in der Zukunft: bleibt fuer die ganze Testdauer frisch.
-file_put_contents($apiDir . '/data/signers_cache.json', json_encode([
+file_put_contents($apiDir . '/data/signers_cache_v2.json', json_encode([
     'testnet:' . $owner->getAccountId() => [
         'data' => ['ok' => true, 'signers' => $liveSigners, 'thresholds' => ['low' => 1, 'med' => 2, 'high' => 2], 'sequence' => '100'],
         'fetchedAt' => time() + 3600,
