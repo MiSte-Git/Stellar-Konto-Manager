@@ -32,6 +32,7 @@ import { resolveFeePerOp } from '../utils/stellar/fees.js';
 import { getMultisigTxTimeout } from '../utils/getMultisigTxTimeout.js';
 import { txHashHex } from '../utils/stellar/txHash.js';
 import { needsMultipleSignatures } from '../utils/stellar/isMultisigAccount.js';
+import { attachSignatures } from '../utils/signers/signTransaction.js';
 // import { refreshSinceCursor } from '../utils/stellar/syncUtils';
 
 // Auswahl fuer Multisig: alle Signaturen lokal sammeln und senden oder nur einen Job anlegen.
@@ -199,9 +200,8 @@ function ListTrustlines({
     const tx = txb.setTimeout(60).build();
     // Nach den Horizon-Aufrufen: gilt das Netz des Ablaufs noch?
     assertFlowNetwork(net);
-    (Array.isArray(collectedSigners) ? collectedSigners : []).forEach((s) => {
-      try { tx.sign(s.keypair); } catch (e) { console.debug?.('sign failed', e); }
-    });
+    // K3: Signierfehler werfen statt verschlucken (vorher kam der Fehler erst als tx_bad_auth vom Netz).
+    attachSignatures(tx, Array.isArray(collectedSigners) ? collectedSigners : []);
     if (import.meta.env.MODE !== 'production') {
       try {
         console.debug('multisig changeTrust signing', {

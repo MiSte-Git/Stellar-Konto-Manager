@@ -4,7 +4,7 @@ import { getHorizonServerForNetwork } from '../../../utils/stellar/stellarUtils.
 import { assertFlowNetwork } from '../../../utils/globalNetwork.js';
 import { resolveFeePerOp } from '../../../utils/stellar/fees.js';
 import { AmbiguousSubmitResultError } from '../../../utils/stellar/submitTransactionSafely.js';
-import { signTransactionWithCollectedSigners } from '../../../utils/stellar/tradingTransactions.js';
+import { attachSignatures } from '../../../utils/signers/signTransaction.js';
 import { guardedSubmit, guardedUnsignedBuild, SendBlockedError } from '../../../utils/submitGuard/guardedSubmit.js';
 import { useSharedSendBlock } from '../../../utils/submitGuard/useAccountSendBlock.js';
 import { LOAD_IN_LOCK_TIMEOUT_MS } from '../../../utils/submitGuard/loadTimeout.js';
@@ -190,7 +190,7 @@ export default function useLiquidityAction({ publicKey, network, poolId, operati
             // work() hat geladen (await): gilt das Netz des Ablaufs noch?
             assertFlowNetwork(network);
             sent = true;
-            return { tx: signTransactionWithCollectedSigners(outcome.tx, collected) };
+            return { tx: attachSignatures(outcome.tx, collected) };
           },
           entryData: () => ({ origin: 'liquidity', summary: { action: actionText } }),
         });

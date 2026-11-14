@@ -34,6 +34,7 @@ import {
   setHiddenClaimableIds,
 } from '../../utils/stellar/claimableBalances.js';
 import { txHashHex } from '../../utils/stellar/txHash.js';
+import { attachSignatures } from '../../utils/signers/signTransaction.js';
 
 const TRUSTLINE_RESERVE_XLM = 0.5;
 
@@ -304,7 +305,7 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
           const tx = buildClaimTx({ account: adjustedAccount(fresh, adjustAccount), item: cur, fee, networkPassphrase });
           // Nach den Horizon-Aufrufen: gilt das Netz des Ablaufs noch?
           assertFlowNetwork(network);
-          signers.forEach((s) => tx.sign(s.keypair));
+          attachSignatures(tx, signers);
           return { tx, item: cur };
         },
         entryData: ({ item: cur }) => ({

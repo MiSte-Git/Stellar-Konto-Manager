@@ -1,23 +1,6 @@
 import { Operation, TransactionBuilder } from '@stellar/stellar-sdk';
 import { toStroops } from './liquidityPools.js';
 
-export function signTransactionWithCollectedSigners(transaction, collectedSigners = []) {
-  const signers = Array.isArray(collectedSigners) ? collectedSigners : [];
-  const failures = [];
-  signers.forEach((signer) => {
-    try {
-      transaction.sign(signer.keypair);
-    } catch (error) {
-      failures.push(error);
-    }
-  });
-  if (failures.length > 0) {
-    console.error('[SKM] Signing failed for one or more signers:', failures);
-    throw new Error('submitTransaction.failed:signingFailed');
-  }
-  return transaction;
-}
-
 export function buildChangeTrustTransaction({
   account,
   asset,

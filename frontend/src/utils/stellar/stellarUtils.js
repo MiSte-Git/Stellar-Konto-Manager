@@ -2,6 +2,7 @@ import { resolveFeePerOp } from './fees.js';
 import { NETWORKS, horizonUrlFor, normalizeNetworkId, passphraseFor, readStoredNetworkId } from '../../config/networks.js';
 import { apiUrl } from '../apiBase.js';
 import { isFlowNetworkCurrent, NETWORK_CHANGED_CODE } from '../globalNetwork.js';
+import { attachSignatures, toCollectedSigner } from '../signers/signTransaction.js';
 import {
   ADDRESS_KINDS,
   CONTRACT_ADDRESS_ERROR,
@@ -635,14 +636,7 @@ export async function deleteTrustlinesInChunks({
         { code: NETWORK_CHANGED_CODE },
       );
     }
-    const signFailures = [];
-    signerList.forEach((kp) => {
-      try { tx.sign(kp); } catch (e) { signFailures.push(e); }
-    });
-    if (signFailures.length > 0) {
-      console.error('[SKM] Trustline delete: signing failed for one or more keys', signFailures);
-      throw new Error('submitTransaction.failed:signingFailed');
-    }
+    attachSignatures(tx, signerList.map((kp) => toCollectedSigner(kp)));
 
     const res = await server.submitTransaction(tx);
     const txId = res?.id || res?.hash || '';

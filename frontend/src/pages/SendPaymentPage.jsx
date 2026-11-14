@@ -55,6 +55,7 @@ import SendAmbiguousPanel, { SendResolvedNotice } from '../components/wallet/Sen
 import BatchPaymentDialog from '../components/wallet/BatchPaymentDialog.jsx';
 import { requestHeaderBalanceRefresh } from '../utils/balanceRefresh.js';
 import { keypairFromSecret } from '../utils/signers/keyMaterial.js';
+import { attachSignatures, toCollectedSigner } from '../utils/signers/signTransaction.js';
 
 // Immediate local submits (single-sig send, or a multisig job collected and
 // submitted right away) expect a near-term Horizon confirmation, unlike a
@@ -915,12 +916,11 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     // (Export, Job ohne lokalen Key), damit kein Ergebnis des alten Netzes herauskommt.
     assertFormNetwork(formNetwork, expectedNetwork);
     if (signTx && signerList.length) {
-      const signFailures = [];
-      signerList.forEach((kpItem) => {
-        try { tx.sign(kpItem); } catch (err) { signFailures.push(err); }
-      });
-      if (signFailures.length > 0) {
-        console.error('[SKM] Payment signing failed for one or more keys', signFailures);
+      try {
+        attachSignatures(tx, signerList.map((kp) => toCollectedSigner(kp)));
+      } catch (err) {
+        // Anzeige wie bisher: uebersetzte Meldung statt des Schluessels.
+        console.error('[SKM] Payment signing failed for one or more keys', err);
         throw new Error(t('errors:submitTransaction.failed.signingFailed', 'One or more signatures could not be created. Please try again.'));
       }
       if (import.meta.env.MODE !== 'production') {

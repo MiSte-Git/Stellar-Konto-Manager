@@ -18,6 +18,7 @@ import { copyText } from '../utils/clipboard.js';
 import { useNavigationGuard } from '../utils/navigationGuard.js';
 import { SESSION_LOCKED_EVENT } from '../utils/sessionSecrets.js';
 import { keypairFromSecret } from '../utils/signers/keyMaterial.js';
+import { attachSignatures, toCollectedSigner } from '../utils/signers/signTransaction.js';
 import {
   Keypair,
   Operation,
@@ -624,7 +625,7 @@ export default function MultisigCreatePage() {
       .build();
     // Zwischen Bestaetigen und hier liegen Horizon-Aufrufe: Netz und Schluessel noch die des Ablaufs?
     assertStillSendable(destPub, t('createAccount:networkChanged.funderAborted'));
-    tx.sign(funder);
+    attachSignatures(tx, [toCollectedSigner(funder)]);
     // Ab hier kann das Konto existieren: vor dem Absenden merken (unklarer Ausgang zaehlt wie gesendet).
     const hash = txHashHex(tx);
     const prev = markActivationSent(destPub, hash);
@@ -680,7 +681,7 @@ export default function MultisigCreatePage() {
 
     const tx = txb.setTimeout(60).build();
     assertStillSendable(newPub, abortMessage);
-    tx.sign(newKp);
+    attachSignatures(tx, [toCollectedSigner(newKp)]);
     const res = await server.submitTransaction(tx);
     setActivation((prev) => (prev && prev.pub === newPub ? { ...prev, multisigDone: true } : prev));
     return { hash: res?.hash || res?.id || '' };

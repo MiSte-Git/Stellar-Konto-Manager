@@ -13,7 +13,6 @@ import {
   buildChangeTrustTransaction,
   buildManageSellOfferTransaction,
   buildPathPaymentStrictSendTransaction,
-  signTransactionWithCollectedSigners,
 } from '../../utils/stellar/tradingTransactions.js';
 import { AmbiguousSubmitResultError } from '../../utils/stellar/submitTransactionSafely.js';
 import { guardedSubmit, SendBlockedError } from '../../utils/submitGuard/guardedSubmit.js';
@@ -72,6 +71,7 @@ import useTradingSubmit from './hooks/useTradingSubmit.js';
 import useTradingMultisig, { JOB_DISABLED_TYPES, requiredWeightFor } from './hooks/useTradingMultisig.js';
 import { LiquidityResultDialog, LiquiditySigningOptions } from '../liquidity/jobParts.jsx';
 import { resolveFeePerOp } from '../../utils/stellar/fees.js';
+import { attachSignatures } from '../../utils/signers/signTransaction.js';
 
 // Gueltigkeit einer direkt gesendeten Trading-Transaktion (Standard der Builder in
 // tradingTransactions.js), kleiner als MAX_SEND_VALIDITY_SECONDS des Sendeschutzes.
@@ -870,7 +870,7 @@ export default function AssetSearch() {
         if (flow.lockEpoch !== undefined && flow.lockEpoch !== lockEpochRef.current) {
           throw new Error('submitTransaction.failed:sessionLocked');
         }
-        return { tx: signTransactionWithCollectedSigners(tx, signers) };
+        return { tx: attachSignatures(tx, signers) };
       },
       entryData: () => ({ origin: 'trade', summary: { action: actionText } }),
     });

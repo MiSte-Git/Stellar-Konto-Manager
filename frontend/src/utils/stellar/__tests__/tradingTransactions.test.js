@@ -2,6 +2,7 @@
 import { describe, expect, it } from 'vitest';
 import { Account, Asset, Keypair, Networks } from '@stellar/stellar-sdk';
 import { poolAssetFor, poolIdFor } from '../liquidityPools.js';
+import { attachSignatures as signTransactionWithCollectedSigners } from '../../signers/signTransaction.js';
 import {
   buildLiquidityDepositTransaction,
   buildLiquidityWithdrawTransaction,
@@ -9,7 +10,6 @@ import {
   buildChangeTrustTransaction,
   buildManageSellOfferTransaction,
   buildPathPaymentStrictSendTransaction,
-  signTransactionWithCollectedSigners,
 } from '../tradingTransactions.js';
 
 const TEST_KEYS = [

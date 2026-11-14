@@ -70,4 +70,13 @@ describe('signAndMergeResultJob', () => {
     }
     expect(fetchMock).not.toHaveBeenCalled();
   });
+
+  it('K3: Signierfehler wird geworfen statt verschluckt, nichts wird gesendet', async () => {
+    const fetchMock = stubFetch();
+    const tx = buildTx();
+    const publicOnly = Keypair.fromPublicKey(source);
+    await expect(signAndMergeResultJob({ jobToSign: jobToSign(tx), keypairs: [publicOnly], clientCollected: [], signers: [] }))
+      .rejects.toThrow('submitTransaction.failed:signingFailed');
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
 });

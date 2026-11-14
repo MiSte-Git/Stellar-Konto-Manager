@@ -34,6 +34,7 @@ import {
   targetTrustlineStatus,
 } from '../../utils/stellar/batchConvert.js';
 import { txHashHex } from '../../utils/stellar/txHash.js';
+import { attachSignatures } from '../../utils/signers/signTransaction.js';
 
 const BASE_RESERVE_XLM = 0.5;
 const STROOPS_PER_XLM = 10000000;
@@ -292,7 +293,7 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
                 fee,
                 networkPassphrase,
               });
-              signers.forEach((s) => tx.sign(s.keypair));
+              attachSignatures(tx, signers);
               return { tx };
             },
             entryData: () => ({

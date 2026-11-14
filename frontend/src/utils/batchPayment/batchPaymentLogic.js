@@ -13,6 +13,7 @@ import { Buffer } from 'buffer';
 import { resolveOrValidateAccount } from '../stellar/stellarUtils.js';
 import { accountRequiresMemo } from '../stellar/memoRequired.js';
 import { containsSecretKey, normalizeAmount } from './batchPaymentStore.js';
+import { attachSignatures, toCollectedSigner } from '../signers/signTransaction.js';
 
 export const BATCH_SUBMIT_TIMEOUT_SECONDS = 180;
 const STROOPS_PER_XLM = 10_000_000n;
@@ -381,8 +382,7 @@ export function buildSignedRowTx({ account, row, destination, fee, networkPassph
     }))
     .setTimeout(BATCH_SUBMIT_TIMEOUT_SECONDS)
     .build();
-  tx.sign(keypair);
-  return tx;
+  return attachSignatures(tx, [toCollectedSigner(keypair)]);
 }
 
 // Kurzbeschreibung eines Horizon-Fehlers (result_codes), sonst die Fehlermeldung.

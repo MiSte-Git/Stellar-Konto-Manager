@@ -23,6 +23,7 @@ import { evaluateLiquidityOperation, exactDepositPrices, hasLiquidityPoolOps, re
 import { jobSubmitResultCodes, liquidityErrorKeyFromResultCodes } from '../utils/stellar/liquidityErrors.js';
 import { formatPoolAmount, formatPrice } from '../components/liquidity/formatPoolAmount.js';
 import { keypairFromSecret } from '../utils/signers/keyMaterial.js';
+import { attachSignatures, toCollectedSigner } from '../utils/signers/signTransaction.js';
 
 const FAILED_PREFIX = 'submitTransaction.failed:';
 
@@ -555,7 +556,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
         fee,
         networkPassphrase: revokePrep.networkPassphrase,
       });
-      signers.forEach((s) => tx.sign(s.keypair));
+      attachSignatures(tx, signers);
       const res = await submitTransactionSafely(server, tx);
       const hash = res?.hash || res?.id || txHashHex(tx);
       setRevokedHash(hash);
@@ -631,7 +632,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
         }));
         return;
       }
-      tx.sign(kp);
+      attachSignatures(tx, [toCollectedSigner(kp)]);
       const signerMeta = (job.signers || []).map((s) => ({
         publicKey: s.publicKey,
         weight: Number(s.weight || 0),

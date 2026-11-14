@@ -22,6 +22,7 @@ import { formatValidUntil } from '../utils/multisig/formatValidUntil.js';
 import { resolveFeePerOp } from '../utils/stellar/fees.js';
 import { txHashHex } from '../utils/stellar/txHash.js';
 import { keypairFromSecret } from '../utils/signers/keyMaterial.js';
+import { SIGNING_FAILED_ERROR, attachSignatures, toCollectedSigner } from '../utils/signers/signTransaction.js';
 
 // Same rationale as SendPaymentPage.jsx: a transaction that gets submitted
 // immediately after signing (test-mode direct submit) only needs to survive
@@ -330,10 +331,9 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
     // Nach den Horizon-Aufrufen und vor dem Signieren erneut: gilt das Netz noch? Auch ohne
     // Signatur (Job), damit kein Ergebnis des alten Netzes herauskommt.
     assertFlowNetwork(network, t('createAccount:networkChanged.funderAborted'));
-    if (signTx && Array.isArray(collectedSigners)) {
-      collectedSigners.forEach((s) => {
-        try { tx.sign(s.keypair); } catch (e) { console.debug?.('sign failed', e); }
-      });
+    if (signTx && Array.isArray(collectedSigners) && collectedSigners.length > 0) {
+      // K3: Signierfehler werfen statt verschlucken.
+      attachSignatures(tx, collectedSigners);
       if (import.meta.env.MODE !== 'production') {
         console.debug('multisig setOptions signing', {
           required,
@@ -377,6 +377,9 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
       const msg = String(e?.message || e);
       if (msg.includes('tx_bad_auth')) {
         setError(t('errors:submitTransaction.failed.multisig.txBadAuth'));
+      } else if (msg === SIGNING_FAILED_ERROR) {
+        // K3: Signierfehler kommt jetzt vor dem Senden statt als tx_bad_auth vom Netz.
+        setError(t('errors:submitTransaction.failed.signingFailed'));
       } else {
         setError(msg);
       }
@@ -432,9 +435,12 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
       // Zwischen Bau und hier lag ein await: Netz noch das des Ablaufs?
       assertFlowNetwork(network, t('createAccount:networkChanged.funderAborted'));
       if (sessionSecret) {
+        // Bewusst optional (Plan 8.2, Stelle 9): Die Erstsignatur mit dem gemerkten Key ist Komfort.
+        // Scheitert sie, wird der Job unsigniert angelegt, initialCollected bleibt leer, und jeder
+        // Signer signiert im Job-Detail. attachSignatures laesst preparedTx dann unveraendert.
         try {
           const kp = keypairFromSecret(sessionSecret);
-          preparedTx.sign(kp);
+          attachSignatures(preparedTx, [toCollectedSigner(kp)]);
           initialCollected.push({ publicKey: kp.publicKey(), weight: plannedMaster });
         } catch (e) {
           console.warn('Session secret sign failed', e);
