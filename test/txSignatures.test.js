@@ -1,7 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { Account, TransactionBuilder, Operation, Networks, Keypair, xdr } = require('@stellar/stellar-sdk');
-const { filterValidSignatures, MAX_TX_SIGNATURES, operationThresholdCategory, requiredWeightForOperations, signatureKey, decoratedSignatureBytes } = require('../services/txSignatures.js');
+const { filterValidSignatures, MAX_TX_SIGNATURES, operationThresholdCategory, requiredWeightForOperations, signatureKey, decoratedSignatureBytes, verifyCollected } = require('../services/txSignatures.js');
 
 function buildTx(sourceKeypair) {
   const account = new Account(sourceKeypair.publicKey(), '100');
@@ -325,3 +325,59 @@ for (const c of opThresholdFixture.requiredWeight) {
     assert.equal(requiredWeightForOperations(c.ops.map((type) => ({ type })), c.thresholds), c.expected);
   });
 }
+
+// --- F-5: je Signer hoechstens eine Signatur (die erste) ---------------------
+// Fixture: zwei verschiedene gueltige Signaturen desselben Keys A ueber denselben Hash (anderes
+// Nonce). Gemeinsam mit test/txSignatures.test.php.
+const dupFixture = require('./assets/duplicate-signer-signatures.json');
+
+function dupTx(order) {
+  const tx = TransactionBuilder.fromXDR(dupFixture.txXdr, Networks.TESTNET);
+  const a = Keypair.fromPublicKey(dupFixture.publicKeyA);
+  const b = Keypair.fromSecret(dupFixture.secretB);
+  const sigs = {
+    A1: new xdr.DecoratedSignature({ hint: a.signatureHint(), signature: Buffer.from(dupFixture.signatureA1, 'base64') }),
+    A2: new xdr.DecoratedSignature({ hint: a.signatureHint(), signature: Buffer.from(dupFixture.signatureA2, 'base64') }),
+    B: new xdr.DecoratedSignature({ hint: b.signatureHint(), signature: b.sign(tx.hash()) }),
+  };
+  order.forEach((name) => tx.signatures.push(sigs[name]));
+  return tx;
+}
+const sigB64 = (s) => Buffer.from(decoratedSignatureBytes(s).signature).toString('base64');
+const dupSigners = [{ publicKey: dupFixture.publicKeyA, weight: 1 }, { publicKey: dupFixture.publicKeyB, weight: 1 }];
+
+test('F-5 sanity: Fixture-Hash passt, beide Signaturen von A sind gueltig und verschieden', () => {
+  const tx = TransactionBuilder.fromXDR(dupFixture.txXdr, Networks.TESTNET);
+  assert.equal(Buffer.from(tx.hash()).toString('hex'), dupFixture.txHashHex);
+  const a = Keypair.fromPublicKey(dupFixture.publicKeyA);
+  assert.ok(a.verify(tx.hash(), Buffer.from(dupFixture.signatureA1, 'base64')));
+  assert.ok(a.verify(tx.hash(), Buffer.from(dupFixture.signatureA2, 'base64')));
+  assert.notEqual(dupFixture.signatureA1, dupFixture.signatureA2);
+});
+
+test('F-5: zwei gueltige Signaturen desselben Signers ergeben eine, die erste (A1, A2)', () => {
+  const kept = filterValidSignatures(dupTx(['A1', 'A2']), dupSigners);
+  assert.deepEqual(kept.map(sigB64), [dupFixture.signatureA1]);
+});
+
+test('F-5: die erste bleibt auch in umgekehrter Reihenfolge (A2, A1)', () => {
+  const kept = filterValidSignatures(dupTx(['A2', 'A1']), dupSigners);
+  assert.deepEqual(kept.map(sigB64), [dupFixture.signatureA2]);
+});
+
+test('F-5: andere Signer bleiben, Reihenfolge bleibt (A1, B, A2)', () => {
+  const tx = dupTx(['A1', 'B', 'A2']);
+  const kept = filterValidSignatures(tx, dupSigners);
+  assert.equal(kept.length, 2);
+  assert.equal(sigB64(kept[0]), dupFixture.signatureA1);
+  assert.equal(sigB64(kept[1]), sigB64(tx.signatures[1]));
+});
+
+test('F-5: gesammeltes Gewicht bleibt gleich (A je einmal gezaehlt)', () => {
+  const tx = dupTx(['A1', 'A2']);
+  const kept = filterValidSignatures(tx, dupSigners);
+  tx.signatures.length = 0;
+  tx.signatures.push(...kept);
+  const collected = verifyCollected(tx, dupSigners);
+  assert.deepEqual(collected, [{ publicKey: dupFixture.publicKeyA, weight: 1 }]);
+});

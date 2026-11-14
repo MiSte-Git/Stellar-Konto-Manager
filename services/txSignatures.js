@@ -79,7 +79,12 @@ function readSignature(sig) {
 }
 
 /**
- * Behaelt nur Signaturen, die zu einem zaehlenden Signer passen, hoechstens MAX_TX_SIGNATURES.
+ * Behaelt nur Signaturen, die zu einem zaehlenden Signer passen, je Signer hoechstens eine (die erste,
+ * beim Merge also die schon gespeicherte), insgesamt hoechstens MAX_TX_SIGNATURES.
+ * F-5: Ed25519 erlaubt mehrere verschiedene gueltige Signaturen desselben Keys (anderes Nonce). Die
+ * Duplikaterkennung beim Merge (signatureKey) vergleicht nur Bytes; zwei Signaturen eines Signers
+ * im Envelope lehnt das Netz mit tx_bad_auth_extra ab. Gleich wie filterValidSignatures in
+ * api/txSignatures.php.
  * @param {import('@stellar/stellar-sdk').Transaction} tx
  * @param {{ publicKey: string, weight: number, type?: string }[]} signers
  * @returns {import('@stellar/stellar-sdk').xdr.DecoratedSignature[]}
@@ -87,9 +92,14 @@ function readSignature(sig) {
 function filterValidSignatures(tx, signers = []) {
   const txHash = toBytes(tx.hash());
   const candidates = countingSigners(signers);
+  const usedSigners = new Set();
   const kept = tx.signatures.filter((sig) => {
     const bytes = readSignature(sig);
-    return !!bytes && candidates.some((s) => signatureMatchesSigner(bytes, s.publicKey, txHash));
+    if (!bytes) return false;
+    const signer = candidates.find((s) => signatureMatchesSigner(bytes, s.publicKey, txHash));
+    if (!signer || usedSigners.has(signer.publicKey)) return false;
+    usedSigners.add(signer.publicKey);
+    return true;
   });
   return kept.slice(0, MAX_TX_SIGNATURES);
 }

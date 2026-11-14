@@ -301,5 +301,48 @@ foreach ($opFixture['requiredWeight'] as $c) {
     check("Fixture requiredWeight {$c['label']} = {$c['expected']}", requiredWeightForOperations(buildTxFor($ops), $c['thresholds']) === $c['expected']);
 }
 
+// --- F-5: je Signer hoechstens eine Signatur (die erste) --------------------
+// Fixture: zwei verschiedene gueltige Signaturen desselben Keys A ueber denselben Hash (anderes
+// Nonce). Gemeinsam mit test/txSignatures.test.js.
+$dup = json_decode((string)file_get_contents(__DIR__ . '/assets/duplicate-signer-signatures.json'), true);
+$dupKpA = KeyPair::fromAccountId($dup['publicKeyA']);
+$dupKpB = KeyPair::fromSeed($dup['secretB']);
+$dupSigners = [['publicKey' => $dup['publicKeyA'], 'weight' => 1], ['publicKey' => $dup['publicKeyB'], 'weight' => 1]];
+function dupTx(array $dup, KeyPair $a, KeyPair $b, array $order): AbstractTransaction {
+    $tx = AbstractTransaction::fromEnvelopeBase64XdrString($dup['txXdr']);
+    $hash = $tx->hash(Network::testnet());
+    $sigs = [
+        'A1' => new XdrDecoratedSignature($a->getHint(), base64_decode($dup['signatureA1'])),
+        'A2' => new XdrDecoratedSignature($a->getHint(), base64_decode($dup['signatureA2'])),
+        'B' => new XdrDecoratedSignature($b->getHint(), $b->sign($hash)),
+    ];
+    $tx->setSignatures(array_map(fn($n) => $sigs[$n], $order));
+    return $tx;
+}
+$dupSigB64 = fn(array $sigs) => array_map(fn(XdrDecoratedSignature $s) => base64_encode($s->getSignature()), $sigs);
+
+$dupBase = AbstractTransaction::fromEnvelopeBase64XdrString($dup['txXdr']);
+$dupHash = $dupBase->hash(Network::testnet());
+check('F-5 sanity: Fixture-Hash passt', bin2hex($dupHash) === $dup['txHashHex']);
+check('F-5 sanity: beide Signaturen von A sind gueltig und verschieden',
+    $dupKpA->verifySignature(base64_decode($dup['signatureA1']), $dupHash)
+    && $dupKpA->verifySignature(base64_decode($dup['signatureA2']), $dupHash)
+    && $dup['signatureA1'] !== $dup['signatureA2']);
+check('F-5: zwei gueltige Signaturen desselben Signers ergeben eine, die erste (A1, A2)',
+    $dupSigB64(filterValidSignatures(dupTx($dup, $dupKpA, $dupKpB, ['A1', 'A2']), NET, $dupSigners)) === [$dup['signatureA1']]);
+check('F-5: die erste bleibt auch in umgekehrter Reihenfolge (A2, A1)',
+    $dupSigB64(filterValidSignatures(dupTx($dup, $dupKpA, $dupKpB, ['A2', 'A1']), NET, $dupSigners)) === [$dup['signatureA2']]);
+$dupTx3 = dupTx($dup, $dupKpA, $dupKpB, ['A1', 'B', 'A2']);
+$dupKept3 = $dupSigB64(filterValidSignatures($dupTx3, NET, $dupSigners));
+check('F-5: andere Signer bleiben, Reihenfolge bleibt (A1, B, A2)',
+    $dupKept3 === [$dup['signatureA1'], base64_encode($dupTx3->getSignatures()[1]->getSignature())]);
+// Merge-Weg: gespeichert A1, eingehend A2 -> mergeSignatures behaelt beide (andere Bytes), der Filter nur A1.
+$dupTarget = dupTx($dup, $dupKpA, $dupKpB, ['A1']);
+$dupMerged = mergeSignatures($dupTarget, dupTx($dup, $dupKpA, $dupKpB, ['A2']));
+check('F-5 sanity: mergeSignatures behaelt beide (Duplikat nur ueber gleiche Bytes)', count($dupMerged->getSignatures()) === 2);
+$dupMerged->setSignatures(filterValidSignatures($dupMerged, NET, $dupSigners));
+check('F-5: nach Merge und Filter bleibt die gespeicherte Signatur A1', $dupSigB64($dupMerged->getSignatures()) === [$dup['signatureA1']]);
+check('F-5: gesammeltes Gewicht bleibt gleich (A einmal)', verifyCollected($dupMerged, NET, $dupSigners) === [['publicKey' => $dup['publicKeyA'], 'weight' => 1]]);
+
 echo "\n{$passed} passed, {$failed} failed\n";
 exit($failed > 0 ? 1 : 0);

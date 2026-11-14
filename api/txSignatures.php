@@ -10,7 +10,8 @@
 // signatures that verify against one of the account's real, live signers
 // (the exact same hint+verify check verifyCollected() already does per
 // signer, just applied per individual signature here so invalid ones can be
-// dropped instead of merely not counted), then caps whatever remains at 20.
+// dropped instead of merely not counted), keeps at most one per signer (F-5), then caps whatever
+// remains at 20.
 declare(strict_types=1);
 
 require_once __DIR__ . '/vendor/autoload.php';
@@ -116,12 +117,21 @@ function filterValidSignatures(AbstractTransaction $tx, string $net, array $sign
     $base = $tx->hash($network);
     $candidates = skm_counting_signers($signers);
 
+    // F-5: je Signer hoechstens eine Signatur (die erste, beim Merge also die schon gespeicherte).
+    // Ed25519 erlaubt mehrere verschiedene gueltige Signaturen desselben Keys (anderes Nonce);
+    // mergeSignatures() erkennt Duplikate nur an gleichen Bytes, und zwei Signaturen eines Signers
+    // im Envelope lehnt das Netz mit tx_bad_auth_extra ab. Gleich wie filterValidSignatures in
+    // services/txSignatures.js.
     $kept = [];
+    $usedSigners = [];
     foreach ($tx->getSignatures() as $sig) {
         if (!$sig instanceof XdrDecoratedSignature) continue;
         foreach ($candidates as $s) {
             if (skm_signature_matches_signer($sig->getHint(), $sig->getRawSignature(), $s['publicKey'], $base)) {
-                $kept[] = $sig;
+                if (!isset($usedSigners[$s['publicKey']])) {
+                    $usedSigners[$s['publicKey']] = true;
+                    $kept[] = $sig;
+                }
                 break;
             }
         }

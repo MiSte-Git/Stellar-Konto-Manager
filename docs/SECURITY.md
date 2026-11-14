@@ -94,9 +94,12 @@ Ein Job ist eine unsignierte oder teilsignierte Transaktion, die mehrere Signer 
 
 - **Anlegen** ist ohne Anmeldung möglich (Rate-Limit). Der Server prüft: XDR dekodierbar, Netz bekannt,
   Transaktionsquelle = Job-Konto (auch bei M-Adresse über das Basiskonto), Gültigkeitsfenster begrenzt.
-- **Signatur hinzufügen (Merge):** Der Server übernimmt nur Signaturen von aktuellen Signern des Kontos und höchstens
-  20 Signaturen (Stellar-Grenze, `services/txSignatures.js`, `api/txSignatures.php`). Merge prüft zuerst den Hash,
-  dann die Quelle.
+- **Signatur hinzufügen (Merge):** Der Server übernimmt nur Signaturen von aktuellen Signern des Kontos, je Signer
+  höchstens eine (die zuerst vorhandene, also die schon gespeicherte) und insgesamt höchstens 20 Signaturen
+  (Stellar-Grenze, `services/txSignatures.js`, `api/txSignatures.php`). Grund für „je Signer eine“: Ed25519 erlaubt
+  mehrere verschiedene gültige Signaturen desselben Keys; zwei davon im Envelope lehnt das Netz mit
+  `tx_bad_auth_extra` ab, ein Mitsigner könnte den Job so sabotieren (Review Fable, Befund F-5). Merge prüft zuerst
+  den Hash, dann die Quelle.
 - **Job-Token:** Wer Job-Details lesen will, braucht ein Token (Header `x-job-token`, nie in der URL). Es gibt das
   Token beim Anlegen oder über eine **Challenge**: Der Server erzeugt eine Nonce je Job und Signer (60 s gültig,
   einmalig), der Client signiert sie lokal, der Server prüft die Signatur und ob der Key aktuell Signer des Kontos

@@ -1,0 +1,12 @@
+{
+  "_comment": "F-5: zwei verschiedene gueltige Ed25519-Signaturen desselben Keys ueber denselben Transaktions-Hash. signatureA1 ist die deterministische Signatur (Keypair.sign), signatureA2 hat ein anderes Nonce r (R = r*B, S = r + H(R||A||M)*a mod L, erzeugt mit @noble/ed25519-Punktarithmetik); beide bestehen die normale Ed25519-Pruefung. Secrets nur fuer Tests, ohne Guthaben. Netz Testnet, txXdr unsigniert. Gelesen von test/txSignatures.test.js und test/txSignatures.test.php.",
+  "network": "testnet",
+  "secretA": "SBNFUWS2LJNFUWS2LJNFUWS2LJNFUWS2LJNFUWS2LJNFUWS2LJNFU7AO",
+  "publicKeyA": "GAGXKUDVJYEABJOSG7XPLATAGV3GXGZ6LIKYNCUUBKZITFMHRDR3BMEA",
+  "secretB": "SBVWW23LNNVWW23LNNVWW23LNNVWW23LNNVWW23LNNVWW23LNNVWXU3Q",
+  "publicKeyB": "GCBSBJIZO7MMHDFIUSJHYZYN6WBB4REXMGKF4FPJ56ZGUFIJ2IYOVB25",
+  "txXdr": "AAAAAgAAAAANdVB1TggApdI37vWCYDV2a5s+WhWGipQKsomVh4jjsAAAAGQAAAAAAAAAZQAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAQAAAAD3ix2ps9+z+jo+VMQ+eTidLwTWvMtimE8ovW+ReYp1DQAAAAAAAAAAAJiWgAAAAAAAAAAA",
+  "txHashHex": "c6c280b15ad8b139b3d1a29c1f4fb99cd6ae0efb3c02ad0c32a0d17008d1ec8a",
+  "signatureA1": "x1ODUOeZJ+WWdFZr4mNdYjj8LjFwaujDeTTG7/hTzOx5ql8qGNPAlFEZ64/nrEqaNRLen7Aa0yv/X8MmlrSMAQ==",
+  "signatureA2": "HcdoCWFuvtuKz1ulomSuihkBg+Cu/JLh679jwIpQvEwji9BkAuNapRN9Yy8YGfsfPFFJCEWsqhJ53v3MQhbfCg=="
+}
