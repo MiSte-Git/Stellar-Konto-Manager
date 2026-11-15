@@ -24,7 +24,8 @@
 //    same domain's FEDERATION_SERVER) and must yield exactly the same
 //    account_id.
 // Any failed step means "no result" - never an error the UI has to show.
-const { assertSafeScheme, readTextWithLimit, ssrfSafeAgent } = require('./tradeService.js');
+// F-7: dieselbe Stelle wie tradeService.js (Adresspruefung binaer, DNS-Pinning, Groessenlimit).
+const { assertSafeScheme, readTextWithLimit, ssrfSafeAgent } = require('./ssrfGuard.js');
 const { asciiTrim, isClassicAccount, isContractAddress } = require('./addressKind.js');
 
 const FEDERATION_FETCH_TIMEOUT_MS = 5000;

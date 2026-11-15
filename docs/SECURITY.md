@@ -231,8 +231,18 @@ Ein Job ist eine unsignierte oder teilsignierte Transaktion, die mehrere Signer 
 
 ### Weitere Schutzmaßnahmen
 
-- SSRF-Schutz für serverseitige Abrufe (TOML, Federation): Auflösung und Prüfung der Ziel-IP, Größenlimits
-  (`api/ssrfGuard.php`, Node über eigene Lookup-Funktion).
+- SSRF-Schutz für serverseitige Abrufe (TOML, Federation): Auflösung und Prüfung der Ziel-IP, Größenlimits, eine
+  Stelle je Backend (`services/ssrfGuard.js` für Trading und Federation, `api/ssrfGuard.php`). Adressen werden binär
+  geprüft (Node `net.isIP` und Bytes, PHP `inet_pton`), für literale Hosts und für jedes DNS-Ergebnis (Node im
+  Lookup des Agents, ohne zweite Auflösung). Gesperrt: 0.0.0.0/8, 10/8, 100.64.0.0/10, 127/8, 169.254/16, 172.16/12,
+  192.0.0.0/24, 192.168/16, 198.18.0.0/15, ab 224.0.0.0; `::`, `::1`, fe80::/10, fec0::/10, fc00::/7, ff00::/8,
+  64:ff9b::/96 und 64:ff9b:1::/48 (NAT64). IPv4-mapped (`::ffff:0:0/96`) und IPv4-compatible (`::/96`) gelten wie
+  ihre IPv4-Adresse, auch in Hex (`::ffff:7f00:1`). Ungültige Adressen sind gesperrt. Dokumentationsnetze bleiben
+  erlaubt (nicht routbar). Gemeinsame Fälle: `test/assets/ssrf-addresses.json`. Vorher erkannte Node
+  `::ffff:7f00:1` nicht als Loopback, und beide ließen 100.64/10, 198.18/15 und NAT64 durch, PHP auch `::7f00:1`
+  (Review Fable, F-7). Die stellar.toml und jede von Hand verfolgte Weiterleitung gehen nur über https
+  (`nextRedirectUrl` bzw. `skm_next_redirect_url`, in PHP zusätzlich `CURLOPT_PROTOCOLS` und
+  `CURLOPT_REDIR_PROTOCOLS`); Federation folgt keinen Weiterleitungen.
 - CORS-Allowlist (`services/corsConfig.js`, `api/cors.php`). Fremde Origins werden abgewiesen (Review Runde 2,
   Befund G3): Hat ein Request einen `Origin`-Header außerhalb der Allowlist (auch leer oder `null`), antworten beide
   Backends sofort mit 403 `forbidden_origin`, auch beim Preflight, bevor Body-Parser, Session oder Handler laufen.
@@ -252,7 +262,10 @@ Ein Job ist eine unsignierte oder teilsignierte Transaktion, die mehrere Signer 
   Code: `services/requestGuard.js`, `api/requestGuard.php`. Das öffentliche Anlegen von Bugreports bleibt offen.
 - Security-Header aus einer Quelle (`services/securityHeaders.js`, PHP-Zwilling `api/securityHeaders.php`): strikte
   CSP, `connect-src` nur zu bekannten Zielen.
-- Datenordner auf dem Server per `.htaccess` gesperrt, Dateirechte eng.
+- Datenordner auf dem Server per `.htaccess` gesperrt, Dateirechte eng. `api/.htaccess` sperrt zusätzlich `vendor/`,
+  `vendor_old/`, `vendor_next/`, `composer.json` und `composer.lock` (403; Review Fable, F-14). Das Deploy bricht ab,
+  wenn diese Regeln fehlen oder der api-Filter die `.htaccess` ausnimmt (`checkApiUpload` in `scripts/deploy-cyon.js`);
+  die Wirkung prüft `test/apiHtaccess.test.js` mit Apache.
 - Konstante Vergleiche für Geheimnisse (`hash_equals` in PHP).
 - CSV-Exporte gegen Formel-Injection (`frontend/src/utils/csvEscape.js`).
 - Keine Tokens, XDR oder Signaturen in Logs.

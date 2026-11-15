@@ -57,6 +57,11 @@ dass jede Spec in dieser Tabelle steht und jede genannte Datei existiert.
 - Zahlung senden und Sammelzahlung mit Ergebnis, unklarer Status (Netz sperren), Trading mit Multisig, Multisig-Job mit
   zweitem Signer, Xdr-Export, Bugreport (sendet echte Mail), Mainnet (nie automatisch).
 - Memo-Pflicht und Fee-Bump-Ablehnung sind als Unit-Tests abgedeckt (`memoRequired.test.js`, Multisig-Tests).
+- SSRF-Schutz (Review Fable F-7): gemeinsame Fälle in `test/assets/ssrf-addresses.json`, geprüft von
+  `test/ssrfGuard.test.js` und `test/ssrfGuard.test.php` ohne Netz (DNS und `fetch` ersetzt).
+- Sperren in `api/.htaccess` (F-14): `test/apiHtaccess.test.js` startet einen lokalen Apache (`/usr/sbin/apache2` mit
+  `mod_rewrite`, `mod_headers`, `mod_authz_core`, ohne PHP) gegen eine Kopie von `api/`; ohne Apache wird der Test
+  übersprungen. `test/deployApiHtaccess.test.js` prüft die Abbruchregel im Deploy.
 - Unklares Sendeergebnis eines Multisig-Jobs (`submit_unclear`, Review Fable F-2): braucht einen Horizon-Timeout oder
   5xx, gegen das echte Testnet nicht auslösbar. Abgedeckt mit Horizon-Mock in `test/multisigSubmitUnclear.test.js`
   und `.php` (Klärung über die Ledger-Zeit aus `GET /`, Mock per `SKM_TEST_HORIZON_ROOT` bzw. Stub, R-1), die

@@ -9,13 +9,87 @@ declare(strict_types=1);
 const MAX_FETCH_REDIRECTS = 5;
 const MAX_FETCH_RESPONSE_BYTES = 1_000_000; // 1 MiB - generous for JSON/TOML, blocks a memory-DoS response (N2)
 
-// Allows only public, non-reserved IPs (blocks RFC1918, loopback, link-local/metadata, IPv6 equivalents).
+// F-7: Adressen werden binaer geprueft (inet_pton), nicht per filter_var-Flags. Vorher kamen 100.64.0.0/10,
+// 198.18.0.0/15, NAT64 (64:ff9b::/96) und IPv4-compatible (::7f00:1) durch. Gleiche Regeln wie
+// services/ssrfGuard.js, gemeinsame Faelle in test/assets/ssrf-addresses.json.
+
+// IPv4 (4 Bytes): nicht oeffentlich routbar oder auf den Server selbst. Dokumentationsnetze bleiben erlaubt.
+function skm_is_blocked_ipv4_bytes(string $b): bool {
+    [$a, $o2, $o3] = [ord($b[0]), ord($b[1]), ord($b[2])];
+    if ($a === 0) return true;                               // 0.0.0.0/8
+    if ($a === 10) return true;                              // 10.0.0.0/8
+    if ($a === 100 && ($o2 & 0xc0) === 64) return true;      // 100.64.0.0/10 (Carrier-Grade NAT)
+    if ($a === 127) return true;                             // 127.0.0.0/8 (Loopback)
+    if ($a === 169 && $o2 === 254) return true;              // 169.254.0.0/16 (Link-Local, Cloud-Metadaten)
+    if ($a === 172 && ($o2 & 0xf0) === 16) return true;      // 172.16.0.0/12
+    if ($a === 192 && $o2 === 0 && $o3 === 0) return true;   // 192.0.0.0/24 (IETF)
+    if ($a === 192 && $o2 === 168) return true;              // 192.168.0.0/16
+    if ($a === 198 && ($o2 & 0xfe) === 18) return true;      // 198.18.0.0/15 (Benchmark)
+    if ($a >= 224) return true;                              // Multicast, reserviert, Broadcast
+    return false;
+}
+
+// Gesperrt? Keine gueltige Adresse: gesperrt (fail closed). Ein Zonen-Index (fe80::1%eth0) wird abgeschnitten.
+function skm_is_blocked_address(string $ip): bool {
+    $s = trim($ip);
+    $zone = strpos($s, '%');
+    if ($zone !== false) $s = substr($s, 0, $zone);
+    if ($s === '') return true;
+    $b = @inet_pton($s);
+    if ($b === false) return true;
+    if (strlen($b) === 4) return skm_is_blocked_ipv4_bytes($b);
+    if (strlen($b) !== 16) return true;
+    // ::ffff:0:0/96 (IPv4-mapped): wie die IPv4-Adresse.
+    if (substr($b, 0, 10) === str_repeat("\0", 10) && substr($b, 10, 2) === "\xff\xff") return skm_is_blocked_ipv4_bytes(substr($b, 12));
+    // ::/96: :: und ::1 gesperrt, sonst IPv4-compatible wie die IPv4-Adresse.
+    if (substr($b, 0, 12) === str_repeat("\0", 12)) {
+        if (substr($b, 12, 3) === "\0\0\0" && ord($b[15]) <= 1) return true;
+        return skm_is_blocked_ipv4_bytes(substr($b, 12));
+    }
+    // 64:ff9b::/96 (NAT64) und 64:ff9b:1::/48 (lokales NAT64): ganz gesperrt.
+    if (substr($b, 0, 4) === "\x00\x64\xff\x9b") {
+        if (substr($b, 4, 8) === str_repeat("\0", 8)) return true;
+        if (substr($b, 4, 2) === "\x00\x01") return true;
+    }
+    $b0 = ord($b[0]);
+    $b1 = ord($b[1]);
+    if ($b0 === 0xfe && ($b1 & 0xc0) === 0x80) return true; // fe80::/10 Link-Local
+    if ($b0 === 0xfe && ($b1 & 0xc0) === 0xc0) return true; // fec0::/10 Site-Local (veraltet)
+    if (($b0 & 0xfe) === 0xfc) return true;                 // fc00::/7 Unique-Local
+    if ($b0 === 0xff) return true;                          // ff00::/8 Multicast
+    return false;
+}
+
+// Allows only public, non-reserved IPs (siehe skm_is_blocked_address).
 function is_public_ip_address(string $ip): bool {
-    return filter_var(
-        $ip,
-        FILTER_VALIDATE_IP,
-        FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE
-    ) !== false;
+    return !skm_is_blocked_address($ip);
+}
+
+/**
+ * F-7: Naechste URL einer von Hand verfolgten Weiterleitung. Relative Location wird gegen die aktuelle URL
+ * aufgeloest; das Ergebnis muss https sein. Gleich wie nextRedirectUrl in services/ssrfGuard.js.
+ */
+function skm_next_redirect_url(string $currentUrl, ?string $location): string {
+    if ($location === null || $location === '') throw new RuntimeException('redirect_without_location');
+    if (preg_match('#^([a-z][a-z0-9+.-]*):#i', $location, $m)) {
+        $next = $location;
+    } else {
+        $cur = parse_url($currentUrl);
+        if ($cur === false || !isset($cur['scheme'], $cur['host'])) throw new RuntimeException('ssrf_blocked_invalid_url');
+        if (strpos($location, '//') === 0) {
+            $next = $cur['scheme'] . ':' . $location;
+        } else {
+            $origin = $cur['scheme'] . '://' . $cur['host'] . (isset($cur['port']) ? ':' . $cur['port'] : '');
+            if ($location[0] === '/') {
+                $next = $origin . $location;
+            } else {
+                $path = $cur['path'] ?? '/';
+                $next = $origin . substr($path, 0, (int)strrpos($path, '/') + 1) . $location;
+            }
+        }
+    }
+    if (strtolower((string)parse_url($next, PHP_URL_SCHEME)) !== 'https') throw new RuntimeException('ssrf_blocked_scheme');
+    return $next;
 }
 
 // Resolves $host to exactly one validated, public IP (N1 fix). Previously,
@@ -148,6 +222,10 @@ function fetch_url(string $url, string $acceptHeader, int $timeoutSeconds, array
                 // as it would without this option.
                 CURLOPT_RESOLVE => ["{$target['host']}:{$target['port']}:{$target['address']}"],
                 CURLOPT_FOLLOWLOCATION => false,
+                // F-7: nur https, wo verlangt; Weiterleitungen (von Hand verfolgt, siehe skm_next_redirect_url)
+                // nie auf etwas anderes als https.
+                CURLOPT_PROTOCOLS => $httpsOnly ? CURLPROTO_HTTPS : (CURLPROTO_HTTP | CURLPROTO_HTTPS),
+                CURLOPT_REDIR_PROTOCOLS => CURLPROTO_HTTPS,
                 CURLOPT_CONNECTTIMEOUT => $timeoutSeconds,
                 CURLOPT_TIMEOUT => $timeoutSeconds,
                 CURLOPT_HTTPHEADER => array_merge([
@@ -185,10 +263,7 @@ function fetch_url(string $url, string $acceptHeader, int $timeoutSeconds, array
             if (in_array($status, [301, 302, 303, 307, 308], true)) {
                 $location = curl_getinfo($ch, CURLINFO_REDIRECT_URL) ?: null;
                 curl_close($ch);
-                if (!$location) {
-                    throw new RuntimeException('redirect_without_location');
-                }
-                $currentUrl = $location;
+                $currentUrl = skm_next_redirect_url($currentUrl, $location);
                 continue;
             }
             curl_close($ch);
@@ -246,10 +321,7 @@ function fetch_url(string $url, string $acceptHeader, int $timeoutSeconds, array
             }
         }
         if (in_array($status, [301, 302, 303, 307, 308], true)) {
-            if (!$location) {
-                throw new RuntimeException('redirect_without_location');
-            }
-            $currentUrl = $location;
+            $currentUrl = skm_next_redirect_url($currentUrl, $location);
             continue;
         }
         if ($maxRedirects === 0 && $status >= 300 && $status < 400) {
@@ -283,8 +355,9 @@ function fetch_json(string $url): array {
     return $data;
 }
 
+// F-7: stellar.toml nur ueber https (auch jede Weiterleitung), wie Node fetchTextWithTimeout.
 function fetch_text(string $url): string {
-    return fetch_url($url, 'text/plain, application/toml, */*', 6);
+    return fetch_url($url, 'text/plain, application/toml, */*', 6, ['httpsOnly' => true]);
 }
 
 // A server answering with an HTML error/redirect page instead of the TOML

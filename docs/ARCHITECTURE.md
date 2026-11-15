@@ -64,7 +64,7 @@ Zwei Varianten mit gleichem Verhalten ([ADR 0003](adr/0003-dual-backend-paritaet
 | Federation | `federationService.js` | `federation.php`, `federationService.php` |
 | Token-Suche/Trading | `tradeService.js` | `trade.php`, `trade/` |
 | Bugtracker, Admin | `server.js`, `requestGuard.js` | `bugreport.php`, `admin.php`, `admin_session.php`, `requestGuard.php` |
-| SSRF-Schutz | eigene Lookup-Funktion | `ssrfGuard.php` |
+| SSRF-Schutz | `ssrfGuard.js` | `ssrfGuard.php` |
 | CORS, Header | `corsConfig.js`, `securityHeaders.js` | `cors.php`, `securityHeaders.php` |
 | Netze | `stellarNetworks.js` | `stellarNetworks.php` |
 

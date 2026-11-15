@@ -154,6 +154,27 @@ function checkBuildOutput(distDir) {
   }
 }
 
+// F-14: Die hochzuladende api/.htaccess muss vendor/, vendor_old/, vendor_next/ und composer.json/.lock
+// sperren, und der api-Filter darf die .htaccess nicht vom Upload ausnehmen. Sonst Abbruch vor dem rsync.
+// Die Wirkung der Regeln prueft test/apiHtaccess.test.js mit Apache.
+const API_HTACCESS_REQUIRED_RULES = [
+  "RewriteRule ^(vendor|vendor_old|vendor_next)(/|$) - [F,L]",
+  "RewriteRule ^composer\\.(json|lock)$ - [F,L,NC]",
+];
+
+function checkApiUpload(root) {
+  const htaccessPath = path.join(root, "api", ".htaccess");
+  if (!fs.existsSync(htaccessPath)) fail("api/.htaccess fehlt");
+  const lines = fs.readFileSync(htaccessPath, "utf8").split(/\r?\n/).map((l) => l.trim());
+  for (const rule of API_HTACCESS_REQUIRED_RULES) {
+    if (!lines.includes(rule)) fail(`api/.htaccess: Regel fehlt: ${rule}`);
+  }
+  const filterLines = fs.readFileSync(path.join(root, "scripts", "deploy", "api.rsync-filter"), "utf8").split(/\r?\n/).map((l) => l.trim());
+  const excludesHtaccess = filterLines.some((l) => /^-\s+\/?\.ht/.test(l) && !l.startsWith("- /data/"));
+  if (excludesHtaccess) fail("api.rsync-filter nimmt die .htaccess vom Upload aus");
+  console.log("[deploy] api/.htaccess sperrt vendor und composer.* ok");
+}
+
 function rsync(root, { source, target, filter, del, dryRun }) {
   const args = ["-rl", "--checksum", "--itemize-changes", `--filter=merge ${filter}`];
   if (del) args.push("--delete");
@@ -538,6 +559,7 @@ function createDeploy({ root, frontendDir, run, npmCmd, dryRun, vendorOps = real
     });
     if (frontendChanges.length === 0) console.log("(keine Unterschiede)");
 
+    checkApiUpload(root);
     console.log("\n[deploy] Dry-Run api (api/ -> " + REMOTE_DIR + "api/):");
     const apiChanges = rsync(root, {
       source: "api/",
@@ -615,6 +637,7 @@ function createDeploy({ root, frontendDir, run, npmCmd, dryRun, vendorOps = real
 
 module.exports = {
   createDeploy,
+  checkApiUpload,
   checkGit,
   describeHeadMismatch,
   decideVendorAction,

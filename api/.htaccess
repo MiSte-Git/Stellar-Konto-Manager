@@ -1,4 +1,9 @@
 RewriteEngine On
+# F-14: Composer-Abhaengigkeiten und Composer-Dateien nie direkt ausliefern (Versionsstaende, Quelltext).
+# vendor_old/ und vendor_next/ entstehen beim Tausch in scripts/deploy-cyon.js. 403 vor allen anderen Regeln.
+# scripts/deploy-cyon.js (checkApiUpload) bricht das Deploy ab, wenn eine der beiden Zeilen fehlt.
+RewriteRule ^(vendor|vendor_old|vendor_next)(/|$) - [F,L]
+RewriteRule ^composer\.(json|lock)$ - [F,L,NC]
 # Route /api/multisig/... to multisig.php
 RewriteRule ^multisig($|/.*$) /api/multisig.php [L,QSA]
 # Route /api/trade/... to trade.php

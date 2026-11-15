@@ -153,5 +153,41 @@ check('classify_toml_error maps "ssrf_blocked_unresolved" to "connectionError", 
 check('classify_toml_error falls back to "fetchFailed" for an unrecognized message', classify_toml_error('something unexpected') === 'fetchFailed');
 check('classify_toml_error falls back to "fetchFailed" for an empty message', classify_toml_error('') === 'fetchFailed');
 
+// --- F-7: gemeinsame Fixture test/assets/ssrf-addresses.json (gleiche Faelle in test/ssrfGuard.test.js) ---
+// Adressen binaer (inet_pton), IPv4-mapped und IPv4-compatible wie IPv4, auch in Hex, 100.64.0.0/10,
+// 198.18.0.0/15, 64:ff9b::/96 und 64:ff9b:1::/48 gesperrt.
+$ssrfFixture = json_decode((string)file_get_contents(__DIR__ . '/assets/ssrf-addresses.json'), true);
+foreach ($ssrfFixture['addresses'] as $c) {
+    $label = 'F-7 Adresse ' . json_encode($c['address']) . ' -> ' . ($c['blocked'] ? 'gesperrt' : 'erlaubt');
+    check("{$label} (is_public_ip_address)", is_public_ip_address($c['address']) === !$c['blocked']);
+    if (($c['url'] ?? true) !== false) {
+        $host = strpos($c['address'], ':') !== false ? '[' . $c['address'] . ']' : $c['address'];
+        if ($c['blocked']) {
+            check("{$label} (literaler Host)", throws(fn() => resolve_safe_host($host), 'ssrf_blocked_ip'));
+        } else {
+            $r = null;
+            try { $r = resolve_safe_host($host); } catch (\Throwable $e) { $r = null; }
+            check("{$label} (literaler Host)", is_array($r) && ($r['address'] ?? '') === $c['address']);
+        }
+    }
+}
+foreach ($ssrfFixture['redirects'] as $r) {
+    $label = 'F-7 Weiterleitung ' . $r['current'] . ' + ' . json_encode($r['location']) . ' -> ' . ($r['result'] ?? $r['error']);
+    if (isset($r['result'])) {
+        $next = null;
+        try { $next = skm_next_redirect_url($r['current'], $r['location']); } catch (\Throwable $e) { $next = 'Fehler: ' . $e->getMessage(); }
+        check($label, $next === $r['result']);
+    } else {
+        check($label, throws(fn() => skm_next_redirect_url($r['current'], $r['location']), $r['error'] === 'scheme' ? 'ssrf_blocked_scheme' : 'redirect_without_location'));
+    }
+}
+check('F-7: fetch_text nur ueber https (http wird vor jeder DNS-Abfrage abgelehnt)',
+    throws(fn() => fetch_text('http://203.0.113.10/.well-known/stellar.toml'), 'ssrf_blocked_scheme'));
+$guardSource = (string)file_get_contents(__DIR__ . '/../api/ssrfGuard.php');
+check('F-7: curl nur mit https-Protokoll fuer Weiterleitungen (CURLOPT_REDIR_PROTOCOLS) und bei httpsOnly auch fuer den Abruf',
+    strpos($guardSource, 'CURLOPT_REDIR_PROTOCOLS') !== false && strpos($guardSource, 'CURLOPT_PROTOCOLS') !== false);
+check('F-7: beide Wege (curl und Stream) folgen Weiterleitungen nur ueber skm_next_redirect_url',
+    substr_count($guardSource, 'skm_next_redirect_url($currentUrl, $location)') === 2);
+
 echo "\n{$passed} passed, {$failed} failed\n";
 exit($failed > 0 ? 1 : 0);
