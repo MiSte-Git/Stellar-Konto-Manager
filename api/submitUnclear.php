@@ -27,17 +27,30 @@ const SUBMIT_UNCLEAR_FAILED_MESSAGE = 'Transaction Failed';
 class SubmitUnclearException extends \Exception {}
 
 /**
- * Antwort von POST /transactions: unklar sind keine Antwort ($httpCode null), 408, 429 und >= 500,
+ * R-6: Eine Ablehnung braucht echte Codes: transaction oder inner_transaction als String oder mindestens
+ * einen String in operations. Gleiche Regel wie hasResultCodes in services/submitUnclear.js, gemeinsame
+ * Faelle in test/assets/submit-classification.json. (skm_clean_result_codes bleibt fuer das Speichern.)
+ */
+function skm_has_result_codes($codes): bool {
+    if (!is_array($codes) || array_is_list($codes)) return false;
+    if (is_string($codes['transaction'] ?? null) || is_string($codes['inner_transaction'] ?? null)) return true;
+    $ops = $codes['operations'] ?? null;
+    return is_array($ops) && count(array_filter($ops, 'is_string')) > 0;
+}
+
+/**
+ * Antwort von POST /transactions: unklar sind keine Antwort ($httpCode null oder 0), 408, 429 und >= 500,
  * jeweils ohne result_codes, sowie 2xx ohne Hash. Mit result_codes und bei jedem anderen Status ist
  * es eine Ablehnung. 2xx mit Hash ist Erfolg (nicht unklar).
  */
 function skm_submit_response_is_unclear(?int $httpCode, $data): bool {
-    if ($httpCode === null) return true;
+    if ($httpCode === null || $httpCode === 0) return true;
     if ($httpCode >= 200 && $httpCode < 300) {
         return !(is_array($data) && is_string($data['hash'] ?? null) && $data['hash'] !== '');
     }
-    $codes = is_array($data) ? ($data['extras']['result_codes'] ?? null) : null;
-    if (skm_clean_result_codes($codes) !== null) return false;
+    $extras = is_array($data) ? ($data['extras'] ?? null) : null;
+    $codes = is_array($extras) ? ($extras['result_codes'] ?? null) : null;
+    if (skm_has_result_codes($codes)) return false;
     return $httpCode === 408 || $httpCode === 429 || $httpCode >= 500;
 }
 

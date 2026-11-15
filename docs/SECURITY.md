@@ -166,8 +166,13 @@ Ein Job ist eine unsignierte oder teilsignierte Transaktion, die mehrere Signer 
   (Liste, Detail, Merge, Anlegen) bereinigt (Review Fable, Befund F-3).
 - **Unklares Sendeergebnis (`submit_unclear`):** Kommt beim Senden durch das Backend (Anlegen oder Merge) keine
   eindeutige Antwort, wird der Job `submit_unclear`, nicht `submitted_failed`. Unklar heißt: keine Antwort, Timeout
-  (20 s in beiden Backends), HTTP 408, 429 oder ab 500 ohne `result_codes`, oder 2xx ohne Hash. Mit `result_codes`
-  ist es eine Ablehnung wie bisher (`tx_bad_seq`/`tx_too_late` beim Merge als `obsolete_seq`/`expired`). Grund: Die
+  (20 s in beiden Backends), Status 0, HTTP 408, 429 oder ab 500 ohne `result_codes`, oder 2xx ohne Hash. Mit
+  `result_codes` ist es eine Ablehnung wie bisher (`tx_bad_seq`/`tx_too_late` beim Merge als `obsolete_seq`/`expired`).
+  Als `result_codes` zählen nur echte Codes: `transaction` oder `inner_transaction` als String oder mindestens ein
+  String in `operations`; ein leeres Objekt, eine leere oder nicht lesbare Liste zählt nicht (beide Backends gleich,
+  gemeinsame Fälle in `test/assets/submit-classification.json`, Review Fixrunde Opus R-6). Node sendet ohne die
+  SEP-29-Prüfung des SDK (`skipMemoRequiredCheck`), wie PHP: Sonst lud das SDK vor dem POST die Zielkonten, und ein
+  Memo-Pflicht-Ziel oder ein Ladefehler ergab `submit_unclear`, obwohl nichts gesendet war (R-5). Grund: Die
   Transaktion kann trotz Timeout im Ledger landen. Als `submitted_failed` hätten die Signer dieselbe Zahlung neu
   angelegt, und sie wäre doppelt ausgeführt worden (Review Fable, Befund F-2). Der Status ist nicht final, aber
   gesperrt: Merge und Ablehnen antworten 409 `submit_unclear`, Löschen 409 `not_final`, es wird nie erneut gesendet;

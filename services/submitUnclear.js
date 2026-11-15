@@ -23,6 +23,9 @@ const SUBMIT_UNCLEAR_MAX_RESOLVES_PER_REQUEST = 5;
 // Datensatz keine result_codes).
 const SUBMIT_UNCLEAR_FAILED_MESSAGE = 'Transaction Failed';
 
+// R-6: Eine Ablehnung braucht echte Codes: transaction oder inner_transaction als String oder mindestens einen
+// String in operations. Gleiche Regel wie skm_has_result_codes in api/submitUnclear.php, gemeinsame Faelle in
+// test/assets/submit-classification.json.
 function hasResultCodes(codes) {
   if (!codes || typeof codes !== 'object' || Array.isArray(codes)) return false;
   return typeof codes.transaction === 'string'
@@ -32,14 +35,14 @@ function hasResultCodes(codes) {
 
 /**
  * Fehler aus Horizon.Server#submitTransaction (oder dem eigenen Timeout): unklar sind keine Antwort
- * (Netzfehler, Timeout), 408, 429 und >= 500, jeweils ohne result_codes. Mit result_codes und bei
- * jedem anderen Status ist es eine Ablehnung.
+ * (Netzfehler, Timeout, Status fehlt oder 0), 408, 429 und >= 500, jeweils ohne result_codes. Mit
+ * result_codes und bei jedem anderen Status ist es eine Ablehnung.
  */
 function isUnclearSubmitError(err) {
   const response = err?.response;
   if (hasResultCodes(response?.data?.extras?.result_codes)) return false;
   const status = response?.status;
-  if (typeof status !== 'number') return true;
+  if (typeof status !== 'number' || status === 0) return true;
   return status === 408 || status === 429 || status >= 500;
 }
 

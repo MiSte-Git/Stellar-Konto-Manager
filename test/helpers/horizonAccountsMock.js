@@ -116,3 +116,14 @@ if (process.env.SKM_TEST_HORIZON_ROOT) {
     return spec;
   };
 }
+
+// Optional (R-5): SKM_TEST_SUBMIT_REAL_URL laesst Horizon.Server#submitTransaction unveraendert (echtes SDK
+// samt Memo-Pruefung SEP-29 und POST), richtet es aber mit denselben Optionen gegen diesen lokalen
+// http-Stub. So sieht der Test, was das Backend dem SDK uebergibt und welche Anfragen dabei entstehen.
+if (process.env.SKM_TEST_SUBMIT_REAL_URL) {
+  const original = StellarSdk.Horizon.Server.prototype.submitTransaction;
+  const local = new StellarSdk.Horizon.Server(process.env.SKM_TEST_SUBMIT_REAL_URL, { allowHttp: true });
+  StellarSdk.Horizon.Server.prototype.submitTransaction = function submitTransaction(tx, opts) {
+    return original.call(local, tx, opts);
+  };
+}

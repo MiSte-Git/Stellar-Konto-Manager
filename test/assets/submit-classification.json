@@ -1,0 +1,32 @@
+{
+  "_comment": "R-6: Einordnung der Antwort auf POST /transactions beim Senden eines Multisig-Jobs, gemeinsam fuer test/submitClassification.test.js und .php. status null = keine Antwort (Netzfehler, Timeout). unclear true = submit_unclear, false = Ablehnung (bei 2xx: Erfolg). Ablehnung nur mit result_codes, die transaction oder inner_transaction als String oder mindestens einen String in operations enthalten; ohne solche Codes ist ab 500 sowie bei 408, 429 und Status 0 alles unklar.",
+  "cases": [
+    { "name": "keine Antwort", "status": null, "data": null, "unclear": true },
+    { "name": "Status 0 mit Body", "status": 0, "data": {}, "unclear": true },
+    { "name": "504 ohne Codes", "status": 504, "data": { "title": "Timeout" }, "unclear": true },
+    { "name": "504 mit transaction", "status": 504, "data": { "extras": { "result_codes": { "transaction": "tx_failed" } } }, "unclear": false },
+    { "name": "500 mit inner_transaction", "status": 500, "data": { "extras": { "result_codes": { "inner_transaction": "tx_failed" } } }, "unclear": false },
+    { "name": "500 mit operations String", "status": 500, "data": { "extras": { "result_codes": { "operations": ["op_underfunded"] } } }, "unclear": false },
+    { "name": "500 result_codes leer", "status": 500, "data": { "extras": { "result_codes": {} } }, "unclear": true },
+    { "name": "500 operations leer", "status": 500, "data": { "extras": { "result_codes": { "operations": [] } } }, "unclear": true },
+    { "name": "500 operations ohne String", "status": 500, "data": { "extras": { "result_codes": { "operations": [1, null] } } }, "unclear": true },
+    { "name": "500 transaction keine Zeichenkette", "status": 500, "data": { "extras": { "result_codes": { "transaction": 5 } } }, "unclear": true },
+    { "name": "503 result_codes als String", "status": 503, "data": { "extras": { "result_codes": "tx_failed" } }, "unclear": true },
+    { "name": "500 result_codes als Liste", "status": 500, "data": { "extras": { "result_codes": ["tx_failed"] } }, "unclear": true },
+    { "name": "502 HTML-Body", "status": 502, "data": "<html>bad gateway</html>", "unclear": true },
+    { "name": "520 Proxy", "status": 520, "data": {}, "unclear": true },
+    { "name": "501", "status": 501, "data": {}, "unclear": true },
+    { "name": "408", "status": 408, "data": {}, "unclear": true },
+    { "name": "429", "status": 429, "data": {}, "unclear": true },
+    { "name": "400 ohne Codes", "status": 400, "data": { "title": "Transaction Malformed" }, "unclear": false },
+    { "name": "400 tx_bad_seq", "status": 400, "data": { "extras": { "result_codes": { "transaction": "tx_bad_seq" } } }, "unclear": false },
+    { "name": "400 result_codes leer", "status": 400, "data": { "extras": { "result_codes": {} } }, "unclear": false },
+    { "name": "404", "status": 404, "data": {}, "unclear": false },
+    { "name": "302", "status": 302, "data": {}, "unclear": false },
+    { "name": "200 mit Hash", "status": 200, "data": { "hash": "ab", "ledger": 1 }, "unclear": false },
+    { "name": "200 ohne Hash", "status": 200, "data": { "successful": true }, "unclear": true },
+    { "name": "200 Hash leer", "status": 200, "data": { "hash": "" }, "unclear": true },
+    { "name": "200 Hash keine Zeichenkette", "status": 200, "data": { "hash": 5 }, "unclear": true },
+    { "name": "200 ohne Body", "status": 200, "data": null, "unclear": true }
+  ]
+}

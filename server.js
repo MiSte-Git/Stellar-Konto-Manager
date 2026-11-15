@@ -731,7 +731,11 @@ async function submitTx(tx, network) {
   const timeout = new Promise((_, reject) => {
     timer = setTimeout(() => reject(Object.assign(new Error('submit_timeout'), { code: 'submit_timeout' })), HORIZON_SUBMIT_TIMEOUT_MS);
   });
-  const submit = horizon.submitTransaction(tx);
+  // R-5: ohne SEP-29-Pruefung des SDK, wie PHP. Sonst laedt das SDK vor dem POST die Zielkonten; verlangt eines
+  // ein Memo oder scheitert das Laden, wirft es ohne HTTP-Status, und der Job wuerde submit_unclear, obwohl
+  // nichts gesendet wurde. SEP-29 ist eine Pruefung fuer Wallets beim Bauen, nicht fuer das Einreichen
+  // einer schon von allen Signern bestaetigten Transaktion.
+  const submit = horizon.submitTransaction(tx, { skipMemoRequiredCheck: true });
   submit.catch(() => {}); // kein unbehandeltes Rejection, falls der Timeout zuerst kommt
   try {
     return await Promise.race([submit, timeout]);
