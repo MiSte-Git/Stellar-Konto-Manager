@@ -36,9 +36,14 @@ StellarSdk.Horizon.Server.prototype.loadAccount = async function loadAccount(acc
 
 // Optional: SKM_TEST_SUBMIT_HASH ersetzt Horizon.Server#submitTransaction durch eine erfolgreiche
 // Antwort mit diesem Hash (Test "Speichern scheitert nach dem Senden", B3-1). Ohne die Variable
-// bleibt das SDK unveraendert.
+// bleibt das SDK unveraendert. SKM_TEST_SUBMIT_LOG (optional): je Sendeversuch eine Zeile.
+// R-3: Gibt es die Datei SKM_TEST_SUBMIT_ARM_FILE, wird SKM_TEST_SUBMIT_ARM_DIR beim Senden
+// schreibgeschuetzt (0500): Das Speichern vor dem Senden gelingt, das danach scheitert.
 if (process.env.SKM_TEST_SUBMIT_HASH) {
   StellarSdk.Horizon.Server.prototype.submitTransaction = async function submitTransaction() {
+    if (process.env.SKM_TEST_SUBMIT_LOG) fs.appendFileSync(process.env.SKM_TEST_SUBMIT_LOG, 'submit\n');
+    const arm = process.env.SKM_TEST_SUBMIT_ARM_FILE;
+    if (arm && fs.existsSync(arm) && process.env.SKM_TEST_SUBMIT_ARM_DIR) fs.chmodSync(process.env.SKM_TEST_SUBMIT_ARM_DIR, 0o500);
     return { hash: process.env.SKM_TEST_SUBMIT_HASH, ledger: 1, envelope_xdr: 'MOCK_ENVELOPE_XDR', result_xdr: 'MOCK_RESULT_XDR' };
   };
 }

@@ -582,6 +582,31 @@ function resolveUnclearJobs(string $jobFile, array $jobs): array {
     return $jobs;
 }
 
+/**
+ * R-3: Ergebnis eines Sendens nach dem Write-ahead schreiben (Anlegen, Merge). Unter withJobsLock und nur,
+ * wenn der Job dort noch submit_unclear ist; hat die Klaerung ihn inzwischen entschieden, bleibt das. Gibt
+ * den gespeicherten Job zurueck (oder null, wenn es ihn nicht mehr gibt). Wirft, wenn das Speichern
+ * scheitert: Dann steht der Write-ahead-Stand (submit_unclear) in der Datei. Gleich wie applySubmitOutcome
+ * in server.js.
+ */
+function applySubmitOutcome(string $jobFile, string $id, string $status, ?array $submittedResult): ?array {
+    $row = null;
+    withJobsLock($jobFile, function (array $items) use ($id, $status, $submittedResult, &$row) {
+        foreach ($items as &$it) {
+            if (($it['id'] ?? '') !== $id) continue;
+            if (($it['status'] ?? '') === SUBMIT_UNCLEAR_STATUS) {
+                $it['status'] = $status;
+                $it['submittedResult'] = $submittedResult;
+                $it['submittedAt'] = gmdate('c');
+            }
+            $row = $it;
+        }
+        unset($it);
+        return $items;
+    });
+    return $row;
+}
+
 // Routing
 $path = parse_url($uri, PHP_URL_PATH) ?? '/';
 
@@ -650,19 +675,11 @@ if ($method === 'POST' && $path === '/api/multisig/jobs') {
         $collected = verifyCollected($tx, $net, $signerMeta);
         $collectedWeight = array_reduce($collected, fn($c, $s) => $c + (int)($s['weight'] ?? 0), 0);
         $status = ($requiredWeight > 0 && $collectedWeight >= $requiredWeight) ? 'ready_to_submit' : 'pending_signatures';
-        $submittedResult = null;
-        if ($status === 'ready_to_submit' && $requiredWeight > 0) {
-            $submitAttempted = true;
-            try {
-                $submittedResult = submitToNetwork($tx, $net);
-                $status = 'submitted_success';
-            } catch (\Throwable $submitErr) {
-                // F-3: nur Fehlertext und result_codes, nie envelope_xdr/result_xdr (die Liste ist ohne Token lesbar).
-                // F-2: unklar (keine eindeutige Antwort) wird submit_unclear, nicht submitted_failed.
-                $submittedResult = skm_submit_error_result($submitErr);
-                $status = $submitErr instanceof SubmitUnclearException ? SUBMIT_UNCLEAR_STATUS : 'submitted_failed';
-            }
-        }
+        // R-3: Erreicht die Signatur schon die Schwelle, sendet das Backend sofort. Write-ahead: erst als
+        // submit_unclear speichern, dann senden, dann das Ergebnis schreiben (applySubmitOutcome). Stirbt
+        // der Prozess oder scheitert das Speichern danach, steht der Job gesperrt da und wird geklaert.
+        $willSubmit = $status === 'ready_to_submit' && $requiredWeight > 0;
+        if ($willSubmit) $status = SUBMIT_UNCLEAR_STATUS;
 
         $job = [
             'id' => bin2hex(random_bytes(12)),
@@ -682,14 +699,30 @@ if ($method === 'POST' && $path === '/api/multisig/jobs') {
             'requiredWeight' => $requiredWeight,
             'collectedSigners' => $collected,
             'collectedWeight' => $collectedWeight,
-            'submittedResult' => $submittedResult,
-            'submittedAt' => $submittedResult ? gmdate('c') : null,
+            'submittedResult' => null,
+            'submittedAt' => $willSubmit ? gmdate('c') : null,
         ];
         $job = summarizeJob($job);
+        // Scheitert dieses Speichern, wurde nichts gesendet (500 save_failed).
         withJobsLock($jobFile, function (array $items) use ($job) {
             array_unshift($items, $job);
             return $items;
         });
+        if ($willSubmit) {
+            $submitAttempted = true;
+            try {
+                $sent = ['status' => 'submitted_success', 'submittedResult' => submitToNetwork($tx, $net)];
+            } catch (\Throwable $submitErr) {
+                // F-3: nur Fehlertext und result_codes, nie envelope_xdr/result_xdr (die Liste ist ohne Token lesbar).
+                // F-2: unklar (keine eindeutige Antwort) wird submit_unclear, nicht submitted_failed.
+                $sent = [
+                    'status' => $submitErr instanceof SubmitUnclearException ? SUBMIT_UNCLEAR_STATUS : 'submitted_failed',
+                    'submittedResult' => skm_submit_error_result($submitErr),
+                ];
+            }
+            $row = applySubmitOutcome($jobFile, $job['id'], $sent['status'], $sent['submittedResult']);
+            if ($row !== null) $job = summarizeJob($row);
+        }
         return sendJson($job);
     } catch (\Throwable $e) {
         error_log('[multisig] jobs.create failed: ' . $e->getMessage());
@@ -1063,7 +1096,10 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/merge-
         $resultRow = null;
         $signersUnavailable = false;
         $lifecycleRejected = null;
-        withJobsLock($jobFile, function (array $items) use ($id, $net, $incoming, &$resultRow, &$signersUnavailable, &$lifecycleRejected, &$submitAttempted) {
+        // R-3: Erreicht der Merge die Schwelle, speichert der Lock unten den Job als submit_unclear mit der
+        // neuen Signatur (Write-ahead); gesendet wird erst danach, das Ergebnis schreibt applySubmitOutcome.
+        $toSubmit = null;
+        withJobsLock($jobFile, function (array $items) use ($id, $net, $incoming, &$resultRow, &$signersUnavailable, &$lifecycleRejected, &$toSubmit) {
             foreach ($items as &$j) {
                 if (($j['id'] ?? '') !== $id) continue;
 
@@ -1153,25 +1189,12 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/merge-
                 $required = (int)($j['requiredWeight'] ?? 0);
                 $status = ($required > 0 && $collectedWeight >= $required) ? 'ready_to_submit' : 'pending_signatures';
                 $submittedResult = $j['submittedResult'] ?? null;
+                $submittedAt = $submittedResult ? ($j['submittedAt'] ?? gmdate('c')) : null;
                 if ($status === 'ready_to_submit' && $required > 0) {
-                    $submitAttempted = true;
-                    try {
-                        $submittedResult = submitToNetwork($merged, $net);
-                        $status = 'submitted_success';
-                    } catch (\Throwable $submitErr) {
-                        // G5 stage 1: a submission that fails specifically because
-                        // the sequence/timebound died between our pre-merge check
-                        // above and Horizon's authoritative processing must not be
-                        // reported as a generic submitted_failed - safety net for
-                        // that TOCTOU gap (the account sequence used above can be
-                        // up to 30s cached, see fetchAccountSignersCached()).
-                        // F-3: wie beim Anlegen nur Fehlertext und result_codes.
-                        // F-2: unklar (keine eindeutige Antwort) wird submit_unclear, nicht submitted_failed.
-                        $submittedResult = skm_submit_error_result($submitErr);
-                        $resultCode = skm_submitted_result_tx_code($submittedResult);
-                        $mapped = mapSubmitResultCodeToLifecycleStatus($resultCode);
-                        $status = $submitErr instanceof SubmitUnclearException ? SUBMIT_UNCLEAR_STATUS : ($mapped ?? 'submitted_failed');
-                    }
+                    $status = SUBMIT_UNCLEAR_STATUS;
+                    $submittedResult = null;
+                    $submittedAt = gmdate('c');
+                    $toSubmit = $merged;
                 }
 
                 $j['txXdrCurrent'] = $merged->toEnvelopeXdrBase64();
@@ -1180,7 +1203,7 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/merge-
                 $j['declinedSigners'] = dropDeclinesOfCollected(is_array($j['declinedSigners'] ?? null) ? $j['declinedSigners'] : [], $collected);
                 $j['status'] = $status;
                 $j['submittedResult'] = $submittedResult;
-                $j['submittedAt'] = $submittedResult ? gmdate('c') : null;
+                $j['submittedAt'] = $submittedAt;
                 $j = summarizeJob($j);
                 $resultRow = $j;
                 break;
@@ -1192,6 +1215,29 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/merge-
         if ($signersUnavailable) return sendError('signers_unavailable', null, 502);
         if ($lifecycleRejected) return sendJson(['ok' => false, 'error' => $lifecycleRejected, 'job' => $resultRow], 409);
         if (!$resultRow) return sendJson(['ok' => false, 'error' => 'not_found'], 404);
+        if ($toSubmit !== null) {
+            // Write-ahead steht in der Datei; erst jetzt senden.
+            $submitAttempted = true;
+            try {
+                $sent = ['status' => 'submitted_success', 'submittedResult' => submitToNetwork($toSubmit, $net)];
+            } catch (\Throwable $submitErr) {
+                // G5 stage 1: a submission that fails specifically because
+                // the sequence/timebound died between our pre-merge check
+                // above and Horizon's authoritative processing must not be
+                // reported as a generic submitted_failed - safety net for
+                // that TOCTOU gap (the account sequence used above can be
+                // up to 30s cached, see fetchAccountSignersCached()).
+                // F-3: wie beim Anlegen nur Fehlertext und result_codes.
+                // F-2: unklar (keine eindeutige Antwort) wird submit_unclear, nicht submitted_failed.
+                $submittedResult = skm_submit_error_result($submitErr);
+                $resultCode = skm_submitted_result_tx_code($submittedResult);
+                $mapped = mapSubmitResultCodeToLifecycleStatus($resultCode);
+                $status = $submitErr instanceof SubmitUnclearException ? SUBMIT_UNCLEAR_STATUS : ($mapped ?? 'submitted_failed');
+                $sent = ['status' => $status, 'submittedResult' => $submittedResult];
+            }
+            $row = applySubmitOutcome($jobFile, $id, $sent['status'], $sent['submittedResult']);
+            if ($row !== null) $resultRow = summarizeJob($row);
+        }
         return sendJson($resultRow);
     } catch (\Throwable $e) {
         error_log('[multisig] jobs.merge failed: ' . $e->getMessage());

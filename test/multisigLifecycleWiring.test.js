@@ -62,7 +62,10 @@ test('F4: the create route responds with the post-guard job object, not the pre-
   const guardIndex = createBlock.indexOf('multisigDb.items = expireStalePendingJobs(multisigDb.items);');
   const responseVarIndex = createBlock.indexOf('const responseJob = multisigDb.items.find((j) => j.id === job.id) || job;');
   // F-3: die Antwort laeuft zusaetzlich durch withSanitizedSubmitResult (ohne envelope_xdr/result_xdr).
-  const respondIndex = createBlock.indexOf('res.json(withSanitizedSubmitResult(responseJob));');
+  // R-3: responseJob kommt als outcome.job aus dem Job-Lock (ohne Senden unveraendert, mit Senden das
+  // geschriebene Ergebnis aus applySubmitOutcome).
+  const respondIndex = createBlock.indexOf('res.json(withSanitizedSubmitResult(outcome.job));');
+  assert.ok(createBlock.includes('if (!shouldSubmit) return { job: responseJob };'), 'ohne Senden antwortet die Route mit dem Objekt nach dem Waechter');
   assert.ok(guardIndex > -1, 'sanity: the guard call exists');
   assert.ok(responseVarIndex > -1 && responseVarIndex > guardIndex, 'the response must be looked up from the guarded item list, after the guard ran');
   assert.ok(respondIndex > -1, 'the route must respond with the post-guard object');

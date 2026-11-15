@@ -767,6 +767,22 @@ async function submitJobTx(tx, network, { mapLifecycleCodes }) {
   return { status: 'submitted_success', submittedResult: submitSuccessResult(result) };
 }
 
+// R-3: Ergebnis eines Sendens nach dem Write-ahead schreiben (Anlegen, Merge), unter dem Job-Lock des
+// Aufrufers. Nur wenn der Job noch submit_unclear ist; hat die Klaerung ihn inzwischen entschieden, bleibt
+// das (Ledger-Daten gehen vor). Scheitert das Speichern, bleibt im Speicher wie in der Datei der
+// Write-ahead-Stand (submit_unclear): 500 save_failed_after_submit, die Klaerung uebernimmt.
+async function applySubmitOutcome(jobId, sent) {
+  const current = findMultisigJob(jobId);
+  if (!current || current.status !== SUBMIT_UNCLEAR_STATUS) return { job: current };
+  const updated = { ...current, status: sent.status, submittedAt: new Date().toISOString(), submittedResult: sent.submittedResult };
+  multisigDb.items = multisigDb.items.map((j) => (j.id === jobId ? updated : j));
+  if (!(await saveMultisigDb())) {
+    multisigDb.items = multisigDb.items.map((j) => (j.id === jobId ? current : j));
+    return { error: SAVE_FAILED_AFTER_SUBMIT };
+  }
+  return { job: updated };
+}
+
 // F-2: Abruf GET /transactions/{hash} fuer die Klaerung. 404 = nicht im Ledger, alles andere ohne
 // Datensatz (Netz, Timeout, 5xx) = Fehler, der Job bleibt dann unklar.
 async function lookupJobTransaction(network, hash) {
@@ -924,30 +940,39 @@ app.post('/api/multisig/jobs', async (req, res) => {
       collectedSigners,
       collectedWeight,
     };
-    // Auto submit if threshold already met (e.g., single-sig)
+    // R-3: Erreicht die Signatur schon die Schwelle, sendet das Backend sofort (z. B. Single-Sig). Write-ahead:
+    // Der Job wird vorher als submit_unclear gespeichert, erst dann gesendet und das Ergebnis geschrieben.
+    // Stirbt der Prozess oder scheitert das Speichern danach, steht er gesperrt da und wird geklaert, nie
+    // erneut gesendet. Alles unter dem Job-Lock (gleiche Reihenfolge wie api/multisig.php).
     if (shouldSubmit) {
+      job.status = SUBMIT_UNCLEAR_STATUS;
+      job.submittedAt = nowIso;
+      job.submittedResult = null;
+    }
+    const outcome = await withMultisigJobLock(job.id, async () => {
+      multisigDb.items.unshift(job);
+      multisigDb.items = expireStalePendingJobs(multisigDb.items);
+      // Beim Speichern fehlgeschlagen nie Erfolg melden (wie PHP, dort wirft saveJobs):
+      // saveMultisigDb wirft nicht, sondern gibt false zurueck. Den Job wieder aus dem
+      // Speicher nehmen, damit er nicht in der Liste steht, ohne gespeichert zu sein. Vor dem
+      // Senden: es wurde nichts gesendet.
+      if (!(await saveMultisigDb())) {
+        multisigDb.items = multisigDb.items.filter((j) => j.id !== job.id);
+        return { error: 'multisig.jobs.save_failed' };
+      }
+      // F4: respond with the post-guard object, not the pre-guard `job`
+      // reference - a dead-on-arrival XDR (already-expired timebound) can be
+      // marked 'expired' by the guard call above, and the response must
+      // reflect that rather than the stale in-memory object from before it ran.
+      const responseJob = multisigDb.items.find((j) => j.id === job.id) || job;
+      if (!shouldSubmit) return { job: responseJob };
       submitAttempted = true;
       // Beim Anlegen ohne Abbildung von tx_bad_seq/tx_too_late (wie bisher und wie PHP).
-      const outcome = await submitJobTx(parsed.tx, net, { mapLifecycleCodes: false });
-      job.status = outcome.status;
-      job.submittedAt = new Date().toISOString();
-      job.submittedResult = outcome.submittedResult;
-    }
-    multisigDb.items.unshift(job);
-    multisigDb.items = expireStalePendingJobs(multisigDb.items);
-    // F4: respond with the post-guard object, not the pre-guard `job`
-    // reference - a dead-on-arrival XDR (already-expired timebound) can be
-    // marked 'expired' by the guard call above, and the response must
-    // reflect that rather than the stale in-memory object from before it ran.
-    const responseJob = multisigDb.items.find((j) => j.id === job.id) || job;
-    // Beim Speichern fehlgeschlagen nie Erfolg melden (wie PHP, dort wirft saveJobs):
-    // saveMultisigDb wirft nicht, sondern gibt false zurueck. Den Job wieder aus dem
-    // Speicher nehmen, damit er nicht in der Liste steht, ohne gespeichert zu sein.
-    if (!(await saveMultisigDb())) {
-      multisigDb.items = multisigDb.items.filter((j) => j.id !== job.id);
-      return res.status(500).json({ ok: false, error: submitAttempted ? SAVE_FAILED_AFTER_SUBMIT : 'multisig.jobs.save_failed' });
-    }
-    res.json(withSanitizedSubmitResult(responseJob));
+      const sent = await submitJobTx(parsed.tx, net, { mapLifecycleCodes: false });
+      return applySubmitOutcome(job.id, sent);
+    });
+    if (outcome.error) return res.status(500).json({ ok: false, error: outcome.error });
+    res.json(withSanitizedSubmitResult(outcome.job));
   } catch (e) {
     console.error('multisig.jobs.post.failed', e);
     res.status(500).json({ ok: false, error: submitAttempted ? SAVE_FAILED_AFTER_SUBMIT : 'multisig.jobs.save_failed' });
@@ -1361,14 +1386,22 @@ app.post('/api/multisig/jobs/:id/merge-signed-xdr', (req, res) => withMultisigJo
       declinedSigners: dropDeclinesOfCollected(job.declinedSigners, collected),
     };
 
-    // Auto-submit when threshold reached
+    // Auto-submit when threshold reached. R-3: Write-ahead wie beim Anlegen: erst als submit_unclear mit
+    // der neuen Signatur speichern, dann senden, dann das Ergebnis schreiben. Scheitert das Speichern
+    // davor, wird nicht gesendet (merge_failed).
     if (requiredWeight > 0 && collectedWeight >= requiredWeight) {
+      const pending = { ...updated, status: SUBMIT_UNCLEAR_STATUS, submittedAt: new Date().toISOString(), submittedResult: null };
+      multisigDb.items = expireStalePendingJobs(multisigDb.items.map((j) => (j.id === job.id ? pending : j)));
+      if (!(await saveMultisigDb())) {
+        multisigDb.items = multisigDb.items.map((j) => (j.id === job.id ? job : j));
+        return res.status(500).json({ ok: false, error: 'multisig.jobs.merge_failed' });
+      }
       submitAttempted = true;
       // tx_bad_seq/tx_too_late werden obsolete_seq/expired, unklar wird submit_unclear (submitJobTx).
-      const outcome = await submitJobTx(current.tx, net, { mapLifecycleCodes: true });
-      updated.status = outcome.status;
-      updated.submittedAt = new Date().toISOString();
-      updated.submittedResult = outcome.submittedResult;
+      const sent = await submitJobTx(current.tx, net, { mapLifecycleCodes: true });
+      const outcome = await applySubmitOutcome(job.id, sent);
+      if (outcome.error) return res.status(500).json({ ok: false, error: outcome.error });
+      return res.json(withSanitizedSubmitResult(outcome.job));
     } else if (added === 0) {
       // No new signature added, keep status
       updated.status = job.status;

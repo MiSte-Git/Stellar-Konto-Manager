@@ -143,9 +143,21 @@ Ein Job ist eine unsignierte oder teilsignierte Transaktion, die mehrere Signer 
   `forbidden`. Der Timeout verhindert, dass ein hängendes Horizon den Job-Lock (Node) belegt.
 - **Speicherfehler und kaputtes JSON:** Schlägt das Schreiben der Jobdatei fehl, melden Anlegen, Merge, Ablehnen und
   Löschen in beiden Backends 500 und nie Erfolg (Node nimmt den Job dann auch wieder aus dem Speicher). Kaputtes JSON im
-  Body ergibt 400 `invalid_json` ohne Stacktrace und ohne Body-Inhalt. Scheitert das Speichern, nachdem beim Anlegen oder
-  Merge schon an Horizon gesendet wurde, lautet der Code `multisig.jobs.save_failed_after_submit` (500, beide Backends):
-  Die Transaktion kann im Netz sein, ein erneutes Senden wäre falsch; die UI weist darauf hin.
+  Body ergibt 400 `invalid_json` ohne Stacktrace und ohne Body-Inhalt. Sendet das Backend (Anlegen oder Merge erreicht
+  die Schwelle), speichert es den Job **vorher** als `submit_unclear` (Write-ahead, mit der neuen Signatur), sendet erst
+  danach und schreibt dann das Ergebnis, und zwar nur, wenn der Job noch `submit_unclear` ist (`applySubmitOutcome` in
+  `server.js` und `api/multisig.php`; Node hält dabei den Job-Lock, PHP gibt den Dateilock während des POST frei).
+  Scheitert das Speichern vor dem POST, wird nicht gesendet (500 `multisig.jobs.save_failed` bzw. `merge_failed`).
+  Scheitert es danach, lautet der Code `multisig.jobs.save_failed_after_submit` (500, beide Backends); der Job steht dann
+  als `submit_unclear` in der Datei und wird über die Klärung entschieden, nie erneut gesendet. Dasselbe gilt, wenn der
+  Prozess zwischen POST und Speichern stirbt. Vorher blieb in beiden Fällen der alte Stand (pending/ready) stehen, ein
+  weiterer Merge sendete erneut, und eine schon ausgeführte Transaktion konnte als `obsolete_seq` enden (Review
+  Fixrunde Opus, R-3). Damit sendet das Backend jede Transaktion eines Jobs höchstens einmal: Ein Job, der einmal
+  gesendet wurde, ist `submit_unclear` oder final, und beide nehmen keinen Merge mehr an. Die Abbildung
+  `tx_bad_seq`/`tx_too_late` auf `obsolete_seq`/`expired` beim Merge betrifft also nur das erste und einzige Senden; ein
+  Weg, der einen schon gesendeten Job ohne Hash-Abfrage `obsolete_seq` setzt, bleibt nicht. Offen bleibt nur ein Einreichen
+  außerhalb des Backends (ein Signer reicht das angezeigte XDR selbst ein): Dann zeigen Lesen und Merge `obsolete_seq`,
+  weil das Backend davon nichts weiß.
 - **Sendeergebnis (`submittedResult`):** Beide Backends speichern und liefern nur Fehlertext und `result_codes`
   (Ablehnung) bzw. Hash und Ledger (Erfolg), nie `envelope_xdr` oder `result_xdr` aus der Horizon-Antwort
   (`services/submitResult.js`, `api/submitResult.php`). Grund: Die Job-Liste ist ohne Token lesbar (G-Adresse reicht);

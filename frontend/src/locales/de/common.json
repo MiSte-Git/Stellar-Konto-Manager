@@ -1357,7 +1357,7 @@
   "multisig": {
     "jobs": {
       "create_failed": "Der Multisig-Job konnte nicht erstellt werden.",
-      "save_failed_after_submit": "Die Transaktion wurde möglicherweise gesendet, der Job konnte aber nicht gespeichert werden. Bitte den Status im Netz prüfen (zum Beispiel im Kontoverlauf) und die Transaktion nicht erneut senden."
+      "save_failed_after_submit": "Die Transaktion wurde möglicherweise gesendet, das Ergebnis konnte aber nicht gespeichert werden. Der Job steht auf „Sendestatus unklar“, SKM klärt den Ausgang beim nächsten Laden. Die Transaktion nicht erneut senden und den Auftrag nicht neu anlegen."
     }
   },
   "resolveOrValidatePublicKey": {
