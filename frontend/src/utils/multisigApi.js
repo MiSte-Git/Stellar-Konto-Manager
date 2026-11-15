@@ -1,6 +1,7 @@
 import { Buffer } from 'buffer';
 import { apiUrl } from './apiBase.js';
 import { backendErrorMessage } from './multisigErrors.js';
+import { submitReasonText } from './multisig/submitReason.js';
 import { keypairFromSecret, signChallengeMessage } from './signers/keyMaterial.js';
 
 function ensureOk(res) {
@@ -156,6 +157,9 @@ export async function createMultisigJobFromXdr({ network, accountId, txXdr }) {
     requiredWeight: Number(data?.requiredWeight || 0) || null,
     collectedSigners: Array.isArray(data?.collectedSigners) ? data.collectedSigners : [],
     accessToken: data?.accessToken || '',
+    // R-2: Status und Grund aus der Antwort (sendet das Backend beim Anlegen, steht hier der Ausgang).
+    status: typeof data?.status === 'string' ? data.status : '',
+    submitReason: submitReasonText(data?.submittedResult),
   };
 }
 

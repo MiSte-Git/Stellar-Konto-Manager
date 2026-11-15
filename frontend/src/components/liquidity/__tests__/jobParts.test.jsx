@@ -35,3 +35,21 @@ describe('LiquidityResultDialog - Schwelle aus den Operationen', () => {
     expect(screen.getByText(progress(2))).toBeInTheDocument();
   });
 });
+
+// R-2: Status aus der Backend-Antwort geht an den gemeinsamen Ergebnisdialog. Liquidity und Trading legen
+// Jobs ohne Signatur an, das Backend sendet dort also nicht; der Weg ist trotzdem derselbe.
+describe('LiquidityResultDialog - Status aus der Backend-Antwort (R-2)', () => {
+  beforeAll(async () => { await i18n.changeLanguage('de'); });
+
+  it('submit_unclear zeigt den Hinweis statt noch nicht gesendet', () => {
+    renderDialog({ status: 'submit_unclear', submitReason: 'Timeout' });
+    expect(screen.getByTestId('multisig-result-submit-unclear')).toBeInTheDocument();
+    expect(screen.queryByText(i18n.t('multisig:prepare.notSentHint'))).toBeNull();
+  });
+
+  it('ohne Status wie bisher', () => {
+    renderDialog({});
+    expect(screen.getByText(i18n.t('multisig:prepare.notSentHint'))).toBeInTheDocument();
+    expect(screen.queryByTestId('multisig-result-submit-unclear')).toBeNull();
+  });
+});

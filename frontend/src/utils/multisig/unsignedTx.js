@@ -44,6 +44,8 @@ export async function finishUnsignedTx({ mode, tx, network, accountId, items = [
     requiredWeight: job.requiredWeight,
     collectedSigners: job.collectedSigners || [],
     accessToken: job.accessToken || '',
+    status: job.status || '',
+    submitReason: job.submitReason || '',
     items,
   };
 }

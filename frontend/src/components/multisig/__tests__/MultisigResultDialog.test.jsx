@@ -162,3 +162,71 @@ describe('MultisigResultDialog', () => {
     expect(screen.getByTestId('multisig-result-sign-now')).not.toBeDisabled();
   });
 });
+
+// R-2 (review_fixrunde_opus.md): Hat das Backend beim Merge oder Anlegen gesendet, zeigt der Dialog
+// den Status aus der Antwort, nie "noch nicht gesendet" oder "kann jetzt gesendet werden".
+describe('MultisigResultDialog: Status nach dem Senden durch das Backend (R-2)', () => {
+  beforeAll(async () => { await i18n.changeLanguage('de'); });
+
+  const NOT_SENT = 'Multisig-Job wurde erstellt. Die Transaktion wurde noch nicht gesendet.';
+  const NOT_SENT_HINT = 'Diese Transaktion wurde noch nicht an das Netzwerk gesendet.';
+  const sentJob = (jobStatus, extra = {}) => ({
+    type: 'job',
+    jobId: 'job-s',
+    hash: 'f'.repeat(64),
+    signing: { required: 2, collected: 2, missingSigners: [], signedSigners: [{ publicKey: SIGNER, weight: 2 }] },
+    onSignNow: vi.fn(),
+    onOpenJob: vi.fn(),
+    jobStatus,
+    ...extra,
+  });
+  const expectNoNotSentTexts = () => {
+    expect(screen.queryByText(NOT_SENT)).toBeNull();
+    expect(screen.queryByText(NOT_SENT_HINT)).toBeNull();
+    expect(screen.queryByTestId('multisig-result-complete')).toBeNull();
+    expect(screen.queryByText(/kann jetzt gesendet werden/)).toBeNull();
+  };
+
+  it('submitted_success: gesendet mit Hash, kein Jetzt signieren, Zum Job bleibt', () => {
+    renderDialog(sentJob('submitted_success'));
+    expect(screen.getByTestId('multisig-result-submitted')).toHaveTextContent(i18n.t('multisig:job.statusHelp.submitted_success'));
+    expect(screen.getByText('f'.repeat(64))).toBeInTheDocument();
+    expectNoNotSentTexts();
+    expect(screen.queryByTestId('multisig-result-sign-now')).toBeNull();
+    expect(screen.getByRole('button', { name: 'Zum Job' })).toBeInTheDocument();
+  });
+
+  it('submitted_failed: Fehler mit Grund, kein Jetzt signieren', () => {
+    renderDialog(sentJob('submitted_failed', { submitReason: 'Transaction Failed' }));
+    expect(screen.getByTestId('multisig-result-submit-failed'))
+      .toHaveTextContent(i18n.t('multisig:detail.submitFailed', { reason: 'Transaction Failed' }));
+    expectNoNotSentTexts();
+    expect(screen.queryByTestId('multisig-result-sign-now')).toBeNull();
+  });
+
+  it('submit_unclear: Hinweis wie im Job-Detail mit Grund, kein Jetzt signieren, Zum Job bleibt', () => {
+    renderDialog(sentJob('submit_unclear', { submitReason: 'Timeout' }));
+    const box = screen.getByTestId('multisig-result-submit-unclear');
+    expect(box).toHaveTextContent(i18n.t('multisig:detail.submitUnclear.title'));
+    expect(box).toHaveTextContent(i18n.t('multisig:detail.submitUnclear.body'));
+    expect(box).toHaveTextContent(i18n.t('multisig:detail.submitUnclear.reason', { reason: 'Timeout' }));
+    expectNoNotSentTexts();
+    expect(screen.queryByTestId('multisig-result-sign-now')).toBeNull();
+    expect(screen.getByRole('button', { name: 'Zum Job' })).toBeInTheDocument();
+  });
+
+  it('pending_signatures: wie bisher (noch nicht gesendet, Jetzt signieren)', () => {
+    renderDialog({
+      type: 'job',
+      jobId: 'job-p',
+      signing: { required: 2, collected: 1, missingSigners: [{ publicKey: SIGNER, weight: 1 }] },
+      onSignNow: vi.fn(),
+      jobStatus: 'pending_signatures',
+    });
+    expect(screen.getByText(NOT_SENT)).toBeInTheDocument();
+    expect(screen.getByText(NOT_SENT_HINT)).toBeInTheDocument();
+    expect(screen.getByTestId('multisig-result-sign-now')).not.toBeDisabled();
+    expect(screen.queryByTestId('multisig-result-submit-unclear')).toBeNull();
+    expect(screen.queryByTestId('multisig-result-submitted')).toBeNull();
+  });
+});

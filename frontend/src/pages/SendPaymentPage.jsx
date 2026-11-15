@@ -17,6 +17,7 @@ import { backendErrorMessage } from '../utils/multisigErrors.js';
 import { jobTxXdr } from '../utils/multisig/verifyJobTransaction.js';
 import { BIDI_ISOLATE } from '../utils/bidiIsolate.js';
 import { JOB_INTEGRITY_ERROR, signAndMergeResultJob } from '../utils/multisig/signResultJob.js';
+import { submitReasonText } from '../utils/multisig/submitReason.js';
 import { getRequiredThreshold } from '../utils/getRequiredThreshold.js';
 import { useSettings } from '../utils/useSettings';
 import { buildExplorerUrl } from '../utils/stellar/accountUtils.js';
@@ -1480,6 +1481,9 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
             requiredWeight: Number(job?.requiredWeight || 0) || null,
             collectedSigners: Array.isArray(job?.collectedSigners) ? job.collectedSigners : collectedForJob,
             accessToken: job?.accessToken || '',
+            // R-2: Erreicht schon die Signatur beim Anlegen die Schwelle, sendet das Backend sofort.
+            status: job?.status || 'pending_signatures',
+            submitReason: submitReasonText(job?.submittedResult),
             // Lokal bekannte Werte, nicht aus der Backend-Antwort: Dagegen prueft "Jetzt signieren".
             expectedJob: { network: getNetworkConfig(netLabel).backendId, accountId: publicKey, txHash: hashHex },
           });
@@ -2859,6 +2863,8 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
             ? t('common:payment.send.networkChanged.jobOtherNetwork')
             : (resultDialog.type === 'job' && resultDialog.noNewSignature ? t('multisig:confirm.result.job.noNewSignature') : null)}
           activeSignerId={publicKey}
+          jobStatus={resultDialog.type === 'job' ? resultDialog.status : undefined}
+          submitReason={resultDialog.type === 'job' ? resultDialog.submitReason : undefined}
           onSignNow={resultDialog.type === 'job' && resultDialog.jobId && jobMatchesCurrentNetwork(resultDialog) ? () => {
             setLastResultDialog(resultDialog);
             setResultDialog(null);
@@ -2996,6 +3002,8 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                     accessToken: jobToSign.accessToken || '',
                     expectedJob: jobToSign.expectedJob,
                     noNewSignature,
+                    // R-2: Grund aus der Merge-Antwort (Ablehnung oder unklares Senden)
+                    submitReason: submitReasonText(merged?.submittedResult),
                   });
                   setSecretError('');
                   closeSecretModal();
@@ -3004,6 +3012,8 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                   let detail = mergeErr?.message || 'multisig.jobs.merge_failed';
                   if (mergeErr?.code === JOB_INTEGRITY_ERROR) detail = t('multisig:detail.integrity.title');
                   else if (detail === 'account_mismatch') detail = t('multisig:errors.accountMismatch');
+                  // R-2: Job mit unklarem Sendeergebnis nimmt keine Signatur an (409), Hinweis statt Code.
+                  else if (detail === 'submit_unclear') detail = t('multisig:detail.access.submitUnclear');
                   showErrorMessage(detail);
                 } finally {
                   setIsProcessing(false);

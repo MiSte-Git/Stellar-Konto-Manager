@@ -5,6 +5,7 @@ import { getPendingMultisigJob, mergeSignedXdr, getMultisigJobChallenge, signMul
 import MultisigJobStatusBadge from '../components/MultisigJobStatusBadge.jsx';
 import { Keypair, extractBaseAddress } from '@stellar/stellar-sdk';
 import { SESSION_LOCKED_EVENT, getSessionSecret, rememberSessionSecrets } from '../utils/sessionSecrets.js';
+import { submitReasonText } from '../utils/multisig/submitReason.js';
 import { takeMultisigJobToken } from '../components/multisig/multisigNavigation.js';
 import { describeOperations, findOperationWarnings, formatAsset } from '../utils/multisig/describeOperations.js';
 import OperationBlocks from '../components/multisig/OperationBlocks.jsx';
@@ -50,14 +51,6 @@ const INTEGRITY_ISSUE_TEXTS = {
   account_mismatch: 'multisig:detail.integrity.accountMismatch',
   fee_bump: 'multisig:detail.integrity.feeBump',
 };
-
-// Grund aus submittedResult.error: ein String (beide Backends seit F-3); Objekt = altes Node-Format.
-function submitReasonText(submittedResult) {
-  const err = submittedResult?.error;
-  if (!err) return '';
-  if (typeof err === 'string') return err;
-  return String(err.title || err.detail || err.message || 'submit_failed');
-}
 
 function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listStatus = '' }) {
   const { t, i18n } = useTranslation(['multisig', 'common']);

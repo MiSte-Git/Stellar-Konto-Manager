@@ -1641,12 +1641,17 @@ describe('Multisig-Job: Jetzt signieren und Netzwechsel (N1)', () => {
   let createCalls;
   let mergeCalls;
   let createGate;
+  // R-2: Antwort von Merge und Anlegen je Test einstellbar.
+  let mergeReply;
+  let createExtra;
 
   beforeEach(() => {
     jobCounter = 0;
     createCalls = [];
     mergeCalls = [];
     createGate = null;
+    mergeReply = { ok: true, body: { status: 'pending_signatures', collectedSigners: [] } };
+    createExtra = {};
     window.localStorage.setItem('SKM_NETWORK', 'PUBLIC');
     hoisted.loadAccountMock.mockImplementation(async (pk) => (
       pk === SENDER.publicKey ? makeTwoOfTwo(makeFundedAccount(pk)) : makeFundedAccount(pk)
@@ -1655,7 +1660,7 @@ describe('Multisig-Job: Jetzt signieren und Netzwechsel (N1)', () => {
       const u = String(url);
       if (u.includes('/merge-signed-xdr')) {
         mergeCalls.push(u);
-        return { ok: true, json: async () => ({ status: 'pending_signatures', collectedSigners: [] }) };
+        return { ok: mergeReply.ok, status: mergeReply.ok ? 200 : 409, json: async () => mergeReply.body };
       }
       if (u.includes('multisig/jobs') && init.method === 'POST') {
         const body = JSON.parse(init.body);
@@ -1664,7 +1669,7 @@ describe('Multisig-Job: Jetzt signieren und Netzwechsel (N1)', () => {
         jobCounter += 1;
         return {
           ok: true,
-          json: async () => ({ id: `job-${jobCounter}`, txXdrCurrent: body.txXdr, accessToken: 'tok', collectedSigners: [] }),
+          json: async () => ({ id: `job-${jobCounter}`, txXdrCurrent: body.txXdr, accessToken: 'tok', collectedSigners: [], ...createExtra }),
         };
       }
       return { ok: false, json: async () => ({}) };
@@ -1743,6 +1748,60 @@ describe('Multisig-Job: Jetzt signieren und Netzwechsel (N1)', () => {
     expect(screen.getByTestId('multisig-result-sign-notice').textContent)
       .toBe(i18n.t('common:payment.send.networkChanged.jobOtherNetwork'));
     expect(mergeCalls).toHaveLength(0);
+  });
+
+  // R-2: Erreicht der Merge die Schwelle, sendet das Backend. Der Dialog zeigt dann den Status aus der
+  // Antwort, nie "noch nicht gesendet" und keinen Knopf "Jetzt signieren".
+  const NOT_SENT = 'Multisig-Job wurde erstellt. Die Transaktion wurde noch nicht gesendet.';
+  const signedBoth = [{ publicKey: SENDER.publicKey, weight: 1 }, { publicKey: 'G' + 'B'.repeat(55), weight: 1 }];
+  const signNowWithReply = async (body) => {
+    mergeReply = { ok: true, body: { collectedSigners: signedBoth, requiredWeight: 2, ...body } };
+    await createFirstJobAndOpenSignNow();
+    await enterSecretAndSubmit();
+    await waitFor(() => expect(mergeCalls).toHaveLength(1));
+  };
+
+  it('R-2: Merge mit submit_unclear zeigt den Hinweis aus dem Job-Detail, nicht noch nicht gesendet', async () => {
+    await signNowWithReply({ status: 'submit_unclear', submittedResult: { error: 'Timeout', detail: { message: 'Timeout', extras: {} } } });
+    const box = await screen.findByTestId('multisig-result-submit-unclear');
+    expect(box).toHaveTextContent(i18n.t('multisig:detail.submitUnclear.title'));
+    expect(box).toHaveTextContent(i18n.t('multisig:detail.submitUnclear.reason', { reason: 'Timeout' }));
+    expect(screen.queryByText(NOT_SENT)).toBeNull();
+    expect(screen.queryByTestId('multisig-result-sign-now')).toBeNull();
+  });
+
+  it('R-2: Merge mit submitted_success zeigt gesendet mit Hash', async () => {
+    await signNowWithReply({ status: 'submitted_success', txHash: 'e'.repeat(64), submittedResult: { hash: 'e'.repeat(64), ledger: 7 } });
+    expect(await screen.findByTestId('multisig-result-submitted')).toHaveTextContent(i18n.t('multisig:job.statusHelp.submitted_success'));
+    expect(screen.getByText('e'.repeat(64))).toBeInTheDocument();
+    expect(screen.queryByText(NOT_SENT)).toBeNull();
+    expect(screen.queryByTestId('multisig-result-sign-now')).toBeNull();
+  });
+
+  it('R-2: Merge mit submitted_failed zeigt den Fehler mit Grund', async () => {
+    await signNowWithReply({ status: 'submitted_failed', submittedResult: { error: 'Transaction Failed', detail: { message: 'Transaction Failed', extras: {} } } });
+    expect(await screen.findByTestId('multisig-result-submit-failed'))
+      .toHaveTextContent(i18n.t('multisig:detail.submitFailed', { reason: 'Transaction Failed' }));
+    expect(screen.queryByText(NOT_SENT)).toBeNull();
+    expect(screen.queryByTestId('multisig-result-sign-now')).toBeNull();
+  });
+
+  it('R-2: Merge 409 submit_unclear ergibt den uebersetzten Hinweis statt des Codes', async () => {
+    mergeReply = { ok: false, body: { ok: false, error: 'submit_unclear' } };
+    await createFirstJobAndOpenSignNow();
+    await enterSecretAndSubmit();
+    await waitFor(() => expect(mergeCalls).toHaveLength(1));
+    expect(await screen.findByText(i18n.t('multisig:detail.access.submitUnclear'))).toBeInTheDocument();
+    expect(screen.queryByText('submit_unclear')).toBeNull();
+  });
+
+  it('R-2: Anlegen, bei dem das Backend sofort sendet (submit_unclear), zeigt den Hinweis', async () => {
+    createExtra = { status: 'submit_unclear', submittedResult: { error: 'submit_timeout', detail: { message: 'submit_timeout', extras: {} } } };
+    renderPage();
+    await fillAndChooseJob();
+    expect(await screen.findByTestId('multisig-result-submit-unclear')).toBeInTheDocument();
+    expect(screen.queryByText(NOT_SENT)).toBeNull();
+    expect(screen.queryByTestId('multisig-result-sign-now')).toBeNull();
   });
 
   it('Jetzt signieren im selben Netz signiert weiterhin den angezeigten Job', async () => {

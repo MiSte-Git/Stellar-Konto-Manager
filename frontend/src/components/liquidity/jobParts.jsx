@@ -77,6 +77,8 @@ export function LiquidityResultDialog({ type, result, account, operationType, on
       xdr={result.xdr}
       validUntil={result.validUntil}
       signing={signing}
+      jobStatus={type === 'job' ? result.status : undefined}
+      submitReason={type === 'job' ? result.submitReason : undefined}
       onClose={onClose}
       onOpenJob={type === 'job' && result.id ? () => {
         onClose();

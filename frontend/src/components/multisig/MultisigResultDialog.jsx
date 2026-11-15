@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { formatValidUntil } from '../../utils/multisig/formatValidUntil.js';
+import { BACKEND_SENT_STATUSES } from '../../utils/multisig/submitReason.js';
 
 const BTN_OUTLINE = 'px-3 py-1 rounded-sm border border-blue-200 text-blue-700 dark:border-blue-700 dark:text-blue-100 hover:bg-blue-50 dark:hover:bg-blue-900';
 const BTN_SMALL = 'px-2 py-1 rounded-sm border border-blue-200 text-blue-700 dark:border-blue-800 dark:text-blue-100 hover:bg-blue-50 dark:hover:bg-blue-900';
@@ -37,6 +38,8 @@ async function copyText(text, onDone) {
  *   notice?: React.ReactNode,            // Zusatzhinweis direkt unter dem Status
  *   explorerLinks?: {href:string, label:string}[],   // nur 'sent'
  *   copyDetailsText?: string,            // nur 'sent': Text fuer "Details kopieren"
+ *   jobStatus?: string,                  // nur 'job': Status aus der Backend-Antwort (Anlegen, Merge)
+ *   submitReason?: string,               // nur 'job': Grund aus submittedResult (Fehler, unklar)
  *   onClose: () => void, onBack?: () => void, onSignNow?: () => void, onOpenJob?: () => void,
  * }} props
  */
@@ -58,6 +61,8 @@ export default function MultisigResultDialog({
   onOpenJob,
   signNotice = null,
   activeSignerId = '',
+  jobStatus = '',
+  submitReason = '',
 }) {
   const { t, i18n } = useTranslation(['multisig', 'common']);
   const [copiedXdr, setCopiedXdr] = useState(false);
@@ -76,6 +81,12 @@ export default function MultisigResultDialog({
   const activeAlreadySigned = !!signing && !!activeSignerId
     && (signing.signedSigners || []).some((s) => s.publicKey === activeSignerId);
   const signNowDisabled = signingComplete || activeAlreadySigned;
+  // R-2: Hat das Backend beim Anlegen oder Merge schon gesendet, zeigt der Dialog den Ausgang. Dann nie
+  // "noch nicht gesendet" oder "kann jetzt gesendet werden" und kein "Jetzt signieren" (nichts mehr zu
+  // signieren; bei submit_unclear und Erfolg waere jeder neue Versuch falsch).
+  const status = String(jobStatus || '').toLowerCase();
+  const backendSent = type === 'job' && BACKEND_SENT_STATUSES.has(status);
+  const showSignNow = !!onSignNow && !backendSent;
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-55 overflow-y-auto p-4" role="dialog" aria-modal="true" data-testid="multisig-result-dialog">
@@ -110,11 +121,30 @@ export default function MultisigResultDialog({
         )}
         {type === 'job' && (
           <div className="text-sm text-blue-700 dark:text-blue-200 mb-3 space-y-1">
-            <div>{t('multisig:confirm.result.job.status')}</div>
+            {!backendSent && <div>{t('multisig:confirm.result.job.status')}</div>}
             {signing && signing.required > 0 && (
               <div data-testid="multisig-result-progress">
                 {t('multisig:confirm.result.job.progress', { collected: signing.collected, required: signing.required })}
               </div>
+            )}
+          </div>
+        )}
+        {backendSent && status === 'submitted_success' && (
+          <div className="border border-green-400 bg-green-50 dark:border-green-700 dark:bg-green-900/30 text-sm text-green-800 dark:text-green-100 rounded-sm p-3 mb-3" data-testid="multisig-result-submitted">
+            {t('multisig:job.statusHelp.submitted_success')}
+          </div>
+        )}
+        {backendSent && status === 'submitted_failed' && (
+          <div role="alert" className="border border-red-400 bg-red-50 dark:border-red-700 dark:bg-red-900/30 text-sm text-red-800 dark:text-red-200 rounded-sm p-3 mb-3" data-testid="multisig-result-submit-failed">
+            {submitReason ? t('multisig:detail.submitFailed', { reason: submitReason }) : t('multisig:job.statusHelp.submitted_failed')}
+          </div>
+        )}
+        {backendSent && status === 'submit_unclear' && (
+          <div role="alert" className="border border-orange-400 bg-orange-50 dark:border-orange-700 dark:bg-orange-900/30 text-sm text-orange-900 dark:text-orange-100 rounded-sm p-3 mb-3 space-y-1" data-testid="multisig-result-submit-unclear">
+            <div className="font-semibold">{t('multisig:detail.submitUnclear.title')}</div>
+            <p className="text-xs">{t('multisig:detail.submitUnclear.body')}</p>
+            {submitReason && (
+              <p className="text-xs opacity-80 break-all">{t('multisig:detail.submitUnclear.reason', { reason: submitReason })}</p>
             )}
           </div>
         )}
@@ -234,9 +264,9 @@ export default function MultisigResultDialog({
           </div>
         )}
 
-        {type === 'job' && (onSignNow || (onOpenJob && jobId)) && (
+        {type === 'job' && (showSignNow || (onOpenJob && jobId)) && (
           <div className="flex flex-wrap gap-2 mb-3">
-            {onSignNow && (
+            {showSignNow && (
               <button
                 type="button"
                 className={`${BTN_OUTLINE} disabled:opacity-50 disabled:cursor-not-allowed`}
@@ -258,13 +288,13 @@ export default function MultisigResultDialog({
           </div>
         )}
 
-        {type === 'job' && signNotice && (
+        {type === 'job' && signNotice && !backendSent && (
           <div className="mb-3 text-sm text-amber-700 dark:text-amber-300" data-testid="multisig-result-sign-notice">{signNotice}</div>
         )}
-        {type === 'job' && onSignNow && signingComplete && (
+        {type === 'job' && showSignNow && signingComplete && (
           <div className="mb-3 text-sm text-green-700 dark:text-green-300" data-testid="multisig-result-complete">{t('multisig:confirm.result.job.allCollected')}</div>
         )}
-        {type === 'job' && onSignNow && !signingComplete && activeAlreadySigned && (
+        {type === 'job' && showSignNow && !signingComplete && activeAlreadySigned && (
           <div className="mb-3 text-sm text-gray-700 dark:text-gray-300" data-testid="multisig-result-active-signed">
             {t('multisig:confirm.result.job.activeSigned', { signer: shortKey(activeSignerId) })}
           </div>
@@ -286,7 +316,7 @@ export default function MultisigResultDialog({
           </div>
         )}
 
-        {type === 'job' && (
+        {type === 'job' && !backendSent && (
           <div className="mt-3 text-sm space-y-1 text-amber-700 dark:text-amber-400">
             <p>{t('multisig:prepare.notSentHint')}</p>
             <p className="text-gray-700 dark:text-gray-300">{t('multisig:prepare.closeHint', 'Du kannst diesen Dialog schließen, sobald Du unterzeichnet hast und der Multisig-Auftrag erstellt wurde; der nächste Signer findet die Job-ID im Menü „Multisig-Jobs“.')}</p>
