@@ -11,7 +11,10 @@ const MAX_FETCH_RESPONSE_BYTES = 1_000_000; // 1 MiB - generous for JSON/TOML, b
 
 // F-7: Adressen werden binaer geprueft (inet_pton), nicht per filter_var-Flags. Vorher kamen 100.64.0.0/10,
 // 198.18.0.0/15, NAT64 (64:ff9b::/96) und IPv4-compatible (::7f00:1) durch. Gleiche Regeln wie
-// services/ssrfGuard.js, gemeinsame Faelle in test/assets/ssrf-addresses.json.
+// services/ssrfGuard.js, gemeinsame Faelle in test/assets/ssrf-addresses.json. IPv4-mapped und
+// IPv4-compatible gelten wie ihre IPv4-Adresse; weitere IPv6-Formen mit eingebetteter IPv4 sind ganz gesperrt:
+// NAT64 (64:ff9b::/96, 64:ff9b:1::/48), SIIT (::ffff:0:0:0/96), 6to4 (2002::/16) und Teredo (2001::/32), weil
+// ein Relay oder Uebersetzer sonst eine interne IPv4-Adresse erreichen koennte. 2001:db8::/32 bleibt erlaubt.
 
 // IPv4 (4 Bytes): nicht oeffentlich routbar oder auf den Server selbst. Dokumentationsnetze bleiben erlaubt.
 function skm_is_blocked_ipv4_bytes(string $b): bool {
@@ -46,11 +49,15 @@ function skm_is_blocked_address(string $ip): bool {
         if (substr($b, 12, 3) === "\0\0\0" && ord($b[15]) <= 1) return true;
         return skm_is_blocked_ipv4_bytes(substr($b, 12));
     }
+    // ::ffff:0:0:0/96 (SIIT): ganz gesperrt.
+    if (substr($b, 0, 8) === str_repeat("\0", 8) && substr($b, 8, 4) === "\xff\xff\x00\x00") return true;
     // 64:ff9b::/96 (NAT64) und 64:ff9b:1::/48 (lokales NAT64): ganz gesperrt.
     if (substr($b, 0, 4) === "\x00\x64\xff\x9b") {
         if (substr($b, 4, 8) === str_repeat("\0", 8)) return true;
         if (substr($b, 4, 2) === "\x00\x01") return true;
     }
+    if (substr($b, 0, 2) === "\x20\x02") return true;          // 2002::/16 (6to4)
+    if (substr($b, 0, 4) === "\x20\x01\x00\x00") return true;  // 2001::/32 (Teredo)
     $b0 = ord($b[0]);
     $b1 = ord($b[1]);
     if ($b0 === 0xfe && ($b1 & 0xc0) === 0x80) return true; // fe80::/10 Link-Local

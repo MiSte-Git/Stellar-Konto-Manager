@@ -5,6 +5,10 @@
 // F-7: Adressen werden binaer geprueft (net.isIP und die 4 bzw. 16 Bytes), nicht per Text. Vorher erkannte
 // die Textpruefung ::ffff:7f00:1 (so normalisiert new URL ::ffff:127.0.0.1) nicht als Loopback.
 // IPv4-mapped (::ffff:0:0/96) und IPv4-compatible (::/96 ausser :: und ::1) gelten wie ihre IPv4-Adresse.
+// Weitere IPv6-Formen mit eingebetteter IPv4 sind ganz gesperrt: NAT64 (64:ff9b::/96, 64:ff9b:1::/48), SIIT
+// (::ffff:0:0:0/96), 6to4 (2002::/16) und Teredo (2001::/32). Ein Relay oder Uebersetzer koennte sonst eine
+// interne IPv4-Adresse erreichen, und eine Einzelpruefung der eingebetteten Adresse lohnt sich fuer diese
+// seltenen Formen nicht. Das Dokumentationsnetz 2001:db8::/32 bleibt wie die IPv4-Dokunetze erlaubt.
 const dns = require('dns');
 const net = require('net');
 const { Agent } = require('undici');
@@ -75,11 +79,15 @@ function isBlockedAddress(ip) {
     if (b[12] === 0 && b[13] === 0 && b[14] === 0 && b[15] <= 1) return true;
     return isBlockedIPv4Bytes(b.subarray(12));
   }
+  // ::ffff:0:0:0/96 (SIIT, RFC 6145): ganz gesperrt.
+  if (zeroUpTo(8) && b[8] === 0xff && b[9] === 0xff && b[10] === 0 && b[11] === 0) return true;
   // 64:ff9b::/96 (NAT64, RFC 6052) und 64:ff9b:1::/48 (lokales NAT64, RFC 8215): ganz gesperrt.
   if (b[0] === 0x00 && b[1] === 0x64 && b[2] === 0xff && b[3] === 0x9b) {
     if (b.subarray(4, 12).every((x) => x === 0)) return true;
     if (b[4] === 0x00 && b[5] === 0x01) return true;
   }
+  if (b[0] === 0x20 && b[1] === 0x02) return true; // 2002::/16 (6to4)
+  if (b[0] === 0x20 && b[1] === 0x01 && b[2] === 0x00 && b[3] === 0x00) return true; // 2001::/32 (Teredo)
   if (b[0] === 0xfe && (b[1] & 0xc0) === 0x80) return true; // fe80::/10 Link-Local
   if (b[0] === 0xfe && (b[1] & 0xc0) === 0xc0) return true; // fec0::/10 Site-Local (veraltet)
   if ((b[0] & 0xfe) === 0xfc) return true; // fc00::/7 Unique-Local
