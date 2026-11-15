@@ -24,9 +24,10 @@
 // die Pruefung ueber Horizon ihn nach Ablauf jeder moeglichen Gueltigkeit freigeben kann.
 import { StrKey, hash as sha256 } from '@stellar/stellar-sdk';
 import {
-  BATCH_SENT_PREFIX, NOT_APPLIED_RETENTION_MS, containsSecretKey, listSentEntryKeys, notAppliedSince, readSentEntryByKey,
+  BATCH_SENT_PREFIX, NOT_APPLIED_RETENTION_MS, listSentEntryKeys, notAppliedSince, readSentEntryByKey,
   sanitizeSentEntry, writeSentEntryByKey,
 } from '../batchPayment/batchPaymentStore.js';
+import { containsSecretKey } from '../secretKeyDetection.js';
 import {
   AMBIGUOUS_LEDGER_BUFFER_SECONDS, AMBIGUOUS_STRICT_RECHECK_MS, lookupTransaction, pinnedSendAccount,
   resolveAmbiguousDetailed, settleAmbiguousEntry,

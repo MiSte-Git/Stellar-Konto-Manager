@@ -1,3 +1,8 @@
+// F-4 (Review Fable): Die Eingabe-Historie speichert keinen Secret Key. writeHistoryArray laesst solche
+// Eintraege weg, readHistoryArray filtert den Altbestand und schreibt die bereinigte Liste einmal zurueck.
+// Gilt fuer jeden Schluessel, ueber den diese beiden Funktionen laufen (alle TEXT_INPUT_HISTORY_KEYS).
+import { containsSecretKey } from './secretKeyDetection.js';
+
 export const RECENT_WALLETS_KEY = 'recentWallets';
 export const PAYMENT_RECIPIENT_HISTORY_KEY = 'stm.hist.recipients';
 export const PAYMENT_AMOUNT_HISTORY_KEY = 'stm.hist.amounts';
@@ -15,20 +20,41 @@ export function emitInputHistoryChanged(keys = TEXT_INPUT_HISTORY_KEYS) {
   window.dispatchEvent(new CustomEvent(INPUT_HISTORY_CHANGED_EVENT, { detail: { keys } }));
 }
 
+// Steckt in einem Eintrag ein Secret Key? Strings direkt, Objekte (recentWallets: { publicKey, ... }) ueber
+// ihre JSON-Form, damit jedes Feld zaehlt.
+export function historyEntryContainsSecret(entry) {
+  if (entry === null || entry === undefined) return false;
+  if (typeof entry === 'string' || typeof entry === 'number') return containsSecretKey(entry);
+  try {
+    return containsSecretKey(JSON.stringify(entry));
+  } catch {
+    return false;
+  }
+}
+
+const withoutSecrets = (list) => list.filter((entry) => !historyEntryContainsSecret(entry));
+
 export function readHistoryArray(key) {
   if (typeof window === 'undefined') return [];
+  let raw;
   try {
-    const raw = JSON.parse(window.localStorage.getItem(key) || '[]');
-    return Array.isArray(raw) ? raw : [];
+    raw = JSON.parse(window.localStorage.getItem(key) || '[]');
   } catch {
     return [];
   }
+  if (!Array.isArray(raw)) return [];
+  const clean = withoutSecrets(raw);
+  // Altbestand: bereinigte Liste einmal zurueckschreiben, still (kein Event, also keine Schleife ueber die
+  // Listener, die bei einem Event selbst neu lesen). Andere Tabs bekommen das storage-Event des Browsers,
+  // lesen neu und finden nichts mehr zum Bereinigen.
+  if (clean.length !== raw.length) writeHistoryArray(key, clean, { silent: true });
+  return clean;
 }
 
 export function writeHistoryArray(key, list, { silent = false } = {}) {
   if (typeof window === 'undefined') return;
   try {
-    window.localStorage.setItem(key, JSON.stringify(Array.isArray(list) ? list : []));
+    window.localStorage.setItem(key, JSON.stringify(withoutSecrets(Array.isArray(list) ? list : [])));
   } catch {
     /* noop */
   }

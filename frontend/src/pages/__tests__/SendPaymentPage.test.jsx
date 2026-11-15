@@ -166,6 +166,35 @@ beforeEach(() => {
   hoisted.submitTransactionSafelyMock.mockResolvedValue({ hash: 'deadbeefcafe' });
 });
 
+// F-4 (Review Fable): Ein ins Memo- oder Empfaengerfeld eingefuegter Secret Key landet weder in der
+// gespeicherten Historie noch in der Vorschlagsliste (pushHistory legt den Wert vorher in den State).
+describe('Eingabe-Historie ohne Secret Key (F-4)', () => {
+  const SECRET = Keypair.random().secret();
+  const suggestionTexts = () => Array.from(document.querySelectorAll('div.absolute button')).map((b) => b.textContent);
+
+  it('Memo: Secret Key wird beim Verlassen nicht gespeichert und nicht vorgeschlagen, ein normales Memo schon', async () => {
+    window.localStorage.removeItem('stm.hist.memos');
+    renderPage();
+    fireEvent.change(memoInput(), { target: { value: 'Miete Mai' } });
+    fireEvent.blur(memoInput());
+    fireEvent.change(memoInput(), { target: { value: SECRET.match(/.{1,4}/g).join(' ') } });
+    fireEvent.blur(memoInput());
+    expect(JSON.parse(window.localStorage.getItem('stm.hist.memos') || '[]')).toEqual(['Miete Mai']);
+    fireEvent.change(memoInput(), { target: { value: '' } });
+    fireEvent.focus(memoInput());
+    await waitFor(() => expect(suggestionTexts()).toContain('Miete Mai'));
+    expect(suggestionTexts().some((t) => t.replace(/\s/g, '').includes(SECRET.slice(0, 20)))).toBe(false);
+  });
+
+  it('Empfaenger: Secret Key wird beim Verlassen nicht gespeichert', async () => {
+    window.localStorage.removeItem('stm.hist.recipients');
+    renderPage();
+    fireEvent.change(destInput(), { target: { value: SECRET } });
+    fireEvent.blur(destInput());
+    expect(window.localStorage.getItem('stm.hist.recipients') || '[]').not.toContain(SECRET);
+  });
+});
+
 describe('federation memo autofill on recipient change (K1)', () => {
   it('autofills the memo from a federation lookup when the field is empty', async () => {
     renderPage();

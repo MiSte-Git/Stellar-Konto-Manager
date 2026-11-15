@@ -20,10 +20,11 @@ import { useTrustedWallets } from '../../utils/useTrustedWallets.js';
 import { useSettings } from '../../utils/useSettings';
 import { createWalletInfoMap, findWalletInfo } from '../../utils/walletInfo.js';
 import {
-  MAX_ROWS, MEMO_TYPES, containsSecretKey, createEmptyRow, isStorageWritable, loadBatchRows, looksLikeThousandsSeparator,
+  MAX_ROWS, MEMO_TYPES, createEmptyRow, isStorageWritable, loadBatchRows, looksLikeThousandsSeparator,
   listSentEntryKeys, normalizeAmount, pruneSentLog, readSentEntry, readSentEntryByKey, recentSendOf, saveBatchRows,
   sentEntryKey, writeSentEntry, writeSentEntryByKey,
 } from '../../utils/batchPayment/batchPaymentStore.js';
+import { containsSecretKey } from '../../utils/secretKeyDetection.js';
 import {
   AMBIGUOUS_LEDGER_BUFFER_SECONDS, ambiguousClearAt, assetDisplay, buildSignedRowTx,
   checkRowOnNetwork, checkSourceAccount, computeSourceTotals, describeSubmitError, findAnyTransaction,

@@ -12,7 +12,7 @@
 // Secret Keys werden nie gespeichert: Jeder Wert, in dem etwas wie ein Secret Key steckt
 // (auch mit Praefix, Suffix oder Leerzeichen), wird beim Speichern und Laden verworfen.
 import { StrKey, hash as sha256 } from '@stellar/stellar-sdk';
-import { isClassicAccount, isPaymentDestination } from '../stellar/addressType.js';
+import { containsSecretKey } from '../secretKeyDetection.js';
 
 export const BATCH_PAYMENT_STORAGE_KEY = 'skm_batch_payment_v1';
 export const BATCH_SENT_PREFIX = 'skm_batch_sent_v1:';
@@ -40,39 +40,9 @@ function newRowId() {
   return `r${Date.now().toString(36)}${idCounter.toString(36)}`;
 }
 
-// Steckt in dem Wert irgendwo ein Secret Key? Nach Unicode-Normalisierung (NFKC, z.B.
-// Vollbreite) und Grossschreibung werden gueltige G-/M-Adressen aus dem Text entfernt (auch mit
-// Zusatz wie "G... (Konto A)"), danach alle Zeichen ausser Base32 (A-Z, 2-7): Trennzeichen,
-// Satzzeichen, unsichtbare Zeichen und die Ziffern 0, 1, 8, 9. So wird auch ein Secret erkannt,
-// das durch Punkt, Bindestrich oder eingefuegte Zeichen getrennt ist (z. B. in einer Federation-
-// Adresse). Jeder Kandidat (S plus 55 Zeichen) wird mit Pruefsumme geprueft
-// (StrKey.isValidEd25519SecretSeed); das verhindert Fehlalarme bei langen Domains oder Texten
-// (Opus-Review S5, umgesetzt 14.11.2026).
-const PUBLIC_KEY_RE = /[GM][A-Z2-7]{55,68}/g;
-const SECRET_LENGTH = 56;
-
-function stripPublicKeys(text) {
-  return text.replace(PUBLIC_KEY_RE, (t) => {
-    if (isPaymentDestination(t)) return ' ';
-    // Laengerer Treffer (Adresse plus angehaengte Buchstaben): gueltige G-Adresse am Anfang?
-    const g = t.slice(0, 56);
-    return isClassicAccount(g) ? ` ${t.slice(56)}` : t;
-  });
-}
-
-function hasSecretPattern(text) {
-  const cleaned = stripPublicKeys(text.toUpperCase()).replace(/[^A-Z2-7]/g, '');
-  for (let i = cleaned.indexOf('S'); i !== -1 && i + SECRET_LENGTH <= cleaned.length; i = cleaned.indexOf('S', i + 1)) {
-    if (StrKey.isValidEd25519SecretSeed(cleaned.slice(i, i + SECRET_LENGTH))) return true;
-  }
-  return false;
-}
-
-export function containsSecretKey(value) {
-  const raw = String(value ?? '').normalize('NFKC');
-  if (!raw.trim()) return false;
-  return hasSecretPattern(raw);
-}
+// containsSecretKey liegt in utils/secretKeyDetection.js (F-4: auch fuer die Eingabe-Historie) und wird hier
+// fuer bestehende Aufrufer weitergereicht.
+export { containsSecretKey };
 
 function cleanField(value) {
   const s = typeof value === 'string' ? value : (value == null ? '' : String(value));

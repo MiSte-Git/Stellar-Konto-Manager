@@ -8,6 +8,7 @@ import {
   RECENT_WALLETS_KEY,
   clearHistoryKey,
   removeRecentWallet,
+  writeHistoryArray,
 } from './inputHistory.js';
 
 export function useRecentWalletOptions() {
@@ -15,7 +16,8 @@ export function useRecentWalletOptions() {
   const walletInfoMap = useMemo(() => createWalletInfoMap(wallets), [wallets]);
   const [recentWallets, setRecentWallets] = useState(() => loadRecentWalletsFromStorage());
   const persistRecent = useCallback((list) => {
-    try { localStorage.setItem('recentWallets', JSON.stringify(list)); } catch { /* noop */ }
+    // F-4: ueber writeHistoryArray (kein Eintrag mit Secret Key), still wie bisher.
+    writeHistoryArray(RECENT_WALLETS_KEY, list, { silent: true });
   }, []);
 
   useEffect(() => {

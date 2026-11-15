@@ -311,3 +311,41 @@ describe('Fee-Bump einer anderen Partei um unsere Transaktion (F6)', () => {
     expect(err.response.data.extras.result_codes.transaction).toBe('tx_failed');
   });
 });
+
+// F-10 (Review Fable): gleiche Regel wie die Backends (R-6). Ablehnung nur mit brauchbaren result_codes
+// (transaction oder inner_transaction als String oder mindestens ein String in operations); sonst ist jeder
+// Status ab 500 sowie 408, 429, Status 0 und keine Antwort unklar. Faelle aus der gemeinsamen Fixture
+// test/assets/submit-classification.json. Die 2xx-Faelle fallen weg: isAmbiguousSubmitError bewertet nur
+// Fehler, die submitTransaction wirft; eine 2xx-Antwort ist hier nie ein Fehler (das SDK gibt sie zurueck).
+describe('isAmbiguousSubmitError: gemeinsame Fixture mit den Backends (F-10)', async () => {
+  const fs = await import('node:fs');
+  const { cases } = JSON.parse(fs.readFileSync(new URL('../../../../../test/assets/submit-classification.json', import.meta.url), 'utf8'));
+  const errorCases = cases.filter((c) => !(typeof c.status === 'number' && c.status >= 200 && c.status < 300));
+  const errorFor = (c) => (c.status === null
+    ? new Error('socket hang up')
+    : Object.assign(new Error(`status ${c.status}`), { response: { status: c.status, data: c.data } }));
+
+  it('Fixture hat Fehlerfaelle', () => expect(errorCases.length).toBeGreaterThanOrEqual(20));
+
+  it.each(errorCases.map((c) => [c.name, c]))('%s', (_name, c) => {
+    expect(isAmbiguousSubmitError(errorFor(c))).toBe(c.unclear);
+  });
+
+  // Die Aenderung darf nur eindeutig zu unklar machen, nie umgekehrt: Wo die alte Regel unklar sagte,
+  // sagt die neue es auch. Alte Regel wortgleich (Stand vor F-10).
+  const oldRule = (err) => {
+    const extras = err?.response?.data?.extras;
+    if (extras?.result_codes) return false;
+    const status = err?.response?.status;
+    return !status || status === 408 || status === 429 || status === 500 || status === 502 || status === 503 || status === 504;
+  };
+  it('nie weniger unklar als vorher (kein Fall wechselt von unklar zu abgelehnt)', () => {
+    const more = [];
+    for (const c of errorCases) {
+      const err = errorFor(c);
+      if (oldRule(err)) expect(isAmbiguousSubmitError(err), c.name).toBe(true);
+      else if (isAmbiguousSubmitError(err)) more.push(c.name);
+    }
+    expect(more.length).toBeGreaterThan(0);
+  });
+});

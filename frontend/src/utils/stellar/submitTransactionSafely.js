@@ -11,11 +11,24 @@ import { feeBumpHashOf, recordMatchesHash } from '../submitGuard/ambiguousResolv
 import { isAccountRequiresMemoError } from './memoRequired.js';
 import { loadWithBackoff } from './retryLoad.js';
 
+// F-10 (Review Fable): gleiche Regel wie die Backends beim Senden eines Multisig-Jobs (R-6,
+// services/submitUnclear.js, api/submitUnclear.php, gemeinsame Faelle in test/assets/submit-classification.json).
+// Eine Ablehnung braucht brauchbare result_codes: transaction oder inner_transaction als String oder mindestens
+// ein String in operations. Ohne solche Codes ist jeder Status ab 500 sowie 408, 429, Status 0 und keine
+// Antwort unklar. Vorher galten nur 500, 502, 503 und 504 als unklar, und jedes result_codes-Objekt (auch {})
+// als Ablehnung: Ein Proxy-Fehler wie 520 gab das Konto frei, obwohl die Transaktion angekommen sein konnte.
+function hasUsableResultCodes(codes) {
+  if (!codes || typeof codes !== 'object' || Array.isArray(codes)) return false;
+  return typeof codes.transaction === 'string'
+    || typeof codes.inner_transaction === 'string'
+    || (Array.isArray(codes.operations) && codes.operations.some((c) => typeof c === 'string'));
+}
+
 export function isAmbiguousSubmitError(err) {
-  const extras = err?.response?.data?.extras;
-  if (extras?.result_codes) return false;
+  if (hasUsableResultCodes(err?.response?.data?.extras?.result_codes)) return false;
   const status = err?.response?.status;
-  return !status || status === 408 || status === 429 || status === 500 || status === 502 || status === 503 || status === 504;
+  if (typeof status !== 'number' || status === 0) return true;
+  return status === 408 || status === 429 || status >= 500;
 }
 
 // Kurze Beschreibung eines Fehlers fuer die Diagnose: Name, Meldung, HTTP-Status oder

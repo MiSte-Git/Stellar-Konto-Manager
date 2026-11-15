@@ -17,7 +17,7 @@
 //   die Werte von initial).
 // - Gesendete Zahlungen werden je Konto vermerkt, damit die Seite beim gleichen Konto
 //   mit gleichen Daten warnen kann (der Entwurf selbst bleibt fuer das naechste Konto).
-import { containsSecretKey } from './batchPayment/batchPaymentStore.js';
+import { containsSecretKey } from './secretKeyDetection.js';
 
 const SENT_MAX = 20;
 const SENT_WINDOW_MS = 20 * 60 * 60 * 1000;

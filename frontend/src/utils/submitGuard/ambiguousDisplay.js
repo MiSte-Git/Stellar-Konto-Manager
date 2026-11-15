@@ -1,6 +1,6 @@
 // Anzeige-Helfer fuer einen unklaren Sendestatus (gemeinsam fuer Sammelzahlung und
 // "Zahlung senden"): Zeiten, Zeitpunkt der automatischen Pruefung, Diagnose-Text.
-import { containsSecretKey } from '../batchPayment/batchPaymentStore.js';
+import { containsSecretKey } from '../secretKeyDetection.js';
 import { ambiguousClearAt } from './ambiguousResolve.js';
 
 export const AMBER_BOX_CLS = 'rounded-sm border border-amber-300 bg-amber-50 dark:border-amber-700 dark:bg-amber-900/30 px-2 py-1.5 text-sm font-medium text-amber-900 dark:text-amber-100';

@@ -36,6 +36,7 @@ import {
   removeHistoryValue,
   writeHistoryArray,
 } from '../utils/inputHistory.js';
+import { containsSecretKey } from '../utils/secretKeyDetection.js';
 import { AmbiguousSubmitResultError, PreSubmitCheckError, verifyMemoRequired } from '../utils/stellar/submitTransactionSafely.js';
 import { formatValidUntil } from '../utils/multisig/formatValidUntil.js';
 import { accountRequiresMemo, isAccountRequiresMemoError, isNotFoundError } from '../utils/stellar/memoRequired.js';
@@ -2036,6 +2037,8 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   const pushHistory = (key, val, setter, limit=15) => {
     try {
       const v = String(val||'').trim(); if (!v) return;
+      // F-4: Ein eingefuegter Secret Key kommt weder in die Vorschlagsliste (State) noch ins localStorage.
+      if (containsSecretKey(v)) return;
       setter(prev => {
         const next = [v, ...prev.filter(x => x !== v)].slice(0, limit);
         writeHistoryArray(key, next, { silent: true });

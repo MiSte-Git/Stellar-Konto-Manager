@@ -12,7 +12,8 @@ import { Asset, Keypair, Memo, MuxedAccount, Operation, StrKey, TransactionBuild
 import { Buffer } from 'buffer';
 import { resolveOrValidateAccount } from '../stellar/stellarUtils.js';
 import { accountRequiresMemo } from '../stellar/memoRequired.js';
-import { containsSecretKey, normalizeAmount } from './batchPaymentStore.js';
+import { normalizeAmount } from './batchPaymentStore.js';
+import { containsSecretKey } from '../secretKeyDetection.js';
 import { attachSignatures, toCollectedSigner } from '../signers/signTransaction.js';
 
 export const BATCH_SUBMIT_TIMEOUT_SECONDS = 180;

@@ -25,6 +25,7 @@ import {
   RECENT_WALLETS_KEY,
   clearHistoryKey,
   removeRecentWallet,
+  writeHistoryArray,
 } from './utils/inputHistory.js';
 import {
   buildPath,
@@ -380,7 +381,8 @@ function Main() {
  
    // Kürzlich verwendete Wallets aus localStorage laden
   const persistRecent = useCallback((list) => {
-    try { localStorage.setItem('recentWallets', JSON.stringify(list)); } catch { /* noop */ }
+    // F-4: ueber writeHistoryArray (kein Eintrag mit Secret Key), still wie bisher.
+    writeHistoryArray(RECENT_WALLETS_KEY, list, { silent: true });
   }, []);
 
   useEffect(() => {
