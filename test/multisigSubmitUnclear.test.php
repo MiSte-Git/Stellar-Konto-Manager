@@ -4,9 +4,10 @@
 // eine Ablehnung. Solange submit_unclear: Merge, Ablehnen und Loeschen 409, nie erneutes Senden, die
 // Live-Neuberechnung (summarizeJob) und expireStalePendingJobs lassen den Status stehen. Beim Lesen
 // (Liste, Detail) klaert das Backend ueber GET /transactions/{hash}, sobald die Sequence verbraucht
-// oder maxTime + 120 s vorbei ist, hoechstens 5 Klaerungen je Anfrage. Gefunden ist sofort endgueltig,
-// ein 404 erst nach maxTime + 120 s (nachhinkender Horizon-Knoten hinter dem Load Balancer).
-// Horizon ist ein lokaler Stub (POST /transactions und GET /transactions/{hash}, Verhalten aus Dateien),
+// oder maxTime laut Serveruhr vorbei ist, hoechstens 5 Klaerungen je Anfrage. Gefunden ist sofort
+// endgueltig, ein 404 erst, wenn Horizon einen Ledger mehr als 60 s nach maxTime meldet (R-1: GET /,
+// history_latest_ledger_closed_at, nicht die Serveruhr).
+// Horizon ist ein lokaler Stub (POST /transactions, GET /transactions/{hash}, GET /, Verhalten aus Dateien),
 // die URL steht nur in der Testkopie von api/stellarNetworks.php. Der Sende-Timeout ist in der
 // Testkopie von api/multisig.php auf 1 s gesetzt. Kontodaten aus vorbelegtem signers_cache_v2.json.
 // Pendant: test/multisigSubmitUnclear.test.js.
@@ -69,7 +70,8 @@ function waitFor(int $port): bool {
 $now = time();
 
 // --- Helfer direkt ---
-check('Helfer: Konstanten gleich wie Node', SUBMIT_UNCLEAR_GRACE_SECONDS === 120 && SUBMIT_UNCLEAR_MAX_RESOLVES_PER_REQUEST === 5);
+check('Helfer: Konstanten gleich wie Node', SUBMIT_UNCLEAR_MAX_RESOLVES_PER_REQUEST === 5 && SUBMIT_UNCLEAR_LEDGER_MARGIN_SECONDS === 60
+    && !defined('SUBMIT_UNCLEAR_GRACE_SECONDS'));
 check('Helfer: keine Antwort ist unklar', skm_submit_response_is_unclear(null, null) === true);
 foreach ([408, 429, 500, 502, 503, 504] as $code) {
     check("Helfer: {$code} ohne result_codes ist unklar", skm_submit_response_is_unclear($code, ['title' => 'Timeout']) === true);
@@ -80,10 +82,17 @@ check('Helfer: 400 ohne result_codes bleibt Ablehnung', skm_submit_response_is_u
 check('Helfer: 2xx ohne Hash ist unklar', skm_submit_response_is_unclear(200, ['successful' => true]) === true && skm_submit_response_is_unclear(200, null) === true);
 check('Helfer: 2xx mit Hash ist nicht unklar', skm_submit_response_is_unclear(200, ['hash' => 'abc']) === false);
 check('Helfer: faellig bei verbrauchter Sequence', skm_unclear_resolve_due(true, $now + 3600, $now) === true);
-check('Helfer: faellig nach maxTime + 121 s', skm_unclear_resolve_due(false, $now - 121, $now) === true);
-check('Helfer: nicht faellig genau an der Karenzgrenze', skm_unclear_resolve_due(false, $now - 120, $now) === false);
+check('Helfer: faellig nach maxTime (Serveruhr, ohne Karenz)', skm_unclear_resolve_due(false, $now - 1, $now) === true);
+check('Helfer: nicht faellig genau bei maxTime', skm_unclear_resolve_due(false, $now, $now) === false);
 check('Helfer: nicht faellig ohne maxTime', skm_unclear_resolve_due(false, 0, $now) === false);
-check('Helfer: Zeit vorbei erst nach maxTime + 120 s', skm_unclear_time_passed($now - 121, $now) && !skm_unclear_time_passed($now - 120, $now) && !skm_unclear_time_passed(0, $now));
+check('Helfer R-1: Ledger-Zeit lesen', skm_parse_ledger_closed_at('2026-11-15T10:00:00Z') === gmmktime(10, 0, 0, 11, 15, 2026));
+$badLedger = true;
+foreach ([null, '', 'gestern', 12345, '2026-13-40T99:00:00Z', '2026-02-30T10:00:00Z', '2026-11-15T10:00:00+01:00', '2026-11-15 10:00:00Z'] as $bad) $badLedger = $badLedger && skm_parse_ledger_closed_at($bad) === null;
+check('Helfer R-1: unlesbare Ledger-Zeit ergibt null', $badLedger);
+check('Helfer R-1: endgueltig erst mit Ledger mehr als 60 s nach maxTime',
+    skm_ledger_past_max_time($now, $now + 61) && !skm_ledger_past_max_time($now, $now + 60) && !skm_ledger_past_max_time($now, $now + 5)
+    && !skm_ledger_past_max_time($now, $now) && !skm_ledger_past_max_time($now, $now - 600)
+    && !skm_ledger_past_max_time($now, null) && !skm_ledger_past_max_time(0, $now));
 check('Helfer: Sequence verbraucht (Konto >= Tx)', skm_sequence_consumed(new BigInteger(101), '101') && skm_sequence_consumed(new BigInteger(101), '200')
     && !skm_sequence_consumed(new BigInteger(101), '100') && !skm_sequence_consumed(new BigInteger(101), null));
 check('Helfer: gefunden und erfolgreich -> submitted_success (sofort, auch vor Ablauf)',
@@ -93,7 +102,7 @@ check('Helfer: gefunden und nicht erfolgreich -> submitted_failed mit Fehlertext
     ($failedOutcome['status'] ?? '') === 'submitted_failed' && is_string($failedOutcome['submittedResult']['error'] ?? null));
 check('Helfer: 404 nach Ablauf und verbraucht -> obsolete_seq', skm_unclear_outcome(['kind' => 'not_found'], true, true) === ['status' => 'obsolete_seq']);
 check('Helfer: 404 nach Ablauf und nicht verbraucht -> expired', skm_unclear_outcome(['kind' => 'not_found'], false, true) === ['status' => 'expired']);
-check('Helfer: Sequence verbraucht, 404 vor maxTime + Karenz -> null (wie Node)', skm_unclear_outcome(['kind' => 'not_found'], true, false) === null);
+check('Helfer: Sequence verbraucht, 404, Ledger nicht nach maxTime -> null (wie Node)', skm_unclear_outcome(['kind' => 'not_found'], true, false) === null);
 check('Helfer: 404 vor Ablauf, nicht verbraucht -> null', skm_unclear_outcome(['kind' => 'not_found'], false, false) === null);
 check('Helfer: sonstiger Fehler -> null', skm_unclear_outcome(['kind' => 'error'], true, true) === null);
 check('Helfer: ohne successful -> null', skm_unclear_outcome(['kind' => 'found', 'hash' => 'h'], true, true) === null);
@@ -129,7 +138,7 @@ function job(string $id, KeyPair $owner, Transaction $tx, int $maxTime, array $e
 }
 
 $acc = [];
-foreach (['merge', 'locked', 'b', 'resSuccess', 'resFailed', 'resObsolete', 'resExpired', 'resError', 'notDue', 'early404', 'many', 'c1', 'c2', 'c3', 'c4', 'c5'] as $k) $acc[$k] = KeyPair::random();
+foreach (['merge', 'locked', 'b', 'resSuccess', 'resFailed', 'resObsolete', 'resExpired', 'resError', 'notDue', 'early404', 'many', 'lagExpired', 'lagObsolete', 'rootError', 'c1', 'c2', 'c3', 'c4', 'c5'] as $k) $acc[$k] = KeyPair::random();
 $future = $now + 3600;
 $mergeTx = buildTx($acc['merge'], $future, false);
 $mergeUnsigned = $mergeTx->toEnvelopeXdrBase64();
@@ -142,15 +151,20 @@ $lockedSignedAgain = $lockedTx->toEnvelopeXdrBase64();
 $txs = [
     'resSuccess' => buildTx($acc['resSuccess'], $future, true),
     'resFailed' => buildTx($acc['resFailed'], $future, true),
-    'resObsolete' => buildTx($acc['resObsolete'], $now - SUBMIT_UNCLEAR_GRACE_SECONDS - 80, true),
+    'resObsolete' => buildTx($acc['resObsolete'], $now - 200, true),
     // Sequence verbraucht, Zeitfenster offen, Horizon meldet 404 (nachhinkender Knoten): bleibt unklar.
     'early404' => buildTx($acc['early404'], $future, true),
-    'resExpired' => buildTx($acc['resExpired'], $now - SUBMIT_UNCLEAR_GRACE_SECONDS - 80, true),
+    'resExpired' => buildTx($acc['resExpired'], $now - 200, true),
     'resError' => buildTx($acc['resError'], $future, true),
-    'notDue' => buildTx($acc['notDue'], $now - 30, true),
+    // Sequence nicht verbraucht, maxTime laut Serveruhr noch nicht erreicht: keine Abfrage.
+    'notDue' => buildTx($acc['notDue'], $now + 600, true),
+    // R-1: Serveruhr weit nach maxTime, Horizon-Ledger je nach Pruefung davor oder danach.
+    'lagExpired' => buildTx($acc['lagExpired'], $now - 3600, true),
+    'lagObsolete' => buildTx($acc['lagObsolete'], $now - 3600, true),
+    'rootError' => buildTx($acc['rootError'], $now - 3600, true),
 ];
 $manyTxs = [];
-for ($i = 0; $i < 6; $i++) $manyTxs[] = buildTx($acc['many'], $now - SUBMIT_UNCLEAR_GRACE_SECONDS - 80, true);
+for ($i = 0; $i < 6; $i++) $manyTxs[] = buildTx($acc['many'], $now - 200, true);
 
 $items = [
     array_merge(job('merge-job', $acc['merge'], $mergeTx, $future, ['status' => 'pending_signatures', 'submittedAt' => null, 'submittedResult' => null]),
@@ -161,13 +175,16 @@ $items = [
     ]), ['txXdrOriginal' => $lockedXdr, 'txXdrCurrent' => $lockedXdr]),
     job('res-success', $acc['resSuccess'], $txs['resSuccess'], $future),
     job('res-failed', $acc['resFailed'], $txs['resFailed'], $future),
-    job('res-obsolete', $acc['resObsolete'], $txs['resObsolete'], $now - SUBMIT_UNCLEAR_GRACE_SECONDS - 80),
+    job('res-obsolete', $acc['resObsolete'], $txs['resObsolete'], $now - 200),
     job('early-404', $acc['early404'], $txs['early404'], $future),
-    job('res-expired', $acc['resExpired'], $txs['resExpired'], $now - SUBMIT_UNCLEAR_GRACE_SECONDS - 80),
+    job('res-expired', $acc['resExpired'], $txs['resExpired'], $now - 200),
     job('res-error', $acc['resError'], $txs['resError'], $future),
-    job('not-due', $acc['notDue'], $txs['notDue'], $now - 30),
+    job('not-due', $acc['notDue'], $txs['notDue'], $now + 600),
+    job('lag-expired', $acc['lagExpired'], $txs['lagExpired'], $now - 3600),
+    job('lag-obsolete', $acc['lagObsolete'], $txs['lagObsolete'], $now - 3600),
+    job('root-error', $acc['rootError'], $txs['rootError'], $now - 3600),
 ];
-foreach ($manyTxs as $i => $t) $items[] = job("many-{$i}", $acc['many'], $t, $now - SUBMIT_UNCLEAR_GRACE_SECONDS - 80);
+foreach ($manyTxs as $i => $t) $items[] = job("many-{$i}", $acc['many'], $t, $now - 200);
 
 $t1 = ['low' => 1, 'med' => 1, 'high' => 1];
 $entry = fn(array $signers, string $seq) => ['data' => ['ok' => true, 'signers' => $signers, 'thresholds' => $t1, 'sequence' => $seq], 'fetchedAt' => time() + 3600];
@@ -180,6 +197,9 @@ $cache = [
     'testnet:' . $acc['resExpired']->getAccountId() => $entry([sig($acc['resExpired'])], '100'),
     'testnet:' . $acc['resError']->getAccountId() => $entry([sig($acc['resError'])], '101'),
     'testnet:' . $acc['notDue']->getAccountId() => $entry([sig($acc['notDue'])], '100'),
+    'testnet:' . $acc['lagExpired']->getAccountId() => $entry([sig($acc['lagExpired'])], '100'),
+    'testnet:' . $acc['lagObsolete']->getAccountId() => $entry([sig($acc['lagObsolete'])], '101'),
+    'testnet:' . $acc['rootError']->getAccountId() => $entry([sig($acc['rootError'])], '100'),
     'testnet:' . $acc['early404']->getAccountId() => $entry([sig($acc['early404'])], '101'),
     'testnet:' . $acc['many']->getAccountId() => $entry([sig($acc['many'])], '101'),
 ];
@@ -226,10 +246,21 @@ if (preg_match('#^/transactions/([0-9a-f]{64})$#', (string)$path, $m)) {
     echo json_encode(['id' => $m[1], 'hash' => $m[1], 'successful' => $rec['successful'], 'ledger' => $rec['ledger']]);
     return;
 }
+if ($path === '/') {
+    file_put_contents($side . '/root.log', "root\n", FILE_APPEND);
+    $spec = json_decode((string)file_get_contents($side . '/root.json'), true);
+    if (isset($spec['status'])) { http_response_code((int)$spec['status']); echo '{}'; return; }
+    echo json_encode($spec);
+    return;
+}
 http_response_code(404);
 echo '{}';
 PHP);
 $setSubmit = fn(array $spec) => file_put_contents($sideDir . '/submit.json', json_encode($spec));
+// R-1: Ledger-Zeit von Horizon (GET /), je Pruefung einstellbar. Standard: Ledger bis jetzt aufgenommen.
+$iso = fn(int $unix) => gmdate('Y-m-d\TH:i:s\Z', $unix);
+$setRoot = fn(array $spec) => file_put_contents($sideDir . '/root.json', json_encode($spec ?: new \stdClass()));
+$setRoot(['history_latest_ledger_closed_at' => $iso($now)]);
 $setSubmit(['status' => 200, 'body' => ['hash' => 'x']]);
 file_put_contents($sideDir . '/txs.json', json_encode([
     hashOf($txs['resSuccess']) => ['successful' => true, 'ledger' => 4242],
@@ -333,8 +364,8 @@ try {
     check('Statusfilter submit_unclear', array_column($f['body'], 'id') === ['locked']);
 
     $l = $list($acc['notDue']);
-    check('Innerhalb der Karenz nach maxTime: bleibt submit_unclear', ($byId($l['body'], 'not-due')['status'] ?? '') === 'submit_unclear');
-    check('Innerhalb der Karenz: keine Klaerung, gespeichert unveraendert',
+    check('Vor maxTime (Serveruhr) und Sequence frei: bleibt submit_unclear', ($byId($l['body'], 'not-due')['status'] ?? '') === 'submit_unclear');
+    check('Vor maxTime: keine Klaerung, gespeichert unveraendert',
         $lookups(hashOf($txs['notDue'])) === 0 && ($stored('not-due')['status'] ?? '') === 'submit_unclear');
 
     // --- Klaerung ---
@@ -357,20 +388,20 @@ try {
     check('Klaerung submitted_failed: nur einmal abgefragt', $lookups(hashOf($txs['resFailed'])) === 1);
 
     $l = $list($acc['early404']);
-    check('Klaerung: Sequence verbraucht, 404 vor maxTime + Karenz -> bleibt submit_unclear (Liste)', ($byId($l['body'], 'early-404')['status'] ?? '') === 'submit_unclear');
-    check('Klaerung: Sequence verbraucht, 404 vor maxTime + Karenz -> bleibt submit_unclear (Detail)', ($detail('early-404')['body']['status'] ?? '') === 'submit_unclear');
-    check('Klaerung: 404 vor maxTime + Karenz wird nicht gespeichert',
+    check('Klaerung: Sequence verbraucht, 404, Ledger vor maxTime -> bleibt submit_unclear (Liste)', ($byId($l['body'], 'early-404')['status'] ?? '') === 'submit_unclear');
+    check('Klaerung: Sequence verbraucht, 404, Ledger vor maxTime -> bleibt submit_unclear (Detail)', ($detail('early-404')['body']['status'] ?? '') === 'submit_unclear');
+    check('Klaerung: 404, Ledger vor maxTime wird nicht gespeichert',
         ($stored('early-404')['status'] ?? '') === 'submit_unclear' && !isset($stored('early-404')['resolvedAt']));
-    check('Klaerung: 404 vor maxTime + Karenz, jede Lese-Anfrage fragt erneut', $lookups(hashOf($txs['early404'])) === 2);
+    check('Klaerung: 404, Ledger vor maxTime, jede Lese-Anfrage fragt erneut', $lookups(hashOf($txs['early404'])) === 2);
 
     $l = $list($acc['resObsolete']);
-    check('Klaerung: 404 und Sequence verbraucht nach maxTime + Karenz -> obsolete_seq',
+    check('Klaerung: 404 und Sequence verbraucht, Ledger nach maxTime -> obsolete_seq',
         ($byId($l['body'], 'res-obsolete')['status'] ?? '') === 'obsolete_seq' && ($stored('res-obsolete')['status'] ?? '') === 'obsolete_seq');
     $detail('res-obsolete');
     check('Klaerung obsolete_seq: nur einmal abgefragt', $lookups(hashOf($txs['resObsolete'])) === 1);
 
     $l = $list($acc['resExpired']);
-    check('Klaerung: 404, nicht verbraucht, maxTime + Karenz vorbei -> expired',
+    check('Klaerung: 404, nicht verbraucht, Ledger nach maxTime -> expired',
         ($byId($l['body'], 'res-expired')['status'] ?? '') === 'expired' && ($stored('res-expired')['status'] ?? '') === 'expired');
     $list($acc['resExpired']);
     check('Klaerung expired: nur einmal abgefragt', $lookups(hashOf($txs['resExpired'])) === 1);
@@ -380,10 +411,45 @@ try {
         ($byId($l['body'], 'res-error')['status'] ?? '') === 'submit_unclear' && ($stored('res-error')['status'] ?? '') === 'submit_unclear');
     check('Klaerung sonstiger Fehler: einmal abgefragt', $lookups(hashOf($txs['resError'])) === 1);
 
+    // --- R-1: Ledger-Zeit statt Serveruhr ---
+    $rootCalls = fn() => count($lines('root.log'));
+    $setRoot(['history_latest_ledger_closed_at' => $iso($now - 7200)]);
+    foreach ([['lagExpired', 'lag-expired'], ['lagObsolete', 'lag-obsolete']] as [$k, $id]) {
+        $l = $list($acc[$k]);
+        check("R-1: Serveruhr weit nach maxTime, Horizon-Ledger davor -> bleibt submit_unclear ({$id})",
+            ($byId($l['body'], $id)['status'] ?? '') === 'submit_unclear' && ($stored($id)['status'] ?? '') === 'submit_unclear'
+            && !isset($stored($id)['resolvedAt']));
+    }
+    $setRoot(['history_latest_ledger_closed_at' => $iso($now - 3600 + 5)]);
+    $l = $list($acc['lagExpired']);
+    check('R-1: Horizon-Ledger 5 s nach maxTime (innerhalb der Marge) -> bleibt submit_unclear',
+        ($byId($l['body'], 'lag-expired')['status'] ?? '') === 'submit_unclear' && ($stored('lag-expired')['status'] ?? '') === 'submit_unclear'
+        && ($detail('lag-obsolete')['body']['status'] ?? '') === 'submit_unclear' && ($stored('lag-obsolete')['status'] ?? '') === 'submit_unclear');
+    $setRoot(['history_latest_ledger_closed_at' => $iso($now - 3600 + 61)]);
+    $l = $list($acc['lagExpired']);
+    check('R-1: Horizon-Ledger 61 s nach maxTime -> expired',
+        ($byId($l['body'], 'lag-expired')['status'] ?? '') === 'expired' && ($stored('lag-expired')['status'] ?? '') === 'expired');
+    check('R-1: Horizon-Ledger 61 s nach maxTime, Sequence verbraucht -> obsolete_seq (Detail)',
+        ($detail('lag-obsolete')['body']['status'] ?? '') === 'obsolete_seq' && ($stored('lag-obsolete')['status'] ?? '') === 'obsolete_seq');
+    foreach ([['history_latest_ledger_closed_at' => $iso($now - 3600)], [], ['history_latest_ledger_closed_at' => 'kaputt'], ['status' => 503]] as $spec) {
+        $setRoot($spec);
+        $l = $list($acc['rootError']);
+        check('R-1: Ledger genau bei maxTime, ohne, kaputte Ledger-Zeit oder Root-Fehler -> bleibt unklar ' . json_encode($spec),
+            ($byId($l['body'], 'root-error')['status'] ?? '') === 'submit_unclear' && ($stored('root-error')['status'] ?? '') === 'submit_unclear');
+    }
+    $setRoot(['history_latest_ledger_closed_at' => $iso($now)]);
+    $before = $rootCalls();
+    $list($acc['notDue']);
+    check('R-1: nicht faellig, keine Root-Abfrage', $rootCalls() === $before);
+    $list($acc['early404']);
+    check('R-1: faellig mit 404, eine Root-Abfrage', $rootCalls() === $before + 1);
+
     $manyHashes = array_map('hashOf', $manyTxs);
     $countMany = fn() => count(array_filter($lines('tx.log'), fn($l) => in_array($l, $manyHashes, true)));
+    $rootBefore = $rootCalls();
     $first = $list($acc['many']);
     check('Grenze: hoechstens 5 Klaerungen je Anfrage', $countMany() === 5);
+    check('Grenze: fuenf 404, eine Root-Abfrage je Anfrage', $rootCalls() === $rootBefore + 1);
     check('Grenze: 5 geklaert, 1 bleibt unklar',
         count(array_filter($first['body'], fn($j) => ($j['status'] ?? '') === 'obsolete_seq')) === 5
         && count(array_filter($first['body'], fn($j) => ($j['status'] ?? '') === 'submit_unclear')) === 1);

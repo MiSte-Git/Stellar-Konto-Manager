@@ -2,10 +2,11 @@
 // Antwort, Timeout, 408, 429, >= 500 ohne result_codes oder 2xx ohne Hash. Mit result_codes bleibt es
 // eine Ablehnung. Solange submit_unclear: Merge, Ablehnen und Loeschen 409, nie erneutes Senden, die
 // Live-Neuberechnung und expireStalePendingJobs lassen den Status stehen. Beim Lesen (Liste, Detail)
-// klaert das Backend ueber GET /transactions/{hash}, sobald die Sequence verbraucht oder maxTime + 120 s
-// vorbei ist, hoechstens 5 Klaerungen je Anfrage. Gefunden ist sofort endgueltig, ein 404 erst nach
-// maxTime + 120 s (nachhinkender Horizon-Knoten hinter dem Load Balancer). Horizon per test/helpers/horizonAccountsMock.js
-// (SKM_TEST_SUBMIT_FILE, SKM_TEST_HORIZON_TXS). Pendant: test/multisigSubmitUnclear.test.php.
+// klaert das Backend ueber GET /transactions/{hash}, sobald die Sequence verbraucht oder maxTime
+// vorbei ist (Serveruhr, nur fuer "faellig"), hoechstens 5 Klaerungen je Anfrage. Gefunden ist sofort
+// endgueltig, ein 404 erst, wenn Horizon einen Ledger mehr als 60 s nach maxTime meldet (R-1: Ledger-Zeit aus GET /,
+// history_latest_ledger_closed_at, nicht die Serveruhr). Horizon per test/helpers/horizonAccountsMock.js
+// (SKM_TEST_SUBMIT_FILE, SKM_TEST_HORIZON_TXS, SKM_TEST_HORIZON_ROOT). Pendant: test/multisigSubmitUnclear.test.php.
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { spawn } = require('child_process');
@@ -14,8 +15,8 @@ const os = require('os');
 const path = require('path');
 const { Account, Asset, Keypair, Networks, Operation, TransactionBuilder } = require('@stellar/stellar-sdk');
 const {
-  isUnclearSubmitError, isUnclearSubmitSuccess, isUnclearResolveDue, isUnclearTimePassed, unclearOutcome,
-  SUBMIT_UNCLEAR_GRACE_SECONDS, SUBMIT_UNCLEAR_MAX_RESOLVES_PER_REQUEST,
+  isUnclearSubmitError, isUnclearSubmitSuccess, isUnclearResolveDue, isLedgerPastMaxTime, parseLedgerClosedAt, unclearOutcome,
+  SUBMIT_UNCLEAR_MAX_RESOLVES_PER_REQUEST, SUBMIT_UNCLEAR_LEDGER_MARGIN_SECONDS,
 } = require('../services/submitUnclear');
 const { expireStalePendingJobs } = require('../services/multisigJobsGuard');
 
@@ -27,7 +28,7 @@ const kp = () => Keypair.random();
 // Konten je Szenario, damit der 30-s-Cache der Kontodaten nicht zwischen Szenarien wirkt.
 const acc = {
   merge: kp(), locked: kp(), b: kp(),
-  resSuccess: kp(), resFailed: kp(), resObsolete: kp(), resExpired: kp(), resError: kp(), notDue: kp(), early404: kp(),
+  resSuccess: kp(), resFailed: kp(), resObsolete: kp(), resExpired: kp(), resError: kp(), notDue: kp(), early404: kp(), lagExpired: kp(), lagObsolete: kp(), rootError: kp(),
   many: kp(),
 };
 
@@ -68,15 +69,19 @@ lockedSignedAgain.sign(acc.b);
 const tx = {
   resSuccess: buildTx(acc.resSuccess, { sign: true }),
   resFailed: buildTx(acc.resFailed, { sign: true }),
-  resObsolete: buildTx(acc.resObsolete, { maxTime: NOW - SUBMIT_UNCLEAR_GRACE_SECONDS - 80, sign: true }),
+  resObsolete: buildTx(acc.resObsolete, { maxTime: NOW - 200, sign: true }),
   // Sequence verbraucht, Zeitfenster offen, Horizon meldet 404 (nachhinkender Knoten): bleibt unklar.
   early404: buildTx(acc.early404, { sign: true }),
-  resExpired: buildTx(acc.resExpired, { maxTime: NOW - SUBMIT_UNCLEAR_GRACE_SECONDS - 80, sign: true }),
+  resExpired: buildTx(acc.resExpired, { maxTime: NOW - 200, sign: true }),
   resError: buildTx(acc.resError, { sign: true }),
-  // maxTime vorbei, aber innerhalb der Karenz: die Lebenszyklus-Rechnung ergaebe expired.
-  notDue: buildTx(acc.notDue, { maxTime: NOW - 30, sign: true }),
+  // Sequence nicht verbraucht, maxTime laut Serveruhr noch nicht erreicht: keine Abfrage.
+  notDue: buildTx(acc.notDue, { maxTime: NOW + 600, sign: true }),
+  // R-1: Serveruhr weit nach maxTime, Horizon-Ledger je nach Test davor oder danach.
+  lagExpired: buildTx(acc.lagExpired, { maxTime: NOW - 3600, sign: true }),
+  lagObsolete: buildTx(acc.lagObsolete, { maxTime: NOW - 3600, sign: true }),
+  rootError: buildTx(acc.rootError, { maxTime: NOW - 3600, sign: true }),
 };
-const manyTxs = Array.from({ length: 6 }, () => buildTx(acc.many, { maxTime: NOW - SUBMIT_UNCLEAR_GRACE_SECONDS - 80, sign: true }));
+const manyTxs = Array.from({ length: 6 }, () => buildTx(acc.many, { maxTime: NOW - 200, sign: true }));
 
 const seeded = [
   job('merge-job', acc.merge, mergeTx, { status: 'pending_signatures', submittedAt: undefined, submittedResult: undefined }),
@@ -91,6 +96,9 @@ const seeded = [
   job('res-error', acc.resError, tx.resError),
   job('not-due', acc.notDue, tx.notDue),
   job('early-404', acc.early404, tx.early404),
+  job('lag-expired', acc.lagExpired, tx.lagExpired),
+  job('lag-obsolete', acc.lagObsolete, tx.lagObsolete),
+  job('root-error', acc.rootError, tx.rootError),
   ...manyTxs.map((t, i) => job(`many-${i}`, acc.many, t)),
 ];
 
@@ -100,6 +108,12 @@ let dbPath;
 let submitFile;
 let submitLog;
 let txLog;
+let rootPath;
+let rootLog;
+// R-1: Ledger-Zeit von Horizon (GET /), je Test einstellbar.
+const iso = (unix) => new Date(unix * 1000).toISOString().replace('.000Z', 'Z');
+const setRoot = (spec) => fs.writeFileSync(rootPath, JSON.stringify(spec));
+const rootCalls = () => (fs.existsSync(rootLog) ? fs.readFileSync(rootLog, 'utf8').split('\n').filter(Boolean).length : 0);
 const setSubmit = (spec) => fs.writeFileSync(submitFile, JSON.stringify(spec));
 const submitCount = () => (fs.existsSync(submitLog) ? fs.readFileSync(submitLog, 'utf8').split('\n').filter(Boolean).length : 0);
 const lookups = (hash) => (fs.existsSync(txLog) ? fs.readFileSync(txLog, 'utf8').split('\n').filter((l) => !hash || l === hash).length : 0);
@@ -132,6 +146,10 @@ test.before(async () => {
   txLog = path.join(dataDir, 'tx_lookups.log');
   const accountsPath = path.join(dataDir, 'horizon_accounts.json');
   const txsPath = path.join(dataDir, 'horizon_txs.json');
+  rootPath = path.join(dataDir, 'horizon_root.json');
+  rootLog = path.join(dataDir, 'horizon_root.log');
+  // Standard: Horizon hat Ledger bis jetzt aufgenommen.
+  setRoot({ history_latest_ledger_closed_at: iso(NOW) });
   fs.writeFileSync(dbPath, JSON.stringify({ items: seeded }));
   setSubmit({ mode: 'hang' });
   fs.writeFileSync(accountsPath, JSON.stringify({
@@ -144,6 +162,9 @@ test.before(async () => {
     [acc.resExpired.publicKey()]: accountEntry(acc.resExpired, '100'),
     [acc.resError.publicKey()]: accountEntry(acc.resError, '101'),
     [acc.notDue.publicKey()]: accountEntry(acc.notDue, '100'),
+    [acc.lagExpired.publicKey()]: accountEntry(acc.lagExpired, '100'),
+    [acc.lagObsolete.publicKey()]: accountEntry(acc.lagObsolete, '101'),
+    [acc.rootError.publicKey()]: accountEntry(acc.rootError, '100'),
     [acc.early404.publicKey()]: accountEntry(acc.early404, '101'),
     [acc.many.publicKey()]: accountEntry(acc.many, '101'),
   }));
@@ -158,6 +179,7 @@ test.before(async () => {
       ...process.env, PORT: String(PORT), BUG_DB_DIR: dataDir, MULTISIG_DB_PATH: dbPath,
       SKM_TEST_HORIZON_ACCOUNTS: accountsPath, SKM_TEST_SUBMIT_FILE: submitFile, SKM_TEST_SUBMIT_LOG: submitLog,
       SKM_TEST_HORIZON_TXS: txsPath, SKM_TEST_HORIZON_TX_LOG: txLog, HORIZON_SUBMIT_TIMEOUT_MS: '300',
+      SKM_TEST_HORIZON_ROOT: rootPath, SKM_TEST_HORIZON_ROOT_LOG: rootLog,
     },
     stdio: 'ignore',
   });
@@ -192,30 +214,43 @@ test('Helfer: 2xx ohne Hash ist unklar', () => {
   assert.equal(isUnclearSubmitSuccess({ hash: 'abc', ledger: 1 }), false);
 });
 
-test('Helfer: Klaerung faellig bei verbrauchter Sequence oder nach maxTime + Karenz', () => {
-  assert.equal(SUBMIT_UNCLEAR_GRACE_SECONDS, 120);
+test('Helfer: Klaerung faellig bei verbrauchter Sequence oder nach maxTime (Serveruhr, ohne Karenz)', () => {
   assert.equal(SUBMIT_UNCLEAR_MAX_RESOLVES_PER_REQUEST, 5);
   assert.equal(isUnclearResolveDue({ sequenceConsumed: true, maxTimeUnix: NOW + 3600, nowUnix: NOW }), true);
-  assert.equal(isUnclearResolveDue({ sequenceConsumed: false, maxTimeUnix: NOW - 121, nowUnix: NOW }), true);
-  assert.equal(isUnclearResolveDue({ sequenceConsumed: false, maxTimeUnix: NOW - 120, nowUnix: NOW }), false);
+  assert.equal(isUnclearResolveDue({ sequenceConsumed: false, maxTimeUnix: NOW - 1, nowUnix: NOW }), true);
+  assert.equal(isUnclearResolveDue({ sequenceConsumed: false, maxTimeUnix: NOW, nowUnix: NOW }), false);
   assert.equal(isUnclearResolveDue({ sequenceConsumed: false, maxTimeUnix: NOW + 10, nowUnix: NOW }), false);
   assert.equal(isUnclearResolveDue({ sequenceConsumed: false, maxTimeUnix: 0, nowUnix: NOW }), false);
-  assert.equal(isUnclearTimePassed(NOW - 121, NOW), true);
-  assert.equal(isUnclearTimePassed(NOW - 120, NOW), false);
-  assert.equal(isUnclearTimePassed(0, NOW), false);
+});
+
+test('Helfer: Ledger-Zeit von Horizon (R-1)', () => {
+  assert.equal(parseLedgerClosedAt('2026-11-15T10:00:00Z'), Date.UTC(2026, 10, 15, 10) / 1000);
+  for (const bad of [undefined, null, '', 'gestern', 12345, '2026-13-40T99:00:00Z', '2026-02-30T10:00:00Z', '2026-11-15T10:00:00+01:00', '2026-11-15 10:00:00Z']) {
+    assert.equal(parseLedgerClosedAt(bad), null, String(bad));
+  }
+  // Ein Ledger nach maxTime schliesst die Transaktion aus (gueltig bis closeTime <= maxTime). Endgueltig erst mit
+  // 60 s Marge: Root und Transaktion koennen verschiedene Knoten treffen.
+  assert.equal(SUBMIT_UNCLEAR_LEDGER_MARGIN_SECONDS, 60);
+  assert.equal(isLedgerPastMaxTime(NOW, NOW + 61), true);
+  assert.equal(isLedgerPastMaxTime(NOW, NOW + 60), false, 'genau an der Marge: noch nicht');
+  assert.equal(isLedgerPastMaxTime(NOW, NOW + 5), false);
+  assert.equal(isLedgerPastMaxTime(NOW, NOW), false);
+  assert.equal(isLedgerPastMaxTime(NOW, NOW - 600), false);
+  assert.equal(isLedgerPastMaxTime(NOW, null), false, 'ohne Ledger-Zeit nie');
+  assert.equal(isLedgerPastMaxTime(0, NOW), false, 'ohne Zeitgrenze nie');
 });
 
 test('Helfer: Ergebnis der Klaerung', () => {
-  // Gefunden ist sofort endgueltig, auch vor Ablauf der Zeit.
+  // Gefunden ist sofort endgueltig, auch ohne Ledger nach maxTime.
   assert.deepEqual(unclearOutcome({ kind: 'found', successful: true, hash: 'h', ledger: 9 }, true, false),
     { status: 'submitted_success', submittedResult: { hash: 'h', ledger: 9 } });
   const failed = unclearOutcome({ kind: 'found', successful: false, hash: 'h', ledger: 9 }, true, false);
   assert.equal(failed.status, 'submitted_failed');
   assert.equal(typeof failed.submittedResult.error, 'string');
-  // 404 erst nach maxTime + Karenz endgueltig.
+  // 404 erst endgueltig, wenn Horizon einen Ledger mehr als 60 s nach maxTime meldet (Wert hier schon ausgewertet).
   assert.deepEqual(unclearOutcome({ kind: 'not_found' }, true, true), { status: 'obsolete_seq' });
   assert.deepEqual(unclearOutcome({ kind: 'not_found' }, false, true), { status: 'expired' });
-  assert.equal(unclearOutcome({ kind: 'not_found' }, true, false), null, 'Sequence verbraucht, 404 vor maxTime + Karenz: unklar');
+  assert.equal(unclearOutcome({ kind: 'not_found' }, true, false), null, 'Sequence verbraucht, Ledger nicht nach maxTime: unklar');
   assert.equal(unclearOutcome({ kind: 'not_found' }, false, false), null);
   assert.equal(unclearOutcome({ kind: 'error' }, true, true), null);
   assert.equal(unclearOutcome({ kind: 'found', hash: 'h' }, true, true), null, 'ohne successful bleibt unklar');
@@ -318,7 +353,7 @@ test('Live-Neuberechnung laesst submit_unclear stehen (voll signiert, Liste und 
   assert.deepEqual(filtered.body.map((j) => j.id), ['locked']);
 });
 
-test('Innerhalb der Karenz nach maxTime: bleibt submit_unclear, keine Klaerung', async () => {
+test('Vor maxTime (Serveruhr) und Sequence frei: bleibt submit_unclear, keine Klaerung', async () => {
   const l = await list(acc.notDue);
   assert.equal(l.body.find((j) => j.id === 'not-due').status, 'submit_unclear');
   assert.equal(lookups(hashOf(tx.notDue)), 0);
@@ -349,7 +384,7 @@ test('Klaerung in der Liste: gefunden und nicht erfolgreich -> submitted_failed'
   assert.equal(lookups(hashOf(tx.resFailed)), 1);
 });
 
-test('Klaerung: Sequence verbraucht, 404 vor maxTime + Karenz -> bleibt submit_unclear, nichts gespeichert', async () => {
+test('Klaerung: Sequence verbraucht, 404, Ledger vor maxTime -> bleibt submit_unclear, nichts gespeichert', async () => {
   const l = await list(acc.early404);
   assert.equal(l.body.find((x) => x.id === 'early-404').status, 'submit_unclear');
   assert.equal((await detail('early-404')).body.status, 'submit_unclear');
@@ -359,7 +394,7 @@ test('Klaerung: Sequence verbraucht, 404 vor maxTime + Karenz -> bleibt submit_u
   assert.equal(lookups(hashOf(tx.early404)), 2, 'jede Lese-Anfrage fragt erneut');
 });
 
-test('Klaerung: 404 und Sequence verbraucht nach maxTime + Karenz -> obsolete_seq', async () => {
+test('Klaerung: 404 und Sequence verbraucht, Ledger nach maxTime -> obsolete_seq', async () => {
   const l = await list(acc.resObsolete);
   assert.equal(l.body.find((x) => x.id === 'res-obsolete').status, 'obsolete_seq');
   assert.equal(stored('res-obsolete').status, 'obsolete_seq');
@@ -367,12 +402,66 @@ test('Klaerung: 404 und Sequence verbraucht nach maxTime + Karenz -> obsolete_se
   assert.equal(lookups(hashOf(tx.resObsolete)), 1);
 });
 
-test('Klaerung: 404, Sequence nicht verbraucht, maxTime + Karenz vorbei -> expired', async () => {
+test('Klaerung: 404, Sequence nicht verbraucht, Ledger nach maxTime -> expired', async () => {
   const l = await list(acc.resExpired);
   assert.equal(l.body.find((x) => x.id === 'res-expired').status, 'expired');
   assert.equal(stored('res-expired').status, 'expired');
   await list(acc.resExpired);
   assert.equal(lookups(hashOf(tx.resExpired)), 1);
+});
+
+// --- R-1: Ledger-Zeit statt Serveruhr ---
+
+test('R-1: Serveruhr weit nach maxTime, Horizon-Ledger davor (Knoten hinkt) -> bleibt submit_unclear', async () => {
+  setRoot({ history_latest_ledger_closed_at: iso(NOW - 7200) });
+  for (const [owner, id] of [[acc.lagExpired, 'lag-expired'], [acc.lagObsolete, 'lag-obsolete']]) {
+    const l = await list(owner);
+    assert.equal(l.body.find((x) => x.id === id).status, 'submit_unclear', id);
+    assert.equal(stored(id).status, 'submit_unclear', id);
+    assert.equal(stored(id).resolvedAt, undefined, id);
+  }
+  setRoot({ history_latest_ledger_closed_at: iso(NOW) });
+});
+
+test('R-1: Horizon-Ledger 5 s nach maxTime (innerhalb der Marge) -> bleibt submit_unclear', async () => {
+  setRoot({ history_latest_ledger_closed_at: iso(NOW - 3600 + 5) });
+  assert.equal((await list(acc.lagExpired)).body.find((x) => x.id === 'lag-expired').status, 'submit_unclear');
+  assert.equal((await detail('lag-obsolete')).body.status, 'submit_unclear');
+  assert.equal(stored('lag-expired').status, 'submit_unclear');
+  assert.equal(stored('lag-obsolete').status, 'submit_unclear');
+  setRoot({ history_latest_ledger_closed_at: iso(NOW) });
+});
+
+test('R-1: Horizon-Ledger 61 s nach maxTime -> expired bzw. obsolete_seq', async () => {
+  setRoot({ history_latest_ledger_closed_at: iso(NOW - 3600 + 61) });
+  assert.equal((await list(acc.lagExpired)).body.find((x) => x.id === 'lag-expired').status, 'expired');
+  assert.equal(stored('lag-expired').status, 'expired');
+  assert.equal((await detail('lag-obsolete')).body.status, 'obsolete_seq');
+  assert.equal(stored('lag-obsolete').status, 'obsolete_seq');
+  setRoot({ history_latest_ledger_closed_at: iso(NOW) });
+});
+
+test('R-1: Ledger genau bei maxTime reicht nicht, ohne oder mit kaputter Ledger-Zeit und bei Root-Fehler bleibt unklar', async () => {
+  for (const spec of [
+    { history_latest_ledger_closed_at: iso(NOW - 3600) },
+    {},
+    { history_latest_ledger_closed_at: 'kaputt' },
+    { status: 503 },
+  ]) {
+    setRoot(spec);
+    const l = await list(acc.rootError);
+    assert.equal(l.body.find((x) => x.id === 'root-error').status, 'submit_unclear', JSON.stringify(spec));
+    assert.equal(stored('root-error').status, 'submit_unclear', JSON.stringify(spec));
+  }
+  setRoot({ history_latest_ledger_closed_at: iso(NOW) });
+});
+
+test('R-1: Ledger-Zeit nur nach einem 404 und hoechstens einmal je Netz und Anfrage', async () => {
+  const before = rootCalls();
+  await list(acc.notDue); // nicht faellig: keine Abfrage
+  assert.equal(rootCalls(), before);
+  await list(acc.early404); // faellig, 404: eine Abfrage
+  assert.equal(rootCalls(), before + 1);
 });
 
 test('Klaerung: sonstiger Fehler beim Abruf -> bleibt submit_unclear', async () => {
@@ -382,11 +471,13 @@ test('Klaerung: sonstiger Fehler beim Abruf -> bleibt submit_unclear', async () 
   assert.equal(lookups(hashOf(tx.resError)), 1);
 });
 
-test('Hoechstens 5 Klaerungen je Anfrage', async () => {
+test('Hoechstens 5 Klaerungen je Anfrage, Ledger-Zeit einmal je Anfrage', async () => {
   const manyHashes = new Set(manyTxs.map(hashOf));
   const countMany = () => lookupLines().filter((h) => manyHashes.has(h)).length;
+  const rootBefore = rootCalls();
   const first = await list(acc.many);
   assert.equal(countMany(), 5);
+  assert.equal(rootCalls(), rootBefore + 1, 'fuenf 404, eine Root-Abfrage');
   assert.equal(first.body.filter((j) => j.status === 'obsolete_seq').length, 5);
   assert.equal(first.body.filter((j) => j.status === 'submit_unclear').length, 1);
   const second = await list(acc.many);

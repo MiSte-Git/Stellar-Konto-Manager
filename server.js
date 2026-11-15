@@ -28,7 +28,7 @@ const { submitErrorResult, submitSuccessResult, withSanitizedSubmitResult } = re
 const { expireStalePendingJobs } = require('./services/multisigJobsGuard.js');
 const {
   SUBMIT_UNCLEAR_STATUS, SUBMIT_UNCLEAR_MAX_RESOLVES_PER_REQUEST,
-  isUnclearSubmitError, isUnclearSubmitSuccess, isSequenceConsumed, isUnclearTimePassed, isUnclearResolveDue, unclearOutcome,
+  isUnclearSubmitError, isUnclearSubmitSuccess, isSequenceConsumed, isUnclearResolveDue, parseLedgerClosedAt, isLedgerPastMaxTime, unclearOutcome,
 } = require('./services/submitUnclear.js');
 
 // Lightweight .env loader (root .env and backend/.env) without extra deps
@@ -789,14 +789,40 @@ async function lookupJobTransaction(network, hash) {
   }
 }
 
+// R-1: Ledger-Zeit von Horizon (GET /, history_latest_ledger_closed_at) als Unix-Sekunden, null bei
+// Fehler, Timeout oder fehlendem Feld. Nur nach einem 404 in der Klaerung abgefragt.
+async function fetchLedgerClosedAt(network) {
+  let timer;
+  const timeout = new Promise((_, reject) => {
+    timer = setTimeout(() => reject(Object.assign(new Error('horizon_timeout'), { code: 'horizon_timeout' })), HORIZON_LOAD_TIMEOUT_MS);
+  });
+  const call = horizonServerForNet(network).root();
+  call.catch(() => {});
+  try {
+    const root = await Promise.race([call, timeout]);
+    return parseLedgerClosedAt(root?.history_latest_ledger_closed_at);
+  } catch {
+    return null;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 // F-2: Klaerung offener submit_unclear-Jobs beim Lesen (Liste, Detail). Nur mit Live-Kontodaten und
-// nur, wenn das Ergebnis feststehen kann (Sequence der Tx-Quelle verbraucht oder maxTime + Karenz
+// nur, wenn das Ergebnis feststehen kann (Sequence der Tx-Quelle verbraucht oder maxTime laut Serveruhr
 // vorbei), hoechstens SUBMIT_UNCLEAR_MAX_RESOLVES_PER_REQUEST Abfragen je Anfrage. Gefunden ist sofort
-// endgueltig, ein 404 erst nach maxTime + Karenz (nachhinkender Horizon-Knoten, siehe unclearOutcome). Gespeichert wird
+// endgueltig, ein 404 erst, wenn Horizon einen Ledger mehr als 60 s nach maxTime meldet (R-1, Ledger-Zeit aus GET /,
+// einmal je Netz und Anfrage, nur nach einem 404; siehe unclearOutcome). Gespeichert wird
 // unter dem Job-Lock und nur, wenn der Job dort noch submit_unclear ist. Scheitert das Speichern,
 // bleibt der Job unklar (auch in der Antwort). Gleich wie resolveUnclearJobs in api/multisig.php.
 async function resolveUnclearJobs(items) {
   let budget = SUBMIT_UNCLEAR_MAX_RESOLVES_PER_REQUEST;
+  // R-1: Ledger-Zeit hoechstens einmal je Netz und Anfrage (Promise, damit auch ein Fehler gemerkt bleibt).
+  const ledgerClosedAtByNet = new Map();
+  const ledgerClosedAt = (net) => {
+    if (!ledgerClosedAtByNet.has(net)) ledgerClosedAtByNet.set(net, fetchLedgerClosedAt(net));
+    return ledgerClosedAtByNet.get(net);
+  };
   const out = [];
   for (const j of items) {
     if (j.status !== SUBMIT_UNCLEAR_STATUS || budget <= 0) { out.push(j); continue; }
@@ -812,7 +838,10 @@ async function resolveUnclearJobs(items) {
       continue;
     }
     budget -= 1;
-    const outcome = unclearOutcome(await lookupJobTransaction(j.network, j.txHash), sequenceConsumed, isUnclearTimePassed(maxTimeUnix, nowUnix));
+    const lookup = await lookupJobTransaction(j.network, j.txHash);
+    // Ein 404 ist nur endgueltig, wenn Horizon einen Ledger mehr als 60 s nach maxTime meldet (R-1, nicht die Serveruhr).
+    const ledgerPast = lookup.kind === 'not_found' && isLedgerPastMaxTime(maxTimeUnix, await ledgerClosedAt(j.network));
+    const outcome = unclearOutcome(lookup, sequenceConsumed, ledgerPast);
     if (!outcome) { out.push(j); continue; }
     const saved = await withMultisigJobLock(j.id, async () => {
       const current = findMultisigJob(j.id);

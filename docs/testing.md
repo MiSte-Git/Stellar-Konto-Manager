@@ -59,7 +59,9 @@ dass jede Spec in dieser Tabelle steht und jede genannte Datei existiert.
 - Memo-Pflicht und Fee-Bump-Ablehnung sind als Unit-Tests abgedeckt (`memoRequired.test.js`, Multisig-Tests).
 - Unklares Sendeergebnis eines Multisig-Jobs (`submit_unclear`, Review Fable F-2): braucht einen Horizon-Timeout oder
   5xx, gegen das echte Testnet nicht auslösbar. Abgedeckt mit Horizon-Mock in `test/multisigSubmitUnclear.test.js`
-  und `.php` sowie im Frontend in `MultisigJobDetail.test.jsx` und `MultisigJobList.test.jsx`.
+  und `.php` (Klärung über die Ledger-Zeit aus `GET /`, Mock per `SKM_TEST_HORIZON_ROOT` bzw. Stub, R-1) sowie im
+  Frontend in `MultisigJobDetail.test.jsx`, `MultisigJobList.test.jsx`, `MultisigResultDialog.test.jsx` und
+  `MultisigPrepareDialog.test.jsx`.
 
 ### Regeln für die Pflege
 

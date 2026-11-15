@@ -99,3 +99,15 @@ if (process.env.SKM_TEST_HORIZON_TXS) {
     };
   };
 }
+
+// Optional (R-1): SKM_TEST_HORIZON_ROOT ersetzt GET / (Horizon.Server#root). JSON-Datei, bei jedem Abruf
+// neu gelesen: der Root-Datensatz (z. B. { history_latest_ledger_closed_at }) oder { status: 503 } fuer
+// einen HTTP-Fehler. SKM_TEST_HORIZON_ROOT_LOG (optional): je Abruf eine Zeile.
+if (process.env.SKM_TEST_HORIZON_ROOT) {
+  StellarSdk.Horizon.Server.prototype.root = async function root() {
+    if (process.env.SKM_TEST_HORIZON_ROOT_LOG) fs.appendFileSync(process.env.SKM_TEST_HORIZON_ROOT_LOG, 'root\n');
+    const spec = JSON.parse(fs.readFileSync(process.env.SKM_TEST_HORIZON_ROOT, 'utf8'));
+    if (spec.status) throw Object.assign(new Error(`Request failed with status code ${spec.status}`), { response: { status: spec.status } });
+    return spec;
+  };
+}

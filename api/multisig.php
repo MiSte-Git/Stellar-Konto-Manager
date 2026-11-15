@@ -302,6 +302,23 @@ function lookupTransactionByHash(string $net, string $hash): array {
     ];
 }
 
+// R-1: Ledger-Zeit von Horizon (GET /, history_latest_ledger_closed_at) als Unix-Sekunden, null bei
+// Fehler, Timeout oder fehlendem Feld. Nur nach einem 404 in der Klaerung abgefragt. Gleich wie
+// fetchLedgerClosedAt in server.js.
+function fetchLedgerClosedAt(string $net): ?int {
+    $ch = curl_init(skm_horizon_url($net) . '/');
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HEADER, false);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+    curl_setopt($ch, CURLOPT_TIMEOUT, HORIZON_LOAD_TIMEOUT_SECONDS);
+    $respBody = curl_exec($ch);
+    $httpCode = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+    if ($respBody === false || $httpCode !== 200) return null;
+    $data = json_decode((string)$respBody, true);
+    return is_array($data) ? skm_parse_ledger_closed_at($data['history_latest_ledger_closed_at'] ?? null) : null;
+}
+
 function fetchAccountSigners(string $accountId, string $net): array {
     try {
         $sdk = horizonClient($net);
@@ -497,8 +514,8 @@ function summarizeJob(array $job): array {
 /**
  * F-2: Klaerung offener submit_unclear-Jobs beim Lesen (Liste, Detail). $jobs sind Ausgaben von
  * summarizeJob() (noch mit XDR). Nur mit Live-Kontodaten und nur, wenn das Ergebnis feststehen kann
- * (Sequence der Tx-Quelle verbraucht oder maxTime + Karenz vorbei; ein 404 zaehlt erst nach maxTime +
- * Karenz, siehe skm_unclear_outcome), hoechstens
+ * (Sequence der Tx-Quelle verbraucht oder maxTime laut Serveruhr vorbei; ein 404 zaehlt erst, wenn
+ * Horizon einen Ledger mehr als 60 s nach maxTime meldet, R-1, siehe skm_unclear_outcome), hoechstens
  * SUBMIT_UNCLEAR_MAX_RESOLVES_PER_REQUEST Abfragen je Anfrage. Die Abfragen laufen ausserhalb des
  * Locks; gespeichert wird unter withJobsLock und nur fuer Jobs, die dort noch submit_unclear sind.
  * Scheitert das Speichern, bleibt der Job unklar (auch in der Antwort). Gleich wie
@@ -507,6 +524,8 @@ function summarizeJob(array $job): array {
 function resolveUnclearJobs(string $jobFile, array $jobs): array {
     $budget = SUBMIT_UNCLEAR_MAX_RESOLVES_PER_REQUEST;
     $outcomes = [];
+    // R-1: Ledger-Zeit hoechstens einmal je Netz und Anfrage (auch ein Fehler wird gemerkt).
+    $ledgerClosedAtByNet = [];
     foreach ($jobs as $j) {
         if (($j['status'] ?? '') !== SUBMIT_UNCLEAR_STATUS) continue;
         if ($budget <= 0) break;
@@ -522,7 +541,14 @@ function resolveUnclearJobs(string $jobFile, array $jobs): array {
         $nowUnix = time();
         if (!skm_unclear_resolve_due($sequenceConsumed, $maxTimeUnix, $nowUnix)) continue;
         $budget--;
-        $outcome = skm_unclear_outcome(lookupTransactionByHash($net, (string)($j['txHash'] ?? '')), $sequenceConsumed, skm_unclear_time_passed($maxTimeUnix, $nowUnix));
+        $lookup = lookupTransactionByHash($net, (string)($j['txHash'] ?? ''));
+        // Ein 404 ist nur endgueltig, wenn Horizon einen Ledger mehr als 60 s nach maxTime meldet (R-1, nicht die Serveruhr).
+        $ledgerPast = false;
+        if (($lookup['kind'] ?? '') === 'not_found') {
+            if (!array_key_exists($net, $ledgerClosedAtByNet)) $ledgerClosedAtByNet[$net] = fetchLedgerClosedAt($net);
+            $ledgerPast = skm_ledger_past_max_time($maxTimeUnix, $ledgerClosedAtByNet[$net]);
+        }
+        $outcome = skm_unclear_outcome($lookup, $sequenceConsumed, $ledgerPast);
         if ($outcome !== null) $outcomes[(string)($j['id'] ?? '')] = $outcome;
     }
     if ($outcomes === []) return $jobs;

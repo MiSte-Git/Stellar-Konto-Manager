@@ -5,15 +5,18 @@
 // (Endzustand, die Signer legen dieselbe Zahlung neu an und sie geht doppelt raus), sondern
 // submit_unclear: nicht final, aber gesperrt (kein Merge, kein Ablehnen, kein Loeschen, nie erneutes
 // Senden). Geklaert wird beim Lesen ueber GET /transactions/{hash}, sobald das Ergebnis feststehen
-// muss: Sequence der Tx-Quelle verbraucht oder maxTime + SUBMIT_UNCLEAR_GRACE_SECONDS vorbei.
-// Gleiche Regeln und Konstanten wie api/submitUnclear.php.
+// kann: Sequence der Tx-Quelle verbraucht oder maxTime laut Serveruhr vorbei. Ob ein 404 endgueltig ist,
+// entscheidet die Ledger-Zeit von Horizon (R-1), nie die Serveruhr. Gleiche Regeln und Konstanten wie
+// api/submitUnclear.php.
 
 const { submitSuccessResult } = require('./submitResult.js');
 
 const SUBMIT_UNCLEAR_STATUS = 'submit_unclear';
-// Karenz nach maxTime: Horizon kann dem Ledger einige Sekunden hinterherhinken, und die Uhr des
-// Servers muss nicht genau mit der Schliesszeit der Ledger uebereinstimmen.
-const SUBMIT_UNCLEAR_GRACE_SECONDS = 120;
+// R-1: Ein 404 ist erst endgueltig, wenn die Ledger-Zeit aus GET / mehr als so viele Sekunden nach maxTime
+// liegt. Root und Transaktion sind zwei Anfragen und koennen hinter dem Load Balancer verschiedene Knoten
+// treffen; mit der Marge muesste der Knoten der Transaktionsabfrage ueber 60 s zurueckliegen statt nur einen
+// Ledger. Gleiche Marge wie der strenge Pfad im Sendeschutz des Frontends (maxTime plus 60 s).
+const SUBMIT_UNCLEAR_LEDGER_MARGIN_SECONDS = 60;
 // Hoechstens so viele Abfragen GET /transactions/{hash} je Lese-Anfrage (Liste oder Detail).
 const SUBMIT_UNCLEAR_MAX_RESOLVES_PER_REQUEST = 5;
 // Fehlertext, wenn die Transaktion im Ledger steht, aber fehlgeschlagen ist (Horizon liefert im
@@ -55,29 +58,52 @@ function isSequenceConsumed(txSequence, accountSequence) {
   }
 }
 
-/** Ist jetzt > maxTime + Karenz? maxTimeUnix 0 heisst ohne Zeitgrenze: nie vorbei. */
-function isUnclearTimePassed(maxTimeUnix, nowUnix) {
+/**
+ * Wird jetzt abgefragt? Bei verbrauchter Sequence oder wenn maxTime laut Serveruhr vorbei ist (maxTime 0:
+ * ohne Zeitgrenze, nie). Die Serveruhr bestimmt nur, wann gefragt wird; endgueltig macht einen 404 nur
+ * die Ledger-Zeit (isLedgerPastMaxTime). Geht die Uhr nach, wird spaeter gefragt, geht sie vor, umsonst.
+ */
+function isUnclearResolveDue({ sequenceConsumed, maxTimeUnix, nowUnix }) {
   const maxTime = Number(maxTimeUnix || 0);
-  return maxTime > 0 && nowUnix > maxTime + SUBMIT_UNCLEAR_GRACE_SECONDS;
+  return sequenceConsumed || (maxTime > 0 && nowUnix > maxTime);
 }
 
-/** Darf jetzt abgefragt werden? Bei verbrauchter Sequence oder abgelaufener Zeit (plus Karenz). */
-function isUnclearResolveDue({ sequenceConsumed, maxTimeUnix, nowUnix }) {
-  return sequenceConsumed || isUnclearTimePassed(maxTimeUnix, nowUnix);
+/**
+ * history_latest_ledger_closed_at aus GET / als Unix-Sekunden, sonst null. Horizon liefert UTC mit Z
+ * (2026-11-15T10:00:00Z). Nur diese Form; ein unmoegliches Datum (30. Februar, Stunde 99) ergibt null,
+ * gleich wie skm_parse_ledger_closed_at in PHP (Date.parse wuerde es weiterrollen).
+ */
+function parseLedgerClosedAt(value) {
+  if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/.test(value)) return null;
+  const ms = Date.parse(value);
+  if (!Number.isFinite(ms) || new Date(ms).toISOString().slice(0, 19) !== value.slice(0, 19)) return null;
+  return Math.floor(ms / 1000);
+}
+
+/**
+ * R-1: Hat Horizon einen Ledger aufgenommen, der mehr als SUBMIT_UNCLEAR_LEDGER_MARGIN_SECONDS nach maxTime
+ * geschlossen wurde? Eine Transaktion kann nur in einen Ledger mit Schliesszeit <= maxTime; liegt der zuletzt
+ * aufgenommene danach, sind alle Ledger bis maxTime aufgenommen und ein 404 ist endgueltig. Die Marge deckt
+ * einen anderen, nachhinkenden Knoten fuer die Transaktionsabfrage ab. Ohne Ledger-Zeit oder Zeitgrenze: nie.
+ */
+function isLedgerPastMaxTime(maxTimeUnix, ledgerClosedAtUnix) {
+  const maxTime = Number(maxTimeUnix || 0);
+  return maxTime > 0 && Number.isFinite(ledgerClosedAtUnix)
+    && ledgerClosedAtUnix > maxTime + SUBMIT_UNCLEAR_LEDGER_MARGIN_SECONDS;
 }
 
 /**
  * Ergebnis aus dem Abruf der Transaktion.
  * @param {{ kind: 'found', successful?: boolean, hash?: string, ledger?: number } | { kind: 'not_found' } | { kind: 'error' }} lookup
- * Gefunden ist sofort endgueltig. Ein 404 erst nach maxTime + Karenz: Horizon laeuft hinter einem Load
- * Balancer, das Konto (Sequence verbraucht) kann vom aktuellen Knoten kommen und der 404 von einem
- * nachhinkenden. Vorher hiesse obsolete_seq bei einem ausgefuehrten Job, dass die Signer ihn neu anlegen.
+ * Gefunden ist sofort endgueltig. Ein 404 erst, wenn Horizon einen Ledger mehr als 60 s nach maxTime meldet: Ein Knoten
+ * kann hinterherhinken (auch mehr als Minuten), dann zeigt er weder die Transaktion noch die verbrauchte
+ * Sequence. Vorher hiesse expired/obsolete_seq bei einem ausgefuehrten Job, dass die Signer ihn neu anlegen.
  * @param {boolean} sequenceConsumed
- * @param {boolean} timePassed jetzt > maxTime + SUBMIT_UNCLEAR_GRACE_SECONDS
+ * @param {boolean} ledgerPastMaxTime isLedgerPastMaxTime(maxTime, history_latest_ledger_closed_at)
  * @returns {{ status: string, submittedResult?: object } | null} null: bleibt unklar. Ohne submittedResult
  *   bleibt das gespeicherte (der Fehlertext vom Senden).
  */
-function unclearOutcome(lookup, sequenceConsumed, timePassed) {
+function unclearOutcome(lookup, sequenceConsumed, ledgerPastMaxTime) {
   if (lookup?.kind === 'found') {
     if (lookup.successful === true) {
       return { status: 'submitted_success', submittedResult: submitSuccessResult({ hash: lookup.hash, ledger: lookup.ledger }) };
@@ -89,7 +115,7 @@ function unclearOutcome(lookup, sequenceConsumed, timePassed) {
     return null;
   }
   if (lookup?.kind === 'not_found') {
-    if (timePassed !== true) return null;
+    if (ledgerPastMaxTime !== true) return null;
     return { status: sequenceConsumed ? 'obsolete_seq' : 'expired' };
   }
   return null;
@@ -97,12 +123,13 @@ function unclearOutcome(lookup, sequenceConsumed, timePassed) {
 
 module.exports = {
   SUBMIT_UNCLEAR_STATUS,
-  SUBMIT_UNCLEAR_GRACE_SECONDS,
   SUBMIT_UNCLEAR_MAX_RESOLVES_PER_REQUEST,
+  SUBMIT_UNCLEAR_LEDGER_MARGIN_SECONDS,
   isUnclearSubmitError,
   isUnclearSubmitSuccess,
   isSequenceConsumed,
-  isUnclearTimePassed,
   isUnclearResolveDue,
+  parseLedgerClosedAt,
+  isLedgerPastMaxTime,
   unclearOutcome,
 };
