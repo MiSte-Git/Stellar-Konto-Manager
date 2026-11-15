@@ -421,6 +421,124 @@ const BugTrackerAdmin: React.FC = () => {
   }, [resizing]);
 
 
+  // Alle Hooks stehen vor den fruehen returns (loading, nicht angemeldet): Sonst laufen beim Wechsel zu
+  // angemeldet mehr Hooks als im Render davor, und React bricht mit "Rendered more hooks than during the
+  // previous render" ab (nach dem Login und bei bestehender Session).
+  const processedReports = useMemo(() => {
+    let items = reports.slice();
+
+    // Default view hides rejected reports (only show them if explicitly filtered).
+    if (statusFilter === 'all') {
+      items = items.filter((r) => r.status !== 'rejected');
+    }
+
+    const q = search.trim().toLowerCase();
+    const labelForPage = (p?: string) => t(`feedback.pages.${p || 'other'}`, t('common:feedback.pages.other', 'Sonstiges')).toLowerCase();
+    if (q) {
+      items = items.filter((r) => {
+        const desc = stripCategoryHeader(r.description);
+        const email = r.contactEmail || (r as any).email || extractEmail(desc) || '';
+        const pageLabel = labelForPage(r.page);
+        const fields = [
+          String(r.id), r.ts, r.url, r.language, r.userAgent, String(r.title || ''), desc, r.category, r.status, r.priority, r.appVersion || '', email, r.page, pageLabel, String(r.rejectionReason || ''), String(r.comment || '')
+        ].map((s) => String(s || '').toLowerCase());
+        return fields.some((s) => s.includes(q));
+      });
+    }
+    if (sortKey) {
+      const key = sortKey;
+      items.sort((a, b) => {
+        const va = key === 'title' ? String(a.title || '').trim() :
+                   key === 'description' ? stripCategoryHeader(a.description) :
+                   key === 'email' ? (a.contactEmail || (a as any).email || extractEmail(stripCategoryHeader(a.description)) || '') :
+                   key === 'appVersion' ? (a.appVersion || '') :
+                   key === 'ts' ? a.ts :
+                   key === 'url' ? a.url :
+                   key === 'page' ? labelForPage(a.page) :
+                   key === 'language' ? a.language :
+                   key === 'userAgent' ? a.userAgent :
+                   key === 'category' ? a.category :
+                   key === 'status' ? a.status :
+                   key === 'rejectionReason' ? String(a.rejectionReason || '') :
+                   key === 'comment' ? String(a.comment || '') :
+                   key === 'priority' ? a.priority :
+                   key === 'id' ? a.id : '' as any;
+        const vb = key === 'title' ? String(b.title || '').trim() :
+                   key === 'description' ? stripCategoryHeader(b.description) :
+                   key === 'email' ? (b.contactEmail || (b as any).email || extractEmail(stripCategoryHeader(b.description)) || '') :
+                   key === 'appVersion' ? (b.appVersion || '') :
+                   key === 'ts' ? b.ts :
+                   key === 'url' ? b.url :
+                   key === 'page' ? labelForPage(b.page) :
+                   key === 'language' ? b.language :
+                   key === 'userAgent' ? b.userAgent :
+                   key === 'category' ? b.category :
+                   key === 'status' ? b.status :
+                   key === 'rejectionReason' ? String(b.rejectionReason || '') :
+                   key === 'comment' ? String(b.comment || '') :
+                   key === 'priority' ? b.priority :
+                   key === 'id' ? b.id : '' as any;
+        let cmp = 0;
+        if (key === 'id') {
+          cmp = (va as number) - (vb as number);
+        } else if (key === 'ts') {
+          cmp = new Date(va as string).getTime() - new Date(vb as string).getTime();
+        } else {
+          cmp = String(va).localeCompare(String(vb));
+        }
+        return sortDir === 'asc' ? cmp : -cmp;
+      });
+    }
+    return items;
+  }, [reports, search, sortKey, sortDir, t, statusFilter]);
+
+  const labelForColumn = useCallback((key: ColumnKey) => (
+    key === 'id' ? t('common:bugReport.admin.id') :
+    key === 'ts' ? t('common:bugReport.admin.created') :
+    key === 'url' ? t('common:bugReport.admin.url') :
+    key === 'page' ? t('common:feedback.page', 'Bereich') :
+    key === 'language' ? t('common:bugReport.admin.language') :
+    key === 'email' ? t('common:bugReport.admin.email', 'E‑Mail') :
+    key === 'userAgent' ? t('common:bugReport.admin.userAgent') :
+    key === 'title' ? t('common:bugReport.admin.bugTitle', 'Titel') :
+    key === 'description' ? t('common:bugReport.admin.description') :
+    key === 'category' ? t('common:bugReport.admin.category') :
+    key === 'status' ? t('common:bugReport.admin.status') :
+    key === 'rejectionReason' ? t('common:bugReport.admin.rejectedReasonTitle', 'Ablehnungsgrund') :
+    key === 'comment' ? t('common:bugReport.admin.comment', 'Kommentar') :
+    key === 'priority' ? t('common:bugReport.admin.priority') :
+    key === 'appVersion' ? 'Version' : String(key)
+  ), [t]);
+
+  const getCellString = useCallback((report: BugReportRow, key: ColumnKey) => {
+    switch (key) {
+      case 'id': return String(report.id);
+      case 'ts': return formatDate(report.ts, i18n?.language);
+      case 'url': return report.url;
+      case 'page': return t(`feedback.pages.${report.page || 'other'}`, t('common:feedback.pages.other', 'Sonstiges'));
+      case 'language': return report.language;
+      case 'userAgent': return report.userAgent;
+      case 'email': {
+        const email = report.contactEmail || (report as any).email || extractEmail(stripCategoryHeader(report.description)) || '';
+        return email;
+      }
+      case 'title': return String(report.title || '').trim();
+      case 'description': {
+        const raw = report.description || '';
+        const parts = raw.split(/\r?\n/);
+        const stripped = parts[0]?.trim().toLowerCase().startsWith('kategorie:') ? parts.slice(1).join('\n').trim() : raw.trim();
+        return stripped;
+      }
+      case 'category': return t(`feedback.categories.${report.category}`);
+      case 'status': return t(`common:bugReport.admin.${report.status}`, report.status);
+      case 'rejectionReason': return String(report.rejectionReason || '');
+      case 'comment': return String(report.comment || '');
+      case 'priority': return t(`common:bugReport.admin.${report.priority}`, report.priority);
+      case 'appVersion': return report.appVersion ? `v${report.appVersion}` : '';
+      default: return '';
+    }
+  }, [i18n?.language, t]);
+
   if (authState === 'loading') {
     return (
       <div className="mx-auto max-w-xl p-6">
@@ -499,73 +617,6 @@ const BugTrackerAdmin: React.FC = () => {
 
   const visibleColumns = prefs.order.filter((k) => prefs.visible[k]);
 
-  const processedReports = useMemo(() => {
-    let items = reports.slice();
-
-    // Default view hides rejected reports (only show them if explicitly filtered).
-    if (statusFilter === 'all') {
-      items = items.filter((r) => r.status !== 'rejected');
-    }
-
-    const q = search.trim().toLowerCase();
-    const labelForPage = (p?: string) => t(`feedback.pages.${p || 'other'}`, t('common:feedback.pages.other', 'Sonstiges')).toLowerCase();
-    if (q) {
-      items = items.filter((r) => {
-        const desc = stripCategoryHeader(r.description);
-        const email = r.contactEmail || (r as any).email || extractEmail(desc) || '';
-        const pageLabel = labelForPage(r.page);
-        const fields = [
-          String(r.id), r.ts, r.url, r.language, r.userAgent, String(r.title || ''), desc, r.category, r.status, r.priority, r.appVersion || '', email, r.page, pageLabel, String(r.rejectionReason || ''), String(r.comment || '')
-        ].map((s) => String(s || '').toLowerCase());
-        return fields.some((s) => s.includes(q));
-      });
-    }
-    if (sortKey) {
-      const key = sortKey;
-      items.sort((a, b) => {
-        const va = key === 'title' ? String(a.title || '').trim() :
-                   key === 'description' ? stripCategoryHeader(a.description) :
-                   key === 'email' ? (a.contactEmail || (a as any).email || extractEmail(stripCategoryHeader(a.description)) || '') :
-                   key === 'appVersion' ? (a.appVersion || '') :
-                   key === 'ts' ? a.ts :
-                   key === 'url' ? a.url :
-                   key === 'page' ? labelForPage(a.page) :
-                   key === 'language' ? a.language :
-                   key === 'userAgent' ? a.userAgent :
-                   key === 'category' ? a.category :
-                   key === 'status' ? a.status :
-                   key === 'rejectionReason' ? String(a.rejectionReason || '') :
-                   key === 'comment' ? String(a.comment || '') :
-                   key === 'priority' ? a.priority :
-                   key === 'id' ? a.id : '' as any;
-        const vb = key === 'title' ? String(b.title || '').trim() :
-                   key === 'description' ? stripCategoryHeader(b.description) :
-                   key === 'email' ? (b.contactEmail || (b as any).email || extractEmail(stripCategoryHeader(b.description)) || '') :
-                   key === 'appVersion' ? (b.appVersion || '') :
-                   key === 'ts' ? b.ts :
-                   key === 'url' ? b.url :
-                   key === 'page' ? labelForPage(b.page) :
-                   key === 'language' ? b.language :
-                   key === 'userAgent' ? b.userAgent :
-                   key === 'category' ? b.category :
-                   key === 'status' ? b.status :
-                   key === 'rejectionReason' ? String(b.rejectionReason || '') :
-                   key === 'comment' ? String(b.comment || '') :
-                   key === 'priority' ? b.priority :
-                   key === 'id' ? b.id : '' as any;
-        let cmp = 0;
-        if (key === 'id') {
-          cmp = (va as number) - (vb as number);
-        } else if (key === 'ts') {
-          cmp = new Date(va as string).getTime() - new Date(vb as string).getTime();
-        } else {
-          cmp = String(va).localeCompare(String(vb));
-        }
-        return sortDir === 'asc' ? cmp : -cmp;
-      });
-    }
-    return items;
-  }, [reports, search, sortKey, sortDir, t, statusFilter]);
 
   const moveColumn = (key: ColumnKey, dir: -1 | 1) => {
     setPrefs((p) => {
@@ -586,52 +637,7 @@ const BugTrackerAdmin: React.FC = () => {
   const acronym = (s: string) => s.split(/\s+/).map((w) => w[0]).join('').toUpperCase();
   const appShort = (import.meta.env.VITE_APP_SHORTNAME && String(import.meta.env.VITE_APP_SHORTNAME).trim()) || acronym(t('common:main.title', 'Stellar Konto Manager'));
 
-  const labelForColumn = useCallback((key: ColumnKey) => (
-    key === 'id' ? t('common:bugReport.admin.id') :
-    key === 'ts' ? t('common:bugReport.admin.created') :
-    key === 'url' ? t('common:bugReport.admin.url') :
-    key === 'page' ? t('common:feedback.page', 'Bereich') :
-    key === 'language' ? t('common:bugReport.admin.language') :
-    key === 'email' ? t('common:bugReport.admin.email', 'E‑Mail') :
-    key === 'userAgent' ? t('common:bugReport.admin.userAgent') :
-    key === 'title' ? t('common:bugReport.admin.bugTitle', 'Titel') :
-    key === 'description' ? t('common:bugReport.admin.description') :
-    key === 'category' ? t('common:bugReport.admin.category') :
-    key === 'status' ? t('common:bugReport.admin.status') :
-    key === 'rejectionReason' ? t('common:bugReport.admin.rejectedReasonTitle', 'Ablehnungsgrund') :
-    key === 'comment' ? t('common:bugReport.admin.comment', 'Kommentar') :
-    key === 'priority' ? t('common:bugReport.admin.priority') :
-    key === 'appVersion' ? 'Version' : String(key)
-  ), [t]);
 
-  const getCellString = useCallback((report: BugReportRow, key: ColumnKey) => {
-    switch (key) {
-      case 'id': return String(report.id);
-      case 'ts': return formatDate(report.ts, i18n?.language);
-      case 'url': return report.url;
-      case 'page': return t(`feedback.pages.${report.page || 'other'}`, t('common:feedback.pages.other', 'Sonstiges'));
-      case 'language': return report.language;
-      case 'userAgent': return report.userAgent;
-      case 'email': {
-        const email = report.contactEmail || (report as any).email || extractEmail(stripCategoryHeader(report.description)) || '';
-        return email;
-      }
-      case 'title': return String(report.title || '').trim();
-      case 'description': {
-        const raw = report.description || '';
-        const parts = raw.split(/\r?\n/);
-        const stripped = parts[0]?.trim().toLowerCase().startsWith('kategorie:') ? parts.slice(1).join('\n').trim() : raw.trim();
-        return stripped;
-      }
-      case 'category': return t(`feedback.categories.${report.category}`);
-      case 'status': return t(`common:bugReport.admin.${report.status}`, report.status);
-      case 'rejectionReason': return String(report.rejectionReason || '');
-      case 'comment': return String(report.comment || '');
-      case 'priority': return t(`common:bugReport.admin.${report.priority}`, report.priority);
-      case 'appVersion': return report.appVersion ? `v${report.appVersion}` : '';
-      default: return '';
-    }
-  }, [i18n?.language, t]);
 
   const buildCsvAndDownload = (items: BugReportRow[], suffix: string, delimiter: string) => {
     const headers = visibleColumns.map((k) => labelForColumn(k));
