@@ -13,7 +13,8 @@ import {
   resolveOrValidateAccount,
   extractMuxedIdFromAddress
  } from './utils/stellar/stellarUtils.js';
-import { loadRecentWalletsFromStorage, normalizeStoredWallet, walletLookupKey } from './utils/recentWallets.js';
+import { loadRecentWalletsFromStorage, normalizeStoredWallet, walletLookupKey, isTestnetOnlyRecent } from './utils/recentWallets.js';
+import TestnetOnlyHint from './components/TestnetOnlyHint.jsx';
 import { useTrustedWallets } from './utils/useTrustedWallets.js';
 import { createWalletInfoMap, findWalletInfo } from './utils/walletInfo.js';
 import AddressDropdown from './components/AddressDropdown.jsx';
@@ -1041,6 +1042,9 @@ function Main() {
               <div className="text-center text-xs text-red-700 mb-3 inline-block border border-red-500 rounded-sm px-2 py-0.5">
                 {t('errors:accountNotFoundInNetwork', { net: devTestnet ? 'Testnet' : 'Mainnet' })}
               </div>
+            )}
+            {notFound && !notFoundOnlyInGate && !devTestnet && isTestnetOnlyRecent(recentWallets, sourcePublicKey) && (
+              <TestnetOnlyHint onSwitch={() => { setDevTestnet(true); setGlobalNetwork('TESTNET'); }} />
             )}
           </>
         )}

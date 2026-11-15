@@ -115,5 +115,7 @@
   },
   "backendConnectError": "Verbindung zum Backend fehlgeschlagen: {{url}}",
   "rateLimited": "Horizon-Rate-Limit überschritten. Bitte ein paar Sekunden warten und erneut versuchen.",
-  "unknown": "Unbekannter Fehler"
+  "unknown": "Unbekannter Fehler",
+  "accountOnlyOnTestnet": "Laut deinem Kontoverlauf gibt es dieses Konto nur im Testnet.",
+  "switchToTestnet": "Zu Testnet wechseln"
 }

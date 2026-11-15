@@ -2,8 +2,8 @@
 // eine Kopie in main.jsx und useRecentWalletOptions.js). Die Referenz unten ist die alte Kopie,
 // wortgleich (Stand 420c8fb). Kein Kontotyp-Feld wird gespeichert oder ergaenzt.
 import { describe, it, expect, beforeEach } from 'vitest';
-import { Keypair, StrKey } from '@stellar/stellar-sdk';
-import { loadRecentWalletsFromStorage, normalizeStoredWallet, walletLookupKey } from '../recentWallets.js';
+import { Account, Keypair, MuxedAccount, StrKey } from '@stellar/stellar-sdk';
+import { loadRecentWalletsFromStorage, normalizeStoredWallet, walletLookupKey, isTestnetOnlyRecent } from '../recentWallets.js';
 import { extractBasePublicKeyFromMuxed } from '../stellar/stellarUtils.js';
 
 function oldNormalizeStoredWallet(entry) {
@@ -102,5 +102,26 @@ describe('walletLookupKey', () => {
 
   it('M-Adresse ergibt das Basiskonto', () => {
     expect(walletLookupKey(M)).toBe(G);
+  });
+});
+
+describe('isTestnetOnlyRecent (T7)', () => {
+  const G = Keypair.random().publicKey();
+  const other = Keypair.random().publicKey();
+
+  it('true nur fuer Eintraege mit Etikett Testnet, auch ueber eine M-Adresse desselben Kontos', () => {
+    const list = [{ publicKey: G, isTestnet: true }, { publicKey: other, isTestnet: false }];
+    expect(isTestnetOnlyRecent(list, G)).toBe(true);
+    const m = new MuxedAccount(new Account(G, '0'), '7').accountId();
+    expect(isTestnetOnlyRecent(list, m)).toBe(true);
+  });
+
+  it('Gegenproben: Mainnet-Eintrag, unbekanntes Etikett, nicht im Verlauf, leere Eingaben', () => {
+    expect(isTestnetOnlyRecent([{ publicKey: G, isTestnet: false }], G)).toBe(false);
+    expect(isTestnetOnlyRecent([{ publicKey: G, isTestnet: undefined }], G)).toBe(false);
+    expect(isTestnetOnlyRecent([{ publicKey: other, isTestnet: true }], G)).toBe(false);
+    expect(isTestnetOnlyRecent([], G)).toBe(false);
+    expect(isTestnetOnlyRecent(null, G)).toBe(false);
+    expect(isTestnetOnlyRecent([{ publicKey: G, isTestnet: true }], '')).toBe(false);
   });
 });

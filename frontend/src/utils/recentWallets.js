@@ -26,3 +26,11 @@ export function loadRecentWalletsFromStorage() {
 export function walletLookupKey(address) {
   return baseAccountOf(address) || address;
 }
+
+// T7: Steht das Konto im Verlauf mit dem Etikett Testnet (gibt es nur im Testnet)? Dann bietet der
+// Kopf auf Mainnet einen Wechsel an. Das Etikett kann veraltet sein, deshalb nie automatisch wechseln.
+export function isTestnetOnlyRecent(recentWallets, address) {
+  if (!address) return false;
+  const key = walletLookupKey(address);
+  return (recentWallets || []).some((entry) => entry?.isTestnet === true && walletLookupKey(entry.publicKey || '') === key);
+}
