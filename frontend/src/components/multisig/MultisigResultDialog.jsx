@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { formatValidUntil } from '../../utils/multisig/formatValidUntil.js';
-import { BACKEND_SENT_STATUSES } from '../../utils/multisig/submitReason.js';
+import JobSubmitStatusNotice from './JobSubmitStatusNotice.jsx';
+import { isBackendSentStatus } from '../../utils/multisig/submitReason.js';
 
 const BTN_OUTLINE = 'px-3 py-1 rounded-sm border border-blue-200 text-blue-700 dark:border-blue-700 dark:text-blue-100 hover:bg-blue-50 dark:hover:bg-blue-900';
 const BTN_SMALL = 'px-2 py-1 rounded-sm border border-blue-200 text-blue-700 dark:border-blue-800 dark:text-blue-100 hover:bg-blue-50 dark:hover:bg-blue-900';
@@ -84,8 +85,7 @@ export default function MultisigResultDialog({
   // R-2: Hat das Backend beim Anlegen oder Merge schon gesendet, zeigt der Dialog den Ausgang. Dann nie
   // "noch nicht gesendet" oder "kann jetzt gesendet werden" und kein "Jetzt signieren" (nichts mehr zu
   // signieren; bei submit_unclear und Erfolg waere jeder neue Versuch falsch).
-  const status = String(jobStatus || '').toLowerCase();
-  const backendSent = type === 'job' && BACKEND_SENT_STATUSES.has(status);
+  const backendSent = type === 'job' && isBackendSentStatus(jobStatus);
   const showSignNow = !!onSignNow && !backendSent;
 
   return (
@@ -129,25 +129,7 @@ export default function MultisigResultDialog({
             )}
           </div>
         )}
-        {backendSent && status === 'submitted_success' && (
-          <div className="border border-green-400 bg-green-50 dark:border-green-700 dark:bg-green-900/30 text-sm text-green-800 dark:text-green-100 rounded-sm p-3 mb-3" data-testid="multisig-result-submitted">
-            {t('multisig:job.statusHelp.submitted_success')}
-          </div>
-        )}
-        {backendSent && status === 'submitted_failed' && (
-          <div role="alert" className="border border-red-400 bg-red-50 dark:border-red-700 dark:bg-red-900/30 text-sm text-red-800 dark:text-red-200 rounded-sm p-3 mb-3" data-testid="multisig-result-submit-failed">
-            {submitReason ? t('multisig:detail.submitFailed', { reason: submitReason }) : t('multisig:job.statusHelp.submitted_failed')}
-          </div>
-        )}
-        {backendSent && status === 'submit_unclear' && (
-          <div role="alert" className="border border-orange-400 bg-orange-50 dark:border-orange-700 dark:bg-orange-900/30 text-sm text-orange-900 dark:text-orange-100 rounded-sm p-3 mb-3 space-y-1" data-testid="multisig-result-submit-unclear">
-            <div className="font-semibold">{t('multisig:detail.submitUnclear.title')}</div>
-            <p className="text-xs">{t('multisig:detail.submitUnclear.body')}</p>
-            {submitReason && (
-              <p className="text-xs opacity-80 break-all">{t('multisig:detail.submitUnclear.reason', { reason: submitReason })}</p>
-            )}
-          </div>
-        )}
+        {backendSent && <JobSubmitStatusNotice jobStatus={jobStatus} submitReason={submitReason} />}
         {type === 'xdr' && (
           <div className="text-sm text-amber-700 dark:text-amber-300 mb-3 space-y-1">
             <div>{t('multisig:confirm.result.xdr.status')}</div>

@@ -48,7 +48,9 @@ vi.mock('../../utils/sessionSecrets.js', async (importOriginal) => ({
   getSessionSecret: async () => hoisted.sessionSecret,
 }));
 vi.mock('../../components/MultisigPrepareDialog.jsx', () => ({
-  default: ({ hash }) => <div data-testid="prepared-hash">{hash}</div>,
+  default: ({ hash, jobStatus, submitReason }) => (
+    <div data-testid="prepared-hash" data-status={jobStatus || ''} data-reason={submitReason || ''}>{hash}</div>
+  ),
 }));
 
 const thresholdInput = (container, labelKey) => {
@@ -119,6 +121,17 @@ describe('MultisigEditPage: Signieren (Teilschritt 3)', () => {
     const body = JSON.parse(globalThis.fetch.mock.calls[0][1].body);
     expect(body.clientCollected).toEqual([{ publicKey: PK, weight: 1 }]);
     expect(body.signers.find((x) => x.publicKey === PK).weight).toBe(3);
+  });
+
+  it('Sendet das Backend beim Anlegen (Erstsignatur reicht), geht der Status mit Grund an den Dialog', async () => {
+    hoisted.sessionSecret = master.secret();
+    globalThis.fetch = vi.fn(async () => ({ ok: true, json: async () => ({
+      id: 'job-1', status: 'submit_unclear', submittedResult: { error: 'Timeout', detail: { message: 'Timeout', extras: {} } },
+    }) }));
+    await createJob();
+    const dialog = screen.getByTestId('prepared-hash');
+    expect(dialog.dataset.status).toBe('submit_unclear');
+    expect(dialog.dataset.reason).toBe('Timeout');
   });
 
   it('Stelle 9: scheitert die Erstsignatur, wird der Job unsigniert angelegt, ohne Fehler in der UI', async () => {

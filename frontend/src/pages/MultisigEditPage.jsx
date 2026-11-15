@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import SecretKeyModal from '../components/SecretKeyModal.jsx';
 import MultiSigHelpDialog from '../components/multisig/MultiSigHelpDialog.jsx';
 import MultisigPrepareDialog from '../components/MultisigPrepareDialog.jsx';
+import { submitReasonText } from '../utils/multisig/submitReason.js';
 import MultisigConfigForm from '../components/multisig/MultisigConfigForm.jsx';
 import { getHorizonServerForNetwork } from '../utils/stellar/stellarUtils.js';
 import { getRequiredThreshold } from '../utils/getRequiredThreshold.js';
@@ -491,6 +492,9 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
         id: jobId,
         hash: jobHash,
         xdr: jobXdr,
+        // R-2: Erreicht die Erstsignatur die Schwelle, sendet das Backend beim Anlegen.
+        status: job?.status || '',
+        submitReason: submitReasonText(job?.submittedResult),
         summary: {
           title: t('multisig:prepare.title'),
           subtitle: t('multisig:prepare.subtitle'),
@@ -772,6 +776,8 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
           hash={preparedTx.hash}
           xdr={preparedTx.xdr}
           summary={preparedTx.summary}
+          jobStatus={preparedTx.status}
+          submitReason={preparedTx.submitReason}
         />
       )}
       <MultiSigHelpDialog isOpen={isHelpOpen} onClose={()=>setIsHelpOpen(false)} />

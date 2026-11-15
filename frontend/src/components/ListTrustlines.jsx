@@ -26,6 +26,7 @@ import AddTrustlineModal from './AddTrustlineModal.jsx';
 import { consumePendingTrustlineAsset } from '../utils/appNavigation.js';
 import { TransactionBuilder, Operation, Asset } from '@stellar/stellar-sdk';
 import MultisigPrepareDialog from './MultisigPrepareDialog.jsx';
+import { submitReasonText } from '../utils/multisig/submitReason.js';
 import { apiUrl } from '../utils/apiBase.js';
 import { backendErrorMessage } from '../utils/multisigErrors.js';
 import { resolveFeePerOp } from '../utils/stellar/fees.js';
@@ -360,6 +361,9 @@ function ListTrustlines({
         id: jobId,
         hash: jobHash,
         xdr: jobXdr,
+        // Unsigniert angelegt, das Backend sendet hier nicht; Status trotzdem aus der Antwort (R-2).
+        status: job?.status || '',
+        submitReason: submitReasonText(job?.submittedResult),
         summary: {
           title: t('multisig:prepare.title'),
           subtitle: t('multisig:prepare.subtitle'),
@@ -930,6 +934,8 @@ function ListTrustlines({
           hash={preparedTx.hash}
           xdr={preparedTx.xdr}
           summary={preparedTx.summary}
+          jobStatus={preparedTx.status}
+          submitReason={preparedTx.submitReason}
         />
       )}
   </div>

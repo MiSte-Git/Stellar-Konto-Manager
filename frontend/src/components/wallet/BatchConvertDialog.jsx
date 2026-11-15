@@ -391,6 +391,9 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
       setPreparedJob({
         hash: job.hash || txHashHex(tx),
         xdr: job.xdr,
+        // Unsigniert angelegt, das Backend sendet hier nicht; Status trotzdem aus der Antwort (R-2).
+        status: job.status,
+        submitReason: job.submitReason,
         summary: {
           title: t('multisig:prepare.title'),
           subtitle: t('multisig:prepare.subtitle'),
@@ -660,6 +663,8 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
           hash={preparedJob.hash}
           xdr={preparedJob.xdr}
           summary={preparedJob.summary}
+          jobStatus={preparedJob.status}
+          submitReason={preparedJob.submitReason}
         />
       )}
     </div>

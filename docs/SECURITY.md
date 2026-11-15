@@ -173,8 +173,9 @@ Ein Job ist eine unsignierte oder teilsignierte Transaktion, die mehrere Signer 
   wenn der Job dort noch `submit_unclear` ist; höchstens 5 Klärungen je Anfrage
   (`SUBMIT_UNCLEAR_MAX_RESOLVES_PER_REQUEST`). Code: `services/submitUnclear.js`, `api/submitUnclear.php`. Das
   Job-Detail zeigt einen Hinweis (nicht neu anlegen, nicht anderswo senden) und keine Knöpfe für Signieren, Import und
-  Ablehnen. Der Ergebnisdialog nach dem Anlegen oder nach „Jetzt signieren“ (`MultisigResultDialog`) zeigt den Status aus
-  der Antwort des Backends: bei `submit_unclear` denselben Hinweis, bei `submitted_success` und `submitted_failed` den
+  Ablehnen. Die Ergebnisdialoge nach dem Anlegen oder nach „Jetzt signieren“ (`MultisigResultDialog`,
+  `MultisigPrepareDialog`, auch in den Multisig-Einstellungen mit gemerktem Key) zeigen den Status aus der Antwort des
+  Backends: bei `submit_unclear` denselben Hinweis, bei `submitted_success` und `submitted_failed` den
   Ausgang, nie „noch nicht gesendet“ und kein weiteres Signieren. Vorher stand dort auch nach dem Senden durch das
   Backend „Die Transaktion wurde noch nicht gesendet“, und die Nutzerin hätte die Zahlung erneut gesendet (Review
   Fixrunde Opus, R-2). Der Widerruf (Sequence verbrauchen) bleibt erlaubt: Ist die Transaktion schon im Ledger, schlägt er fehl,

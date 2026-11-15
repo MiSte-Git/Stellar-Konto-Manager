@@ -10,3 +10,7 @@ export function submitReasonText(submittedResult) {
 // R-2: Status, in denen das Backend schon gesendet hat (Anlegen oder Merge). Der Ergebnisdialog zeigt
 // dann den Ausgang statt "noch nicht gesendet" und bietet kein weiteres Signieren an.
 export const BACKEND_SENT_STATUSES = new Set(['submitted_success', 'submitted_failed', 'submit_unclear']);
+
+export function isBackendSentStatus(jobStatus) {
+  return BACKEND_SENT_STATUSES.has(String(jobStatus || '').toLowerCase());
+}

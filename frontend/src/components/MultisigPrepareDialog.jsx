@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import JobSubmitStatusNotice from './multisig/JobSubmitStatusNotice.jsx';
+import { isBackendSentStatus } from '../utils/multisig/submitReason.js';
 
-function MultisigPrepareDialog({ open, onClose, hash, xdr, summary }) {
+// jobStatus/submitReason: Status aus der Backend-Antwort beim Anlegen. Hat das Backend schon gesendet
+// (Erstsignatur erreicht die Schwelle), zeigt der Dialog den Ausgang statt "noch nicht gesendet" (R-2).
+function MultisigPrepareDialog({ open, onClose, hash, xdr, summary, jobStatus = '', submitReason = '' }) {
   const { t } = useTranslation(['multisig', 'common']);
   const [copied, setCopied] = useState(false);
 
@@ -20,6 +24,7 @@ function MultisigPrepareDialog({ open, onClose, hash, xdr, summary }) {
   const items = summary?.items || [];
   const title = summary?.title || t('multisig:prepare.title');
   const subtitle = summary?.subtitle || t('multisig:prepare.subtitle');
+  const backendSent = isBackendSentStatus(jobStatus);
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 overflow-y-auto p-4">
@@ -27,7 +32,7 @@ function MultisigPrepareDialog({ open, onClose, hash, xdr, summary }) {
         <div className="flex items-start justify-between gap-3 mb-3">
           <div>
             <h3 className="text-lg font-semibold">{title}</h3>
-            <p className="text-sm text-gray-700 dark:text-gray-300">{subtitle}</p>
+            {!backendSent && <p className="text-sm text-gray-700 dark:text-gray-300">{subtitle}</p>}
           </div>
           <button
             type="button"
@@ -37,6 +42,8 @@ function MultisigPrepareDialog({ open, onClose, hash, xdr, summary }) {
             {t('common:option.cancel', 'Abbrechen')}
           </button>
         </div>
+
+        {backendSent && <JobSubmitStatusNotice jobStatus={jobStatus} submitReason={submitReason} />}
 
         {items.length > 0 && (
           <div className="border rounded-sm p-3 mb-3 space-y-1">
@@ -72,7 +79,7 @@ function MultisigPrepareDialog({ open, onClose, hash, xdr, summary }) {
           />
         </div>
 
-        <p className="mt-3 text-sm text-amber-700 dark:text-amber-400">{t('multisig:prepare.notSentHint')}</p>
+        {!backendSent && <p className="mt-3 text-sm text-amber-700 dark:text-amber-400">{t('multisig:prepare.notSentHint')}</p>}
       </div>
     </div>
   );
