@@ -72,6 +72,10 @@ $e = new class('Transaction Failed') extends \Exception {
 };
 check('Helfer: Ablehnung behaelt nur Fehlertext und result_codes',
     json_encode(skm_submit_error_result($e)) === json_encode(['error' => 'Transaction Failed', 'detail' => ['message' => 'Transaction Failed', 'extras' => ['result_codes' => ['transaction' => 'tx_insufficient_fee']]]]));
+// Regression F-2: extras ist dort ein leeres stdClass; das Bereinigen darf daran nicht scheitern
+// (vorher "Cannot use object of type stdClass as array", 500 beim Anlegen und Merge).
+check('Helfer: frisches Ergebnis ohne result_codes laesst sich bereinigen',
+    json_encode(skm_sanitize_submitted_result(skm_submit_error_result(new \RuntimeException('submit_timeout')))) === '{"error":"submit_timeout","detail":{"message":"submit_timeout","extras":{}}}');
 check('Helfer: Fehler ohne extras ergibt leeres extras-Objekt (wie Node)',
     json_encode(skm_submit_error_result(new \RuntimeException('submit_timeout'))) === '{"error":"submit_timeout","detail":{"message":"submit_timeout","extras":{}}}');
 check('Helfer: Erfolg nur Hash und Ledger',

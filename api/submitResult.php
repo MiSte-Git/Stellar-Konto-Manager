@@ -76,7 +76,11 @@ function skm_sanitize_submitted_result($sr): ?array {
                 ?: skm_submit_clean_text($err['message'] ?? null)
                 ?: skm_submit_clean_text($sr['detail']['message'] ?? null);
         }
-        $codes = $sr['detail']['extras']['result_codes'] ?? (is_array($err) ? ($err['extras']['result_codes'] ?? null) : null);
+        // extras kann frisch aus skm_submit_error_result_from ein leeres stdClass sein (JSON {}); ein
+        // Array-Zugriff darauf wirft auch mit ??. Darum erst pruefen.
+        $extras = is_array($sr['detail'] ?? null) ? ($sr['detail']['extras'] ?? null) : null;
+        $codes = is_array($extras) ? ($extras['result_codes'] ?? null) : null;
+        if ($codes === null && is_array($err)) $codes = is_array($err['extras'] ?? null) ? ($err['extras']['result_codes'] ?? null) : null;
         return skm_submit_error_result_from($message, $codes);
     }
     return skm_submit_success_result($sr);
