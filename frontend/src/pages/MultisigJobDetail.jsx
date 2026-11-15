@@ -141,6 +141,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
     if (code === 'challenge_missing_or_expired') return t('multisig:detail.access.challengeExpired', 'Die Anmeldung am Job ist abgelaufen oder wurde schon verwendet. Bitte erneut versuchen.');
     if (code === 'invalid_signature') return t('multisig:detail.access.invalidSignature', 'Die Signatur der Anmeldung wurde abgelehnt. Bitte erneut versuchen.');
     if (code === 'already_signed') return t('multisig:detail.decline.alreadySigned', 'Du hast bereits signiert und kannst nicht mehr ablehnen.');
+    if (code === 'submit_unclear') return t('multisig:detail.access.submitUnclear');
     if (['rejected', 'submitted_success', 'submitted_failed', 'expired', 'obsolete_seq'].includes(code)) {
       return t('multisig:detail.access.finalState', { status: t(`multisig:list.status.${code}`, code), defaultValue: 'Der Job ist bereits abgeschlossen ({{status}}).' });
     }
@@ -294,11 +295,15 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
     const s = String(job?.status || '').toLowerCase();
     return ['submitted_success', 'submitted_failed', 'expired', 'obsolete_seq', 'rejected'].includes(s);
   }, [job]);
+  // F-2: Beim Senden kam keine eindeutige Antwort. Nicht final (das Backend klaert beim Lesen), aber
+  // wie ein Endzustand gesperrt: kein Signieren, kein Import, kein Ablehnen. Der Widerruf bleibt.
+  const isSubmitUnclear = String(job?.status || '').toLowerCase() === 'submit_unclear';
+  const signingClosed = isFinalState || isSubmitUnclear;
   const declinedSet = useMemo(() => new Set((job?.declinedSigners || []).map((d) => d?.publicKey).filter(Boolean)), [job]);
   const declinedByMe = !!currentPublicKey && declinedSet.has(currentPublicKey);
   // Ablehnen ist immer gefahrlos (es signiert nichts) und deshalb auch bei Warnungen und
   // Sperren moeglich, nur nicht nach der eigenen Signatur oder im Endzustand.
-  const canDecline = canCurrentSign && !isFinalState && !collectedSet.has(currentPublicKey) && !declinedByMe;
+  const canDecline = canCurrentSign && !signingClosed && !collectedSet.has(currentPublicKey) && !declinedByMe;
 
   // G5 stage 2: decoded client-side purely for display, so a signer can see
   // what they're actually being asked to sign (operations, validity window)
@@ -598,6 +603,8 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
       // fee_bump_not_supported: backendErrorMessage (multisigErrors.js) liefert schon den uebersetzten Text.
       } else if (raw === 'signers_unavailable') {
         setError(t('multisig:errors.signersUnavailable'));
+      } else if (raw === 'submit_unclear') {
+        setError(t('multisig:detail.access.submitUnclear'));
       } else {
         setError(raw);
       }
@@ -653,7 +660,8 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
       const st = merged?.status || 'pending_signatures';
       setInfo(t('multisig:detail.signatures.signedLocalStatus', { status: t(`multisig:list.status.${st}`, st) }));
       const submitErr = submitReasonText(merged?.submittedResult);
-      if (submitErr) {
+      // F-2: unklar ist kein Fehler; der Hinweiskasten im Job erklaert es.
+      if (submitErr && st !== 'submit_unclear') {
         const lpText = liquiditySubmitText(merged?.submittedResult);
         setError(`${t('multisig:detail.submitFailed', { reason: submitErr })}${lpText ? ` ${lpText}` : ''}`);
       } else {
@@ -673,6 +681,8 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
         setError(t('multisig:errors.signersUnavailable'));
       } else if (String(e?.message || '') === 'account_mismatch') {
         setError(t('multisig:errors.accountMismatch'));
+      } else if (String(e?.message || '') === 'submit_unclear') {
+        setError(t('multisig:detail.access.submitUnclear'));
       } else {
         // Schluessel (z. B. signingFailed aus attachSignatures) uebersetzt anzeigen, nicht roh.
         setError(formatErrorForUi(t, e?.message ? e : new Error('multisig.jobs.merge_failed')));
@@ -991,7 +1001,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
                         defaultValue: 'Diese Transaktion hat Bedingungen, die SKM selbst nie setzt: {{list}}. Sie bestimmen, ab wann oder unter welchen Umständen die Transaktion gültig ist; ein Extra Signer verlangt zusätzlich die Signatur eines weiteren Schlüssels. Prüfe die gelb markierten Zeilen, bevor du signierst.',
                       })}
                     </p>
-                    {!isFinalState && !integrityBlocked && (
+                    {!signingClosed && !integrityBlocked && (
                       <label className="flex items-center gap-2">
                         <input type="checkbox" checked={preconditionsConfirmed} onChange={(e) => setConfirmed('preconditions', e.target.checked)} />
                         {t('multisig:detail.tx.confirmPreconditions', 'Ich habe die zusätzlichen Bedingungen geprüft und möchte trotzdem signieren.')}
@@ -1048,7 +1058,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
                       })}
                     </p>
                   )}
-                  {!isFinalState && !integrityBlocked && !ownAccountAsOpSource && (
+                  {!signingClosed && !integrityBlocked && !ownAccountAsOpSource && (
                     <label className="flex items-center gap-2">
                       <input type="checkbox" checked={foreignSourcesConfirmed} onChange={(e) => setConfirmed('foreignSources', e.target.checked)} />
                       {t('multisig:detail.operations.confirmForeignSources', 'Ich habe die fremden Quellkonten geprüft und möchte trotzdem signieren.')}
@@ -1059,7 +1069,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
               {operationWarnings.unknownTypes.length > 0 && (
                 <div role="alert" className="mt-2 space-y-1 rounded-sm border border-red-300 bg-red-50 p-2 text-xs text-red-900 dark:border-red-700 dark:bg-red-900/30 dark:text-red-100">
                   <p className="font-medium">{t('multisig:detail.operations.warnUnknown', { types: operationWarnings.unknownTypes.join(', ') })}</p>
-                  {!isFinalState && !integrityBlocked && (
+                  {!signingClosed && !integrityBlocked && (
                     <label className="flex items-center gap-2">
                       <input type="checkbox" checked={unknownOpsConfirmed} onChange={(e) => setConfirmed('unknownOps', e.target.checked)} />
                       {t('multisig:detail.operations.confirmUnknown')}
@@ -1068,8 +1078,9 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
                 </div>
               )}
             </div>
-            {/* Nach dem Einreichen ist die Sequence verbraucht, der Status oben sagt dann alles. */}
-            {!String(job.status || '').startsWith('submitted_') && (
+            {/* Nach dem Einreichen ist die Sequence verbraucht, der Status oben sagt dann alles. Bei
+                unklarem Sendeergebnis (F-2) ist offen, ob sie verbraucht ist. */}
+            {!String(job.status || '').startsWith('submitted_') && !isSubmitUnclear && (
             <div className="flex flex-wrap gap-x-6 gap-y-1">
               <div>
                 <span className="text-gray-600 dark:text-gray-300">{t('multisig:detail.sequenceStatus.label', 'Sequenz-Status')}: </span>
@@ -1097,7 +1108,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
             </div>
           )}
 
-          {canCurrentSign && !isFinalState && (
+          {canCurrentSign && !signingClosed && (
             <div className="flex items-center justify-between gap-3 border rounded-sm p-3">
               <div className="text-sm font-semibold">
                 {t('multisig:detail.secretPrompt.signNow', 'Jetzt signieren')}
@@ -1118,7 +1129,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
             </div>
           )}
 
-          {showSecretPrompt && canCurrentSign && !isFinalState && (
+          {showSecretPrompt && canCurrentSign && !signingClosed && (
             <div className="border border-amber-500 rounded-sm p-3 space-y-3 bg-amber-50 dark:bg-amber-900/40 shadow-xs">
               <div className="text-sm font-semibold text-amber-900 dark:text-amber-100">
                 {t('multisig:detail.secretPrompt.title', 'Secret eingeben, um zu signieren')}
@@ -1155,7 +1166,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
               </div>
             </div>
           )}
-          {canCurrentSign && !isFinalState && declinedByMe && (
+          {canCurrentSign && !signingClosed && declinedByMe && (
             <div className="border border-red-300 dark:border-red-700 rounded-sm p-3 text-sm text-red-800 dark:text-red-200" data-testid="job-declined-by-me">
               {t('multisig:detail.decline.declinedByMe', 'Du hast diesen Job abgelehnt. Signierst du doch noch, wird die Ablehnung entfernt.')}
             </div>
@@ -1286,7 +1297,16 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
               allowRememberSession={false}
             />
           )}
-          {submitError && (
+          {isSubmitUnclear && (
+            <div role="alert" className="border border-orange-400 bg-orange-50 dark:border-orange-700 dark:bg-orange-900/30 text-sm text-orange-900 dark:text-orange-100 rounded-sm p-3 space-y-1" data-testid="job-submit-unclear">
+              <div className="font-semibold">{t('multisig:detail.submitUnclear.title')}</div>
+              <p className="text-xs">{t('multisig:detail.submitUnclear.body')}</p>
+              {submitError && (
+                <p className="text-xs opacity-80 break-all">{t('multisig:detail.submitUnclear.reason', { reason: submitError })}</p>
+              )}
+            </div>
+          )}
+          {submitError && !isSubmitUnclear && (
             <div className="border border-red-400 bg-red-50 dark:bg-red-900/30 text-xs text-red-800 dark:text-red-200 rounded-sm p-2 space-y-1">
               <div>{t('multisig:detail.submitFailed', { reason: submitError })}</div>
               {liquiditySubmitText(job.submittedResult) && (
@@ -1327,8 +1347,9 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
             <textarea className="w-full h-32 text-xs font-mono bg-gray-50 dark:bg-gray-900 border rounded-sm px-2 py-1" readOnly value={jobTxXdr(job)} />
           </div>
 
-          {/* Abgeschlossene Jobs (auch veraltete/abgelaufene) nehmen keine Signaturen mehr an. */}
-          {!isFinalState && (
+          {/* Abgeschlossene Jobs (auch veraltete/abgelaufene) und Jobs mit unklarem Sendeergebnis
+              (F-2) nehmen keine Signaturen mehr an. */}
+          {!signingClosed && (
             <div className="border rounded-sm p-3 space-y-2">
               <div>
                 <h3 className="font-semibold text-sm">{t('multisig:detail.signedXdr.title')}</h3>

@@ -57,6 +57,9 @@ dass jede Spec in dieser Tabelle steht und jede genannte Datei existiert.
 - Zahlung senden und Sammelzahlung mit Ergebnis, unklarer Status (Netz sperren), Trading mit Multisig, Multisig-Job mit
   zweitem Signer, Xdr-Export, Bugreport (sendet echte Mail), Mainnet (nie automatisch).
 - Memo-Pflicht und Fee-Bump-Ablehnung sind als Unit-Tests abgedeckt (`memoRequired.test.js`, Multisig-Tests).
+- Unklares Sendeergebnis eines Multisig-Jobs (`submit_unclear`, Review Fable F-2): braucht einen Horizon-Timeout oder
+  5xx, gegen das echte Testnet nicht auslösbar. Abgedeckt mit Horizon-Mock in `test/multisigSubmitUnclear.test.js`
+  und `.php` sowie im Frontend in `MultisigJobDetail.test.jsx` und `MultisigJobList.test.jsx`.
 
 ### Regeln für die Pflege
 

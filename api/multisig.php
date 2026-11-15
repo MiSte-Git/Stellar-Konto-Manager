@@ -8,6 +8,8 @@
 //   POST   /api/multisig/jobs/:id/challenge
 //   POST   /api/multisig/jobs/:id/token
 //   POST   /api/multisig/jobs/:id/merge-signed-xdr
+//   POST   /api/multisig/jobs/:id/decline
+//   POST   /api/multisig/jobs/:id/delete
 
 declare(strict_types=1);
 
@@ -32,6 +34,7 @@ require __DIR__ . '/multisigJobsGuard.php';
 require __DIR__ . '/multisigLifecycle.php';
 require __DIR__ . '/multisigDecline.php';
 require __DIR__ . '/submitResult.php';
+require __DIR__ . '/submitUnclear.php';
 
 use Soneso\StellarSDK\StellarSDK;
 use Soneso\StellarSDK\AbstractTransaction;
@@ -234,6 +237,13 @@ function txHash(AbstractTransaction $tx, string $net): string {
     return bin2hex($tx->hash($network));
 }
 
+// F-2: Sende-Timeout. Danach ist das Ergebnis unklar (submit_unclear), nicht fehlgeschlagen.
+// Gleich wie Node (HORIZON_SUBMIT_TIMEOUT_MS, Standard 20 s).
+const HORIZON_SUBMIT_TIMEOUT_SECONDS = 20;
+
+// Sendet und ordnet das Ergebnis ein (F-2), gleich wie submitJobTx in server.js: 2xx mit Hash ist
+// Erfolg (Rueckgabe). Unklar (SubmitUnclearException): keine Antwort, Timeout, 408, 429, >= 500 ohne
+// result_codes, 2xx ohne Hash. Sonst Ablehnung (SubmitFailedException mit extras).
 function submitToNetwork(AbstractTransaction $tx, string $net): array {
     $horizon = skm_horizon_url($net);
     $xdr = $tx->toEnvelopeXdrBase64();
@@ -243,16 +253,22 @@ function submitToNetwork(AbstractTransaction $tx, string $net): array {
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_HEADER, false);
     curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 20);
+    curl_setopt($ch, CURLOPT_TIMEOUT, HORIZON_SUBMIT_TIMEOUT_SECONDS);
     $respBody = curl_exec($ch);
     $curlErrno = curl_errno($ch);
+    $curlError = curl_error($ch);
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
     if ($respBody === false) {
-        throw new SubmitFailedException($curlErrno === CURLE_OPERATION_TIMEDOUT ? 'submit_timeout' : 'submit_failed');
+        throw new SubmitUnclearException($curlErrno === CURLE_OPERATION_TIMEDOUT ? 'submit_timeout' : ($curlError !== '' ? $curlError : 'submit_no_response'));
     }
     $data = json_decode($respBody, true);
-    if ($httpCode >= 200 && $httpCode < 300 && isset($data['hash'])) {
+    if (skm_submit_response_is_unclear((int)$httpCode, $data)) {
+        $isSuccessCode = $httpCode >= 200 && $httpCode < 300;
+        $message = $isSuccessCode ? 'submit_no_hash' : (is_array($data) ? ($data['title'] ?? $data['detail'] ?? null) : null);
+        throw new SubmitUnclearException(is_string($message) && $message !== '' ? $message : 'submit_unclear');
+    }
+    if ($httpCode >= 200 && $httpCode < 300) {
         // F-3: nur Hash und Ledger speichern (kein envelope_xdr/result_xdr).
         return skm_submit_success_result($data);
     }
@@ -260,6 +276,30 @@ function submitToNetwork(AbstractTransaction $tx, string $net): array {
     if (is_array($data) && isset($data['extras'])) $extras = $data['extras'];
     // Fehlertext zuerst title, dann detail, wie Node (submitErrorResult in services/submitResult.js).
     throw new SubmitFailedException($data['title'] ?? $data['detail'] ?? 'submit_failed', $extras);
+}
+
+// F-2: Abruf GET /transactions/{hash} fuer die Klaerung. 404 = nicht im Ledger, alles andere ohne
+// Datensatz (Netz, Timeout, 5xx, kaputtes JSON) = Fehler, der Job bleibt dann unklar.
+function lookupTransactionByHash(string $net, string $hash): array {
+    if (!preg_match('/^[0-9a-f]{64}$/', $hash)) return ['kind' => 'error'];
+    $ch = curl_init(skm_horizon_url($net) . '/transactions/' . $hash);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HEADER, false);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+    curl_setopt($ch, CURLOPT_TIMEOUT, HORIZON_LOAD_TIMEOUT_SECONDS);
+    $respBody = curl_exec($ch);
+    $httpCode = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+    if ($respBody === false) return ['kind' => 'error'];
+    if ($httpCode === 404) return ['kind' => 'not_found'];
+    $data = json_decode((string)$respBody, true);
+    if ($httpCode !== 200 || !is_array($data)) return ['kind' => 'error'];
+    return [
+        'kind' => 'found',
+        'successful' => is_bool($data['successful'] ?? null) ? $data['successful'] : null,
+        'hash' => is_string($data['hash'] ?? null) ? $data['hash'] : $hash,
+        'ledger' => is_int($data['ledger'] ?? null) ? $data['ledger'] : null,
+    ];
 }
 
 function fetchAccountSigners(string $accountId, string $net): array {
@@ -380,8 +420,9 @@ function matchRoute(string $uri, string $pattern): ?array {
  * entfernter Signer zaehlte weiter, ein bei Horizon-Ausfall angelegter Job blieb bei "noetig: 1").
  * Antwortet Horizon nicht, bleibt der gespeicherte Stand. Endzustaende: keine Abfrage, gespeicherter
  * Stand. Auf gespeicherte collectedSigners wird nur bei nicht lesbarem XDR zurueckgegriffen.
- * Nichts davon wird hier gespeichert (nur Anlegen und Merge speichern). Gleich wie
- * annotateJobsLifecycleStatus in server.js.
+ * submit_unclear (F-2): Signer und Gewicht live wie bei offenen Jobs, der Status bleibt; aendern darf
+ * ihn nur die Klaerung (resolveUnclearJobs). Nichts davon wird hier gespeichert (nur Anlegen, Merge
+ * und die Klaerung speichern). Gleich wie annotateJobsLifecycleStatus in server.js.
  */
 function summarizeJob(array $job): array {
     $net = $job['network'] ?? 'public';
@@ -438,7 +479,7 @@ function summarizeJob(array $job): array {
     $job['missingSigners'] = $missing;
     $job['missingWeight'] = $missingWeight;
 
-    if (!$isFinal) {
+    if (!$isFinal && ($job['status'] ?? '') !== SUBMIT_UNCLEAR_STATUS) {
         // G5 stage 1: a frozen sequence/timebound that has since become
         // unreachable on-chain overrides the collected-vs-required weight
         // computation below - no amount of additional signatures can save a
@@ -451,6 +492,68 @@ function summarizeJob(array $job): array {
 
     // F-3: jede Ausgabe eines Jobs laeuft hier durch; bereinigt auch Altjobs (envelope_xdr/result_xdr fallen weg).
     return skm_with_sanitized_submit_result($job);
+}
+
+/**
+ * F-2: Klaerung offener submit_unclear-Jobs beim Lesen (Liste, Detail). $jobs sind Ausgaben von
+ * summarizeJob() (noch mit XDR). Nur mit Live-Kontodaten und nur, wenn das Ergebnis feststehen kann
+ * (Sequence der Tx-Quelle verbraucht oder maxTime + Karenz vorbei; ein 404 zaehlt erst nach maxTime +
+ * Karenz, siehe skm_unclear_outcome), hoechstens
+ * SUBMIT_UNCLEAR_MAX_RESOLVES_PER_REQUEST Abfragen je Anfrage. Die Abfragen laufen ausserhalb des
+ * Locks; gespeichert wird unter withJobsLock und nur fuer Jobs, die dort noch submit_unclear sind.
+ * Scheitert das Speichern, bleibt der Job unklar (auch in der Antwort). Gleich wie
+ * resolveUnclearJobs in server.js.
+ */
+function resolveUnclearJobs(string $jobFile, array $jobs): array {
+    $budget = SUBMIT_UNCLEAR_MAX_RESOLVES_PER_REQUEST;
+    $outcomes = [];
+    foreach ($jobs as $j) {
+        if (($j['status'] ?? '') !== SUBMIT_UNCLEAR_STATUS) continue;
+        if ($budget <= 0) break;
+        $net = $j['network'] ?? 'public';
+        $parseErr = null;
+        $tx = parseTx((string)($j['txXdrCurrent'] ?? ($j['txXdrOriginal'] ?? '')), $net, $parseErr);
+        if (!($tx instanceof \Soneso\StellarSDK\Transaction)) continue;
+        $meta = fetchAccountSignersCached($j['accountId'] ?? '', $net);
+        if (($meta['ok'] ?? true) === false) continue;
+        // Sequenz von accountId genuegt: K1 erzwingt beim Anlegen und Merge Tx-Quelle == accountId.
+        $sequenceConsumed = skm_sequence_consumed($tx->getSequenceNumber(), isset($meta['sequence']) ? (string)$meta['sequence'] : null);
+        $maxTimeUnix = extractMaxTimeUnix($tx);
+        $nowUnix = time();
+        if (!skm_unclear_resolve_due($sequenceConsumed, $maxTimeUnix, $nowUnix)) continue;
+        $budget--;
+        $outcome = skm_unclear_outcome(lookupTransactionByHash($net, (string)($j['txHash'] ?? '')), $sequenceConsumed, skm_unclear_time_passed($maxTimeUnix, $nowUnix));
+        if ($outcome !== null) $outcomes[(string)($j['id'] ?? '')] = $outcome;
+    }
+    if ($outcomes === []) return $jobs;
+
+    $applied = [];
+    try {
+        withJobsLock($jobFile, function (array $items) use ($outcomes, &$applied) {
+            foreach ($items as &$it) {
+                $id = (string)($it['id'] ?? '');
+                if (!isset($outcomes[$id]) || ($it['status'] ?? '') !== SUBMIT_UNCLEAR_STATUS) continue;
+                $it['status'] = $outcomes[$id]['status'];
+                if (array_key_exists('submittedResult', $outcomes[$id])) $it['submittedResult'] = $outcomes[$id]['submittedResult'];
+                $it['resolvedAt'] = gmdate('c');
+                $applied[$id] = $it;
+            }
+            unset($it);
+            return $items;
+        });
+    } catch (\Throwable $e) {
+        error_log('[multisig] jobs.resolve_unclear failed: ' . $e->getMessage());
+        return $jobs;
+    }
+    foreach ($jobs as &$j) {
+        $id = (string)($j['id'] ?? '');
+        if (!isset($applied[$id])) continue;
+        $j['status'] = $applied[$id]['status'];
+        $j['submittedResult'] = skm_sanitize_submitted_result($applied[$id]['submittedResult'] ?? null);
+        $j['resolvedAt'] = $applied[$id]['resolvedAt'];
+    }
+    unset($j);
+    return $jobs;
 }
 
 // Routing
@@ -529,8 +632,9 @@ if ($method === 'POST' && $path === '/api/multisig/jobs') {
                 $status = 'submitted_success';
             } catch (\Throwable $submitErr) {
                 // F-3: nur Fehlertext und result_codes, nie envelope_xdr/result_xdr (die Liste ist ohne Token lesbar).
+                // F-2: unklar (keine eindeutige Antwort) wird submit_unclear, nicht submitted_failed.
                 $submittedResult = skm_submit_error_result($submitErr);
-                $status = 'submitted_failed';
+                $status = $submitErr instanceof SubmitUnclearException ? SUBMIT_UNCLEAR_STATUS : 'submitted_failed';
             }
         }
 
@@ -611,6 +715,8 @@ if ($method === 'GET' && $path === '/api/multisig/jobs') {
     $page = array_slice($items, $offset, $limit);
 
     $page = array_map('summarizeJob', $page);
+    // F-2: vor dem Statusfilter, damit ?status= den geklaerten Stand sieht.
+    $page = resolveUnclearJobs($jobFile, $page);
     // Filtered against the freshly recomputed status, not the stored one
     // (server.js's annotateJobsLifecycleStatus() runs before its equivalent
     // filter for the same reason) - a job that just became expired/
@@ -639,7 +745,8 @@ if ($method === 'GET' && ($m = matchRoute($path, '/api/multisig/jobs/:id'))) {
     foreach ($items as $j) {
         if (($j['id'] ?? '') === $id) {
             if (!hasValidJobToken($j)) return sendJson(['ok' => false, 'error' => 'forbidden'], 403);
-            return sendJson(summarizeJob($j));
+            $resolved = resolveUnclearJobs($jobFile, [summarizeJob($j)]);
+            return sendJson($resolved[0]);
         }
     }
     return sendJson(['ok' => false, 'error' => 'not_found'], 404);
@@ -789,7 +896,8 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/declin
                 if (($j['id'] ?? '') !== $id) continue;
                 $current = summarizeJob($j);
                 $finalStates = ['submitted_success', 'submitted_failed', 'expired', 'obsolete_seq', 'rejected'];
-                if (in_array($current['status'] ?? '', $finalStates, true)) {
+                // F-2: submit_unclear ist nicht final, aber gesperrt (die Transaktion kann im Ledger sein).
+                if (in_array($current['status'] ?? '', $finalStates, true) || ($current['status'] ?? '') === SUBMIT_UNCLEAR_STATUS) {
                     $conflict = $current['status'];
                     return $items;
                 }
@@ -955,7 +1063,8 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/merge-
                 // submitted_success.
                 $finalStates = ['submitted_success', 'submitted_failed', 'expired', 'obsolete_seq', 'rejected'];
                 $existingStatus = $j['status'] ?? '';
-                if (in_array($existingStatus, $finalStates, true)) {
+                // F-2: submit_unclear ebenso, sonst wuerde ein weiterer Merge erneut senden.
+                if (in_array($existingStatus, $finalStates, true) || $existingStatus === SUBMIT_UNCLEAR_STATUS) {
                     $lifecycleRejected = $existingStatus;
                     $resultRow = summarizeJob($j);
                     break;
@@ -1031,10 +1140,11 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/merge-
                         // that TOCTOU gap (the account sequence used above can be
                         // up to 30s cached, see fetchAccountSignersCached()).
                         // F-3: wie beim Anlegen nur Fehlertext und result_codes.
+                        // F-2: unklar (keine eindeutige Antwort) wird submit_unclear, nicht submitted_failed.
                         $submittedResult = skm_submit_error_result($submitErr);
                         $resultCode = skm_submitted_result_tx_code($submittedResult);
                         $mapped = mapSubmitResultCodeToLifecycleStatus($resultCode);
-                        $status = $mapped ?? 'submitted_failed';
+                        $status = $submitErr instanceof SubmitUnclearException ? SUBMIT_UNCLEAR_STATUS : ($mapped ?? 'submitted_failed');
                     }
                 }
 

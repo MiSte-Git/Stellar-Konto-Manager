@@ -103,7 +103,8 @@ Ein Job ist eine unsignierte oder teilsignierte Transaktion, die mehrere Signer 
   gespeicherte Stand. Endzustände werden ohne Horizon-Abfrage aus dem gespeicherten Stand gezeigt. Auf gespeicherte
   `collectedSigners` wird nur bei nicht lesbarem XDR zurückgegriffen (`summarizeJob` in `api/multisig.php`,
   `recomputeJobState` in `server.js`; Befund F-11). Die Sequenz für den Lebenszyklus kommt von `accountId`; das
-  reicht, weil Anlegen und Merge Quelle = `accountId` erzwingen (K1).
+  reicht, weil Anlegen und Merge Quelle = `accountId` erzwingen (K1). Den Status `submit_unclear` lässt die
+  Neuberechnung stehen (siehe Unklares Sendeergebnis).
 - **Signatur hinzufügen (Merge):** Der Server übernimmt nur Signaturen von aktuellen Signern des Kontos, je Signer
   höchstens eine (die zuerst vorhandene, also die schon gespeicherte) und insgesamt höchstens 20 Signaturen
   (Stellar-Grenze, `services/txSignatures.js`, `api/txSignatures.php`). Grund für „je Signer eine“: Ed25519 erlaubt
@@ -129,8 +130,8 @@ Ein Job ist eine unsignierte oder teilsignierte Transaktion, die mehrere Signer 
   Transaktionssignatur. Mit Präfix ist keine signierte Nachricht 32 Bytes lang, und eine Signatur für einen Zweck
   gilt nicht für einen anderen. Code: `services/challengeStore.js`, `api/challengeStore.php`,
   `frontend/src/utils/multisigApi.js`.
-- **Ablehnen:** nur aktuelle Signer, nicht nach eigener Signatur, nicht im Endzustand. Gewicht und Threshold kommen
-  live.
+- **Ablehnen:** nur aktuelle Signer, nicht nach eigener Signatur, nicht im Endzustand und nicht bei
+  `submit_unclear` (409). Gewicht und Threshold kommen live.
 - **Löschen** (`POST /api/multisig/jobs/:id/delete`): nur aktuelle Signer des Job-Kontos (live geprüft, Gewicht > 0),
   Besitznachweis per Challenge mit Zweck `delete`, nur im Endzustand (sonst 409 `not_final`). Das Job-Token reicht
   nicht: Es hat auch, wer den Job angelegt hat, und es bleibt gültig, wenn ein Signer später entfernt wird
@@ -151,6 +152,29 @@ Ein Job ist eine unsignierte oder teilsignierte Transaktion, die mehrere Signer 
   mit dem signierten Envelope könnte ein Dritter eine nur vorläufig abgelehnte Transaktion (z. B.
   `tx_insufficient_fee`) bis `maxTime` selbst einreichen. Altjobs mit vollständiger Antwort werden bei jeder Ausgabe
   (Liste, Detail, Merge, Anlegen) bereinigt (Review Fable, Befund F-3).
+- **Unklares Sendeergebnis (`submit_unclear`):** Kommt beim Senden durch das Backend (Anlegen oder Merge) keine
+  eindeutige Antwort, wird der Job `submit_unclear`, nicht `submitted_failed`. Unklar heißt: keine Antwort, Timeout
+  (20 s in beiden Backends), HTTP 408, 429 oder ab 500 ohne `result_codes`, oder 2xx ohne Hash. Mit `result_codes`
+  ist es eine Ablehnung wie bisher (`tx_bad_seq`/`tx_too_late` beim Merge als `obsolete_seq`/`expired`). Grund: Die
+  Transaktion kann trotz Timeout im Ledger landen. Als `submitted_failed` hätten die Signer dieselbe Zahlung neu
+  angelegt, und sie wäre doppelt ausgeführt worden (Review Fable, Befund F-2). Der Status ist nicht final, aber
+  gesperrt: Merge und Ablehnen antworten 409 `submit_unclear`, Löschen 409 `not_final`, es wird nie erneut gesendet;
+  die Live-Neuberechnung und der Ablaufwächter `expireStalePendingJobs` ändern ihn nicht. Geklärt wird beim Lesen
+  (Liste, Detail). Abgefragt wird `GET /transactions/{hash}`, sobald die Sequence der Tx-Quelle verbraucht ist
+  (Konto-Sequence ≥ Tx-Sequence) oder `maxTime` seit mehr als 120 s vorbei ist (`SUBMIT_UNCLEAR_GRACE_SECONDS`).
+  Gefunden ist sofort endgültig: erfolgreich ergibt `submitted_success` (Hash, Ledger), fehlgeschlagen
+  `submitted_failed`. Ein 404 ist erst nach `maxTime` + 120 s endgültig: bei verbrauchter Sequence `obsolete_seq`
+  (eine andere Transaktion hat sie verbraucht), sonst `expired`. Vorher bleibt der Job bei 404 unklar und es wird
+  nichts gespeichert, auch wenn die Sequence schon verbraucht ist. Grund: Horizon läuft hinter einem Load Balancer;
+  das Konto kann von einem aktuellen Knoten kommen (Sequence verbraucht) und die Transaktion von einem
+  nachhinkenden (404). `obsolete_seq` würde dann einen ausgeführten Job als ungültig zeigen, und die Signer legten ihn
+  neu an. Nach `maxTime` kann die Transaktion nicht mehr ins Ledger, und die Karenz deckt den Rückstand eines Knotens
+  ab. Jeder andere Fehler lässt den Job ebenfalls unklar. Ohne Live-Kontodaten wird nicht geklärt. Gespeichert wird unter dem Job-Lock und nur,
+  wenn der Job dort noch `submit_unclear` ist; höchstens 5 Klärungen je Anfrage
+  (`SUBMIT_UNCLEAR_MAX_RESOLVES_PER_REQUEST`). Code: `services/submitUnclear.js`, `api/submitUnclear.php`. Das
+  Job-Detail zeigt einen Hinweis (nicht neu anlegen, nicht anderswo senden) und keine Knöpfe für Signieren, Import und
+  Ablehnen. Der Widerruf (Sequence verbrauchen) bleibt erlaubt: Ist die Transaktion schon im Ledger, schlägt er fehl,
+  sonst macht er sie sicher ungültig.
 - **Nebenläufigkeit:** Node serialisiert Merge, Ablehnen und Löschen je Job (`services/multisigJobLock.js`), PHP
   arbeitet unter Dateilock. Endzustände werden im Lock geprüft.
 - **Anzeige vor dem Signieren** (`frontend/src/utils/multisig/describeTransaction.js`,

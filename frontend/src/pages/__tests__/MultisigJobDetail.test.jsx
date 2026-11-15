@@ -1370,3 +1370,37 @@ describe('Job ablehnen', () => {
     expect(screen.queryByRole('button', { name: 'Ablehnen' })).toBeNull();
   });
 });
+
+describe('Sendestatus unklar (F-2)', () => {
+  const unclearJob = () => makeJob({
+    status: 'submit_unclear',
+    collectedSigners: [{ publicKey: SIGNER_B.publicKey, weight: 1 }],
+    collectedWeight: 1,
+    submittedResult: { error: 'Timeout', detail: { message: 'Timeout', extras: {} } },
+  });
+
+  it('zeigt den Hinweis, keine Knoepfe fuer Signieren, Import und Ablehnen, der Widerruf bleibt', async () => {
+    hoisted.getJobMock.mockImplementation(async () => unclearJob());
+    renderPage();
+    const box = await screen.findByTestId('job-submit-unclear');
+    expect(box).toHaveTextContent('Unklar, ob die Transaktion ausgeführt wurde');
+    expect(box).toHaveTextContent('Bis dahin diesen Auftrag nicht neu anlegen und nicht anderswo senden.');
+    expect(screen.getByText(/Status: Sendestatus unklar/)).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Jetzt signieren' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Ablehnen' })).toBeNull();
+    expect(screen.queryByText(i18n.t('multisig:detail.signedXdr.title'))).toBeNull();
+    expect(screen.queryByText(/Beim Senden ist ein Fehler aufgetreten/)).toBeNull();
+    expect(screen.queryByText(/aktuell gültig/)).toBeNull();
+    expect(await screen.findByRole('button', { name: 'Job widerrufen' })).toBeInTheDocument();
+  });
+
+  it('nach dem Signieren mit unklarem Sendeergebnis: Hinweis statt Fehlermeldung', async () => {
+    hoisted.sessionSecretMock.mockResolvedValue(SIGNER_A.secret);
+    hoisted.mergeMock.mockImplementation(async () => unclearJob());
+    renderPage();
+    fireEvent.click((await screen.findAllByRole('button', { name: 'Jetzt signieren' }))[0]);
+    expect(await screen.findByTestId('job-submit-unclear')).toBeInTheDocument();
+    expect(screen.queryByText(/Beim Senden ist ein Fehler aufgetreten/)).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Jetzt signieren' })).toBeNull();
+  });
+});

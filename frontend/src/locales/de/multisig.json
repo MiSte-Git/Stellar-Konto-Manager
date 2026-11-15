@@ -232,6 +232,11 @@
     },
     "submitFailed": "Beim Senden ist ein Fehler aufgetreten: {{reason}}",
     "submitNoExtras": "Keine weiteren Fehlerdetails verfügbar.",
+    "submitUnclear": {
+      "title": "Unklar, ob die Transaktion ausgeführt wurde",
+      "body": "Beim Senden kam keine eindeutige Antwort vom Stellar-Netz. Die Transaktion kann trotzdem ausgeführt worden sein. SKM klärt das, sobald die Sequence des Kontos verbraucht oder das Zeitfenster abgelaufen ist. Bis dahin diesen Auftrag nicht neu anlegen und nicht anderswo senden. Wer sicher abbrechen will, kann den Job widerrufen.",
+      "reason": "Antwort beim Senden: {{reason}}"
+    },
     "liquidityState": {
       "title": "Aktueller Pool-Stand laut Horizon (nur Anzeige)",
       "loading": "Pool-Daten werden geladen …",
@@ -450,6 +455,7 @@
       "failed": "Der Job konnte nicht geladen werden ({{code}}). Bitte Verbindung prüfen und erneut versuchen.",
       "tokenRejected": "Der Zugriff wurde abgelehnt. Bitte den Secret Key erneut eingeben.",
       "finalState": "Der Job ist bereits abgeschlossen ({{status}}).",
+      "submitUnclear": "Beim Senden dieses Jobs kam keine eindeutige Antwort vom Stellar-Netz. Bis das geklärt ist, nimmt er keine Signaturen und keine Ablehnung an.",
       "tooManyRequests": "Der Server meldet zu viele Anfragen. Bitte etwas warten und erneut versuchen.",
       "tooManyRequestsWait": "Der Server meldet zu viele Anfragen. Bitte in {{seconds}} Sekunden erneut versuchen."
     },
@@ -514,6 +520,7 @@
     "status": {
       "pending_signatures": "Wartet auf Signaturen",
       "ready_to_submit": "Bereit zum Senden",
+      "submit_unclear": "Sendestatus unklar",
       "submitted_success": "Gesendet",
       "submitted_failed": "Senden fehlgeschlagen",
       "expired": "Abgelaufen",
@@ -571,6 +578,7 @@
       "ready_to_submit": "Es liegen genug Signaturen vor. Der Auftrag kann gesendet werden.",
       "submitted_success": "Der Auftrag wurde gesendet.",
       "submitted_failed": "Beim Senden ist ein Fehler aufgetreten.",
+      "submit_unclear": "Beim Senden kam keine eindeutige Antwort. SKM klärt beim nächsten Laden, ob die Transaktion ausgeführt wurde. Bis dahin nimmt der Auftrag keine Signaturen an.",
       "expired": "Der Auftrag ist abgelaufen.",
       "obsolete_seq": "Die Sequence ist veraltet.",
       "unknown": "Status unbekannt.",

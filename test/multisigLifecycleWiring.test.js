@@ -108,7 +108,8 @@ test('merge route backfills maxTimeUnix for jobs stored before the field existed
 });
 
 test('merge route rejects an already-final job with HTTP 409, before any Horizon lookup', () => {
-  const finalCheckIndex = mergeBlock.indexOf('if (multisigFinalStatus.has(job.status)) {');
+  // F-2: submit_unclear ist nicht final, aber genauso gesperrt (sonst wuerde erneut gesendet).
+  const finalCheckIndex = mergeBlock.indexOf('if (multisigFinalStatus.has(job.status) || job.status === SUBMIT_UNCLEAR_STATUS) {');
   const metaFetchIndex = mergeBlock.indexOf('fetchAccountMetaCached(net, job.accountId)');
   assert.ok(finalCheckIndex > -1, 'the already-final guard must exist');
   assert.ok(metaFetchIndex > -1 && finalCheckIndex < metaFetchIndex, 'the guard must precede the (Horizon-costing) account meta fetch');
@@ -134,11 +135,23 @@ test('merge route persists a lifecycle-dead status with HTTP 409 rather than sil
 // --- merge route: submit-failure result-code mapping (TOCTOU safety net) -----
 
 test('merge route maps a failed submission\'s Horizon result code to a lifecycle status (TOCTOU safety net)', () => {
-  const catchIndex = mergeBlock.indexOf('} catch (submitErr) {');
-  const mappedIndex = mergeBlock.indexOf('const mapped = mapSubmitResultCodeToLifecycleStatus(resultCode);');
+  // Seit F-2 sendet submitJobTx() fuer Anlegen und Merge; nur der Merge bildet tx_bad_seq/tx_too_late ab.
+  assert.ok(mergeBlock.includes('submitJobTx(current.tx, net, { mapLifecycleCodes: true })'), 'merge must submit with lifecycle mapping');
+  const fnStart = serverSource.indexOf('async function submitJobTx(');
+  const fnEnd = serverSource.indexOf('\n}\n', fnStart);
+  assert.ok(fnStart > -1 && fnEnd > fnStart, 'submitJobTx must exist');
+  const fnBlock = serverSource.slice(fnStart, fnEnd);
+  const catchIndex = fnBlock.indexOf('} catch (submitErr) {');
+  const unclearIndex = fnBlock.indexOf('if (isUnclearSubmitError(submitErr)) {');
+  const mappedIndex = fnBlock.indexOf('const mapped = mapLifecycleCodes ? mapSubmitResultCodeToLifecycleStatus(resultCode) : null;');
   assert.ok(catchIndex > -1 && mappedIndex > -1);
   assert.ok(mappedIndex > catchIndex, 'the mapping must happen inside the submit-failure catch block');
-  assert.ok(mergeBlock.includes("updated.status = mapped || 'submitted_failed';"), 'must fall back to submitted_failed only when nothing was mapped');
+  assert.ok(unclearIndex > catchIndex && unclearIndex < mappedIndex, 'F-2: an unclear result is decided before any rejection mapping');
+  assert.ok(fnBlock.includes("return { status: mapped || 'submitted_failed', submittedResult: submitErrorResult(submitErr) };"), 'must fall back to submitted_failed only when nothing was mapped');
+});
+
+test('create route submits without lifecycle mapping (unchanged behaviour)', () => {
+  assert.ok(serverSource.includes('submitJobTx(parsed.tx, net, { mapLifecycleCodes: false })'));
 });
 
 test('merge route runs expireStalePendingJobs() on the full item list before saving (write-time guard parity)', () => {

@@ -100,6 +100,9 @@ function expireStalePendingJobs(array $items, int $maxAgeDays = PENDING_JOB_EXPI
     foreach ($items as &$job) {
         $status = $job['status'] ?? '';
         if (in_array($status, $finalStates, true)) continue;
+        // F-2: submit_unclear ist nicht final, darf hier aber nie expired werden. Die Transaktion kann im
+        // Ledger sein; nur die Klaerung ueber Horizon beim Lesen setzt den Status (multisig.php).
+        if ($status === 'submit_unclear') continue;
 
         $maxTimeUnix = (int)($job['maxTimeUnix'] ?? 0);
         if ($maxTimeUnix !== 0) {

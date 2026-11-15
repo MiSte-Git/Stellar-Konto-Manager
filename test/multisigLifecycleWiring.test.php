@@ -36,7 +36,10 @@ $summarizeIdx = strpos($source, 'function summarizeJob(array $job): array');
 $routingIdx = strpos($source, "// Routing\n\$path = parse_url");
 check('sanity: summarizeJob() exists', $summarizeIdx !== false);
 check('sanity: routing section follows summarizeJob()', $routingIdx !== false && $routingIdx > $summarizeIdx);
-$summarizeBlock = ($summarizeIdx !== false && $routingIdx !== false) ? substr($source, $summarizeIdx, $routingIdx - $summarizeIdx) : '';
+// Block endet an der naechsten Funktion (seit F-2 folgt resolveUnclearJobs()) oder am Routing.
+$nextFunctionIdx = $summarizeIdx !== false ? strpos($source, "\nfunction ", $summarizeIdx + 1) : false;
+$summarizeEnd = ($nextFunctionIdx !== false && $routingIdx !== false) ? min($nextFunctionIdx, $routingIdx) : $routingIdx;
+$summarizeBlock = ($summarizeIdx !== false && $summarizeEnd !== false) ? substr($source, $summarizeIdx, $summarizeEnd - $summarizeIdx) : '';
 
 // F2 / F-11: the Horizon meta fetch must be conditioned on actually needing it -
 // only an open (not final) job is recomputed live (signers, thresholds,
@@ -52,7 +55,8 @@ check(
 check('F2/F-11: there is exactly one Horizon meta fetch in summarizeJob()', substr_count($summarizeBlock, 'fetchAccountSignersCached(') === 1);
 check('summarizeJob() derives a BigInteger account sequence from the fetched meta', strpos($summarizeBlock, "new BigInteger(\$meta['sequence'])") !== false);
 $lifecycleCallIdx = strpos($summarizeBlock, 'computeMultisigLifecycleStatus($tx, $accountSequence, time())');
-$notFinalBranchIdx = strpos($summarizeBlock, 'if (!$isFinal) {');
+// F-2: submit_unclear bleibt beim Live-Rechnen stehen, nur die Klaerung darf ihn aendern.
+$notFinalBranchIdx = strpos($summarizeBlock, "if (!\$isFinal && (\$job['status'] ?? '') !== SUBMIT_UNCLEAR_STATUS) {");
 check('summarizeJob() calls computeMultisigLifecycleStatus()', $lifecycleCallIdx !== false);
 check(
     'the lifecycle check runs inside the not-already-final branch, and overrides the ready/pending computation',
@@ -147,7 +151,7 @@ check('the submit-failure handler maps Horizon result codes to lifecycle statuse
 check('the mapping happens inside the submit catch block, not elsewhere', $mappedIdx !== false && $submitCatchIdx !== false && $mappedIdx > $submitCatchIdx);
 check(
     'a mapped result falls back to submitted_failed only when the mapping is null (TOCTOU safety net, not a replacement for the generic case)',
-    strpos($mergeBlock, "\$status = \$mapped ?? 'submitted_failed';") !== false
+    strpos($mergeBlock, "\$status = \$submitErr instanceof SubmitUnclearException ? SUBMIT_UNCLEAR_STATUS : (\$mapped ?? 'submitted_failed');") !== false
 );
 
 // --- multisigJobsGuard.php: maxTimeUnix-based expiry --------------------------

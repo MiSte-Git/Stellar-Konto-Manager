@@ -114,6 +114,14 @@ describe('MultisigJobList: Filter', () => {
     expect(onOpenDetail).toHaveBeenCalledWith('tot', 'obsolete_seq');
   });
 
+  it('zeigt submit_unclear als Sendestatus unklar und bietet kein Loeschen an (F-2)', async () => {
+    window.fetch.mockImplementation(async () => ({ ok: true, json: async () => [job('unklar', { accountId: ME, status: 'submit_unclear' })] }));
+    renderList();
+    expect(await screen.findByText('Sendestatus unklar')).toBeInTheDocument();
+    expect(screen.getByRole('checkbox', { name: 'Job unklar auswählen' })).toBeDisabled();
+    expect(screen.queryByTestId('job-dead-hint')).toBeNull();
+  });
+
   it('bietet kein Loeschen aller Testnet-Jobs mehr an', async () => {
     renderList();
     await waitFor(() => expect(screen.getByText(/eigen-abgel/)).toBeInTheDocument());

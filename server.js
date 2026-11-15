@@ -26,6 +26,10 @@ const { applyDecline, dropDeclinesOfCollected } = require('./services/multisigDe
 const { withMultisigJobLock } = require('./services/multisigJobLock.js');
 const { submitErrorResult, submitSuccessResult, withSanitizedSubmitResult } = require('./services/submitResult.js');
 const { expireStalePendingJobs } = require('./services/multisigJobsGuard.js');
+const {
+  SUBMIT_UNCLEAR_STATUS, SUBMIT_UNCLEAR_MAX_RESOLVES_PER_REQUEST,
+  isUnclearSubmitError, isUnclearSubmitSuccess, isSequenceConsumed, isUnclearTimePassed, isUnclearResolveDue, unclearOutcome,
+} = require('./services/submitUnclear.js');
 
 // Lightweight .env loader (root .env and backend/.env) without extra deps
 (function loadDotEnv() {
@@ -309,7 +313,7 @@ const allowedPriority = new Set(['low', 'normal', 'high', 'urgent']);
 const allowedCategory = new Set(['bug', 'idea', 'improve', 'other']);
 const allowedPage = new Set(['start','trustlines','trustlineCompare','balance','xlmByMemo','sendPayment','investedTokens','createAccount','multisigEdit','settings','feedback','other']);
 const ADMIN_SECRET = process.env.BUGTRACKER_ADMIN_SECRET || '';
-const multisigStatus = new Set(['pending_signatures', 'ready_to_submit', 'submitted_success', 'submitted_failed', 'expired', 'obsolete_seq', 'rejected']);
+const multisigStatus = new Set(['pending_signatures', 'ready_to_submit', 'submit_unclear', 'submitted_success', 'submitted_failed', 'expired', 'obsolete_seq', 'rejected']);
 const multisigFinalStatus = new Set(['submitted_success', 'submitted_failed', 'expired', 'obsolete_seq', 'rejected']);
 
 // Bugtracker admin session auth (finding A2): replaces the client-side secret
@@ -663,8 +667,9 @@ function parseJobTx(job) {
 // Schwellen und requiredWeight live, collected aus verifyCollected gegen diese Signer, Status aus
 // Lebenszyklus bzw. Gewicht. Antwortet Horizon nicht, gilt der gespeicherte Stand (Signer, Schwellen,
 // requiredWeight), der Status wird daraus berechnet. Endzustaende: keine Abfrage, Status bleibt.
-// Gespeicherte collectedSigners nur bei nicht lesbarem XDR. Dauerhaft aendern nur Anlegen und Merge
-// (unter saveMultisigDb()).
+// submit_unclear (F-2): Signer und Gewicht live wie bei offenen Jobs, der Status bleibt; aendern darf
+// ihn nur die Klaerung (resolveUnclearJobs). Gespeicherte collectedSigners nur bei nicht lesbarem XDR.
+// Dauerhaft aendern nur Anlegen, Merge und die Klaerung (unter saveMultisigDb()).
 function recomputeJobState(job, tx, liveMeta, nowUnix) {
   const isFinal = multisigFinalStatus.has(job.status);
   const signers = liveMeta ? (liveMeta.signers || []) : (Array.isArray(job.signers) ? job.signers : []);
@@ -680,7 +685,7 @@ function recomputeJobState(job, tx, liveMeta, nowUnix) {
   const collectedWeight = collectedSigners.reduce((acc, s) => acc + Number(s.weight || 0), 0);
   const out = { ...job, signers, requiredWeight, collectedSigners, collectedWeight };
   if (liveMeta) out.thresholds = liveMeta.thresholds;
-  if (!isFinal) {
+  if (!isFinal && job.status !== SUBMIT_UNCLEAR_STATUS) {
     // Sequenz von accountId genuegt: K1 erzwingt beim Anlegen und Merge, dass die Tx-Quelle
     // (Basiskonto) gleich accountId ist. Altjobs von vor K1 nehmen keine Signatur mehr an und laufen ab.
     const accountSequence = liveMeta ? liveMeta.sequence : null;
@@ -715,10 +720,115 @@ async function annotateJobsLifecycleStatus(items) {
 // Gleicher Wortlaut wie in api/multisig.php.
 const ACCOUNT_MISMATCH_BODY = { ok: false, error: 'account_mismatch', detail: 'Transaction source does not match accountId.' };
 
+// F-2: Sende-Timeout wie PHP (curl 20 s). Ohne ihn wartet das SDK bis zu 60 s und haelt so lange den
+// Job-Lock. Nach dem Timeout gilt das Ergebnis als unklar (submit_unclear), die Antwort danach wird
+// verworfen. Optional per HORIZON_SUBMIT_TIMEOUT_MS (Tests).
+const HORIZON_SUBMIT_TIMEOUT_MS = Number(process.env.HORIZON_SUBMIT_TIMEOUT_MS) > 0 ? Number(process.env.HORIZON_SUBMIT_TIMEOUT_MS) : 20_000;
+
 async function submitTx(tx, network) {
   const horizon = horizonServerForNet(network);
-  const res = await horizon.submitTransaction(tx);
-  return res;
+  let timer;
+  const timeout = new Promise((_, reject) => {
+    timer = setTimeout(() => reject(Object.assign(new Error('submit_timeout'), { code: 'submit_timeout' })), HORIZON_SUBMIT_TIMEOUT_MS);
+  });
+  const submit = horizon.submitTransaction(tx);
+  submit.catch(() => {}); // kein unbehandeltes Rejection, falls der Timeout zuerst kommt
+  try {
+    return await Promise.race([submit, timeout]);
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+// Senden eines Jobs mit Einordnung des Ergebnisses (F-2), gleich wie in api/multisig.php:
+// Erfolg mit Hash -> submitted_success; keine Antwort, Timeout, 408, 429, >= 500 ohne result_codes
+// oder 2xx ohne Hash -> submit_unclear; sonst Ablehnung (submitted_failed, beim Merge tx_bad_seq und
+// tx_too_late als obsolete_seq/expired). submittedResult immer im F-3-Format.
+async function submitJobTx(tx, network, { mapLifecycleCodes }) {
+  let result;
+  try {
+    result = await submitTx(tx, network);
+  } catch (submitErr) {
+    if (isUnclearSubmitError(submitErr)) {
+      return { status: SUBMIT_UNCLEAR_STATUS, submittedResult: submitErrorResult(submitErr) };
+    }
+    // G5 stage 1 (nur Merge): a submission that fails specifically because the sequence/timebound
+    // died between our pre-merge check and Horizon's authoritative processing must not be reported
+    // as a generic submitted_failed - safety net for that TOCTOU gap (the account sequence used
+    // there can be up to 30s cached).
+    const resultCode = submitErr?.response?.data?.extras?.result_codes?.transaction;
+    const mapped = mapLifecycleCodes ? mapSubmitResultCodeToLifecycleStatus(resultCode) : null;
+    // F-3: nur Fehlertext und result_codes, nie envelope_xdr/result_xdr (die Liste ist ohne Token lesbar).
+    return { status: mapped || 'submitted_failed', submittedResult: submitErrorResult(submitErr) };
+  }
+  if (isUnclearSubmitSuccess(result)) {
+    return { status: SUBMIT_UNCLEAR_STATUS, submittedResult: submitErrorResult(new Error('submit_no_hash')) };
+  }
+  return { status: 'submitted_success', submittedResult: submitSuccessResult(result) };
+}
+
+// F-2: Abruf GET /transactions/{hash} fuer die Klaerung. 404 = nicht im Ledger, alles andere ohne
+// Datensatz (Netz, Timeout, 5xx) = Fehler, der Job bleibt dann unklar.
+async function lookupJobTransaction(network, hash) {
+  let timer;
+  const timeout = new Promise((_, reject) => {
+    timer = setTimeout(() => reject(Object.assign(new Error('horizon_timeout'), { code: 'horizon_timeout' })), HORIZON_LOAD_TIMEOUT_MS);
+  });
+  const call = horizonServerForNet(network).transactions().transaction(hash).call();
+  call.catch(() => {});
+  try {
+    const rec = await Promise.race([call, timeout]);
+    // Das SDK legt das Ledger als ledger_attr ab (ledger wird zur Link-Funktion).
+    const ledger = Number.isInteger(rec?.ledger_attr) ? rec.ledger_attr : (Number.isInteger(rec?.ledger) ? rec.ledger : undefined);
+    return { kind: 'found', successful: rec?.successful, hash: typeof rec?.hash === 'string' ? rec.hash : hash, ledger };
+  } catch (err) {
+    if (isAccountNotFound(err)) return { kind: 'not_found' };
+    return { kind: 'error' };
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+// F-2: Klaerung offener submit_unclear-Jobs beim Lesen (Liste, Detail). Nur mit Live-Kontodaten und
+// nur, wenn das Ergebnis feststehen kann (Sequence der Tx-Quelle verbraucht oder maxTime + Karenz
+// vorbei), hoechstens SUBMIT_UNCLEAR_MAX_RESOLVES_PER_REQUEST Abfragen je Anfrage. Gefunden ist sofort
+// endgueltig, ein 404 erst nach maxTime + Karenz (nachhinkender Horizon-Knoten, siehe unclearOutcome). Gespeichert wird
+// unter dem Job-Lock und nur, wenn der Job dort noch submit_unclear ist. Scheitert das Speichern,
+// bleibt der Job unklar (auch in der Antwort). Gleich wie resolveUnclearJobs in api/multisig.php.
+async function resolveUnclearJobs(items) {
+  let budget = SUBMIT_UNCLEAR_MAX_RESOLVES_PER_REQUEST;
+  const out = [];
+  for (const j of items) {
+    if (j.status !== SUBMIT_UNCLEAR_STATUS || budget <= 0) { out.push(j); continue; }
+    const tx = parseJobTx(j);
+    const meta = tx ? await fetchAccountMetaCached(j.network, j.accountId) : null;
+    if (!tx || !meta || !meta.ok) { out.push(j); continue; }
+    // Sequenz von accountId genuegt: K1 erzwingt beim Anlegen und Merge Tx-Quelle == accountId.
+    const sequenceConsumed = isSequenceConsumed(tx.sequence, meta.sequence);
+    const maxTimeUnix = extractMaxTimeUnix(tx);
+    const nowUnix = Math.floor(Date.now() / 1000);
+    if (!isUnclearResolveDue({ sequenceConsumed, maxTimeUnix, nowUnix })) {
+      out.push(j);
+      continue;
+    }
+    budget -= 1;
+    const outcome = unclearOutcome(await lookupJobTransaction(j.network, j.txHash), sequenceConsumed, isUnclearTimePassed(maxTimeUnix, nowUnix));
+    if (!outcome) { out.push(j); continue; }
+    const saved = await withMultisigJobLock(j.id, async () => {
+      const current = findMultisigJob(j.id);
+      if (!current || current.status !== SUBMIT_UNCLEAR_STATUS) return null;
+      const updated = { ...current, status: outcome.status, resolvedAt: new Date().toISOString() };
+      if (outcome.submittedResult) updated.submittedResult = outcome.submittedResult;
+      multisigDb.items = multisigDb.items.map((x) => (x.id === j.id ? updated : x));
+      if (!(await saveMultisigDb())) {
+        multisigDb.items = multisigDb.items.map((x) => (x.id === j.id ? current : x));
+        return null;
+      }
+      return updated;
+    });
+    out.push(saved ? { ...j, status: saved.status, submittedResult: saved.submittedResult, resolvedAt: saved.resolvedAt } : j);
+  }
+  return out;
 }
 
 app.post('/api/multisig/jobs', async (req, res) => {
@@ -788,17 +898,11 @@ app.post('/api/multisig/jobs', async (req, res) => {
     // Auto submit if threshold already met (e.g., single-sig)
     if (shouldSubmit) {
       submitAttempted = true;
-      try {
-        const result = await submitTx(parsed.tx, net);
-        job.status = 'submitted_success';
-        job.submittedAt = new Date().toISOString();
-        job.submittedResult = submitSuccessResult(result);
-      } catch (submitErr) {
-        job.status = 'submitted_failed';
-        job.submittedAt = new Date().toISOString();
-        // F-3: nur Fehlertext und result_codes, nie envelope_xdr/result_xdr (die Liste ist ohne Token lesbar).
-        job.submittedResult = submitErrorResult(submitErr);
-      }
+      // Beim Anlegen ohne Abbildung von tx_bad_seq/tx_too_late (wie bisher und wie PHP).
+      const outcome = await submitJobTx(parsed.tx, net, { mapLifecycleCodes: false });
+      job.status = outcome.status;
+      job.submittedAt = new Date().toISOString();
+      job.submittedResult = outcome.submittedResult;
     }
     multisigDb.items.unshift(job);
     multisigDb.items = expireStalePendingJobs(multisigDb.items);
@@ -853,6 +957,8 @@ app.get('/api/multisig/jobs', async (req, res) => {
     // below runs, so ?status=... is evaluated against each job's actual
     // current viability, not a possibly-stale stored status.
     items = await annotateJobsLifecycleStatus(items);
+    // F-2: vor dem Statusfilter, damit ?status= den geklaerten Stand sieht.
+    items = await resolveUnclearJobs(items);
     if (status && multisigStatus.has(String(status))) {
       items = items.filter((j) => j.status === status);
     }
@@ -875,7 +981,8 @@ app.get('/api/multisig/jobs/:id', async (req, res) => {
     if (!job) return res.status(404).json({ ok: false, error: 'not_found' });
     if (!hasValidJobToken(job, req)) return res.status(403).json({ ok: false, error: 'forbidden' });
     const [annotated] = await annotateJobsLifecycleStatus([job]);
-    res.json(withMissingSigners(annotated));
+    const [resolved] = await resolveUnclearJobs([annotated]);
+    res.json(withMissingSigners(resolved));
   } catch (e) {
     console.error('multisig.jobs.get.failed', e);
     res.status(500).json({ ok: false, error: 'multisig.jobs.get_failed' });
@@ -1009,7 +1116,10 @@ app.post('/api/multisig/jobs/:id/decline', (req, res) => withMultisigJobLock(req
     if (!isActiveSigner) return res.status(403).json({ ok: false, error: 'forbidden' });
 
     const [current] = await annotateJobsLifecycleStatus([job]);
-    if (multisigFinalStatus.has(current.status)) return res.status(409).json({ ok: false, error: current.status });
+    // F-2: submit_unclear ist nicht final, aber gesperrt (die Transaktion kann im Ledger sein).
+    if (multisigFinalStatus.has(current.status) || current.status === SUBMIT_UNCLEAR_STATUS) {
+      return res.status(409).json({ ok: false, error: current.status });
+    }
     // Aus dem neu berechneten Stand (F-11), wie summarizeJob in PHP: zaehlt auch eine Signatur im XDR,
     // die der gespeicherte Stand nicht kennt (z. B. Job bei Horizon-Ausfall angelegt).
     if ((current.collectedSigners || []).some((c) => c.publicKey === signerPk)) {
@@ -1129,7 +1239,8 @@ app.post('/api/multisig/jobs/:id/merge-signed-xdr', (req, res) => withMultisigJo
     // overwritten. Without this, a stray signature arriving after success
     // used to fall through to the `else` branch below and incorrectly revert
     // a true submitted_success back to pending_signatures.
-    if (multisigFinalStatus.has(job.status)) {
+    // F-2: submit_unclear ebenso, sonst wuerde ein weiterer Merge erneut senden.
+    if (multisigFinalStatus.has(job.status) || job.status === SUBMIT_UNCLEAR_STATUS) {
       return res.status(409).json({ ok: false, error: job.status, job: withSanitizedSubmitResult(job) });
     }
 
@@ -1224,24 +1335,11 @@ app.post('/api/multisig/jobs/:id/merge-signed-xdr', (req, res) => withMultisigJo
     // Auto-submit when threshold reached
     if (requiredWeight > 0 && collectedWeight >= requiredWeight) {
       submitAttempted = true;
-      try {
-        const result = await submitTx(current.tx, net);
-        updated.status = 'submitted_success';
-        updated.submittedAt = new Date().toISOString();
-        updated.submittedResult = submitSuccessResult(result);
-      } catch (submitErr) {
-        // G5 stage 1: a submission that fails specifically because the
-        // sequence/timebound died between our pre-merge check above and
-        // Horizon's authoritative processing must not be reported as a
-        // generic submitted_failed - safety net for that TOCTOU gap (the
-        // account sequence used above can be up to 30s cached).
-        const resultCode = submitErr?.response?.data?.extras?.result_codes?.transaction;
-        const mapped = mapSubmitResultCodeToLifecycleStatus(resultCode);
-        updated.status = mapped || 'submitted_failed';
-        updated.submittedAt = new Date().toISOString();
-        // F-3: wie beim Anlegen nur Fehlertext und result_codes.
-        updated.submittedResult = submitErrorResult(submitErr);
-      }
+      // tx_bad_seq/tx_too_late werden obsolete_seq/expired, unklar wird submit_unclear (submitJobTx).
+      const outcome = await submitJobTx(current.tx, net, { mapLifecycleCodes: true });
+      updated.status = outcome.status;
+      updated.submittedAt = new Date().toISOString();
+      updated.submittedResult = outcome.submittedResult;
     } else if (added === 0) {
       // No new signature added, keep status
       updated.status = job.status;

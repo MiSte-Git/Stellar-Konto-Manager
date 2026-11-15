@@ -21,6 +21,9 @@
 const PENDING_JOB_EXPIRY_DAYS = 7;
 
 const FINAL_STATES = new Set(['submitted_success', 'submitted_failed', 'expired', 'obsolete_seq', 'rejected']);
+// F-2: submit_unclear ist nicht final, darf hier aber nie expired werden. Die Transaktion kann im
+// Ledger sein; nur die Klaerung ueber Horizon beim Lesen setzt den Status (server.js).
+const UNTOUCHED_STATES = new Set([...FINAL_STATES, 'submit_unclear']);
 
 /**
  * @param {object[]} items
@@ -32,7 +35,7 @@ function expireStalePendingJobs(items, maxAgeDays = PENDING_JOB_EXPIRY_DAYS) {
   const nowSeconds = Math.floor(Date.now() / 1000);
   return items.map((job) => {
     const status = job?.status || '';
-    if (FINAL_STATES.has(status)) return job;
+    if (UNTOUCHED_STATES.has(status)) return job;
 
     const maxTimeUnix = Number(job?.maxTimeUnix || 0);
     if (maxTimeUnix !== 0) {
