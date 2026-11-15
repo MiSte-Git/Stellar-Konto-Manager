@@ -35,7 +35,9 @@ export async function loadAccount(page, publicKey) {
 // Seitenmenue oeffnen und einen Eintrag waehlen (das Menue ist ein Drawer links).
 export async function openMenuItem(page, name) {
   await page.locator('header button').first().click();
-  await page.getByRole('button', { name, exact: true }).click();
+  // Nur Menuepunkte (data-nav-id): gleich benannte Buttons auf der Seite, z. B. Neues Konto
+  // erstellen auf der leeren Startseite, trafen sonst im strict mode doppelt (Flake 15.11.).
+  await page.getByRole('button', { name, exact: true }).and(page.locator('[data-nav-id]')).click();
 }
 
 // Secret-Key-Dialog: Key eintragen und "Senden". Nur fuer Testnet-Keys aus den Fixtures.

@@ -97,6 +97,19 @@ const rowA = (o = {}) => createEmptyRow({ source: SENDER.publicKey(), dest: DEST
 const rowB = (o = {}) => createEmptyRow({ source: SENDER.publicKey(), dest: DEST_B, amount: '6', memoVal: 'b', ...o });
 const fpOf = (row, destination) => paymentFingerprint({ network: 'PUBLIC', row, destination });
 
+// Fake-Uhr ohne Echtzeit. Mit shouldAdvanceTime lief unter Last echte Zeit in die Fake-Uhr ein
+// (Flakes 13.11. und 15.11.: Countdown verschoben, Wiederholungsabfrage zu frueh). Testing Library
+// erkennt Fake-Timer nur ueber ein globales jest und schiebt dann in waitFor die Fake-Zeit in
+// kleinen Schritten selbst weiter; die Zeit im Test haengt damit nicht mehr von der Rechnerlast ab.
+function startDeterministicClock(toFake) {
+  vi.useFakeTimers({ toFake });
+  globalThis.jest = { advanceTimersByTime: (ms) => vi.advanceTimersByTime(ms) };
+}
+function restoreClock() {
+  delete globalThis.jest;
+  vi.useRealTimers();
+}
+
 async function checkAndWait(readyCount) {
   fireEvent.click(screen.getByRole('button', { name: 'Prüfen' }));
   if (readyCount) await waitFor(() => expect(screen.getAllByText('Bereit')).toHaveLength(readyCount));
@@ -887,7 +900,7 @@ describe('BatchPaymentDialog: unklarer Status: Uhrzeit, Status jetzt pruefen, au
   });
 
   it('prueft im Ergebnis nach Ablauf einmal automatisch und zeigt dann Erneut senden', async () => {
-    vi.useFakeTimers({ shouldAdvanceTime: true, toFake: ['setTimeout', 'clearTimeout'] });
+    startDeterministicClock(['setTimeout', 'clearTimeout']);
     try {
       const a = rowA();
       let maxTime;
@@ -923,7 +936,7 @@ describe('BatchPaymentDialog: unklarer Status: Uhrzeit, Status jetzt pruefen, au
       await waitFor(() => expect(screen.getByText('Bereit')).toBeInTheDocument());
       expect(screen.getByRole('checkbox').checked).toBe(true);
     } finally {
-      vi.useRealTimers();
+      restoreClock();
     }
   });
 });
@@ -937,12 +950,10 @@ describe('BatchPaymentDialog: Countdown und Diagnose bei unklarem Status', () =>
   };
   // Zeitpunkt der automatischen Pruefung: maxTime + 60 s Puffer + 10 s Marge
   const dueOf = (maxTime) => (maxTime + 60) * 1000 + 10 * 1000;
-  // Unter Last (voller Lauf im Deploy) braucht der erste Render mit Pruefung mehr als die
-  // Standard-Sekunde von waitFor (Flake 13.11.): grosszuegiges Zeitlimit, Echtzeit laeuft mit.
+  const fake = () => startDeterministicClock(['setTimeout', 'clearTimeout', 'setInterval', 'clearInterval', 'Date']);
+  // Nur fuer die Tests mit echten Timern (Details kopieren): unter Last braucht der Lauf
+  // mehr als die Standard-Sekunde von waitFor (Flake 13.11.).
   const WAIT = { timeout: 8000 };
-  const fake = () => vi.useFakeTimers({
-    shouldAdvanceTime: true, toFake: ['setTimeout', 'clearTimeout', 'setInterval', 'clearInterval', 'Date'],
-  });
 
   it('zaehlt herunter, stimmt nach Neuladen und prueft nach Ablauf automatisch', async () => {
     fake();
@@ -954,7 +965,7 @@ describe('BatchPaymentDialog: Countdown und Diagnose bei unklarem Status', () =>
       saveBatchRows('PUBLIC', [a]);
       const first = renderDialog();
       fireEvent.click(screen.getByRole('button', { name: 'Prüfen' }));
-      await waitFor(() => expect(screen.getByTestId('batch-ambiguous-countdown')).toBeInTheDocument(), WAIT);
+      await waitFor(() => expect(screen.getByTestId('batch-ambiguous-countdown')).toBeInTheDocument());
       const box = screen.getByTestId('batch-ambiguous-countdown');
       expect(box.textContent).toMatch(/^Status unklar\. SKM prüft automatisch erneut in \d\d:\d\d\. Vorher nicht erneut senden, auch nicht als Einzelzahlung\.$/);
       expect(box.className).toContain('bg-amber-50');
@@ -972,7 +983,7 @@ describe('BatchPaymentDialog: Countdown und Diagnose bei unklarem Status', () =>
       await act(async () => { await vi.advanceTimersByTimeAsync(30 * 1000); });
       renderDialog();
       fireEvent.click(screen.getByRole('button', { name: 'Prüfen' }));
-      await waitFor(() => expect(screen.getByTestId('batch-ambiguous-countdown')).toBeInTheDocument(), WAIT);
+      await waitFor(() => expect(screen.getByTestId('batch-ambiguous-countdown')).toBeInTheDocument());
       const afterReload = countdownSeconds();
       expect(Math.abs(afterReload - (expected0 - 60))).toBeLessThanOrEqual(1);
       expect(afterReload).toBeLessThan(expected0 - 50); // Gegenprobe: kein Neustart bei vollem Wert
@@ -985,13 +996,13 @@ describe('BatchPaymentDialog: Countdown und Diagnose bei unklarem Status', () =>
       // Nach Ablauf: "Wird geprueft ...", dann Ergebnis (abgelaufen -> nicht gesendet)
       hoisted.ledgerClosedAt.value = isoAt(maxTime + 65);
       await act(async () => { await vi.advanceTimersByTimeAsync(6 * 1000); });
-      await waitFor(() => expect(screen.getByTestId('batch-ambiguous-countdown').textContent).toBe('Status unklar. Wird geprüft …'), WAIT);
+      await waitFor(() => expect(screen.getByTestId('batch-ambiguous-countdown').textContent).toBe('Status unklar. Wird geprüft …'));
       expect(hoisted.txLookupMock.mock.calls.length).toBe(lookupsBefore + 1);
       await act(async () => { await vi.advanceTimersByTimeAsync(3000); });
-      await waitFor(() => expect(screen.getByTestId('batch-resolved-not-sent')).toBeInTheDocument(), WAIT);
+      await waitFor(() => expect(screen.getByTestId('batch-resolved-not-sent')).toBeInTheDocument());
       expect(readSentEntry('PUBLIC', fpOf(a, DEST_A))).toMatchObject({ status: 'notApplied', pin: true });
     } finally {
-      vi.useRealTimers();
+      restoreClock();
     }
   });
 
@@ -1005,13 +1016,13 @@ describe('BatchPaymentDialog: Countdown und Diagnose bei unklarem Status', () =>
       saveBatchRows('PUBLIC', [a]);
       renderDialog();
       fireEvent.click(screen.getByRole('button', { name: 'Prüfen' }));
-      await waitFor(() => expect(screen.getByTestId('batch-ambiguous-countdown').textContent).toMatch(/erneut in/), WAIT);
+      await waitFor(() => expect(screen.getByTestId('batch-ambiguous-countdown').textContent).toMatch(/erneut in/));
       hoisted.txLookupMock.mockImplementation(async () => { throw new TypeError('Failed to fetch'); });
       await act(async () => { await vi.advanceTimersByTimeAsync(80 * 1000); });
-      await waitFor(() => expect(screen.getByTestId('batch-ambiguous-countdown').textContent).toMatch(/Horizon war nicht erreichbar/), WAIT);
+      await waitFor(() => expect(screen.getByTestId('batch-ambiguous-countdown').textContent).toMatch(/Horizon war nicht erreichbar/));
       expect(screen.getByRole('checkbox')).toBeDisabled();
     } finally {
-      vi.useRealTimers();
+      restoreClock();
     }
   });
 
