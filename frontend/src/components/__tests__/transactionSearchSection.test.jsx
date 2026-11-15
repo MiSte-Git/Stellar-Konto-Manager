@@ -147,6 +147,24 @@ describe('Transaktionen durchsuchen', () => {
     fireEvent.keyDown(input, { key: 'Enter' });
     await screen.findByText('Treffer: 2 von 3');
     expect(rowAmounts()).not.toContain('3.0000000 XLM');
+    // T5: Chip sagt, was gefiltert wird (vorher missverstaendlich Ohne Memo: ...)
+    expect(screen.getByText('Nicht im Memo: Miete')).toBeInTheDocument();
+    expect(screen.queryByText(/Ohne Memo:/)).toBeNull();
+  });
+
+  it('T1: Tabelle scrollt auf Handybreite seitlich, Kopfzeile hat einen deckenden Hintergrund', async () => {
+    wrap(<XlmByMemoPanel publicKey={PK} />);
+    await load();
+    const table = screen.getByTestId('search-result-table');
+    expect(table.className).toContain('overflow-auto');
+    const inner = table.firstElementChild;
+    expect(inner.className).toContain('min-w-[40rem]');
+    expect(inner.className).toContain('sm:min-w-0');
+    const head = inner.firstElementChild;
+    expect(head.className).toContain('sticky');
+    expect(head.className).toContain('bg-white');
+    expect(head.className).toContain('dark:bg-[#242424]');
+    expect(head.className).not.toMatch(/(^|\s)bg-gray(\s|$)/);
   });
 
   it('Richtung: alle Zahlungen im Test gehen vom Konto aus, Eingang zeigt keine Treffer', async () => {

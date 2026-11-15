@@ -353,8 +353,10 @@ export default function TransactionSearchSection({ rows, incomplete, memoIncompl
         <div className="mt-3 text-sm text-gray-500">{t(rows.length === 0 ? 'xlmByMemo:search.result.noneLoaded' : 'xlmByMemo:search.result.none')}</div>
       ) : (
         <>
-          <div className="mt-2 overflow-auto max-h-[28rem] text-xs">
-            <div className="grid grid-cols-6 gap-2 font-semibold sticky top-0 bg-gray z-10 py-1">
+          {/* Unter sm horizontal scrollen statt Spalten zu quetschen (T1); Kopfzeile deckend in hell und dunkel. */}
+          <div className="mt-2 overflow-auto max-h-[28rem] text-xs" data-testid="search-result-table">
+            <div className="min-w-[40rem] sm:min-w-0">
+            <div className="grid grid-cols-6 gap-2 font-semibold sticky top-0 z-10 py-1 bg-white dark:bg-[#242424]">
               <button type="button" className="!p-0 !border-0 !bg-transparent text-left font-semibold" onClick={() => toggleSort('created_at')}>{t('xlmByMemo:search.columns.created_at')}{arrow('created_at')}</button>
               <div>{t('xlmByMemo:search.columns.from')}</div>
               <div>{t('xlmByMemo:search.columns.to')}</div>
@@ -365,16 +367,17 @@ export default function TransactionSearchSection({ rows, incomplete, memoIncompl
             {shown.map((r, i) => (
               <div key={`${r.id}-${i}`} className="grid grid-cols-6 gap-2 py-0.5">
                 <div>
-                  <div className="font-mono">{r.created_at}</div>
+                  <div className="font-mono break-all">{r.created_at}</div>
                   <div className="text-gray-500">{[dirLabel(r.dir), r.type].filter(Boolean).join(' · ')}</div>
                 </div>
                 <div className="font-mono break-all">{r.from}</div>
                 <div className="font-mono break-all">{r.to}</div>
-                <div className="font-mono">{r.amount ? `${r.amount} ${assetLabel(r.assetKey)}` : '–'}</div>
+                <div className="font-mono break-words">{r.amount ? `${r.amount} ${assetLabel(r.assetKey)}` : '–'}</div>
                 <MemoCell memo={r.memo} />
                 <div className="font-mono break-all">{r.tx_hash}</div>
               </div>
             ))}
+            </div>
           </div>
           {sorted.length > MAX_SHOWN && (
             <div className="text-xs text-gray-500 mt-1">{t('xlmByMemo:search.result.capped', { shown: MAX_SHOWN, total: sorted.length })}</div>

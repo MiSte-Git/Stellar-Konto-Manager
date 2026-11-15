@@ -60,7 +60,7 @@
     },
     "chips": {
       "memo": "Memo: {{value}}",
-      "notMemo": "Ohne Memo: {{value}}",
+      "notMemo": "Nicht im Memo: {{value}}",
       "recipient": "An: {{value}}",
       "amount": "Betrag {{from}} – {{to}} {{asset}}",
       "remove": "Filter entfernen: {{label}}",

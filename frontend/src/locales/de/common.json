@@ -328,7 +328,9 @@
       "scan_tx": "Transaktionen scannen",
       "sync": "Synchronisiere Zahlungen…",
       "txFetch": "Lade Transaktionsdetails…",
-      "done": "Fertig"
+      "done": "Fertig",
+      "searchMemos": "Lade Memos (Seite {{page}})…",
+      "searchOps": "Lade Operationen (Seite {{page}})…"
     },
     "wrongMemos": {
       "failed": "Fehler beim Laden der Zahlungen mit falschem/leerem Memo."

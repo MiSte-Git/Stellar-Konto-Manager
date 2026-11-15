@@ -4,11 +4,11 @@ import { NETWORKS } from '../config/networks.js';
 import { useTranslation } from "react-i18next";
 import { getHorizonServer } from "../utils/stellar/stellarUtils";
 import ProgressBar from "../components/ProgressBar.jsx";
-import { formatElapsedMmSs } from '../utils/datetime';
+import { formatElapsedMmSs, formatLocalDateTime } from '../utils/datetime';
 import { buildDefaultFilename } from '../utils/filename';
 import { csvLine } from '../utils/csvEscape.js';
 import { withRetry } from "../utils/stellar/queryUtils";
-import { loadOperations } from '../utils/stellar/transactionSearch.js';
+import { loadOperations, etaFromRate } from '../utils/stellar/transactionSearch.js';
 import TransactionSearchSection from './TransactionSearchSection.jsx';
 
 // Lokales Datum (YYYY-MM-DD) und lokale Uhrzeit (HH:MM oder HH:MM:SS, immer 24 Stunden).
@@ -65,9 +65,14 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = NETWORKS.PUBLIC
           setProg(p => {
             if (p.phase === 'idle' || p.phase === 'finalize') return p;
             const elapsed = Date.now() - (startedAtRef.current || Date.now());
-            const total = (p.etaMs || 0) + elapsed;
-            const soft = total > 0 ? Math.min(0.98, elapsed / total) : p.progress ?? 0;
-            return { ...p, progress: Number.isFinite(soft) ? soft : p.progress };
+            if (p.phase === 'export') {
+              const total = (p.etaMs || 0) + elapsed;
+              const soft = total > 0 ? Math.min(0.98, elapsed / total) : p.progress ?? 0;
+              return { ...p, progress: Number.isFinite(soft) ? soft : p.progress };
+            }
+            // Laden: Fortschritt kommt aus dem geladenen Zeitraum, ETA aus der bisherigen Rate.
+            // Erst nach 5 s und 2 % eine Schaetzung, vorher keine (statt einer festen Annahme).
+            return { ...p, etaMs: etaFromRate(p.progress, elapsed) };
           });
           setElapsedMs(Date.now() - (startedAtRef.current || Date.now()));
         }, 1000);
@@ -177,16 +182,15 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = NETWORKS.PUBLIC
     handleLoad({ fromISO: from.toISOString(), toISOExc: plus1sIso(now.toISOString()) });
   };
 
-  const onProgress = useCallback((info = {}) => { setProg((p) => ({ ...p, ...info })); }, []);
+  const onProgress = useCallback((info = {}) => {
+    const oldest = info.oldest ? formatLocalDateTime(info.oldest) : '';
+    setProg((p) => ({ ...p, ...info, progress: info.progress ?? p.progress, oldest }));
+  }, []);
 
   const windowIso = () => {
     const fromISO = toUTCISO(fromDate, fromTime, tz, ROLE.FROM);
     const toISOExc = toDate ? plus1sIso(toUTCISO(toDate, toTime, tz, ROLE.TO)) : undefined;
     return { fromISO, toISOExc };
-  };
-  const estimateEtaMs = (fromISO, toISOExc) => {
-    const windowMs = Math.max(0, (toISOExc ? new Date(toISOExc) : new Date()) - (fromISO ? new Date(fromISO) : new Date(0)));
-    return Math.min(180000, Math.max(15000, Math.floor(windowMs / 20)));
   };
 
   /** Laedt die Operationen des Kontos im Zeitraum einmal; gefiltert wird danach im Browser. */
@@ -198,7 +202,7 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = NETWORKS.PUBLIC
       abortRef.current = new AbortController();
       startedAtRef.current = Date.now();
       const { fromISO, toISOExc } = override?.fromISO ? override : windowIso();
-      setProg({ phase: 'scan', progress: 0, etaMs: estimateEtaMs(fromISO, toISOExc), page: 0 });
+      setProg({ phase: 'searchMemos', progress: 0, etaMs: 0, page: 0, oldest: '' });
       const res = await loadOperations({
         server, accountId: publicKey, fromISO, toISO: toISOExc, onProgress, signal: abortRef.current.signal,
       });

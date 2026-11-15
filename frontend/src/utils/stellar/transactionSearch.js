@@ -246,8 +246,32 @@ async function retry(fn, signal) {
   }
 }
 
+// Anteil des Zeitfensters, der bei absteigender Reihenfolge bis oldest geladen ist (0..1).
+// Ohne Startzeit oder Datum: null (kein Fortschritt bestimmbar).
+export function windowCoverage(fromISO, toISO, oldest) {
+  const from = Date.parse(fromISO || '');
+  const to = toISO ? Date.parse(toISO) : Date.now();
+  const at = Date.parse(oldest || '');
+  if (!Number.isFinite(from) || !Number.isFinite(to) || !Number.isFinite(at) || to <= from) return null;
+  return Math.min(1, Math.max(0, (to - at) / (to - from)));
+}
+
+// Restzeit aus der bisherigen Rate; ohne belastbare Grundlage 0 (ProgressBar zeigt dann keine ETA).
+export function etaFromRate(progress, elapsedMs) {
+  if (typeof progress !== 'number' || progress < 0.02 || progress >= 1 || elapsedMs < 5000) return 0;
+  return Math.round(elapsedMs * (1 - progress) / progress);
+}
+
+// Fortschritt fuer zwei Ladephasen: Memos (erste Haelfte), dann Operationen (zweite Haelfte).
+function reportPage(onProgress, { phase, page, oldest, fromISO, toISO, found }) {
+  if (!onProgress) return;
+  const cov = windowCoverage(fromISO, toISO, oldest);
+  const offset = phase === 'searchOps' ? 0.5 : 0;
+  onProgress({ phase, page, oldest, found, progress: cov == null ? null : offset + cov / 2 });
+}
+
 // Memos der Transaktionen im Zeitfenster (Hash -> Memo). need (Set) beendet das Laden frueh.
-export async function loadTxMemos({ server, accountId, fromISO, toISO, signal, need, maxPages = MAX_PAGES }) {
+export async function loadTxMemos({ server, accountId, fromISO, toISO, signal, need, onProgress, maxPages = MAX_PAGES }) {
   const memos = new Map();
   let remaining = need ? new Set(need) : null;
   let page = await retry(() => server.transactions().forAccount(accountId).order('desc').limit(200).call(), signal);
@@ -263,6 +287,8 @@ export async function loadTxMemos({ server, accountId, fromISO, toISO, signal, n
     }
     if (!page.next || !(page.records || []).length) return { memos, incomplete: false };
     if (pages >= maxPages) return { memos, incomplete: true };
+    const recs = page.records || [];
+    reportPage(onProgress, { phase: 'searchMemos', page: pages, oldest: recs[recs.length - 1]?.created_at, fromISO, toISO });
     page = await retry(() => page.next(), signal);
     pages += 1;
   }
@@ -272,7 +298,7 @@ export async function loadTxMemos({ server, accountId, fromISO, toISO, signal, n
 // Memo der Transaktion. Gefiltert wird danach im Browser mit matchesFilters.
 // Ergebnis: { rows, incomplete, memoIncomplete, oldestLoaded, scanned }. incomplete = Ladegrenze erreicht.
 export async function loadOperations({ server, accountId, fromISO, toISO, signal, onProgress, maxPages = MAX_PAGES }) {
-  const txRes = await loadTxMemos({ server, accountId, fromISO, toISO, signal, maxPages });
+  const txRes = await loadTxMemos({ server, accountId, fromISO, toISO, signal, onProgress, maxPages });
   const rows = [];
   let incomplete = false;
   let scanned = 0;
@@ -295,7 +321,8 @@ export async function loadOperations({ server, accountId, fromISO, toISO, signal
     }
     if (reachedStart || !page.next || !(page.records || []).length) break;
     if (pages >= maxPages) { incomplete = true; break; }
-    onProgress?.({ phase: 'scan', page: pages, found: rows.length });
+    const recs = page.records || [];
+    reportPage(onProgress, { phase: 'searchOps', page: pages, oldest: recs[recs.length - 1]?.created_at, fromISO, toISO, found: rows.length });
     page = await retry(() => page.next(), signal);
     pages += 1;
   }

@@ -4,6 +4,7 @@ import { Account, Keypair, MuxedAccount } from '@stellar/stellar-sdk';
 import {
   parseStroops, formatStroops, buildSearchFilters, normalizeOperation, matchesFilters,
   sumByAsset, loadOperations, sortRows, parseRecipient, SEARCH_ABORT_MESSAGE,
+  windowCoverage, etaFromRate,
 } from '../transactionSearch.js';
 
 const ME = Keypair.random().publicKey();
@@ -305,5 +306,58 @@ describe('loadOperations', () => {
     ctrl.abort();
     const server = fakeServer({ ops: [[op(1)]] });
     await expect(loadOperations({ server, accountId: ME, signal: ctrl.signal })).rejects.toThrow(SEARCH_ABORT_MESSAGE);
+  });
+});
+
+describe('Ladefortschritt (T2)', () => {
+  const FROM = '2026-11-01T00:00:00.000Z';
+  const TO = '2026-11-11T00:00:00.000Z';
+  const day = (d) => `2026-11-${String(d).padStart(2, '0')}T12:00:00Z`;
+
+  it('windowCoverage: Anteil des Fensters von oben bis oldest, begrenzt auf 0..1', () => {
+    expect(windowCoverage(FROM, TO, '2026-11-06T00:00:00.000Z')).toBeCloseTo(0.5);
+    expect(windowCoverage(FROM, TO, '2026-10-20T00:00:00Z')).toBe(1);
+    expect(windowCoverage(FROM, TO, '2026-11-20T00:00:00Z')).toBe(0);
+    expect(windowCoverage('', TO, day(5))).toBeNull();
+    expect(windowCoverage(FROM, TO, '')).toBeNull();
+  });
+
+  it('etaFromRate: erst ab 5 s und 2 %, dann Rest aus der bisherigen Rate', () => {
+    expect(etaFromRate(0.5, 60000)).toBe(60000);
+    expect(etaFromRate(0.25, 30000)).toBe(90000);
+    expect(etaFromRate(0.01, 60000)).toBe(0);
+    expect(etaFromRate(0.5, 4000)).toBe(0);
+    expect(etaFromRate(null, 60000)).toBe(0);
+    expect(etaFromRate(1, 60000)).toBe(0);
+  });
+
+  it('meldet schon waehrend der Memo-Phase Seiten und Fortschritt, danach die Operationen', async () => {
+    // Zwei Seiten je Feed, neueste zuerst; Fenster 1. bis 11.11.
+    const pages = (records) => {
+      const mk = (i) => ({ records: records[i], next: i + 1 < records.length ? async () => mk(i + 1) : undefined });
+      return mk(0);
+    };
+    const tx = pages([
+      [{ hash: 'a', created_at: day(9), memo: 'x' }, { hash: 'b', created_at: day(6), memo: 'y' }],
+      [{ hash: 'c', created_at: day(3), memo: 'z' }, { hash: 'd', created_at: '2026-10-30T00:00:00Z', memo: '' }],
+    ]);
+    const op = (id, d) => ({ id, type: 'payment', from: 'GA', to: 'GB', amount: '1.0000000', asset_type: 'native', created_at: day(d), transaction_hash: id });
+    const ops = pages([[op('a', 9), op('b', 6)], [op('c', 3), { ...op('d', 1), created_at: '2026-10-30T00:00:00Z' }]]);
+    const chain = (first) => { const b = { forAccount: () => b, order: () => b, limit: () => b, call: async () => first }; return b; };
+    const server = { transactions: () => chain(tx), operations: () => chain(ops) };
+    const seen = [];
+    const res = await loadOperations({ server, accountId: 'GA', fromISO: FROM, toISO: TO, onProgress: (p) => seen.push(p) });
+    expect(res.rows).toHaveLength(3);
+    // Gegenprobe zum alten Verhalten: dort gab es in der Memo-Phase keine Meldung (Seite 0 ohne Bewegung)
+    const memo = seen.filter((p) => p.phase === 'searchMemos');
+    expect(memo).toHaveLength(1);
+    expect(memo[0]).toMatchObject({ page: 1, oldest: day(6) });
+    expect(memo[0].progress).toBeGreaterThan(0.2);
+    expect(memo[0].progress).toBeLessThan(0.5);
+    const opsSeen = seen.filter((p) => p.phase === 'searchOps');
+    expect(opsSeen).toHaveLength(1);
+    expect(opsSeen[0].progress).toBeGreaterThan(0.7);
+    expect(opsSeen[0].progress).toBeLessThan(1);
+    expect(seen.map((p) => p.progress)).toEqual([...seen.map((p) => p.progress)].sort((x, y) => x - y));
   });
 });
