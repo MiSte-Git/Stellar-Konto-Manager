@@ -29,12 +29,21 @@ function forwardedEntriesLoopback(headers) {
   const entries = [];
   for (const v of headerValues(headers['x-forwarded-for'])) entries.push(...v.split(','));
   for (const v of headerValues(headers['x-real-ip'])) entries.push(...v.split(','));
+  // B3-5: Forwarded ganz lesen wie X-Forwarded-For: jedes for= in jedem Element (durch , getrennt) und in
+  // jedem Paar eines Elements (durch ; getrennt), Name ohne Ruecksicht auf Gross- und Kleinschreibung. Vorher
+  // zaehlte je Element nur das erste for=. Das einfache Zerlegen an , und ; ignoriert Anfuehrungszeichen
+  // bewusst: Es kann nur zusaetzliche Eintraege erzeugen (die dann ablehnen), nie ein for= verstecken.
   for (const v of headerValues(headers.forwarded)) {
     for (const element of v.split(',')) {
-      const m = /(?:^|;)\s*for\s*=\s*("[^"]*"|[^;]*)/i.exec(element);
+      const forValues = element.split(';')
+        .map((pair) => /^\s*for\s*=\s*(.*?)\s*$/i.exec(pair))
+        .filter(Boolean)
+        .map((m) => m[1]);
       // Ein Forwarded-Element ohne for= traegt keine Adresse, ist aber ungewoehnlich: ablehnen.
-      if (!m) return false;
-      entries.push(m[1].replace(/^"|"$/g, '').replace(/^\[|\](?::\d+)?$/g, '').replace(/^(\d+\.\d+\.\d+\.\d+):\d+$/, '$1'));
+      if (!forValues.length) return false;
+      for (const value of forValues) {
+        entries.push(value.replace(/^"|"$/g, '').replace(/^\[|\](?::\d+)?$/g, '').replace(/^(\d+\.\d+\.\d+\.\d+):\d+$/, '$1'));
+      }
     }
   }
   return entries.every((e) => isLoopbackAddress(e.trim()));

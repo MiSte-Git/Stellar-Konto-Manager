@@ -83,3 +83,32 @@ test('B3-4: isLocalRequest lehnt ungueltige Oktette im Weiterleitungs-Header ab'
   assert.equal(isLocalRequest(req('127.0.0.1', { forwarded: 'for=127.0.0.256' })), false);
   assert.equal(isLocalRequest(req('127.0.0.1', { 'x-forwarded-for': '127.0.0.5' })), true);
 });
+
+// B3-5: Forwarded wird wie X-Forwarded-For ganz gelesen: jedes for= in jedem Element, auch mehrere for= in
+// einem Element (durch ; getrennt) und mehrere Header-Zeilen. Vorher zaehlte je Element nur das erste for=,
+// ein weiteres mit fremder Adresse blieb unbeachtet. Fail-closed wie bisher: was sich nicht sicher als
+// Loopback lesen laesst, lehnt ab.
+test('B3-5: zweites for= im selben Forwarded-Element mit fremder Adresse lehnt ab', () => {
+  assert.equal(isLocalRequest(req('127.0.0.1', { forwarded: 'for=127.0.0.1;for=203.0.113.7' })), false);
+  assert.equal(isLocalRequest(req('127.0.0.1', { forwarded: 'for=127.0.0.1;proto=http;for="[2001:db8::1]:4711"' })), false);
+  assert.equal(isLocalRequest(req('127.0.0.1', { forwarded: 'proto=http;for=127.0.0.1;by=127.0.0.1;FOR=203.0.113.7' })), false);
+});
+
+test('B3-5: jedes Element und jede Header-Zeile zaehlt', () => {
+  assert.equal(isLocalRequest(req('127.0.0.1', { forwarded: 'for=127.0.0.1, for=203.0.113.7' })), false);
+  assert.equal(isLocalRequest(req('127.0.0.1', { forwarded: ['for=127.0.0.1', 'for=127.0.0.1;for=203.0.113.7'] })), false);
+});
+
+test('B3-5: Leerzeichen, Gross- und Kleinschreibung und Anfuehrungszeichen verbergen kein for=', () => {
+  assert.equal(isLocalRequest(req('127.0.0.1', { forwarded: 'for=127.0.0.1 ; For = 203.0.113.7' })), false);
+  assert.equal(isLocalRequest(req('127.0.0.1', { forwarded: 'for=127.0.0.1;x="a;for=203.0.113.7"' })), false);
+  assert.equal(isLocalRequest(req('127.0.0.1', { forwarded: 'for="127.0.0.1;for=203.0.113.7"' })), false);
+  assert.equal(isLocalRequest(req('127.0.0.1', { forwarded: 'for=_hidden' })), false);
+  assert.equal(isLocalRequest(req('127.0.0.1', { forwarded: 'for=unknown' })), false);
+});
+
+test('B3-5 Gegenprobe: mehrere for= nur mit Loopback bleiben lokal', () => {
+  assert.equal(isLocalRequest(req('127.0.0.1', { forwarded: 'for=127.0.0.1;for="[::1]:1234";proto=http' })), true);
+  assert.equal(isLocalRequest(req('127.0.0.1', { forwarded: 'for=127.0.0.1, for="127.0.0.2:8080"' })), true);
+  assert.equal(isLocalRequest(req('127.0.0.1', { forwarded: ['for=127.0.0.1', 'FOR=::1'] })), true);
+});

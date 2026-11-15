@@ -321,7 +321,9 @@ Diese Punkte wurden in früheren Reviews falsch gemeldet. Bitte vor einer Meldun
   Funktionsnamen schließen.
 - **„Command Injection in composeMail.“** `spawn` ohne Shell mit festen Argumenten. composeMail ist nur im lokalen
   Node-Backend vorhanden. Der Endpunkt gilt nur für Aufrufe von derselben Maschine: Peer-Adresse und alle Adressen in
-  `X-Forwarded-For`, `Forwarded` und `X-Real-IP` müssen Loopback sein (`services/network.js`), im Zweifel 403. Hinter dem
+  `X-Forwarded-For`, `Forwarded` und `X-Real-IP` müssen Loopback sein (`services/network.js`), im Zweifel 403. Bei
+  `Forwarded` zählt jedes `for=` in jedem Element und jeder Header-Zeile, auch mehrere in einem Element; ein Element ohne
+  `for=` lehnt ab (B3-5, vorher zählte je Element nur das erste `for=`). Hinter dem
   Vite-Proxy ist die Peer-Adresse immer Loopback; deshalb hängt der Proxy die Client-Adresse an (`xfwd: true`). Restgrenzen:
   jeder Prozess auf derselben Maschine gilt als lokal (ohne zusätzliches Secret nicht lösbar); ein Reverse Proxy, der keine
   Forwarded-Header setzt oder `X-Forwarded-For` überschreibt, hebt den Schutz auf; und der Schutz hängt an `xfwd: true` in
