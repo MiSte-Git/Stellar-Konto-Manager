@@ -93,6 +93,25 @@ $longEmoji = skm_submit_error_result(new \RuntimeException(str_repeat('a', 299) 
 check('Helfer: Emoji an der Grenze bleibt ganz (wie Node)', $longEmoji['error'] === str_repeat('a', 299) . "\u{1F600}" && json_encode($longEmoji) !== false);
 check('Helfer: Altjob mit error-Objekt ohne title nimmt detail (wie Node)',
     skm_sanitize_submitted_result(['error' => ['detail' => 'The transaction failed.']])['error'] === 'The transaction failed.');
+// R-7: Die Bereinigung laeuft bei jedem Speichern ueber alle Jobs; idempotent, wie Node. Verglichen als JSON
+// (extras kann ein leeres stdClass sein).
+$r7Extras = ['envelope_xdr' => 'OLD_ENVELOPE', 'result_xdr' => 'OLD_RESULT', 'result_codes' => ['transaction' => 'tx_insufficient_fee']];
+$r7Idempotent = true;
+foreach ([
+    ['error' => ['title' => 'Transaction Failed', 'extras' => $r7Extras]],
+    ['error' => 'Transaction Failed', 'detail' => ['message' => 'Transaction Failed', 'extras' => $r7Extras]],
+    ['hash' => 'abc', 'ledger' => 7, 'envelopeXdr' => 'OLD_ENVELOPE', 'resultXdr' => 'OLD_RESULT'],
+    ['error' => 'Timeout', 'detail' => ['message' => 'Timeout', 'extras' => new \stdClass()]],
+    ['hash' => 'abc'],
+    null,
+] as $sr) {
+    $once = skm_sanitize_submitted_result($sr);
+    // Nach dem Speichern liest PHP extras {} als [] zurueck; das muss ebenfalls gleich bleiben.
+    $reloaded = json_decode(json_encode($once), true);
+    $r7Idempotent = $r7Idempotent && json_encode(skm_sanitize_submitted_result($once)) === json_encode($once)
+        && json_encode(skm_sanitize_submitted_result($reloaded)) === json_encode($once);
+}
+check('R-7 Helfer: Bereinigung ist idempotent, auch nach dem Wiedereinlesen (wie Node)', $r7Idempotent);
 
 // --- HTTP ---
 $owner = KeyPair::random();
@@ -171,6 +190,8 @@ $server = proc_open([PHP_BINARY, '-S', '127.0.0.1:' . TEST_PORT, $apiDir . '/mul
 
 try {
     check('sanity: Horizon-Stub und PHP-Server laufen', waitFor(STUB_PORT) && waitFor(TEST_PORT));
+    check('R-7 sanity: vor dem ersten Schreiben liegen die Altjobs mit Envelope in der Datei',
+        strpos((string)file_get_contents($apiDir . '/data/multisig_jobs.json'), 'OLD_ENVELOPE') !== false);
 
     $res = request('POST', BASE_URL, [], ['network' => 'testnet', 'accountId' => $owner->getAccountId(), 'txXdr' => buildTx($owner, $now, true)->toEnvelopeXdrBase64()]);
     check('Anlegen mit Ablehnung: submitted_failed', $res['status'] === 200 && ($res['body']['status'] ?? '') === 'submitted_failed');
@@ -205,6 +226,22 @@ try {
         $res = request('GET', BASE_URL . '/' . $id, ['x-job-token: tok-' . $id]);
         check("Detail {$id}: ohne envelope_xdr/result_xdr", $res['status'] === 200 && noLeak($res['body']['submittedResult'] ?? null));
     }
+
+    // R-7: Anlegen und Merge oben haben die Datei geschrieben; auch die Altjobs sind darin bereinigt.
+    $fileText = (string)file_get_contents($apiDir . '/data/multisig_jobs.json');
+    $fileClean = true;
+    foreach (LEAKS as $needle) $fileClean = $fileClean && strpos($fileText, $needle) === false;
+    check('R-7: nach einem Schreibvorgang enthaelt die Jobdatei keinen Envelope mehr (wie Node)', $fileClean);
+    $fileById = [];
+    foreach (json_decode($fileText, true)['items'] ?? [] as $j) $fileById[$j['id'] ?? ''] = $j;
+    check('R-7: Altjobs behalten Status, Fehlertext und result_codes',
+        ($fileById['old-node']['status'] ?? '') === 'submitted_failed'
+        && ($fileById['old-node']['submittedResult']['error'] ?? '') === 'Transaction Failed'
+        && ($fileById['old-node']['submittedResult']['detail']['extras']['result_codes']['transaction'] ?? '') === 'tx_insufficient_fee'
+        && ($fileById['old-php']['submittedResult']['detail']['extras']['result_codes']['transaction'] ?? '') === 'tx_insufficient_fee');
+    check('R-7: Altjob Erfolg behaelt Status, Hash und Ledger',
+        ($fileById['old-success']['status'] ?? '') === 'submitted_success'
+        && ($fileById['old-success']['submittedResult'] ?? null) === ['hash' => 'abc', 'ledger' => 7]);
 } finally {
     proc_terminate($server);
     proc_close($server);

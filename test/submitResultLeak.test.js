@@ -128,6 +128,27 @@ test('Helfer: result_codes nur als Strings, Fremdfelder fallen weg', () => {
   assert.equal(sanitizeSubmittedResult(undefined), null);
 });
 
+// R-7: Die Bereinigung laeuft bei jedem Speichern ueber alle Jobs. Sie muss deshalb idempotent sein und darf an
+// schon bereinigten Ergebnissen nichts aendern.
+test('R-7 Helfer: Bereinigung ist idempotent (Altformate und neues Format)', () => {
+  const samples = [
+    { error: { title: 'Transaction Failed', extras: oldExtras } },
+    { error: 'Transaction Failed', detail: { message: 'Transaction Failed', extras: oldExtras } },
+    { hash: 'abc', ledger: 7, envelopeXdr: 'OLD_ENVELOPE', resultXdr: 'OLD_RESULT' },
+    { error: 'Timeout', detail: { message: 'Timeout', extras: {} } },
+    { hash: 'abc' },
+    null,
+  ];
+  for (const sr of samples) {
+    const once = sanitizeSubmittedResult(sr);
+    assert.deepEqual(sanitizeSubmittedResult(once), once, JSON.stringify(sr));
+  }
+});
+
+test('R-7 sanity: vor dem ersten Schreiben liegen die Altjobs mit Envelope in der Datei', () => {
+  assert.ok(fs.readFileSync(dbPath, 'utf8').includes('OLD_ENVELOPE'));
+});
+
 test('Anlegen mit Ablehnung: Antwort und Liste ohne envelope_xdr/result_xdr, result_codes bleiben', async () => {
   const res = await post(BASE, { network: 'testnet', accountId: owner.publicKey(), txXdr: newTx(true).toXDR() });
   assert.equal(res.status, 200);
@@ -165,4 +186,17 @@ test('Detail: Altjobs ohne envelope_xdr/result_xdr', async () => {
     assert.equal(res.status, 200);
     assertNoLeak(res.body.submittedResult, `Detail ${id}`);
   }
+});
+
+test('R-7: nach einem Schreibvorgang enthaelt die Jobdatei keinen Envelope mehr, Altjobs behalten Status und Codes', () => {
+  // Anlegen und Merge oben haben die Datei geschrieben.
+  const text = fs.readFileSync(dbPath, 'utf8');
+  for (const needle of LEAKS) assert.ok(!text.includes(needle), `Datei: enthaelt ${needle}`);
+  const byId = Object.fromEntries(JSON.parse(text).items.map((j) => [j.id, j]));
+  assert.equal(byId['old-node'].status, 'submitted_failed');
+  assert.equal(byId['old-node'].submittedResult.error, 'Transaction Failed');
+  assert.equal(byId['old-node'].submittedResult.detail.extras.result_codes.transaction, 'tx_insufficient_fee');
+  assert.equal(byId['old-php'].submittedResult.detail.extras.result_codes.transaction, 'tx_insufficient_fee');
+  assert.equal(byId['old-success'].status, 'submitted_success');
+  assert.deepEqual(byId['old-success'].submittedResult, { hash: 'abc', ledger: 7 });
 });

@@ -145,7 +145,9 @@ function loadJobs(string $jobFile): array {
 // did not actually happen, so callers never report success on silent data loss.
 function saveJobs(string $jobFile, array $items): void {
     ensureDataDirWritable(dirname($jobFile));
-    $payload = ['items' => array_values($items)];
+    // R-7: submittedResult aller Jobs bereinigen (idempotent), damit auch Altjobs envelope_xdr/result_xdr
+    // verlieren, sobald die Datei einmal geschrieben wird. Gleich wie saveMultisigDb in server.js.
+    $payload = ['items' => array_values(array_map('skm_with_sanitized_submit_result', $items))];
     $json = json_encode($payload, JSON_PRETTY_PRINT);
     if ($json === false) {
         throw new \RuntimeException('jobs_encode_failed');

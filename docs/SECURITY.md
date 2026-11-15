@@ -163,7 +163,10 @@ Ein Job ist eine unsignierte oder teilsignierte Transaktion, die mehrere Signer 
   (`services/submitResult.js`, `api/submitResult.php`). Grund: Die Job-Liste ist ohne Token lesbar (G-Adresse reicht);
   mit dem signierten Envelope könnte ein Dritter eine nur vorläufig abgelehnte Transaktion (z. B.
   `tx_insufficient_fee`) bis `maxTime` selbst einreichen. Altjobs mit vollständiger Antwort werden bei jeder Ausgabe
-  (Liste, Detail, Merge, Anlegen) bereinigt (Review Fable, Befund F-3).
+  (Liste, Detail, Merge, Anlegen) bereinigt (Review Fable, Befund F-3) und zusätzlich bei jedem Schreiben der Jobdatei
+  (`saveMultisigDb` in `server.js`, `saveJobs` in `api/multisig.php`, über alle Jobs, idempotent): Sobald die Datei
+  einmal geschrieben wird, steht auch kein alter Envelope mehr darin, der sonst mit einem Backup oder einer Kopie
+  der Datei weiterwandern würde (Review Fixrunde Opus, R-7).
 - **Unklares Sendeergebnis (`submit_unclear`):** Kommt beim Senden durch das Backend (Anlegen oder Merge) keine
   eindeutige Antwort, wird der Job `submit_unclear`, nicht `submitted_failed`. Unklar heißt: keine Antwort, Timeout
   (20 s in beiden Backends), Status 0, HTTP 408, 429 oder ab 500 ohne `result_codes`, oder 2xx ohne Hash. Mit

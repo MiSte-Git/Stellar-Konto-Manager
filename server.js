@@ -297,6 +297,9 @@ async function loadMultisigDb() {
 async function saveMultisigDb() {
   try {
     await ensureDbDir();
+    // R-7: submittedResult aller Jobs bereinigen (idempotent), damit auch Altjobs envelope_xdr/result_xdr
+    // verlieren, sobald die Datei einmal geschrieben wird. Gleich wie saveJobs in api/multisig.php.
+    multisigDb.items = multisigDb.items.map(withSanitizedSubmitResult);
     await writeJsonFileLocked(MULTISIG_DB_PATH, multisigDb);
     return true;
   } catch (e) {
