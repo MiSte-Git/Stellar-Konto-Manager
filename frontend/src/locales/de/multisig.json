@@ -372,6 +372,7 @@
       "thresholdInfo": "Benötigt Signaturen mit Gewicht {{required}} (Low-Threshold).",
       "continue": "Weiter zum Signieren",
       "alreadyDead": "Dieser Job ist bereits ungültig, die Sequenz des Kontos ist schon weiter. Ein Widerruf ist nicht nötig.",
+    "unclearConsumed": "Die Sequence des Kontos ist schon weiter. Die Transaktion dieses Jobs wurde daher vermutlich ausgeführt. SKM klärt den Status über Horizon. Den Auftrag nicht neu anlegen und nicht anderswo senden.",
       "success": "Job widerrufen. Transaktion {{hash}}. Der Status wechselt innerhalb von etwa 30 Sekunden auf ungültig.",
       "insufficientWeight": "Die eingegebenen Signer erreichen zusammen nicht das nötige Gewicht {{required}}.",
       "noTxData": "Die Transaktion des Jobs konnte nicht gelesen werden, ein Widerruf ist nicht möglich.",

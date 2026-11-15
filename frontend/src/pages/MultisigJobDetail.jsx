@@ -472,6 +472,18 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
     return t('multisig:detail.revoke.failed', { reason: formatErrorForUi(t, e) });
   }, [t]);
 
+  // R-4: Sequence verbraucht. Bei submit_unclear wurde dann vermutlich gerade dieser Job ausgefuehrt: nicht
+  // "bereits ungueltig" melden (die Signer legten ihn sonst neu an), sondern den Job neu laden, das klaert
+  // den Status ueber Horizon, und danach den eigenen Hinweis zeigen.
+  const reportConsumed = useCallback(async () => {
+    if (!isSubmitUnclear) {
+      setInfo(t('multisig:detail.revoke.alreadyDead'));
+      return;
+    }
+    await fetchJob();
+    setInfo(t('multisig:detail.revoke.unclearConsumed'));
+  }, [fetchJob, isSubmitUnclear, t]);
+
   // Schritt 1: Konto laden, pruefen ob der Job noch lebt, Bestaetigung anzeigen.
   const startRevoke = useCallback(async () => {
     setRevokeError('');
@@ -492,7 +504,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
       const account = await getHorizonServerForNetwork(jobNetwork).loadAccount(seqInfo.sourceAccountId);
       const seqCheck = checkRevocationSequence(accountSequenceOf(account), seqInfo.sequence);
       if (seqCheck === 'consumed') {
-        setInfo(t('multisig:detail.revoke.alreadyDead'));
+        await reportConsumed();
         return;
       }
       if (seqCheck !== 'ok') {
@@ -518,7 +530,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
     } finally {
       setRevoking(false);
     }
-  }, [decodedTx, describeRevokeError, job, jobCheck, jobNetwork, t]);
+  }, [decodedTx, describeRevokeError, job, jobCheck, jobNetwork, reportConsumed, t]);
 
   // Schritt 2: mit den im SecretKeyModal gesammelten Signern signieren und senden.
   // Die Secrets bleiben im Speicher dieses Aufrufs, sie werden weder gespeichert noch
@@ -537,7 +549,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
       if (seqCheck !== 'ok') {
         setShowRevokeSecretModal(false);
         setRevokePrep(null);
-        if (seqCheck === 'consumed') setInfo(t('multisig:detail.revoke.alreadyDead'));
+        if (seqCheck === 'consumed') await reportConsumed();
         else setRevokeError(t(seqCheck === 'too_far' ? 'multisig:detail.revoke.sequenceTooFar' : 'multisig:detail.revoke.sequenceInvalid'));
         return;
       }
@@ -569,7 +581,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
       revokeInFlightRef.current = false;
       setRevoking(false);
     }
-  }, [describeRevokeError, fetchJob, revokePrep, t]);
+  }, [describeRevokeError, fetchJob, reportConsumed, revokePrep, t]);
 
   const handleMerge = useCallback(async () => {
     if (!jobId || !importXdr.trim() || importBlocked) return;

@@ -1394,6 +1394,37 @@ describe('Sendestatus unklar (F-2)', () => {
     expect(await screen.findByRole('button', { name: 'Job widerrufen' })).toBeInTheDocument();
   });
 
+  // R-4: Ist die Sequence bei submit_unclear verbraucht, wurde die Transaktion vermutlich ausgefuehrt.
+  // Nicht "bereits ungueltig" melden (die Signer legten sonst neu an), sondern eigenen Hinweis und Klaerung
+  // ueber das Neuladen des Jobs.
+  const UNCLEAR_CONSUMED = () => i18n.t('multisig:detail.revoke.unclearConsumed');
+
+  it('R-4: Widerruf bei verbrauchter Sequence: eigener Hinweis, nicht bereits ungueltig, Job wird neu geladen', async () => {
+    hoisted.getJobMock.mockImplementation(async () => unclearJob());
+    hoisted.loadAccountMock.mockImplementation(async () => horizonAccount('101'));
+    renderPage();
+    fireEvent.click(await screen.findByRole('button', { name: 'Job widerrufen' }));
+    expect(await screen.findByText(UNCLEAR_CONSUMED())).toBeInTheDocument();
+    expect(screen.queryByText(/bereits ungültig/)).toBeNull();
+    expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
+    await waitFor(() => expect(hoisted.getJobMock).toHaveBeenCalledTimes(2));
+    expect(hoisted.submitMock).not.toHaveBeenCalled();
+  });
+
+  it('R-4: Sequence erst beim Ausfuehren verbraucht: ebenfalls eigener Hinweis und Neuladen, nichts gesendet', async () => {
+    hoisted.getJobMock.mockImplementation(async () => unclearJob());
+    let calls = 0;
+    hoisted.loadAccountMock.mockImplementation(async () => { calls += 1; return horizonAccount(calls === 1 ? '100' : '101'); });
+    await openSecretModal();
+    const loadsBefore = hoisted.getJobMock.mock.calls.length;
+    typeSecrets(SIGNER_A.secret);
+    submitSecretModal();
+    expect(await screen.findByText(UNCLEAR_CONSUMED())).toBeInTheDocument();
+    expect(screen.queryByText(/bereits ungültig/)).toBeNull();
+    await waitFor(() => expect(hoisted.getJobMock.mock.calls.length).toBe(loadsBefore + 1));
+    expect(hoisted.submitMock).not.toHaveBeenCalled();
+  });
+
   it('nach dem Signieren mit unklarem Sendeergebnis: Hinweis statt Fehlermeldung', async () => {
     hoisted.sessionSecretMock.mockResolvedValue(SIGNER_A.secret);
     hoisted.mergeMock.mockImplementation(async () => unclearJob());

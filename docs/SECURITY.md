@@ -195,8 +195,13 @@ Ein Job ist eine unsignierte oder teilsignierte Transaktion, die mehrere Signer 
   Backends: bei `submit_unclear` denselben Hinweis, bei `submitted_success` und `submitted_failed` den
   Ausgang, nie „noch nicht gesendet“ und kein weiteres Signieren. Vorher stand dort auch nach dem Senden durch das
   Backend „Die Transaktion wurde noch nicht gesendet“, und die Nutzerin hätte die Zahlung erneut gesendet (Review
-  Fixrunde Opus, R-2). Der Widerruf (Sequence verbrauchen) bleibt erlaubt: Ist die Transaktion schon im Ledger, schlägt er fehl,
-  sonst macht er sie sicher ungültig.
+  Fixrunde Opus, R-2). Der Widerruf (Sequence verbrauchen) bleibt erlaubt. Er baut eine
+  `bumpSequence`-Transaktion mit genau der Sequence des Jobs; im Netz kann also höchstens eine der beiden ausgeführt
+  werden. Gelingt er, ist der Job sicher ungültig. Zeigt das Konto die Sequence schon als verbraucht, wird nichts
+  gesendet: Bei `submit_unclear` wurde dann vermutlich gerade dieser Job ausgeführt, SKM meldet das (Text
+  `detail.revoke.unclearConsumed`, nicht „bereits ungültig“) und lädt den Job neu, was die Klärung auslöst (Review
+  Fixrunde Opus, R-4). Hinkt das Konto bei Horizon nach, obwohl die Transaktion schon im Ledger steht, lehnt das Netz
+  den Widerruf mit `tx_bad_seq` ab.
 - **Nebenläufigkeit:** Node serialisiert Merge, Ablehnen und Löschen je Job (`services/multisigJobLock.js`), PHP
   arbeitet unter Dateilock. Endzustände werden im Lock geprüft.
 - **Anzeige vor dem Signieren** (`frontend/src/utils/multisig/describeTransaction.js`,
