@@ -450,6 +450,7 @@
     "access": {
       "notFound": "Diesen Job gibt es nicht mehr. Abgeschlossene Jobs werden nach 30 Tagen gelöscht.",
       "challengeExpired": "Die Anmeldung am Job ist abgelaufen oder wurde schon verwendet. Bitte erneut versuchen.",
+      "invalidChallenge": "Der Server hat eine ungültige Anmeldung am Job geschickt. Es wurde nichts signiert. Bitte später erneut versuchen.",
       "invalidSignature": "Die Signatur der Anmeldung wurde abgelehnt. Bitte erneut versuchen.",
       "timeout": "Der Server antwortet nicht. Bitte später erneut versuchen.",
       "horizonUnavailable": "Das Stellar-Netz (Horizon) ist gerade nicht erreichbar. Ob dieses Konto Signer ist, lässt sich im Moment nicht prüfen. Bitte später erneut versuchen.",
@@ -541,6 +542,7 @@
     "deleteNotSigner": "kein Signer",
     "deleteHorizonUnavailable": "Horizon nicht erreichbar",
     "deleteNotFinal": "nicht abgeschlossen",
+    "deleteInvalidChallenge": "ungültige Anmeldung vom Server, nichts signiert",
     "hide": "Ausblenden",
     "unhide": "Einblenden",
     "showHidden": "Ausgeblendete anzeigen ({{n}})",

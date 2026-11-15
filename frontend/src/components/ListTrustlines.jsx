@@ -34,6 +34,7 @@ import { getMultisigTxTimeout } from '../utils/getMultisigTxTimeout.js';
 import { txHashHex } from '../utils/stellar/txHash.js';
 import { needsMultipleSignatures } from '../utils/stellar/isMultisigAccount.js';
 import { attachSignatures } from '../utils/signers/signTransaction.js';
+import { collectEffectiveSigners } from '../utils/multisig/jobRevocation.js';
 // import { refreshSinceCursor } from '../utils/stellar/syncUtils';
 
 // Auswahl fuer Multisig: alle Signaturen lokal sammeln und senden oder nur einen Job anlegen.
@@ -179,16 +180,10 @@ function ListTrustlines({
     const thresholds = account?.thresholds || {};
     const required = getRequiredThreshold('changeTrust', thresholds);
     const horizonSigners = account?.signers || [];
-    const current = (Array.isArray(collectedSigners) ? collectedSigners : []).reduce((acc, s) => {
-      try {
-        const pub = s.keypair?.publicKey?.();
-        const match = horizonSigners.find((sg) => sg.key === pub || sg.public_key === pub);
-        const w = Number(match?.weight || 0);
-        return acc + (w > 0 ? w : 0);
-      } catch {
-        return acc;
-      }
-    }, 0);
+    // F-15 (Review Fable): Gewicht und Signaturen nur von Keys, die laut Horizon Signer mit Gewicht sind
+    // (collectEffectiveSigners, wie Widerruf, Liquidity und Claimable). Vorher wurde jeder eingegebene Key
+    // signiert; ein Key ohne Gewicht fuehrte zu tx_bad_auth_extra statt zu einer klaren Meldung.
+    const { signers: effectiveSigners, weight: current } = collectEffectiveSigners(collectedSigners, horizonSigners);
     if (current <= 0) throw new Error('submitTransaction.failed:' + 'multisig.noKeysProvided');
     if (current < required) throw new Error('submitTransaction.failed:' + 'multisig.insufficientWeight');
 
@@ -202,7 +197,7 @@ function ListTrustlines({
     // Nach den Horizon-Aufrufen: gilt das Netz des Ablaufs noch?
     assertFlowNetwork(net);
     // K3: Signierfehler werfen statt verschlucken (vorher kam der Fehler erst als tx_bad_auth vom Netz).
-    attachSignatures(tx, Array.isArray(collectedSigners) ? collectedSigners : []);
+    attachSignatures(tx, effectiveSigners);
     if (import.meta.env.MODE !== 'production') {
       try {
         console.debug('multisig changeTrust signing', {

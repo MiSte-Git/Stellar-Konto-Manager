@@ -67,12 +67,32 @@ export const CHALLENGE_PURPOSES = Object.freeze(['token', 'decline', 'delete']);
 // lang wie ein Transaktions-Hash, ein manipuliertes Backend koennte sonst einen Tx-Hash
 // als Challenge schicken und so eine gueltige Transaktions-Signatur erhalten.
 // Gleich wie challengeMessage in services/challengeStore.js und api/challengeStore.php.
+// F-6 (Review Fable): Laenge der Nonce, wie sie das Backend erzeugt (32 Zufallsbytes).
+export const CHALLENGE_NONCE_BYTES = 32;
+
+/**
+ * Nonce aus der Challenge des Servers, nur als strikte base64 mit genau 32 Byte (gleiche Strenge wie K5 im
+ * Backend, decodeStrictBase64 in services/signerAuth.js: Laenge durch 4 teilbar, nur Standardalphabet,
+ * Padding nur am Ende, kanonische Form). Sonst Fehler multisig.jobs.invalid_challenge, es wird nichts signiert.
+ * Grund: ADR 0004 sagt, keine signierte Nachricht sei 32 Byte lang. Das haengt sonst am Server: Mit einer
+ * 22-Byte-Nonce waere skm:token: plus Nonce genau 32 Byte, so lang wie ein Transaktions-Hash.
+ */
+export function decodeChallengeNonce(challengeB64) {
+  const invalid = () => new Error('multisig.jobs.invalid_challenge');
+  if (typeof challengeB64 !== 'string' || challengeB64.length === 0 || challengeB64.length % 4 !== 0) throw invalid();
+  if (!/^[A-Za-z0-9+/]*={0,2}$/.test(challengeB64)) throw invalid();
+  const bytes = Buffer.from(challengeB64, 'base64');
+  if (bytes.toString('base64') !== challengeB64 || bytes.length !== CHALLENGE_NONCE_BYTES) throw invalid();
+  return bytes;
+}
+
 export function signMultisigJobChallenge(secret, challengeB64, purpose) {
   if (!CHALLENGE_PURPOSES.includes(purpose)) {
     throw new Error(`multisig.jobs.invalid_challenge_purpose: ${purpose || '-'}`);
   }
+  // Erst die Nonce pruefen, dann den Key: bei ungueltiger Challenge wird nichts signiert.
+  const nonceBytes = decodeChallengeNonce(challengeB64);
   const keypair = keypairFromSecret(secret);
-  const nonceBytes = Buffer.from(String(challengeB64 || ''), 'base64');
   const data = Buffer.concat([Buffer.from(`skm:${purpose}:`, 'utf8'), nonceBytes]);
   const signature = signChallengeMessage(keypair, data);
   return Buffer.from(signature).toString('base64');

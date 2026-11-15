@@ -77,6 +77,8 @@ Folgen daraus:
   und wird bei jedem Neuladen neu erzeugt, ein Reload macht also alle gemerkten Secrets unbrauchbar. Löschung nach
   15 Minuten Inaktivität und beim Schließen des Tabs. Gemerkte Keys sind ans Netz gebunden (Speicherschlüssel mit
   Netz): Ein auf Testnet gemerkter Key signiert nie auf Mainnet. Code: `frontend/src/utils/sessionSecrets.js`.
+  Ein Eintrag ohne `enc1:`-Präfix (Klartext aus der Zeit vor der Verschlüsselung) gilt als nicht gemerkt: Er wird nie
+  im Klartext zurückgegeben und beim Lesen entfernt; der Aufrufer fragt den Key dann wie sonst ab (Review Fable, F-12).
 - Der Haken „Für diese Sitzung merken“ ist in allen Key-Dialogen standardmäßig an, auch in der Sammelzahlung
   (bewusste Entscheidung 14.11.2026, Opus-Review #11: einheitlich wie in den anderen Abläufen). Die Sammelzahlung merkt
   den Key schon beim Bestätigen im Dialog, weil sie danach mehrere Zahlungen mit ihm sendet; die anderen Abläufe erst
@@ -133,7 +135,9 @@ Ein Job ist eine unsignierte oder teilsignierte Transaktion, die mehrere Signer 
   signieren, könnte ein bösartiges Backend einen Transaktions-Hash als „Challenge“ schicken und bekäme eine gültige
   Transaktionssignatur. Mit Präfix ist keine signierte Nachricht 32 Bytes lang, und eine Signatur für einen Zweck
   gilt nicht für einen anderen. Code: `services/challengeStore.js`, `api/challengeStore.php`,
-  `frontend/src/utils/multisigApi.js`.
+  `frontend/src/utils/multisigApi.js`. Das hängt nicht am Server: Der Client signiert nur eine Nonce, die strikte
+  base64 mit genau 32 Byte ist (gleiche Strenge wie K5 im Backend, `decodeChallengeNonce`), sonst nichts und mit
+  Hinweis. Mit einer 22-Byte-Nonce wäre `skm:token:` plus Nonce sonst genau 32 Byte lang (Review Fable, F-6).
 - **Ablehnen:** nur aktuelle Signer, nicht nach eigener Signatur, nicht im Endzustand und nicht bei
   `submit_unclear` (409). Gewicht und Threshold kommen live.
 - **Löschen** (`POST /api/multisig/jobs/:id/delete`): nur aktuelle Signer des Job-Kontos (live geprüft, Gewicht > 0),

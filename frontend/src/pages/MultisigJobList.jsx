@@ -181,6 +181,8 @@ function MultisigJobList({ onBack, publicKey, onOpenDetail, refreshKey = 0 }) {
             ? t('multisig:list.deleteHorizonUnavailable', 'Horizon nicht erreichbar')
           : e?.message === 'not_final'
             ? t('multisig:list.deleteNotFinal', 'nicht abgeschlossen')
+          : e?.message === 'multisig.jobs.invalid_challenge'
+            ? t('multisig:list.deleteInvalidChallenge')
             : String(e?.message || 'delete_failed');
         failed.push({ id: job.id, reason });
       }

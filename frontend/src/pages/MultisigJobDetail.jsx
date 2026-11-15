@@ -138,6 +138,8 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
     if (['rejected', 'submitted_success', 'submitted_failed', 'expired', 'obsolete_seq'].includes(code)) {
       return t('multisig:detail.access.finalState', { status: t(`multisig:list.status.${code}`, code), defaultValue: 'Der Job ist bereits abgeschlossen ({{status}}).' });
     }
+    // F-6: Challenge des Servers nicht genau 32 Byte strikte base64, es wurde nichts signiert.
+    if (code === 'multisig.jobs.invalid_challenge') return t('multisig:detail.access.invalidChallenge');
     if (code === 'timeout') return t('multisig:detail.access.timeout', 'Der Server antwortet nicht. Bitte später erneut versuchen.');
     return t('multisig:detail.access.failed', { code: code || '-', defaultValue: 'Der Job konnte nicht geladen werden ({{code}}). Bitte Verbindung prüfen und erneut versuchen.' });
   }, [t]);

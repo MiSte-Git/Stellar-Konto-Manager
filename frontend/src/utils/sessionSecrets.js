@@ -92,11 +92,13 @@ async function encryptSecret(plaintext) {
  * Decrypts a stored secret. Legacy/plaintext values (pre-encryption entries,
  * or entries from before a page reload wiped the in-memory key) pass through
  * as empty - the caller sees "no secret" and re-prompts, never a crash.
+ * F-12 (Review Fable): Ein Eintrag ohne enc1:-Praefix ergibt leer, nie den Klartext. Vorher kam er
+ * unveraendert zurueck, entgegen diesem Kommentar. readEncryptedMap entfernt solche Eintraege zusaetzlich.
  */
 async function decryptSecret(stored) {
   const s = String(stored ?? '');
   if (!s) return '';
-  if (!s.startsWith(ENC_PREFIX)) return s; // legacy plaintext entry from before this change
+  if (!s.startsWith(ENC_PREFIX)) return '';
   try {
     const [ivB64, ctB64] = s.slice(ENC_PREFIX.length).split(':');
     const key = await getEncryptionKey();
@@ -127,10 +129,28 @@ function readRawMap(key) {
   }
 }
 
-/** Returns the stored map of signerPublicKey -> encrypted secret, without decrypting anything. */
+const isEncryptedEntry = (value) => typeof value === 'string' && value.startsWith(ENC_PREFIX);
+
+/**
+ * Returns the stored map of signerPublicKey -> encrypted secret, without decrypting anything.
+ * F-12: Altbestand ohne enc1:-Praefix (Klartext oder Fremdes) gilt als nicht gemerkt und wird beim Lesen
+ * entfernt; bleibt nichts, faellt der ganze Eintrag weg. Still, ohne Event: Wer das Event auswertet, liest
+ * ohnehin ueber diese Funktion und sieht schon den bereinigten Stand.
+ */
 function readEncryptedMap(accountPublicKey) {
   if (!accountPublicKey) return {};
-  return readRawMap(mapKeyFor(currentNetwork(), accountPublicKey)) || {};
+  const key = mapKeyFor(currentNetwork(), accountPublicKey);
+  const raw = readRawMap(key);
+  if (!raw) return {};
+  const entries = Object.entries(raw);
+  const clean = Object.fromEntries(entries.filter(([, value]) => isEncryptedEntry(value)));
+  if (Object.keys(clean).length !== entries.length) {
+    try {
+      if (Object.keys(clean).length) sessionStorage.setItem(key, JSON.stringify(clean));
+      else sessionStorage.removeItem(key);
+    } catch { /* noop */ }
+  }
+  return clean;
 }
 
 // Informs UI (status chip in the top bar, Main) that stored secrets changed.

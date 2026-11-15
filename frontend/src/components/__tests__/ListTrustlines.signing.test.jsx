@@ -12,7 +12,9 @@ const master = Keypair.random();
 const PK = master.publicKey();
 const ISSUER = 'GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN';
 
-const hoisted = vi.hoisted(() => ({ failSigning: false, submits: [] }));
+const other = Keypair.random();
+// F-15: Signer des Kontos laut Horizon und die im Key-Dialog eingegebenen Keys, je Test einstellbar.
+const hoisted = vi.hoisted(() => ({ failSigning: false, submits: [], extraSigners: [], collected: null }));
 vi.mock('../../utils/signers/signTransaction.js', async (importOriginal) => {
   const orig = await importOriginal();
   return {
@@ -28,7 +30,7 @@ vi.mock('../../utils/stellar/stellarUtils.js', async (orig) => (await import('..
   getHorizonServer: () => ({
     loadAccount: async (pk) => {
       const acct = new Account(pk, '100');
-      acct.signers = [{ key: pk, weight: 1, type: 'ed25519_public_key' }];
+      acct.signers = [{ key: pk, weight: 1, type: 'ed25519_public_key' }, ...hoisted.extraSigners];
       acct.thresholds = { low_threshold: 0, med_threshold: 0, high_threshold: 0 };
       return acct;
     },
@@ -42,7 +44,7 @@ vi.mock('../../utils/stellar/fees.js', async (importOriginal) => ({
 }));
 vi.mock('../SecretKeyModal.jsx', () => ({
   default: ({ onConfirm }) => (
-    <button type="button" data-testid="secret-confirm" onClick={() => onConfirm([{ keypair: master, publicKey: PK, weight: 1 }])}>confirm</button>
+    <button type="button" data-testid="secret-confirm" onClick={() => onConfirm(hoisted.collected || [{ keypair: master, publicKey: PK, weight: 1 }])}>confirm</button>
   ),
 }));
 
@@ -74,6 +76,8 @@ describe('ListTrustlines: Signierfehler beim Anlegen (K3)', () => {
     window.localStorage.setItem('SKM_NETWORK', 'TESTNET');
     hoisted.failSigning = false;
     hoisted.submits.length = 0;
+    hoisted.extraSigners = [];
+    hoisted.collected = null;
   });
   afterEach(() => {
     setMainMounted(false);
@@ -92,6 +96,50 @@ describe('ListTrustlines: Signierfehler beim Anlegen (K3)', () => {
   });
 
   it('Gegenprobe: ohne Fehler wird mit genau einer Signatur gesendet', async () => {
+    await addTrustline();
+    await waitFor(() => expect(hoisted.submits).toHaveLength(1));
+    expect(hoisted.submits[0].signatures).toHaveLength(1);
+  });
+
+  // F-15 (Review Fable): Angehaengt werden nur Signaturen von Keys mit Gewicht (collectEffectiveSigners aus
+  // jobRevocation.js), wie in den anderen Sendewegen. Vorher wurde jeder eingegebene Key signiert; ein Key
+  // ohne Gewicht fuehrte zu tx_bad_auth_extra statt zu einer klaren Meldung.
+  it('F-15: Key mit Gewicht 0 wird nicht signiert, der Key mit Gewicht schon', async () => {
+    hoisted.extraSigners = [{ key: other.publicKey(), weight: 0, type: 'ed25519_public_key' }];
+    hoisted.collected = [{ keypair: master, publicKey: PK, weight: 1 }, { keypair: other, publicKey: other.publicKey(), weight: 0 }];
+    await addTrustline();
+    await waitFor(() => expect(hoisted.submits).toHaveLength(1));
+    expect(hoisted.submits[0].signatures).toHaveLength(1);
+  });
+
+  it('F-15: nur der Key mit Gewicht 0 eingegeben: nichts signiert, nichts gesendet', async () => {
+    // Zusammen mit dem Fall davor: Die eine Signatur dort stammt vom Key mit Gewicht.
+    hoisted.extraSigners = [{ key: other.publicKey(), weight: 0, type: 'ed25519_public_key' }];
+    hoisted.collected = [{ keypair: other, publicKey: other.publicKey(), weight: 0 }];
+    const err = vi.spyOn(console, 'error').mockImplementation(() => {});
+    await addTrustline();
+    expect((await screen.findAllByText(i18n.t('errors:submitTransaction.failed.multisig.noKeysProvided'), { exact: false })).length).toBeGreaterThan(0);
+    expect(hoisted.submits).toHaveLength(0);
+    err.mockRestore();
+  });
+
+  it('F-15: Key, der kein Signer des Kontos ist, wird nicht signiert', async () => {
+    hoisted.collected = [{ keypair: master, publicKey: PK, weight: 1 }, { keypair: other, publicKey: other.publicKey(), weight: 1 }];
+    await addTrustline();
+    await waitFor(() => expect(hoisted.submits).toHaveLength(1));
+    expect(hoisted.submits[0].signatures).toHaveLength(1);
+  });
+
+  it('F-15 Gegenprobe: zweiter Key mit Gewicht wird mitsigniert', async () => {
+    hoisted.extraSigners = [{ key: other.publicKey(), weight: 1, type: 'ed25519_public_key' }];
+    hoisted.collected = [{ keypair: master, publicKey: PK, weight: 1 }, { keypair: other, publicKey: other.publicKey(), weight: 1 }];
+    await addTrustline();
+    await waitFor(() => expect(hoisted.submits).toHaveLength(1));
+    expect(hoisted.submits[0].signatures).toHaveLength(2);
+  });
+
+  it('F-15: derselbe Key zweimal eingegeben wird nur einmal signiert', async () => {
+    hoisted.collected = [{ keypair: master, publicKey: PK, weight: 1 }, { keypair: master, publicKey: PK, weight: 1 }];
     await addTrustline();
     await waitFor(() => expect(hoisted.submits).toHaveLength(1));
     expect(hoisted.submits[0].signatures).toHaveLength(1);

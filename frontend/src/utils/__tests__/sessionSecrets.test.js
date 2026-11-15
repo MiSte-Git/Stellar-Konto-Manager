@@ -63,9 +63,40 @@ describe('sessionSecrets (hardened storage)', () => {
     expect(getSessionSecretCount(ACCOUNT)).toBe(1);
   });
 
-  it('treats a legacy plaintext map entry as pass-through (pre-encryption migration)', async () => {
+  // F-12 (Review Fable): Ein Eintrag ohne enc1:-Praefix (Klartext aus der Zeit vor der Verschluesselung) wird
+  // nie im Klartext zurueckgegeben. Er gilt als nicht gemerkt und wird beim Lesen entfernt. Vorher gab
+  // decryptSecret ihn unveraendert zurueck, entgegen dem Kommentar darueber.
+  it('F-12: Klartext-Eintrag ohne enc1: gilt als nicht gemerkt, kein Klartext zurueck', async () => {
     sessionStorage.setItem(`stm.session.secrets.PUBLIC.${ACCOUNT}`, JSON.stringify({ [SIGNER]: SECRET }));
+    expect(await getSessionSecret(ACCOUNT, SIGNER)).toBe('');
+    expect(await getSessionSecrets(ACCOUNT)).toEqual({});
+  });
+
+  it('F-12: Altbestand ohne enc1: wird beim Lesen entfernt, gueltige Eintraege bleiben', async () => {
+    await setSessionSecrets(ACCOUNT, { [SIGNER]: SECRET });
+    const key = `stm.session.secrets.PUBLIC.${ACCOUNT}`;
+    const map = JSON.parse(sessionStorage.getItem(key));
+    const OTHER = 'GB7TAYRUZGE6TVT7NHP5SMIZRNQA6PLM423EYISAOAP3MKYIQMVYP2JO';
+    sessionStorage.setItem(key, JSON.stringify({ ...map, [OTHER]: 'SBPLAINTEXTSECRETFROMBEFORE', [`${OTHER}x`]: 42 }));
+    expect(getSessionSecretCount(ACCOUNT)).toBe(1);
+    expect(hasSessionSecrets(ACCOUNT)).toBe(true);
+    expect(Object.keys(JSON.parse(sessionStorage.getItem(key)))).toEqual([SIGNER]);
     expect(await getSessionSecret(ACCOUNT, SIGNER)).toBe(SECRET);
+    expect(await getSessionSecret(ACCOUNT, OTHER)).toBe('');
+  });
+
+  it('F-12: Map nur mit Klartext-Eintraegen wird ganz entfernt', () => {
+    const key = `stm.session.secrets.PUBLIC.${ACCOUNT}`;
+    sessionStorage.setItem(key, JSON.stringify({ [SIGNER]: SECRET }));
+    expect(hasSessionSecrets(ACCOUNT)).toBe(false);
+    expect(sessionStorage.getItem(key)).toBeNull();
+  });
+
+  it('F-12: Klartext unter einem anderen Konto wird auch bei der Suche ueber alle Konten nicht genutzt', async () => {
+    const OTHER_ACCOUNT = 'GB7TAYRUZGE6TVT7NHP5SMIZRNQA6PLM423EYISAOAP3MKYIQMVYP2JO';
+    sessionStorage.setItem(`stm.session.secrets.PUBLIC.${OTHER_ACCOUNT}`, JSON.stringify({ [SIGNER]: SECRET }));
+    expect(await getSessionSecret(ACCOUNT, SIGNER)).toBe('');
+    expect(getUsableSignerKeys(ACCOUNT)).toEqual([]);
   });
 
   it('fails safe (returns empty) for undecryptable/corrupted entries instead of throwing', async () => {
