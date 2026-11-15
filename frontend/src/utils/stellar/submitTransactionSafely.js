@@ -17,7 +17,8 @@ import { loadWithBackoff } from './retryLoad.js';
 // ein String in operations. Ohne solche Codes ist jeder Status ab 500 sowie 408, 429, Status 0 und keine
 // Antwort unklar. Vorher galten nur 500, 502, 503 und 504 als unklar, und jedes result_codes-Objekt (auch {})
 // als Ablehnung: Ein Proxy-Fehler wie 520 gab das Konto frei, obwohl die Transaktion angekommen sein konnte.
-function hasUsableResultCodes(codes) {
+// Auch genutzt von classifyHorizonSubmitError (utils/stellar/activationOutcome.js): eine Regel an einer Stelle.
+export function hasUsableResultCodes(codes) {
   if (!codes || typeof codes !== 'object' || Array.isArray(codes)) return false;
   return typeof codes.transaction === 'string'
     || typeof codes.inner_transaction === 'string'

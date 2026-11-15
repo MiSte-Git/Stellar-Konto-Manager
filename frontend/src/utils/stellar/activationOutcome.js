@@ -8,6 +8,7 @@
 //
 // Im Zweifel 'ambiguous': Faelschlich "abgelehnt" verwirft den Key eines womoeglich
 // gefuellten Kontos, faelschlich "unklar" kostet nur einen Hinweis.
+import { hasUsableResultCodes } from './submitTransactionSafely.js';
 
 const EXISTS_RE = /already[\s_-]*(exists?|funded)|op_already_exists|createAccountAlreadyExist/i;
 
@@ -44,13 +45,16 @@ export function classifyFriendbotResponse(status, bodyText = '') {
 
 /**
  * Fehler von server.submitTransaction(createAccount) einordnen.
- * Eindeutig nur mit result_codes von Horizon (die Transaktion wurde geprueft bzw. ist
- * fehlgeschlagen); ohne sie (Timeout 504, Netzfehler) ist der Ausgang unklar.
+ * Eindeutig nur mit brauchbaren result_codes von Horizon (die Transaktion wurde geprueft bzw. ist
+ * fehlgeschlagen); ohne sie (Timeout 504, Netzfehler, auch jeder 4xx) ist der Ausgang unklar.
+ * Brauchbar heisst wie in isAmbiguousSubmitError (hasUsableResultCodes): transaction oder
+ * inner_transaction als String oder mindestens ein String in operations. Ein leeres oder
+ * unbrauchbares result_codes-Objekt galt vorher als Ablehnung (Nachtrag F-10).
  * @returns {'exists'|'rejected'|'ambiguous'}
  */
 export function classifyHorizonSubmitError(err) {
   const codes = err?.response?.data?.extras?.result_codes;
-  if (!codes) return 'ambiguous';
+  if (!hasUsableResultCodes(codes)) return 'ambiguous';
   const ops = Array.isArray(codes.operations) ? codes.operations : [];
   if (ops.includes('op_already_exists')) return 'exists';
   return 'rejected';
