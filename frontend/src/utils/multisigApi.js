@@ -106,12 +106,14 @@ export function signMultisigJobChallenge(secret, challengeB64, purpose) {
 // the only way to obtain a job's token, since the job list response no longer
 // includes it (it used to, which let anyone who knew a public accountId read
 // every pending job's token straight out of the list).
-export async function getMultisigJobAccessToken(jobId, signerPublicKey, signature) {
+// challenge ist die Nonce aus getMultisigJobChallenge(), ueber die signiert wurde: Das Backend
+// verbraucht nur genau diese, andere offene Challenges desselben Signers bleiben.
+export async function getMultisigJobAccessToken(jobId, signerPublicKey, signature, challenge) {
   try {
     const r = await fetch(apiUrl(`multisig/jobs/${encodeURIComponent(jobId)}/token`), {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ signer: signerPublicKey || '', signature: signature || '' }),
+      body: JSON.stringify({ signer: signerPublicKey || '', signature: signature || '', challenge: challenge || '' }),
     });
     const data = await r.json().catch(() => ({}));
     if (!r.ok) {
@@ -200,22 +202,22 @@ async function jobRequest(url, options, fallbackError) {
 }
 
 // Ablehnen: signature ist die mit dem Signer-Key signierte Challenge (wie beim Token),
-// damit das Backend weiss, welcher Signer ablehnt. Antwort: { ok, status, declinedSigners }.
-export async function declineMultisigJob(jobId, signerPublicKey, signature) {
+// damit das Backend weiss, welcher Signer ablehnt; challenge ist deren Nonce. Antwort: { ok, status, declinedSigners }.
+export async function declineMultisigJob(jobId, signerPublicKey, signature, challenge) {
   return jobRequest(apiUrl(`multisig/jobs/${encodeURIComponent(jobId)}/decline`), {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ signer: signerPublicKey || '', signature: signature || '' }),
+    body: JSON.stringify({ signer: signerPublicKey || '', signature: signature || '', challenge: challenge || '' }),
   }, 'multisig.jobs.decline_failed');
 }
 
 // Einzelnen Job im Endzustand loeschen (C1): signature ist die mit dem Signer-Key und Zweck
-// `delete` signierte Challenge, wie beim Ablehnen. Das Backend loescht nur fuer aktuelle
+// `delete` signierte Challenge, wie beim Ablehnen, challenge deren Nonce. Das Backend loescht nur fuer aktuelle
 // Signer des Job-Kontos (live geprueft), das Job-Token reicht dafuer nicht.
-export async function deleteMultisigJob(jobId, signerPublicKey, signature) {
+export async function deleteMultisigJob(jobId, signerPublicKey, signature, challenge) {
   return jobRequest(apiUrl(`multisig/jobs/${encodeURIComponent(jobId)}/delete`), {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ signer: signerPublicKey || '', signature: signature || '' }),
+    body: JSON.stringify({ signer: signerPublicKey || '', signature: signature || '', challenge: challenge || '' }),
   }, 'multisig.jobs.delete_failed');
 }

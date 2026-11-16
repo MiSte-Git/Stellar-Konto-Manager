@@ -291,7 +291,7 @@ $create = fn(KeyPair $owner) => request('POST', BASE_URL, [], ['network' => 'tes
 $signedChallenge = function (string $id, KeyPair $kp, string $purpose): array {
     $ch = request('POST', BASE_URL . "/{$id}/challenge", [], ['signer' => $kp->getAccountId()]);
     $nonce = base64_decode((string)($ch['body']['challenge'] ?? ''), true) ?: '';
-    return ['signer' => $kp->getAccountId(), 'signature' => base64_encode($kp->sign('skm:' . $purpose . ':' . $nonce))];
+    return ['signer' => $kp->getAccountId(), 'signature' => base64_encode($kp->sign('skm:' . $purpose . ':' . $nonce)), 'challenge' => base64_encode($nonce)];
 };
 
 $env = array_merge(getenv(), [

@@ -6,7 +6,8 @@
 // holds that key's private half was required, and signer lists are public on
 // Horizon. This module adds the missing possession proof: the caller must
 // first request a short-lived, single-use nonce for (jobId, signerPublicKey),
-// then sign it with the claimed key before a token is issued.
+// then sign it with the claimed key before a token is issued. Beim Einloesen
+// schickt der Client die Nonce mit; verbraucht wird nur genau diese.
 //
 // In-memory only (no disk persistence, unlike the job store): server.js is a
 // single long-running process, and a challenge is only ever useful for ~60s -
@@ -20,16 +21,20 @@ const DEFAULT_TTL_MS = 60_000;
 // Gleich in api/challengeStore.php.
 const MAX_CHALLENGES_TOTAL = 2000;
 const MAX_CHALLENGES_PER_JOB = 20;
+// Offene Challenges je (jobId, signer). Mehrere, damit ein Dritter mit jobId und Signer-Adresse
+// (beides oeffentlich) die Challenge eines ehrlichen Signers nicht ueberschreiben kann.
+const MAX_CHALLENGES_PER_SIGNER = 5;
+// Laenge der Nonce in Byte, gleich wie CHALLENGE_NONCE_BYTES im Frontend.
+const CHALLENGE_NONCE_BYTES = 32;
 // Budget fuer POST /challenge je IP, gleich wie in api/challengeStore.php.
 const CHALLENGE_RATE_LIMIT_MAX = 20;
 const CHALLENGE_RATE_LIMIT_WINDOW_MS = 60_000;
 
-/** @type {Map<string, { jobId: string, nonce: string, expiresAt: number }>} */
+// Schluessel ist die Nonce (base64, kanonisch), nicht mehr (jobId, signer): Jede Challenge
+// bleibt fuer sich offen, bis genau sie eingeloest wird oder ablaeuft. Die Reihenfolge der
+// Map ist das Alter (aelteste zuerst).
+/** @type {Map<string, { jobId: string, signer: string, expiresAt: number }>} */
 const challenges = new Map();
-
-function challengeKey(jobId, signerPublicKey) {
-  return `${jobId}:${signerPublicKey}`;
-}
 
 // Opportunistic cleanup so abandoned challenges (requested but never
 // redeemed) don't accumulate forever; cheap enough to run on every create.
@@ -40,26 +45,40 @@ function pruneExpired(now = Date.now()) {
 }
 
 /**
- * Issues a fresh nonce for (jobId, signerPublicKey), overwriting any
- * still-pending challenge for the same pair (only the newest one is valid).
+ * Nonce aus dem Request-Body (Feld challenge): nur strikte Standard-base64 mit Padding und
+ * genau 32 Byte, gleiche Strenge wie K5 und decodeChallengeNonce im Frontend. Gibt die Nonce
+ * unveraendert zurueck oder null. Gleich parseChallengeNonce in api/challengeStore.php.
+ */
+function parseChallengeNonce(value) {
+  if (typeof value !== 'string') return null;
+  const bytes = decodeStrictBase64(value);
+  if (!bytes || bytes.length !== CHALLENGE_NONCE_BYTES) return null;
+  return value;
+}
+
+/**
+ * Issues a fresh nonce for (jobId, signerPublicKey). Andere offene Challenges desselben Paars
+ * bleiben, bis MAX_CHALLENGES_PER_SIGNER erreicht ist (dann faellt die aelteste weg).
  * @returns {{ challenge: string, expiresAt: number }} challenge is base64.
  */
 function createChallenge(jobId, signerPublicKey, ttlMs = DEFAULT_TTL_MS) {
   const now = Date.now();
   pruneExpired(now);
-  const nonce = crypto.randomBytes(32).toString('base64');
+  let nonce;
+  do nonce = crypto.randomBytes(CHALLENGE_NONCE_BYTES).toString('base64'); while (challenges.has(nonce));
   const expiresAt = now + ttlMs;
-  const key = challengeKey(jobId, signerPublicKey);
-  // Neu einfuegen statt ueberschreiben: die Reihenfolge der Map ist das Alter.
-  challenges.delete(key);
-  capChallenges(jobId);
-  challenges.set(key, { jobId, nonce, expiresAt });
+  capChallenges(jobId, signerPublicKey);
+  challenges.set(nonce, { jobId, signer: signerPublicKey, expiresAt });
   return { challenge: nonce, expiresAt };
 }
 
-// Macht Platz fuer eine neue Challenge von jobId: zuerst je Job, dann gesamt die
-// aeltesten Eintraege entfernen. Abgelaufene hat pruneExpired() schon entfernt.
-function capChallenges(jobId) {
+// Macht Platz fuer eine neue Challenge von (jobId, signer): zuerst je Signer, dann je Job,
+// dann gesamt die aeltesten Eintraege entfernen. Abgelaufene hat pruneExpired() schon entfernt.
+function capChallenges(jobId, signerPublicKey) {
+  const ofSigner = [...challenges]
+    .filter(([, entry]) => entry.jobId === jobId && entry.signer === signerPublicKey)
+    .map(([key]) => key);
+  for (let i = 0; i <= ofSigner.length - MAX_CHALLENGES_PER_SIGNER; i += 1) challenges.delete(ofSigner[i]);
   const ofJob = [...challenges].filter(([, entry]) => entry.jobId === jobId).map(([key]) => key);
   for (let i = 0; i <= ofJob.length - MAX_CHALLENGES_PER_JOB; i += 1) challenges.delete(ofJob[i]);
   for (const key of challenges.keys()) {
@@ -69,19 +88,21 @@ function capChallenges(jobId) {
 }
 
 /**
- * Atomically retrieves and deletes the pending challenge for (jobId,
- * signerPublicKey) - single-use regardless of whether the signature that
- * follows turns out to be valid, so a captured nonce+signature pair can never
- * be replayed even against a retried request.
- * @returns {{ nonce: string } | null} null if none pending or it expired.
+ * Loest genau die Challenge `nonceB64` ein, wenn sie zu (jobId, signerPublicKey) gehoert, und
+ * loescht sie dabei, unabhaengig davon, ob die folgende Signaturpruefung gelingt (kein Replay).
+ * Eine Nonce, die kaputt, unbekannt, abgelaufen oder fuer einen anderen Job oder Signer
+ * ausgestellt ist, ergibt null; eine fremde Nonce bleibt dabei unangetastet. Andere offene
+ * Challenges desselben Signers bleiben immer.
+ * @returns {{ nonce: string } | null}
  */
-function consumeChallenge(jobId, signerPublicKey) {
-  const key = challengeKey(jobId, signerPublicKey);
-  const entry = challenges.get(key);
-  challenges.delete(key);
-  if (!entry) return null;
+function consumeChallenge(jobId, signerPublicKey, nonceB64) {
+  const nonce = parseChallengeNonce(nonceB64);
+  if (!nonce) return null;
+  const entry = challenges.get(nonce);
+  if (!entry || entry.jobId !== jobId || entry.signer !== signerPublicKey) return null;
+  challenges.delete(nonce);
   if (entry.expiresAt <= Date.now()) return null;
-  return { nonce: entry.nonce };
+  return { nonce };
 }
 
 /**
@@ -114,10 +135,13 @@ function verifyChallengeSignature(nonceB64, signatureB64, signerPublicKey, purpo
 module.exports = {
   createChallenge,
   consumeChallenge,
+  parseChallengeNonce,
   verifyChallengeSignature,
   challengeMessage,
   MAX_CHALLENGES_TOTAL,
   MAX_CHALLENGES_PER_JOB,
+  MAX_CHALLENGES_PER_SIGNER,
+  CHALLENGE_NONCE_BYTES,
   CHALLENGE_RATE_LIMIT_MAX,
   CHALLENGE_RATE_LIMIT_WINDOW_MS,
 };

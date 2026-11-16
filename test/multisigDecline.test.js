@@ -106,7 +106,7 @@ test('Ablehnen ohne Challenge -> 400, mit falscher Signatur -> 403', async () =>
   assert.equal(res.status, 400);
   assert.equal(res.body.error, 'challenge_missing_or_expired');
   const { body: ch } = await post(`${BASE}/offen/challenge`, { signer: signer.publicKey() });
-  res = await post(`${BASE}/offen/decline`, { signer: signer.publicKey(), signature: signChallenge(Keypair.random(), ch.challenge) });
+  res = await post(`${BASE}/offen/decline`, { signer: signer.publicKey(), signature: signChallenge(Keypair.random(), ch.challenge), challenge: ch.challenge });
   assert.equal(res.status, 403);
   assert.equal(res.body.error, 'invalid_signature');
 });
@@ -114,7 +114,7 @@ test('Ablehnen ohne Challenge -> 400, mit falscher Signatur -> 403', async () =>
 test('Ablehnen: Signatur gueltig, aber kein Signer des Kontos -> 403, Job unveraendert', async () => {
   const stranger = Keypair.random();
   const { body: ch } = await post(`${BASE}/offen/challenge`, { signer: stranger.publicKey() });
-  const res = await post(`${BASE}/offen/decline`, { signer: stranger.publicKey(), signature: signChallenge(stranger, ch.challenge) });
+  const res = await post(`${BASE}/offen/decline`, { signer: stranger.publicKey(), signature: signChallenge(stranger, ch.challenge), challenge: ch.challenge });
   assert.equal(res.status, 403);
   assert.equal(res.body.error, 'forbidden');
   const stored = JSON.parse(fs.readFileSync(dbPath, 'utf8')).items.find((j) => j.id === 'offen');
@@ -125,7 +125,7 @@ test('Ablehnen: Token-Signatur und Rohsignatur der Nonce gelten nicht als Ablehn
   const signer = Keypair.random();
   for (const purpose of ['token', null]) {
     const { body: ch } = await post(`${BASE}/offen/challenge`, { signer: signer.publicKey() });
-    const res = await post(`${BASE}/offen/decline`, { signer: signer.publicKey(), signature: signChallenge(signer, ch.challenge, purpose) });
+    const res = await post(`${BASE}/offen/decline`, { signer: signer.publicKey(), signature: signChallenge(signer, ch.challenge, purpose), challenge: ch.challenge });
     assert.equal(res.status, 403);
     assert.equal(res.body.error, 'invalid_signature');
   }
@@ -138,7 +138,7 @@ test('Token: skm:token: besteht die Signaturpruefung, Rohsignatur und decline-Si
   const signer = Keypair.random();
   const token = async (purpose) => {
     const { body: ch } = await post(`${BASE}/offen/challenge`, { signer: signer.publicKey() });
-    return post(`${BASE}/offen/token`, { signer: signer.publicKey(), signature: signChallenge(signer, ch.challenge, purpose) });
+    return post(`${BASE}/offen/token`, { signer: signer.publicKey(), signature: signChallenge(signer, ch.challenge, purpose), challenge: ch.challenge });
   };
   const ok = await token('token');
   assert.equal(ok.status, 403);
@@ -154,12 +154,12 @@ test('Ablehnen: Challenge ist einmalig und an den Job gebunden', async () => {
   const signer = Keypair.random();
   const { body: ch } = await post(`${BASE}/offen/challenge`, { signer: signer.publicKey() });
   const sig = signChallenge(signer, ch.challenge);
-  await post(`${BASE}/offen/decline`, { signer: signer.publicKey(), signature: sig });
-  const again = await post(`${BASE}/offen/decline`, { signer: signer.publicKey(), signature: sig });
+  await post(`${BASE}/offen/decline`, { signer: signer.publicKey(), signature: sig, challenge: ch.challenge });
+  const again = await post(`${BASE}/offen/decline`, { signer: signer.publicKey(), signature: sig, challenge: ch.challenge });
   assert.equal(again.status, 400);
   assert.equal(again.body.error, 'challenge_missing_or_expired');
   const { body: other } = await post(`${BASE}/offen/challenge`, { signer: signer.publicKey() });
-  const elsewhere = await post(`${BASE}/alt/decline`, { signer: signer.publicKey(), signature: signChallenge(signer, other.challenge) });
+  const elsewhere = await post(`${BASE}/alt/decline`, { signer: signer.publicKey(), signature: signChallenge(signer, other.challenge), challenge: other.challenge });
   assert.equal(elsewhere.status, 400);
 });
 

@@ -49,29 +49,34 @@ check('createChallenge expiresAt is ~60s in the future', $c1['expiresAt'] >= $be
 
 // --- consumeChallenge: single-use --------------------------------------
 $c2 = createChallenge('job-2', 'GSIGNER2');
-$first = consumeChallenge('job-2', 'GSIGNER2');
+$first = consumeChallenge('job-2', 'GSIGNER2', $c2['challenge']);
 check('consumeChallenge returns the nonce on first call', $first !== null && $first['nonce'] === $c2['challenge']);
-$second = consumeChallenge('job-2', 'GSIGNER2');
+$second = consumeChallenge('job-2', 'GSIGNER2', $c2['challenge']);
 check('consumeChallenge returns null on second call (single-use)', $second === null);
 
 // --- consumeChallenge: unknown pair -------------------------------------
 check(
     'consumeChallenge returns null for a pair that never requested a challenge',
-    consumeChallenge('never-requested-job', 'GNOBODY') === null
+    consumeChallenge('never-requested-job', 'GNOBODY', base64_encode(str_repeat("\0", 32))) === null
 );
 
-// --- overwrite on re-request ---------------------------------------------
-$jobId3 = 'job-3';
+// --- ohne Nonce wird nichts verbraucht ------------------------------------
+$c3 = createChallenge('job-3', 'GSIGNER3')['challenge'];
+check('consumeChallenge ohne Nonce verbraucht nichts', consumeChallenge('job-3', 'GSIGNER3', null) === null);
+check('die offene Challenge bleibt danach einloesbar', (consumeChallenge('job-3', 'GSIGNER3', $c3)['nonce'] ?? '') === $c3);
+
+// --- keine Ueberschreibung mehr --------------------------------------------
+$jobId3 = 'job-3b';
 $signer3 = 'GSIGNER3';
 $firstChallenge = createChallenge($jobId3, $signer3)['challenge'];
 $secondChallenge = createChallenge($jobId3, $signer3)['challenge'];
 check('requesting a new challenge produces a different nonce', $firstChallenge !== $secondChallenge);
-$consumed3 = consumeChallenge($jobId3, $signer3);
-check('consumeChallenge returns the newest nonce after an overwrite', $consumed3 !== null && $consumed3['nonce'] === $secondChallenge);
+check('die erste Challenge bleibt nach einer zweiten gueltig', (consumeChallenge($jobId3, $signer3, $firstChallenge)['nonce'] ?? '') === $firstChallenge);
+check('die zweite Challenge ebenfalls', (consumeChallenge($jobId3, $signer3, $secondChallenge)['nonce'] ?? '') === $secondChallenge);
 
 // --- expiry ---------------------------------------------------------------
-createChallenge('job-4', 'GSIGNER4', -1); // already expired the instant it's created
-check('consumeChallenge treats an expired challenge as absent', consumeChallenge('job-4', 'GSIGNER4') === null);
+$c4 = createChallenge('job-4', 'GSIGNER4', -1); // already expired the instant it's created
+check('consumeChallenge treats an expired challenge as absent', consumeChallenge('job-4', 'GSIGNER4', $c4['challenge']) === null);
 
 // --- verifyChallengeSignature: genuine signature --------------------------
 $kp5 = KeyPair::random();
@@ -145,47 +150,98 @@ $jobId8 = 'job-8';
 $kp8 = KeyPair::random();
 $c8 = createChallenge($jobId8, $kp8->getAccountId());
 $sig8 = signNonce($kp8, $c8['challenge']);
-$pending8 = consumeChallenge($jobId8, $kp8->getAccountId());
+$pending8 = consumeChallenge($jobId8, $kp8->getAccountId(), $c8['challenge']);
 check('end-to-end: challenge is still pending before redemption', $pending8 !== null);
 check(
     'end-to-end: verifyChallengeSignature succeeds against the consumed nonce',
     $pending8 !== null && verifyChallengeSignature($pending8['nonce'], $sig8, $kp8->getAccountId(), 'token') === true
 );
 check(
-    'end-to-end: replaying the same (jobId, signer) after consumption fails closed',
-    consumeChallenge($jobId8, $kp8->getAccountId()) === null
+    'end-to-end: replaying the same nonce after consumption fails closed',
+    consumeChallenge($jobId8, $kp8->getAccountId(), $c8['challenge']) === null
 );
+
+// --- Gemeinsame Faelle (test/assets/challenge-cases.json, gleich in Node) ----
+$cases = json_decode((string)file_get_contents(__DIR__ . '/assets/challenge-cases.json'), true);
+foreach ($cases['scenarios'] as $si => $scenario) {
+    $jobs = ['j1' => "fx{$si}-j1", 'j2' => "fx{$si}-j2"];
+    $keys = ['S1' => KeyPair::random(), 'S2' => KeyPair::random()];
+    $nonces = [];
+    $ok = true;
+    $detail = '';
+    foreach ($scenario['steps'] as $i => $step) {
+        $pk = $keys[$step['signer']]->getAccountId();
+        if ($step['op'] === 'create') {
+            $nonces[$step['nonce']] = createChallenge($jobs[$step['job']], $pk)['challenge'];
+            continue;
+        }
+        $nonce = $nonces[$step['nonce']];
+        $pending = consumeChallenge($jobs[$step['job']], $pk, $nonce);
+        $outcome = 'missing';
+        if ($pending !== null) {
+            $signWith = $step['sign'] === 'valid' ? $keys[$step['signer']] : KeyPair::random();
+            $outcome = verifyChallengeSignature($pending['nonce'], signNonce($signWith, $nonce), $pk, 'token') ? 'ok' : 'invalid_signature';
+        }
+        if ($outcome !== $step['expect']) {
+            $ok = false;
+            $detail .= ' [Schritt ' . ($i + 1) . ": {$outcome} statt {$step['expect']}]";
+        }
+    }
+    check("Fixture: {$scenario['name']}{$detail}", $ok);
+}
+check(
+    'Fixture: Grenzen stimmen mit den Konstanten ueberein',
+    CHALLENGE_MAX_PER_SIGNER === $cases['limits']['perSigner'] && CHALLENGE_MAX_PER_JOB === $cases['limits']['perJob']
+        && CHALLENGE_MAX_TOTAL === $cases['limits']['total'] && CHALLENGE_TTL_SECONDS === $cases['limits']['ttlSeconds']
+        && CHALLENGE_NONCE_BYTES === $cases['limits']['nonceBytes']
+);
+$kpBody = KeyPair::random();
+$cBody = createChallenge('fx-body', $kpBody->getAccountId())['challenge'];
+foreach ($cases['bodyNonces'] as $c) {
+    $value = !empty($c['omit']) ? null : $c['value'];
+    check("Fixture: Nonce im Body \"{$c['label']}\" " . ($c['wellFormed'] ? 'wohlgeformt' : 'abgelehnt'), (parseChallengeNonce($value) !== null) === $c['wellFormed']);
+    check("Fixture: Nonce im Body \"{$c['label']}\" verbraucht nichts", consumeChallenge('fx-body', $kpBody->getAccountId(), $value) === null);
+}
+check('Fixture: offene Challenge bleibt nach kaputten Nonces einloesbar', (consumeChallenge('fx-body', $kpBody->getAccountId(), $cBody)['nonce'] ?? '') === $cBody);
+$cExp = createChallenge('fx-exp', 'GEXP', -1)['challenge'];
+check('abgelaufene Nonce: fuer anderen Signer null', consumeChallenge('fx-exp', 'GANDERER', $cExp) === null);
+check('abgelaufene Nonce: fuer den richtigen Signer null', consumeChallenge('fx-exp', 'GEXP', $cExp) === null);
 
 // --- Obergrenzen (C2) -----------------------------------------------------
 $capSigners = array_map(fn($i) => "GCAPJOB{$i}", range(0, CHALLENGE_MAX_PER_JOB));
-foreach ($capSigners as $pk) createChallenge('cap-job', $pk);
-check('je Job hoechstens CHALLENGE_MAX_PER_JOB, die aelteste fliegt raus', consumeChallenge('cap-job', $capSigners[0]) === null);
+$capNonces = array_map(fn($pk) => createChallenge('cap-job', $pk)['challenge'], $capSigners);
+check('je Job hoechstens CHALLENGE_MAX_PER_JOB, die aelteste fliegt raus', consumeChallenge('cap-job', $capSigners[0], $capNonces[0]) === null);
 $restOk = true;
-foreach (array_slice($capSigners, 1) as $pk) if (consumeChallenge('cap-job', $pk) === null) $restOk = false;
+foreach (array_slice($capSigners, 1, null, true) as $i => $pk) if (consumeChallenge('cap-job', $pk, $capNonces[$i]) === null) $restOk = false;
 check('die uebrigen Challenges des Jobs bleiben offen', $restOk);
 
 $reSigners = array_map(fn($i) => "GREJOB{$i}", range(0, CHALLENGE_MAX_PER_JOB - 1));
-foreach ($reSigners as $pk) createChallenge('re-job', $pk);
-createChallenge('re-job', $reSigners[0]);
-createChallenge('re-job', 'GREJOBNEU');
+$reNonces = array_map(fn($pk) => createChallenge('re-job', $pk)['challenge'], $reSigners);
+$again = createChallenge('re-job', $reSigners[0])['challenge'];
 check(
-    'erneute Challenge fuer dasselbe Paar zaehlt als neueste',
-    consumeChallenge('re-job', $reSigners[1]) === null && consumeChallenge('re-job', $reSigners[0]) !== null
+    'weitere Challenge fuer dasselbe Paar zaehlt je Job mit, verdraengt wird die aelteste des Jobs',
+    consumeChallenge('re-job', $reSigners[0], $reNonces[0]) === null
+        && consumeChallenge('re-job', $reSigners[0], $again) !== null
+        && consumeChallenge('re-job', $reSigners[1], $reNonces[1]) !== null
 );
 
 // Gesamt: Datei bis zur Obergrenze vorbelegen (schneller als 2000 Einzelaufrufe),
 // davor ein abgelaufener Eintrag. Er faellt zuerst weg, dann die aelteste gueltige.
-$full = ['expired:GEXPIRED' => ['nonce' => base64_encode(random_bytes(32)), 'expiresAt' => time() - 1]];
+$expiredKey = base64_encode(random_bytes(32));
+$full = [$expiredKey => ['jobId' => 'expired', 'signer' => 'GEXPIRED', 'expiresAt' => time() - 1]];
+$totalKeys = [];
 for ($i = 0; $i < CHALLENGE_MAX_TOTAL; $i++) {
-    $full["total-{$i}:GTOTAL"] = ['nonce' => base64_encode(random_bytes(32)), 'expiresAt' => time() + 60];
+    $k = base64_encode(random_bytes(32));
+    $totalKeys[] = $k;
+    $full[$k] = ['jobId' => "total-{$i}", 'signer' => 'GTOTAL', 'expiresAt' => time() + 60];
 }
 file_put_contents(challengesFilePath(), json_encode($full));
 $kpFresh = KeyPair::random();
 $cFresh = createChallenge('fresh-job', $kpFresh->getAccountId());
 $stored = json_decode((string)file_get_contents(challengesFilePath()), true);
 check('gesamt hoechstens CHALLENGE_MAX_TOTAL Eintraege', count($stored) === CHALLENGE_MAX_TOTAL);
-check('abgelaufene und dann die aelteste wurden verdraengt', !isset($stored['expired:GEXPIRED']) && !isset($stored['total-0:GTOTAL']) && isset($stored['total-1:GTOTAL']));
-$pendingFresh = consumeChallenge('fresh-job', $kpFresh->getAccountId());
+check('abgelaufene und dann die aelteste wurden verdraengt', !isset($stored[$expiredKey]) && !isset($stored[$totalKeys[0]]) && isset($stored[$totalKeys[1]]));
+$pendingFresh = consumeChallenge('fresh-job', $kpFresh->getAccountId(), $cFresh['challenge']);
 check(
     'nach der Verdraengung funktioniert eine frische Challenge mit Signatur weiter',
     $pendingFresh !== null && verifyChallengeSignature($pendingFresh['nonce'], signNonce($kpFresh, $cFresh['challenge']), $kpFresh->getAccountId(), 'token') === true
@@ -209,7 +265,7 @@ $roWritable = is_writable($roDir);
 check('sanity: Verzeichnis ist schreibgeschuetzt', !$roWritable);
 $roResults = [];
 for ($i = 0; $i < 3; $i++) {
-    try { $roResults[] = consumeChallenge('ro-job', 'GROSIGNER'); } catch (\Throwable $e) { $roResults[] = 'thrown'; }
+    try { $roResults[] = consumeChallenge('ro-job', 'GROSIGNER', $cRo['challenge']); } catch (\Throwable $e) { $roResults[] = 'thrown'; }
 }
 check('Verzeichnis 0555: consumeChallenge wirft bei jedem Versuch', $roResults === ['thrown', 'thrown', 'thrown']);
 check('Verzeichnis 0555: keine Nonce wird herausgegeben', !in_array(true, array_map(fn($r) => is_array($r) && ($r['nonce'] ?? '') === $cRo['challenge'], $roResults), true));
@@ -222,7 +278,7 @@ mkdir($renameDir . '/challenges.json', 0775, true);
 touch($renameDir . '/challenges.json/blocker');
 putenv('CHALLENGES_FILE_PATH=' . $renameDir . '/challenges.json');
 check('rename scheitert: createChallenge wirft', $throws(fn() => createChallenge('rn-job', 'GRNSIGNER')));
-check('rename scheitert: consumeChallenge wirft', $throws(fn() => consumeChallenge('rn-job', 'GRNSIGNER')));
+check('rename scheitert: consumeChallenge wirft', $throws(fn() => consumeChallenge('rn-job', 'GRNSIGNER', base64_encode(random_bytes(32)))));
 check('rename scheitert: keine Temp-Datei bleibt liegen', glob($renameDir . '/challenges.json.tmp.*') === []);
 
 // json_encode scheitert (ungueltiges UTF-8 im Schluessel): ebenfalls ein Fehler, kein stilles Verwerfen.

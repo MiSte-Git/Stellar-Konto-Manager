@@ -59,6 +59,10 @@ dass jede Spec in dieser Tabelle steht und jede genannte Datei existiert.
 - Memo-Pflicht und Fee-Bump-Ablehnung sind als Unit-Tests abgedeckt (`memoRequired.test.js`, Multisig-Tests).
 - SSRF-Schutz (Review Fable F-7): gemeinsame Fälle in `test/assets/ssrf-addresses.json`, geprüft von
   `test/ssrfGuard.test.js` und `test/ssrfGuard.test.php` ohne Netz (DNS und `fetch` ersetzt).
+- Challenges eines Signers ersetzen oder verbrauchen (Sabotage durch Dritte): gemeinsame Fälle in
+  `test/assets/challenge-cases.json`, geprüft auf Store-Ebene in `test/challengeStore.test.js` und `.php` und über
+  HTTP in `test/challengeCases.test.js` und `.php` (Token, Ablehnen, Löschen; mehrere offene Challenges je Signer,
+  nur die mitgeschickte Nonce wird verbraucht, Bindung an Job und Signer, Obergrenze je Signer, kaputte Nonce im Body).
 - Sperren in `api/.htaccess` (F-14): `test/apiHtaccess.test.js` startet einen lokalen Apache (`/usr/sbin/apache2` mit
   `mod_rewrite`, `mod_headers`, `mod_authz_core`, ohne PHP) gegen eine Kopie von `api/`; ohne Apache wird der Test
   übersprungen. `test/deployApiHtaccess.test.js` prüft die Abbruchregel im Deploy.

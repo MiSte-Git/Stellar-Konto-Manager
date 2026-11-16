@@ -1,0 +1,82 @@
+{
+  "_comment": "Gemeinsame Faelle fuer die Challenge-Nonces (Node: test/challengeStore.test.js, test/challengeCases.test.js; PHP: test/challengeStore.test.php, test/challengeCases.test.php). Jobs und Signer sind Platzhalter (j1, j2, S1, S2), die Tests setzen echte Job-IDs und Zufalls-Keys ein. Ein Schritt create legt eine Challenge an und merkt sich die Nonce unter dem Namen in nonce. Ein Schritt redeem loest die Nonce fuer job und signer ein; sign ist valid (Signatur des genannten Signers mit Zweck token) oder wrong (Signatur eines fremden Keys). expect: ok (Pruefung bestanden), missing (400 challenge_missing_or_expired), invalid_signature (403). Die Store-Tests pruefen dasselbe mit consumeChallenge plus verifyChallengeSignature, die Routen-Tests gegen POST /token.",
+  "limits": {
+    "perSigner": 5,
+    "perJob": 20,
+    "total": 2000,
+    "ttlSeconds": 60,
+    "nonceBytes": 32
+  },
+  "scenarios": [
+    {
+      "name": "(a) zweite Challenge desselben Signers macht die erste nicht ungueltig",
+      "steps": [
+        { "op": "create", "nonce": "A", "job": "j1", "signer": "S1" },
+        { "op": "create", "nonce": "B", "job": "j1", "signer": "S1" },
+        { "op": "redeem", "nonce": "A", "job": "j1", "signer": "S1", "sign": "valid", "expect": "ok" },
+        { "op": "redeem", "nonce": "B", "job": "j1", "signer": "S1", "sign": "valid", "expect": "ok" }
+      ]
+    },
+    {
+      "name": "(b) falsche Signatur mit Nonce A verbraucht A, aber nicht B",
+      "steps": [
+        { "op": "create", "nonce": "A", "job": "j1", "signer": "S1" },
+        { "op": "create", "nonce": "B", "job": "j1", "signer": "S1" },
+        { "op": "redeem", "nonce": "A", "job": "j1", "signer": "S1", "sign": "wrong", "expect": "invalid_signature" },
+        { "op": "redeem", "nonce": "A", "job": "j1", "signer": "S1", "sign": "valid", "expect": "missing" },
+        { "op": "redeem", "nonce": "B", "job": "j1", "signer": "S1", "sign": "valid", "expect": "ok" }
+      ]
+    },
+    {
+      "name": "(c) jede Nonce nur einmal",
+      "steps": [
+        { "op": "create", "nonce": "A", "job": "j1", "signer": "S1" },
+        { "op": "redeem", "nonce": "A", "job": "j1", "signer": "S1", "sign": "valid", "expect": "ok" },
+        { "op": "redeem", "nonce": "A", "job": "j1", "signer": "S1", "sign": "valid", "expect": "missing" }
+      ]
+    },
+    {
+      "name": "(d) Nonce eines anderen Signers oder Jobs wird abgelehnt und bleibt fuer den richtigen offen",
+      "steps": [
+        { "op": "create", "nonce": "A", "job": "j1", "signer": "S1" },
+        { "op": "redeem", "nonce": "A", "job": "j1", "signer": "S2", "sign": "valid", "expect": "missing" },
+        { "op": "redeem", "nonce": "A", "job": "j2", "signer": "S1", "sign": "valid", "expect": "missing" },
+        { "op": "redeem", "nonce": "A", "job": "j1", "signer": "S1", "sign": "valid", "expect": "ok" }
+      ]
+    },
+    {
+      "name": "(e) hoechstens perSigner offene Challenges je Job und Signer, die aelteste faellt weg, andere Signer bleiben",
+      "steps": [
+        { "op": "create", "nonce": "O", "job": "j1", "signer": "S2" },
+        { "op": "create", "nonce": "N1", "job": "j1", "signer": "S1" },
+        { "op": "create", "nonce": "N2", "job": "j1", "signer": "S1" },
+        { "op": "create", "nonce": "N3", "job": "j1", "signer": "S1" },
+        { "op": "create", "nonce": "N4", "job": "j1", "signer": "S1" },
+        { "op": "create", "nonce": "N5", "job": "j1", "signer": "S1" },
+        { "op": "create", "nonce": "N6", "job": "j1", "signer": "S1" },
+        { "op": "redeem", "nonce": "N1", "job": "j1", "signer": "S1", "sign": "valid", "expect": "missing" },
+        { "op": "redeem", "nonce": "N2", "job": "j1", "signer": "S1", "sign": "valid", "expect": "ok" },
+        { "op": "redeem", "nonce": "N6", "job": "j1", "signer": "S1", "sign": "valid", "expect": "ok" },
+        { "op": "redeem", "nonce": "O", "job": "j1", "signer": "S2", "sign": "valid", "expect": "ok" }
+      ]
+    }
+  ],
+  "bodyNonces": [
+    { "label": "fehlt", "omit": true, "wellFormed": false },
+    { "label": "null", "value": null, "wellFormed": false },
+    { "label": "leer", "value": "", "wellFormed": false },
+    { "label": "Zahl", "value": 123, "wellFormed": false },
+    { "label": "Liste", "value": ["AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="], "wellFormed": false },
+    { "label": "Objekt", "value": { "nonce": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=" }, "wellFormed": false },
+    { "label": "kein base64", "value": "kein-base64!!", "wellFormed": false },
+    { "label": "31 Byte", "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==", "wellFormed": false },
+    { "label": "33 Byte", "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "wellFormed": false },
+    { "label": "22 Byte (F-6)", "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==", "wellFormed": false },
+    { "label": "ohne Padding", "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "wellFormed": false },
+    { "label": "nicht kanonisch (Restbits)", "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB=", "wellFormed": false },
+    { "label": "base64url", "value": "_-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=", "wellFormed": false },
+    { "label": "Leerzeichen am Ende", "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA= ", "wellFormed": false },
+    { "label": "Zeilenumbruch in der Mitte", "value": "AAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAA=", "wellFormed": false },
+    { "label": "gueltig, aber unbekannt", "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=", "wellFormed": true }
+  ]
+}

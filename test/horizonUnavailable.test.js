@@ -41,7 +41,7 @@ const call = async (jobId, action, purpose) => {
   const { body: ch } = await post(`${BASE}/${jobId}/challenge`, { signer: signer.publicKey() });
   const nonce = Buffer.from(ch.challenge, 'base64');
   const signature = Buffer.from(signer.sign(Buffer.concat([Buffer.from(`skm:${purpose}:`), nonce]))).toString('base64');
-  return post(`${BASE}/${jobId}/${action}`, { signer: signer.publicKey(), signature });
+  return post(`${BASE}/${jobId}/${action}`, { signer: signer.publicKey(), signature, challenge: ch.challenge });
 };
 
 test.before(async () => {

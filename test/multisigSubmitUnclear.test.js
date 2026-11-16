@@ -134,6 +134,7 @@ const signedChallenge = async (jobId, signer, purpose) => {
   return {
     signer: signer.publicKey(),
     signature: Buffer.from(signer.sign(Buffer.concat([Buffer.from(`skm:${purpose}:`), Buffer.from(ch, 'base64')]))).toString('base64'),
+    challenge: ch,
   };
 };
 const createFor = (owner) => post(BASE, { network: 'testnet', accountId: owner.publicKey(), txXdr: buildTx(owner, { sign: true }).toXDR() });

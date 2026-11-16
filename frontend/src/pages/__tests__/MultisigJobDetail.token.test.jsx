@@ -81,7 +81,7 @@ describe('MultisigJobDetail: Zugriffstoken', () => {
       renderDetail({ jobId: 'd-reload', currentPublicKey: SIGNER });
       await waitFor(() => expect(hoisted.getJob).toHaveBeenCalledWith('d-reload', 'tok-challenge'));
       expect(hoisted.challenge).toHaveBeenCalledWith('d-reload', SIGNER);
-      expect(hoisted.accessToken).toHaveBeenCalledWith('d-reload', SIGNER, 'signature:token');
+      expect(hoisted.accessToken).toHaveBeenCalledWith('d-reload', SIGNER, 'signature:token', 'AAAA');
     });
 
     const OTHER_SECRET = 'SBFKGXZFIZJ5U2RZTPBZ3EUCKQQGT5APKWAHGTQCJQSLD4CXIIHOVYVO';
@@ -111,7 +111,7 @@ describe('MultisigJobDetail: Zugriffstoken', () => {
       fireEvent.click(openButton());
       await waitFor(() => expect(hoisted.getJob).toHaveBeenCalledWith('d-reload', 'tok-challenge'));
       expect(hoisted.challenge).toHaveBeenCalledWith('d-reload', SIGNER);
-      expect(hoisted.accessToken).toHaveBeenCalledWith('d-reload', SIGNER, 'signature:token');
+      expect(hoisted.accessToken).toHaveBeenCalledWith('d-reload', SIGNER, 'signature:token', 'AAAA');
       expect(hoisted.remember).not.toHaveBeenCalled();
       expect(screen.queryByTestId('job-unlock')).toBeNull();
     });

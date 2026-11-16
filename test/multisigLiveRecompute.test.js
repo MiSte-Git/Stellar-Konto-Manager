@@ -85,7 +85,7 @@ const detail = async (id) => {
 const signedChallenge = async (id, signer, purpose) => {
   const { body } = await post(`${BASE}/${id}/challenge`, { signer: signer.publicKey() });
   const data = Buffer.concat([Buffer.from(`skm:${purpose}:`), Buffer.from(body.challenge, 'base64')]);
-  return { signer: signer.publicKey(), signature: Buffer.from(signer.sign(data)).toString('base64') };
+  return { signer: signer.publicKey(), signature: Buffer.from(signer.sign(data)).toString('base64'), challenge: body.challenge };
 };
 const pks = (list) => (list || []).map((s) => s.publicKey).sort();
 

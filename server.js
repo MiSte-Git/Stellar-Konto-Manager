@@ -1102,8 +1102,9 @@ app.post('/api/multisig/jobs/:id/challenge', challengeLimiter, (req, res) => {
 
 // Issues a job's access token to a caller who proves BOTH that they hold the
 // private key for the claimed signer public key (a valid signature over
-// `skm:token:` plus the nonce from /challenge above, checked first and consumed
-// regardless of outcome so it can never be replayed) AND - via the account's real, live
+// `skm:token:` plus the nonce from /challenge above, sent back in the body field
+// `challenge`; exactly that nonce is checked first and consumed regardless of
+// outcome so it can never be replayed) AND - via the account's real, live
 // signer list, never the client-supplied job.signers snapshot - that this
 // public key is an active signer (weight > 0) of the job's account. This is
 // the only way to obtain a job's token now that the list endpoint no longer
@@ -1120,7 +1121,8 @@ app.post('/api/multisig/jobs/:id/token', async (req, res) => {
     const signature = String(req.body?.signature || '').trim();
     if (!signature) return res.status(400).json({ ok: false, error: 'missing_signature' });
 
-    const pending = consumeChallenge(id, signerPk);
+    // Nur genau die mitgeschickte Nonce dieses Jobs und Signers wird verbraucht, andere offene bleiben.
+    const pending = consumeChallenge(id, signerPk, req.body?.challenge);
     if (!pending) return res.status(400).json({ ok: false, error: 'challenge_missing_or_expired' });
     if (!verifyChallengeSignature(pending.nonce, signature, signerPk, 'token')) {
       return res.status(403).json({ ok: false, error: 'invalid_signature' });
@@ -1161,7 +1163,8 @@ app.post('/api/multisig/jobs/:id/decline', (req, res) => withMultisigJobLock(req
     const signature = typeof req.body?.signature === 'string' ? req.body.signature.trim() : '';
     if (!signature) return res.status(400).json({ ok: false, error: 'missing_signature' });
 
-    const pending = consumeChallenge(id, signerPk);
+    // Nur genau die mitgeschickte Nonce dieses Jobs und Signers wird verbraucht, andere offene bleiben.
+    const pending = consumeChallenge(id, signerPk, req.body?.challenge);
     if (!pending) return res.status(400).json({ ok: false, error: 'challenge_missing_or_expired' });
     if (!verifyChallengeSignature(pending.nonce, signature, signerPk, 'decline')) {
       return res.status(403).json({ ok: false, error: 'invalid_signature' });
@@ -1227,7 +1230,8 @@ app.post('/api/multisig/jobs/:id/delete', (req, res) => withMultisigJobLock(req.
     const signature = typeof req.body?.signature === 'string' ? req.body.signature.trim() : '';
     if (!signature) return res.status(400).json({ ok: false, error: 'missing_signature' });
 
-    const pending = consumeChallenge(id, signerPk);
+    // Nur genau die mitgeschickte Nonce dieses Jobs und Signers wird verbraucht, andere offene bleiben.
+    const pending = consumeChallenge(id, signerPk, req.body?.challenge);
     if (!pending) return res.status(400).json({ ok: false, error: 'challenge_missing_or_expired' });
     if (!verifyChallengeSignature(pending.nonce, signature, signerPk, 'delete')) {
       return res.status(403).json({ ok: false, error: 'invalid_signature' });

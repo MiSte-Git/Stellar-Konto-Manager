@@ -54,6 +54,7 @@ function call(string $jobId, KeyPair $signer, string $action, string $purpose): 
     return request('POST', BASE_URL . "/{$jobId}/{$action}", [], [
         'signer' => $signer->getAccountId(),
         'signature' => base64_encode($signer->sign("skm:{$purpose}:" . $nonce)),
+        'challenge' => base64_encode($nonce),
     ]);
 }
 

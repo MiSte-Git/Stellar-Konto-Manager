@@ -45,7 +45,7 @@ const act = async (jobId, action, kp) => {
   const { body: ch } = await postJson(`${BASE}/${jobId}/challenge`, { signer: kp.publicKey() });
   const nonce = Buffer.from(ch.challenge, 'base64');
   const signature = Buffer.from(kp.sign(Buffer.concat([Buffer.from(`skm:${action}:`), nonce]))).toString('base64');
-  return postJson(`${BASE}/${jobId}/${action}`, { signer: kp.publicKey(), signature });
+  return postJson(`${BASE}/${jobId}/${action}`, { signer: kp.publicKey(), signature, challenge: ch.challenge });
 };
 const list = async () => (await (await fetch(`${BASE}?network=testnet&accountId=${owner.publicKey()}`)).json());
 

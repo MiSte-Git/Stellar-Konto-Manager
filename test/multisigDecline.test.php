@@ -73,7 +73,7 @@ function decline(string $jobId, KeyPair $kp, ?KeyPair $signWith = null): array {
     $ch = request('POST', BASE_URL . "/{$jobId}/challenge", [], ['signer' => $kp->getAccountId()]);
     $nonce = base64_decode((string)($ch['body']['challenge'] ?? ''), true);
     $signature = base64_encode(($signWith ?? $kp)->sign('skm:decline:' . $nonce));
-    return request('POST', BASE_URL . "/{$jobId}/decline", [], ['signer' => $kp->getAccountId(), 'signature' => $signature]);
+    return request('POST', BASE_URL . "/{$jobId}/decline", [], ['signer' => $kp->getAccountId(), 'signature' => $signature, 'challenge' => base64_encode((string)$nonce)]);
 }
 
 $owner = KeyPair::random();
@@ -141,10 +141,10 @@ file_put_contents($apiDir . '/data/signers_cache_v2.json', json_encode([
 // verdraengen, Token und Ablehnen funktionieren trotzdem.
 $prefilled = [];
 for ($i = 0; $i < CHALLENGE_MAX_PER_JOB; $i++) {
-    $prefilled['offen:' . KeyPair::random()->getAccountId()] = ['nonce' => base64_encode(random_bytes(32)), 'expiresAt' => $now + 3600];
+    $prefilled[base64_encode(random_bytes(32))] = ['jobId' => 'offen', 'signer' => KeyPair::random()->getAccountId(), 'expiresAt' => $now + 3600];
 }
 for ($i = count($prefilled); $i < CHALLENGE_MAX_TOTAL; $i++) {
-    $prefilled["fremd-{$i}:GFREMD"] = ['nonce' => base64_encode(random_bytes(32)), 'expiresAt' => $now + 3600];
+    $prefilled[base64_encode(random_bytes(32))] = ['jobId' => "fremd-{$i}", 'signer' => 'GFREMD', 'expiresAt' => $now + 3600];
 }
 file_put_contents($apiDir . '/data/challenges.json', json_encode($prefilled));
 
@@ -173,21 +173,21 @@ try {
     check('Ablehnen durch Nicht-Signer -> 403 forbidden', $res['status'] === 403 && ($res['body']['error'] ?? '') === 'forbidden');
 
     $nonce = challengeFor('offen', $b);
-    $res = request('POST', BASE_URL . '/offen/decline', [], ['signer' => $b->getAccountId(), 'signature' => base64_encode($b->sign($nonce))]);
+    $res = request('POST', BASE_URL . '/offen/decline', [], ['signer' => $b->getAccountId(), 'signature' => base64_encode($b->sign($nonce)), 'challenge' => base64_encode($nonce)]);
     check('Rohsignatur der Nonce gilt nicht als Ablehnung -> 403', $res['status'] === 403 && ($res['body']['error'] ?? '') === 'invalid_signature');
     $nonce = challengeFor('offen', $b);
-    $res = request('POST', BASE_URL . '/offen/decline', [], ['signer' => $b->getAccountId(), 'signature' => base64_encode($b->sign('skm:token:' . $nonce))]);
+    $res = request('POST', BASE_URL . '/offen/decline', [], ['signer' => $b->getAccountId(), 'signature' => base64_encode($b->sign('skm:token:' . $nonce)), 'challenge' => base64_encode($nonce)]);
     check('Token-Signatur gilt nicht als Ablehnung -> 403', $res['status'] === 403 && ($res['body']['error'] ?? '') === 'invalid_signature');
 
     // Token-Endpunkt: nur "skm:token:" plus Nonce ist gueltig.
     $tokenWith = function (string $prefix) use ($b): array {
         $nonce = challengeFor('offen', $b);
-        return request('POST', BASE_URL . '/offen/token', [], ['signer' => $b->getAccountId(), 'signature' => base64_encode($b->sign($prefix . $nonce))]);
+        return request('POST', BASE_URL . '/offen/token', [], ['signer' => $b->getAccountId(), 'signature' => base64_encode($b->sign($prefix . $nonce)), 'challenge' => base64_encode($nonce)]);
     };
     $res = $tokenWith('skm:token:');
     check('Token mit skm:token: -> 200 und Token (nach Verdraengung alter Challenges)', $res['status'] === 200 && ($res['body']['accessToken'] ?? '') === 'tok-offen');
     $stored = json_decode((string)file_get_contents($apiDir . '/data/challenges.json'), true) ?: [];
-    $ofOpen = array_filter(array_keys($stored), fn($k) => str_starts_with((string)$k, 'offen:'));
+    $ofOpen = array_filter($stored, fn($e) => ($e['jobId'] ?? '') === 'offen');
     check('Challenge-Datei bleibt bei hoechstens CHALLENGE_MAX_TOTAL Eintraegen', count($stored) <= CHALLENGE_MAX_TOTAL);
     check('Job offen hat hoechstens CHALLENGE_MAX_PER_JOB offene Challenges', count($ofOpen) <= CHALLENGE_MAX_PER_JOB);
     check('Vorbelegte Challenges von offen wurden verdraengt', count(array_intersect_key($stored, $prefilled)) < count($prefilled));
@@ -197,7 +197,7 @@ try {
     check('Token mit decline-Signatur -> 403 invalid_signature', $res['status'] === 403 && ($res['body']['error'] ?? '') === 'invalid_signature');
     $nonce = challengeFor('offen', $b);
     $sig = base64_encode($b->sign('skm:decline:' . $nonce));
-    $res = request('POST', BASE_URL . '/signiert/decline', [], ['signer' => $b->getAccountId(), 'signature' => $sig]);
+    $res = request('POST', BASE_URL . '/signiert/decline', [], ['signer' => $b->getAccountId(), 'signature' => $sig, 'challenge' => base64_encode($nonce)]);
     check('Challenge eines anderen Jobs gilt nicht -> 400', $res['status'] === 400);
 
     $res = decline('offen', $b);

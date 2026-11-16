@@ -126,12 +126,12 @@ try {
     // Challenge fuer das Loeschen holen, solange der Datenordner noch beschreibbar ist.
     $ch = request('POST', BASE_URL . '/final-job/challenge', [], ['signer' => $b->getAccountId()]);
     $nonce = base64_decode((string)($ch['body']['challenge'] ?? ''), true) ?: '';
-    $deleteBody = ['signer' => $b->getAccountId(), 'signature' => base64_encode($b->sign('skm:delete:' . $nonce))];
+    $deleteBody = ['signer' => $b->getAccountId(), 'signature' => base64_encode($b->sign('skm:delete:' . $nonce)), 'challenge' => base64_encode($nonce)];
 
     // Challenge fuer das Ablehnen (anderer Job, gleicher Signer).
     $ch = request('POST', BASE_URL . '/merge-job/challenge', [], ['signer' => $b->getAccountId()]);
     $declineNonce = base64_decode((string)($ch['body']['challenge'] ?? ''), true) ?: '';
-    $declineBody = ['signer' => $b->getAccountId(), 'signature' => base64_encode($b->sign('skm:decline:' . $declineNonce))];
+    $declineBody = ['signer' => $b->getAccountId(), 'signature' => base64_encode($b->sign('skm:decline:' . $declineNonce)), 'challenge' => base64_encode($declineNonce)];
 
     chmod($apiDir . '/data', 0555);
     clearstatcache();

@@ -119,12 +119,22 @@ Ein Job ist eine unsignierte oder teilsignierte Transaktion, die mehrere Signer 
   den Hash, dann die Quelle. Antwortet Horizon beim Merge nicht, antworten beide Backends 502 `signers_unavailable`
   und ändern nichts (Node rechnete früher mit dem gespeicherten Stand weiter und sendete gegebenenfalls, Befund F-9).
 - **Job-Token:** Wer Job-Details lesen will, braucht ein Token (Header `x-job-token`, nie in der URL). Es gibt das
-  Token beim Anlegen oder über eine **Challenge**: Der Server erzeugt eine Nonce je Job und Signer (60 s gültig,
-  einmalig), der Client signiert sie lokal, der Server prüft die Signatur und ob der Key aktuell Signer des Kontos
-  ist. In PHP liegen die Challenges in `api/data/challenges.json`; scheitert dort das Schreiben (Kodieren,
+  Token beim Anlegen oder über eine **Challenge**: Der Server erzeugt eine Nonce für Job und Signer (60 s gültig,
+  einmalig), der Client signiert sie lokal und schickt sie mit der Signatur zurück (Feld `challenge`), der Server
+  prüft die Signatur und ob der Key aktuell Signer des Kontos ist. Je Job und Signer können mehrere Challenges offen
+  sein (höchstens 5, dazu weiter 20 je Job und 2000 gesamt; bei Überlauf fällt jeweils die älteste weg). Schlüssel
+  ist die Nonce. Token, Ablehnen und Löschen verbrauchen nur genau die mitgeschickte Nonce, und nur wenn sie für
+  diesen Job und diesen Signer ausgestellt wurde; das geschieht vor der Signaturprüfung und unabhängig von deren
+  Ergebnis (kein Replay). Andere offene Challenges desselben Signers bleiben. Fehlt die Nonce im Body, ist sie keine
+  strikte base64 mit genau 32 Byte, unbekannt, abgelaufen oder für einen anderen Job oder Signer ausgestellt,
+  antworten beide Backends 400 `challenge_missing_or_expired`; eine fremde Nonce wird dabei nicht verbraucht.
+  Vorher gab es je Job und Signer genau eine Challenge: Wer Job-ID und Signer-Adresse kannte (beides öffentlich),
+  konnte sie per `POST /challenge` ersetzen oder mit einer falschen Signatur verbrauchen und so Anmeldung, Ablehnen
+  und Löschen eines ehrlichen Signers scheitern lassen (Sabotage, kein Geldrisiko). Code und gemeinsame Fälle:
+  `services/challengeStore.js`, `api/challengeStore.php`, `test/assets/challenge-cases.json`. In PHP liegen die Challenges in `api/data/challenges.json`; scheitert dort das Schreiben (Kodieren,
   Temp-Datei oder Umbenennen), antworten Challenge, Token, Ablehnen und Löschen mit 500 und geben keine Nonce
   heraus. Vorher wurde der Fehler verschluckt, und eine Nonce ließ sich bis zum Ablauf mehrfach einlösen (F-13).
-  Ein 503 `horizon_unavailable` bei Token, Ablehnen oder Löschen verbraucht die Challenge ebenfalls; der nächste
+  Ein 503 `horizon_unavailable` bei Token, Ablehnen oder Löschen verbraucht die mitgeschickte Challenge ebenfalls; der nächste
   Versuch holt eine neue (bewusst so, B3-7: Verbrauch unabhängig vom Ausgang, kein getrenntes Lesen und Verbrauchen
   an der Stelle, die die Zweckbindung trägt). Mit gemerktem Key oder einem schon eingegebenen Key im Job-Detail
   (Entsperren, Ablehnen) geht der nächste Versuch ohne neue Eingabe. Beim Löschen in der Liste mit eingegebenem Key
@@ -289,6 +299,7 @@ Ein Job ist eine unsignierte oder teilsignierte Transaktion, die mehrere Signer 
 | Ein abgelehnter Job kann trotzdem eingereicht werden, wenn jemand das signierte XDR hat | Das Backend kann das nicht verhindern. Endgültig stoppt nur ein Widerruf (Sequence verbrauchen). So in der UI beschrieben. |
 | „Ausblenden“ eines Jobs wirkt nur lokal (`localStorage`) | Reiner Komfort, ohne Wirkung auf Server oder andere Signer. |
 | Alter offener Tab bekommt 403, bis er neu geladen wird | Folge der Zweckbindung; alte Clients signieren ohne Präfix. Gewollt. |
+| Alter offener Tab ohne Nonce im Body bekommt 400 `challenge_missing_or_expired`, bis er neu geladen wird | Folge der Bindung an die Nonce; alte Clients schicken das Feld `challenge` nicht mit. Gewollt. |
 | PHP cacht Signer bis 30 s | Weniger Horizon-Anfragen. Ein gerade entfernter Signer kann höchstens so lange noch als Signer gelten. |
 | Node-Rate-Limits liegen im Speicher je Prozess | Node ist das lokale Entwicklungs-Backend. |
 | Federation-Rückwärtssuche bleibt | Wird abgesichert statt entfernt. |
@@ -311,6 +322,7 @@ Ein Job ist eine unsignierte oder teilsignierte Transaktion, die mehrere Signer 
 | Weitere Sendewege ohne Eintrag, Lock und Sperre, aber idempotent: Trustline anlegen oder ändern in der Wallet (`ListTrustlines`), Trustlines löschen in Blöcken, Multisig-Einstellungen (`MultisigEditPage`, setOptions), Konto-Anlage mit Multisig (`MultisigCreatePage`, eigener Aktivierungsvermerk), Widerruf eines Jobs (bumpSequence), Lern-Demos im Testnet | Ein zweites Senden führt zum selben Zielzustand oder scheitert am Protokoll (`op_already_exists`, Sequence verbraucht). Sie verbrauchen aber Sequences, ohne die Sperre zu prüfen; ein offener Pin geht danach in die strenge Prüfung (fail-closed). Die nicht idempotenten Wege (Liquidity, Claimable Balances, Sammel-Tausch) laufen seit Bündel 4c über den Sendeschutz. Konto zusammenführen (`accountMerge`) hat das Frontend nicht; Operationen anderer Art sendet es nur über die genannten Wege. |
 | Memo-Pflicht (SEP-29) beim Senden | „Zahlung senden“ prüft die **fertig gebaute Transaktion** mit `checkMemoRequired` des SDK (`verifyMemoRequired`, in `buildTx` nach dem Bauen und vor dem Eintrag), nicht einen separat aufgelösten Empfänger: Geprüft wird genau das Ziel, das gesendet wird, auch wenn sich die Auflösung einer Federation-Adresse zwischen Vorprüfung und Bauen unterscheidet. Fail-closed: Laden des Ziels scheitert (Netz, Server) oder der Server hat die Methode nicht: `PreSubmitCheckError`, nichts gesendet, kein Eintrag. Erst danach wird mit `skipMemoRequiredCheck` gesendet (kein zweites Laden vor dem POST). Die Vorprüfung in der Oberfläche (`checkRecipientMemoRequired`) ist nur für eine frühe Rückmeldung. Die Sammelzahlung prüft beim Prüfen (`checkRowOnNetwork`), nicht beim Senden: Setzt ein Ziel die Pflicht dazwischen, geht die Zahlung ohne Memo raus; SEP-29 ist ohnehin nur eine Client-Prüfung. Trading, Liquidity, Claimable Balances und Sammel-Tausch prüfen nicht (kein fremdes Ziel: Swap und Sammel-Tausch zahlen an das eigene Konto, die anderen haben keine Zahlungsoperation) und senden mit `skipMemoRequiredCheck`. Andere Wege lassen das SDK vor dem POST prüfen; ein Fehler dort heißt „nichts gesendet“ (`PreSubmitCheckError`), nie „unklar“. Wiederholt wird nur das Laden (GET, 1 s und 2 s), nie der POST, nie das Bauen. Ein nicht aktiviertes Ziel (Horizon 404) ist keine Sperre; erkannt wird es über die SDK-Klasse `NotFoundError` (`isNotFoundError`), nicht über `response.status` (dort steht der Body der Antwort, den ein Proxy anders füllen kann). |
 | Klärung eines unklaren Multisig-Jobs: Ledger-Zeit (`GET /`) und Abfrage der Transaktion (`GET /transactions/{hash}`) sind zwei Anfragen und können hinter dem Load Balancer von Horizon verschiedene Knoten treffen | Falsch endgültig (`expired` bzw. `obsolete_seq` für eine ausgeführte Transaktion) wird ein Job nur, wenn der Knoten der Transaktionsabfrage mehr als 60 s (`SUBMIT_UNCLEAR_LEDGER_MARGIN_SECONDS`) plus den Abstand zwischen Ausführung und `maxTime` hinter dem Knoten der Ledger-Zeit liegt. Ein einzelner nachhinkender Knoten reicht nicht, wenn er beide Anfragen bedient, und die Serveruhr spielt keine Rolle mehr (R-1). Eine zweite Beobachtung im Abstand von mindestens 30 s wie im Sendeschutz des Frontends ist bewusst nicht umgesetzt: Der Rest betrifft nur einen Knoten mit über 60 s Rückstand bei gleichzeitig ungleich verteilten Anfragen, die zweite Beobachtung bräuchte gespeicherten Zustand je Job. |
+| Challenge eines Signers verdrängen: Wer Job-ID und Signer-Adresse kennt, kann weiter neue Challenges anfordern. Ab der sechsten offenen Challenge desselben Signers, der 21. des Jobs oder der 2001. gesamt fällt die älteste weg, auch die eines ehrlichen Signers | Überschreiben und Verbrauchen mit falscher Signatur gehen nicht mehr. Verdrängen braucht laufend neue Anfragen innerhalb der 60 s zwischen Challenge und Einlösen, begrenzt durch das Rate-Limit von `POST /challenge` (20 je Minute und IP). Folge ist nur ein fehlgeschlagener Versuch (400), kein Geldrisiko; der nächste Versuch holt eine neue Challenge. |
 | `npm audit`: moderate Meldungen über `exceljs` → `archiver` → `glob`/`minimatch` | Im genutzten Pfad nicht ausnutzbar; der angebotene Fix wäre ein Downgrade. |
 
 ## Hinweise für Reviewer (häufige Fehlannahmen)

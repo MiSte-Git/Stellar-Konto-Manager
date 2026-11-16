@@ -60,7 +60,7 @@ function withChallenge(string $jobId, KeyPair $signer, string $action, string $p
     $ch = request('POST', BASE_URL . "/{$jobId}/challenge", [], ['signer' => $signer->getAccountId()]);
     $nonce = base64_decode((string)($ch['body']['challenge'] ?? ''), true) ?: '';
     $signature = base64_encode(($signWith ?? $signer)->sign($prefix . $nonce));
-    return request('POST', BASE_URL . "/{$jobId}/{$action}", [], ['signer' => $signer->getAccountId(), 'signature' => $signature]);
+    return request('POST', BASE_URL . "/{$jobId}/{$action}", [], ['signer' => $signer->getAccountId(), 'signature' => $signature, 'challenge' => base64_encode($nonce)]);
 }
 
 $owner = KeyPair::random();
@@ -123,7 +123,7 @@ writeSignersCache($cacheFile, $owner, [
 // Abgelaufene Challenge fuer abgelaufen/b vorbelegen, die Nonce ist bekannt.
 $expiredNonce = random_bytes(32);
 file_put_contents($apiDir . '/data/challenges.json', json_encode([
-    challengeKey('abgelaufen', $b->getAccountId()) => ['nonce' => base64_encode($expiredNonce), 'expiresAt' => $now - 5],
+    base64_encode($expiredNonce) => ['jobId' => 'abgelaufen', 'signer' => $b->getAccountId(), 'expiresAt' => $now - 5],
 ]));
 
 $storedIds = function () use ($jobsFile): array {
@@ -170,16 +170,16 @@ try {
     // Challenge fehlt, abgelaufen, fremder Job, einmalig
     $res = request('POST', BASE_URL . '/abgelaufen/delete', [], ['signer' => $c->getAccountId(), 'signature' => 'AAAA']);
     check('Ohne Challenge -> 400 challenge_missing_or_expired', $res['status'] === 400 && ($res['body']['error'] ?? '') === 'challenge_missing_or_expired');
-    $res = request('POST', BASE_URL . '/abgelaufen/delete', [], ['signer' => $b->getAccountId(), 'signature' => base64_encode($b->sign('skm:delete:' . $expiredNonce))]);
+    $res = request('POST', BASE_URL . '/abgelaufen/delete', [], ['signer' => $b->getAccountId(), 'signature' => base64_encode($b->sign('skm:delete:' . $expiredNonce)), 'challenge' => base64_encode($expiredNonce)]);
     check('Abgelaufene Challenge mit gueltiger delete-Signatur -> 400 challenge_missing_or_expired', $res['status'] === 400 && ($res['body']['error'] ?? '') === 'challenge_missing_or_expired');
     $ch = request('POST', BASE_URL . '/offen/challenge', [], ['signer' => $b->getAccountId()]);
     $nonce = base64_decode((string)($ch['body']['challenge'] ?? ''), true) ?: '';
-    $res = request('POST', BASE_URL . '/abgelaufen/delete', [], ['signer' => $b->getAccountId(), 'signature' => base64_encode($b->sign('skm:delete:' . $nonce))]);
+    $res = request('POST', BASE_URL . '/abgelaufen/delete', [], ['signer' => $b->getAccountId(), 'signature' => base64_encode($b->sign('skm:delete:' . $nonce)), 'challenge' => base64_encode($nonce)]);
     check('Challenge eines anderen Jobs -> 400', $res['status'] === 400 && ($res['body']['error'] ?? '') === 'challenge_missing_or_expired');
     $ch = request('POST', BASE_URL . '/abgelaufen/challenge', [], ['signer' => $b->getAccountId()]);
     $nonce = base64_decode((string)($ch['body']['challenge'] ?? ''), true) ?: '';
-    request('POST', BASE_URL . '/abgelaufen/delete', [], ['signer' => $b->getAccountId(), 'signature' => base64_encode($b->sign('skm:token:' . $nonce))]);
-    $res = request('POST', BASE_URL . '/abgelaufen/delete', [], ['signer' => $b->getAccountId(), 'signature' => base64_encode($b->sign('skm:delete:' . $nonce))]);
+    request('POST', BASE_URL . '/abgelaufen/delete', [], ['signer' => $b->getAccountId(), 'signature' => base64_encode($b->sign('skm:token:' . $nonce)), 'challenge' => base64_encode($nonce)]);
+    $res = request('POST', BASE_URL . '/abgelaufen/delete', [], ['signer' => $b->getAccountId(), 'signature' => base64_encode($b->sign('skm:delete:' . $nonce)), 'challenge' => base64_encode($nonce)]);
     check('Challenge ist einmalig, auch nach falscher Signatur -> 400', $res['status'] === 400 && ($res['body']['error'] ?? '') === 'challenge_missing_or_expired');
     check('Job nach den Fehlversuchen noch da', in_array('abgelaufen', $storedIds(), true));
 

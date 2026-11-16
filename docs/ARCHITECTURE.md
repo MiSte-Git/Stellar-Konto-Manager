@@ -81,7 +81,8 @@ Ersteller           Backend                         Signer B
    │                   │                                 │
    │                   │◀── POST /jobs/:id/challenge ────│
    │                   │──── Nonce ─────────────────────▶│ signiert skm:token:+Nonce
-   │                   │◀── POST /jobs/:id/token ────────│
+   │                   │◀── POST /jobs/:id/token ────────│ mit Signatur und Nonce
+   │                   │ verbraucht genau diese Nonce,   │
    │                   │ prüft Signatur + Signer live    │
    │                   │──── Token ─────────────────────▶│
    │                   │──── Job (XDR) ─────────────────▶│ prüft Hash/Quelle, zeigt alles an,

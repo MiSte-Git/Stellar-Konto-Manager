@@ -41,6 +41,7 @@ const challengeFor = async (jobId, kp) => (await post(`${BASE}/${jobId}/challeng
 const deleteWith = (jobId, kp, challenge, purpose = 'delete') => post(`${BASE}/${jobId}/delete`, {
   signer: kp.publicKey(),
   signature: Buffer.from(kp.sign(Buffer.concat([Buffer.from(`skm:${purpose}:`), Buffer.from(challenge, 'base64')]))).toString('base64'),
+  challenge,
 });
 
 test.before(async () => {

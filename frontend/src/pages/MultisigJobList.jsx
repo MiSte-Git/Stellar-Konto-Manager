@@ -167,7 +167,7 @@ function MultisigJobList({ onBack, publicKey, onOpenDetail, refreshKey = 0 }) {
     for (const [index, job] of selectedShown.entries()) {
       try {
         const { challenge } = await getMultisigJobChallenge(job.id, accountId);
-        await deleteMultisigJob(job.id, accountId, signMultisigJobChallenge(kp.secret(), challenge, 'delete'));
+        await deleteMultisigJob(job.id, accountId, signMultisigJobChallenge(kp.secret(), challenge, 'delete'), challenge);
         deleted += 1;
       } catch (e) {
         // Zu viele Anfragen: abbrechen statt jeden weiteren Job scheitern zu lassen.

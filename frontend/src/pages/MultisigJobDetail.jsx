@@ -145,14 +145,16 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
 
   // Challenge holen, lokal signieren, gegen das Token tauschen. Mit Zeitlimit, damit ein
   // haengender Server die Ansicht nicht dauerhaft blockiert.
-  // Challenge holen und lokal signieren: Besitznachweis fuer Token und Ablehnen.
+  // Challenge holen und lokal signieren: Besitznachweis fuer Token und Ablehnen. Die Nonce geht
+  // mit der Signatur zurueck, das Backend verbraucht nur genau diese.
   const signFreshChallenge = useCallback(async (secret, purpose) => {
     const { challenge } = await withTimeout(getMultisigJobChallenge(jobId, currentPublicKey));
-    return signMultisigJobChallenge(secret, challenge, purpose);
+    return { challenge, signature: signMultisigJobChallenge(secret, challenge, purpose) };
   }, [jobId, currentPublicKey]);
-  const requestToken = useCallback(async (secret) => (
-    withTimeout(getMultisigJobAccessToken(jobId, currentPublicKey, await signFreshChallenge(secret, 'token')))
-  ), [jobId, currentPublicKey, signFreshChallenge]);
+  const requestToken = useCallback(async (secret) => {
+    const { challenge, signature } = await signFreshChallenge(secret, 'token');
+    return withTimeout(getMultisigJobAccessToken(jobId, currentPublicKey, signature, challenge));
+  }, [jobId, currentPublicKey, signFreshChallenge]);
 
   // Token aus Prop, URL/Speicher, schon geholt oder per Challenge mit gemerktem Secret.
   const resolveToken = useCallback(async () => {
@@ -774,8 +776,8 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
     const scope = scopeRef.current;
     setDeclining(true);
     try {
-      const signature = await signFreshChallenge(kp.secret(), 'decline');
-      const result = await withTimeout(declineMultisigJob(jobId, currentPublicKey, signature));
+      const { challenge, signature } = await signFreshChallenge(kp.secret(), 'decline');
+      const result = await withTimeout(declineMultisigJob(jobId, currentPublicKey, signature, challenge));
       if (scope !== scopeRef.current) return;
       if (!stored) forgetUnlockedKey();
       setShowDecline(false);

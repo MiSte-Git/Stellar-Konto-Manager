@@ -100,7 +100,7 @@ const signChallenge = (kp, challenge, purpose) => {
 // Neue Faelle nur mit Blick darauf ergaenzen. Challenge fuer signer holen, mit signWith (Standard: signer) und Zweck signieren, an action schicken.
 const withChallenge = async (jobId, signer, action, purpose, signWith = signer) => {
   const { body: ch } = await post(`${BASE}/${jobId}/challenge`, { signer: signer.publicKey() });
-  return post(`${BASE}/${jobId}/${action}`, { signer: signer.publicKey(), signature: signChallenge(signWith, ch.challenge, purpose) });
+  return post(`${BASE}/${jobId}/${action}`, { signer: signer.publicKey(), signature: signChallenge(signWith, ch.challenge, purpose), challenge: ch.challenge });
 };
 
 test('Mock-Sanity: token-Signatur eines aktiven Signers bekommt das Token (Live-Pruefung greift)', async () => {
@@ -141,13 +141,13 @@ test('Loeschen ohne Challenge -> 400 challenge_missing_or_expired, Challenge ist
   assert.equal(res.body.error, 'challenge_missing_or_expired');
   // Challenge eines anderen Jobs gilt nicht.
   const { body: other } = await post(`${BASE}/offen/challenge`, { signer: b.publicKey() });
-  res = await post(`${BASE}/abgelaufen/delete`, { signer: b.publicKey(), signature: signChallenge(b, other.challenge, 'delete') });
+  res = await post(`${BASE}/abgelaufen/delete`, { signer: b.publicKey(), signature: signChallenge(b, other.challenge, 'delete'), challenge: other.challenge });
   assert.equal(res.status, 400);
   assert.equal(res.body.error, 'challenge_missing_or_expired');
   // Verbraucht wird sie auch bei falscher Signatur: Nachreichen der richtigen scheitert.
   const { body: ch } = await post(`${BASE}/abgelaufen/challenge`, { signer: b.publicKey() });
-  await post(`${BASE}/abgelaufen/delete`, { signer: b.publicKey(), signature: signChallenge(b, ch.challenge, 'token') });
-  res = await post(`${BASE}/abgelaufen/delete`, { signer: b.publicKey(), signature: signChallenge(b, ch.challenge, 'delete') });
+  await post(`${BASE}/abgelaufen/delete`, { signer: b.publicKey(), signature: signChallenge(b, ch.challenge, 'token'), challenge: ch.challenge });
+  res = await post(`${BASE}/abgelaufen/delete`, { signer: b.publicKey(), signature: signChallenge(b, ch.challenge, 'delete'), challenge: ch.challenge });
   assert.equal(res.status, 400);
   assert.equal(res.body.error, 'challenge_missing_or_expired');
   assert.ok(storedIds().includes('abgelaufen'));

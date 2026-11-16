@@ -865,8 +865,8 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/challe
 // POST /api/multisig/jobs/:id/token - issues a job's access token to a caller
 // who proves BOTH that they hold the private key for the claimed signer
 // public key (a valid signature over "skm:token:" plus the nonce from /challenge
-// above, checked first and consumed regardless of outcome so it can never be
-// replayed) AND - via the account's real, live signer list, never the stored
+// above, sent back in the body field "challenge"; exactly that nonce is checked
+// first and consumed regardless of outcome so it can never be replayed) AND - via the account's real, live signer list, never the stored
 // job.signers snapshot - that this public key is an active signer (weight > 0)
 // of the job's account. This is the only way to obtain a job's token now that
 // the list endpoint no longer includes it. (H1 fix: merely naming an active
@@ -884,7 +884,8 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/token'
     if ($signature === '') return sendJson(['ok' => false, 'error' => 'missing_signature'], 400);
 
     try {
-        $pending = consumeChallenge($id, $signerPk);
+        // Nur genau die mitgeschickte Nonce dieses Jobs und Signers wird verbraucht, andere offene bleiben.
+        $pending = consumeChallenge($id, $signerPk, $body['challenge'] ?? null);
     } catch (\Throwable $e) {
         error_log('[multisig] jobs.token challenge lookup failed: ' . $e->getMessage());
         return sendError('server_error', null, 500);
@@ -926,7 +927,8 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/declin
     if ($signature === '') return sendJson(['ok' => false, 'error' => 'missing_signature'], 400);
 
     try {
-        $pending = consumeChallenge($id, $signerPk);
+        // Nur genau die mitgeschickte Nonce dieses Jobs und Signers wird verbraucht, andere offene bleiben.
+        $pending = consumeChallenge($id, $signerPk, $body['challenge'] ?? null);
     } catch (\Throwable $e) {
         error_log('[multisig] jobs.decline challenge lookup failed: ' . $e->getMessage());
         return sendError('server_error', null, 500);
@@ -1015,7 +1017,8 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/delete
     if ($signature === '') return sendJson(['ok' => false, 'error' => 'missing_signature'], 400);
 
     try {
-        $pending = consumeChallenge($id, $signerPk);
+        // Nur genau die mitgeschickte Nonce dieses Jobs und Signers wird verbraucht, andere offene bleiben.
+        $pending = consumeChallenge($id, $signerPk, $body['challenge'] ?? null);
     } catch (\Throwable $e) {
         error_log('[multisig] jobs.delete_one challenge lookup failed: ' . $e->getMessage());
         return sendError('server_error', null, 500);

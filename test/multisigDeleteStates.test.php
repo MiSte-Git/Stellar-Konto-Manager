@@ -52,6 +52,7 @@ function deleteJob(string $jobId, KeyPair $signer): array {
     return request('POST', BASE_URL . "/{$jobId}/delete", [], [
         'signer' => $signer->getAccountId(),
         'signature' => base64_encode($signer->sign('skm:delete:' . $nonce)),
+        'challenge' => base64_encode($nonce),
     ]);
 }
 

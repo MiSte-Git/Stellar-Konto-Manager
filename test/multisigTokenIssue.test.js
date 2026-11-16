@@ -32,7 +32,7 @@ const post = async (url, body) => {
 };
 const challenge = async (kp) => (await post(`${BASE}/issue-job/challenge`, { signer: kp.publicKey() })).body.challenge;
 const sign = (kp, nonce, purpose = 'token') => Buffer.from(kp.sign(challengeMessage(nonce, purpose))).toString('base64');
-const requestToken = (kp, signature) => post(`${BASE}/issue-job/token`, { signer: kp.publicKey(), signature });
+const requestToken = (kp, signature, nonce) => post(`${BASE}/issue-job/token`, { signer: kp.publicKey(), signature, challenge: nonce });
 
 test.before(async () => {
   dataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'skm-token-issue-'));
@@ -69,7 +69,7 @@ test.after(() => {
 
 test('aktiver Signer mit gueltiger Signatur bekommt das accessToken des Jobs (200)', async () => {
   const nonce = await challenge(owner);
-  const res = await requestToken(owner, sign(owner, nonce));
+  const res = await requestToken(owner, sign(owner, nonce), nonce);
   assert.equal(res.status, 200);
   assert.deepEqual(res.body, { accessToken: TOKEN });
 
@@ -78,14 +78,14 @@ test('aktiver Signer mit gueltiger Signatur bekommt das accessToken des Jobs (20
   assert.equal(job.status, 200);
 
   // Dieselbe Challenge ist danach verbraucht.
-  const again = await requestToken(owner, sign(owner, nonce));
+  const again = await requestToken(owner, sign(owner, nonce), nonce);
   assert.equal(again.status, 400);
   assert.equal(again.body.error, 'challenge_missing_or_expired');
 });
 
 test('Signer mit Gewicht 0 bekommt kein Token (403)', async () => {
   const nonce = await challenge(zeroWeight);
-  const res = await requestToken(zeroWeight, sign(zeroWeight, nonce));
+  const res = await requestToken(zeroWeight, sign(zeroWeight, nonce), nonce);
   assert.equal(res.status, 403);
   assert.equal(res.body.error, 'forbidden');
   assert.equal(res.body.accessToken, undefined);
@@ -93,7 +93,7 @@ test('Signer mit Gewicht 0 bekommt kein Token (403)', async () => {
 
 test('Signatur mit anderem Zweck gilt nicht fuer das Token (403)', async () => {
   const nonce = await challenge(owner);
-  const res = await requestToken(owner, sign(owner, nonce, 'decline'));
+  const res = await requestToken(owner, sign(owner, nonce, 'decline'), nonce);
   assert.equal(res.status, 403);
   assert.equal(res.body.error, 'invalid_signature');
   assert.equal(res.body.accessToken, undefined);

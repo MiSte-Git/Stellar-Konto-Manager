@@ -131,7 +131,8 @@ describe('MultisigJobList: Filter', () => {
   describe('Ausblenden und Loeschen', () => {
     beforeEach(() => {
       Object.values(hoisted).forEach((fn) => fn.mockReset());
-      hoisted.challenge.mockResolvedValue({ challenge: 'AAAA' });
+      // Je Job eine eigene Nonce: das Loeschen muss genau die Nonce seiner Challenge mitschicken.
+      hoisted.challenge.mockImplementation(async (id) => ({ challenge: `nonce-${id}` }));
       hoisted.token.mockImplementation(async (id) => `tok-${id}`);
       hoisted.del.mockResolvedValue({ ok: true });
       hoisted.sessionSecret.mockResolvedValue('');
@@ -194,7 +195,8 @@ describe('MultisigJobList: Filter', () => {
       expect(result).toHaveTextContent('nicht abgeschlossen');
       expect(hoisted.del.mock.calls.map((c) => c[0]).sort()).toEqual(['eigen-abgelaufen', 'eigen-abgelehnt', 'fremd-gesendet']);
       // C1: Signatur mit Zweck delete direkt an den Loesch-Endpunkt, kein Token mehr.
-      expect(hoisted.del).toHaveBeenCalledWith('eigen-abgelaufen', ME, 'signature:delete');
+      expect(hoisted.del).toHaveBeenCalledWith('eigen-abgelaufen', ME, 'signature:delete', 'nonce-eigen-abgelaufen');
+      hoisted.del.mock.calls.forEach(([id, , , nonce]) => expect(nonce).toBe(`nonce-${id}`));
       expect(hoisted.challenge).toHaveBeenCalledWith('eigen-abgelaufen', ME);
       expect(hoisted.token).not.toHaveBeenCalled();
     });
