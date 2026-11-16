@@ -291,6 +291,26 @@ describe('BatchPaymentDialog', () => {
     expect(hoisted.submitMock).not.toHaveBeenCalled();
   });
 
+  it('#19: sendet nicht, wenn der Sender zwischen Pruefen und Senden Multisig geworden ist', async () => {
+    const a = rowA();
+    saveBatchRows('PUBLIC', [a]);
+    renderDialog();
+    await checkAndWait(1);
+    // Nach dem Pruefen kommt ein zweiter Signer dazu.
+    hoisted.loadAccountMock.mockImplementation(async (id) => {
+      countRequest();
+      const acc = account(id);
+      if (id === SENDER.publicKey()) acc.signers = [...acc.signers, { key: SENDER2.publicKey(), weight: 1 }];
+      return acc;
+    });
+    fireEvent.click(screen.getByRole('button', { name: '1 Zahlung senden' }));
+    await waitFor(() => expect(screen.getByTestId('batch-summary').textContent).toContain('0 von 1'));
+    expect(hoisted.submitMock).not.toHaveBeenCalled();
+    expect(screen.getByText(/Sender ist ein Multisig-Konto/)).toBeInTheDocument();
+    // Nichts als gesendet oder unklar vermerkt.
+    expect(readSentEntry('PUBLIC', fpOf(a, DEST_A))).toBeFalsy();
+  });
+
   it('shows the resolved account for a federation address and blocks duplicates in the list', async () => {
     saveBatchRows('PUBLIC', [rowA({ dest: 'friend*example.com' }), rowA()]);
     renderDialog();

@@ -818,6 +818,14 @@ export default function BatchPaymentDialog({ onClose, onNetworkChangeClose }) {
           const ownPinUsed = pins.some((p) => p.store === 'batch' && ownKeys.includes(p.key));
           try {
             const loaded = await server.loadAccount(source);
+            // #19: Die Pruefung nur Master Key reicht galt beim Pruefen. Zwischen Pruefen und Senden
+            // liegen die Key-Abfragen (beliebig lang); auf dem frisch geladenen Konto wiederholen.
+            // Die Gebuehr bleibt die bestaetigte aus dem Review (Hoechstgebot, berechnet wird weniger).
+            const sourceCode = checkSourceAccount(loaded);
+            if (sourceCode) {
+              setResult(row.id, { status: 'skipped', message: errorText(sourceCode) });
+              continue;
+            }
             let account = loaded;
             if (pins.length) {
               const p = applyAccountPins({ loaded, source, pins });
