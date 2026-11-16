@@ -1188,8 +1188,9 @@ function Main() {
       {menuSelection === 'xlmByMemo' && !accountGateActive && (
         sourcePublicKey ? (
           <XlmByMemoPage
-            key={refreshToken}
+            key={`${devTestnet ? 'TESTNET' : 'PUBLIC'}:${refreshToken}`}
             publicKey={sourcePublicKey}
+            network={devTestnet ? 'TESTNET' : 'PUBLIC'}
             onBack={() => setMenuSelection(null)}  // oder null, wie du magst
           />
         ) : (
