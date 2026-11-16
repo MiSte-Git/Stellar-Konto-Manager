@@ -27,6 +27,9 @@
 // @param {number} nowUnixSeconds
 // @returns {'obsolete_seq'|'expired'|null}
 function computeMultisigLifecycleStatus(tx, accountSequence, nowUnixSeconds) {
+  // Nur eine normale Transaktion hat Sequence und Zeitfenster; ein Fee-Bump (Altjob) bleibt unbestimmt,
+  // wie in api/multisigLifecycle.php (instanceof Transaction).
+  if (!tx || tx.innerTransaction) return null;
   if (accountSequence != null) {
     try {
       const txSeq = BigInt(tx.sequence);
@@ -54,7 +57,8 @@ function computeMultisigLifecycleStatus(tx, accountSequence, nowUnixSeconds) {
 // @param {import('@stellar/stellar-sdk').Transaction} tx
 // @returns {number}
 function extractMaxTimeUnix(tx) {
-  const tb = tx && tx.timeBounds;
+  if (!tx || tx.innerTransaction) return 0; // Fee-Bump: 0 wie in api/multisigLifecycle.php
+  const tb = tx.timeBounds;
   if (!tb || !tb.maxTime) return 0;
   const n = Number(tb.maxTime);
   return Number.isFinite(n) ? n : 0;

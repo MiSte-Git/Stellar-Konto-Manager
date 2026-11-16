@@ -250,7 +250,8 @@ Ein Job ist eine unsignierte oder teilsignierte Transaktion, die mehrere Signer 
   Das nötige Gewicht kommt nur aus dem Job-Konto; für Operationen mit anderer Quelle prüft das Netz deren Signer und
   Thresholds, die das Backend nicht kennt. Beide Backends vermerken diese Konten am Job (`foreignOpSourcesOf` in
   `services/txSignatures.js` und `api/txSignatures.php`, Basiskonto, M-Adresse aufgelöst, beim Fee-Bump die innere
-  Transaktion; Feld `foreignOpSources`, beim Lesen aus dem XDR) und senden beim Anlegen und beim Merge nicht, auch wenn
+  Transaktion, bei Altjobs von vor K1 zuerst auch eine Tx-Quelle ungleich dem Job-Konto; Feld `foreignOpSources`,
+  beim Lesen aus dem XDR) und senden beim Anlegen und beim Merge nicht, auch wenn
   das Gewicht des Job-Kontos erreicht ist: Der Job bleibt `ready_to_submit`. Vorher wurde er gesendet und endete mit
   `tx_bad_auth` als `submitted_failed`. Signaturen von Signern fremder Konten verwirft der Merge weiter (nur Signer des
   Job-Kontos zählen, sonst `tx_bad_auth_extra`); fertig signieren und senden geht nur außerhalb von SKM über den

@@ -36,11 +36,14 @@ function txSourceBaseAccount(AbstractTransaction $tx): ?string {
     return $tx instanceof Transaction ? skm_base_account_of($tx->getSourceAccount()->getAccountId()) : null;
 }
 
-// Basiskonten (G...) aller Operationen, deren Quelle (op.source) ein anderes Konto als $accountId ist,
-// eindeutig in Reihenfolge der Operationen (ADR 0013). Eine M-Adresse zaehlt zu ihrem Basiskonto. Bei
-// einem Fee-Bump zaehlt die innere Transaktion. Eine Quelle ohne bestimmbares Basiskonto zaehlt als
-// fremd (Rohwert), wie isForeignOpSource im Frontend. Gewicht und Signer dieser Konten prueft das Backend nicht;
-// ein Job mit fremden Quellen wird nie automatisch gesendet.
+// Basiskonten (G...) aller Konten ausser $accountId, die die Transaktion autorisieren muessen (ADR 0013),
+// eindeutig: zuerst die Tx-Quelle, wenn sie nicht $accountId ist (Altjobs von vor K1; Operationen ohne
+// op.source laufen unter ihr, und sie zahlt Gebuehr und Sequence), dann jede op.source in Reihenfolge der
+// Operationen. Eine M-Adresse zaehlt zu ihrem Basiskonto. Bei einem Fee-Bump zaehlt die innere
+// Transaktion. Eine Quelle ohne bestimmbares Basiskonto zaehlt als fremd (Rohwert), wie isForeignOpSource
+// im Frontend (fail closed). Gewicht und Signer dieser Konten prueft das Backend nicht; ein Job mit
+// fremden Quellen wird nie automatisch gesendet. Das Frontend (findOperationWarnings) zaehlt nur
+// op.source und vergleicht mit der Tx-Quelle; eine Tx-Quelle ungleich accountId sperrt es ueber account_mismatch.
 // Pendant: foreignOpSourcesOf() in services/txSignatures.js.
 /** @return string[] */
 function foreignOpSourcesOf(AbstractTransaction $tx, string $accountId): array {
@@ -48,13 +51,14 @@ function foreignOpSourcesOf(AbstractTransaction $tx, string $accountId): array {
     if (!$inner instanceof Transaction) return [];
     $own = skm_base_account_of($accountId);
     $out = [];
+    $add = function (string $raw) use ($own, &$out): void {
+        $base = skm_base_account_of($raw) ?? $raw;
+        if ($base !== $own && !in_array($base, $out, true)) $out[] = $base;
+    };
+    $add($inner->getSourceAccount()->getEd25519AccountId());
     foreach ($inner->getOperations() as $op) {
         $source = $op->getSourceAccount();
-        if ($source === null) continue;
-        $raw = $source->getEd25519AccountId();
-        $base = skm_base_account_of($raw) ?? $raw;
-        if ($base === $own || in_array($base, $out, true)) continue;
-        $out[] = $base;
+        if ($source !== null) $add($source->getEd25519AccountId());
     }
     return $out;
 }

@@ -19,5 +19,14 @@
     { "label": "gemischt, Reihenfolge der Operationen", "ops": [null, "C_M", "A", "B"], "expected": ["C", "B"], "autoSubmit": false },
     { "label": "Fee-Bump: innere Transaktion zaehlt", "ops": ["B"], "feeBump": true, "feeSource": "C", "expected": ["B"], "autoSubmit": false },
     { "label": "Fee-Bump: fremde Fee-Quelle ist keine op.source", "ops": [null], "feeBump": true, "feeSource": "C", "expected": [], "autoSubmit": true }
+  ],
+  "_txSourceComment": "Nur Backends (Node, PHP), nicht das Frontend. Altjobs von vor K1 koennen eine Tx-Quelle txSource ungleich dem Job-Konto A haben; dann zaehlt ihr Basiskonto zuerst als fremd (Operationen ohne op.source laufen unter ihr, sie zahlt Gebuehr und Sequence; fail closed). Das Frontend vergleicht in findOperationWarnings bewusst mit der Tx-Quelle statt mit dem Job-Konto, weil es dem accountId des Servers nicht traut; einen Job mit Tx-Quelle ungleich accountId sperrt es vorher ueber account_mismatch (verifyJobTransaction). Anlegen und Merge lassen solche Jobs nicht mehr zu (K1).",
+  "txSourceCases": [
+    { "label": "Tx-Quelle fremd, Operation ohne op.source", "txSource": "B", "ops": [null], "expected": ["B"], "autoSubmit": false },
+    { "label": "Tx-Quelle fremd, Operation des Job-Kontos", "txSource": "B", "ops": ["A"], "expected": ["B"], "autoSubmit": false },
+    { "label": "Tx-Quelle fremde M-Adresse zaehlt als ihr G-Konto", "txSource": "B_M", "ops": [null], "expected": ["B"], "autoSubmit": false },
+    { "label": "Tx-Quelle fremd und weitere op.source, Tx-Quelle zuerst, eindeutig", "txSource": "B", "ops": ["C", "B_M"], "expected": ["B", "C"], "autoSubmit": false },
+    { "label": "Tx-Quelle M-Adresse des Job-Kontos ist nicht fremd", "txSource": "A_M", "ops": [null], "expected": [], "autoSubmit": true },
+    { "label": "Fee-Bump: innere Tx-Quelle fremd, Fee-Quelle Job-Konto", "txSource": "B", "ops": [null], "feeBump": true, "feeSource": "A", "expected": ["B"], "autoSubmit": false }
   ]
 }

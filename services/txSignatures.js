@@ -172,13 +172,16 @@ function requiredWeightForOperations(operations, thresholds) {
 }
 
 /**
- * Basiskonten (G...) aller Operationen, deren Quelle (op.source) ein anderes Konto als accountId ist,
- * eindeutig in Reihenfolge der Operationen (ADR 0013). Eine M-Adresse zaehlt zu ihrem Basiskonto, eine
- * M-Adresse von accountId ist also nicht fremd. Bei einem Fee-Bump zaehlt die innere Transaktion. Eine Quelle
- * ohne bestimmbares Basiskonto zaehlt als fremd (Rohwert), wie isForeignOpSource im Frontend.
+ * Basiskonten (G...) aller Konten ausser accountId, die die Transaktion autorisieren muessen (ADR 0013),
+ * eindeutig: zuerst die Tx-Quelle, wenn sie nicht accountId ist (Altjobs von vor K1; Operationen ohne
+ * op.source laufen unter ihr, und sie zahlt Gebuehr und Sequence), dann jede op.source in Reihenfolge der
+ * Operationen. Eine M-Adresse zaehlt zu ihrem Basiskonto, eine M-Adresse von accountId ist also nicht fremd.
+ * Bei einem Fee-Bump zaehlt die innere Transaktion. Eine Quelle ohne bestimmbares Basiskonto zaehlt als
+ * fremd (Rohwert), wie isForeignOpSource im Frontend (fail closed).
  * Gewicht und Signer dieser Konten prueft das Backend nicht; ein Job mit fremden Quellen wird deshalb
- * nie automatisch gesendet. Gleich wie foreignOpSourcesOf in api/txSignatures.php und
- * findOperationWarnings im Frontend.
+ * nie automatisch gesendet. Gleich wie foreignOpSourcesOf in api/txSignatures.php. findOperationWarnings
+ * im Frontend zaehlt nur op.source und vergleicht mit der Tx-Quelle; eine Tx-Quelle ungleich accountId
+ * sperrt das Frontend schon ueber account_mismatch (verifyJobTransaction).
  * @param {import('@stellar/stellar-sdk').Transaction|import('@stellar/stellar-sdk').FeeBumpTransaction} tx
  * @param {string} accountId
  * @returns {string[]}
@@ -187,12 +190,13 @@ function foreignOpSourcesOf(tx, accountId) {
   const inner = tx?.innerTransaction || tx;
   const own = baseAccountOf(String(accountId || ''));
   const out = [];
-  for (const op of inner?.operations || []) {
-    if (!op?.source) continue;
-    const raw = String(op.source);
+  const add = (raw) => {
     const base = baseAccountOf(raw) || raw;
-    if (base === own || out.includes(base)) continue;
-    out.push(base);
+    if (base !== own && !out.includes(base)) out.push(base);
+  };
+  if (inner?.source) add(String(inner.source));
+  for (const op of inner?.operations || []) {
+    if (op?.source) add(String(op.source));
   }
   return out;
 }

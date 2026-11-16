@@ -8,6 +8,9 @@
 // - FS-7.4: wartender Job laeuft ab (expired, Merge 409) oder seine Sequence ist verbraucht (obsolete_seq);
 //   Loeschen erst im Endzustand.
 // - FS-7.5: Ablehnen durch einen nicht gesammelten Signer laesst ready_to_submit stehen.
+// - FS-4: Fee-Bump-Altjob (von vor #15): Lesen liefert foreignOpSources der inneren Transaktion und das
+//   strenge Mindestgewicht wie Node; Merge lehnt ab. Altjob von vor K1 (Tx-Quelle ungleich accountId):
+//   die Tx-Quelle zaehlt als fremd; Merge lehnt ab (account_mismatch). Beides sendet nie.
 // Altjob und FS-3-Job liegen vor dem Start in der Jobdatei, Kontodaten im vorbelegten signers_cache_v2.json
 // (Stand nach der Aenderung, wie in Node). Horizon ist ein lokaler Stub, der jede Anfrage protokolliert.
 // Pendant: test/multisigForeignOpSourceStates.test.js.
@@ -21,7 +24,9 @@ require __DIR__ . '/../api/vendor/autoload.php';
 use Soneso\StellarSDK\Account;
 use Soneso\StellarSDK\AbstractTransaction;
 use Soneso\StellarSDK\Asset;
+use Soneso\StellarSDK\BumpSequenceOperationBuilder;
 use Soneso\StellarSDK\Crypto\KeyPair;
+use Soneso\StellarSDK\FeeBumpTransactionBuilder;
 use Soneso\StellarSDK\MuxedAccount;
 use Soneso\StellarSDK\Network;
 use Soneso\StellarSDK\PaymentOperationBuilder;
@@ -102,10 +107,29 @@ $cacheEntry = fn(array $signers, int $threshold, string $sequence = '100') => [
     'fetchedAt' => time() + 3600,
 ];
 
+$fbAcc = KeyPair::random(); $feePayer = KeyPair::random();                       // FS-4 Fee-Bump-Altjob
+$preK1 = KeyPair::random(); $preK1Source = KeyPair::random();                     // FS-4 Altjob von vor K1
+
 // FS-3: gespeichert mit d1 und d2 als ready_to_submit; live ist d2 kein Signer mehr.
 $txDropped = $payment($dropped, [$d1, $d2]);
 // FS-7.3: Altjob von vor ADR 0013, ohne Feld foreignOpSources, von l1 signiert.
 $txLegacy = $payment($legacy, [$l1]);
+
+// FS-4: innere Transaktion mit bumpSequence (Low) unter fremder op.source. Ueber die Operationen waere das
+// noetige Gewicht max(low 1, 1) = 1, ohne Operationen (Fee-Bump) max(low 1, med 2, 1) = 2.
+$fbNow = time();
+$txFbInner = (new TransactionBuilder(new Account($fbAcc->getAccountId(), new BigInteger(100))))
+    ->addOperation((new BumpSequenceOperationBuilder(new BigInteger(0)))->setMuxedSourceAccount(MuxedAccount::fromAccountId($foreign))->build())
+    ->setTimeBounds(new TimeBounds((new DateTime())->setTimestamp($fbNow), (new DateTime())->setTimestamp($fbNow + 3600)))
+    ->build();
+$txFbInner->sign($fbAcc, Network::testnet());
+$txFeeBump = (new FeeBumpTransactionBuilder($txFbInner))->setFeeAccount($feePayer->getAccountId())->setBaseFee(2000)->build();
+// FS-4: Altjob von vor K1, Tx-Quelle preK1Source, Operation ohne op.source.
+$txPreK1 = (new TransactionBuilder(new Account($preK1Source->getAccountId(), new BigInteger(100))))
+    ->addOperation((new PaymentOperationBuilder(KeyPair::random()->getAccountId(), Asset::native(), '1'))->build())
+    ->setTimeBounds(new TimeBounds((new DateTime())->setTimestamp($fbNow), (new DateTime())->setTimestamp($fbNow + 3600)))
+    ->build();
+$txPreK1->sign($preK1, Network::testnet());
 
 $apiDir = sys_get_temp_dir() . '/skm-foreign-states-' . bin2hex(random_bytes(4));
 $sideDir = sys_get_temp_dir() . '/skm-foreign-states-side-' . bin2hex(random_bytes(4));
@@ -125,6 +149,12 @@ if (($_SERVER["REQUEST_METHOD"] ?? "") === "POST" && $path === "/transactions") 
 http_response_code(404); echo "{}";');
 $jobsFile = $apiDir . '/data/multisig_jobs.json';
 file_put_contents($jobsFile, json_encode(['items' => [
+    $seeded('feebump', $fbAcc, $txFeeBump, [
+        'status' => 'pending_signatures', 'signers' => [$sig($fbAcc)], 'requiredWeight' => 2, 'collectedSigners' => [], 'collectedWeight' => 0,
+    ]),
+    $seeded('prek1', $preK1, $txPreK1, [
+        'status' => 'pending_signatures', 'signers' => [$sig($preK1)], 'requiredWeight' => 1, 'collectedSigners' => [], 'collectedWeight' => 0,
+    ]),
     $seeded('dropped', $dropped, $txDropped, [
         'status' => 'ready_to_submit', 'signers' => [$sig($dropped, 0), $sig($d1), $sig($d2)], 'requiredWeight' => 2,
         'collectedSigners' => [$sig($d1), $sig($d2)], 'collectedWeight' => 2, 'foreignOpSources' => [$foreign],
@@ -134,7 +164,11 @@ file_put_contents($jobsFile, json_encode(['items' => [
         'collectedSigners' => [$sig($l1)], 'collectedWeight' => 1,
     ]),
 ]]));
+$fbEntry = $cacheEntry([$sig($fbAcc)], 1);
+$fbEntry['data']['thresholds'] = ['low' => 1, 'med' => 2, 'high' => 3];
 file_put_contents($apiDir . '/data/signers_cache_v2.json', json_encode([
+    'testnet:' . $fbAcc->getAccountId() => $fbEntry,
+    'testnet:' . $preK1->getAccountId() => $cacheEntry([$sig($preK1)], 1),
     'testnet:' . $dropped->getAccountId() => $cacheEntry([$sig($dropped, 0), $sig($d1)], 2),
     'testnet:' . $legacy->getAccountId() => $cacheEntry([$sig($legacy, 0), $sig($l1), $sig($l2)], 2),
     'testnet:' . $expiring->getAccountId() => $cacheEntry([$sig($expiring)], 1),
@@ -241,6 +275,32 @@ try {
         && array_column($res['body']['declinedSigners'] ?? [], 'publicKey') === [$e3->getAccountId()]);
     check('FS-7.5: gespeichert und gelesen ready_to_submit, nichts gesendet',
         ($stored($id)['status'] ?? '') === 'ready_to_submit' && ($detail($id, $token)['status'] ?? '') === 'ready_to_submit' && $posts() === $before);
+
+    // FS-4 Fee-Bump-Altjob
+    $d = $detail('feebump', 'tok-feebump');
+    check('FS-4: Fee-Bump-Altjob: Detail mit foreignOpSources der inneren Transaktion', ($d['foreignOpSources'] ?? null) === [$foreign]);
+    check('FS-4: Fee-Bump-Altjob: noetiges Gewicht ohne Operationen max(low, med, 1) = 2, wie Node',
+        ($d['requiredWeight'] ?? null) === 2 && ($d['status'] ?? '') === 'pending_signatures');
+    $list = request('GET', BASE_URL . '?network=testnet&accountId=' . $fbAcc->getAccountId());
+    $row = array_values(array_filter($list['body'], fn($j) => ($j['id'] ?? '') === 'feebump'))[0] ?? [];
+    check('FS-4: Fee-Bump-Altjob: Liste mit foreignOpSources', ($row['foreignOpSources'] ?? null) === [$foreign]);
+    $before = $posts();
+    $res = $merge('feebump', 'tok-feebump', $txFeeBump);
+    check('FS-4: Fee-Bump-Altjob: Merge mit Fee-Bump 400 fee_bump_not_supported', $res['status'] === 400 && ($res['body']['error'] ?? '') === 'fee_bump_not_supported');
+    $res = $merge('feebump', 'tok-feebump', $txFbInner);
+    check('FS-4: Fee-Bump-Altjob: Merge mit innerer Transaktion 400 mismatched_hash', $res['status'] === 400 && ($res['body']['error'] ?? '') === 'mismatched_hash');
+    check('FS-4: Fee-Bump-Altjob: unveraendert, nichts gesendet', ($stored('feebump')['status'] ?? '') === 'pending_signatures' && $posts() === $before);
+
+    // FS-4 Altjob von vor K1
+    $d = $detail('prek1', 'tok-prek1');
+    check('FS-4: Altjob von vor K1: Tx-Quelle zaehlt als fremd (Detail)', ($d['foreignOpSources'] ?? null) === [$preK1Source->getAccountId()]);
+    $list = request('GET', BASE_URL . '?network=testnet&accountId=' . $preK1->getAccountId());
+    $row = array_values(array_filter($list['body'], fn($j) => ($j['id'] ?? '') === 'prek1'))[0] ?? [];
+    check('FS-4: Altjob von vor K1: Tx-Quelle zaehlt als fremd (Liste)', ($row['foreignOpSources'] ?? null) === [$preK1Source->getAccountId()]);
+    $before = $posts();
+    $res = $merge('prek1', 'tok-prek1', $txPreK1);
+    check('FS-4: Altjob von vor K1: Merge 400 account_mismatch, nichts gesendet',
+        $res['status'] === 400 && ($res['body']['error'] ?? '') === 'account_mismatch' && $posts() === $before);
 } finally {
     proc_terminate($server);
     proc_close($server);

@@ -658,13 +658,22 @@ async function fetchAccountMetaCached(net, accountId) {
   return data;
 }
 
+// Gespeichertes XDR eines Jobs fuer Lesen, Klaerung und Ablehnen. Liest wie parseTx in api/multisig.php auch
+// einen Fee-Bump (Altjob von vor #15); Anlegen und Merge nehmen keinen an (parseTxAndHash). Nicht lesbar: null.
 function parseJobTx(job) {
   try {
     const passphrase = stellarNetworks.passphraseFor(job.network);
-    return new StellarSdk.Transaction(job.txXdrCurrent || job.txXdrOriginal || '', passphrase);
+    return StellarSdk.TransactionBuilder.fromXDR(job.txXdrCurrent || job.txXdrOriginal || '', passphrase);
   } catch {
     return null;
   }
+}
+
+// Operationen fuer das noetige Gewicht. Ein Fee-Bump zaehlt ohne Operationen (strenges Mindestgewicht
+// max(low, med, 1)), wie requiredWeightForOperations in api/txSignatures.php. Das SDK gaebe bei einem
+// Fee-Bump sonst die inneren Operationen heraus, PHP nicht.
+function jobTxOperations(tx) {
+  return tx instanceof StellarSdk.FeeBumpTransaction ? [] : tx.operations;
 }
 
 // Lesen eines Jobs (Liste, Detail, Ablehnen, Loeschen): Neuberechnung ohne Speichern, gleich wie
@@ -680,11 +689,11 @@ function recomputeJobState(job, tx, liveMeta, nowUnix) {
   const signers = liveMeta ? (liveMeta.signers || []) : (Array.isArray(job.signers) ? job.signers : []);
   let requiredWeight;
   if (liveMeta && tx) {
-    requiredWeight = requiredWeightForOperations(tx.operations, liveMeta.thresholds);
+    requiredWeight = requiredWeightForOperations(jobTxOperations(tx), liveMeta.thresholds);
   } else if (job.requiredWeight !== undefined && job.requiredWeight !== null) {
     requiredWeight = Number(job.requiredWeight);
   } else {
-    requiredWeight = tx ? requiredWeightForOperations(tx.operations, job.thresholds || {}) : Number(job.thresholds?.med || 0);
+    requiredWeight = tx ? requiredWeightForOperations(jobTxOperations(tx), job.thresholds || {}) : Number(job.thresholds?.med || 0);
   }
   const collectedSigners = tx ? verifyCollected(tx, signers) : (Array.isArray(job.collectedSigners) ? job.collectedSigners : []);
   const collectedWeight = collectedSigners.reduce((acc, s) => acc + Number(s.weight || 0), 0);
@@ -854,8 +863,10 @@ async function resolveUnclearJobs(items) {
   for (const j of items) {
     if (j.status !== SUBMIT_UNCLEAR_STATUS || budget <= 0) { out.push(j); continue; }
     const tx = parseJobTx(j);
-    const meta = tx ? await fetchAccountMetaCached(j.network, j.accountId) : null;
-    if (!tx || !meta || !meta.ok) { out.push(j); continue; }
+    // Fee-Bump (Altjob): keine eigene Sequence und kein Zeitfenster, bleibt unklar wie in api/multisig.php.
+    if (!tx || tx instanceof StellarSdk.FeeBumpTransaction) { out.push(j); continue; }
+    const meta = await fetchAccountMetaCached(j.network, j.accountId);
+    if (!meta || !meta.ok) { out.push(j); continue; }
     // Sequenz von accountId genuegt: K1 erzwingt beim Anlegen und Merge Tx-Quelle == accountId.
     const sequenceConsumed = isSequenceConsumed(tx.sequence, meta.sequence);
     const maxTimeUnix = extractMaxTimeUnix(tx);
@@ -1208,7 +1219,7 @@ app.post('/api/multisig/jobs/:id/decline', (req, res) => withMultisigJobLock(req
     // ein Threshold inzwischen gesenkt, darf der Job nicht faelschlich abgelehnt werden.
     const tx = parseJobTx(job);
     const requiredWeight = tx
-      ? requiredWeightForOperations(tx.operations, signerMeta.thresholds)
+      ? requiredWeightForOperations(jobTxOperations(tx), signerMeta.thresholds)
       : Number(job.requiredWeight || 0);
     const result = applyDecline({ ...job, requiredWeight }, signerPk, signerMeta.signers, new Date().toISOString());
     const updated = { ...job, requiredWeight, declinedSigners: result.declinedSigners, status: result.status };

@@ -7,6 +7,9 @@
 // - FS-7.4: wartender Job laeuft ab (expired, Merge 409) oder seine Sequence ist verbraucht (obsolete_seq);
 //   Loeschen erst im Endzustand.
 // - FS-7.5: Ablehnen durch einen nicht gesammelten Signer laesst ready_to_submit stehen.
+// - FS-4: Fee-Bump-Altjob (von vor #15): Lesen liefert foreignOpSources der inneren Transaktion und das
+//   strenge Mindestgewicht wie PHP; Merge lehnt ab. Altjob von vor K1 (Tx-Quelle ungleich accountId):
+//   die Tx-Quelle zaehlt als fremd; Merge lehnt ab (account_mismatch). Beides sendet nie.
 // Altjob und FS-3-Job liegen vor dem Start in der Jobdatei (der Konto-Cache in server.js haelt 30 s,
 // darum sind die Kontodaten von Anfang an der Stand nach der Aenderung). Kontodaten ueber
 // test/helpers/horizonAccountsMock.js, Senden gegen einen lokalen Horizon-Stub, der jedes POST zaehlt.
@@ -52,6 +55,10 @@ const payment = (source, { opSource = foreign, signers = [], timeout = 3600 } = 
   signers.forEach((kp) => tx.sign(kp));
   return tx;
 };
+const fbAcc = Keypair.random(); // FS-4: Fee-Bump-Altjob
+const feePayer = Keypair.random();
+const preK1 = Keypair.random(); // FS-4: Altjob von vor K1, accountId
+const preK1Source = Keypair.random(); // dessen Tx-Quelle
 const sig = (kp, weight = 1) => ({ publicKey: kp.publicKey(), weight });
 const seeded = (id, source, tx, extra) => ({
   id, accessToken: `tok-${id}`, network: 'testnet', accountId: source.publicKey(),
@@ -68,7 +75,27 @@ const live = (signers, threshold, sequence = '100') => ({
 const txDropped = payment(dropped, { signers: [d1, d2] });
 // FS-7.3: Altjob von vor ADR 0013, ohne Feld foreignOpSources, von l1 signiert.
 const txLegacy = payment(legacy, { signers: [l1] });
+// FS-4: innere Transaktion mit bumpSequence (Low) unter fremder op.source. Ueber die Operationen waere das
+// noetige Gewicht max(low 1, 1) = 1, ohne Operationen (Fee-Bump, wie PHP) max(low 1, med 2, 1) = 2.
+const txFbInner = new TransactionBuilder(new Account(fbAcc.publicKey(), '100'), { fee: '1000', networkPassphrase: Networks.TESTNET })
+  .addOperation(Operation.bumpSequence({ bumpTo: '0', source: foreign }))
+  .setTimeout(3600)
+  .build();
+txFbInner.sign(fbAcc);
+const txFeeBump = TransactionBuilder.buildFeeBumpTransaction(feePayer.publicKey(), '2000', txFbInner, Networks.TESTNET);
+// FS-4: Altjob von vor K1, Tx-Quelle preK1Source, Operation ohne op.source.
+const txPreK1 = new TransactionBuilder(new Account(preK1Source.publicKey(), '100'), { fee: '1000', networkPassphrase: Networks.TESTNET })
+  .addOperation(Operation.payment({ destination: Keypair.random().publicKey(), asset: Asset.native(), amount: '1' }))
+  .setTimeout(3600)
+  .build();
+txPreK1.sign(preK1);
 const items = [
+  seeded('feebump', fbAcc, txFeeBump, {
+    status: 'pending_signatures', signers: [sig(fbAcc)], requiredWeight: 2, collectedSigners: [], collectedWeight: 0,
+  }),
+  seeded('prek1', preK1, txPreK1, {
+    status: 'pending_signatures', signers: [sig(preK1)], requiredWeight: 1, collectedSigners: [], collectedWeight: 0,
+  }),
   seeded('dropped', dropped, txDropped, {
     status: 'ready_to_submit', signers: [sig(dropped, 0), sig(d1), sig(d2)], requiredWeight: 2,
     collectedSigners: [sig(d1), sig(d2)], collectedWeight: 2, foreignOpSources: [foreign],
@@ -79,6 +106,8 @@ const items = [
   }),
 ];
 const accounts = {
+  [fbAcc.publicKey()]: { ...live([[fbAcc, 1]], 1), thresholds: { low_threshold: 1, med_threshold: 2, high_threshold: 3 } },
+  [preK1.publicKey()]: live([[preK1, 1]], 1),
   [dropped.publicKey()]: live([[dropped, 0], [d1, 1]], 2),
   [legacy.publicKey()]: live([[legacy, 0], [l1, 1], [l2, 1]], 2),
   [expiring.publicKey()]: live([[expiring, 1]], 1),
@@ -223,5 +252,38 @@ test('FS-7.5: Ablehnen eines wartenden Jobs durch nicht gesammelten Signer: blei
   assert.deepEqual(res.body.declinedSigners.map((d) => d.publicKey), [e3.publicKey()]);
   assert.equal(stored(id).status, 'ready_to_submit');
   assert.equal((await detail(id, accessToken)).status, 'ready_to_submit');
+  assert.equal(posts(), before, 'nichts an Horizon gesendet');
+});
+
+test('FS-4: Fee-Bump-Altjob: Detail und Liste mit foreignOpSources der inneren Transaktion, Gewicht wie PHP', async () => {
+  const d = await detail('feebump', 'tok-feebump');
+  assert.deepEqual(d.foreignOpSources, [foreign], 'innere op.source, nicht leer');
+  assert.equal(d.requiredWeight, 2, 'ohne Operationen: max(low, med, 1) wie api/txSignatures.php');
+  assert.equal(d.status, 'pending_signatures');
+  const list = await (await fetch(`${BASE}?network=testnet&accountId=${fbAcc.publicKey()}`)).json();
+  assert.deepEqual(list.find((j) => j.id === 'feebump')?.foreignOpSources, [foreign]);
+});
+
+test('FS-4: Fee-Bump-Altjob: Merge lehnt ab (Fee-Bump und normale Transaktion), nichts gesendet', async () => {
+  const before = posts();
+  const asFeeBump = await merge('feebump', 'tok-feebump', txFeeBump);
+  assert.equal(asFeeBump.status, 400);
+  assert.equal(asFeeBump.body.error, 'fee_bump_not_supported');
+  const asInner = await merge('feebump', 'tok-feebump', txFbInner);
+  assert.equal(asInner.status, 400);
+  assert.equal(asInner.body.error, 'mismatched_hash');
+  assert.equal(stored('feebump').status, 'pending_signatures');
+  assert.equal(posts(), before, 'nichts an Horizon gesendet');
+});
+
+test('FS-4: Altjob von vor K1: Tx-Quelle zaehlt als fremd, Merge account_mismatch, nichts gesendet', async () => {
+  const d = await detail('prek1', 'tok-prek1');
+  assert.deepEqual(d.foreignOpSources, [preK1Source.publicKey()]);
+  const list = await (await fetch(`${BASE}?network=testnet&accountId=${preK1.publicKey()}`)).json();
+  assert.deepEqual(list.find((j) => j.id === 'prek1')?.foreignOpSources, [preK1Source.publicKey()]);
+  const before = posts();
+  const res = await merge('prek1', 'tok-prek1', txPreK1);
+  assert.equal(res.status, 400);
+  assert.equal(res.body.error, 'account_mismatch');
   assert.equal(posts(), before, 'nichts an Horizon gesendet');
 });

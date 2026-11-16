@@ -15,7 +15,11 @@ schon [ADR 0005](0005-sperre-eigenes-konto-als-op-source.md) (harte Sperre im Jo
 ## Entscheidung
 
 Beide Backends erkennen fremde `op.source`-Konten (`foreignOpSourcesOf`, bei einem Fee-Bump die innere Transaktion;
-eine Quelle ohne bestimmbares Basiskonto zählt mit ihrem Rohwert als fremd, wie im Frontend) und vermerken sie am Job (`foreignOpSources`, auch beim Lesen aus dem XDR). Ein Job mit fremden Quellen wird nie
+eine Quelle ohne bestimmbares Basiskonto zählt mit ihrem Rohwert als fremd, wie im Frontend) und vermerken sie am Job (`foreignOpSources`, auch beim Lesen aus dem XDR).
+Ist die Tx-Quelle selbst nicht das Job-Konto (Altjobs von vor K1), steht ihr Basiskonto zuerst in der Liste: Unter ihr
+laufen alle Operationen ohne `op.source`, und sie zahlt Gebühr und Sequence. Anlegen und Merge lassen solche Jobs
+seit K1 nicht mehr zu, betroffen ist nur das Lesen. Das Frontend vergleicht in `findOperationWarnings` mit der
+Tx-Quelle statt mit `accountId` und sperrt eine abweichende Tx-Quelle über `account_mismatch`. Ein Job mit fremden Quellen wird nie
 automatisch gesendet: Erreicht er das Gewicht des Job-Kontos, bleibt er `ready_to_submit`. Das Frontend sagt, dass
 Gewicht und Signer dieser Konten nicht geprüft sind, und verweist auf den XDR-Export.
 
@@ -42,7 +46,11 @@ Gewicht und Signer dieser Konten nicht geprüft sind, und verweist auf den XDR-E
   und `api/multisig.php` (`shouldSubmit`/`willSubmit`, Merge-Zweig), Lesen in `recomputeJobState`/`summarizeJob`.
   Frontend: `pages/MultisigJobDetail.jsx` (Hinweis `job-foreign-not-auto-submitted`, Satz in `job-foreign-sources`,
   Hinweis beim Ablehnen), `pages/MultisigJobList.jsx`. Fixture `test/assets/foreign-op-sources.json` für beide
-  Backends und das Frontend.
+  Backends und das Frontend (`cases`); `txSourceCases` (Tx-Quelle ungleich Job-Konto) nur für die Backends.
+- Fee-Bump-Altjobs (von vor #15) liest Node wie PHP (`parseJobTx` über `TransactionBuilder.fromXDR`): fremde Quellen
+  der inneren Transaktion, nötiges Gewicht ohne Operationen (`max(low, med, 1)`, `jobTxOperations`), kein
+  Lebenszyklus-Status und keine Klärung aus Sequence oder Zeitfenster. Anlegen und Merge lehnen Fee-Bumps weiter ab
+  (`fee_bump_not_supported`), es gibt keinen Sendeweg für sie.
 - Signaturen von Signern fremder Konten speichert SKM nur, wenn sie auch Signer des Job-Kontos sind. Fertig signieren
   und senden geht dann nur außerhalb von SKM (XDR kopieren).
 - Ablehnen bleibt beim Gewicht des Job-Kontos: Erreicht es sein Gewicht nicht mehr, kann die Transaktion ohnehin nicht

@@ -24,6 +24,7 @@ use Soneso\StellarSDK\Asset;
 use Soneso\StellarSDK\BumpSequenceOperationBuilder;
 use Soneso\StellarSDK\ClaimClaimableBalanceOperationBuilder;
 use Soneso\StellarSDK\Crypto\KeyPair;
+use Soneso\StellarSDK\FeeBumpTransaction;
 use Soneso\StellarSDK\FeeBumpTransactionBuilder;
 use Soneso\StellarSDK\MuxedAccount;
 use Soneso\StellarSDK\Network;
@@ -306,7 +307,8 @@ foreach ($opFixture['requiredWeight'] as $c) {
 $foreignFixture = json_decode((string)file_get_contents(__DIR__ . '/assets/foreign-op-sources.json'), true);
 $fAddr = fn(string $name) => $foreignFixture['accounts'][$name];
 $buildForeignTx = function (array $c) use ($fAddr): AbstractTransaction {
-    $builder = new TransactionBuilder(new Account($fAddr('A'), new BigInteger('100')));
+    // Tx-Quelle: $c['txSource'] (Altjob von vor K1) oder das Job-Konto A, auch als M-Adresse.
+    $builder = new TransactionBuilder(Account::fromAccountId($fAddr($c['txSource'] ?? 'A'), new BigInteger('100')));
     foreach ($c['ops'] as $source) {
         $op = new PaymentOperationBuilder($fAddr('C'), Asset::native(), '1');
         if ($source !== null) $op->setMuxedSourceAccount(MuxedAccount::fromAccountId($fAddr($source)));
@@ -324,6 +326,16 @@ foreach ($foreignFixture['cases'] as $c) {
     $expected = array_map($fAddr, $c['expected']);
     check("Fixture foreignOpSourcesOf: {$c['label']}", foreignOpSourcesOf($buildForeignTx($c), $fAddr('A')) === $expected);
     check("Fixture foreignOpSourcesOf: {$c['label']} (autoSubmit stimmig)", $c['autoSubmit'] === ($expected === []));
+}
+// FS-4: Altjobs von vor K1, Tx-Quelle ungleich Job-Konto (nur Backends, siehe _txSourceComment).
+check('Fixture txSourceCases geladen', count($foreignFixture['txSourceCases'] ?? []) > 0);
+foreach ($foreignFixture['txSourceCases'] as $c) {
+    $expected = array_map($fAddr, $c['expected']);
+    $tx = $buildForeignTx($c);
+    $inner = $tx instanceof FeeBumpTransaction ? $tx->getInnerTx() : $tx;
+    check("Fixture Tx-Quelle sanity: {$c['label']}", $inner->getSourceAccount()->getAccountId() === $fAddr($c['txSource']));
+    check("Fixture Tx-Quelle foreignOpSourcesOf: {$c['label']}", foreignOpSourcesOf($tx, $fAddr('A')) === $expected);
+    check("Fixture Tx-Quelle: {$c['label']} (autoSubmit stimmig)", $c['autoSubmit'] === ($expected === []));
 }
 check('foreignOpSourcesOf: M-Adresse als Job-Konto, eigene Operationen nicht fremd',
     foreignOpSourcesOf($buildForeignTx(['ops' => ['A']]), $fAddr('A_M')) === []);
