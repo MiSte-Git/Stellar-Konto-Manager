@@ -350,7 +350,12 @@
       "warnUnknownSigner": "Signer-Typ nicht erkannt.",
       "ownAccountMarker": "dein aktuelles Konto",
       "ownAccountAsSource": "Gesperrt: Eine Operation wird von deinem aktuellen Konto {{account}} ausgeführt, nicht vom Job-Konto. Deine Signatur würde sie für dein Konto autorisieren, zum Beispiel eine Zahlung aus deinem Guthaben. SKM baut solche Jobs nie selbst, darum sind Signieren und Import hier gesperrt.",
-      "keyIsOpSource": "Nicht signiert: Der eingegebene Key gehört zum Konto {{account}}, das in diesem Job selbst eine Operation ausführt. Deine Signatur würde diese Operation für dieses Konto autorisieren."
+      "keyIsOpSource": "Nicht signiert: Der eingegebene Key gehört zum Konto {{account}}, das in diesem Job selbst eine Operation ausführt. Deine Signatur würde diese Operation für dieses Konto autorisieren.",
+      "warnAccountMerge": "Das gesamte XLM-Guthaben geht an das Zielkonto, danach ist das Konto gelöscht. Das lässt sich nicht rückgängig machen.",
+      "warnMasterWeightZero": "Der Master Key verliert sein Gewicht. Danach können nur noch die anderen Signer signieren.",
+      "warnLockout": "Reicht das Gewicht der verbleibenden Signer danach nicht mehr für die Thresholds, ist das Konto dauerhaft gesperrt. Prüfe Signer und Thresholds nach dieser Änderung.",
+      "warnAccountMergeJob": "Achtung: Dieser Job führt das Konto zusammen. Das gesamte XLM-Guthaben geht an das Zielkonto, danach ist das Konto gelöscht. Das lässt sich nicht rückgängig machen.",
+      "confirmAccountMerge": "Ich habe das Zielkonto geprüft und weiß, dass das Konto danach gelöscht ist."
     },
     "validUntil": {
       "label": "Gültig bis",
@@ -372,7 +377,7 @@
       "thresholdInfo": "Benötigt Signaturen mit Gewicht {{required}} (Low-Threshold).",
       "continue": "Weiter zum Signieren",
       "alreadyDead": "Dieser Job ist bereits ungültig, die Sequenz des Kontos ist schon weiter. Ein Widerruf ist nicht nötig.",
-    "unclearConsumed": "Die Sequence des Kontos ist schon weiter. Die Transaktion dieses Jobs wurde daher vermutlich ausgeführt. SKM klärt den Status über Horizon. Den Auftrag nicht neu anlegen und nicht anderswo senden.",
+      "unclearConsumed": "Die Sequence des Kontos ist schon weiter. Die Transaktion dieses Jobs wurde daher vermutlich ausgeführt. SKM klärt den Status über Horizon. Den Auftrag nicht neu anlegen und nicht anderswo senden.",
       "success": "Job widerrufen. Transaktion {{hash}}. Der Status wechselt innerhalb von etwa 30 Sekunden auf ungültig.",
       "insufficientWeight": "Die eingegebenen Signer erreichen zusammen nicht das nötige Gewicht {{required}}.",
       "noTxData": "Die Transaktion des Jobs konnte nicht gelesen werden, ein Widerruf ist nicht möglich.",

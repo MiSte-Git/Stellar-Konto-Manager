@@ -317,6 +317,36 @@ describe('Multisig-Job widerrufen (P2.3)', () => {
     expect(signButton).not.toBeDisabled();
   });
 
+  it('#14: sperrt das Signieren bei accountMerge bis zur ausdruecklichen Bestaetigung', async () => {
+    const tx = new TransactionBuilder(new Account(SOURCE, '100'), { fee: '1000', networkPassphrase: Networks.TESTNET })
+      .addOperation(Operation.accountMerge({ destination: Keypair.random().publicKey() }))
+      .setTimeout(86400)
+      .build();
+    hoisted.getJobMock.mockImplementation(async () => makeJob({ txXdr: tx.toXDR(), txHash: txHashHex(tx) }));
+    renderPage();
+    await screen.findByTestId('job-account-merge');
+    expect(screen.getAllByText(/gesamte XLM-Guthaben geht an das Zielkonto/).length).toBeGreaterThan(0);
+    const signButton = screen.getAllByRole('button', { name: 'Jetzt signieren' })[0];
+    expect(signButton).toBeDisabled();
+    const confirm = screen.getByRole('checkbox', { name: /Zielkonto geprüft/ });
+    fireEvent.click(confirm);
+    expect(signButton).not.toBeDisabled();
+    // Zuruecknehmen sperrt wieder.
+    fireEvent.click(confirm);
+    expect(signButton).toBeDisabled();
+  });
+
+  it('#14 Gegenprobe: ohne accountMerge keine Merge-Bestaetigung', async () => {
+    const tx = new TransactionBuilder(new Account(SOURCE, '100'), { fee: '1000', networkPassphrase: Networks.TESTNET })
+      .addOperation(Operation.payment({ destination: Keypair.random().publicKey(), asset: Asset.native(), amount: '1' }))
+      .setTimeout(86400)
+      .build();
+    hoisted.getJobMock.mockImplementation(async () => makeJob({ txXdr: tx.toXDR(), txHash: txHashHex(tx) }));
+    renderPage();
+    await screen.findAllByRole('button', { name: 'Jetzt signieren' });
+    expect(screen.queryByTestId('job-account-merge')).toBeNull();
+  });
+
   it('zeigt die Operationen eines Batch-Convert-Jobs im Klartext', async () => {
     const spam = new Asset('SPAM', SIGNER_B.publicKey);
     const tx = new TransactionBuilder(new Account(SOURCE, '100'), { fee: '1000', networkPassphrase: Networks.TESTNET })

@@ -320,7 +320,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
     [decodedTx, decodedOps, t, txSourceAccountId, poolInfo, i18n.language]
   );
   const operationWarnings = useMemo(
-    () => (decodedTx ? findOperationWarnings((decodedTx.innerTransaction || decodedTx).operations, txSourceAccountId) : { unknownTypes: [], pathPaymentToOther: false, foreignOpSources: [] }),
+    () => (decodedTx ? findOperationWarnings((decodedTx.innerTransaction || decodedTx).operations, txSourceAccountId) : { unknownTypes: [], pathPaymentToOther: false, foreignOpSources: [], accountMerge: false }),
     [decodedTx, txSourceAccountId]
   );
   // Memo, Fee, Zeitfenster und weitere Preconditions (H1), nur Anzeige plus Bestaetigungspflicht
@@ -349,6 +349,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
   const unknownOpsConfirmed = !!confirmationKey && confirmedFor.unknownOps === confirmationKey;
   const foreignSourcesConfirmed = !!confirmationKey && confirmedFor.foreignSources === confirmationKey;
   const preconditionsConfirmed = !!confirmationKey && confirmedFor.preconditions === confirmationKey;
+  const accountMergeConfirmed = !!confirmationKey && confirmedFor.accountMerge === confirmationKey;
   // Passt die Transaktion nicht zum Job, gibt es bewusst keine Bestaetigung: Das ist kein
   // abwaegbares Risiko, sondern die Aussage des Servers ist falsch.
   const integrityBlocked = !!job && !isFinalState && !jobCheck.ok;
@@ -368,7 +369,8 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
     || ownAccountBlocked
     || (operationWarnings.unknownTypes.length > 0 && !unknownOpsConfirmed)
     || (operationWarnings.foreignOpSources.length > 0 && !foreignSourcesConfirmed)
-    || (unusualPreconditions.length > 0 && !preconditionsConfirmed);
+    || (unusualPreconditions.length > 0 && !preconditionsConfirmed)
+    || (operationWarnings.accountMerge && !accountMergeConfirmed);
   // Importierte Signaturen zaehlen wie eigene: der Merge kann den Job einreichen.
   const importBlocked = signingBlocked && !isFinalState;
   // Harte Sperren: einen nur im Speicher gehaltenen Key nicht laenger aufheben.
@@ -1069,6 +1071,17 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
                     <label className="flex items-center gap-2">
                       <input type="checkbox" checked={foreignSourcesConfirmed} onChange={(e) => setConfirmed('foreignSources', e.target.checked)} />
                       {t('multisig:detail.operations.confirmForeignSources', 'Ich habe die fremden Quellkonten geprüft und möchte trotzdem signieren.')}
+                    </label>
+                  )}
+                </div>
+              )}
+              {operationWarnings.accountMerge && (
+                <div role="alert" className="mt-2 space-y-1 rounded-sm border border-red-300 bg-red-50 p-2 text-xs text-red-900 dark:border-red-700 dark:bg-red-900/30 dark:text-red-100" data-testid="job-account-merge">
+                  <p className="font-medium">{t('multisig:detail.operations.warnAccountMergeJob', 'Achtung: Dieser Job führt das Konto zusammen. Das gesamte XLM-Guthaben geht an das Zielkonto, danach ist das Konto gelöscht. Das lässt sich nicht rückgängig machen.')}</p>
+                  {!signingClosed && !integrityBlocked && (
+                    <label className="flex items-center gap-2">
+                      <input type="checkbox" checked={accountMergeConfirmed} onChange={(e) => setConfirmed('accountMerge', e.target.checked)} />
+                      {t('multisig:detail.operations.confirmAccountMerge', 'Ich habe das Zielkonto geprüft und weiß, dass das Konto danach gelöscht ist.')}
                     </label>
                   )}
                 </div>

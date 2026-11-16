@@ -301,7 +301,29 @@ describe('setOptions', () => {
   it('Signer ohne erkennbare Daten: Warnung, auch beim Entfernen', () => {
     const [block] = describeOperations([{ type: 'setOptions', signer: { weight: 0 } }], fakeT, SOURCE);
     expect(valueOf(block, 'signerRemove')).toBe('-');
-    expect(block.warnings).toEqual(['Signer-Typ nicht erkannt.']);
+    // #14: Entfernen eines Signers zeigt zusaetzlich die Aussperr-Warnung.
+    expect(block.warnings[0]).toBe('Signer-Typ nicht erkannt.');
+    expect(block.warnings[1]).toMatch(/dauerhaft gesperrt/);
+  });
+
+  it('#14: Master-Gewicht 0 warnt doppelt (Master Key und Aussperren)', () => {
+    const block = describeOne(Operation.setOptions({ masterWeight: 0 }));
+    expect(block.warnings).toHaveLength(2);
+    expect(block.warnings[0]).toMatch(/Master Key verliert sein Gewicht/);
+    expect(block.warnings[1]).toMatch(/dauerhaft gesperrt/);
+  });
+
+  it('#14: Signer entfernen und Threshold erhoehen warnen vor dem Aussperren', () => {
+    const removed = describeOne(Operation.setOptions({ signer: { ed25519PublicKey: Keypair.random().publicKey(), weight: 0 } }));
+    expect(removed.warnings).toEqual([expect.stringMatching(/dauerhaft gesperrt/)]);
+    const raised = describeOne(Operation.setOptions({ medThreshold: 2 }));
+    expect(raised.warnings).toEqual([expect.stringMatching(/dauerhaft gesperrt/)]);
+  });
+
+  it('#14 Gegenproben: Master-Gewicht > 0, Threshold 0, nur Home-Domain warnen nicht', () => {
+    expect(describeOne(Operation.setOptions({ masterWeight: 1 })).warnings).toEqual([]);
+    expect(describeOne(Operation.setOptions({ lowThreshold: 0, medThreshold: 0, highThreshold: 0 })).warnings).toEqual([]);
+    expect(describeOne(Operation.setOptions({ homeDomain: 'example.org' })).warnings).toEqual([]);
   });
 
   it('bekannte Signer-Typen loesen keine Warnung aus', () => {
@@ -480,7 +502,15 @@ describe('findOperationWarnings', () => {
 
   it('meldet nichts bei einem Tausch an das eigene Konto', () => {
     const ops = decoded([Operation.pathPaymentStrictSend({ sendAsset: new Asset('SPAM', issuer), sendAmount: '5', destination: SOURCE, destAsset: Asset.native(), destMin: '1.2', path: [] })]);
-    expect(findOperationWarnings(ops, SOURCE)).toEqual({ unknownTypes: [], pathPaymentToOther: false, foreignOpSources: [] });
+    expect(findOperationWarnings(ops, SOURCE)).toEqual({ unknownTypes: [], pathPaymentToOther: false, foreignOpSources: [], accountMerge: false });
+  });
+
+  it('#14: meldet accountMerge, damit das Signieren eine Bestaetigung verlangt', () => {
+    const other = Keypair.random().publicKey();
+    const ops = decoded([Operation.accountMerge({ destination: other })]);
+    expect(findOperationWarnings(ops, SOURCE).accountMerge).toBe(true);
+    const [block] = describeOperations(ops, fakeT, SOURCE);
+    expect(block.warnings).toEqual([expect.stringMatching(/gesamte XLM-Guthaben geht an das Zielkonto/)]);
   });
 
   it('warnt, wenn ein Tausch an ein anderes Konto geht', () => {

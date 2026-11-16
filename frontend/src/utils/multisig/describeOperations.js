@@ -130,7 +130,9 @@ export function findOperationWarnings(operations, sourceAccountId) {
     && !isSameAccount(op.destination, sourceAccountId)
   ));
   const foreignOpSources = [...new Set(ops.filter((op) => isForeignOpSource(op, sourceAccountId)).map((op) => baseAccountOf(op.source)))];
-  return { unknownTypes, pathPaymentToOther, foreignOpSources };
+  // #14: accountMerge leert und loescht das Konto, braucht beim Signieren eine Bestaetigung.
+  const accountMerge = ops.some((op) => op?.type === 'accountMerge');
+  return { unknownTypes, pathPaymentToOther, foreignOpSources, accountMerge };
 }
 
 function shortKey(pk) {
@@ -270,6 +272,25 @@ export function describeOperations(operations, t, sourceAccountId = '', options 
     return rows;
   };
 
+  // #14: Warnzeilen, wenn die Aenderung das Konto aussperren kann. Ohne den Kontostand vor der
+  // Aenderung laesst sich das nicht sicher ausrechnen, darum Hinweis statt Urteil.
+  const setOptionsWarnings = (op) => {
+    const isSet = (value) => value !== undefined && value !== null;
+    const warnings = [];
+    if (op.signer && formatSignerKey(op.signer) === null) {
+      warnings.push(t('detail.operations.warnUnknownSigner', { defaultValue: 'Signer-Typ nicht erkannt.' }));
+    }
+    if (isSet(op.masterWeight) && Number(op.masterWeight) === 0) {
+      warnings.push(t('detail.operations.warnMasterWeightZero', { defaultValue: 'Der Master Key verliert sein Gewicht. Danach können nur noch die anderen Signer signieren.' }));
+    }
+    const removesSigner = !!op.signer && !(Number(op.signer.weight) > 0);
+    const raisesThreshold = [op.lowThreshold, op.medThreshold, op.highThreshold].some((v) => isSet(v) && Number(v) > 0);
+    if (removesSigner || raisesThreshold || (isSet(op.masterWeight) && Number(op.masterWeight) === 0)) {
+      warnings.push(t('detail.operations.warnLockout', { defaultValue: 'Reicht das Gewicht der verbleibenden Signer danach nicht mehr für die Thresholds, ist das Konto dauerhaft gesperrt. Prüfe Signer und Thresholds nach dieser Änderung.' }));
+    }
+    return warnings;
+  };
+
   const describe = (op) => {
     switch (op?.type) {
       case 'payment':
@@ -293,9 +314,7 @@ export function describeOperations(operations, t, sourceAccountId = '', options 
         return {
           title: title('setOptions', 'Kontooptionen ändern'),
           rows: setOptionsRows(op),
-          warnings: op.signer && formatSignerKey(op.signer) === null
-            ? [t('detail.operations.warnUnknownSigner', { defaultValue: 'Signer-Typ nicht erkannt.' })]
-            : [],
+          warnings: setOptionsWarnings(op),
         };
       case 'changeTrust': {
         const line = op.line || op.asset;
@@ -399,6 +418,7 @@ export function describeOperations(operations, t, sourceAccountId = '', options 
         return {
           title: title('accountMerge', 'Konto zusammenführen'),
           rows: addressRows('destination', label('mergeDestination', 'Zielkonto'), op.destination, { emphasis: true }),
+          warnings: [t('detail.operations.warnAccountMerge', { defaultValue: 'Das gesamte XLM-Guthaben geht an das Zielkonto, danach ist das Konto gelöscht. Das lässt sich nicht rückgängig machen.' })],
         };
       default:
         return {
