@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import i18n from '../../i18n.js';
-import { backendErrorMessage, SAVE_FAILED_AFTER_SUBMIT } from '../multisigErrors.js';
+import { backendErrorMessage, SAVE_FAILED_AFTER_SUBMIT, TX_NOT_VIABLE } from '../multisigErrors.js';
 import { createMultisigJobFromXdr, mergeSignedXdr } from '../multisigApi.js';
 
 function mockResponse(status, body) {
@@ -81,5 +81,12 @@ describe('horizon_unavailable und account_not_found beim Anlegen (F-8)', () => {
     mockResponse(400, { ok: false, error: 'account_not_found' });
     await expect(createMultisigJobFromXdr({ network: 'testnet', accountId: 'GA', txXdr: 'AAAA' }))
       .rejects.toThrow(/nicht bekannt/);
+  });
+});
+
+describe('tx_not_viable (ADR 0014, ES-1)', () => {
+  it('uebersetzt den Code beim Anlegen', async () => {
+    await i18n.changeLanguage('de');
+    expect(backendErrorMessage(TX_NOT_VIABLE)).toBe('Die Transaktion kann nicht mehr ausgeführt werden: Die Sequence des Kontos ist schon verbraucht oder das Zeitfenster abgelaufen. Es wurde kein Job angelegt. Bitte die Transaktion neu erstellen.');
   });
 });

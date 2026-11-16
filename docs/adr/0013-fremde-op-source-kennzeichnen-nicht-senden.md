@@ -56,5 +56,4 @@ Gewicht und Signer dieser Konten nicht geprüft sind, und verweist auf den XDR-E
 - Ablehnen bleibt beim Gewicht des Job-Kontos: Erreicht es sein Gewicht nicht mehr, kann die Transaktion ohnehin nicht
   gelingen (`rejected` stimmt). Ablehnen können nur Signer des Job-Kontos.
 - Ein solcher Job ist bis zum Ablauf oder Widerruf offen und lässt sich vorher nicht löschen.
-- Offen (zweiter Schritt): extern gesendete Jobs beim Lesen über `txHash` als `submitted_success` klären. Bis dahin
-  erkennt das Lesen sie nur über die verbrauchte Sequence als `obsolete_seq`.
+- Extern gesendete Jobs klärt das Lesen über `txHash`, siehe [ADR 0014](0014-extern-gesendete-jobs-ueber-txhash-klaeren.md).

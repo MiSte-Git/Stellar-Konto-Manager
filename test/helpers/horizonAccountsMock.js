@@ -85,9 +85,11 @@ if (process.env.SKM_TEST_SUBMIT_FILE) {
 }
 
 // Optional (F-2): SKM_TEST_HORIZON_TXS ersetzt den Abruf GET /transactions/{hash}. JSON-Datei
-// { "<hash>": { successful, ledger } | { status: 500 } }, bei jedem Abruf neu gelesen. Fehlt der Hash,
-// wirft der Abruf wie Horizon bei 404 (NotFoundError). Der Datensatz hat das Ledger wie das SDK unter
-// ledger_attr. SKM_TEST_HORIZON_TX_LOG (optional): je Abruf eine Zeile mit dem Hash.
+// { "<hash>": { successful, ledger, ...weitere Felder } | { status: 500 } }, bei jedem Abruf neu gelesen. Fehlt
+// der Hash, wirft der Abruf wie Horizon bei 404 (NotFoundError). Der Datensatz hat das Ledger wie das SDK unter
+// ledger_attr; weitere Felder (hash, created_at, inner_transaction, fee_bump_transaction) gehen unveraendert
+// durch (ADR 0014). delayMs (optional) verzoegert die Antwort, auch eines 404 unter "<hash>": { notFound: true }.
+// SKM_TEST_HORIZON_TX_LOG (optional): je Abruf eine Zeile mit dem Hash.
 if (process.env.SKM_TEST_HORIZON_TXS) {
   StellarSdk.Horizon.Server.prototype.transactions = function transactions() {
     return {
@@ -96,13 +98,27 @@ if (process.env.SKM_TEST_HORIZON_TXS) {
           if (process.env.SKM_TEST_HORIZON_TX_LOG) fs.appendFileSync(process.env.SKM_TEST_HORIZON_TX_LOG, `${hash}\n`);
           const txs = JSON.parse(fs.readFileSync(process.env.SKM_TEST_HORIZON_TXS, 'utf8'));
           const rec = txs[hash];
-          if (!rec) throw Object.assign(new Error('Not Found'), { name: 'NotFoundError', response: { status: 404 } });
+          if (rec?.delayMs) await new Promise((r) => setTimeout(r, rec.delayMs));
+          if (!rec || rec.notFound) throw Object.assign(new Error('Not Found'), { name: 'NotFoundError', response: { status: 404 } });
           if (rec.status) throw Object.assign(new Error(`Request failed with status code ${rec.status}`), { response: { status: rec.status } });
-          return { id: hash, hash, successful: rec.successful, ledger_attr: rec.ledger };
+          const { ledger, delayMs, ...rest } = rec;
+          return { id: hash, hash, ...rest, ledger_attr: ledger };
         },
       }),
     };
   };
+}
+
+// Ohne SKM_TEST_HORIZON_TXS bzw. SKM_TEST_HORIZON_ROOT fragt kein Test ins echte Netz: Abruf und Root
+// werfen wie ein Netzfehler (Klaerung bleibt offen). Seit ADR 0014 fragt die Klaerung auch offene Jobs mit
+// verbrauchter Sequence ab, die in vielen Tests vorkommen.
+if (!process.env.SKM_TEST_HORIZON_TXS) {
+  StellarSdk.Horizon.Server.prototype.transactions = function transactions() {
+    return { transaction: () => ({ call: async () => { throw new Error('horizon_mock_offline'); } }) };
+  };
+}
+if (!process.env.SKM_TEST_HORIZON_ROOT) {
+  StellarSdk.Horizon.Server.prototype.root = async function root() { throw new Error('horizon_mock_offline'); };
 }
 
 // Optional (R-1): SKM_TEST_HORIZON_ROOT ersetzt GET / (Horizon.Server#root). JSON-Datei, bei jedem Abruf

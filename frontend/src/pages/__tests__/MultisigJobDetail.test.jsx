@@ -674,6 +674,84 @@ describe('Fremdes Quellkonto einer Operation', () => {
     expect(screen.queryByTestId('job-foreign-no-auto-submit')).toBeNull();
   });
 
+  it('ADR 0014: extern gesendet und erfolgreich: Hinweis mit Ledger und Zeit, keine Hinweise zu fremder Quelle', async () => {
+    hoisted.getJobMock.mockImplementation(async () => ({
+      ...jobFor(paymentTx(OTHER_SOURCE)), status: 'submitted_success', collectedWeight: 2, foreignOpSources: [OTHER_SOURCE],
+      submittedExternally: true, submittedAt: '2026-11-16T14:38:40Z', submittedResult: { hash: 'a'.repeat(64), ledger: 5763255 },
+    }));
+    renderPage();
+    const notice = await screen.findByTestId('job-submitted-externally');
+    expect(notice).toHaveTextContent('Im Ledger gefunden, nicht über diesen Job gesendet. Die Transaktion ist erfolgreich ausgeführt.');
+    expect(notice).toHaveTextContent('Laut Horizon: Ledger 5763255, 2026-11-16T14:38:40Z');
+    expect(screen.queryByTestId('job-foreign-not-auto-submitted')).toBeNull();
+    expect(screen.queryByTestId('job-foreign-no-auto-submit')).toBeNull();
+    expect(screen.queryByText('Gewicht und Signer dieser Konten prüft SKM nicht. Die angezeigten Signaturen gelten nur für das Job-Konto.')).toBeNull();
+    expect(screen.queryByText('Der Auftrag wurde gesendet.')).toBeNull();
+  });
+
+  it('ADR 0014: extern gesendet, im Ledger fehlgeschlagen: eigener Text, kein Sendefehler von SKM', async () => {
+    hoisted.getJobMock.mockImplementation(async () => ({
+      ...jobFor(paymentTx(OTHER_SOURCE)), status: 'submitted_failed', foreignOpSources: [OTHER_SOURCE],
+      submittedExternally: true, submittedAt: '2026-11-16T14:40:00Z',
+      submittedResult: { error: 'Transaction Failed', detail: { message: 'Transaction Failed', extras: {} } },
+    }));
+    renderPage();
+    const notice = await screen.findByTestId('job-submitted-externally');
+    expect(notice).toHaveTextContent('Im Ledger gefunden, nicht über diesen Job gesendet. Die Transaktion ist im Ledger fehlgeschlagen.');
+    expect(notice).toHaveTextContent('Laut Horizon: Ledger -, 2026-11-16T14:40:00Z');
+    expect(screen.queryByText(/Beim Senden ist ein Fehler aufgetreten/)).toBeNull();
+    expect(screen.queryByTestId('job-foreign-no-auto-submit')).toBeNull();
+  });
+
+  // ES-8: Ohne gemerkten Key laedt das Detail den Job nicht (Token noetig) und klaert ihn deshalb auch nicht. Der Stand
+  // kommt aus der Liste, die ohne Token klaert; dann nie "Lege den Auftrag bei Bedarf neu an".
+  const renderFromList = (listStatus, listLedgerCheckPending) => render(
+    <I18nextProvider i18n={i18n}>
+      <MultisigJobDetail jobId="job-1" accessToken={null} currentPublicKey={SIGNER_A.publicKey} onBack={() => {}}
+        listStatus={listStatus} listLedgerCheckPending={listLedgerCheckPending} />
+    </I18nextProvider>
+  );
+
+  it.each(['obsolete_seq', 'expired'])('ES-8: %s aus der Liste ohne Key, noch nicht geklaert: Hinweis statt neu anlegen', async (status) => {
+    hoisted.sessionSecretMock.mockResolvedValue(null);
+    renderFromList(status, true);
+    const hint = await screen.findByTestId('job-ledger-check-pending');
+    expect(hint).toHaveTextContent('SKM prüft noch über Horizon, ob genau diese Transaktion schon im Ledger steht');
+    expect(hint).toHaveTextContent('Lege den Auftrag bis dahin nicht neu an');
+    expect(screen.queryByText(/Lege den Auftrag bei Bedarf neu an/)).toBeNull();
+    expect(hoisted.getJobMock).not.toHaveBeenCalled();
+  });
+
+  it('ES-8 Gegenprobe: obsolete_seq aus der Liste, geklaert (ledgerCheckPending false): Text zum Neuanlegen bleibt', async () => {
+    hoisted.sessionSecretMock.mockResolvedValue(null);
+    renderFromList('obsolete_seq', false);
+    expect(await screen.findByText(/Lege den Auftrag bei Bedarf neu an/)).toBeInTheDocument();
+    expect(screen.queryByTestId('job-ledger-check-pending')).toBeNull();
+  });
+
+  it('ES-8: geladener Job mit ledgerCheckPending (abgelehnt, Sequence verbraucht): Hinweis, kein Text zum Neuanlegen', async () => {
+    hoisted.getJobMock.mockImplementation(async () => ({ ...makeJob(), status: 'rejected', ledgerCheckPending: true }));
+    renderPage();
+    expect(await screen.findByTestId('job-ledger-check-pending')).toHaveTextContent('Lege den Auftrag bis dahin nicht neu an');
+  });
+
+  it('ES-8: geladener Job obsolete_seq mit ledgerCheckPending: Hinweis in der roten Box statt neu anlegen', async () => {
+    hoisted.getJobMock.mockImplementation(async () => ({ ...makeJob(), status: 'obsolete_seq', ledgerCheckPending: true }));
+    renderPage();
+    const dead = await screen.findByTestId('job-dead');
+    expect(within(dead).getByTestId('job-ledger-check-pending')).toBeInTheDocument();
+    expect(screen.queryByText(/Lege den Auftrag bei Bedarf neu an/)).toBeNull();
+  });
+
+  it('ADR 0014 Gegenprobe: von SKM gesendet (ohne submittedExternally): kein Hinweis', async () => {
+    hoisted.getJobMock.mockImplementation(async () => ({
+      ...makeJob(), status: 'submitted_success', collectedWeight: 2, submittedResult: { hash: 'a'.repeat(64), ledger: 7 },
+    }));
+    renderPage();
+    await screen.findByText('Der Auftrag wurde gesendet.');
+    expect(screen.queryByTestId('job-submitted-externally')).toBeNull();
+  });
+
   it('FS-6: Ablehnen bei wartendem Job sagt, dass es den Status nicht aendert', async () => {
     hoisted.getJobMock.mockImplementation(async () => ({
       ...jobFor(paymentTx(OTHER_SOURCE)), status: 'ready_to_submit', collectedWeight: 2, foreignOpSources: [OTHER_SOURCE],
@@ -681,6 +759,30 @@ describe('Fremdes Quellkonto einer Operation', () => {
     renderPage();
     fireEvent.click(await screen.findByRole('button', { name: 'Ablehnen' }));
     expect(await screen.findByTestId('job-decline-foreign-hint')).toHaveTextContent('Ablehnen ändert den Status nicht');
+  });
+
+  it.each(['submitted_success', 'expired', 'rejected'])('ES-5: im Endzustand %s nur der Fakt zu fremder Quelle, keine Aufforderung', async (status) => {
+    hoisted.getJobMock.mockImplementation(async () => ({ ...jobFor(paymentTx(OTHER_SOURCE)), status, foreignOpSources: [OTHER_SOURCE] }));
+    renderPage();
+    const box = await screen.findByTestId('job-foreign-sources');
+    expect(screen.getByTestId('job-foreign-sources-final')).toHaveTextContent('Mindestens eine Operation hat ein anderes Quellkonto als die Transaktion:');
+    expect(box).toHaveTextContent(OTHER_SOURCE);
+    expect(box).not.toHaveTextContent('bevor du signierst');
+    expect(box).not.toHaveTextContent('prüft SKM nicht');
+  });
+
+  it('ES-5: eigenes Konto als Quelle im Endzustand: keine Sperr-Meldung', async () => {
+    hoisted.getJobMock.mockImplementation(async () => ({ ...jobFor(paymentTx(SIGNER_A.publicKey)), status: 'submitted_success', foreignOpSources: [SIGNER_A.publicKey] }));
+    renderPage();
+    await screen.findByTestId('job-foreign-sources-final');
+    expect(screen.queryByTestId('job-own-account-source')).toBeNull();
+  });
+
+  it('ES-5 Gegenprobe: offener Job zeigt die Warnung mit Aufforderung', async () => {
+    hoisted.getJobMock.mockImplementation(async () => jobFor(paymentTx(OTHER_SOURCE)));
+    renderPage();
+    expect(await screen.findByTestId('job-foreign-sources')).toHaveTextContent('bevor du signierst');
+    expect(screen.queryByTestId('job-foreign-sources-final')).toBeNull();
   });
 
   it('zeigt bei op.source gleich Quellkonto weder Zeile noch Warnung', async () => {

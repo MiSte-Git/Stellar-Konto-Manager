@@ -124,7 +124,141 @@ function unclearOutcome(lookup, sequenceConsumed, ledgerPastMaxTime) {
   return null;
 }
 
+// ADR 0014: Klaerung extern gesendeter Jobs ueber den txHash. SKM sendet nur ueber den Write-ahead
+// submit_unclear (R-3); steht ein Job mit einem dieser gespeicherten Status im Ledger, hat ihn jemand
+// ausserhalb von SKM gesendet. Offene Jobs und die Endzustaende, die SKM ohne Blick ins Ledger setzt
+// (Waechter, Merge, Ablehnen). submitted_success und submitted_failed nie. Gleich wie api/submitUnclear.php.
+const EXTERNAL_CHECK_STATUSES = new Set(['pending_signatures', 'ready_to_submit', 'expired', 'obsolete_seq', 'rejected']);
+// Endzustaende, die ein sicherer 404 stehen laesst (es kommt nur ledgerCheckedAt dazu). expired nicht: Kandidaten haben
+// eine verbrauchte Sequence, und ein Widerruf (bumpSequence) ergibt obsolete_seq, auch wenn der Waechter (Serveruhr)
+// den Job vorher bei maxTime auf expired gesetzt hat (ES-6).
+const EXTERNAL_CHECK_FINAL_STATUSES = new Set(['obsolete_seq', 'rejected']);
+
+/**
+ * Wird der gespeicherte Job auf ein externes Senden geprueft? Status aus EXTERNAL_CHECK_STATUSES, noch ohne
+ * ledgerCheckedAt (Marker nach der Klaerung) und nicht schon als extern gesendet markiert. Ob die Sequence
+ * verbraucht ist, prueft der Aufrufer mit Live-Kontodaten.
+ */
+function isExternalCheckCandidate(storedJob) {
+  if (!storedJob || typeof storedJob !== 'object') return false;
+  return EXTERNAL_CHECK_STATUSES.has(storedJob.status)
+    && !storedJob.ledgerCheckedAt
+    && storedJob.submittedExternally !== true;
+}
+
+/**
+ * maxTime plus Marge laut Serveruhr vorbei? Dann kann ein 404 schon endgueltig sein bzw. lohnt die Ledger-Zeit
+ * (isLedgerPastMaxTime entscheidet). Ohne Zeitgrenze (0) nie. Die Serveruhr bestimmt nur, wann gefragt wird.
+ */
+function isPastMaxTimeByClock(maxTimeUnix, nowUnix) {
+  const maxTime = Number(maxTimeUnix || 0);
+  return maxTime > 0 && nowUnix > maxTime + SUBMIT_UNCLEAR_LEDGER_MARGIN_SECONDS;
+}
+
+/**
+ * ADR 0014: Reihenfolge im gemeinsamen Budget (SUBMIT_UNCLEAR_MAX_RESOLVES_PER_REQUEST). Zuerst submit_unclear
+ * (Sendeschutz). Dann Kandidaten mit mindestens einer gueltigen gesammelten Signatur eines Signers des Job-Kontos
+ * (signed) vor Jobs ohne Signatur (ES-2): Eine gueltige Signatur kann niemand ohne Key erzeugen, untergeschobene
+ * unsignierte Jobs verdraengen echte Kandidaten also nicht mehr. Innerhalb jeder Gruppe zuerst Kandidaten, deren
+ * maxTime plus Marge laut Serveruhr vorbei ist (ein 404 kann dort schon endgueltig sein), dann aelteste maxTime,
+ * ohne Zeitgrenze (0) zuletzt. Sonst Reihenfolge der Liste (stabiles Sortieren). Die Serveruhr ordnet nur;
+ * endgueltig macht einen 404 nur die Ledger-Zeit. Gleich wie skm_compare_resolve_priority in api/submitUnclear.php.
+ * @param {{ unclear: boolean, signed?: boolean, maxTimeUnix: number }} a
+ * @param {{ unclear: boolean, signed?: boolean, maxTimeUnix: number }} b
+ */
+function compareResolvePriority(a, b, nowUnix) {
+  if (a.unclear !== b.unclear) return a.unclear ? -1 : 1;
+  if (a.unclear) return 0;
+  const signedA = a.signed === true;
+  const signedB = b.signed === true;
+  if (signedA !== signedB) return signedA ? -1 : 1;
+  const decidable = (c) => isPastMaxTimeByClock(c.maxTimeUnix, nowUnix);
+  if (decidable(a) !== decidable(b)) return decidable(a) ? -1 : 1;
+  const key = (c) => (c.maxTimeUnix > 0 ? c.maxTimeUnix : Number.MAX_SAFE_INTEGER);
+  return key(a) - key(b);
+}
+
+/**
+ * Datensatz aus GET /transactions/{hash} als Ergebnis der Abfrage. Nur ein Datensatz zum abgefragten Hash zaehlt
+ * (eigener Hash oder inner_transaction.hash eines Fee-Bumps), sonst Fehler. Ledger aus ledger_attr (SDK) oder
+ * ledger (JSON), createdAt nur in der Form von Horizon (UTC mit Z), sonst null. successful nur als Boolean.
+ * Gleich wie skm_transaction_lookup_from_record in api/submitUnclear.php.
+ */
+function transactionLookupFromRecord(rec, queriedHash) {
+  if (!rec || typeof rec !== 'object' || typeof queriedHash !== 'string' || queriedHash === '') return { kind: 'error' };
+  const innerHash = rec.inner_transaction && typeof rec.inner_transaction === 'object' ? rec.inner_transaction.hash : undefined;
+  if (rec.hash !== queriedHash && innerHash !== queriedHash) return { kind: 'error' };
+  const rawLedger = Number.isInteger(rec.ledger_attr) ? rec.ledger_attr : rec.ledger;
+  return {
+    kind: 'found',
+    successful: typeof rec.successful === 'boolean' ? rec.successful : null,
+    hash: queriedHash,
+    ledger: Number.isInteger(rawLedger) ? rawLedger : null,
+    createdAt: parseLedgerClosedAt(rec.created_at) !== null ? rec.created_at : null,
+  };
+}
+
+/**
+ * ADR 0014: Ergebnis fuer einen Kandidaten (isExternalCheckCandidate, Sequence verbraucht).
+ * Gefunden und erfolgreich: submitted_success mit submittedExternally, submittedResult im F-3-Format, submittedAt
+ * aus created_at von Horizon (null, wenn es fehlt). Gefunden und fehlgeschlagen: submitted_failed ebenso. Ein 404
+ * nur bei ledgerPastMaxTime (R-1): obsolete_seq (die Sequence ist verbraucht), gespeichert obsolete_seq und rejected
+ * bleiben. Sonst null: nichts speichern, beim naechsten Lesen erneut.
+ * @param {{ kind: string, successful?: boolean|null, hash?: string, ledger?: number|null, createdAt?: string|null }} lookup
+ * @param {boolean} ledgerPastMaxTime
+ * @param {string} storedStatus
+ * @returns {{ status: string, submittedExternally?: true, submittedResult?: object, submittedAt?: string|null } | null}
+ */
+function externalOutcome(lookup, ledgerPastMaxTime, storedStatus) {
+  if (lookup?.kind === 'found') {
+    const submittedAt = typeof lookup.createdAt === 'string' ? lookup.createdAt : null;
+    if (lookup.successful === true) {
+      return {
+        status: 'submitted_success',
+        submittedExternally: true,
+        submittedResult: submitSuccessResult({ hash: lookup.hash, ledger: lookup.ledger }),
+        submittedAt,
+      };
+    }
+    if (lookup.successful === false) {
+      const message = SUBMIT_UNCLEAR_FAILED_MESSAGE;
+      return { status: 'submitted_failed', submittedExternally: true, submittedResult: { error: message, detail: { message, extras: {} } }, submittedAt };
+    }
+    return null;
+  }
+  if (lookup?.kind === 'not_found' && ledgerPastMaxTime === true) {
+    return { status: EXTERNAL_CHECK_FINAL_STATUSES.has(storedStatus) ? storedStatus : 'obsolete_seq' };
+  }
+  return null;
+}
+
+// ES-9: Endzustaende, die SKM ohne Blick ins Ledger setzt. Bei ihnen markiert eine Ledger-Zeit nach maxTime plus Marge
+// auch ohne verbrauchte Sequence die Klaerung als erledigt (offene Jobs setzt vorher der Waechter auf expired).
+const EXTERNAL_UNCONSUMED_FINAL_STATUSES = new Set(['expired', 'obsolete_seq', 'rejected']);
+
+/**
+ * ADR 0014 (ES-9): Ergebnis fuer einen Kandidaten im Endzustand, dessen Sequence laut Live-Daten nicht verbraucht ist.
+ * Meldet Horizon einen Ledger mehr als 60 s nach maxTime (R-1), kann die Transaktion nie mehr ins Ledger: Status
+ * bleibt, es kommt nur ledgerCheckedAt dazu, und der Job ist kein Kandidat mehr (sonst kostete er bei jedem Lesen
+ * Kontodaten). Ohne Zeitgrenze (maxTime 0, nur Altjobs) nie: Ohne maxTime gibt es keinen Zeitpunkt, ab dem die
+ * Transaktion sicher nicht mehr ins Ledger kann. Offene Jobs nie (die Klaerung speichert offene Jobs nur nach einem
+ * Ledger-Befund zu ihrem Hash). Sonst null. Gleich wie skm_external_unconsumed_outcome in api/submitUnclear.php.
+ * @param {string} storedStatus
+ * @param {boolean} ledgerPastMaxTime
+ * @returns {{ status: string } | null}
+ */
+function externalUnconsumedOutcome(storedStatus, ledgerPastMaxTime) {
+  if (ledgerPastMaxTime !== true || !EXTERNAL_UNCONSUMED_FINAL_STATUSES.has(storedStatus)) return null;
+  return { status: storedStatus };
+}
+
 module.exports = {
+  isExternalCheckCandidate,
+  compareResolvePriority,
+  transactionLookupFromRecord,
+  externalOutcome,
+  externalUnconsumedOutcome,
+  isPastMaxTimeByClock,
   SUBMIT_UNCLEAR_STATUS,
   SUBMIT_UNCLEAR_MAX_RESOLVES_PER_REQUEST,
   SUBMIT_UNCLEAR_LEDGER_MARGIN_SECONDS,

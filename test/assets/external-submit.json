@@ -1,0 +1,995 @@
+{
+  "_comment": "ADR 0014: Klaerung extern gesendeter Jobs ueber den txHash. Gemeinsame Faelle fuer Node (test/externalSubmit.test.js, test/multisigExternalSubmit.test.js) und PHP (test/externalSubmit.test.php, test/multisigExternalSubmit.test.php). $JOB_HASH steht fuer den Hash der Job-Transaktion. createdAt nur in der Form von Horizon (UTC mit Z). Der Fee-Bump-Datensatz ist echt nachgebildet: Testnet-Probe vom 16.11.2026, GET /transactions/{innerHash} liefert 200 mit hash = innerer Hash, inner_transaction.hash und fee_bump_transaction.hash. unconsumedCases: Endzustand mit nicht verbrauchter Sequence (ES-9). orderCases: signed = mindestens eine gueltige gesammelte Signatur (ES-2).",
+  "candidateCases": [
+    {
+      "name": "pending_signatures",
+      "job": {
+        "status": "pending_signatures"
+      },
+      "expected": true
+    },
+    {
+      "name": "ready_to_submit",
+      "job": {
+        "status": "ready_to_submit"
+      },
+      "expected": true
+    },
+    {
+      "name": "expired ohne Marker",
+      "job": {
+        "status": "expired"
+      },
+      "expected": true
+    },
+    {
+      "name": "obsolete_seq ohne Marker",
+      "job": {
+        "status": "obsolete_seq"
+      },
+      "expected": true
+    },
+    {
+      "name": "rejected ohne Marker",
+      "job": {
+        "status": "rejected"
+      },
+      "expected": true
+    },
+    {
+      "name": "obsolete_seq mit Marker",
+      "job": {
+        "status": "obsolete_seq",
+        "ledgerCheckedAt": "2026-11-16T10:00:00Z"
+      },
+      "expected": false
+    },
+    {
+      "name": "expired mit Marker",
+      "job": {
+        "status": "expired",
+        "ledgerCheckedAt": "2026-11-16T10:00:00Z"
+      },
+      "expected": false
+    },
+    {
+      "name": "submitted_success",
+      "job": {
+        "status": "submitted_success"
+      },
+      "expected": false
+    },
+    {
+      "name": "submitted_failed",
+      "job": {
+        "status": "submitted_failed"
+      },
+      "expected": false
+    },
+    {
+      "name": "submit_unclear (eigener Weg)",
+      "job": {
+        "status": "submit_unclear"
+      },
+      "expected": false
+    },
+    {
+      "name": "schon extern markiert",
+      "job": {
+        "status": "expired",
+        "submittedExternally": true
+      },
+      "expected": false
+    },
+    {
+      "name": "unbekannter Status",
+      "job": {
+        "status": "irgendwas"
+      },
+      "expected": false
+    },
+    {
+      "name": "kein Job",
+      "job": null,
+      "expected": false
+    }
+  ],
+  "recordCases": [
+    {
+      "name": "Erfolg",
+      "record": {
+        "hash": "$JOB_HASH",
+        "successful": true,
+        "ledger": 5763255,
+        "created_at": "2026-11-16T14:38:40Z"
+      },
+      "expected": {
+        "kind": "found",
+        "successful": true,
+        "hash": "$JOB_HASH",
+        "ledger": 5763255,
+        "createdAt": "2026-11-16T14:38:40Z"
+      }
+    },
+    {
+      "name": "Fehlschlag im Ledger",
+      "record": {
+        "hash": "$JOB_HASH",
+        "successful": false,
+        "ledger": 77,
+        "created_at": "2026-11-16T14:40:00Z"
+      },
+      "expected": {
+        "kind": "found",
+        "successful": false,
+        "hash": "$JOB_HASH",
+        "ledger": 77,
+        "createdAt": "2026-11-16T14:40:00Z"
+      }
+    },
+    {
+      "name": "Fee-Bump-Huelle, abgefragt mit dem inneren Hash",
+      "record": {
+        "hash": "$JOB_HASH",
+        "successful": true,
+        "ledger": 5763255,
+        "created_at": "2026-11-16T14:38:40Z",
+        "inner_transaction": {
+          "hash": "$JOB_HASH"
+        },
+        "fee_bump_transaction": {
+          "hash": "329d6271aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      },
+      "expected": {
+        "kind": "found",
+        "successful": true,
+        "hash": "$JOB_HASH",
+        "ledger": 5763255,
+        "createdAt": "2026-11-16T14:38:40Z"
+      }
+    },
+    {
+      "name": "Fee-Bump-Huelle mit aeusserem Hash, innerer gleich dem Job",
+      "record": {
+        "hash": "329d6271aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "successful": true,
+        "ledger": 5763255,
+        "created_at": "2026-11-16T14:38:40Z",
+        "inner_transaction": {
+          "hash": "$JOB_HASH"
+        }
+      },
+      "expected": {
+        "kind": "found",
+        "successful": true,
+        "hash": "$JOB_HASH",
+        "ledger": 5763255,
+        "createdAt": "2026-11-16T14:38:40Z"
+      }
+    },
+    {
+      "name": "fremder Hash: Fehler",
+      "record": {
+        "hash": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+        "successful": true,
+        "ledger": 1
+      },
+      "expected": {
+        "kind": "error"
+      }
+    },
+    {
+      "name": "ohne Hash: Fehler",
+      "record": {
+        "successful": true,
+        "ledger": 1
+      },
+      "expected": {
+        "kind": "error"
+      }
+    },
+    {
+      "name": "successful fehlt",
+      "record": {
+        "hash": "$JOB_HASH",
+        "ledger": 9,
+        "created_at": "2026-11-16T14:38:40Z"
+      },
+      "expected": {
+        "kind": "found",
+        "successful": null,
+        "hash": "$JOB_HASH",
+        "ledger": 9,
+        "createdAt": "2026-11-16T14:38:40Z"
+      }
+    },
+    {
+      "name": "successful als String zaehlt nicht",
+      "record": {
+        "hash": "$JOB_HASH",
+        "successful": "true",
+        "ledger": 9
+      },
+      "expected": {
+        "kind": "found",
+        "successful": null,
+        "hash": "$JOB_HASH",
+        "ledger": 9,
+        "createdAt": null
+      }
+    },
+    {
+      "name": "created_at in anderer Form und Ledger als String",
+      "record": {
+        "hash": "$JOB_HASH",
+        "successful": true,
+        "ledger": "9",
+        "created_at": "2026-11-16T14:38:40+01:00"
+      },
+      "expected": {
+        "kind": "found",
+        "successful": true,
+        "hash": "$JOB_HASH",
+        "ledger": null,
+        "createdAt": null
+      }
+    },
+    {
+      "name": "kein Objekt",
+      "record": "kaputt",
+      "expected": {
+        "kind": "error"
+      }
+    }
+  ],
+  "outcomeCases": [
+    {
+      "name": "gefunden, Erfolg",
+      "lookup": {
+        "kind": "found",
+        "successful": true,
+        "hash": "$JOB_HASH",
+        "ledger": 5763255,
+        "createdAt": "2026-11-16T14:38:40Z"
+      },
+      "ledgerPastMaxTime": false,
+      "storedStatus": "ready_to_submit",
+      "expected": {
+        "status": "submitted_success",
+        "submittedExternally": true,
+        "submittedResult": {
+          "hash": "$JOB_HASH",
+          "ledger": 5763255
+        },
+        "submittedAt": "2026-11-16T14:38:40Z"
+      }
+    },
+    {
+      "name": "gefunden, Erfolg ohne Zeit und Ledger",
+      "lookup": {
+        "kind": "found",
+        "successful": true,
+        "hash": "$JOB_HASH",
+        "ledger": null,
+        "createdAt": null
+      },
+      "ledgerPastMaxTime": false,
+      "storedStatus": "expired",
+      "expected": {
+        "status": "submitted_success",
+        "submittedExternally": true,
+        "submittedResult": {
+          "hash": "$JOB_HASH"
+        },
+        "submittedAt": null
+      }
+    },
+    {
+      "name": "gefunden, im Ledger fehlgeschlagen",
+      "lookup": {
+        "kind": "found",
+        "successful": false,
+        "hash": "$JOB_HASH",
+        "ledger": 77,
+        "createdAt": "2026-11-16T14:40:00Z"
+      },
+      "ledgerPastMaxTime": true,
+      "storedStatus": "pending_signatures",
+      "expected": {
+        "status": "submitted_failed",
+        "submittedExternally": true,
+        "submittedResult": {
+          "error": "Transaction Failed",
+          "detail": {
+            "message": "Transaction Failed",
+            "extras": {}
+          }
+        },
+        "submittedAt": "2026-11-16T14:40:00Z"
+      }
+    },
+    {
+      "name": "gefunden ohne successful",
+      "lookup": {
+        "kind": "found",
+        "successful": null,
+        "hash": "$JOB_HASH",
+        "ledger": 9,
+        "createdAt": null
+      },
+      "ledgerPastMaxTime": true,
+      "storedStatus": "ready_to_submit",
+      "expected": null
+    },
+    {
+      "name": "sicher nicht gefunden, offener Job",
+      "lookup": {
+        "kind": "not_found"
+      },
+      "ledgerPastMaxTime": true,
+      "storedStatus": "pending_signatures",
+      "expected": {
+        "status": "obsolete_seq"
+      }
+    },
+    {
+      "name": "sicher nicht gefunden, gespeichert obsolete_seq bleibt",
+      "lookup": {
+        "kind": "not_found"
+      },
+      "ledgerPastMaxTime": true,
+      "storedStatus": "obsolete_seq",
+      "expected": {
+        "status": "obsolete_seq"
+      }
+    },
+    {
+      "name": "sicher nicht gefunden, gespeichert expired (Waechter nach Widerruf) wird obsolete_seq",
+      "lookup": {
+        "kind": "not_found"
+      },
+      "ledgerPastMaxTime": true,
+      "storedStatus": "expired",
+      "expected": {
+        "status": "obsolete_seq"
+      }
+    },
+    {
+      "name": "sicher nicht gefunden, gespeichert rejected bleibt",
+      "lookup": {
+        "kind": "not_found"
+      },
+      "ledgerPastMaxTime": true,
+      "storedStatus": "rejected",
+      "expected": {
+        "status": "rejected"
+      }
+    },
+    {
+      "name": "404 zu frueh (Ledger nicht nach maxTime plus Marge)",
+      "lookup": {
+        "kind": "not_found"
+      },
+      "ledgerPastMaxTime": false,
+      "storedStatus": "pending_signatures",
+      "expected": null
+    },
+    {
+      "name": "Horizon-Fehler",
+      "lookup": {
+        "kind": "error"
+      },
+      "ledgerPastMaxTime": true,
+      "storedStatus": "ready_to_submit",
+      "expected": null
+    }
+  ],
+  "orderCases": [
+    {
+      "name": "submit_unclear zuerst, dann entscheidbar, dann aelteste maxTime, ohne Zeitgrenze zuletzt (alle signiert)",
+      "now": 100000,
+      "items": [
+        {
+          "name": "ohneGrenze",
+          "unclear": false,
+          "maxTimeUnix": 0,
+          "signed": true
+        },
+        {
+          "name": "spaet",
+          "unclear": false,
+          "maxTimeUnix": 105000,
+          "signed": true
+        },
+        {
+          "name": "frueh",
+          "unclear": false,
+          "maxTimeUnix": 101000,
+          "signed": true
+        },
+        {
+          "name": "unklar1",
+          "unclear": true,
+          "maxTimeUnix": 200000,
+          "signed": true
+        },
+        {
+          "name": "inMarge",
+          "unclear": false,
+          "maxTimeUnix": 99950,
+          "signed": true
+        },
+        {
+          "name": "entscheidbarJung",
+          "unclear": false,
+          "maxTimeUnix": 99000,
+          "signed": true
+        },
+        {
+          "name": "entscheidbarAlt",
+          "unclear": false,
+          "maxTimeUnix": 50000,
+          "signed": true
+        },
+        {
+          "name": "unklar2",
+          "unclear": true,
+          "maxTimeUnix": 0,
+          "signed": true
+        }
+      ],
+      "expected": [
+        "unklar1",
+        "unklar2",
+        "entscheidbarAlt",
+        "entscheidbarJung",
+        "inMarge",
+        "frueh",
+        "spaet",
+        "ohneGrenze"
+      ]
+    },
+    {
+      "name": "ES-2: signierte vor unsignierten, in jeder Gruppe entscheidbar vor aeltester maxTime",
+      "now": 100000,
+      "items": [
+        {
+          "name": "unsigniertEntscheidbar",
+          "unclear": false,
+          "signed": false,
+          "maxTimeUnix": 50000
+        },
+        {
+          "name": "unsigniertFrueh",
+          "unclear": false,
+          "signed": false,
+          "maxTimeUnix": 100500
+        },
+        {
+          "name": "signiertSpaet",
+          "unclear": false,
+          "signed": true,
+          "maxTimeUnix": 104000
+        },
+        {
+          "name": "unklar",
+          "unclear": true,
+          "signed": false,
+          "maxTimeUnix": 200000
+        },
+        {
+          "name": "signiertEntscheidbar",
+          "unclear": false,
+          "signed": true,
+          "maxTimeUnix": 90000
+        },
+        {
+          "name": "signiertOhneGrenze",
+          "unclear": false,
+          "signed": true,
+          "maxTimeUnix": 0
+        },
+        {
+          "name": "ohneFeld",
+          "unclear": false,
+          "maxTimeUnix": 100100
+        }
+      ],
+      "expected": [
+        "unklar",
+        "signiertEntscheidbar",
+        "signiertSpaet",
+        "signiertOhneGrenze",
+        "unsigniertEntscheidbar",
+        "ohneFeld",
+        "unsigniertFrueh"
+      ]
+    }
+  ],
+  "routeCases": [
+    {
+      "name": "gefunden, Erfolg (offener Job)",
+      "storedStatus": "ready_to_submit",
+      "ledgerPast": false,
+      "sequenceConsumed": true,
+      "horizon": {
+        "record": {
+          "successful": true,
+          "ledger": 5763255,
+          "created_at": "2026-11-16T14:38:40Z"
+        }
+      },
+      "expected": {
+        "status": "submitted_success",
+        "stored": "submitted_success",
+        "submittedExternally": true,
+        "ledgerChecked": true,
+        "submittedAt": "2026-11-16T14:38:40Z",
+        "ledger": 5763255,
+        "lookups": 1,
+        "ledgerCheckPending": false
+      }
+    },
+    {
+      "name": "gefunden, Fehlschlag (offener Job)",
+      "storedStatus": "pending_signatures",
+      "ledgerPast": false,
+      "sequenceConsumed": true,
+      "horizon": {
+        "record": {
+          "successful": false,
+          "ledger": 77,
+          "created_at": "2026-11-16T14:40:00Z"
+        }
+      },
+      "expected": {
+        "status": "submitted_failed",
+        "stored": "submitted_failed",
+        "submittedExternally": true,
+        "ledgerChecked": true,
+        "submittedAt": "2026-11-16T14:40:00Z",
+        "lookups": 1,
+        "ledgerCheckPending": false
+      }
+    },
+    {
+      "name": "Fee-Bump-Huelle (offener Job)",
+      "storedStatus": "ready_to_submit",
+      "ledgerPast": false,
+      "sequenceConsumed": true,
+      "horizon": {
+        "record": {
+          "successful": true,
+          "ledger": 5763255,
+          "created_at": "2026-11-16T14:38:40Z",
+          "inner_transaction": {
+            "hash": "$JOB_HASH"
+          },
+          "fee_bump_transaction": {
+            "hash": "329d6271aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        }
+      },
+      "expected": {
+        "status": "submitted_success",
+        "stored": "submitted_success",
+        "submittedExternally": true,
+        "ledgerChecked": true,
+        "submittedAt": "2026-11-16T14:38:40Z",
+        "ledger": 5763255,
+        "lookups": 1,
+        "ledgerCheckPending": false
+      }
+    },
+    {
+      "name": "gefunden, Erfolg (Waechter hat expired gespeichert)",
+      "storedStatus": "expired",
+      "ledgerPast": true,
+      "sequenceConsumed": true,
+      "horizon": {
+        "record": {
+          "successful": true,
+          "ledger": 4242,
+          "created_at": "2026-11-16T09:00:00Z"
+        }
+      },
+      "expected": {
+        "status": "submitted_success",
+        "stored": "submitted_success",
+        "submittedExternally": true,
+        "ledgerChecked": true,
+        "submittedAt": "2026-11-16T09:00:00Z",
+        "ledger": 4242,
+        "lookups": 1,
+        "ledgerCheckPending": false
+      }
+    },
+    {
+      "name": "gefunden, Erfolg (abgelehnt gespeichert)",
+      "storedStatus": "rejected",
+      "ledgerPast": false,
+      "sequenceConsumed": true,
+      "horizon": {
+        "record": {
+          "successful": true,
+          "ledger": 4243,
+          "created_at": "2026-11-16T09:01:00Z"
+        }
+      },
+      "expected": {
+        "status": "submitted_success",
+        "stored": "submitted_success",
+        "submittedExternally": true,
+        "ledgerChecked": true,
+        "submittedAt": "2026-11-16T09:01:00Z",
+        "ledger": 4243,
+        "lookups": 1,
+        "ledgerCheckPending": false
+      }
+    },
+    {
+      "name": "sicher nicht gefunden (offener Job)",
+      "storedStatus": "pending_signatures",
+      "ledgerPast": true,
+      "sequenceConsumed": true,
+      "horizon": {
+        "notFound": true
+      },
+      "expected": {
+        "status": "obsolete_seq",
+        "stored": "obsolete_seq",
+        "submittedExternally": false,
+        "ledgerChecked": true,
+        "lookups": 1,
+        "ledgerCheckPending": false
+      }
+    },
+    {
+      "name": "sicher nicht gefunden (rejected bleibt rejected)",
+      "storedStatus": "rejected",
+      "ledgerPast": true,
+      "sequenceConsumed": true,
+      "horizon": {
+        "notFound": true
+      },
+      "expected": {
+        "status": "rejected",
+        "stored": "rejected",
+        "submittedExternally": false,
+        "ledgerChecked": true,
+        "lookups": 1,
+        "ledgerCheckPending": false
+      }
+    },
+    {
+      "name": "Widerruf vor maxTime plus Marge: Anzeige obsolete_seq, nichts gespeichert",
+      "storedStatus": "pending_signatures",
+      "ledgerPast": false,
+      "sequenceConsumed": true,
+      "horizon": {
+        "notFound": true
+      },
+      "expected": {
+        "status": "obsolete_seq",
+        "stored": "pending_signatures",
+        "submittedExternally": false,
+        "ledgerChecked": false,
+        "lookups": 2,
+        "ledgerCheckPending": true
+      }
+    },
+    {
+      "name": "Widerruf nach maxTime plus Marge: obsolete_seq gespeichert",
+      "storedStatus": "ready_to_submit",
+      "ledgerPast": true,
+      "sequenceConsumed": true,
+      "horizon": {
+        "notFound": true
+      },
+      "expected": {
+        "status": "obsolete_seq",
+        "stored": "obsolete_seq",
+        "submittedExternally": false,
+        "ledgerChecked": true,
+        "lookups": 1,
+        "ledgerCheckPending": false
+      }
+    },
+    {
+      "name": "Widerruf, Waechter hat expired gespeichert: obsolete_seq",
+      "storedStatus": "expired",
+      "ledgerPast": true,
+      "sequenceConsumed": true,
+      "horizon": {
+        "notFound": true
+      },
+      "expected": {
+        "status": "obsolete_seq",
+        "stored": "obsolete_seq",
+        "submittedExternally": false,
+        "ledgerChecked": true,
+        "lookups": 1,
+        "ledgerCheckPending": false
+      }
+    },
+    {
+      "name": "Horizon-Fehler: nichts gespeichert, naechstes Lesen fragt erneut",
+      "storedStatus": "ready_to_submit",
+      "ledgerPast": true,
+      "sequenceConsumed": true,
+      "horizon": {
+        "status": 500
+      },
+      "expected": {
+        "status": "obsolete_seq",
+        "stored": "ready_to_submit",
+        "submittedExternally": false,
+        "ledgerChecked": false,
+        "lookups": 2,
+        "ledgerCheckPending": true
+      }
+    },
+    {
+      "name": "successful fehlt: nichts gespeichert",
+      "storedStatus": "expired",
+      "ledgerPast": true,
+      "sequenceConsumed": true,
+      "horizon": {
+        "record": {
+          "ledger": 9,
+          "created_at": "2026-11-16T14:38:40Z"
+        }
+      },
+      "expected": {
+        "status": "expired",
+        "stored": "expired",
+        "submittedExternally": false,
+        "ledgerChecked": false,
+        "lookups": 2,
+        "ledgerCheckPending": true
+      }
+    },
+    {
+      "name": "Sequence nicht verbraucht: keine Abfrage",
+      "storedStatus": "ready_to_submit",
+      "ledgerPast": false,
+      "sequenceConsumed": false,
+      "horizon": {
+        "record": {
+          "successful": true,
+          "ledger": 1,
+          "created_at": "2026-11-16T14:38:40Z"
+        }
+      },
+      "expected": {
+        "status": "ready_to_submit",
+        "stored": "ready_to_submit",
+        "submittedExternally": false,
+        "ledgerChecked": false,
+        "lookups": 0,
+        "ledgerCheckPending": false
+      }
+    },
+    {
+      "name": "schon geprueft (ledgerCheckedAt): keine Abfrage",
+      "storedStatus": "obsolete_seq",
+      "storedExtra": {
+        "ledgerCheckedAt": "2026-11-16T10:00:00Z"
+      },
+      "ledgerPast": true,
+      "sequenceConsumed": true,
+      "horizon": {
+        "record": {
+          "successful": true,
+          "ledger": 1,
+          "created_at": "2026-11-16T14:38:40Z"
+        }
+      },
+      "expected": {
+        "status": "obsolete_seq",
+        "stored": "obsolete_seq",
+        "submittedExternally": false,
+        "ledgerChecked": true,
+        "lookups": 0,
+        "ledgerCheckPending": false
+      }
+    },
+    {
+      "name": "submitted_success von SKM: keine Abfrage",
+      "storedStatus": "submitted_success",
+      "ledgerPast": true,
+      "sequenceConsumed": true,
+      "horizon": {
+        "record": {
+          "successful": false,
+          "ledger": 1
+        }
+      },
+      "expected": {
+        "status": "submitted_success",
+        "stored": "submitted_success",
+        "submittedExternally": false,
+        "ledgerChecked": false,
+        "lookups": 0,
+        "ledgerCheckPending": false
+      }
+    },
+    {
+      "name": "Konto unbekannt (extern per accountMerge aufgeloest), gefunden",
+      "storedStatus": "pending_signatures",
+      "ledgerPast": false,
+      "sequenceConsumed": true,
+      "accountNotFound": true,
+      "horizon": {
+        "record": {
+          "successful": true,
+          "ledger": 5000,
+          "created_at": "2026-11-16T13:00:00Z"
+        }
+      },
+      "expected": {
+        "status": "submitted_success",
+        "stored": "submitted_success",
+        "submittedExternally": true,
+        "ledgerChecked": true,
+        "submittedAt": "2026-11-16T13:00:00Z",
+        "ledger": 5000,
+        "lookups": 1,
+        "ledgerCheckPending": false
+      }
+    },
+    {
+      "name": "Konto unbekannt, sicher nicht gefunden",
+      "storedStatus": "ready_to_submit",
+      "ledgerPast": true,
+      "sequenceConsumed": true,
+      "accountNotFound": true,
+      "horizon": {
+        "notFound": true
+      },
+      "expected": {
+        "status": "obsolete_seq",
+        "stored": "obsolete_seq",
+        "submittedExternally": false,
+        "ledgerChecked": true,
+        "lookups": 1,
+        "ledgerCheckPending": false
+      }
+    },
+    {
+      "name": "ES-9: Endzustand, Sequence frei, Ledger nach maxTime plus Marge: nur ledgerCheckedAt",
+      "storedStatus": "expired",
+      "ledgerPast": true,
+      "maxTimeOffset": -3600,
+      "sequenceConsumed": false,
+      "horizon": {
+        "notFound": true
+      },
+      "expected": {
+        "status": "expired",
+        "stored": "expired",
+        "submittedExternally": false,
+        "ledgerChecked": true,
+        "lookups": 0,
+        "ledgerCheckPending": false
+      }
+    },
+    {
+      "name": "ES-9 Gegenprobe: Endzustand, Sequence frei, maxTime noch nicht vorbei: nichts gespeichert",
+      "storedStatus": "rejected",
+      "ledgerPast": false,
+      "sequenceConsumed": false,
+      "horizon": {
+        "notFound": true
+      },
+      "expected": {
+        "status": "rejected",
+        "stored": "rejected",
+        "submittedExternally": false,
+        "ledgerChecked": false,
+        "lookups": 0,
+        "ledgerCheckPending": false
+      }
+    },
+    {
+      "name": "ES-11: Altjob vor K1, Sequence der Tx-Quelle verbraucht, Job-Konto nicht: gefunden",
+      "storedStatus": "expired",
+      "ledgerPast": false,
+      "txSourceDiffers": true,
+      "sequenceConsumed": true,
+      "accountIdSequenceConsumed": false,
+      "horizon": {
+        "record": {
+          "successful": true,
+          "ledger": 6100,
+          "created_at": "2026-11-16T15:00:00Z"
+        }
+      },
+      "expected": {
+        "status": "submitted_success",
+        "stored": "submitted_success",
+        "submittedExternally": true,
+        "ledgerChecked": true,
+        "submittedAt": "2026-11-16T15:00:00Z",
+        "ledger": 6100,
+        "lookups": 1,
+        "ledgerCheckPending": false
+      }
+    },
+    {
+      "name": "ES-11 Gegenprobe: Altjob vor K1, nur das Job-Konto verbraucht: keine Abfrage",
+      "storedStatus": "expired",
+      "ledgerPast": false,
+      "txSourceDiffers": true,
+      "sequenceConsumed": false,
+      "accountIdSequenceConsumed": true,
+      "horizon": {
+        "record": {
+          "successful": true,
+          "ledger": 6101,
+          "created_at": "2026-11-16T15:00:00Z"
+        }
+      },
+      "expected": {
+        "status": "expired",
+        "stored": "expired",
+        "submittedExternally": false,
+        "ledgerChecked": false,
+        "lookups": 0,
+        "ledgerCheckPending": false
+      }
+    }
+  ],
+  "_routeComment": "routeCases: ledgerPast true heisst, die Ledger-Zeit von Horizon (GET /) liegt mehr als 60 s nach maxTime (R-1), false davor. sequenceConsumed: Live-Sequence des Kontos >= Sequence der Job-Transaktion (z. B. nach Widerruf per bumpSequence oder externem Senden). horizon: record (Datensatz zu $JOB_HASH, hash wird ergaenzt), notFound (404) oder status (HTTP-Fehler). expected.lookups: Abfragen GET /transactions/{hash} nach zwei Lese-Anfragen (Liste, Detail). accountNotFound: Horizon kennt das Konto nicht (404), die Sequence gilt als verbraucht (ES-4). maxTimeOffset (optional): maxTime = jetzt + Offset statt jetzt + 1000 s (ledgerPast) bzw. jetzt + 3600 s. txSourceDiffers: Altjob von vor K1, Tx-Quelle ist ein anderes Konto als accountId; sequenceConsumed gilt dann fuer die Tx-Quelle, accountIdSequenceConsumed fuer accountId (ES-11). expected.ledgerCheckPending: Feld in Liste und Detail (Kandidat mit verbrauchter oder unbekannter Sequence, in dieser Anfrage nicht geklaert, ES-8).",
+  "unconsumedCases": [
+    {
+      "name": "expired, Ledger nach der Marge",
+      "storedStatus": "expired",
+      "ledgerPastMaxTime": true,
+      "expected": {
+        "status": "expired"
+      }
+    },
+    {
+      "name": "obsolete_seq, Ledger nach der Marge",
+      "storedStatus": "obsolete_seq",
+      "ledgerPastMaxTime": true,
+      "expected": {
+        "status": "obsolete_seq"
+      }
+    },
+    {
+      "name": "rejected, Ledger nach der Marge",
+      "storedStatus": "rejected",
+      "ledgerPastMaxTime": true,
+      "expected": {
+        "status": "rejected"
+      }
+    },
+    {
+      "name": "rejected, Ledger vor der Marge",
+      "storedStatus": "rejected",
+      "ledgerPastMaxTime": false,
+      "expected": null
+    },
+    {
+      "name": "offener Job: nie",
+      "storedStatus": "pending_signatures",
+      "ledgerPastMaxTime": true,
+      "expected": null
+    },
+    {
+      "name": "ready_to_submit: nie",
+      "storedStatus": "ready_to_submit",
+      "ledgerPastMaxTime": true,
+      "expected": null
+    },
+    {
+      "name": "submitted_success: nie",
+      "storedStatus": "submitted_success",
+      "ledgerPastMaxTime": true,
+      "expected": null
+    }
+  ]
+}

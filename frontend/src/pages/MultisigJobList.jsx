@@ -107,7 +107,8 @@ function MultisigJobList({ onBack, publicKey, onOpenDetail, refreshKey = 0 }) {
     return visible.filter((j) => needsSignatureFrom(j, accountId));
   }, [jobs, onlyPendingForMe, accountId, hiddenIds, showHidden]);
   const hiddenCount = useMemo(() => jobs.filter((j) => hiddenIds.has(j.id)).length, [jobs, hiddenIds]);
-  const isDeletable = (j) => FINAL_JOB_STATUSES.has(String(j?.status || ''));
+  // ES-8: Ein noch nicht im Ledger geklaerter Job ist nicht loeschbar (Backend 409 ledger_check_pending).
+  const isDeletable = (j) => FINAL_JOB_STATUSES.has(String(j?.status || '')) && j?.ledgerCheckPending !== true;
   const deletableShown = useMemo(() => jobsToShow.filter(isDeletable), [jobsToShow]);
   const selectedShown = useMemo(() => deletableShown.filter((j) => selected.has(j.id)), [deletableShown, selected]);
 
@@ -181,6 +182,8 @@ function MultisigJobList({ onBack, publicKey, onOpenDetail, refreshKey = 0 }) {
             ? t('multisig:list.deleteHorizonUnavailable', 'Horizon nicht erreichbar')
           : e?.message === 'not_final'
             ? t('multisig:list.deleteNotFinal', 'nicht abgeschlossen')
+          : e?.message === 'ledger_check_pending'
+            ? t('multisig:list.deleteLedgerCheckPending')
           : e?.message === 'multisig.jobs.invalid_challenge'
             ? t('multisig:list.deleteInvalidChallenge')
             : String(e?.message || 'delete_failed');
@@ -412,7 +415,7 @@ function MultisigJobList({ onBack, publicKey, onOpenDetail, refreshKey = 0 }) {
                       disabled={!isDeletable(j)}
                       onChange={() => toggleSelected(j.id)}
                       aria-label={t('multisig:list.select', { id: j.id, defaultValue: 'Job {{id}} auswählen' })}
-                      title={isDeletable(j) ? '' : t('multisig:list.notDeletable', 'Nur abgeschlossene Jobs können gelöscht werden. Offene Jobs ablehnen oder widerrufen.')}
+                      title={isDeletable(j) ? '' : j?.ledgerCheckPending === true ? t('multisig:list.ledgerCheckPending') : t('multisig:list.notDeletable', 'Nur abgeschlossene Jobs können gelöscht werden. Offene Jobs ablehnen oder widerrufen.')}
                     />
                   </td>
                   <td className="px-2 py-1 font-mono break-all">{j.accountId}</td>
@@ -421,9 +424,21 @@ function MultisigJobList({ onBack, publicKey, onOpenDetail, refreshKey = 0 }) {
                     {DEAD_JOB_STATUSES.has(String(j.status || '')) ? (
                       <div>
                         <span className="font-semibold text-red-700 dark:text-red-300">{renderStatus(j.status)}</span>
-                        <div className="text-xs text-red-700 dark:text-red-300" data-testid="job-dead-hint">{t('multisig:list.deadHint')}</div>
+                        {j.ledgerCheckPending === true
+                          ? <div className="text-xs text-amber-800 dark:text-amber-200" data-testid="job-ledger-check-pending-hint">{t('multisig:list.ledgerCheckPending')}</div>
+                          : <div className="text-xs text-red-700 dark:text-red-300" data-testid="job-dead-hint">{t('multisig:list.deadHint')}</div>}
                       </div>
                     ) : renderStatus(j.status)}
+                    {/* ES-8: z. B. rejected mit verbrauchter Sequence, noch nicht geklaert. */}
+                    {j.ledgerCheckPending === true && !DEAD_JOB_STATUSES.has(String(j.status || '')) && (
+                      <div className="text-xs text-amber-800 dark:text-amber-200" data-testid="job-ledger-check-pending-hint">{t('multisig:list.ledgerCheckPending')}</div>
+                    )}
+                    {/* ADR 0014: im Ledger gefunden, nicht ueber diesen Job gesendet (ES-10). */}
+                    {j.submittedExternally === true && (j.status === 'submitted_success' || j.status === 'submitted_failed') && (
+                      <div className="text-xs text-gray-700 dark:text-gray-300" data-testid="job-submitted-externally-hint">
+                        {j.status === 'submitted_failed' ? t('multisig:list.submittedExternallyFailed') : t('multisig:list.submittedExternally')}
+                      </div>
+                    )}
                     {/* ADR 0013: fremde op.source, das Backend sendet nicht automatisch. */}
                     {Array.isArray(j.foreignOpSources) && j.foreignOpSources.length > 0 && !FINAL_JOB_STATUSES.has(String(j.status || '')) && j.status !== 'submit_unclear' && (
                       <div className="text-xs text-amber-800 dark:text-amber-200" data-testid="job-foreign-sources-hint">{t('multisig:list.foreignSources')}</div>
@@ -443,7 +458,7 @@ function MultisigJobList({ onBack, publicKey, onOpenDetail, refreshKey = 0 }) {
                     <div className="flex flex-col items-end gap-1">
                     <button
                       className={FINAL_JOB_STATUSES.has(String(j.status || '')) ? BTN_ROW_SECONDARY : BTN_ROW_PRIMARY}
-                      onClick={() => onOpenDetail(j.id, String(j.status || ''))}
+                      onClick={() => onOpenDetail(j.id, String(j.status || ''), j.ledgerCheckPending === true)}
                     >
                       {FINAL_JOB_STATUSES.has(String(j.status || ''))
                         ? t('multisig:list.detailsOnly', 'Details')

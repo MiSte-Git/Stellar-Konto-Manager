@@ -276,6 +276,7 @@ function Main() {
   const [activeJobToken, setActiveJobToken] = useState(() => readMenuStateFromUrl().activeJobToken);
   // Status des Jobs laut Liste (z. B. obsolete_seq), bevor die Detailansicht ihn selbst geladen hat.
   const [activeJobListStatus, setActiveJobListStatus] = useState('');
+  const [activeJobListLedgerCheckPending, setActiveJobListLedgerCheckPending] = useState(false);
   // Erhoeht beim Schliessen eines Jobs, damit die Jobliste den neuen Status laedt.
   const [jobListRefresh, setJobListRefresh] = useState(0);
   // Dev/Testnet toggle state synced with localStorage
@@ -1306,7 +1307,7 @@ function Main() {
             refreshKey={jobListRefresh}
             publicKey={sourcePublicKey}
             onBack={() => setMenuSelection(null)}
-            onOpenDetail={(id, status) => { setActiveJobId(id); setActiveJobToken(null); setActiveJobListStatus(status || ''); }}
+            onOpenDetail={(id, status, ledgerCheckPending) => { setActiveJobId(id); setActiveJobToken(null); setActiveJobListStatus(status || ''); setActiveJobListLedgerCheckPending(ledgerCheckPending === true); }}
           />
         </div>
       )}
@@ -1407,13 +1408,13 @@ function Main() {
               <button
                 type="button"
                 className="text-sm px-3 py-1 rounded-sm border hover:bg-gray-100 dark:hover:bg-gray-800"
-                onClick={() => { setActiveJobId(null); setActiveJobToken(null); setActiveJobListStatus(''); setJobListRefresh((n) => n + 1); }}
+                onClick={() => { setActiveJobId(null); setActiveJobToken(null); setActiveJobListStatus(''); setActiveJobListLedgerCheckPending(false); setJobListRefresh((n) => n + 1); }}
               >
                 {t('common:close', 'Schliessen')}
               </button>
             </div>
             <div className="p-4">
-              <MultisigJobDetail key={activeJobId} jobId={activeJobId} accessToken={activeJobToken} currentPublicKey={sourcePublicKey} listStatus={activeJobListStatus} />
+              <MultisigJobDetail key={activeJobId} jobId={activeJobId} accessToken={activeJobToken} currentPublicKey={sourcePublicKey} listStatus={activeJobListStatus} listLedgerCheckPending={activeJobListLedgerCheckPending} />
             </div>
           </div>
         </div>

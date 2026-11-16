@@ -117,3 +117,127 @@ function skm_unclear_outcome(array $lookup, bool $sequenceConsumed, bool $ledger
     }
     return null;
 }
+
+// ADR 0014: Klaerung extern gesendeter Jobs ueber den txHash. SKM sendet nur ueber den Write-ahead
+// submit_unclear (R-3); steht ein Job mit einem dieser gespeicherten Status im Ledger, hat ihn jemand
+// ausserhalb von SKM gesendet. Offene Jobs und die Endzustaende, die SKM ohne Blick ins Ledger setzt
+// (Waechter, Merge, Ablehnen). submitted_success und submitted_failed nie. Gleich wie services/submitUnclear.js.
+const EXTERNAL_CHECK_STATUSES = ['pending_signatures', 'ready_to_submit', 'expired', 'obsolete_seq', 'rejected'];
+// Endzustaende, die ein sicherer 404 stehen laesst (es kommt nur ledgerCheckedAt dazu). expired nicht: Kandidaten haben
+// eine verbrauchte Sequence, und ein Widerruf (bumpSequence) ergibt obsolete_seq, auch wenn der Waechter (Serveruhr)
+// den Job vorher bei maxTime auf expired gesetzt hat (ES-6).
+const EXTERNAL_CHECK_FINAL_STATUSES = ['obsolete_seq', 'rejected'];
+
+/**
+ * Wird der gespeicherte Job auf ein externes Senden geprueft? Status aus EXTERNAL_CHECK_STATUSES, noch ohne
+ * ledgerCheckedAt (Marker nach der Klaerung) und nicht schon als extern gesendet markiert. Ob die Sequence
+ * verbraucht ist, prueft der Aufrufer mit Live-Kontodaten. Gleich wie isExternalCheckCandidate in Node.
+ */
+function skm_is_external_check_candidate($storedJob): bool {
+    if (!is_array($storedJob)) return false;
+    $ledgerCheckedAt = $storedJob['ledgerCheckedAt'] ?? null;
+    return in_array($storedJob['status'] ?? null, EXTERNAL_CHECK_STATUSES, true)
+        && ($ledgerCheckedAt === null || $ledgerCheckedAt === '' || $ledgerCheckedAt === false || $ledgerCheckedAt === 0)
+        && ($storedJob['submittedExternally'] ?? null) !== true;
+}
+
+/**
+ * maxTime plus Marge laut Serveruhr vorbei? Dann kann ein 404 schon endgueltig sein bzw. lohnt die Ledger-Zeit
+ * (skm_ledger_past_max_time entscheidet). Ohne Zeitgrenze (0) nie. Gleich wie isPastMaxTimeByClock in Node.
+ */
+function skm_past_max_time_by_clock(int $maxTimeUnix, int $nowUnix): bool {
+    return $maxTimeUnix > 0 && $nowUnix > $maxTimeUnix + SUBMIT_UNCLEAR_LEDGER_MARGIN_SECONDS;
+}
+
+/**
+ * ADR 0014: Reihenfolge im gemeinsamen Budget (SUBMIT_UNCLEAR_MAX_RESOLVES_PER_REQUEST). Zuerst submit_unclear
+ * (Sendeschutz). Dann Kandidaten mit mindestens einer gueltigen gesammelten Signatur eines Signers des Job-Kontos
+ * (signed) vor Jobs ohne Signatur (ES-2): Eine gueltige Signatur kann niemand ohne Key erzeugen. Innerhalb jeder
+ * Gruppe zuerst Kandidaten, deren maxTime plus Marge laut Serveruhr vorbei ist, dann aelteste maxTime, ohne
+ * Zeitgrenze (0) zuletzt. Sonst Reihenfolge der Liste (usort ist ab PHP 8 stabil). Die Serveruhr ordnet nur;
+ * endgueltig macht einen 404 nur die Ledger-Zeit. $a, $b: ['unclear' => bool, 'signed' => bool, 'maxTimeUnix' => int].
+ * Gleich wie compareResolvePriority in Node.
+ */
+function skm_compare_resolve_priority(array $a, array $b, int $nowUnix): int {
+    $ua = (bool)($a['unclear'] ?? false);
+    $ub = (bool)($b['unclear'] ?? false);
+    if ($ua !== $ub) return $ua ? -1 : 1;
+    if ($ua) return 0;
+    $sa = ($a['signed'] ?? false) === true;
+    $sb = ($b['signed'] ?? false) === true;
+    if ($sa !== $sb) return $sa ? -1 : 1;
+    $decidable = fn(array $c): bool => skm_past_max_time_by_clock((int)$c['maxTimeUnix'], $nowUnix);
+    if ($decidable($a) !== $decidable($b)) return $decidable($a) ? -1 : 1;
+    $key = fn(array $c): int => (int)$c['maxTimeUnix'] > 0 ? (int)$c['maxTimeUnix'] : PHP_INT_MAX;
+    return $key($a) <=> $key($b);
+}
+
+/**
+ * Datensatz aus GET /transactions/{hash} als Ergebnis der Abfrage. Nur ein Datensatz zum abgefragten Hash zaehlt
+ * (eigener Hash oder inner_transaction.hash eines Fee-Bumps), sonst Fehler. createdAt nur in der Form von Horizon
+ * (UTC mit Z), sonst null. successful nur als Boolean. Gleich wie transactionLookupFromRecord in Node.
+ */
+function skm_transaction_lookup_from_record($data, string $queriedHash): array {
+    if (!is_array($data) || $queriedHash === '') return ['kind' => 'error'];
+    $inner = $data['inner_transaction'] ?? null;
+    $innerHash = is_array($inner) ? ($inner['hash'] ?? null) : null;
+    if (($data['hash'] ?? null) !== $queriedHash && $innerHash !== $queriedHash) return ['kind' => 'error'];
+    $createdAt = $data['created_at'] ?? null;
+    return [
+        'kind' => 'found',
+        'successful' => is_bool($data['successful'] ?? null) ? $data['successful'] : null,
+        'hash' => $queriedHash,
+        'ledger' => is_int($data['ledger'] ?? null) ? $data['ledger'] : null,
+        'createdAt' => skm_parse_ledger_closed_at($createdAt) !== null ? $createdAt : null,
+    ];
+}
+
+/**
+ * ADR 0014: Ergebnis fuer einen Kandidaten (skm_is_external_check_candidate, Sequence verbraucht).
+ * Gefunden und erfolgreich: submitted_success mit submittedExternally, submittedResult im F-3-Format, submittedAt
+ * aus created_at von Horizon (null, wenn es fehlt). Gefunden und fehlgeschlagen: submitted_failed ebenso. Ein 404
+ * nur bei $ledgerPastMaxTime (R-1): obsolete_seq (die Sequence ist verbraucht), gespeichert obsolete_seq und rejected
+ * bleiben. Sonst null: nichts speichern, beim naechsten Lesen erneut. Gleich wie externalOutcome in Node.
+ */
+function skm_external_outcome(array $lookup, bool $ledgerPastMaxTime, string $storedStatus): ?array {
+    $kind = $lookup['kind'] ?? '';
+    if ($kind === 'found') {
+        $submittedAt = is_string($lookup['createdAt'] ?? null) ? $lookup['createdAt'] : null;
+        $successful = $lookup['successful'] ?? null;
+        if ($successful === true) {
+            return [
+                'status' => 'submitted_success',
+                'submittedExternally' => true,
+                'submittedResult' => skm_submit_success_result(['hash' => $lookup['hash'] ?? null, 'ledger' => $lookup['ledger'] ?? null]),
+                'submittedAt' => $submittedAt,
+            ];
+        }
+        if ($successful === false) {
+            return [
+                'status' => 'submitted_failed',
+                'submittedExternally' => true,
+                'submittedResult' => skm_submit_error_result_from(SUBMIT_UNCLEAR_FAILED_MESSAGE, null),
+                'submittedAt' => $submittedAt,
+            ];
+        }
+        return null;
+    }
+    if ($kind === 'not_found' && $ledgerPastMaxTime) {
+        return ['status' => in_array($storedStatus, EXTERNAL_CHECK_FINAL_STATUSES, true) ? $storedStatus : 'obsolete_seq'];
+    }
+    return null;
+}
+
+// ES-9: Endzustaende, die SKM ohne Blick ins Ledger setzt. Gleich wie EXTERNAL_UNCONSUMED_FINAL_STATUSES in Node.
+const EXTERNAL_UNCONSUMED_FINAL_STATUSES = ['expired', 'obsolete_seq', 'rejected'];
+
+/**
+ * ADR 0014 (ES-9): Kandidat im Endzustand, Sequence laut Live-Daten nicht verbraucht. Meldet Horizon einen Ledger mehr
+ * als 60 s nach maxTime (R-1), kann die Transaktion nie mehr ins Ledger: Status bleibt, nur ledgerCheckedAt kommt
+ * dazu. Ohne Zeitgrenze (maxTime 0, nur Altjobs) und fuer offene Jobs nie. Sonst null. Gleich wie
+ * externalUnconsumedOutcome in Node.
+ */
+function skm_external_unconsumed_outcome(string $storedStatus, bool $ledgerPastMaxTime): ?array {
+    if (!$ledgerPastMaxTime || !in_array($storedStatus, EXTERNAL_UNCONSUMED_FINAL_STATUSES, true)) return null;
+    return ['status' => $storedStatus];
+}

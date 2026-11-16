@@ -19,5 +19,6 @@ alten ersetzt, statt den alten still umzuschreiben.
 | [0011](0011-kein-swap-als-multisig-job.md) | Kein Swap als Multisig-Job | akzeptiert |
 | [0012](0012-signer-typen-zentral-quantensicher-vorbereiten.md) | Signer-Typen zentral behandeln, quantensichere Signer vorbereiten | akzeptiert |
 | [0013](0013-fremde-op-source-kennzeichnen-nicht-senden.md) | Fremde op.source kennzeichnen, nicht automatisch senden | akzeptiert |
+| [0014](0014-extern-gesendete-jobs-ueber-txhash-klaeren.md) | Extern gesendete Jobs über txHash klären | akzeptiert |
 
 Neue Einträge nach [template.md](template.md), fortlaufend nummeriert.

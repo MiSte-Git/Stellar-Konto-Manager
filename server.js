@@ -30,6 +30,8 @@ const { expireStalePendingJobs } = require('./services/multisigJobsGuard.js');
 const {
   SUBMIT_UNCLEAR_STATUS, SUBMIT_UNCLEAR_MAX_RESOLVES_PER_REQUEST,
   isUnclearSubmitError, isUnclearSubmitSuccess, isSequenceConsumed, isUnclearResolveDue, parseLedgerClosedAt, isLedgerPastMaxTime, unclearOutcome,
+  isExternalCheckCandidate, compareResolvePriority, transactionLookupFromRecord, externalOutcome,
+  externalUnconsumedOutcome, isPastMaxTimeByClock,
 } = require('./services/submitUnclear.js');
 
 // Lightweight .env loader (root .env and backend/.env) without extra deps
@@ -804,7 +806,8 @@ async function applySubmitOutcome(jobId, sent) {
 }
 
 // F-2: Abruf GET /transactions/{hash} fuer die Klaerung. 404 = nicht im Ledger, alles andere ohne
-// Datensatz (Netz, Timeout, 5xx) = Fehler, der Job bleibt dann unklar.
+// Datensatz (Netz, Timeout, 5xx) = Fehler, der Job bleibt dann unklar. Der Datensatz zaehlt nur zum
+// abgefragten Hash (auch als innerer Hash eines Fee-Bumps), siehe transactionLookupFromRecord (ADR 0014).
 async function lookupJobTransaction(network, hash) {
   let timer;
   const timeout = new Promise((_, reject) => {
@@ -815,8 +818,7 @@ async function lookupJobTransaction(network, hash) {
   try {
     const rec = await Promise.race([call, timeout]);
     // Das SDK legt das Ledger als ledger_attr ab (ledger wird zur Link-Funktion).
-    const ledger = Number.isInteger(rec?.ledger_attr) ? rec.ledger_attr : (Number.isInteger(rec?.ledger) ? rec.ledger : undefined);
-    return { kind: 'found', successful: rec?.successful, hash: typeof rec?.hash === 'string' ? rec.hash : hash, ledger };
+    return transactionLookupFromRecord(rec, hash);
   } catch (err) {
     if (isAccountNotFound(err)) return { kind: 'not_found' };
     return { kind: 'error' };
@@ -851,41 +853,105 @@ async function fetchLedgerClosedAt(network) {
 // einmal je Netz und Anfrage, nur nach einem 404; siehe unclearOutcome). Gespeichert wird
 // unter dem Job-Lock und nur, wenn der Job dort noch submit_unclear ist. Scheitert das Speichern,
 // bleibt der Job unklar (auch in der Antwort). Gleich wie resolveUnclearJobs in api/multisig.php.
+//
+// ADR 0014: Dieselbe Klaerung prueft auch Jobs, die ausserhalb von SKM gesendet worden sein koennen: gespeichert
+// offen oder in einem Endzustand, den SKM ohne Blick ins Ledger setzt (isExternalCheckCandidate), mit laut
+// Live-Daten verbrauchter Sequence. Gemeinsames Budget, Reihenfolge nach compareResolvePriority. Ergebnis aus
+// externalOutcome, gespeichert unter dem Job-Lock nur, wenn der Job dort noch denselben Status hat wie beim
+// Lesen und noch Kandidat ist. Jede gespeicherte Klaerung (auch submit_unclear) setzt ledgerCheckedAt: Der Job
+// ist im Ledger geprueft und wird danach nie wieder abgefragt. Gesendet wird nie.
+// ES-11: Konto, dessen Sequence die Job-Transaktion verbraucht, also das Basiskonto der Tx-Quelle. Seit K1 gleich
+// accountId; bei Altjobs von vor K1 ein anderes Konto. Gleich wie skm_sequence_account_of in api/multisig.php.
+function sequenceAccountOf(job, tx) {
+  return (tx && txSourceBaseAccount(tx)) || job.accountId;
+}
+
+// Sequence laut Live-Kontodaten verbraucht: true/false, null = unbekannt (Horizon-Fehler, Timeout). Kennt Horizon das
+// Konto nicht (404, z. B. nach einem accountMerge), kann die Transaktion nicht mehr ins Ledger, die Sequence gilt als
+// verbraucht (ES-4). Gleich wie skm_sequence_consumed_from_meta in api/multisig.php.
+function sequenceConsumedFromMeta(tx, meta) {
+  if (!meta) return null;
+  if (meta.ok) return isSequenceConsumed(tx.sequence, meta.sequence);
+  return meta.notFound ? true : null;
+}
+
+// ADR 0014: Gespeicherter Job ist Kandidat der Klaerung und seine Sequence laut Live-Daten verbraucht (consumed aus
+// sequenceConsumedFromMeta). Unbekannt (null) zaehlt als verbraucht: Im Zweifel nicht loeschen und nicht zum Neuanlegen
+// auffordern (ES-8). Fee-Bump-Altjobs (keine eigene Sequence) nie. Gleich wie skm_ledger_check_pending in api/multisig.php.
+function isLedgerCheckPending(storedJob, tx, consumed) {
+  return isExternalCheckCandidate(storedJob) && !!tx && !(tx instanceof StellarSdk.FeeBumpTransaction)
+    && consumed !== false;
+}
+
 async function resolveUnclearJobs(items) {
-  let budget = SUBMIT_UNCLEAR_MAX_RESOLVES_PER_REQUEST;
+  const nowUnix = Math.floor(Date.now() / 1000);
+  const storedById = new Map(multisigDb.items.map((x) => [x.id, x]));
   // R-1: Ledger-Zeit hoechstens einmal je Netz und Anfrage (Promise, damit auch ein Fehler gemerkt bleibt).
   const ledgerClosedAtByNet = new Map();
   const ledgerClosedAt = (net) => {
     if (!ledgerClosedAtByNet.has(net)) ledgerClosedAtByNet.set(net, fetchLedgerClosedAt(net));
     return ledgerClosedAtByNet.get(net);
   };
-  const out = [];
-  for (const j of items) {
-    if (j.status !== SUBMIT_UNCLEAR_STATUS || budget <= 0) { out.push(j); continue; }
-    const tx = parseJobTx(j);
-    // Fee-Bump (Altjob): keine eigene Sequence und kein Zeitfenster, bleibt unklar wie in api/multisig.php.
-    if (!tx || tx instanceof StellarSdk.FeeBumpTransaction) { out.push(j); continue; }
-    const meta = await fetchAccountMetaCached(j.network, j.accountId);
-    if (!meta || !meta.ok) { out.push(j); continue; }
-    // Sequenz von accountId genuegt: K1 erzwingt beim Anlegen und Merge Tx-Quelle == accountId.
-    const sequenceConsumed = isSequenceConsumed(tx.sequence, meta.sequence);
-    const maxTimeUnix = extractMaxTimeUnix(tx);
-    const nowUnix = Math.floor(Date.now() / 1000);
-    if (!isUnclearResolveDue({ sequenceConsumed, maxTimeUnix, nowUnix })) {
-      out.push(j);
-      continue;
+  const candidates = [];
+  items.forEach((j, index) => {
+    let readStatus;
+    if (j.status === SUBMIT_UNCLEAR_STATUS) {
+      readStatus = SUBMIT_UNCLEAR_STATUS;
+    } else {
+      // Der gespeicherte Status zaehlt, nicht der neu berechnete (ein offener Job zeigt beim Lesen schon obsolete_seq).
+      const stored = storedById.get(j.id);
+      if (!isExternalCheckCandidate(stored)) return;
+      readStatus = stored.status;
     }
-    budget -= 1;
-    const lookup = await lookupJobTransaction(j.network, j.txHash);
-    // Ein 404 ist nur endgueltig, wenn Horizon einen Ledger mehr als 60 s nach maxTime meldet (R-1, nicht die Serveruhr).
-    const ledgerPast = lookup.kind === 'not_found' && isLedgerPastMaxTime(maxTimeUnix, await ledgerClosedAt(j.network));
-    const outcome = unclearOutcome(lookup, sequenceConsumed, ledgerPast);
-    if (!outcome) { out.push(j); continue; }
+    const tx = parseJobTx(j);
+    // Fee-Bump (Altjob): keine eigene Sequence und kein Zeitfenster, bleibt wie er ist (wie in api/multisig.php).
+    if (!tx || tx instanceof StellarSdk.FeeBumpTransaction) return;
+    candidates.push({
+      index, job: j, tx, readStatus, unclear: readStatus === SUBMIT_UNCLEAR_STATUS, maxTimeUnix: extractMaxTimeUnix(tx),
+      // ES-2: mindestens eine gueltige gesammelte Signatur eines Signers des Job-Kontos (verifyCollected beim Lesen).
+      signed: Number(j.collectedWeight || 0) > 0,
+    });
+  });
+  candidates.sort((a, b) => compareResolvePriority(a, b, nowUnix));
+
+  let budget = SUBMIT_UNCLEAR_MAX_RESOLVES_PER_REQUEST;
+  const resolved = new Map();
+  // ES-8: Kandidaten (nicht submit_unclear) mit verbrauchter oder unbekannter Sequence, die diese Anfrage nicht klaert.
+  const pending = new Set();
+  for (const c of candidates) {
+    const j = c.job;
+    // Kontodaten auch nach erschoepftem Budget (gecacht 30 s), damit ledgerCheckPending fuer jeden Kandidaten stimmt.
+    // ES-11: Sequence der Tx-Quelle (bei Altjobs von vor K1 nicht accountId).
+    const meta = await fetchAccountMetaCached(j.network, sequenceAccountOf(j, c.tx));
+    const sequenceConsumed = sequenceConsumedFromMeta(c.tx, meta);
+    if (!c.unclear && sequenceConsumed !== false) pending.add(c.index);
+    // Horizon-Fehler: diesmal nicht klaeren.
+    if (sequenceConsumed === null) continue;
+    let outcome;
+    if (!c.unclear && !sequenceConsumed) {
+      // ES-9: Endzustand mit freier Sequence. Erst nach maxTime plus Marge laut Serveruhr nach der Ledger-Zeit fragen
+      // (keine Abfrage der Transaktion, kein Budget); entscheidet die Ledger-Zeit (R-1), bleibt der Status.
+      if (!isPastMaxTimeByClock(c.maxTimeUnix, nowUnix) || !externalUnconsumedOutcome(c.readStatus, true)) continue;
+      outcome = externalUnconsumedOutcome(c.readStatus, isLedgerPastMaxTime(c.maxTimeUnix, await ledgerClosedAt(j.network)));
+    } else {
+      if (c.unclear && !isUnclearResolveDue({ sequenceConsumed, maxTimeUnix: c.maxTimeUnix, nowUnix })) continue;
+      if (budget <= 0) continue;
+      budget -= 1;
+      const lookup = await lookupJobTransaction(j.network, j.txHash);
+      // Ein 404 ist nur endgueltig, wenn Horizon einen Ledger mehr als 60 s nach maxTime meldet (R-1, nicht die Serveruhr).
+      const ledgerPast = lookup.kind === 'not_found' && isLedgerPastMaxTime(c.maxTimeUnix, await ledgerClosedAt(j.network));
+      outcome = c.unclear ? unclearOutcome(lookup, sequenceConsumed, ledgerPast) : externalOutcome(lookup, ledgerPast, c.readStatus);
+    }
+    if (!outcome) continue;
     const saved = await withMultisigJobLock(j.id, async () => {
       const current = findMultisigJob(j.id);
-      if (!current || current.status !== SUBMIT_UNCLEAR_STATUS) return null;
-      const updated = { ...current, status: outcome.status, resolvedAt: new Date().toISOString() };
-      if (outcome.submittedResult) updated.submittedResult = outcome.submittedResult;
+      // Geloescht oder inzwischen geaendert (Merge, Ablehnen, Waechter, Senden): nichts speichern.
+      if (!current || current.status !== c.readStatus) return null;
+      if (!c.unclear && !isExternalCheckCandidate(current)) return null;
+      const at = new Date().toISOString();
+      const updated = c.unclear
+        ? { ...current, status: outcome.status, resolvedAt: at, ledgerCheckedAt: at, ...(outcome.submittedResult ? { submittedResult: outcome.submittedResult } : {}) }
+        : { ...current, ...outcome, ledgerCheckedAt: at };
       multisigDb.items = multisigDb.items.map((x) => (x.id === j.id ? updated : x));
       if (!(await saveMultisigDb())) {
         multisigDb.items = multisigDb.items.map((x) => (x.id === j.id ? current : x));
@@ -893,9 +959,21 @@ async function resolveUnclearJobs(items) {
       }
       return updated;
     });
-    out.push(saved ? { ...j, status: saved.status, submittedResult: saved.submittedResult, resolvedAt: saved.resolvedAt } : j);
+    if (!saved) continue;
+    pending.delete(c.index);
+    resolved.set(c.index, c.unclear
+      ? { ...j, status: saved.status, submittedResult: saved.submittedResult, resolvedAt: saved.resolvedAt, ledgerCheckedAt: saved.ledgerCheckedAt }
+      : {
+        ...j,
+        status: saved.status,
+        submittedResult: saved.submittedResult,
+        submittedAt: saved.submittedAt,
+        submittedExternally: saved.submittedExternally,
+        ledgerCheckedAt: saved.ledgerCheckedAt,
+      });
   }
-  return out;
+  // ES-8: ledgerCheckPending nur in der Antwort, nie gespeichert. Gleich wie api/multisig.php.
+  return items.map((j, i) => ({ ...(resolved.get(i) || j), ledgerCheckPending: pending.has(i) }));
 }
 
 app.post('/api/multisig/jobs', async (req, res) => {
@@ -937,6 +1015,11 @@ app.post('/api/multisig/jobs', async (req, res) => {
         ? res.status(400).json({ ok: false, error: 'account_not_found' })
         : res.status(503).json({ ok: false, error: 'horizon_unavailable' });
     }
+    // ADR 0014 (ES-1): Eine Transaktion mit verbrauchter Sequence oder abgelaufener maxTime kann nie mehr ins Ledger.
+    // Kein Job: sonst liesse sich eine alte, schon ausgefuehrte Transaktion eines fremden Kontos als Job anlegen, die
+    // Klaerung zeigte sie als "ausserhalb von SKM gesendet" und belegte das Budget. Gleich wie api/multisig.php.
+    const deadStatus = computeMultisigLifecycleStatus(parsed.tx, signerMeta.sequence, Math.floor(Date.now() / 1000));
+    if (deadStatus) return res.status(409).json({ ok: false, error: 'tx_not_viable', status: deadStatus });
     const requiredWeight = requiredWeightForOperations(parsed.tx.operations, signerMeta.thresholds);
     const signers = signerMeta.signers || [];
     const collectedSigners = signers.length ? verifyCollected(parsed.tx, signers) : [];
@@ -1273,6 +1356,15 @@ app.post('/api/multisig/jobs/:id/delete', (req, res) => withMultisigJobLock(req.
 
     const [current] = await annotateJobsLifecycleStatus([job]);
     if (!multisigFinalStatus.has(current.status)) return res.status(409).json({ ok: false, error: 'not_final', status: current.status });
+    // ADR 0014 (ES-3): Ein Kandidat mit verbrauchter Sequence kann ausserhalb von SKM gesendet worden sein. Erst nach
+    // der Klaerung beim Lesen loeschbar, sonst ginge der Nachweis verloren und der Auftrag wuerde neu angelegt.
+    // ES-11: Sequence der Tx-Quelle; seit K1 ist das accountId, dessen Kontodaten schon geladen sind.
+    const jobTx = parseJobTx(job);
+    const seqAccount = sequenceAccountOf(job, jobTx);
+    const seqMeta = seqAccount === job.accountId ? { ok: true, ...signerMeta } : await fetchAccountMetaCached(job.network, seqAccount);
+    if (isLedgerCheckPending(job, jobTx, jobTx ? sequenceConsumedFromMeta(jobTx, seqMeta) : false)) {
+      return res.status(409).json({ ok: false, error: 'ledger_check_pending', status: current.status });
+    }
     multisigDb.items = multisigDb.items.filter((j) => j.id !== id);
     if (!(await saveMultisigDb())) {
       // Nur diesen Job wiederherstellen, Aenderungen an anderen Jobs bleiben.

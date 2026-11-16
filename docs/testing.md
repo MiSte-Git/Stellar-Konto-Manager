@@ -84,6 +84,18 @@ dass jede Spec in dieser Tabelle steht und jede genannte Datei existiert.
   lokalen Stub (`test/multisigSubmitNoMemoCheck.test.js` und `.php`, `SKM_TEST_SUBMIT_REAL_URL`, R-5) sowie im
   Frontend in `MultisigJobDetail.test.jsx`, `MultisigJobList.test.jsx`, `MultisigResultDialog.test.jsx` und
   `MultisigPrepareDialog.test.jsx`.
+- Außerhalb von SKM gesendete Jobs (ADR 0014): gegen das echte Testnet nicht wiederholbar automatisiert (Fee-Bump-Probe
+  einmalig von Hand, 16.11.2026). Gemeinsame Fixture `test/assets/external-submit.json`: reine Funktionen (Kandidat,
+  Datensatz, Ergebnis, Reihenfolge samt signiert vor unsigniert, Endzustand mit freier Sequence) in
+  `test/externalSubmit.test.js` und `.php`, Routen (gefunden Erfolg und Fehlschlag,
+  Fee-Bump-Hülle, sicher nicht gefunden, Widerruf vor und nach der Marge, auch nach `expired` des Wächters,
+  Horizon-Fehler, `successful` fehlt, Sequence nicht verbraucht, schon geprüft, Konto unbekannt, Endzustand mit freier Sequence nach
+  der Marge und Gegenprobe, Altjob vor K1 mit Sequence der Tx-Quelle und Gegenprobe, `ledgerCheckPending` je Fall,
+  untergeschobene unsignierte Jobs gegen einen signierten Kandidaten und Gegenprobe, Budget mit mehr als 5 Kandidaten, gelöschter Job und Merge während der Abfrage, Anlegen einer toten Transaktion abgelehnt, Löschen vor der
+  Klärung abgelehnt, nie gesendet) in `test/multisigExternalSubmit.test.js` und `.php` gegen den Horizon-Mock bzw.
+  -Stub. Anzeige in `MultisigJobDetail.test.jsx` (auch keine Signier-Aufforderung zu fremder Quelle im Endzustand),
+  `MultisigJobList.test.jsx` und `multisigErrors.test.js`. PHP-Tests ohne Netz: `https_proxy=http://127.0.0.1:9`
+  vor dem Aufruf sperrt ausgehendes HTTPS (alle grün, Stand 16.11.2026).
 - Job mit fremder `op.source` (ADR 0013): kein automatisches Senden beim Anlegen und beim Merge, `foreignOpSources` in
   Antwort, Detail und Liste, auch mit `accountId` mit Leerzeichen und fremder M-Adresse, gegen einen lokalen
   Horizon-Stub (`test/multisigForeignOpSource.test.js` und `.php`). Zustände des wartenden Jobs: Altjob ohne

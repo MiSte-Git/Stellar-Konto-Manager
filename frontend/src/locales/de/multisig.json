@@ -128,7 +128,8 @@
     "feeBump": "Fee-Bump-Transaktionen sind als Multisig-Job nicht vorgesehen und werden abgelehnt. Bitte die Transaktion ohne Fee-Bump neu erstellen.",
     "mismatchedHash": "Die signierte XDR gehört nicht zu dieser Transaktion.",
     "signersUnavailable": "Die Signer-Liste des Kontos ist bei Horizon gerade nicht abrufbar. Die Signatur wurde nicht übernommen. Bitte in ein paar Sekunden erneut versuchen.",
-    "timeboundTooLong": "Das Zeitfenster ist zu lang. Bitte die Multisig-Timeout-Einstellung auf maximal {{maxDays}} Tage reduzieren."
+    "timeboundTooLong": "Das Zeitfenster ist zu lang. Bitte die Multisig-Timeout-Einstellung auf maximal {{maxDays}} Tage reduzieren.",
+    "txNotViable": "Die Transaktion kann nicht mehr ausgeführt werden: Die Sequence des Kontos ist schon verbraucht oder das Zeitfenster abgelaufen. Es wurde kein Job angelegt. Bitte die Transaktion neu erstellen."
   },
   "prepare": {
     "title": "Transaktion für Multisig vorbereitet",
@@ -482,6 +483,7 @@
       "obsolete_seq": "Dieser Job kann nicht mehr signiert oder gesendet werden: Das Konto hat seit dem Anlegen eine andere Transaktion gesendet, dadurch passt die Sequence-Nummer nicht mehr. Eine Stellar-Transaktion gilt nur für genau eine Sequence-Nummer. Lege den Auftrag bei Bedarf neu an.",
       "expired": "Dieser Job kann nicht mehr signiert oder gesendet werden: Sein Gültigkeitszeitraum ist abgelaufen. Lege den Auftrag bei Bedarf neu an.",
       "skipUnlock": "Du musst dafür keinen Secret Key eingeben.",
+      "ledgerCheckPending": "Die Sequence dieses Jobs ist verbraucht. SKM prüft noch über Horizon, ob genau diese Transaktion schon im Ledger steht, zum Beispiel weil sie außerhalb von SKM gesendet wurde. Lege den Auftrag bis dahin nicht neu an, sonst kann die Zahlung zweimal ausgeführt werden. Geklärt wird beim nächsten Laden der Liste oder dieses Jobs.",
       "showAnyway": "Details trotzdem ansehen (Secret Key nötig)"
     },
     "foreignSources": {
@@ -491,7 +493,13 @@
       "declineHint": "Ablehnen können nur Signer des Job-Kontos.",
       "noAutoSubmit": "SKM sendet diesen Auftrag nicht automatisch, auch wenn das Gewicht des Job-Kontos erreicht ist.",
       "ownAccountWarning": "SKM sendet diesen Auftrag nicht. Er enthält eine Operation deines Kontos. Signiere sie nirgends, auch nicht mit einem anderen Werkzeug, wenn du sie nicht selbst veranlasst hast.",
-      "declineNoEffect": "Das Gewicht des Job-Kontos ist schon erreicht. Ablehnen ändert den Status nicht. Stoppen kann den Auftrag nur ein Widerruf."
+      "declineNoEffect": "Das Gewicht des Job-Kontos ist schon erreicht. Ablehnen ändert den Status nicht. Stoppen kann den Auftrag nur ein Widerruf.",
+      "finalInfo": "Mindestens eine Operation hat ein anderes Quellkonto als die Transaktion:"
+    },
+    "submittedExternally": {
+      "success": "Im Ledger gefunden, nicht über diesen Job gesendet. Die Transaktion ist erfolgreich ausgeführt.",
+      "failed": "Im Ledger gefunden, nicht über diesen Job gesendet. Die Transaktion ist im Ledger fehlgeschlagen.",
+      "ledger": "Laut Horizon: Ledger {{ledger}}, {{time}}"
     }
   },
   "secretModal": {
@@ -566,7 +574,11 @@
     "errorDetail": "Detail: {{detail}}",
     "detailsOnly": "Details",
     "deadHint": "Kann nicht mehr signiert werden",
-    "foreignSources": "Fremde Quellkonten, wird nicht automatisch gesendet"
+    "foreignSources": "Fremde Quellkonten, wird nicht automatisch gesendet",
+    "submittedExternally": "Im Ledger gefunden, nicht über diesen Job gesendet",
+    "submittedExternallyFailed": "Im Ledger gefunden, nicht über diesen Job gesendet, fehlgeschlagen",
+    "ledgerCheckPending": "Noch nicht geklärt, ob die Transaktion schon im Ledger steht. Nicht neu anlegen.",
+    "deleteLedgerCheckPending": "noch nicht im Ledger geprüft, die Liste später neu laden und dann löschen"
   },
   "actions": {
     "createMultisigJob": "Multisig-Job erstellen"

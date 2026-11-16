@@ -52,7 +52,7 @@ const INTEGRITY_ISSUE_TEXTS = {
   fee_bump: 'multisig:detail.integrity.feeBump',
 };
 
-function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listStatus = '' }) {
+function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listStatus = '', listLedgerCheckPending = false }) {
   const { t, i18n } = useTranslation(['multisig', 'common']);
   const [job, setJob] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -294,6 +294,10 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
   // F-2: Beim Senden kam keine eindeutige Antwort. Nicht final (das Backend klaert beim Lesen), aber
   // wie ein Endzustand gesperrt: kein Signieren, kein Import, kein Ablehnen. Der Widerruf bleibt.
   const isSubmitUnclear = String(job?.status || '').toLowerCase() === 'submit_unclear';
+  // ADR 0014: Das Backend hat die Transaktion im Ledger gefunden, gesendet wurde sie nicht ueber diesen Job (ES-10:
+  // ausserhalb von SKM oder ueber einen anderen Job mit derselben Transaktion). Sagt nichts darueber, wer gesendet hat.
+  const submittedExternally = job?.submittedExternally === true
+    && ['submitted_success', 'submitted_failed'].includes(String(job?.status || '').toLowerCase());
   const signingClosed = isFinalState || isSubmitUnclear;
   const declinedSet = useMemo(() => new Set((job?.declinedSigners || []).map((d) => d?.publicKey).filter(Boolean)), [job]);
   const declinedByMe = !!currentPublicKey && declinedSet.has(currentPublicKey);
@@ -815,6 +819,10 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
     ? String(job.status)
     : (!job && ['obsolete_seq', 'expired'].includes(String(listStatus || '')) ? String(listStatus) : '');
   const hideUnlockForDeadJob = !!deadStatus && !job && !showUnlockAnyway;
+  // ES-8 (ADR 0014): Sequence verbraucht, aber noch nicht geklaert, ob genau diese Transaktion im Ledger steht. Dann nie
+  // zum Neuanlegen auffordern. Ohne geladenen Job (kein gemerkter Key) gilt der Stand aus der Liste: Das Detail braucht
+  // ein Token, die Liste klaert ohne.
+  const ledgerCheckPending = job ? job.ledgerCheckPending === true : listLedgerCheckPending === true;
 
   return (
     <div className="space-y-4">
@@ -852,7 +860,9 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
       {error && <div className="text-sm text-red-600">{error}</div>}
       {deadStatus && (
         <div role="alert" className="rounded-sm border border-red-400 bg-red-50 p-3 text-sm text-red-900 dark:border-red-700 dark:bg-red-900/30 dark:text-red-100 space-y-2" data-testid="job-dead">
-          <p>{t(`multisig:detail.dead.${deadStatus}`)}</p>
+          {ledgerCheckPending
+            ? <p data-testid="job-ledger-check-pending">{t('multisig:detail.dead.ledgerCheckPending')}</p>
+            : <p>{t(`multisig:detail.dead.${deadStatus}`)}</p>}
           {needsUnlock && !job && (
             <p className="text-xs">{t('multisig:detail.dead.skipUnlock')}</p>
           )}
@@ -994,11 +1004,28 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
                 })}
               </div>
             </div>
-            {job.status && (
+            {submittedExternally && (
+              <div role="status" className="mt-2 space-y-1 rounded-sm border border-gray-300 bg-gray-50 p-2 text-xs text-gray-800 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100" data-testid="job-submitted-externally">
+                <p className="font-medium">
+                  {String(job.status).toLowerCase() === 'submitted_failed'
+                    ? t('multisig:detail.submittedExternally.failed')
+                    : t('multisig:detail.submittedExternally.success')}
+                </p>
+                {(Number.isInteger(job.submittedResult?.ledger) || job.submittedAt) && (
+                  <p>{t('multisig:detail.submittedExternally.ledger', { ledger: Number.isInteger(job.submittedResult?.ledger) ? job.submittedResult.ledger : '-', time: job.submittedAt || '-' })}</p>
+                )}
+              </div>
+            )}
+            {job.status && !submittedExternally && (
               <div className="mt-2 text-xs text-gray-600 dark:text-gray-300">
                 {foreignWaiting
                   ? t('multisig:job.statusHelp.ready_to_submit_foreign')
                   : t(`multisig:job.statusHelp.${job.status}`, t('multisig:job.statusHelp.unknown'))}
+              </div>
+            )}
+            {ledgerCheckPending && !deadStatus && (
+              <div role="status" className="mt-2 rounded-sm border border-amber-300 bg-amber-50 p-2 text-xs text-amber-900 dark:border-amber-700 dark:bg-amber-900/30 dark:text-amber-100" data-testid="job-ledger-check-pending">
+                {t('multisig:detail.dead.ledgerCheckPending')}
               </div>
             )}
             {notAutoSubmitted && (
@@ -1078,11 +1105,16 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
               )}
               {operationWarnings.foreignOpSources.length > 0 && (
                 <div role="alert" className="mt-2 space-y-1 rounded-sm border border-red-300 bg-red-50 p-2 text-xs text-red-900 dark:border-red-700 dark:bg-red-900/30 dark:text-red-100" data-testid="job-foreign-sources">
+                  {/* ES-5: im Endzustand nur der Fakt, keine Aufforderung zum Pruefen vor dem Signieren. */}
+                  {isFinalState ? (
+                    <p className="font-medium" data-testid="job-foreign-sources-final">{t('multisig:detail.foreignSources.finalInfo')}</p>
+                  ) : (
                   <p className="font-medium">{t('multisig:detail.operations.warnForeignSources', 'Achtung: Mindestens eine Operation hat ein anderes Quellkonto als die Transaktion. Für sie zählen die Signer und Thresholds des jeweiligen Kontos, nicht nur die des Job-Kontos; die angezeigte Signaturanzahl berücksichtigt das nicht. Gehört einer deiner Keys zu diesem Konto, autorisiert deine Signatur auch diese Operation. Prüfe die Adressen, bevor du signierst:')}</p>
+                  )}
                   {foreignNoAutoSubmit && (
                     <p data-testid="job-foreign-no-auto-submit">{t('multisig:detail.foreignSources.noAutoSubmit')}</p>
                   )}
-                  <p>{t('multisig:detail.foreignSources.weightNotChecked')}</p>
+                  {!isFinalState && <p>{t('multisig:detail.foreignSources.weightNotChecked')}</p>}
                   <ul className="list-disc pl-4 font-mono">
                     {operationWarnings.foreignOpSources.map((account) => (
                       <li key={account} className="break-all">
@@ -1091,7 +1123,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
                       </li>
                     ))}
                   </ul>
-                  {ownAccountAsOpSource && (
+                  {ownAccountAsOpSource && !isFinalState && (
                     <p className="font-semibold" data-testid="job-own-account-source">
                       {t('multisig:detail.operations.ownAccountAsSource', {
                         account: ownAccountAsOpSource,
@@ -1365,7 +1397,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
               )}
             </div>
           )}
-          {submitError && !isSubmitUnclear && (
+          {submitError && !isSubmitUnclear && !submittedExternally && (
             <div className="border border-red-400 bg-red-50 dark:bg-red-900/30 text-xs text-red-800 dark:text-red-200 rounded-sm p-2 space-y-1">
               <div>{t('multisig:detail.submitFailed', { reason: submitError })}</div>
               {liquiditySubmitText(job.submittedResult) && (

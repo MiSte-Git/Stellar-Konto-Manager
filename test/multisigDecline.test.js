@@ -1,6 +1,7 @@
 // Feature 31.10.: Ablehnen einzelner Multisig-Jobs (Node). Loeschen: test/multisigDelete.test.js.
-// Pendant: test/multisigDecline.test.php (dort auch der volle Ablauf mit vorbelegtem
-// Signer-Cache; Node fragt die Signer live ab, das geht offline nicht).
+// Pendant: test/multisigDecline.test.php (dort auch der volle Ablauf mit vorbelegtem Signer-Cache).
+// Horizon per test/helpers/horizonAccountsMock.js: Das Job-Konto existiert mit sich selbst als einzigem Signer,
+// kein Test fragt das echte Testnet (frueher lieferte dort ein 404 fuer das Zufallskonto das 403).
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { spawn } = require('child_process');
@@ -69,9 +70,14 @@ test.before(async () => {
   dataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'skm-decline-'));
   dbPath = path.join(dataDir, 'multisig_jobs.json');
   fs.writeFileSync(dbPath, JSON.stringify({ items: [baseJob('offen', 'pending_signatures', 'tok-offen'), baseJob('alt', 'expired', 'tok-alt')] }));
-  server = spawn(process.execPath, ['server.js'], {
+  const accountsPath = path.join(dataDir, 'accounts.json');
+  // Sequence 100: die Job-Transaktion (101) ist nicht verbraucht.
+  fs.writeFileSync(accountsPath, JSON.stringify({
+    [owner.publicKey()]: { signers: [{ key: owner.publicKey(), weight: 1 }], thresholds: { low_threshold: 1, med_threshold: 1, high_threshold: 1 }, sequence: '100' },
+  }));
+  server = spawn(process.execPath, ['--require', './test/helpers/horizonAccountsMock.js', 'server.js'], {
     cwd: path.join(__dirname, '..'),
-    env: { ...process.env, PORT: String(PORT), BUG_DB_DIR: dataDir, MULTISIG_DB_PATH: dbPath },
+    env: { ...process.env, PORT: String(PORT), BUG_DB_DIR: dataDir, MULTISIG_DB_PATH: dbPath, SKM_TEST_HORIZON_ACCOUNTS: accountsPath },
     stdio: 'ignore',
   });
   for (let i = 0; i < 100; i += 1) {
@@ -131,7 +137,7 @@ test('Ablehnen: Token-Signatur und Rohsignatur der Nonce gelten nicht als Ablehn
   }
 });
 
-// Token-Endpunkt: Node fragt die Signer live ab, offline endet eine gueltige Signatur bei
+// Token-Endpunkt: Der Zufalls-Signer ist kein Signer des Job-Kontos, eine gueltige Signatur endet bei
 // 403 forbidden. Entscheidend ist, dass sie die Signaturpruefung besteht (nicht
 // invalid_signature), waehrend Rohsignatur und decline-Signatur dort scheitern.
 test('Token: skm:token: besteht die Signaturpruefung, Rohsignatur und decline-Signatur nicht', async () => {

@@ -173,9 +173,33 @@ Ein Job ist eine unsignierte oder teilsignierte Transaktion, die mehrere Signer 
   Fixrunde Opus, R-3). Damit sendet das Backend jede Transaktion eines Jobs höchstens einmal: Ein Job, der einmal
   gesendet wurde, ist `submit_unclear` oder final, und beide nehmen keinen Merge mehr an. Die Abbildung
   `tx_bad_seq`/`tx_too_late` auf `obsolete_seq`/`expired` beim Merge betrifft also nur das erste und einzige Senden; ein
-  Weg, der einen schon gesendeten Job ohne Hash-Abfrage `obsolete_seq` setzt, bleibt nicht. Offen bleibt nur ein Einreichen
-  außerhalb des Backends (ein Signer reicht das angezeigte XDR selbst ein): Dann zeigen Lesen und Merge `obsolete_seq`,
-  weil das Backend davon nichts weiß.
+  Weg, der einen schon gesendeten Job ohne Hash-Abfrage `obsolete_seq` setzt, bleibt nicht. Ein Einreichen außerhalb
+  des Backends (ein Signer reicht das angezeigte XDR selbst ein) klärt das Lesen über den `txHash` (siehe unten,
+  ADR 0014).
+- **Außerhalb von SKM gesendete Jobs** ([ADR 0014](adr/0014-extern-gesendete-jobs-ueber-txhash-klaeren.md)): Die
+  Klärung von `submit_unclear` prüft beim Lesen auch Jobs, die gespeichert offen oder `expired`, `obsolete_seq` bzw.
+  `rejected` ohne `ledgerCheckedAt` sind, sobald die Sequence laut Live-Daten verbraucht ist. Diese Endzustände setzt
+  SKM ohne Blick ins Ledger (Wächter, Merge, Ablehnen); ohne Klärung legten die Signer den Auftrag neu an und die
+  Zahlung ginge doppelt raus. Gefunden: `submitted_success` bzw. `submitted_failed` mit `submittedExternally: true`,
+  Ledger in `submittedResult` (F-3-Format unverändert), Zeit aus Horizon in `submittedAt`. Der Datensatz zählt nur,
+  wenn sein `hash` oder `inner_transaction.hash` dem Job-Hash gleicht (gilt auch für `submit_unclear`); ein Fee-Bump als
+  Hülle wird über den inneren Hash gefunden (Testnet-Probe 16.11.2026). Sicher nicht gefunden (R-1): `obsolete_seq`,
+  gespeichert `obsolete_seq` und `rejected` bleiben (ein `expired` des Wächters nach einem Widerruf wird `obsolete_seq`).
+  Kennt Horizon das Konto nicht mehr (404), gilt die Sequence als verbraucht. Geprüft wird die Sequence der Tx-Quelle
+  (bei Altjobs von vor K1 nicht `accountId`). Ein Endzustand mit nicht verbrauchter Sequence gilt als geklärt, sobald
+  Horizon einen Ledger mehr als 60 s nach `maxTime` meldet (Status bleibt). Jede gespeicherte Klärung setzt
+  `ledgerCheckedAt`, danach keine Abfrage mehr. Das Anlegen lehnt eine schon tote Transaktion ab (409 `tx_not_viable`),
+  das Löschen einen ungeprüften Kandidaten mit verbrauchter Sequence (409 `ledger_check_pending`).
+  Horizon-Fehler, 404 vor der Marge oder fehlendes `successful` speichern nichts. Gespeichert wird unter dem Job-Lock
+  nur, wenn der Job noch existiert und denselben Status wie beim Lesen hat. Gemeinsames Budget von 5 Abfragen je
+  Anfrage, `submit_unclear` zuerst, dann Kandidaten mit mindestens einer gültigen gesammelten Signatur vor unsignierten
+  (eine Signatur kann nur ein Signer erzeugen, Jobs anlegen jeder), in jeder Gruppe nach `maxTime` entscheidbare, dann
+  älteste `maxTime`. Gesendet wird nie. Der Hinweis „Im Ledger gefunden, nicht über diesen Job gesendet“ sagt nicht,
+  wer gesendet hat, und nicht „außerhalb von SKM“ (es kann ein anderer Job mit derselben Transaktion sein). Ist ein
+  Kandidat mit verbrauchter oder unbekannter Sequence noch nicht geklärt, tragen Liste und Detail `ledgerCheckPending`
+  (nur in der Antwort), und das Frontend sagt statt „Lege den Auftrag bei Bedarf neu an“, dass noch geprüft wird und
+  der Auftrag bis dahin nicht neu angelegt werden soll; auch das Detail ohne gemerkten Key, das ohne Token nicht lädt,
+  übernimmt den Stand aus der Liste.
 - **Sendeergebnis (`submittedResult`):** Beide Backends speichern und liefern nur Fehlertext und `result_codes`
   (Ablehnung) bzw. Hash und Ledger (Erfolg), nie `envelope_xdr` oder `result_xdr` aus der Horizon-Antwort
   (`services/submitResult.js`, `api/submitResult.php`). Grund: Die Job-Liste ist ohne Token lesbar (G-Adresse reicht);
@@ -358,7 +382,7 @@ Ein Job ist eine unsignierte oder teilsignierte Transaktion, die mehrere Signer 
 | IP-Bildung Node/PHP in Randfällen verschieden (`::ffff:` in Hex-Form, NAT64 `64:ff9b::/96`, Zonen-ID `%eth0`) | `REMOTE_ADDR` und `req.ip` liefern diese Formen praktisch nicht; Node ist nur Dev-Backend. |
 | Admin-Login: Prüfen und Zählen sind zwei Schritte; parallele Anfragen vor der ersten Zählung bekommen mehr als 5 Versuche | Gewinn ist nur ein Burst je Sperrfenster; Schutz bleibt das Secret (`hash_equals`). |
 | Node schickt zusätzlich `RateLimit`-Header (auch bei 200), PHP nur `Retry-After` bei 429 | Status, Code, Body und `Retry-After` sind gleich; das Frontend nutzt die Zusatz-Header nicht. |
-| Job mit fremder `op.source` (ADR 0013): SKM sendet ihn nie; er bleibt bis Ablauf oder Widerruf offen, und außerhalb von SKM gesendet erkennt ihn das Lesen nur als `obsolete_seq` (Sequence verbraucht), nicht als `submitted_success` | Kein Geldrisiko, nur Anzeige. Klärung über `txHash` ist als eigener Schritt vorgemerkt. |
+| Außerhalb von SKM gesendeter Job (ADR 0014, auch fremde `op.source`, ADR 0013): Bis die Klärung ihn findet, zeigt das Lesen `obsolete_seq` (Sequence verbraucht). Ein 404 ist erst nach `maxTime` plus 60 s laut Ledger endgültig; ein widerrufener Job kostet bis dahin je Lesen eine Abfrage im Budget von 5. Jobs ohne Zeitgrenze (nur Altjobs) werden nie sicher nicht gefunden, Fee-Bump-Altjobs nicht geprüft. Kandidaten laden bei jedem Lesen Live-Kontodaten (gecacht 30 s), Endzustände mit freier Sequence nur bis `maxTime` plus 60 s, ohne Zeitgrenze (Altjobs) dauerhaft. Ein Dritter kann für ein fremdes Konto unsignierte Jobs mit der nächsten Sequence anlegen; verbraucht das Konto sie, belegen diese bis `maxTime` plus 60 s das Budget der Liste, aber nur vor Kandidaten ohne gültige Signatur. Ein Kandidat ohne Zeitgrenze (Altjob) lässt sich bei verbrauchter Sequence nicht löschen; liest das Löschen einen nachhinkenden Horizon-Knoten, ist es vor der Klärung möglich. | Gefunden wird ein Job beim nächsten Lesen mit freiem Budget (`submit_unclear` zuerst, dann signierte); das Detail mit Token klärt ihn mit eigenem Budget sofort. Bis dahin zeigen Liste und Detail `ledgerCheckPending` mit dem Hinweis, nicht neu anzulegen. Tote Transaktionen nimmt das Anlegen nicht an. Gesendet wird nie. |
 | `npm audit`: moderate Meldungen über `exceljs` → `archiver` → `glob`/`minimatch` | Im genutzten Pfad nicht ausnutzbar; der angebotene Fix wäre ein Downgrade. |
 
 ## Hinweise für Reviewer (häufige Fehlannahmen)

@@ -281,7 +281,8 @@ function submitToNetwork(AbstractTransaction $tx, string $net): array {
 }
 
 // F-2: Abruf GET /transactions/{hash} fuer die Klaerung. 404 = nicht im Ledger, alles andere ohne
-// Datensatz (Netz, Timeout, 5xx, kaputtes JSON) = Fehler, der Job bleibt dann unklar.
+// Datensatz (Netz, Timeout, 5xx, kaputtes JSON) = Fehler, der Job bleibt dann unklar. Der Datensatz zaehlt nur
+// zum abgefragten Hash (auch als innerer Hash eines Fee-Bumps), siehe skm_transaction_lookup_from_record (ADR 0014).
 function lookupTransactionByHash(string $net, string $hash): array {
     if (!preg_match('/^[0-9a-f]{64}$/', $hash)) return ['kind' => 'error'];
     $ch = curl_init(skm_horizon_url($net) . '/transactions/' . $hash);
@@ -296,12 +297,7 @@ function lookupTransactionByHash(string $net, string $hash): array {
     if ($httpCode === 404) return ['kind' => 'not_found'];
     $data = json_decode((string)$respBody, true);
     if ($httpCode !== 200 || !is_array($data)) return ['kind' => 'error'];
-    return [
-        'kind' => 'found',
-        'successful' => is_bool($data['successful'] ?? null) ? $data['successful'] : null,
-        'hash' => is_string($data['hash'] ?? null) ? $data['hash'] : $hash,
-        'ledger' => is_int($data['ledger'] ?? null) ? $data['ledger'] : null,
-    ];
+    return skm_transaction_lookup_from_record($data, $hash);
 }
 
 // R-1: Ledger-Zeit von Horizon (GET /, history_latest_ledger_closed_at) als Unix-Sekunden, null bei
@@ -524,37 +520,119 @@ function summarizeJob(array $job): array {
  * Locks; gespeichert wird unter withJobsLock und nur fuer Jobs, die dort noch submit_unclear sind.
  * Scheitert das Speichern, bleibt der Job unklar (auch in der Antwort). Gleich wie
  * resolveUnclearJobs in server.js.
+ *
+ * ADR 0014: Dieselbe Klaerung prueft auch Jobs, die ausserhalb von SKM gesendet worden sein koennen: gespeichert
+ * offen oder in einem Endzustand, den SKM ohne Blick ins Ledger setzt (skm_is_external_check_candidate), mit laut
+ * Live-Daten verbrauchter Sequence. Gemeinsames Budget, Reihenfolge nach skm_compare_resolve_priority. Ergebnis
+ * aus skm_external_outcome, gespeichert unter withJobsLock nur, wenn der Job dort noch denselben Status hat wie
+ * beim Lesen und noch Kandidat ist. Jede gespeicherte Klaerung (auch submit_unclear) setzt ledgerCheckedAt: Der
+ * Job ist im Ledger geprueft und wird danach nie wieder abgefragt. Gesendet wird nie.
  */
+/**
+ * ES-11: Konto, dessen Sequence die Job-Transaktion verbraucht, also das Basiskonto der Tx-Quelle. Seit K1 gleich
+ * accountId; bei Altjobs von vor K1 ein anderes Konto. Gleich wie sequenceAccountOf in server.js.
+ */
+function skm_sequence_account_of(array $job, ?AbstractTransaction $tx): string {
+    $source = $tx !== null ? txSourceBaseAccount($tx) : null;
+    return $source ?? (string)($job['accountId'] ?? '');
+}
+
+/**
+ * Sequence laut Live-Kontodaten verbraucht: true/false, null = unbekannt (Horizon-Fehler, Timeout). Kennt Horizon das
+ * Konto nicht (404, z. B. nach einem accountMerge), gilt die Sequence als verbraucht (ES-4). Gleich wie
+ * sequenceConsumedFromMeta in server.js.
+ */
+function skm_sequence_consumed_from_meta(\Soneso\StellarSDK\Transaction $tx, ?array $meta): ?bool {
+    if ($meta === null) return null;
+    if (($meta['ok'] ?? true) !== false) {
+        return skm_sequence_consumed($tx->getSequenceNumber(), isset($meta['sequence']) ? (string)$meta['sequence'] : null);
+    }
+    return ($meta['notFound'] ?? false) ? true : null;
+}
+
+/**
+ * ADR 0014: Gespeicherter Job ist Kandidat der Klaerung und seine Sequence laut Live-Daten verbraucht ($consumed aus
+ * skm_sequence_consumed_from_meta). Unbekannt (null) zaehlt als verbraucht: im Zweifel nicht loeschen und nicht zum
+ * Neuanlegen auffordern (ES-8). Fee-Bump-Altjobs (keine eigene Sequence) nie. Gleich wie isLedgerCheckPending in server.js.
+ */
+function skm_ledger_check_pending(array $storedJob, ?AbstractTransaction $tx, ?bool $consumed): bool {
+    return skm_is_external_check_candidate($storedJob) && $tx instanceof \Soneso\StellarSDK\Transaction && $consumed !== false;
+}
+
 function resolveUnclearJobs(string $jobFile, array $jobs): array {
-    $budget = SUBMIT_UNCLEAR_MAX_RESOLVES_PER_REQUEST;
-    $outcomes = [];
-    // R-1: Ledger-Zeit hoechstens einmal je Netz und Anfrage (auch ein Fehler wird gemerkt).
-    $ledgerClosedAtByNet = [];
-    foreach ($jobs as $j) {
-        if (($j['status'] ?? '') !== SUBMIT_UNCLEAR_STATUS) continue;
-        if ($budget <= 0) break;
+    $nowUnix = time();
+    // Gespeicherter Status je Job (summarizeJob rechnet ihn fuer offene Jobs neu), nur bei Bedarf geladen.
+    $storedById = null;
+    $candidates = [];
+    foreach ($jobs as $index => $j) {
+        $id = (string)($j['id'] ?? '');
+        if (($j['status'] ?? '') === SUBMIT_UNCLEAR_STATUS) {
+            $readStatus = SUBMIT_UNCLEAR_STATUS;
+        } else {
+            if (!in_array($j['status'] ?? '', EXTERNAL_CHECK_STATUSES, true)) continue;
+            if ($storedById === null) {
+                $storedById = [];
+                foreach (loadJobs($jobFile) as $it) $storedById[(string)($it['id'] ?? '')] = $it;
+            }
+            $stored = $storedById[$id] ?? null;
+            if (!skm_is_external_check_candidate($stored)) continue;
+            $readStatus = (string)$stored['status'];
+        }
         $net = $j['network'] ?? 'public';
         $parseErr = null;
         $tx = parseTx((string)($j['txXdrCurrent'] ?? ($j['txXdrOriginal'] ?? '')), $net, $parseErr);
+        // Fee-Bump (Altjob): keine eigene Sequence und kein Zeitfenster, bleibt wie er ist.
         if (!($tx instanceof \Soneso\StellarSDK\Transaction)) continue;
-        $meta = fetchAccountSignersCached($j['accountId'] ?? '', $net);
-        if (($meta['ok'] ?? true) === false) continue;
-        // Sequenz von accountId genuegt: K1 erzwingt beim Anlegen und Merge Tx-Quelle == accountId.
-        $sequenceConsumed = skm_sequence_consumed($tx->getSequenceNumber(), isset($meta['sequence']) ? (string)$meta['sequence'] : null);
-        $maxTimeUnix = extractMaxTimeUnix($tx);
-        $nowUnix = time();
-        if (!skm_unclear_resolve_due($sequenceConsumed, $maxTimeUnix, $nowUnix)) continue;
-        $budget--;
-        $lookup = lookupTransactionByHash($net, (string)($j['txHash'] ?? ''));
-        // Ein 404 ist nur endgueltig, wenn Horizon einen Ledger mehr als 60 s nach maxTime meldet (R-1, nicht die Serveruhr).
-        $ledgerPast = false;
-        if (($lookup['kind'] ?? '') === 'not_found') {
-            if (!array_key_exists($net, $ledgerClosedAtByNet)) $ledgerClosedAtByNet[$net] = fetchLedgerClosedAt($net);
-            $ledgerPast = skm_ledger_past_max_time($maxTimeUnix, $ledgerClosedAtByNet[$net]);
-        }
-        $outcome = skm_unclear_outcome($lookup, $sequenceConsumed, $ledgerPast);
-        if ($outcome !== null) $outcomes[(string)($j['id'] ?? '')] = $outcome;
+        $candidates[] = [
+            'index' => $index, 'id' => $id, 'job' => $j, 'tx' => $tx, 'net' => $net, 'readStatus' => $readStatus,
+            'unclear' => $readStatus === SUBMIT_UNCLEAR_STATUS, 'maxTimeUnix' => extractMaxTimeUnix($tx),
+            // ES-2: mindestens eine gueltige gesammelte Signatur eines Signers des Job-Kontos (verifyCollected beim Lesen).
+            'signed' => (int)($j['collectedWeight'] ?? 0) > 0,
+        ];
     }
+    usort($candidates, fn(array $a, array $b) => skm_compare_resolve_priority($a, $b, $nowUnix));
+
+    $budget = SUBMIT_UNCLEAR_MAX_RESOLVES_PER_REQUEST;
+    $outcomes = [];
+    // ES-8: Kandidaten (nicht submit_unclear) mit verbrauchter oder unbekannter Sequence, die diese Anfrage nicht klaert.
+    $pending = [];
+    // R-1: Ledger-Zeit hoechstens einmal je Netz und Anfrage (auch ein Fehler wird gemerkt).
+    $ledgerClosedAtByNet = [];
+    $ledgerClosedAt = function (string $net) use (&$ledgerClosedAtByNet): ?int {
+        if (!array_key_exists($net, $ledgerClosedAtByNet)) $ledgerClosedAtByNet[$net] = fetchLedgerClosedAt($net);
+        return $ledgerClosedAtByNet[$net];
+    };
+    foreach ($candidates as $c) {
+        $j = $c['job'];
+        $net = $c['net'];
+        // Kontodaten auch nach erschoepftem Budget (gecacht 30 s), damit ledgerCheckPending fuer jeden Kandidaten stimmt.
+        // ES-11: Sequence der Tx-Quelle (bei Altjobs von vor K1 nicht accountId).
+        $meta = fetchAccountSignersCached(skm_sequence_account_of($j, $c['tx']), $net);
+        $sequenceConsumed = skm_sequence_consumed_from_meta($c['tx'], $meta);
+        if (!$c['unclear'] && $sequenceConsumed !== false) $pending[$c['index']] = true;
+        // Horizon-Fehler: diesmal nicht klaeren.
+        if ($sequenceConsumed === null) continue;
+        if (!$c['unclear'] && !$sequenceConsumed) {
+            // ES-9: Endzustand mit freier Sequence. Erst nach maxTime plus Marge laut Serveruhr nach der Ledger-Zeit
+            // fragen (keine Abfrage der Transaktion, kein Budget); entscheidet die Ledger-Zeit (R-1), bleibt der Status.
+            if (!skm_past_max_time_by_clock($c['maxTimeUnix'], $nowUnix) || skm_external_unconsumed_outcome($c['readStatus'], true) === null) continue;
+            $outcome = skm_external_unconsumed_outcome($c['readStatus'], skm_ledger_past_max_time($c['maxTimeUnix'], $ledgerClosedAt($net)));
+        } else {
+            if ($c['unclear'] && !skm_unclear_resolve_due($sequenceConsumed, $c['maxTimeUnix'], $nowUnix)) continue;
+            if ($budget <= 0) continue;
+            $budget--;
+            $lookup = lookupTransactionByHash($net, (string)($j['txHash'] ?? ''));
+            // Ein 404 ist nur endgueltig, wenn Horizon einen Ledger mehr als 60 s nach maxTime meldet (R-1, nicht die Serveruhr).
+            $ledgerPast = ($lookup['kind'] ?? '') === 'not_found' && skm_ledger_past_max_time($c['maxTimeUnix'], $ledgerClosedAt($net));
+            $outcome = $c['unclear']
+                ? skm_unclear_outcome($lookup, $sequenceConsumed, $ledgerPast)
+                : skm_external_outcome($lookup, $ledgerPast, $c['readStatus']);
+        }
+        if ($outcome !== null) $outcomes[$c['id']] = ['outcome' => $outcome, 'readStatus' => $c['readStatus'], 'unclear' => $c['unclear']];
+    }
+    // ES-8: ledgerCheckPending nur in der Antwort, nie gespeichert. Gleich wie server.js.
+    foreach ($jobs as $index => &$jp) $jp['ledgerCheckPending'] = isset($pending[$index]);
+    unset($jp);
     if ($outcomes === []) return $jobs;
 
     $applied = [];
@@ -562,10 +640,20 @@ function resolveUnclearJobs(string $jobFile, array $jobs): array {
         withJobsLock($jobFile, function (array $items) use ($outcomes, &$applied) {
             foreach ($items as &$it) {
                 $id = (string)($it['id'] ?? '');
-                if (!isset($outcomes[$id]) || ($it['status'] ?? '') !== SUBMIT_UNCLEAR_STATUS) continue;
-                $it['status'] = $outcomes[$id]['status'];
-                if (array_key_exists('submittedResult', $outcomes[$id])) $it['submittedResult'] = $outcomes[$id]['submittedResult'];
-                $it['resolvedAt'] = gmdate('c');
+                if (!isset($outcomes[$id])) continue;
+                $o = $outcomes[$id];
+                // Inzwischen geaendert (Merge, Ablehnen, Waechter, Senden): nichts speichern. Geloeschte Jobs fehlen hier.
+                if (($it['status'] ?? '') !== $o['readStatus']) continue;
+                if (!$o['unclear'] && !skm_is_external_check_candidate($it)) continue;
+                if ($o['unclear']) {
+                    $it['status'] = $o['outcome']['status'];
+                    if (array_key_exists('submittedResult', $o['outcome'])) $it['submittedResult'] = $o['outcome']['submittedResult'];
+                    $it['resolvedAt'] = gmdate('c');
+                    $it['ledgerCheckedAt'] = $it['resolvedAt'];
+                } else {
+                    foreach ($o['outcome'] as $k => $v) $it[$k] = $v;
+                    $it['ledgerCheckedAt'] = gmdate('c');
+                }
                 $applied[$id] = $it;
             }
             unset($it);
@@ -578,9 +666,17 @@ function resolveUnclearJobs(string $jobFile, array $jobs): array {
     foreach ($jobs as &$j) {
         $id = (string)($j['id'] ?? '');
         if (!isset($applied[$id])) continue;
-        $j['status'] = $applied[$id]['status'];
-        $j['submittedResult'] = skm_sanitize_submitted_result($applied[$id]['submittedResult'] ?? null);
-        $j['resolvedAt'] = $applied[$id]['resolvedAt'];
+        $row = $applied[$id];
+        $j['ledgerCheckPending'] = false;
+        $j['status'] = $row['status'];
+        $j['submittedResult'] = skm_sanitize_submitted_result($row['submittedResult'] ?? null);
+        $j['ledgerCheckedAt'] = $row['ledgerCheckedAt'];
+        if ($outcomes[$id]['unclear']) {
+            $j['resolvedAt'] = $row['resolvedAt'];
+        } else {
+            if (array_key_exists('submittedAt', $row)) $j['submittedAt'] = $row['submittedAt'];
+            if (array_key_exists('submittedExternally', $row)) $j['submittedExternally'] = $row['submittedExternally'];
+        }
     }
     unset($j);
     return $jobs;
@@ -674,6 +770,12 @@ if ($method === 'POST' && $path === '/api/multisig/jobs') {
                 ? sendJson(['ok' => false, 'error' => 'account_not_found'], 400)
                 : sendJson(['ok' => false, 'error' => 'horizon_unavailable'], 503);
         }
+        // ADR 0014 (ES-1): Eine Transaktion mit verbrauchter Sequence oder abgelaufener maxTime kann nie mehr ins
+        // Ledger. Kein Job: sonst liesse sich eine alte, schon ausgefuehrte Transaktion eines fremden Kontos als Job
+        // anlegen, die Klaerung zeigte sie als "ausserhalb von SKM gesendet" und belegte das Budget. Gleich wie server.js.
+        $liveSequence = ($meta['sequence'] ?? null) !== null ? new BigInteger((string)$meta['sequence']) : null;
+        $deadStatus = computeMultisigLifecycleStatus($tx, $liveSequence, time());
+        if ($deadStatus !== null) return sendJson(['ok' => false, 'error' => 'tx_not_viable', 'status' => $deadStatus], 409);
         $signerMeta = $meta['signers'];
         $requiredWeight = requiredWeightForOperations($tx, $meta['thresholds']);
         $collected = verifyCollected($tx, $net, $signerMeta);
@@ -1054,13 +1156,26 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/delete
     try {
         $conflict = null;
         $deleted = false;
-        withJobsLock($jobFile, function (array $items) use ($id, &$conflict, &$deleted) {
+        $ledgerCheckPending = null;
+        withJobsLock($jobFile, function (array $items) use ($id, $meta, &$conflict, &$deleted, &$ledgerCheckPending) {
             foreach ($items as $i => $j) {
                 if (($j['id'] ?? '') !== $id) continue;
                 $current = summarizeJob($j);
                 $finalStates = ['submitted_success', 'submitted_failed', 'expired', 'obsolete_seq', 'rejected'];
                 if (!in_array($current['status'] ?? '', $finalStates, true)) {
                     $conflict = $current['status'] ?? '';
+                    return $items;
+                }
+                // ADR 0014 (ES-3): Ein Kandidat mit verbrauchter Sequence kann ausserhalb von SKM gesendet worden sein.
+                // Erst nach der Klaerung beim Lesen loeschbar, sonst ginge der Nachweis verloren. Gleich wie server.js.
+                // ES-11: Sequence der Tx-Quelle; seit K1 ist das accountId, dessen Kontodaten schon geladen sind.
+                $parseErr = null;
+                $jobTx = parseTx((string)($j['txXdrCurrent'] ?? ($j['txXdrOriginal'] ?? '')), $j['network'] ?? 'public', $parseErr);
+                $seqAccount = skm_sequence_account_of($j, $jobTx);
+                $seqMeta = $seqAccount === ($j['accountId'] ?? '') ? $meta : fetchAccountSignersCached($seqAccount, $j['network'] ?? 'public');
+                $consumed = $jobTx instanceof \Soneso\StellarSDK\Transaction ? skm_sequence_consumed_from_meta($jobTx, $seqMeta) : false;
+                if (skm_ledger_check_pending($j, $jobTx, $consumed)) {
+                    $ledgerCheckPending = $current['status'] ?? '';
                     return $items;
                 }
                 unset($items[$i]);
@@ -1074,6 +1189,7 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/delete
         return sendError('multisig.jobs.delete_failed', null, 500);
     }
     if ($conflict !== null) return sendJson(['ok' => false, 'error' => 'not_final', 'status' => $conflict], 409);
+    if ($ledgerCheckPending !== null) return sendJson(['ok' => false, 'error' => 'ledger_check_pending', 'status' => $ledgerCheckPending], 409);
     if (!$deleted) return sendJson(['ok' => false, 'error' => 'not_found'], 404);
     return sendJson(['ok' => true]);
 }

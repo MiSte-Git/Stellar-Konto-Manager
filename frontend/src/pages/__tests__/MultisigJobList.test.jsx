@@ -111,7 +111,19 @@ describe('MultisigJobList: Filter', () => {
     expect(await screen.findByTestId('job-dead-hint')).toHaveTextContent(i18n.t('multisig:list.deadHint'));
     expect(screen.queryByRole('button', { name: i18n.t('multisig:list.details') })).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: i18n.t('multisig:list.detailsOnly') }));
-    expect(onOpenDetail).toHaveBeenCalledWith('tot', 'obsolete_seq');
+    expect(onOpenDetail).toHaveBeenCalledWith('tot', 'obsolete_seq', false);
+  });
+
+  it('ES-8: gibt ledgerCheckPending an das Detail weiter (dort ohne Key nicht ladbar)', async () => {
+    const onOpenDetail = vi.fn();
+    window.fetch.mockImplementation(async () => ({ ok: true, json: async () => [job('offen-geprueft', { accountId: ME, status: 'obsolete_seq', ledgerCheckPending: true })] }));
+    render(
+      <I18nextProvider i18n={i18n}>
+        <MultisigJobList publicKey={ME} onBack={() => {}} onOpenDetail={onOpenDetail} />
+      </I18nextProvider>
+    );
+    fireEvent.click(await screen.findByRole('button', { name: i18n.t('multisig:list.detailsOnly') }));
+    expect(onOpenDetail).toHaveBeenCalledWith('offen-geprueft', 'obsolete_seq', true);
   });
 
   it('zeigt submit_unclear als Sendestatus unklar und bietet kein Loeschen an (F-2)', async () => {
@@ -133,6 +145,39 @@ describe('MultisigJobList: Filter', () => {
     const hints = await screen.findAllByTestId('job-foreign-sources-hint');
     expect(hints).toHaveLength(1);
     expect(hints[0]).toHaveTextContent('Fremde Quellkonten, wird nicht automatisch gesendet');
+  });
+
+  it('ADR 0014: kennzeichnet ausserhalb von SKM gesendete Jobs, ohne Hinweis zu fremder Quelle', async () => {
+    window.fetch.mockImplementation(async () => ({ ok: true, json: async () => [
+      job('extern', { accountId: ME, status: 'submitted_success', submittedExternally: true, foreignOpSources: ['GOTHER'] }),
+      job('externFehl', { accountId: ME, status: 'submitted_failed', submittedExternally: true }),
+      job('skm', { accountId: ME, status: 'submitted_success' }),
+      job('offen', { accountId: ME, status: 'ready_to_submit', submittedExternally: true }),
+    ] }));
+    renderList();
+    const hints = await screen.findAllByTestId('job-submitted-externally-hint');
+    expect(hints.map((h) => h.textContent)).toEqual([
+      'Im Ledger gefunden, nicht über diesen Job gesendet',
+      'Im Ledger gefunden, nicht über diesen Job gesendet, fehlgeschlagen',
+    ]);
+    expect(screen.queryByTestId('job-foreign-sources-hint')).toBeNull();
+  });
+
+  it('ES-8: noch nicht geklaert (ledgerCheckPending): Hinweis statt "Kann nicht mehr signiert werden", nicht loeschbar', async () => {
+    window.fetch.mockImplementation(async () => ({ ok: true, json: async () => [
+      job('ungeklaert', { accountId: ME, status: 'obsolete_seq', ledgerCheckPending: true }),
+      job('abgelehnt', { accountId: ME, status: 'rejected', ledgerCheckPending: true }),
+      job('geklaert', { accountId: ME, status: 'obsolete_seq', ledgerCheckPending: false }),
+    ] }));
+    renderList();
+    const hints = await screen.findAllByTestId('job-ledger-check-pending-hint');
+    expect(hints).toHaveLength(2);
+    expect(hints[0]).toHaveTextContent('Noch nicht geklärt, ob die Transaktion schon im Ledger steht. Nicht neu anlegen.');
+    // Gegenprobe: der geklaerte Job behaelt den bisherigen Hinweis.
+    expect(screen.getAllByTestId('job-dead-hint')).toHaveLength(1);
+    expect(screen.getByRole('checkbox', { name: 'Job ungeklaert auswählen' })).toBeDisabled();
+    expect(screen.getByRole('checkbox', { name: 'Job abgelehnt auswählen' })).toBeDisabled();
+    expect(screen.getByRole('checkbox', { name: 'Job geklaert auswählen' })).not.toBeDisabled();
   });
 
   it('bietet kein Loeschen aller Testnet-Jobs mehr an', async () => {
@@ -186,6 +231,22 @@ describe('MultisigJobList: Filter', () => {
       expect(await screen.findByText('Ungültiger Secret Key.')).toBeInTheDocument();
       expect(hoisted.del).not.toHaveBeenCalled();
       expect(panel).toBeInTheDocument();
+    });
+
+    it('ADR 0014 (ES-3): Loeschen vor der Klaerung meldet einen eigenen Grund', async () => {
+      hoisted.sessionSecret.mockResolvedValue(ME_SECRET);
+      hoisted.del.mockImplementation(async (id) => {
+        if (id === 'eigen-abgelaufen') throw Object.assign(new Error('ledger_check_pending'), { status: 409 });
+        return { ok: true };
+      });
+      renderList();
+      await waitFor(() => expect(screen.getAllByTestId('job-row')).toHaveLength(4));
+      fireEvent.click(screen.getByRole('checkbox', { name: 'Alle abgeschlossenen auswählen' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Auswahl löschen (3)' }));
+      await screen.findByTestId('job-delete-panel');
+      fireEvent.click(screen.getByRole('button', { name: 'Löschen' }));
+      const result = await screen.findByTestId('job-delete-result');
+      expect(result).toHaveTextContent('noch nicht im Ledger geprüft, die Liste später neu laden und dann löschen');
     });
 
     it('loescht mit gemerktem Key ohne Abfrage und meldet Fehler je Job', async () => {

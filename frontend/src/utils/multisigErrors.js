@@ -13,9 +13,13 @@ export const FEE_BUMP_NOT_SUPPORTED = 'fee_bump_not_supported';
 export const HORIZON_UNAVAILABLE = 'horizon_unavailable';
 export const ACCOUNT_NOT_FOUND = 'account_not_found';
 
+// ADR 0014: Beide Backends legen keinen Job an, dessen Transaktion schon tot ist (Sequence verbraucht oder maxTime
+// vorbei, 409).
+export const TX_NOT_VIABLE = 'tx_not_viable';
+
 /**
  * Text fuer einen Fehlercode des Multisig-Backends. Fuer save_failed_after_submit,
- * fee_bump_not_supported, horizon_unavailable und account_not_found der uebersetzte Hinweis, sonst
+ * fee_bump_not_supported, horizon_unavailable, account_not_found und tx_not_viable der uebersetzte Hinweis, sonst
  * der Code selbst (oder fallback), wie bisher.
  */
 export function backendErrorMessage(code, fallback = '') {
@@ -23,5 +27,6 @@ export function backendErrorMessage(code, fallback = '') {
   if (code === FEE_BUMP_NOT_SUPPORTED) return i18n.t('multisig:errors.feeBump');
   if (code === HORIZON_UNAVAILABLE) return i18n.t('multisig:errors.createHorizonUnavailable');
   if (code === ACCOUNT_NOT_FOUND) return i18n.t('multisig:errors.accountNotFound');
+  if (code === TX_NOT_VIABLE) return i18n.t('multisig:errors.txNotViable');
   return code || fallback;
 }

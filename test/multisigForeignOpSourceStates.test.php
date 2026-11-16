@@ -5,7 +5,8 @@
 //   den Status neu (pending_signatures).
 // - FS-7.3: Altjob ohne gespeichertes Feld foreignOpSources: Detail und Liste liefern es aus dem XDR,
 //   ein Merge bis zum Gewicht sendet nicht.
-// - FS-7.4: wartender Job laeuft ab (expired, Merge 409) oder seine Sequence ist verbraucht (obsolete_seq);
+// - FS-7.4: wartender Job laeuft ab (expired, Merge 409) oder seine Sequence ist verbraucht (obsolete_seq, Loeschen
+//   erst nach der Klaerung, ADR 0014);
 //   Loeschen erst im Endzustand.
 // - FS-7.5: Ablehnen durch einen nicht gesammelten Signer laesst ready_to_submit stehen.
 // - FS-4: Fee-Bump-Altjob (von vor #15): Lesen liefert foreignOpSources der inneren Transaktion und das
@@ -114,6 +115,9 @@ $preK1 = KeyPair::random(); $preK1Source = KeyPair::random();                   
 $txDropped = $payment($dropped, [$d1, $d2]);
 // FS-7.3: Altjob von vor ADR 0013, ohne Feld foreignOpSources, von l1 signiert.
 $txLegacy = $payment($legacy, [$l1]);
+// FS-7.4: wartender Job, danach per bumpSequence widerrufen (Sequence 1000). Seit ADR 0014 (ES-1) nimmt das Anlegen
+// eine schon verbrauchte Sequence nicht mehr an, der Job liegt deshalb schon in der Datei.
+$txRevoked = $payment($revoked, [$revoked]);
 
 // FS-4: innere Transaktion mit bumpSequence (Low) unter fremder op.source. Ueber die Operationen waere das
 // noetige Gewicht max(low 1, 1) = 1, ohne Operationen (Fee-Bump) max(low 1, med 2, 1) = 2.
@@ -158,6 +162,10 @@ file_put_contents($jobsFile, json_encode(['items' => [
     $seeded('dropped', $dropped, $txDropped, [
         'status' => 'ready_to_submit', 'signers' => [$sig($dropped, 0), $sig($d1), $sig($d2)], 'requiredWeight' => 2,
         'collectedSigners' => [$sig($d1), $sig($d2)], 'collectedWeight' => 2, 'foreignOpSources' => [$foreign],
+    ]),
+    $seeded('revoked', $revoked, $txRevoked, [
+        'status' => 'ready_to_submit', 'signers' => [$sig($revoked)], 'requiredWeight' => 1,
+        'collectedSigners' => [$sig($revoked)], 'collectedWeight' => 1, 'foreignOpSources' => [$foreign],
     ]),
     $seeded('legacy', $legacy, $txLegacy, [
         'status' => 'pending_signatures', 'signers' => [$sig($legacy, 0), $sig($l1), $sig($l2)], 'requiredWeight' => 2,
@@ -253,15 +261,13 @@ try {
 
     // FS-7.4 Widerruf
     $before = $posts();
-    $tx = $payment($revoked, [$revoked]);
-    $created = $create($revoked, $tx);
-    $id = (string)($created['body']['id'] ?? '');
-    $token = (string)($created['body']['accessToken'] ?? '');
-    check('FS-7.4: verbrauchte Sequence: Lesen liefert obsolete_seq', ($detail($id, $token)['status'] ?? '') === 'obsolete_seq');
-    $res = $merge($id, $token, $tx);
+    check('FS-7.4: verbrauchte Sequence: Lesen liefert obsolete_seq', ($detail('revoked', 'tok-revoked')['status'] ?? '') === 'obsolete_seq');
+    $res = $merge('revoked', 'tok-revoked', $txRevoked);
     check('FS-7.4: Merge mit verbrauchter Sequence 409 obsolete_seq', $res['status'] === 409 && ($res['body']['error'] ?? '') === 'obsolete_seq');
-    $del = withChallenge($id, $revoked, 'delete');
-    check('FS-7.4: Loeschen nach dem Widerruf 200, Job entfernt, nie gesendet', $del['status'] === 200 && $stored($id) === null && $posts() === $before);
+    // Ohne Ledger-Pruefung (der Stub kennt GET /transactions nicht) koennte der Job extern gesendet sein: 409 (ADR 0014).
+    $del = withChallenge('revoked', $revoked, 'delete');
+    check('FS-7.4: Loeschen vor der Klaerung 409 ledger_check_pending, Job bleibt, nie gesendet',
+        $del['status'] === 409 && ($del['body']['error'] ?? '') === 'ledger_check_pending' && $stored('revoked') !== null && $posts() === $before);
 
     // FS-7.5
     $before = $posts();

@@ -4,7 +4,8 @@
 //   den Status neu (pending_signatures), statt das gespeicherte ready_to_submit zu uebernehmen.
 // - FS-7.3: Altjob ohne gespeichertes Feld foreignOpSources: Detail und Liste liefern es aus dem XDR,
 //   ein Merge bis zum Gewicht sendet nicht.
-// - FS-7.4: wartender Job laeuft ab (expired, Merge 409) oder seine Sequence ist verbraucht (obsolete_seq);
+// - FS-7.4: wartender Job laeuft ab (expired, Merge 409) oder seine Sequence ist verbraucht (obsolete_seq, Loeschen
+//   erst nach der Klaerung, ADR 0014);
 //   Loeschen erst im Endzustand.
 // - FS-7.5: Ablehnen durch einen nicht gesammelten Signer laesst ready_to_submit stehen.
 // - FS-4: Fee-Bump-Altjob (von vor #15): Lesen liefert foreignOpSources der inneren Transaktion und das
@@ -75,6 +76,8 @@ const live = (signers, threshold, sequence = '100') => ({
 const txDropped = payment(dropped, { signers: [d1, d2] });
 // FS-7.3: Altjob von vor ADR 0013, ohne Feld foreignOpSources, von l1 signiert.
 const txLegacy = payment(legacy, { signers: [l1] });
+// FS-7.4: wartender Job, danach per bumpSequence widerrufen.
+const txRevoked = payment(revoked, { signers: [revoked] });
 // FS-4: innere Transaktion mit bumpSequence (Low) unter fremder op.source. Ueber die Operationen waere das
 // noetige Gewicht max(low 1, 1) = 1, ohne Operationen (Fee-Bump, wie PHP) max(low 1, med 2, 1) = 2.
 const txFbInner = new TransactionBuilder(new Account(fbAcc.publicKey(), '100'), { fee: '1000', networkPassphrase: Networks.TESTNET })
@@ -99,6 +102,12 @@ const items = [
   seeded('dropped', dropped, txDropped, {
     status: 'ready_to_submit', signers: [sig(dropped, 0), sig(d1), sig(d2)], requiredWeight: 2,
     collectedSigners: [sig(d1), sig(d2)], collectedWeight: 2, foreignOpSources: [foreign],
+  }),
+  // FS-7.4: wartender Job, danach widerrufen (Sequence 1000). Seit ADR 0014 (ES-1) nimmt das Anlegen eine schon
+  // verbrauchte Sequence nicht mehr an, der Job liegt deshalb schon in der Datei.
+  seeded('revoked', revoked, txRevoked, {
+    status: 'ready_to_submit', signers: [sig(revoked)], requiredWeight: 1,
+    collectedSigners: [sig(revoked)], collectedWeight: 1, foreignOpSources: [foreign],
   }),
   seeded('legacy', legacy, txLegacy, {
     status: 'pending_signatures', signers: [sig(legacy, 0), sig(l1), sig(l2)], requiredWeight: 2,
@@ -225,19 +234,17 @@ test('FS-7.4: wartender Job laeuft ab: vorher nicht loeschbar, danach expired, M
   assert.equal(posts(), before, 'nie an Horizon gesendet');
 });
 
-test('FS-7.4: verbrauchte Sequence (Widerruf): obsolete_seq, Merge 409, Loeschen moeglich', async () => {
-  const tx = payment(revoked, { signers: [revoked] });
+test('FS-7.4: verbrauchte Sequence (Widerruf): obsolete_seq, Merge 409, Loeschen erst nach der Klaerung (ADR 0014)', async () => {
   const before = posts();
-  const created = await create(revoked, tx);
-  assert.equal(created.body.status, 'ready_to_submit');
-  const { id, accessToken } = created.body;
-  assert.equal((await detail(id, accessToken)).status, 'obsolete_seq');
-  const merged = await merge(id, accessToken, tx);
+  assert.equal((await detail('revoked', 'tok-revoked')).status, 'obsolete_seq');
+  const merged = await merge('revoked', 'tok-revoked', txRevoked);
   assert.equal(merged.status, 409);
   assert.equal(merged.body.error, 'obsolete_seq');
-  const del = await withChallenge(id, revoked, 'delete');
-  assert.equal(del.status, 200);
-  assert.equal(stored(id), undefined, 'geloescht');
+  // Ohne Ledger-Pruefung (hier kein Horizon fuer GET /transactions) koennte der Job extern gesendet sein: 409.
+  const del = await withChallenge('revoked', revoked, 'delete');
+  assert.equal(del.status, 409);
+  assert.equal(del.body.error, 'ledger_check_pending');
+  assert.ok(stored('revoked'), 'nicht geloescht');
   assert.equal(posts(), before, 'nie an Horizon gesendet');
 });
 
