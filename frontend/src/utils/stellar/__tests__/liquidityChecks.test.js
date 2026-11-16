@@ -6,6 +6,7 @@ import {
   checkDepositPreconditions,
   checkWithdrawPreconditions,
   minimumReserveStroops,
+  sameAssetSet,
 } from '../liquidityChecks.js';
 
 const ISSUER = Keypair.random().publicKey();
@@ -162,5 +163,25 @@ describe('checkWithdrawPreconditions', () => {
     const acc = account({ account_id: ISSUER2, subentries: 2, lines: [shares] });
     const r = checkWithdrawPreconditions({ account: acc, pool: xlmPool, shares: toStroops('10'), amountA: toStroops('33'), amountB: toStroops('3'), feePerOp: 100 });
     expect(codes(r)).toEqual(['missingAssetTrust:B']);
+  });
+});
+
+describe('sameAssetSet (#17)', () => {
+  const usd = new Asset('USD', ISSUER);
+  const eur = new Asset('EUR', ISSUER);
+  const usdOther = new Asset('USD', ISSUER2);
+
+  it('gleich bei denselben Assets, unabhaengig von der Reihenfolge', () => {
+    expect(sameAssetSet([usd, eur], [eur, usd])).toBe(true);
+    expect(sameAssetSet([], [])).toBe(true);
+    expect(sameAssetSet(undefined, [])).toBe(true);
+  });
+
+  it('Gegenproben: gleiche Anzahl, aber anderes Asset oder anderer Issuer ist verschieden', () => {
+    // Vorher wurde nur die Anzahl verglichen: diese Faelle galten als gleich.
+    expect(sameAssetSet([usd], [eur])).toBe(false);
+    expect(sameAssetSet([usd], [usdOther])).toBe(false);
+    expect(sameAssetSet([usd], [usd, eur])).toBe(false);
+    expect(sameAssetSet([Asset.native()], [usd])).toBe(false);
   });
 });

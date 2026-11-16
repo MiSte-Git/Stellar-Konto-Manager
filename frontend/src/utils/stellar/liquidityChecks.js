@@ -31,6 +31,15 @@ export function assetKey(asset) {
   return asset.isNative() ? 'native' : `${asset.getCode()}:${asset.getIssuer()}`;
 }
 
+// #17: Gleiche Assets (Code und Issuer), unabhaengig von der Reihenfolge. Vergleicht etwa die
+// fehlenden Trustlines der bestaetigten Vorschau mit denen des frischen Kontostands.
+export function sameAssetSet(a, b) {
+  const keys = (list) => (Array.isArray(list) ? list : []).map(assetKey).sort();
+  const ka = keys(a);
+  const kb = keys(b);
+  return ka.length === kb.length && ka.every((k, i) => k === kb[i]);
+}
+
 function accountIdOf(account) {
   if (typeof account?.accountId === 'function') return account.accountId();
   return account?.account_id || account?.id || '';

@@ -19,7 +19,7 @@ import {
   quoteDeposit,
   simulateDeposit,
 } from '../../utils/stellar/liquidityPools.js';
-import { checkDepositPreconditions, findAssetLine, isOwnIssuedAsset } from '../../utils/stellar/liquidityChecks.js';
+import { checkDepositPreconditions, findAssetLine, isOwnIssuedAsset, sameAssetSet } from '../../utils/stellar/liquidityChecks.js';
 import { buildLiquidityDepositTransaction } from '../../utils/stellar/tradingTransactions.js';
 import { formatAssetLabelWithIssuer, getAssetCode } from '../trading/assetSearchUtils.js';
 import useLiquidityAction from './hooks/useLiquidityAction.js';
@@ -147,10 +147,13 @@ export default function DepositDialog({ poolId, firstAsset, publicKey, network, 
       && sim.shares > 0n
       && priceWithinBounds(sim.amountA, sim.amountB, c.quote.minPrice, c.quote.maxPrice);
     const freshCheck = checkDepositPreconditions({ account: fresh.account, pool: fresh.pool, maxAmountA: c.quote.maxAmountA, maxAmountB: c.quote.maxAmountB, feePerOp, issuerFlags });
+    // #17: dieselben Operationen wie bestaetigt, fehlende Trustlines nach Code und Issuer verglichen
+    // (vorher nur die Anzahl). Heute sperrt jede fehlende Asset-Trustline schon als Problem; der
+    // Vergleich sichert ab, falls diese Regel gelockert wird.
     const sameOps = freshCheck.needPoolTrust === c.check.needPoolTrust
-      && freshCheck.missingTrustAssets.length === c.check.missingTrustAssets.length;
-    if (!priceOk || !sameOps) return { changed: t('liquidity:deposit.priceChanged'), fresh };
-    if (freshCheck.problems.length) return { changed: t('liquidity:dialog.checksChanged'), fresh };
+      && sameAssetSet(freshCheck.missingTrustAssets, c.check.missingTrustAssets);
+    if (!priceOk) return { changed: t('liquidity:deposit.priceChanged'), fresh };
+    if (!sameOps || freshCheck.problems.length) return { changed: t('liquidity:dialog.checksChanged'), fresh };
     return { fresh, freshCheck };
   };
 
