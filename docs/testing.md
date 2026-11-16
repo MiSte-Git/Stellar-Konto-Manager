@@ -63,6 +63,8 @@ dass jede Spec in dieser Tabelle steht und jede genannte Datei existiert.
   `test/assets/challenge-cases.json`, geprüft auf Store-Ebene in `test/challengeStore.test.js` und `.php` und über
   HTTP in `test/challengeCases.test.js` und `.php` (Token, Ablehnen, Löschen; mehrere offene Challenges je Signer,
   nur die mitgeschickte Nonce wird verbraucht, Bindung an Job und Signer, Obergrenze je Signer, kaputte Nonce im Body).
+  `signer` und `signature` nur als String (Fixture-Abschnitt `bodyTypes`): `test/challengeBodyTypes.test.js` und
+  `.php`, eigene Dateien wegen des Rate-Limits von `POST /challenge` (20 je Minute und IP).
 - Sperren in `api/.htaccess` (F-14): `test/apiHtaccess.test.js` startet einen lokalen Apache (`/usr/sbin/apache2` mit
   `mod_rewrite`, `mod_headers`, `mod_authz_core`, ohne PHP) gegen eine Kopie von `api/`; ohne Apache wird der Test
   übersprungen. `test/deployApiHtaccess.test.js` prüft die Abbruchregel im Deploy.

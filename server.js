@@ -1067,8 +1067,11 @@ function findMultisigJob(id) {
   return multisigDb.items.find((j) => j.id === id);
 }
 
+// Nur Strings: ein Array mit einem gueltigen Key oder eine Zahl ergibt null (400 invalid_signer),
+// wie in api/multisig.php. Vorher machte String(['G...']) daraus einen gueltigen Key (R-1).
 function parseSignerPublicKey(raw) {
-  const signerPk = sanitizeHeader(String(raw || '')).trim();
+  if (typeof raw !== 'string') return null;
+  const signerPk = sanitizeHeader(raw).trim();
   try {
     StellarSdk.Keypair.fromPublicKey(signerPk);
   } catch {
@@ -1118,7 +1121,7 @@ app.post('/api/multisig/jobs/:id/token', async (req, res) => {
 
     const signerPk = parseSignerPublicKey(req.body?.signer);
     if (!signerPk) return res.status(400).json({ ok: false, error: 'invalid_signer' });
-    const signature = String(req.body?.signature || '').trim();
+    const signature = typeof req.body?.signature === 'string' ? req.body.signature.trim() : '';
     if (!signature) return res.status(400).json({ ok: false, error: 'missing_signature' });
 
     // Nur genau die mitgeschickte Nonce dieses Jobs und Signers wird verbraucht, andere offene bleiben.

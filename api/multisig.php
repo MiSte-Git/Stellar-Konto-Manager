@@ -851,7 +851,7 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/challe
     if (!findJobById($jobFile, $id)) return sendJson(['ok' => false, 'error' => 'not_found'], 404);
 
     $body = jsonBody();
-    $signerPk = parseSignerPublicKey((string)($body['signer'] ?? ''));
+    $signerPk = parseSignerPublicKey(is_string($body['signer'] ?? null) ? $body['signer'] : '');
     if ($signerPk === null) return sendJson(['ok' => false, 'error' => 'invalid_signer'], 400);
 
     try {
@@ -878,9 +878,9 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/token'
     if (!$job) return sendJson(['ok' => false, 'error' => 'not_found'], 404);
 
     $body = jsonBody();
-    $signerPk = parseSignerPublicKey((string)($body['signer'] ?? ''));
+    $signerPk = parseSignerPublicKey(is_string($body['signer'] ?? null) ? $body['signer'] : '');
     if ($signerPk === null) return sendJson(['ok' => false, 'error' => 'invalid_signer'], 400);
-    $signature = trim((string)($body['signature'] ?? ''));
+    $signature = is_string($body['signature'] ?? null) ? trim($body['signature']) : '';
     if ($signature === '') return sendJson(['ok' => false, 'error' => 'missing_signature'], 400);
 
     try {

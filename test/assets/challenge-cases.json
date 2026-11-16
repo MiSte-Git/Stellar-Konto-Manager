@@ -61,6 +61,15 @@
       ]
     }
   ],
+  "bodyTypes": {
+    "_comment": "Werte fuer signer und signature, die kein String sind (R-1). $VALID ersetzen die Tests durch einen gueltigen Wert (Signer-Key bzw. gueltige Signatur). signer ergibt an challenge, token, decline und delete 400 invalid_signer, signature an token, decline und delete 400 missing_signature; eine mitgeschickte Nonce wird dabei nicht verbraucht. Geprueft in test/challengeBodyTypes.test.js und .php.",
+    "values": [
+      { "label": "Liste mit gueltigem Wert", "value": ["$VALID"] },
+      { "label": "Zahl", "value": 123 },
+      { "label": "Objekt", "value": { "value": "$VALID" } },
+      { "label": "null", "value": null }
+    ]
+  },
   "bodyNonces": [
     { "label": "fehlt", "omit": true, "wellFormed": false },
     { "label": "null", "value": null, "wellFormed": false },
