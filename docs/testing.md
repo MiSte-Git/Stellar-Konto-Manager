@@ -65,6 +65,14 @@ dass jede Spec in dieser Tabelle steht und jede genannte Datei existiert.
   nur die mitgeschickte Nonce wird verbraucht, Bindung an Job und Signer, Obergrenze je Signer, kaputte Nonce im Body).
   `signer` und `signature` nur als String (Fixture-Abschnitt `bodyTypes`): `test/challengeBodyTypes.test.js` und
   `.php`, eigene Dateien wegen des Rate-Limits von `POST /challenge` (20 je Minute und IP).
+- Rate-Limits je IP (R-8): gemeinsame Budgets in `test/assets/rate-limits.json`. `test/rateLimitAreas.test.php`
+  prüft je PHP-Bereich Budget, IPv6 je /64 und IPv4-mapped sowie die Fehlversuche des Admin-Logins (Fenster ab dem
+  ersten Fehlversuch, Verdrängung nach frühestem Ablauf, Sperre auch ohne öffenbare Lock-Datei; Zeitstempel über
+  vorbefüllte Dateien, kein `sleep`),
+  `test/rateLimitRoutes.test.php` Status, Fehlercode und `Retry-After` an Federation, Job anlegen, Jobliste und
+  Admin-Login (Sperre und Freigabe) per HTTP, `test/jobListRateLimit.test.js` dasselbe Budget für die Liste in Node
+  (IPv6 in-process, Einbindung über `server.js`). Bugreport anlegen nur über die Funktion und den Quelltext, weil
+  vor dem Limit die DB-Verbindung steht.
 - Sperren in `api/.htaccess` (F-14): `test/apiHtaccess.test.js` startet einen lokalen Apache (`/usr/sbin/apache2` mit
   `mod_rewrite`, `mod_headers`, `mod_authz_core`, ohne PHP) gegen eine Kopie von `api/`; ohne Apache wird der Test
   übersprungen. `test/deployApiHtaccess.test.js` prüft die Abbruchregel im Deploy.

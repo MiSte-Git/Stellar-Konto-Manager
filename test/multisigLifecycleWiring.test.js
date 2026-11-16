@@ -23,7 +23,7 @@ test('server.js requires the new lifecycle and jobs-guard modules', () => {
 // --- POST /jobs (create): maxTimeUnix precomputed + write-time guard --------
 
 const createRouteIndex = serverSource.indexOf("app.post('/api/multisig/jobs', async");
-const listRouteIndex = serverSource.indexOf("app.get('/api/multisig/jobs', async");
+const listRouteIndex = serverSource.indexOf("app.get('/api/multisig/jobs', jobListLimiter, async");
 test('sanity: the create route exists and precedes the list route', () => {
   assert.ok(createRouteIndex > -1);
   assert.ok(listRouteIndex > createRouteIndex);

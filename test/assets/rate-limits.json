@@ -1,0 +1,11 @@
+{
+  "_comment": "Budgets der Rate-Limits je IP (R-8). PHP: alle Bereiche ueber api/rateLimit.php, IPv6 je /64, IPv4-mapped als IPv4, je Bereich eigene Datei. Node: Liste und Challenge mit eigenem Limiter (services/rateLimit.js), Federation mit eigenem Limiter, Rest nur ueber den globalen Limiter (100 je 15 min). retryAfterInBody: retryAfter steht auch im JSON, sonst nur der Header Retry-After. Geprueft in test/rateLimitAreas.test.php, test/rateLimitRoutes.test.php und test/jobListRateLimit.test.js.",
+  "areas": {
+    "federation": { "max": 30, "windowSeconds": 60, "status": 429, "error": "federation.rateLimited", "retryAfterInBody": false },
+    "bugreport": { "max": 10, "windowSeconds": 60, "status": 429, "error": "too_many_requests", "retryAfterInBody": true },
+    "jobCreate": { "max": 20, "windowSeconds": 300, "status": 429, "error": "too_many_requests", "retryAfterInBody": true },
+    "jobList": { "max": 60, "windowSeconds": 60, "status": 429, "error": "too_many_requests", "retryAfterInBody": true },
+    "challenge": { "max": 20, "windowSeconds": 60, "status": 429, "error": "too_many_requests", "retryAfterInBody": true }
+  },
+  "adminLogin": { "maxFailures": 5, "windowSeconds": 900, "status": 429, "error": "too_many_attempts", "retryAfterInBody": true }
+}

@@ -7,9 +7,11 @@
 // soon as it's required.
 declare(strict_types=1);
 
+require_once __DIR__ . '/rateLimit.php';
+
 // N-style per-IP rate limit for the public, unauthenticated "create job"
-// action - file-backed (same approach as api/bugreportGuard.php's report rate
-// limit) so it survives across requests without needing a DB table. Job
+// action, ueber den gemeinsamen Limiter api/rateLimit.php (IPv6 je /64, eigene
+// Datei, Pfad per MULTISIG_JOB_RATE_LIMIT_PATH ueberschreibbar). Job
 // creation does a live Horizon lookup plus (if the threshold is already met)
 // a real network submission, so it's meaningfully more expensive per request
 // than a bugreport - the window is wider and the budget smaller accordingly.
@@ -17,54 +19,30 @@ const MULTISIG_JOB_RATE_LIMIT_MAX = 20;
 const MULTISIG_JOB_RATE_LIMIT_WINDOW_SECONDS = 300;
 
 function multisigJobRateLimitPath(): string {
-    // Same override convention as challengeStore.php's CHALLENGES_FILE_PATH,
-    // so tests can point this at a throwaway file instead of the real one.
-    $override = getenv('MULTISIG_JOB_RATE_LIMIT_PATH');
-    return $override !== false && $override !== '' ? $override : __DIR__ . '/data/multisig_job_rate_limit.json';
+    return rateLimitPath('MULTISIG_JOB_RATE_LIMIT_PATH', 'multisig_job_rate_limit.json');
 }
 
 // Records one request for $ip and returns the seconds to wait if that pushed
 // $ip over the limit, 0 if the request is within budget.
 function multisigJobRateLimitCheckAndRecord(string $ip): int {
-    $file = multisigJobRateLimitPath();
-    $dir = dirname($file);
-    if (!is_dir($dir)) @mkdir($dir, 0775, true);
-    $lockHandle = @fopen($file . '.lock', 'c');
-    if ($lockHandle === false) return 0; // fail open on the rate limiter itself
-    flock($lockHandle, LOCK_EX);
-    try {
-        $data = [];
-        if (file_exists($file)) {
-            $raw = @file_get_contents($file);
-            $decoded = $raw ? json_decode($raw, true) : null;
-            if (is_array($decoded)) $data = $decoded;
-        }
+    return rateLimitCheckAndRecord(multisigJobRateLimitPath(), $ip, MULTISIG_JOB_RATE_LIMIT_MAX, MULTISIG_JOB_RATE_LIMIT_WINDOW_SECONDS);
+}
 
-        $now = time();
-        foreach ($data as $key => $entry) {
-            $windowStart = (int)($entry['windowStart'] ?? 0);
-            if (($now - $windowStart) > MULTISIG_JOB_RATE_LIMIT_WINDOW_SECONDS) {
-                unset($data[$key]);
-            }
-        }
+// R-8: GET /api/multisig/jobs (Liste nach accountId oder signer) je IP. Jede Liste kann
+// Horizon-Abrufe ausloesen (Live-Neuberechnung, bis zu 5 Klaerungen bei submit_unclear).
+// 60 je Minute: Das Frontend pollt nicht, es laedt die Liste nur beim Oeffnen, bei
+// Filterwechsel, Aktualisieren, nach dem Schliessen eines Jobs und nach dem Loeschen, je
+// hoechstens 2 Anfragen (accountId und signer). Gleiches Budget in server.js
+// (services/rateLimit.js). Gezaehlt wird vor allen Pruefungen.
+const MULTISIG_JOB_LIST_RATE_LIMIT_MAX = 60;
+const MULTISIG_JOB_LIST_RATE_LIMIT_WINDOW_SECONDS = 60;
 
-        $entry = $data[$ip] ?? ['count' => 0, 'windowStart' => $now];
-        if (($now - (int)$entry['windowStart']) > MULTISIG_JOB_RATE_LIMIT_WINDOW_SECONDS) {
-            $entry = ['count' => 0, 'windowStart' => $now];
-        }
-        $entry['count'] = (int)$entry['count'] + 1;
-        $data[$ip] = $entry;
-        @file_put_contents($file, json_encode($data));
+function multisigJobListRateLimitPath(): string {
+    return rateLimitPath('MULTISIG_JOB_LIST_RATE_LIMIT_PATH', 'multisig_job_list_rate_limit.json');
+}
 
-        if ($entry['count'] > MULTISIG_JOB_RATE_LIMIT_MAX) {
-            $remaining = MULTISIG_JOB_RATE_LIMIT_WINDOW_SECONDS - ($now - (int)$entry['windowStart']);
-            return max($remaining, 1);
-        }
-        return 0;
-    } finally {
-        flock($lockHandle, LOCK_UN);
-        fclose($lockHandle);
-    }
+function multisigJobListRateLimitCheckAndRecord(string $ip): int {
+    return rateLimitCheckAndRecord(multisigJobListRateLimitPath(), $ip, MULTISIG_JOB_LIST_RATE_LIMIT_MAX, MULTISIG_JOB_LIST_RATE_LIMIT_WINDOW_SECONDS);
 }
 
 // A job left in a non-final state (pending_signatures/ready_to_submit) this

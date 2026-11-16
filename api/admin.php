@@ -13,6 +13,7 @@ declare(strict_types=1);
 require __DIR__ . '/admin_session.php';
 require __DIR__ . '/cors.php';
 require __DIR__ . '/requestGuard.php';
+require_once __DIR__ . '/rateLimit.php';
 
 // CORS: session cookies require a specific origin (not '*') plus the
 // credentials flag - shared allowlist in cors.php (finding #9).
@@ -42,12 +43,14 @@ function json_body(): array {
 // Brute-force protection for POST /api/admin/login (per-IP lockout, file-backed
 // so it survives across requests without needing a DB). Not a replacement for
 // the hash_equals() secret check - that remains the actual security boundary;
-// this only slows down repeated guessing.
+// this only slows down repeated guessing. Nur Fehlversuche zaehlen, nach 5 ist die IP
+// 15 Minuten gesperrt, ein Erfolg loescht den Zaehler. Zaehlen, IP-Bildung (IPv6 je /64),
+// Lock und Obergrenze der Eintraege liegen in api/rateLimit.php.
 const LOGIN_MAX_ATTEMPTS = 5;
 const LOGIN_WINDOW_SECONDS = 900; // 15 minutes
 
 function loginAttemptsPath(): string {
-    return __DIR__ . '/data/admin_login_attempts.json';
+    return rateLimitPath('ADMIN_LOGIN_ATTEMPTS_PATH', 'admin_login_attempts.json');
 }
 
 function clientIp(): string {
@@ -56,63 +59,13 @@ function clientIp(): string {
 
 // Returns seconds remaining if the given IP is currently locked out, 0 otherwise.
 function loginRateLimitCheck(string $ip): int {
-    $file = loginAttemptsPath();
-    if (!file_exists($file)) return 0;
-    $raw = @file_get_contents($file);
-    $data = $raw ? json_decode($raw, true) : null;
-    if (!is_array($data) || !isset($data[$ip])) return 0;
-    $lockedUntil = (int)($data[$ip]['lockedUntil'] ?? 0);
-    $remaining = $lockedUntil - time();
-    return $remaining > 0 ? $remaining : 0;
+    return rateLimitFailureCheck(loginAttemptsPath(), $ip);
 }
 
 // Records the outcome of a login attempt: clears the counter on success,
 // increments (and locks past the threshold) on failure.
 function loginRateLimitRecord(string $ip, bool $success): void {
-    $file = loginAttemptsPath();
-    $dir = dirname($file);
-    if (!is_dir($dir)) @mkdir($dir, 0775, true);
-    $lockHandle = @fopen($file . '.lock', 'c');
-    if ($lockHandle === false) return; // fail open on the rate limiter itself
-    flock($lockHandle, LOCK_EX);
-    try {
-        $data = [];
-        if (file_exists($file)) {
-            $raw = @file_get_contents($file);
-            $decoded = $raw ? json_decode($raw, true) : null;
-            if (is_array($decoded)) $data = $decoded;
-        }
-
-        $now = time();
-        // Prune entries that are neither locked nor within their counting window,
-        // so the file doesn't grow forever.
-        foreach ($data as $key => $entry) {
-            $lockedUntil = (int)($entry['lockedUntil'] ?? 0);
-            $firstAttempt = (int)($entry['firstAttempt'] ?? 0);
-            if ($lockedUntil <= $now && ($now - $firstAttempt) > LOGIN_WINDOW_SECONDS) {
-                unset($data[$key]);
-            }
-        }
-
-        if ($success) {
-            unset($data[$ip]);
-        } else {
-            $entry = $data[$ip] ?? ['count' => 0, 'firstAttempt' => $now, 'lockedUntil' => 0];
-            if (($now - (int)$entry['firstAttempt']) > LOGIN_WINDOW_SECONDS) {
-                $entry = ['count' => 0, 'firstAttempt' => $now, 'lockedUntil' => 0];
-            }
-            $entry['count'] = (int)$entry['count'] + 1;
-            if ($entry['count'] >= LOGIN_MAX_ATTEMPTS) {
-                $entry['lockedUntil'] = $now + LOGIN_WINDOW_SECONDS;
-            }
-            $data[$ip] = $entry;
-        }
-
-        @file_put_contents($file, json_encode($data));
-    } finally {
-        flock($lockHandle, LOCK_UN);
-        fclose($lockHandle);
-    }
+    rateLimitFailureRecord(loginAttemptsPath(), $ip, $success, LOGIN_MAX_ATTEMPTS, LOGIN_WINDOW_SECONDS);
 }
 
 admin_session_start();

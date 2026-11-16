@@ -16,6 +16,7 @@ const { handleFederationRequest, HOP_HEADER: FEDERATION_HOP_HEADER } = require('
 const { writeJsonFileLocked } = require('./services/jsonFileStore.js');
 const { createChallenge, consumeChallenge, verifyChallengeSignature } = require('./services/challengeStore.js');
 const { createChallengeLimiter } = require('./services/challengeRateLimit.js');
+const { createJobListLimiter } = require('./services/rateLimit.js');
 const { filterValidSignatures, requiredWeightForOperations, signatureKey, txSourceBaseAccount, verifyCollected } = require('./services/txSignatures.js');
 const { isInteractiveSigner, normalizeHorizonSigners } = require('./services/signerAuth.js');
 const { isLocalRequest } = require('./services/network.js');
@@ -145,6 +146,7 @@ app.use(session({
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   limit: 100, // renamed from `max` (express-rate-limit v7+, finding #16)
+  ipv6Subnet: 64, // wie api/rateLimit.php (Default der Bibliothek waere /56)
   message: 'Too many requests from this IP, please try again later.',
 });
 app.use(limiter);
@@ -986,7 +988,10 @@ app.post('/api/multisig/jobs', async (req, res) => {
   }
 });
 
-app.get('/api/multisig/jobs', async (req, res) => {
+// R-8: eigenes Rate-Limit fuer die Liste, gleiches Budget und gleiche Antwort wie
+// api/multisig.php (60 je Minute und IP); der globale Limiter gilt zusaetzlich.
+const jobListLimiter = createJobListLimiter();
+app.get('/api/multisig/jobs', jobListLimiter, async (req, res) => {
   try {
     const { network, accountId, status, signer } = req.query;
     // Without a scoping filter this would enumerate every job of every
@@ -1483,6 +1488,7 @@ app.get('/trustlines', async (req, res) => {
 const federationLimiter = rateLimit({
   windowMs: 60 * 1000,
   limit: 30,
+  ipv6Subnet: 64, // wie api/rateLimit.php (Default der Bibliothek waere /56)
   standardHeaders: true,
   legacyHeaders: false,
   message: { ok: false, error: 'federation.rateLimited' },

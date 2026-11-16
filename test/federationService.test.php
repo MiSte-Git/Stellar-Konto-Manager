@@ -141,9 +141,9 @@ for ($i = 0; $i < FEDERATION_RATE_LIMIT_MAX; $i++) {
 }
 check('IPv6 addresses in one /64 share the budget', federation_rate_limit_check_and_record('2001:db8:1:2:ffff::1') > 0);
 check('another /64 has its own budget', federation_rate_limit_check_and_record('2001:db8:1:3::1') === 0);
-check('IPv4 keys stay per address', federation_rate_limit_key('198.51.100.7') === '198.51.100.7');
-check('IPv4-mapped IPv6 is keyed by the embedded IPv4', federation_rate_limit_key('::ffff:1.2.3.4') === '1.2.3.4'
-    && federation_rate_limit_key('::ffff:5.6.7.8') === '5.6.7.8');
+check('IPv4 keys stay per address', rateLimitClientKey('198.51.100.7') === '198.51.100.7');
+check('IPv4-mapped IPv6 is keyed by the embedded IPv4', rateLimitClientKey('::ffff:1.2.3.4') === '1.2.3.4'
+    && rateLimitClientKey('::ffff:5.6.7.8') === '5.6.7.8');
 @unlink($rateFile);
 @unlink($rateFile . '.lock');
 putenv('FEDERATION_RATE_LIMIT_PATH');

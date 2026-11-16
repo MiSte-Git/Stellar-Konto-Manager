@@ -59,7 +59,8 @@ Zwei Varianten mit gleichem Verhalten ([ADR 0003](adr/0003-dual-backend-paritaet
 | Thema | Node (`server.js`, `services/`) | PHP (`api/`) |
 |---|---|---|
 | Multisig-Jobs | `server.js`, `multisigLifecycle.js`, `multisigJobsGuard.js`, `multisigJobLock.js`, `multisigDecline.js`, `submitResult.js`, `submitUnclear.js` | `multisig.php`, `multisigLifecycle.php`, `multisigJobsGuard.php`, `multisigDecline.php`, `submitResult.php`, `submitUnclear.php` |
-| Challenges | `challengeStore.js`, `challengeRateLimit.js` | `challengeStore.php`, `rateLimit.php` |
+| Challenges | `challengeStore.js`, `challengeRateLimit.js` | `challengeStore.php` |
+| Rate-Limits je IP | `rateLimit.js` (Jobliste, Challenge), Federation und global in `server.js` | `rateLimit.php` (alle Bereiche, Admin-Login mit Fehlversuchen) |
 | Signaturen | `txSignatures.js` | `txSignatures.php` |
 | Federation | `federationService.js` | `federation.php`, `federationService.php` |
 | Token-Suche/Trading | `tradeService.js` | `trade.php`, `trade/` |

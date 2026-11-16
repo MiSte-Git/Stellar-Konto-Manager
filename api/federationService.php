@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/ssrfGuard.php';
 require_once __DIR__ . '/addressKind.php';
+require_once __DIR__ . '/rateLimit.php';
 
 const FEDERATION_FETCH_TIMEOUT_SECONDS = 5;
 const FEDERATION_MAX_TOML_BYTES = 256 * 1024;
@@ -242,69 +243,17 @@ function federation_handle_request(array $query, callable $loadHomeDomain, ?call
     }
 }
 
-// Per-IP rate limit, file-backed like bugReportRateLimitCheckAndRecord()
-// (api/bugreportGuard.php). Same budget as the Node route (30 per minute):
+// Per-IP rate limit ueber den gemeinsamen Limiter api/rateLimit.php (IPv6 je /64,
+// IPv4-mapped als IPv4, eigene Datei). Same budget as the Node route (30 per minute):
 // each lookup fans out to up to three outbound requests.
 const FEDERATION_RATE_LIMIT_MAX = 30;
 const FEDERATION_RATE_LIMIT_WINDOW_SECONDS = 60;
 
 function federation_rate_limit_path(): string {
-    $override = getenv('FEDERATION_RATE_LIMIT_PATH');
-    return $override !== false && $override !== '' ? $override : __DIR__ . '/data/federation_rate_limit.json';
+    return rateLimitPath('FEDERATION_RATE_LIMIT_PATH', 'federation_rate_limit.json');
 }
-
-// IPv6 is keyed per /64 (one end-user allocation), like express-rate-limit
-// on the Node side; otherwise a single /64 would be unlimited identities.
-function federation_rate_limit_key(string $ip): string {
-    $packed = @inet_pton($ip);
-    // IPv4-mapped (::ffff:a.b.c.d): key by the embedded IPv4 address, otherwise
-    // every IPv4 client behind a dual-stack socket would share one /64 bucket.
-    if ($packed !== false && strlen($packed) === 16 && substr($packed, 0, 12) === str_repeat("\0", 10) . "\xff\xff") {
-        return inet_ntop(substr($packed, 12));
-    }
-    if ($packed !== false && strlen($packed) === 16) {
-        return 'v6:' . bin2hex(substr($packed, 0, 8)) . '::/64';
-    }
-    return $ip;
-}
-
-const FEDERATION_RATE_LIMIT_MAX_ENTRIES = 5000;
 
 // Records one request for $ip; returns seconds to wait if over budget, else 0.
 function federation_rate_limit_check_and_record(string $ip): int {
-    $ip = federation_rate_limit_key($ip);
-    $file = federation_rate_limit_path();
-    $dir = dirname($file);
-    if (!is_dir($dir)) @mkdir($dir, 0775, true);
-    $lockHandle = @fopen($file . '.lock', 'c');
-    if ($lockHandle === false) return 0; // fail open on the rate limiter itself
-    flock($lockHandle, LOCK_EX);
-    try {
-        $data = [];
-        if (file_exists($file)) {
-            $raw = @file_get_contents($file);
-            $decoded = $raw ? json_decode($raw, true) : null;
-            if (is_array($decoded)) $data = $decoded;
-        }
-        $now = time();
-        foreach ($data as $key => $entry) {
-            if (($now - (int)($entry['windowStart'] ?? 0)) > FEDERATION_RATE_LIMIT_WINDOW_SECONDS) unset($data[$key]);
-        }
-        // Cap the file size: when full, the oldest windows are dropped first.
-        if (!isset($data[$ip]) && count($data) >= FEDERATION_RATE_LIMIT_MAX_ENTRIES) {
-            uasort($data, fn($a, $b) => (int)($a['windowStart'] ?? 0) <=> (int)($b['windowStart'] ?? 0));
-            $data = array_slice($data, count($data) - FEDERATION_RATE_LIMIT_MAX_ENTRIES + 1, null, true);
-        }
-        $entry = $data[$ip] ?? ['count' => 0, 'windowStart' => $now];
-        $entry['count'] = (int)$entry['count'] + 1;
-        $data[$ip] = $entry;
-        @file_put_contents($file, json_encode($data));
-        if ($entry['count'] > FEDERATION_RATE_LIMIT_MAX) {
-            return max(FEDERATION_RATE_LIMIT_WINDOW_SECONDS - ($now - (int)$entry['windowStart']), 1);
-        }
-        return 0;
-    } finally {
-        flock($lockHandle, LOCK_UN);
-        fclose($lockHandle);
-    }
+    return rateLimitCheckAndRecord(federation_rate_limit_path(), $ip, FEDERATION_RATE_LIMIT_MAX, FEDERATION_RATE_LIMIT_WINDOW_SECONDS);
 }

@@ -26,7 +26,7 @@ if (file_exists($autoload)) {
 }
 
 require __DIR__ . '/challengeStore.php';
-require __DIR__ . '/rateLimit.php';
+require_once __DIR__ . '/rateLimit.php';
 require_once __DIR__ . '/stellarNetworks.php';
 require_once __DIR__ . '/addressKind.php';
 require __DIR__ . '/txSignatures.php';
@@ -734,6 +734,12 @@ if ($method === 'POST' && $path === '/api/multisig/jobs') {
 
 // GET /api/multisig/jobs
 if ($method === 'GET' && $path === '/api/multisig/jobs') {
+    // R-8: Rate-Limit je IP (multisigJobsGuard.php), vor allen Pruefungen wie in Node.
+    $retryAfter = multisigJobListRateLimitCheckAndRecord((string)($_SERVER['REMOTE_ADDR'] ?? 'unknown'));
+    if ($retryAfter > 0) {
+        header('Retry-After: ' . $retryAfter);
+        return sendJson(['ok' => false, 'error' => 'too_many_requests', 'retryAfter' => $retryAfter], 429);
+    }
     $net = normalizeNetwork($_GET['network'] ?? null);
     $accountId = $_GET['accountId'] ?? null;
     $signer = $_GET['signer'] ?? null;
