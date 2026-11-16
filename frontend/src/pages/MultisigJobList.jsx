@@ -424,6 +424,10 @@ function MultisigJobList({ onBack, publicKey, onOpenDetail, refreshKey = 0 }) {
                         <div className="text-xs text-red-700 dark:text-red-300" data-testid="job-dead-hint">{t('multisig:list.deadHint')}</div>
                       </div>
                     ) : renderStatus(j.status)}
+                    {/* ADR 0013: fremde op.source, das Backend sendet nicht automatisch. */}
+                    {Array.isArray(j.foreignOpSources) && j.foreignOpSources.length > 0 && !FINAL_JOB_STATUSES.has(String(j.status || '')) && (
+                      <div className="text-xs text-amber-800 dark:text-amber-200" data-testid="job-foreign-sources-hint">{t('multisig:list.foreignSources')}</div>
+                    )}
                   </td>
                   <td className="px-2 py-1">
                     <div className="text-xs text-gray-700 dark:text-gray-300">

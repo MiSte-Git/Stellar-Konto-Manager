@@ -246,6 +246,15 @@ Ein Job ist eine unsignierte oder teilsignierte Transaktion, die mehrere Signer 
 - **Bugreports tragen kein Zugriffstoken:** Die Seitenadresse im Bugreport wird über `reportUrl()` gebildet
   (`frontend/src/utils/reportUrl.js`): Query-Parameter und Fragment mit „token“ werden entfernt.
 - **Eigenes Konto als `op.source`** sperrt das Signieren hart, ohne Bestätigungs-Checkbox.
+- **Fremde `op.source` wird nie automatisch gesendet** ([ADR 0013](adr/0013-fremde-op-source-kennzeichnen-nicht-senden.md)).
+  Das nötige Gewicht kommt nur aus dem Job-Konto; für Operationen mit anderer Quelle prüft das Netz deren Signer und
+  Thresholds, die das Backend nicht kennt. Beide Backends vermerken diese Konten am Job (`foreignOpSourcesOf` in
+  `services/txSignatures.js` und `api/txSignatures.php`, Basiskonto, M-Adresse aufgelöst, beim Fee-Bump die innere
+  Transaktion; Feld `foreignOpSources`, beim Lesen aus dem XDR) und senden beim Anlegen und beim Merge nicht, auch wenn
+  das Gewicht des Job-Kontos erreicht ist: Der Job bleibt `ready_to_submit`. Vorher wurde er gesendet und endete mit
+  `tx_bad_auth` als `submitted_failed`. Signaturen von Signern fremder Konten verwirft der Merge weiter (nur Signer des
+  Job-Kontos zählen, sonst `tx_bad_auth_extra`); fertig signieren und senden geht nur außerhalb von SKM über den
+  XDR-Export. Ablehnen rechnet weiter nur mit dem Job-Konto. Gemeinsame Fälle: `test/assets/foreign-op-sources.json`.
 
 ### Weitere Schutzmaßnahmen
 
@@ -344,6 +353,7 @@ Ein Job ist eine unsignierte oder teilsignierte Transaktion, die mehrere Signer 
 | IP-Bildung Node/PHP in Randfällen verschieden (`::ffff:` in Hex-Form, NAT64 `64:ff9b::/96`, Zonen-ID `%eth0`) | `REMOTE_ADDR` und `req.ip` liefern diese Formen praktisch nicht; Node ist nur Dev-Backend. |
 | Admin-Login: Prüfen und Zählen sind zwei Schritte; parallele Anfragen vor der ersten Zählung bekommen mehr als 5 Versuche | Gewinn ist nur ein Burst je Sperrfenster; Schutz bleibt das Secret (`hash_equals`). |
 | Node schickt zusätzlich `RateLimit`-Header (auch bei 200), PHP nur `Retry-After` bei 429 | Status, Code, Body und `Retry-After` sind gleich; das Frontend nutzt die Zusatz-Header nicht. |
+| Job mit fremder `op.source` (ADR 0013): SKM sendet ihn nie; er bleibt bis Ablauf oder Widerruf offen, und außerhalb von SKM gesendet erkennt ihn das Lesen nur als `obsolete_seq` (Sequence verbraucht), nicht als `submitted_success` | Kein Geldrisiko, nur Anzeige. Klärung über `txHash` ist als eigener Schritt vorgemerkt. |
 | `npm audit`: moderate Meldungen über `exceljs` → `archiver` → `glob`/`minimatch` | Im genutzten Pfad nicht ausnutzbar; der angebotene Fix wäre ein Downgrade. |
 
 ## Hinweise für Reviewer (häufige Fehlannahmen)

@@ -84,6 +84,12 @@ dass jede Spec in dieser Tabelle steht und jede genannte Datei existiert.
   lokalen Stub (`test/multisigSubmitNoMemoCheck.test.js` und `.php`, `SKM_TEST_SUBMIT_REAL_URL`, R-5) sowie im
   Frontend in `MultisigJobDetail.test.jsx`, `MultisigJobList.test.jsx`, `MultisigResultDialog.test.jsx` und
   `MultisigPrepareDialog.test.jsx`.
+- Job mit fremder `op.source` (ADR 0013): kein automatisches Senden beim Anlegen und beim Merge, `foreignOpSources` in
+  Antwort, Detail und Liste, gegen einen lokalen Horizon-Stub (`test/multisigForeignOpSource.test.js` und `.php`).
+  Die Erkennung prüfen `test/foreignOpSources.test.js`, `test/txSignatures.test.php` und
+  `describeOperations.test.js` gegen die gemeinsame Fixture `test/assets/foreign-op-sources.json` (auch Fee-Bump),
+  die Anzeige `MultisigJobDetail.test.jsx` und `MultisigJobList.test.jsx`. Gegen das Testnet nicht als E2E-Spec:
+  SKM baut solche Jobs nie selbst.
 
 ### Regeln für die Pflege
 

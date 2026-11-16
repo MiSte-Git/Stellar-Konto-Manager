@@ -581,3 +581,31 @@ describe('Liquidity-Pool-Operationen', () => {
     expect(valueOf(block, 'maxPrice')).toBe('0,3333333');
   });
 });
+
+// ADR 0013: gleiche Faelle wie foreignOpSourcesOf in beiden Backends (test/assets/foreign-op-sources.json).
+// Der Aufrufer (MultisigJobDetail) gibt bei einem Fee-Bump die Operationen der inneren Transaktion.
+describe('Fixture foreign-op-sources (Node, PHP, Frontend)', async () => {
+  const fs = await import('node:fs');
+  const path = await import('node:path');
+  const { fileURLToPath } = await import('node:url');
+  const here = path.dirname(fileURLToPath(import.meta.url));
+  const fixture = JSON.parse(fs.readFileSync(path.join(here, '..', '..', '..', '..', '..', 'test', 'assets', 'foreign-op-sources.json'), 'utf8'));
+  const addr = (name) => fixture.accounts[name];
+  const build = (c) => {
+    const builder = new TransactionBuilder(new Account(addr('A'), '100'), { fee: '100', networkPassphrase: Networks.TESTNET });
+    for (const source of c.ops) {
+      const opts = { destination: addr('C'), asset: Asset.native(), amount: '1' };
+      if (source) opts.source = addr(source);
+      builder.addOperation(Operation.payment(opts));
+    }
+    const inner = builder.setTimeout(3600).build();
+    const tx = c.feeBump ? TransactionBuilder.buildFeeBumpTransaction(addr(c.feeSource), '200', inner, Networks.TESTNET) : inner;
+    return TransactionBuilder.fromXDR(tx.toXDR(), Networks.TESTNET);
+  };
+  for (const c of fixture.cases) {
+    it(c.label, () => {
+      const tx = build(c);
+      expect(findOperationWarnings((tx.innerTransaction || tx).operations, addr('A')).foreignOpSources).toEqual(c.expected.map(addr));
+    });
+  }
+});

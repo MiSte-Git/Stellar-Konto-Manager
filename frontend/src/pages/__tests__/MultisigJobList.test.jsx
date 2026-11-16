@@ -122,6 +122,18 @@ describe('MultisigJobList: Filter', () => {
     expect(screen.queryByTestId('job-dead-hint')).toBeNull();
   });
 
+  it('ADR 0013: markiert Jobs mit fremden Quellkonten, nicht im Endzustand', async () => {
+    window.fetch.mockImplementation(async () => ({ ok: true, json: async () => [
+      job('bereit', { accountId: ME, status: 'ready_to_submit', foreignOpSources: ['GOTHER'] }),
+      job('fertig', { accountId: ME, status: 'submitted_success', foreignOpSources: ['GOTHER'] }),
+      job('normal', { accountId: ME, status: 'ready_to_submit', foreignOpSources: [] }),
+    ] }));
+    renderList();
+    const hints = await screen.findAllByTestId('job-foreign-sources-hint');
+    expect(hints).toHaveLength(1);
+    expect(hints[0]).toHaveTextContent('Fremde Quellkonten, wird nicht automatisch gesendet');
+  });
+
   it('bietet kein Loeschen aller Testnet-Jobs mehr an', async () => {
     renderList();
     await waitFor(() => expect(screen.getByText(/eigen-abgel/)).toBeInTheDocument());

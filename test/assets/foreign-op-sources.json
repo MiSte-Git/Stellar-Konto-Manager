@@ -1,0 +1,23 @@
+{
+  "_comment": "Fremde op.source-Konten eines Multisig-Jobs (ADR 0013). Gemeinsame Faelle fuer services/txSignatures.js (foreignOpSourcesOf), api/txSignatures.php (foreignOpSourcesOf) und frontend findOperationWarnings. Job-Konto ist immer A. ops: Zahlungen von 1 XLM an C, source null = keine op.source. feeBump: true = die Transaktion steckt in einem Fee-Bump mit Fee-Quelle feeSource; gezaehlt wird nur die innere Transaktion. autoSubmit: ob das Backend bei erreichtem Gewicht des Job-Kontos automatisch senden darf. Adressen aus festen Seeds (Byte 11, 12, 13), M-Adressen mit ID 7.",
+  "accounts": {
+    "A": "GBTL47RTFR5EKMZSXWOQU735WBK7LRPPDIDK3JTNTCZZ7NUBBRDTVSK2",
+    "A_M": "MBTL47RTFR5EKMZSXWOQU735WBK7LRPPDIDK3JTNTCZZ7NUBBRDTUAAAAAAAAAAAA7Q3K",
+    "B": "GAFVCOWZWSJEAFOKBEBO2B4QITJ2YXN6YIYG6BUURQINVDVW4OPS3OL6",
+    "B_M": "MAFVCOWZWSJEAFOKBEBO2B4QITJ2YXN6YIYG6BUURQINVDVW4OPS2AAAAAAAAAAAA6CUK",
+    "C": "GCI2FCQLOQ4BLE5E3FDJK6JARETK7SFNQLEIHG3WIQ2ZXHV2TJFTUNWJ",
+    "C_M": "MCI2FCQLOQ4BLE5E3FDJK6JARETK7SFNQLEIHG3WIQ2ZXHV2TJFTUAAAAAAAAAAAA7IBQ"
+  },
+  "seeds": { "A": 11, "B": 12, "C": 13 },
+  "cases": [
+    { "label": "ohne op.source", "ops": [null], "expected": [], "autoSubmit": true },
+    { "label": "op.source gleich Job-Konto", "ops": ["A"], "expected": [], "autoSubmit": true },
+    { "label": "op.source M-Adresse des Job-Kontos", "ops": ["A_M"], "expected": [], "autoSubmit": true },
+    { "label": "fremdes G-Konto", "ops": ["B"], "expected": ["B"], "autoSubmit": false },
+    { "label": "fremde M-Adresse zaehlt als ihr G-Konto", "ops": ["B_M"], "expected": ["B"], "autoSubmit": false },
+    { "label": "dasselbe fremde Konto zweimal (G und M) nur einmal", "ops": ["B", "B_M"], "expected": ["B"], "autoSubmit": false },
+    { "label": "gemischt, Reihenfolge der Operationen", "ops": [null, "C_M", "A", "B"], "expected": ["C", "B"], "autoSubmit": false },
+    { "label": "Fee-Bump: innere Transaktion zaehlt", "ops": ["B"], "feeBump": true, "feeSource": "C", "expected": ["B"], "autoSubmit": false },
+    { "label": "Fee-Bump: fremde Fee-Quelle ist keine op.source", "ops": [null], "feeBump": true, "feeSource": "C", "expected": [], "autoSubmit": true }
+  ]
+}

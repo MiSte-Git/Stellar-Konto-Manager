@@ -595,6 +595,33 @@ describe('Fremdes Quellkonto einer Operation', () => {
     expect(block).toHaveTextContent('Diese Operation wird von einem anderen Konto ausgeführt.');
   });
 
+  it('ADR 0013: Hinweis, dass Gewicht und Signer fremder Konten nicht geprueft sind', async () => {
+    hoisted.getJobMock.mockImplementation(async () => jobFor(paymentTx(OTHER_SOURCE)));
+    renderPage();
+    const warning = await screen.findByTestId('job-foreign-sources');
+    expect(warning).toHaveTextContent('Gewicht und Signer dieser Konten prüft SKM nicht.');
+    expect(screen.queryByTestId('job-foreign-not-auto-submitted')).toBeNull();
+  });
+
+  it('ADR 0013: ready_to_submit mit fremder Quelle: kein automatisches Senden, Hinweis auf XDR-Export', async () => {
+    hoisted.getJobMock.mockImplementation(async () => ({
+      ...jobFor(paymentTx(OTHER_SOURCE)), status: 'ready_to_submit', collectedWeight: 2, foreignOpSources: [OTHER_SOURCE],
+    }));
+    renderPage();
+    const notice = await screen.findByTestId('job-foreign-not-auto-submitted');
+    expect(notice).toHaveTextContent('SKM sendet diesen Auftrag trotzdem nicht automatisch');
+    expect(notice).toHaveTextContent(OTHER_SOURCE);
+    expect(notice).toHaveTextContent('Zum Senden das XDR unten kopieren');
+    expect(screen.getByText('Genug Signaturen für das Job-Konto. Wegen fremder Quellkonten sendet SKM nicht automatisch.')).toBeInTheDocument();
+  });
+
+  it('ADR 0013 Gegenprobe: ready_to_submit ohne fremde Quelle zeigt den normalen Hinweis', async () => {
+    hoisted.getJobMock.mockImplementation(async () => ({ ...makeJob(), status: 'ready_to_submit', collectedWeight: 2, foreignOpSources: [] }));
+    renderPage();
+    await screen.findByText('Es liegen genug Signaturen vor. Der Auftrag kann gesendet werden.');
+    expect(screen.queryByTestId('job-foreign-not-auto-submitted')).toBeNull();
+  });
+
   it('zeigt bei op.source gleich Quellkonto weder Zeile noch Warnung', async () => {
     hoisted.getJobMock.mockImplementation(async () => jobFor(paymentTx(SOURCE)));
     renderPage();

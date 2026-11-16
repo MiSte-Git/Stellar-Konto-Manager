@@ -171,8 +171,35 @@ function requiredWeightForOperations(operations, thresholds) {
   return Math.max(low, ...categoryWeights, MIN_SIGNED_WEIGHT);
 }
 
+/**
+ * Basiskonten (G...) aller Operationen, deren Quelle (op.source) ein anderes Konto als accountId ist,
+ * eindeutig in Reihenfolge der Operationen (ADR 0013). Eine M-Adresse zaehlt zu ihrem Basiskonto, eine
+ * M-Adresse von accountId ist also nicht fremd. Bei einem Fee-Bump zaehlt die innere Transaktion. Eine Quelle
+ * ohne bestimmbares Basiskonto zaehlt als fremd (Rohwert), wie isForeignOpSource im Frontend.
+ * Gewicht und Signer dieser Konten prueft das Backend nicht; ein Job mit fremden Quellen wird deshalb
+ * nie automatisch gesendet. Gleich wie foreignOpSourcesOf in api/txSignatures.php und
+ * findOperationWarnings im Frontend.
+ * @param {import('@stellar/stellar-sdk').Transaction|import('@stellar/stellar-sdk').FeeBumpTransaction} tx
+ * @param {string} accountId
+ * @returns {string[]}
+ */
+function foreignOpSourcesOf(tx, accountId) {
+  const inner = tx?.innerTransaction || tx;
+  const own = baseAccountOf(String(accountId || ''));
+  const out = [];
+  for (const op of inner?.operations || []) {
+    if (!op?.source) continue;
+    const raw = String(op.source);
+    const base = baseAccountOf(raw) || raw;
+    if (base === own || out.includes(base)) continue;
+    out.push(base);
+  }
+  return out;
+}
+
 module.exports = {
   filterValidSignatures,
+  foreignOpSourcesOf,
   verifyCollected,
   signatureKey,
   decoratedSignatureBytes,

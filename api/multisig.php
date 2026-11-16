@@ -471,6 +471,8 @@ function summarizeJob(array $job): array {
     $accountSequence = ($live && ($meta['sequence'] ?? null) !== null) ? new BigInteger($meta['sequence']) : null;
     $job['signers'] = $signers;
     $job['requiredWeight'] = $requiredWeight;
+    // ADR 0013: fremde op.source-Konten aus dem XDR (auch fuer Altjobs ohne gespeichertes Feld).
+    $job['foreignOpSources'] = $tx ? foreignOpSourcesOf($tx, $accountId) : (is_array($job['foreignOpSources'] ?? null) ? array_values($job['foreignOpSources']) : []);
 
     if ($tx) {
         $collected = verifyCollected($tx, $net, $signers);
@@ -680,7 +682,10 @@ if ($method === 'POST' && $path === '/api/multisig/jobs') {
         // R-3: Erreicht die Signatur schon die Schwelle, sendet das Backend sofort. Write-ahead: erst als
         // submit_unclear speichern, dann senden, dann das Ergebnis schreiben (applySubmitOutcome). Stirbt
         // der Prozess oder scheitert das Speichern danach, steht der Job gesperrt da und wird geklaert.
-        $willSubmit = $status === 'ready_to_submit' && $requiredWeight > 0;
+        // ADR 0013: Gewicht und Signer fremder op.source-Konten prueft das Backend nicht. Ein solcher Job
+        // wird nie automatisch gesendet, auch wenn das Gewicht des Job-Kontos erreicht ist (sonst tx_bad_auth).
+        $foreignOpSources = foreignOpSourcesOf($tx, $accountId);
+        $willSubmit = $status === 'ready_to_submit' && $requiredWeight > 0 && $foreignOpSources === [];
         if ($willSubmit) $status = SUBMIT_UNCLEAR_STATUS;
 
         $job = [
@@ -701,6 +706,7 @@ if ($method === 'POST' && $path === '/api/multisig/jobs') {
             'requiredWeight' => $requiredWeight,
             'collectedSigners' => $collected,
             'collectedWeight' => $collectedWeight,
+            'foreignOpSources' => $foreignOpSources,
             'submittedResult' => null,
             'submittedAt' => $willSubmit ? gmdate('c') : null,
         ];
@@ -1201,7 +1207,9 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/merge-
                 $status = ($required > 0 && $collectedWeight >= $required) ? 'ready_to_submit' : 'pending_signatures';
                 $submittedResult = $j['submittedResult'] ?? null;
                 $submittedAt = $submittedResult ? ($j['submittedAt'] ?? gmdate('c')) : null;
-                if ($status === 'ready_to_submit' && $required > 0) {
+                // ADR 0013: mit fremden op.source-Konten nie automatisch senden, der Job bleibt ready_to_submit.
+                $j['foreignOpSources'] = foreignOpSourcesOf($merged, (string)($j['accountId'] ?? ''));
+                if ($status === 'ready_to_submit' && $required > 0 && $j['foreignOpSources'] === []) {
                     $status = SUBMIT_UNCLEAR_STATUS;
                     $submittedResult = null;
                     $submittedAt = gmdate('c');

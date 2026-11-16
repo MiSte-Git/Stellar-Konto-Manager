@@ -21,6 +21,7 @@ require_once __DIR__ . '/signerAuth.php';
 
 use Soneso\StellarSDK\AbstractOperation;
 use Soneso\StellarSDK\AbstractTransaction;
+use Soneso\StellarSDK\FeeBumpTransaction;
 use Soneso\StellarSDK\Network;
 use Soneso\StellarSDK\Transaction;
 use Soneso\StellarSDK\Xdr\XdrDecoratedSignature;
@@ -33,6 +34,29 @@ const MAX_TX_SIGNATURES = 20; // Stellar XDR: Signatures is DecoratedSignature<2
 // Pendant: txSourceBaseAccount() in services/txSignatures.js.
 function txSourceBaseAccount(AbstractTransaction $tx): ?string {
     return $tx instanceof Transaction ? skm_base_account_of($tx->getSourceAccount()->getAccountId()) : null;
+}
+
+// Basiskonten (G...) aller Operationen, deren Quelle (op.source) ein anderes Konto als $accountId ist,
+// eindeutig in Reihenfolge der Operationen (ADR 0013). Eine M-Adresse zaehlt zu ihrem Basiskonto. Bei
+// einem Fee-Bump zaehlt die innere Transaktion. Eine Quelle ohne bestimmbares Basiskonto zaehlt als
+// fremd (Rohwert), wie isForeignOpSource im Frontend. Gewicht und Signer dieser Konten prueft das Backend nicht;
+// ein Job mit fremden Quellen wird nie automatisch gesendet.
+// Pendant: foreignOpSourcesOf() in services/txSignatures.js.
+/** @return string[] */
+function foreignOpSourcesOf(AbstractTransaction $tx, string $accountId): array {
+    $inner = $tx instanceof FeeBumpTransaction ? $tx->getInnerTx() : $tx;
+    if (!$inner instanceof Transaction) return [];
+    $own = skm_base_account_of($accountId);
+    $out = [];
+    foreach ($inner->getOperations() as $op) {
+        $source = $op->getSourceAccount();
+        if ($source === null) continue;
+        $raw = $source->getEd25519AccountId();
+        $base = skm_base_account_of($raw) ?? $raw;
+        if ($base === $own || in_array($base, $out, true)) continue;
+        $out[] = $base;
+    }
+    return $out;
 }
 
 // Stellar's protocol assigns each operation type to a threshold category

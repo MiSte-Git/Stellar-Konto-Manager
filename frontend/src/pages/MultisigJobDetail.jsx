@@ -324,6 +324,12 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
     () => (decodedTx ? findOperationWarnings((decodedTx.innerTransaction || decodedTx).operations, txSourceAccountId) : { unknownTypes: [], pathPaymentToOther: false, foreignOpSources: [], accountMerge: false }),
     [decodedTx, txSourceAccountId]
   );
+  // ADR 0013: fremde op.source-Konten laut Backend (gleiche Regel), sonst aus dem XDR. Ist das Gewicht
+  // des Job-Kontos erreicht, sendet das Backend einen solchen Job nicht automatisch.
+  const foreignSources = Array.isArray(job?.foreignOpSources) && job.foreignOpSources.length
+    ? job.foreignOpSources
+    : operationWarnings.foreignOpSources;
+  const notAutoSubmitted = job?.status === 'ready_to_submit' && foreignSources.length > 0;
   // Memo, Fee, Zeitfenster und weitere Preconditions (H1), nur Anzeige plus Bestaetigungspflicht
   // fuer Preconditions, die SKM selbst nie setzt.
   const txDetails = useMemo(
@@ -982,7 +988,15 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
             </div>
             {job.status && (
               <div className="mt-2 text-xs text-gray-600 dark:text-gray-300">
-                {t(`multisig:job.statusHelp.${job.status}`, t('multisig:job.statusHelp.unknown'))}
+                {notAutoSubmitted
+                  ? t('multisig:job.statusHelp.ready_to_submit_foreign')
+                  : t(`multisig:job.statusHelp.${job.status}`, t('multisig:job.statusHelp.unknown'))}
+              </div>
+            )}
+            {notAutoSubmitted && (
+              <div role="status" className="mt-2 space-y-1 rounded-sm border border-amber-300 bg-amber-50 p-2 text-xs text-amber-900 dark:border-amber-700 dark:bg-amber-900/30 dark:text-amber-100" data-testid="job-foreign-not-auto-submitted">
+                <p className="font-medium">{t('multisig:detail.foreignSources.notAutoSubmitted', { accounts: foreignSources.join(', ') })}</p>
+                <p>{t('multisig:detail.foreignSources.exportHint')}</p>
               </div>
             )}
           </div>
@@ -1052,6 +1066,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
               {operationWarnings.foreignOpSources.length > 0 && (
                 <div role="alert" className="mt-2 space-y-1 rounded-sm border border-red-300 bg-red-50 p-2 text-xs text-red-900 dark:border-red-700 dark:bg-red-900/30 dark:text-red-100" data-testid="job-foreign-sources">
                   <p className="font-medium">{t('multisig:detail.operations.warnForeignSources', 'Achtung: Mindestens eine Operation hat ein anderes Quellkonto als die Transaktion. Für sie zählen die Signer und Thresholds des jeweiligen Kontos, nicht nur die des Job-Kontos; die angezeigte Signaturanzahl berücksichtigt das nicht. Gehört einer deiner Keys zu diesem Konto, autorisiert deine Signatur auch diese Operation. Prüfe die Adressen, bevor du signierst:')}</p>
+                  <p>{t('multisig:detail.foreignSources.weightNotChecked')}</p>
                   <ul className="list-disc pl-4 font-mono">
                     {operationWarnings.foreignOpSources.map((account) => (
                       <li key={account} className="break-all">
@@ -1215,6 +1230,11 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
               <p className="text-xs text-gray-700 dark:text-gray-300">
                 {t('multisig:detail.decline.hint', 'Die anderen Signer sehen deine Ablehnung. Reicht das Gewicht ohne dich nicht mehr, wird der Job abgelehnt und nimmt keine Signaturen mehr an. Auf dem Netz wird die Transaktion dadurch nicht ungültig: Wer sie bereits woanders signiert hat, könnte sie mit genug Signaturen trotzdem einreichen. Endgültig stoppt sie nur ein Widerruf (unten).')}
               </p>
+              {foreignSources.length > 0 && (
+                <p className="text-xs text-gray-700 dark:text-gray-300" data-testid="job-decline-foreign-hint">
+                  {t('multisig:detail.foreignSources.declineHint')}
+                </p>
+              )}
               {declineNeedsKey && (
                 <input
                   type="password"

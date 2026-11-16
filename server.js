@@ -17,7 +17,7 @@ const { writeJsonFileLocked } = require('./services/jsonFileStore.js');
 const { createChallenge, consumeChallenge, verifyChallengeSignature } = require('./services/challengeStore.js');
 const { createChallengeLimiter } = require('./services/challengeRateLimit.js');
 const { createJobListLimiter } = require('./services/rateLimit.js');
-const { filterValidSignatures, requiredWeightForOperations, signatureKey, txSourceBaseAccount, verifyCollected } = require('./services/txSignatures.js');
+const { filterValidSignatures, foreignOpSourcesOf, requiredWeightForOperations, signatureKey, txSourceBaseAccount, verifyCollected } = require('./services/txSignatures.js');
 const { isInteractiveSigner, normalizeHorizonSigners } = require('./services/signerAuth.js');
 const { isLocalRequest } = require('./services/network.js');
 const { asciiTrim, isClassicAccount } = require('./services/addressKind.js');
@@ -688,7 +688,9 @@ function recomputeJobState(job, tx, liveMeta, nowUnix) {
   }
   const collectedSigners = tx ? verifyCollected(tx, signers) : (Array.isArray(job.collectedSigners) ? job.collectedSigners : []);
   const collectedWeight = collectedSigners.reduce((acc, s) => acc + Number(s.weight || 0), 0);
-  const out = { ...job, signers, requiredWeight, collectedSigners, collectedWeight };
+  // ADR 0013: fremde op.source-Konten aus dem XDR (auch fuer Altjobs ohne gespeichertes Feld).
+  const foreignOpSources = tx ? foreignOpSourcesOf(tx, job.accountId) : (Array.isArray(job.foreignOpSources) ? job.foreignOpSources : []);
+  const out = { ...job, signers, requiredWeight, collectedSigners, collectedWeight, foreignOpSources };
   if (liveMeta) out.thresholds = liveMeta.thresholds;
   if (!isFinal && job.status !== SUBMIT_UNCLEAR_STATUS) {
     // Sequenz von accountId genuegt: K1 erzwingt beim Anlegen und Merge, dass die Tx-Quelle
@@ -929,7 +931,10 @@ app.post('/api/multisig/jobs', async (req, res) => {
     const collectedSigners = signers.length ? verifyCollected(parsed.tx, signers) : [];
     const collectedWeight = collectedSigners.reduce((acc, s) => acc + Number(s.weight || 0), 0);
     const nowIso = new Date().toISOString();
-    const shouldSubmit = collectedWeight >= requiredWeight && requiredWeight > 0;
+    // ADR 0013: Gewicht und Signer fremder op.source-Konten prueft das Backend nicht. Ein solcher Job
+    // wird nie automatisch gesendet, auch wenn das Gewicht des Job-Kontos erreicht ist (sonst tx_bad_auth).
+    const foreignOpSources = foreignOpSourcesOf(parsed.tx, asciiTrim(accountId));
+    const shouldSubmit = collectedWeight >= requiredWeight && requiredWeight > 0 && foreignOpSources.length === 0;
     const job = {
       id: newJobId(),
       accessToken: newAccessToken(),
@@ -938,7 +943,7 @@ app.post('/api/multisig/jobs', async (req, res) => {
       txHash: parsed.hashHex,
       txXdrOriginal: txXdr,
       txXdrCurrent: txXdr,
-      status: shouldSubmit ? 'ready_to_submit' : 'pending_signatures',
+      status: collectedWeight >= requiredWeight && requiredWeight > 0 ? 'ready_to_submit' : 'pending_signatures',
       createdAt: nowIso,
       // G5 stage 1: precomputed once here so the dependency-free
       // expireStalePendingJobs() guard never needs to parse XDR itself.
@@ -948,6 +953,7 @@ app.post('/api/multisig/jobs', async (req, res) => {
       requiredWeight,
       collectedSigners,
       collectedWeight,
+      foreignOpSources,
     };
     // R-3: Erreicht die Signatur schon die Schwelle, sendet das Backend sofort (z. B. Single-Sig). Write-ahead:
     // Der Job wird vorher als submit_unclear gespeichert, erst dann gesendet und das Ergebnis geschrieben.
@@ -1396,9 +1402,13 @@ app.post('/api/multisig/jobs/:id/merge-signed-xdr', (req, res) => withMultisigJo
     const collected = verifyCollected(current.tx, signers);
     const collectedWeight = collected.reduce((acc, s) => acc + Number(s.weight || 0), 0);
     const requiredWeight = Number(job.requiredWeight || 0);
+    const weightReached = requiredWeight > 0 && collectedWeight >= requiredWeight;
+    // ADR 0013: mit fremden op.source-Konten nie automatisch senden (Gewicht dieser Konten ungeprueft).
+    const foreignOpSources = foreignOpSourcesOf(current.tx, job.accountId);
 
     const updated = {
       ...job,
+      foreignOpSources,
       txXdrCurrent: newXdr,
       collectedSigners: collected,
       collectedWeight,
@@ -1408,7 +1418,7 @@ app.post('/api/multisig/jobs/:id/merge-signed-xdr', (req, res) => withMultisigJo
     // Auto-submit when threshold reached. R-3: Write-ahead wie beim Anlegen: erst als submit_unclear mit
     // der neuen Signatur speichern, dann senden, dann das Ergebnis schreiben. Scheitert das Speichern
     // davor, wird nicht gesendet (merge_failed).
-    if (requiredWeight > 0 && collectedWeight >= requiredWeight) {
+    if (weightReached && foreignOpSources.length === 0) {
       const pending = { ...updated, status: SUBMIT_UNCLEAR_STATUS, submittedAt: new Date().toISOString(), submittedResult: null };
       multisigDb.items = expireStalePendingJobs(multisigDb.items.map((j) => (j.id === job.id ? pending : j)));
       if (!(await saveMultisigDb())) {
@@ -1421,6 +1431,9 @@ app.post('/api/multisig/jobs/:id/merge-signed-xdr', (req, res) => withMultisigJo
       const outcome = await applySubmitOutcome(job.id, sent);
       if (outcome.error) return res.status(500).json({ ok: false, error: outcome.error });
       return res.json(withSanitizedSubmitResult(outcome.job));
+    } else if (weightReached) {
+      // Fremde op.source: Gewicht des Job-Kontos erreicht, aber kein Senden (ADR 0013).
+      updated.status = 'ready_to_submit';
     } else if (added === 0) {
       // No new signature added, keep status
       updated.status = job.status;

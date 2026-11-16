@@ -25,6 +25,7 @@ use Soneso\StellarSDK\BumpSequenceOperationBuilder;
 use Soneso\StellarSDK\ClaimClaimableBalanceOperationBuilder;
 use Soneso\StellarSDK\Crypto\KeyPair;
 use Soneso\StellarSDK\FeeBumpTransactionBuilder;
+use Soneso\StellarSDK\MuxedAccount;
 use Soneso\StellarSDK\Network;
 use Soneso\StellarSDK\PaymentOperationBuilder;
 use Soneso\StellarSDK\SetOptionsOperationBuilder;
@@ -300,6 +301,42 @@ foreach ($opFixture['requiredWeight'] as $c) {
     $ops = array_map(fn($t) => $opBuilders[$t](), $c['ops']);
     check("Fixture requiredWeight {$c['label']} = {$c['expected']}", requiredWeightForOperations(buildTxFor($ops), $c['thresholds']) === $c['expected']);
 }
+
+// --- ADR 0013: fremde op.source-Konten (gemeinsame Fixture mit Node und Frontend) ---------------
+$foreignFixture = json_decode((string)file_get_contents(__DIR__ . '/assets/foreign-op-sources.json'), true);
+$fAddr = fn(string $name) => $foreignFixture['accounts'][$name];
+$buildForeignTx = function (array $c) use ($fAddr): AbstractTransaction {
+    $builder = new TransactionBuilder(new Account($fAddr('A'), new BigInteger('100')));
+    foreach ($c['ops'] as $source) {
+        $op = new PaymentOperationBuilder($fAddr('C'), Asset::native(), '1');
+        if ($source !== null) $op->setMuxedSourceAccount(MuxedAccount::fromAccountId($fAddr($source)));
+        $builder->addOperation($op->build());
+    }
+    $tx = $builder->build();
+    if (!empty($c['feeBump'])) {
+        $tx = (new FeeBumpTransactionBuilder($tx))->setFeeAccount($fAddr($c['feeSource']))->setBaseFee(200)->build();
+    }
+    // Ueber XDR wie im Backend (parseTx), nicht das gebaute Objekt.
+    return AbstractTransaction::fromEnvelopeBase64XdrString($tx->toEnvelopeXdrBase64());
+};
+check('Fixture foreign-op-sources geladen', count($foreignFixture['cases'] ?? []) > 0);
+foreach ($foreignFixture['cases'] as $c) {
+    $expected = array_map($fAddr, $c['expected']);
+    check("Fixture foreignOpSourcesOf: {$c['label']}", foreignOpSourcesOf($buildForeignTx($c), $fAddr('A')) === $expected);
+    check("Fixture foreignOpSourcesOf: {$c['label']} (autoSubmit stimmig)", $c['autoSubmit'] === ($expected === []));
+}
+check('foreignOpSourcesOf: M-Adresse als Job-Konto, eigene Operationen nicht fremd',
+    foreignOpSourcesOf($buildForeignTx(['ops' => ['A']]), $fAddr('A_M')) === []);
+// Stub-Operation mit nicht bestimmbarem Basiskonto (MuxedAccount prueft nur das erste Zeichen), direkt ohne XDR.
+$brokenSource = new MuxedAccount('GKAPUTT');
+$stubTx = (new TransactionBuilder(new Account($fAddr('A'), new BigInteger('100'))))
+    ->addOperation((new PaymentOperationBuilder($fAddr('C'), Asset::native(), '1'))->setMuxedSourceAccount($brokenSource)->build())
+    ->addOperation((new PaymentOperationBuilder($fAddr('C'), Asset::native(), '1'))->setSourceAccount($fAddr('B'))->build())
+    ->addOperation((new PaymentOperationBuilder($fAddr('C'), Asset::native(), '1'))->setMuxedSourceAccount($brokenSource)->build())
+    ->addOperation((new PaymentOperationBuilder($fAddr('C'), Asset::native(), '1'))->setSourceAccount($fAddr('A'))->build())
+    ->build();
+check('foreignOpSourcesOf: Quelle ohne bestimmbares Basiskonto zaehlt als fremd (Rohwert, einmal), wie das Frontend',
+    foreignOpSourcesOf($stubTx, $fAddr('A')) === ['GKAPUTT', $fAddr('B')]);
 
 // --- F-5: je Signer hoechstens eine Signatur (die erste) --------------------
 // Fixture: zwei verschiedene gueltige Signaturen desselben Keys A ueber denselben Hash (anderes
