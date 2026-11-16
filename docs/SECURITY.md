@@ -255,6 +255,10 @@ Ein Job ist eine unsignierte oder teilsignierte Transaktion, die mehrere Signer 
   `tx_bad_auth` als `submitted_failed`. Signaturen von Signern fremder Konten verwirft der Merge weiter (nur Signer des
   Job-Kontos zählen, sonst `tx_bad_auth_extra`); fertig signieren und senden geht nur außerhalb von SKM über den
   XDR-Export. Ablehnen rechnet weiter nur mit dem Job-Konto. Gemeinsame Fälle: `test/assets/foreign-op-sources.json`.
+  Die Detailseite nimmt die fremden Konten aus dem XDR, die Liste des Backends nur ohne dekodierbares XDR. Den
+  Exporthinweis zeigt sie nicht, wenn ADR 0005 (eigenes Konto als `op.source`) oder die Integritätsprüfung sperrt; beim
+  eigenen Konto steht stattdessen die Warnung, die Operation nirgends zu signieren. Der Hinweis richtet sich an den
+  Ersteller des Jobs, nicht an Signer der fremden Konten.
 
 ### Weitere Schutzmaßnahmen
 

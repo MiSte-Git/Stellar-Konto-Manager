@@ -127,6 +127,7 @@ describe('MultisigJobList: Filter', () => {
       job('bereit', { accountId: ME, status: 'ready_to_submit', foreignOpSources: ['GOTHER'] }),
       job('fertig', { accountId: ME, status: 'submitted_success', foreignOpSources: ['GOTHER'] }),
       job('normal', { accountId: ME, status: 'ready_to_submit', foreignOpSources: [] }),
+      job('unklar', { accountId: ME, status: 'submit_unclear', foreignOpSources: ['GOTHER'] }),
     ] }));
     renderList();
     const hints = await screen.findAllByTestId('job-foreign-sources-hint');

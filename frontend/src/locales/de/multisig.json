@@ -486,9 +486,12 @@
     },
     "foreignSources": {
       "notAutoSubmitted": "Für das Job-Konto liegen genug Signaturen vor. SKM sendet diesen Auftrag trotzdem nicht automatisch, weil Operationen andere Quellkonten haben: {{accounts}}. Ob deren Signer und Thresholds erfüllt sind, prüft SKM nicht.",
-      "exportHint": "Zum Senden das XDR unten kopieren, fehlende Signaturen der anderen Konten mit einem anderen Werkzeug ergänzen und dort senden. Signaturen von Signern dieser Konten speichert SKM nur, wenn sie auch Signer des Job-Kontos sind.",
+      "exportHint": "Wer den Auftrag angelegt hat, kann das XDR kopieren und außerhalb von SKM fertig signieren und senden lassen. Signaturen von Signern dieser Konten speichert SKM nur, wenn sie auch Signer des Job-Kontos sind.",
       "weightNotChecked": "Gewicht und Signer dieser Konten prüft SKM nicht. Die angezeigten Signaturen gelten nur für das Job-Konto.",
-      "declineHint": "Ablehnen können nur Signer des Job-Kontos."
+      "declineHint": "Ablehnen können nur Signer des Job-Kontos.",
+      "noAutoSubmit": "SKM sendet diesen Auftrag nicht automatisch, auch wenn das Gewicht des Job-Kontos erreicht ist.",
+      "ownAccountWarning": "SKM sendet diesen Auftrag nicht. Er enthält eine Operation deines Kontos. Signiere sie nirgends, auch nicht mit einem anderen Werkzeug, wenn du sie nicht selbst veranlasst hast.",
+      "declineNoEffect": "Das Gewicht des Job-Kontos ist schon erreicht. Ablehnen ändert den Status nicht. Stoppen kann den Auftrag nur ein Widerruf."
     }
   },
   "secretModal": {

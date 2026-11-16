@@ -425,7 +425,7 @@ function MultisigJobList({ onBack, publicKey, onOpenDetail, refreshKey = 0 }) {
                       </div>
                     ) : renderStatus(j.status)}
                     {/* ADR 0013: fremde op.source, das Backend sendet nicht automatisch. */}
-                    {Array.isArray(j.foreignOpSources) && j.foreignOpSources.length > 0 && !FINAL_JOB_STATUSES.has(String(j.status || '')) && (
+                    {Array.isArray(j.foreignOpSources) && j.foreignOpSources.length > 0 && !FINAL_JOB_STATUSES.has(String(j.status || '')) && j.status !== 'submit_unclear' && (
                       <div className="text-xs text-amber-800 dark:text-amber-200" data-testid="job-foreign-sources-hint">{t('multisig:list.foreignSources')}</div>
                     )}
                   </td>

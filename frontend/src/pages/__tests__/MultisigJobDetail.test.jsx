@@ -611,7 +611,8 @@ describe('Fremdes Quellkonto einer Operation', () => {
     const notice = await screen.findByTestId('job-foreign-not-auto-submitted');
     expect(notice).toHaveTextContent('SKM sendet diesen Auftrag trotzdem nicht automatisch');
     expect(notice).toHaveTextContent(OTHER_SOURCE);
-    expect(notice).toHaveTextContent('Zum Senden das XDR unten kopieren');
+    expect(notice).toHaveTextContent('Wer den Auftrag angelegt hat, kann das XDR kopieren');
+    expect(notice).not.toHaveTextContent('fehlende Signaturen der anderen Konten');
     expect(screen.getByText('Genug Signaturen für das Job-Konto. Wegen fremder Quellkonten sendet SKM nicht automatisch.')).toBeInTheDocument();
   });
 
@@ -620,6 +621,66 @@ describe('Fremdes Quellkonto einer Operation', () => {
     renderPage();
     await screen.findByText('Es liegen genug Signaturen vor. Der Auftrag kann gesendet werden.');
     expect(screen.queryByTestId('job-foreign-not-auto-submitted')).toBeNull();
+  });
+
+  it('FS-1: eigenes Konto als fremde Quelle: kein Exporthinweis, stattdessen Warnung', async () => {
+    hoisted.getJobMock.mockImplementation(async () => ({
+      ...jobFor(paymentTx(SIGNER_A.publicKey)), status: 'ready_to_submit', collectedWeight: 2, foreignOpSources: [SIGNER_A.publicKey],
+    }));
+    renderPage();
+    expect(await screen.findByTestId('job-foreign-own-account-warning')).toHaveTextContent('Signiere sie nirgends');
+    expect(screen.getByTestId('job-own-account-source')).toBeInTheDocument();
+    expect(screen.queryByTestId('job-foreign-not-auto-submitted')).toBeNull();
+  });
+
+  it('FS-1: Integritaet verletzt: kein Exporthinweis', async () => {
+    hoisted.getJobMock.mockImplementation(async () => ({
+      ...jobFor(paymentTx(OTHER_SOURCE)), txHash: 'a'.repeat(64), status: 'ready_to_submit', collectedWeight: 2, foreignOpSources: [OTHER_SOURCE],
+    }));
+    renderPage();
+    await screen.findByTestId('job-integrity-block');
+    expect(screen.queryByTestId('job-foreign-not-auto-submitted')).toBeNull();
+    expect(screen.queryByTestId('job-foreign-own-account-warning')).toBeNull();
+  });
+
+  it('FS-2: die Konten im Hinweis kommen aus dem XDR, nicht aus der Liste des Backends', async () => {
+    hoisted.getJobMock.mockImplementation(async () => ({
+      ...jobFor(paymentTx(OTHER_SOURCE)), status: 'ready_to_submit', collectedWeight: 2, foreignOpSources: [SIGNER_B.publicKey],
+    }));
+    renderPage();
+    const notice = await screen.findByTestId('job-foreign-not-auto-submitted');
+    expect(notice).toHaveTextContent(OTHER_SOURCE);
+    expect(notice).not.toHaveTextContent(SIGNER_B.publicKey);
+  });
+
+  it('FS-2: leere Liste vom Backend, fremde Quelle im XDR: Hinweis trotzdem', async () => {
+    hoisted.getJobMock.mockImplementation(async () => ({
+      ...jobFor(paymentTx(OTHER_SOURCE)), status: 'ready_to_submit', collectedWeight: 2, foreignOpSources: [],
+    }));
+    renderPage();
+    expect(await screen.findByTestId('job-foreign-not-auto-submitted')).toHaveTextContent(OTHER_SOURCE);
+  });
+
+  it('FS-5: offener Job mit fremder Quelle sagt schon vor dem Gewicht, dass SKM nicht automatisch sendet', async () => {
+    hoisted.getJobMock.mockImplementation(async () => ({ ...jobFor(paymentTx(OTHER_SOURCE)), status: 'pending_signatures' }));
+    renderPage();
+    expect(await screen.findByTestId('job-foreign-no-auto-submit')).toHaveTextContent('SKM sendet diesen Auftrag nicht automatisch');
+  });
+
+  it.each(['submitted_success', 'submit_unclear'])('FS-5 Gegenprobe: bei %s kein Satz zum automatischen Senden', async (status) => {
+    hoisted.getJobMock.mockImplementation(async () => ({ ...jobFor(paymentTx(OTHER_SOURCE)), status }));
+    renderPage();
+    await screen.findByTestId('job-foreign-sources');
+    expect(screen.queryByTestId('job-foreign-no-auto-submit')).toBeNull();
+  });
+
+  it('FS-6: Ablehnen bei wartendem Job sagt, dass es den Status nicht aendert', async () => {
+    hoisted.getJobMock.mockImplementation(async () => ({
+      ...jobFor(paymentTx(OTHER_SOURCE)), status: 'ready_to_submit', collectedWeight: 2, foreignOpSources: [OTHER_SOURCE],
+    }));
+    renderPage();
+    fireEvent.click(await screen.findByRole('button', { name: 'Ablehnen' }));
+    expect(await screen.findByTestId('job-decline-foreign-hint')).toHaveTextContent('Ablehnen ändert den Status nicht');
   });
 
   it('zeigt bei op.source gleich Quellkonto weder Zeile noch Warnung', async () => {
