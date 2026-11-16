@@ -76,3 +76,22 @@ node scripts/i18n_ci_check.js       # i18n-Prüfung
 - Analyse- und Review-Dateien (`analyse_*.md`, `review_*.md`) im Repo-Root sind lokal und nicht versioniert.
   Frühere Reviews können veraltet oder falsch sein, immer am aktuellen Code prüfen.
 - Projektsprache ist Deutsch.
+
+## Planung und Befunde
+
+Jeder Plan mit Bezug zu Schlüsseln, Signieren, Senden, Multisig-Jobs oder Sendeschutz beantwortet vor der Umsetzung
+ausdrücklich diese Fragen. Ist eine nicht zutreffend, steht das mit einem Satz Begründung im Plan.
+
+1. **Bestehende Schutzmechanismen:** Welche Sperren, Prüfungen und ADRs berührt die Änderung (z. B. ADR 0005,
+   Integritätsprüfung, Sendeschutz, Bestätigungen)? Wie spielen neue Anzeigen und Texte mit ihnen zusammen?
+2. **Fail-closed:** Was passiert bei ungültiger, unklarer oder fehlender Eingabe (kaputte Adresse, fehlendes Feld,
+   Altdaten, Horizon nicht erreichbar)? Im Zweifel nicht senden, nicht signieren, als fremd oder unbekannt werten.
+3. **Parität:** Machen Node, PHP und Frontend für dieselbe Eingabe dasselbe? Gemeinsame Fixture unter `test/assets/`.
+4. **Zustand:** Welcher Zustand wird neu, länger oder anders gespeichert? Welche bestehenden Wege (Merge ohne neue
+   Signatur, Ablauf, Widerruf, Ablehnen, Löschen, Altjobs) treffen jetzt auf ihn?
+5. **Texte und Rollen:** Wer liest welchen Text in welcher Rolle (Ersteller, Signer, Signer eines anderen Kontos,
+   Opfer eines Angreifers, der den Job angelegt hat)? Kann ein Text zu einer gefährlichen Handlung verleiten?
+
+Befunde aus Prüfungen und Reviews werden direkt danach behoben, unabhängig von der Schwere, auch Hinweise. Offen
+bleibt nur, was eine Rückfrage braucht, oder was ausdrücklich als Restrisiko entschieden und in `docs/SECURITY.md`
+eingetragen ist. Nichts wandert ungefragt in einen Rückstau.

@@ -31,6 +31,9 @@ Begründung nicht greift.
 - Vor einer Aussage „PHP fehlt X“ in den eigenen Dateien suchen (`multisigDecline.php`, `multisigLifecycle.php`,
   `multisigJobsGuard.php`, `rateLimit.php`, `txSignatures.php`, `challengeStore.php`).
 - Frühere Reviews erst **nach** der eigenen Prüfung lesen und dann abgleichen. Sie können veraltet oder falsch sein.
+- Die fünf Planungsfragen aus `AGENTS.md` (Abschnitt Planung und Befunde) ausdrücklich prüfen: bestehende
+  Schutzmechanismen, fail-closed, Parität, Zustand, Texte und Rollen. Fehlt eine Antwort im Plan oder hält sie am Code
+  nicht, ist das ein Befund.
 
 ## Form des Ergebnisses
 
