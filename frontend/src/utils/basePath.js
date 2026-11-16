@@ -211,21 +211,6 @@ export function getMultisigJobId(pathname) {
 }
 
 /**
- * Extracts the per-job access token (B3) from the URL's ?token= query parameter,
- * used when a multisig job detail page is opened via a bookmarked/shared link
- * (as opposed to in-app navigation, which passes the token directly). Callers
- * use takeMultisigJobToken, which also removes it from the address bar.
- */
-export function getMultisigJobToken(search) {
-  try {
-    const qs = typeof search === 'string' ? search : (typeof window !== 'undefined' ? window.location.search : '');
-    return new URLSearchParams(qs).get('token') || null;
-  } catch {
-    return null;
-  }
-}
-
-/**
  * Checks whether the current path points to the multisig job list (/multisig/jobs)
  */
 export function isMultisigJobsListPath(pathname) {

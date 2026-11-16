@@ -50,12 +50,13 @@ describe('MultisigJobDetail: Zugriffstoken', () => {
   });
   afterEach(() => { window.history.replaceState({}, '', '/'); });
 
-  it('liest ?token= ein, entfernt es aus der Adresszeile und laedt den Job damit', async () => {
+  it('#10: nutzt ?token= nicht (keine geteilten Links), entfernt es aber aus der Adresszeile', async () => {
     window.history.replaceState({}, '', '/multisig/jobs/d-1?token=tok-link&ref=mail');
     renderDetail({ jobId: 'd-1', currentPublicKey: SIGNER });
-    await waitFor(() => expect(hoisted.getJob).toHaveBeenCalledWith('d-1', 'tok-link'));
-    expect(window.location.search).toBe('?ref=mail');
-    expect(hoisted.challenge).not.toHaveBeenCalled();
+    await waitFor(() => expect(window.location.search).toBe('?ref=mail'));
+    // Gegenprobe zum alten Verhalten: dort lud der Job mit tok-link.
+    await new Promise((r) => setTimeout(r, 50));
+    expect(hoisted.getJob.mock.calls.some((c) => c[1] === 'tok-link')).toBe(false);
   });
 
   it('entfernt ?token= auch, wenn das Token schon als Prop kommt', async () => {

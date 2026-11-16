@@ -1,8 +1,21 @@
-import { getMultisigJobId, getMultisigJobToken, multisigJobPath } from '../../utils/basePath.js';
+import { getMultisigJobId, multisigJobPath } from '../../utils/basePath.js';
+import { SESSION_LOCKED_EVENT } from '../../utils/sessionSecrets.js';
 
 // Zugriffstoken je Job-ID, nur im Speicher: uebersteht Navigation innerhalb der
 // App, nicht aber ein Neuladen (dann greift resolveToken in MultisigJobDetail).
+// Geleert beim Sperren (Schloss, Inaktivitaet) und beim Kontowechsel (#10). Im Endzustand
+// bewusst nicht: Das Token braucht auch das Lesen des Ergebnisses, und wer den Job angelegt
+// hat, kommt ohne gemerktes Secret sonst nicht mehr an die Anzeige.
 const jobTokens = new Map();
+
+/** Alle gemerkten Job-Tokens vergessen (Sperren, Kontowechsel). */
+export function clearMultisigJobTokens() {
+  jobTokens.clear();
+}
+
+if (typeof window !== 'undefined') {
+  window.addEventListener(SESSION_LOCKED_EVENT, clearMultisigJobTokens);
+}
 
 function removeTokenFromUrl() {
   try {
@@ -15,17 +28,16 @@ function removeTokenFromUrl() {
 }
 
 /**
- * Liefert das bekannte Zugriffstoken eines Jobs. Steht auf einer Job-URL noch
- * ?token= (geteilter Link), wird es uebernommen und aus der Adresszeile entfernt;
- * uebrige Query-Parameter, Pfad und Hash bleiben. Mehrfacher Aufruf ist unschaedlich.
+ * Liefert das bekannte Zugriffstoken eines Jobs (nur aus dem Speicher). Geteilte Links mit
+ * Token gibt es nicht (Entscheidung 16.11., #10): Steht auf einer Job-URL noch ?token=,
+ * wird es nicht uebernommen, sondern nur aus der Adresszeile entfernt, damit es nicht im
+ * Verlauf oder im Referer stehen bleibt; uebrige Query-Parameter, Pfad und Hash bleiben.
+ * Co-Signer holen das Token ueber Challenge und Signatur (resolveToken in MultisigJobDetail).
  */
 export function takeMultisigJobToken(jobId) {
-  const fromUrl = getMultisigJobToken();
-  const urlJobId = getMultisigJobId();
-  if (fromUrl && urlJobId) {
-    jobTokens.set(urlJobId, fromUrl);
-    removeTokenFromUrl();
-  }
+  try {
+    if (getMultisigJobId() && new URLSearchParams(window.location.search).has('token')) removeTokenFromUrl();
+  } catch { /* noop */ }
   return jobTokens.get(jobId) || null;
 }
 

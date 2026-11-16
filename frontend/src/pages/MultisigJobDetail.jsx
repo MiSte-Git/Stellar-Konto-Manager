@@ -70,9 +70,8 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
   const [revokedHash, setRevokedHash] = useState('');
   const revokeInFlightRef = useRef(false);
 
-  // A job's access token may arrive as a prop (read by main.jsx) or as a
-  // ?token= query parameter, which takeMultisigJobToken moves into memory and
-  // removes from the address bar. The job list no longer hands out tokens at all (anyone who knew the public accountId could otherwise
+  // A job's access token may arrive as a prop (main.jsx) or from in-app navigation
+  // (takeMultisigJobToken, memory only; shared ?token= links are not supported, #10). The job list no longer hands out tokens at all (anyone who knew the public accountId could otherwise
   // read every pending job's token straight from the list) - if neither is
   // present, resolveToken() fetches it on demand, verified server-side against
   // currentPublicKey being an active signer of the job's account. Cached in a

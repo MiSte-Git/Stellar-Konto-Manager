@@ -74,7 +74,7 @@ import { isAssetDetailPath } from './utils/assetDetailRoute.js';
 import { installCrossTabNetworkSync, networkFromEvent, setGlobalNetwork } from './utils/globalNetwork.js';
 import { emitAccountSelected } from './utils/accountBus.js';
 
-import { takeMultisigJobToken } from './components/multisig/multisigNavigation.js';
+import { clearMultisigJobTokens, takeMultisigJobToken } from './components/multisig/multisigNavigation.js';
 import IdentityHeaderRows from './components/groupfund/IdentityHeaderRows.jsx';
 import { consumePendingMainView, consumePendingTradingAsset, consumePendingTrustlineAsset, navigateToPath, setPendingTradingAsset, publishActiveAccount, publishActiveMainView, setMainMounted } from './utils/appNavigation.js';
 import ListTrustlines from './components/ListTrustlines';
@@ -379,6 +379,13 @@ function Main() {
   // Clear info block whenever page changes or account switches
   useEffect(() => { setInfoMessage(''); }, [menuSelection]);
   useEffect(() => { setInfoMessage(''); }, [sourcePublicKey]);
+  // #10: Job-Tokens gehoeren zum Arbeitskontext; beim Kontowechsel vergessen (erster Render zaehlt nicht).
+  const tokenAccountRef = useRef(sourcePublicKey);
+  useEffect(() => {
+    if (tokenAccountRef.current === sourcePublicKey) return;
+    tokenAccountRef.current = sourcePublicKey;
+    clearMultisigJobTokens();
+  }, [sourcePublicKey]);
  
    // Kürzlich verwendete Wallets aus localStorage laden
   const persistRecent = useCallback((list) => {
@@ -1406,7 +1413,7 @@ function Main() {
               </button>
             </div>
             <div className="p-4">
-              <MultisigJobDetail jobId={activeJobId} accessToken={activeJobToken} currentPublicKey={sourcePublicKey} listStatus={activeJobListStatus} />
+              <MultisigJobDetail key={activeJobId} jobId={activeJobId} accessToken={activeJobToken} currentPublicKey={sourcePublicKey} listStatus={activeJobListStatus} />
             </div>
           </div>
         </div>
