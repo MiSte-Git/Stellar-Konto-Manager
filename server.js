@@ -1374,7 +1374,6 @@ app.post('/api/multisig/jobs/:id/merge-signed-xdr', (req, res) => withMultisigJo
     // der Merge ab, bevor filterValidSignatures laeuft. Sonst wuerde der Filter
     // alle gespeicherten Signaturen verwerfen und txXdrCurrent unwiderruflich leeren.
     const existingKeys = new Set(current.tx.signatures.map((s) => signatureKey(s)));
-    let added = 0;
     incoming.tx.signatures.forEach((sig) => {
       let key;
       try {
@@ -1385,7 +1384,6 @@ app.post('/api/multisig/jobs/:id/merge-signed-xdr', (req, res) => withMultisigJo
       if (!existingKeys.has(key)) {
         current.tx.signatures.push(sig);
         existingKeys.add(key);
-        added += 1;
       }
     });
 
@@ -1431,14 +1429,12 @@ app.post('/api/multisig/jobs/:id/merge-signed-xdr', (req, res) => withMultisigJo
       const outcome = await applySubmitOutcome(job.id, sent);
       if (outcome.error) return res.status(500).json({ ok: false, error: outcome.error });
       return res.json(withSanitizedSubmitResult(outcome.job));
-    } else if (weightReached) {
-      // Fremde op.source: Gewicht des Job-Kontos erreicht, aber kein Senden (ADR 0013).
-      updated.status = 'ready_to_submit';
-    } else if (added === 0) {
-      // No new signature added, keep status
-      updated.status = job.status;
     } else {
-      updated.status = 'pending_signatures';
+      // Fremde op.source mit erreichtem Gewicht: kein Senden, ready_to_submit (ADR 0013). Sonst
+      // pending_signatures. Der Status kommt immer aus dem Gewicht, auch ohne neue Signatur: Ist das
+      // Gewicht seit dem Speichern gefallen (Signer oder Threshold geaendert), darf ein gespeichertes
+      // ready_to_submit nicht stehen bleiben (FS-3). Gleich wie api/multisig.php.
+      updated.status = weightReached ? 'ready_to_submit' : 'pending_signatures';
     }
 
     multisigDb.items = expireStalePendingJobs(multisigDb.items.map((j) => (j.id === job.id ? updated : j)));

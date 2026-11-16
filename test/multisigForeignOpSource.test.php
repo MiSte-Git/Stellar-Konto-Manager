@@ -146,6 +146,26 @@ try {
     $res = $create($owner->getAccountId(), $payment($owner->getAccountId(), null, [$owner]));
     check('Anlegen ohne fremde op.source: wie bisher gesendet', ($res['body']['status'] ?? '') === 'submitted_success' && $posts() === $before + 1);
 
+    // FS-7.1: accountId mit Leerzeichen wird getrimmt; eigene op.source ist nicht fremd, fremde schon.
+    $before = $posts();
+    $res = $create(' ' . $owner->getAccountId() . ' ', $payment($owner->getAccountId(), $owner->getAccountId(), [$owner]));
+    check('FS-7.1: accountId mit Leerzeichen, eigene op.source: getrimmt und gesendet',
+        $res['status'] === 200 && ($res['body']['accountId'] ?? '') === $owner->getAccountId()
+        && ($res['body']['status'] ?? '') === 'submitted_success' && ($res['body']['foreignOpSources'] ?? null) === [] && $posts() === $before + 1);
+    $before = $posts();
+    $res = $create(' ' . $owner->getAccountId() . ' ', $payment($owner->getAccountId(), $foreign, [$owner]));
+    check('FS-7.1: accountId mit Leerzeichen, fremde op.source: nicht gesendet, nur das fremde Konto',
+        $res['status'] === 200 && ($res['body']['status'] ?? '') === 'ready_to_submit'
+        && ($res['body']['foreignOpSources'] ?? null) === [$foreign] && $posts() === $before);
+
+    // FS-7.2: fremde M-Adresse zaehlt als ihr G-Konto.
+    $before = $posts();
+    $foreignM = (new MuxedAccount($foreign, 7))->getAccountId();
+    $res = $create($owner->getAccountId(), $payment($owner->getAccountId(), $foreignM, [$owner]));
+    check('FS-7.2: fremde M-Adresse als op.source: nicht gesendet, foreignOpSources mit dem G-Konto',
+        $res['status'] === 200 && ($res['body']['status'] ?? '') === 'ready_to_submit'
+        && ($res['body']['foreignOpSources'] ?? null) === [$foreign] && $posts() === $before);
+
     $tx = $payment($vault->getAccountId(), $foreign, [$s1]);
     $created = $create($vault->getAccountId(), $tx);
     check('Merge-Fall: angelegt als pending_signatures mit foreignOpSources',

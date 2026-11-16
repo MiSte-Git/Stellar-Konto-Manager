@@ -85,8 +85,10 @@ dass jede Spec in dieser Tabelle steht und jede genannte Datei existiert.
   Frontend in `MultisigJobDetail.test.jsx`, `MultisigJobList.test.jsx`, `MultisigResultDialog.test.jsx` und
   `MultisigPrepareDialog.test.jsx`.
 - Job mit fremder `op.source` (ADR 0013): kein automatisches Senden beim Anlegen und beim Merge, `foreignOpSources` in
-  Antwort, Detail und Liste, gegen einen lokalen Horizon-Stub (`test/multisigForeignOpSource.test.js` und `.php`).
-  Die Erkennung prüfen `test/foreignOpSources.test.js`, `test/txSignatures.test.php` und
+  Antwort, Detail und Liste, auch mit `accountId` mit Leerzeichen und fremder M-Adresse, gegen einen lokalen
+  Horizon-Stub (`test/multisigForeignOpSource.test.js` und `.php`). Zustände des wartenden Jobs: Altjob ohne
+  gespeichertes Feld, Ablauf, verbrauchte Sequence, Löschen erst im Endzustand, Ablehnen ohne Statuswechsel, Merge
+  ohne neue Signatur nach gefallenem Gewicht (`test/multisigForeignOpSourceStates.test.js` und `.php`). Die Erkennung prüfen `test/foreignOpSources.test.js`, `test/txSignatures.test.php` und
   `describeOperations.test.js` gegen die gemeinsame Fixture `test/assets/foreign-op-sources.json` (auch Fee-Bump),
   die Anzeige `MultisigJobDetail.test.jsx` und `MultisigJobList.test.jsx`. Gegen das Testnet nicht als E2E-Spec:
   SKM baut solche Jobs nie selbst.

@@ -119,6 +119,35 @@ test('Anlegen ohne fremde op.source: wird wie bisher gesendet', async () => {
   assert.equal(posts(), before + 1);
 });
 
+test('FS-7.1: accountId mit Leerzeichen und eigener op.source: getrimmt, nicht fremd, wird gesendet', async () => {
+  const before = posts();
+  const res = await create(` ${owner.publicKey()} `, payment(owner.publicKey(), { opSource: owner.publicKey(), signers: [owner] }));
+  assert.equal(res.status, 200);
+  assert.equal(res.body.accountId, owner.publicKey());
+  assert.equal(res.body.status, 'submitted_success');
+  assert.deepEqual(res.body.foreignOpSources, []);
+  assert.equal(posts(), before + 1);
+});
+
+test('FS-7.1: accountId mit Leerzeichen und fremder op.source: nicht gesendet', async () => {
+  const before = posts();
+  const res = await create(` ${owner.publicKey()} `, payment(owner.publicKey(), { opSource: foreign, signers: [owner] }));
+  assert.equal(res.status, 200);
+  assert.equal(res.body.status, 'ready_to_submit');
+  assert.deepEqual(res.body.foreignOpSources, [foreign], 'nur das fremde Konto, nicht das Job-Konto');
+  assert.equal(posts(), before, 'nichts an Horizon gesendet');
+});
+
+test('FS-7.2: fremde M-Adresse als op.source: nicht gesendet, foreignOpSources mit dem G-Konto', async () => {
+  const before = posts();
+  const foreignM = new MuxedAccount(new Account(foreign, '0'), '7').accountId();
+  const res = await create(owner.publicKey(), payment(owner.publicKey(), { opSource: foreignM, signers: [owner] }));
+  assert.equal(res.status, 200);
+  assert.equal(res.body.status, 'ready_to_submit');
+  assert.deepEqual(res.body.foreignOpSources, [foreign]);
+  assert.equal(posts(), before, 'nichts an Horizon gesendet');
+});
+
 test('Merge erreicht das Gewicht, fremde op.source: kein Senden, ready_to_submit', async () => {
   const tx = payment(vault.publicKey(), { opSource: foreign, signers: [s1] });
   const created = await create(vault.publicKey(), tx);
