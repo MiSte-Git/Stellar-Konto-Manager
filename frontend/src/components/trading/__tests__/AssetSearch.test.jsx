@@ -963,6 +963,22 @@ describe('AssetSearch - Modus Im Konto (Teil C, 13.11.)', () => {
     expect(window.location.pathname).toBe(`/assets/${ASSET_CODE}-${ISSUER_PK}`);
   });
 
+  it('17.11.: Suchtext und Ausblende-Filter bleiben beim Wechsel Im Konto / Auf der Blockchain erhalten, ohne Suche', async () => {
+    withFooTrustline();
+    renderPage();
+    await screen.findByRole('button', { name: `${ASSET_CODE} handeln` });
+    fireEvent.change(screen.getByTestId('account-tokens-filter'), { target: { value: ASSET_CODE } });
+    const hideMode = screen.getByRole('button', { name: 'Ausblenden' });
+    fireEvent.click(hideMode);
+    fireEvent.click(screen.getByRole('button', { name: 'Auf der Blockchain' }));
+    expect(screen.getByPlaceholderText('USDC, G... oder USDC:G...')).toHaveValue(ASSET_CODE);
+    expect(fetch.mock.calls.some(([u]) => String(u).includes('trade/assets/search'))).toBe(false);
+    fireEvent.change(screen.getByPlaceholderText('USDC, G... oder USDC:G...'), { target: { value: `${ASSET_CODE}:${ISSUER_PK}` } });
+    fireEvent.click(screen.getByRole('button', { name: 'Im Konto' }));
+    expect(screen.getByTestId('account-tokens-filter')).toHaveValue(`${ASSET_CODE}:${ISSUER_PK}`);
+    expect(screen.getByRole('button', { name: 'Ausblenden' })).toHaveAttribute('aria-pressed', 'true');
+  });
+
   it('ohne Konto startet die Seite mit der Suche auf der Blockchain', () => {
     window.localStorage.removeItem('SKM_LAST_ACCOUNT');
     renderPage();

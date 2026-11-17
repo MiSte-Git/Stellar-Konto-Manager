@@ -66,6 +66,7 @@ import useAssetSearch from './hooks/useAssetSearch.js';
 import { assetDetailSubpath, readTradingAssetFromSearch } from '../../utils/assetDetailRoute.js';
 import { consumePendingTradingAsset, navigateToPath } from '../../utils/appNavigation.js';
 import AccountTokenList from './AccountTokenList.jsx';
+import { DEFAULT_HIDE_OPTIONS } from './accountTokens.js';
 import useTradingAccount from './hooks/useTradingAccount.js';
 import useTradingSubmit from './hooks/useTradingSubmit.js';
 import useTradingMultisig, { JOB_DISABLED_TYPES, requiredWeightFor } from './hooks/useTradingMultisig.js';
@@ -82,6 +83,7 @@ export default function AssetSearch() {
   const [tokenFactsExpanded, setTokenFactsExpanded] = useState(false);
   // Modus der Seite: Token des Kontos (Standard mit Konto) oder Suche auf der Blockchain
   const [searchMode, setSearchMode] = useState(() => (getStoredAccountInput() ? 'account' : 'blockchain'));
+  const [accountTokenHide, setAccountTokenHide] = useState(DEFAULT_HIDE_OPTIONS);
   const {
     accountInput,
     accountId,
@@ -1371,6 +1373,15 @@ export default function AssetSearch() {
 
       {searchMode === 'account' && (
         <AccountTokenList
+          // Ein Suchtext fuer beide Modi (gleiche Formate: Code, Issuer, CODE:ISSUER): der Wechsel zu Auf der
+          // Blockchain behaelt die Eingabe, gesucht wird dort erst auf Klick. Der Ausblende-Filter bleibt ebenfalls.
+          query={assetQuery}
+          onQueryChange={(value) => {
+            setAssetQuery(value);
+            if (assetError) setAssetError('');
+          }}
+          hide={accountTokenHide}
+          onHideChange={setAccountTokenHide}
           account={accountInfo}
           accountId={accountId}
           accountLoading={accountStatus.loading}

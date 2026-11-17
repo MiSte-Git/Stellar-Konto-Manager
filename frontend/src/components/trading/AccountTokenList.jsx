@@ -15,11 +15,24 @@ const btnCls = 'rounded-sm border border-gray-300 px-2 py-1 text-xs font-medium 
  * (assetFilter.js), je Token Details (Asset-Detailseite) und Handeln (Detailansicht im Trading).
  * Ausblende-Filter (Saldo 0, kein Marktpreis gegen XLM, SCAM-Eintrag bei StellarExpert) ist
  * standardmaessig aus; geprueft wird erst, wenn er an ist. Nur Anzeige, sendet nichts.
+ * Suchtext und Ausblende-Filter koennen von aussen gefuehrt werden (query/onQueryChange, hide/onHideChange), damit
+ * sie beim Wechsel zu Auf der Blockchain und zurueck erhalten bleiben (AssetSearch teilt den Suchtext mit der
+ * Blockchain-Suche). Ohne diese Props haelt die Liste beides selbst.
  */
-export default function AccountTokenList({ account, accountId, accountLoading = false, accountError = '', network, onTrade, onOpenDetails }) {
+export default function AccountTokenList({
+  account, accountId, accountLoading = false, accountError = '', network, onTrade, onOpenDetails,
+  query: queryProp, onQueryChange, hide: hideProp, onHideChange,
+}) {
   const { t, i18n } = useTranslation(['trading', 'common']);
-  const [query, setQuery] = useState('');
-  const [hide, setHide] = useState(DEFAULT_HIDE_OPTIONS);
+  const [ownQuery, setOwnQuery] = useState('');
+  const [ownHide, setOwnHide] = useState(DEFAULT_HIDE_OPTIONS);
+  const query = typeof onQueryChange === 'function' ? (queryProp ?? '') : ownQuery;
+  const setQuery = typeof onQueryChange === 'function' ? onQueryChange : setOwnQuery;
+  const hide = typeof onHideChange === 'function' ? (hideProp ?? DEFAULT_HIDE_OPTIONS) : ownHide;
+  const setHide = (update) => {
+    if (typeof onHideChange === 'function') onHideChange(typeof update === 'function' ? update(hide) : update);
+    else setOwnHide(update);
+  };
   const active = hide.mode !== 'all';
   const tokens = useMemo(() => tokensFromAccount(account), [account]);
   const flags = useTokenFlags(tokens, network, {
