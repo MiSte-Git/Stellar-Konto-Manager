@@ -6,7 +6,6 @@ import SecretKeyModal from '../components/SecretKeyModal.jsx';
 import MultiSigHelpDialog from '../components/multisig/MultiSigHelpDialog.jsx';
 import MultisigConfigForm from '../components/multisig/MultisigConfigForm.jsx';
 import { getHorizonServerForNetwork } from '../utils/stellar/stellarUtils.js';
-import { getRequiredThreshold } from '../utils/getRequiredThreshold.js';
 import { useConfirmDialog } from '../components/useConfirmDialog.jsx';
 import { isValidSignerKey } from '../utils/multisig/signerKeys.js';
 import { getMultisigSafetyCheck } from '../utils/getMultisigSafetyCheck.js';
@@ -16,7 +15,7 @@ import { txHashHex } from '../utils/stellar/txHash.js';
 import { classifyFriendbotResponse, classifyHorizonSubmitError, isAccountNotFoundError } from '../utils/stellar/activationOutcome.js';
 import { copyText } from '../utils/clipboard.js';
 import { useNavigationGuard } from '../utils/navigationGuard.js';
-import { SESSION_LOCKED_EVENT } from '../utils/sessionSecrets.js';
+import { SESSION_LOCKED_EVENT, getLockEpoch, rememberAfterSuccess } from '../utils/sessionSecrets.js';
 import { keypairFromSecret } from '../utils/signers/keyMaterial.js';
 import { attachSignatures, toCollectedSigner } from '../utils/signers/signTransaction.js';
 import { formatErrorForUi } from '../utils/formatErrorForUi.js';
@@ -168,20 +167,6 @@ export default function MultisigCreatePage() {
   )), [signerRows, t]);
   const signersInvalid = signerFieldErrors.some(Boolean);
   const weightsInvalid = signerWeightErrors.some(Boolean);
-  const thresholdsForModal = useMemo(() => ({
-    low_threshold: Math.max(0, Number(lowT) || 0),
-    med_threshold: Math.max(0, Number(medT) || 0),
-    high_threshold: Math.max(0, Number(highT) || 0),
-  }), [lowT, medT, highT]);
-  const signersForModal = useMemo(() => {
-    const master = generated?.pub ? [{ public_key: generated.pub, weight: Math.max(0, Number(masterWeight) || 0) }] : [];
-    const others = signerPairs.map((p) => ({ public_key: p.key, weight: p.weight }));
-    return [...master, ...others];
-  }, [generated?.pub, masterWeight, signerPairs]);
-  const requiredThreshold = useMemo(
-    () => getRequiredThreshold('setOptions', thresholdsForModal),
-    [thresholdsForModal]
-  );
 
   // Helper: clamp to byte range 0..255 and coerce to integer
   function clampByte(n) {
@@ -712,7 +697,8 @@ export default function MultisigCreatePage() {
   }
 
 
-  async function handleConfirmSecret(collectedSigners) {
+  async function handleConfirmSecret(collectedSigners, remember = false) {
+    const lockEpoch = getLockEpoch();
     const funderSecret = collectedSigners?.[0]?.keypair?.secret?.() || '';
     setShowSecretModal(false);
     if (!pendingAction) return;
@@ -742,9 +728,11 @@ export default function MultisigCreatePage() {
       if (type === 'activate') {
         const { hash, existed } = await activateWithFunderSecret(funderSecret, destPub, startingBalance || '1');
         setResultMsg(existed ? t('multisigCreate:alreadyActive') : t('multisigCreate:activated', { hash }));
+        if (!existed) await rememberFunder(collectedSigners, remember, startedOn, destPub, lockEpoch);
       } else if (type === 'createAll') {
         // 1) Aktivieren
-        await activateWithFunderSecret(funderSecret, destPub, startingBalance || '1');
+        const { existed } = await activateWithFunderSecret(funderSecret, destPub, startingBalance || '1');
+        if (!existed) await rememberFunder(collectedSigners, remember, startedOn, destPub, lockEpoch);
         // 2) Multisig setzen
         const setRes = await setMultisigOnNewAccount(generated.sec, { abortMessage: t('createAccount:networkChanged.stoppedAfterPartial') });
         setResultMsg(
@@ -752,10 +740,25 @@ export default function MultisigCreatePage() {
         );
       }
     } catch (e) {
+      // Review M-8: Der Funder-Dialog kennt das Funder-Konto vorher nicht und fragt genau einen Key ab. Reicht dessen
+      // Gewicht nicht (Funder mit Multisig), meldet Horizon tx_bad_auth: verstaendlich statt roh anzeigen.
+      const codes = e?.response?.data?.extras?.result_codes;
+      const badAuth = codes?.transaction === 'tx_bad_auth' || (Array.isArray(codes?.operations) && codes.operations.includes('op_bad_auth'));
       // Schluessel (z. B. signingFailed aus attachSignatures) uebersetzt anzeigen, nicht roh.
-      setError(formatErrorForUi(t, e));
+      setError(badAuth ? t('multisigCreate:funder.badAuth') : formatErrorForUi(t, e));
     } finally {
       setBusy(false);
+    }
+  }
+
+  // Funder-Key nach erfolgreicher Aktivierung merken (Haken im Key-Dialog), unter dem Funder-Konto selbst. Nicht bei
+  // existierendem Konto (die Funder-Transaktion ist dann gescheitert) und nie, wenn als Funder der Schluessel des neuen
+  // Kontos eingegeben wurde (Review M-6, M-7): der neue Kontoschluessel wird nie gemerkt. Nichts nach einer Sperre.
+  async function rememberFunder(collectedSigners, remember, startedOn, destPub, lockEpoch) {
+    const funderPub = collectedSigners?.[0]?.keypair?.publicKey?.() || '';
+    if (!funderPub || funderPub === destPub || funderPub === generated?.pub) return;
+    if (await rememberAfterSuccess(funderPub, collectedSigners.slice(0, 1), remember, startedOn, lockEpoch) === 'insecure') {
+      setError(t('secretKey:remember.insecureContextError'));
     }
   }
 
@@ -1299,11 +1302,14 @@ export default function MultisigCreatePage() {
         <SecretKeyModal
           onConfirm={handleConfirmSecret}
           onCancel={() => { setShowSecretModal(false); setPendingAction(null); }}
-          thresholds={thresholdsForModal}
-          signers={signersForModal}
-          operationType="setOptions"
-          requiredThreshold={requiredThreshold}
-          account={{ signers: signersForModal, thresholds: thresholdsForModal }}
+          // Abgefragt wird der Key des Funder-Kontos, nicht des neuen Kontos: dessen Signer und Schwellen
+          // gelten hier nicht (vorher lehnte der Dialog jeden Funder ab, der nicht Signer des neuen Kontos war).
+          // Das Funder-Konto ist vorher nicht bekannt; Gewicht und Schwelle prueft Horizon beim Senden.
+          signers={[]}
+          operationType="createAccount"
+          requiredThreshold={0}
+          network={network}
+          subtitle={t('multisigCreate:funder.subtitle')}
         />
       )}
 

@@ -13,7 +13,7 @@ import {
 import { txHashHex } from '../../utils/stellar/txHash.js';
 import { buildExplorerUrl } from '../../utils/stellar/accountUtils.js';
 import { splitAddressForCompare } from '../../utils/stellar/walletSummary.js';
-import { getSessionSecret, rememberSessionSecrets } from '../../utils/sessionSecrets.js';
+import { getLockEpoch, getSessionSecret, rememberAfterSuccess } from '../../utils/sessionSecrets.js';
 import { copyText } from '../../utils/clipboard.js';
 import { useRecentWalletOptions } from '../../utils/useRecentWalletOptions.js';
 import { useTrustedWallets } from '../../utils/useTrustedWallets.js';
@@ -694,11 +694,12 @@ export default function BatchPaymentDialog({ onClose, onNetworkChangeClose }) {
       setSecretError(t('batchPayment:errors.keyMismatch'));
       return;
     }
+    const lockEpoch = getLockEpoch();
     setSecretPrompt(null);
     prompt.resolve(entry.keypair);
-    if (remember) {
-      try { await rememberSessionSecrets(prompt.source, [entry]); } catch { /* Senden geht trotzdem */ }
-    }
+    // Ausnahme (SECURITY.md): die Sammelzahlung merkt schon beim Bestaetigen, weil sie mehrere Zahlungen sendet.
+    // Netz des Laufs; scheitert das Merken, geht das Senden trotzdem.
+    await rememberAfterSuccess(prompt.source, [entry], remember, network, lockEpoch);
   };
   const handleSecretCancel = () => {
     const prompt = secretPrompt;
@@ -1367,6 +1368,9 @@ export default function BatchPaymentDialog({ onClose, onNetworkChangeClose }) {
           signers={(secretPrompt.account?.signers || []).map((s) => ({ public_key: s.key, weight: s.weight }))}
           operationType="payment"
           requiredThreshold={Number(secretPrompt.account?.thresholds?.med_threshold || 0)}
+          network={network}
+          // Verlangt wird der Master-Key des Senders (handleSecretConfirm): nur er zaehlt und wird vorbelegt (Review M-9).
+          onlySignerKey={secretPrompt.source}
         />
       )}
     </div>

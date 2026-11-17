@@ -5,9 +5,12 @@ import {
   getSessionSecret,
   getSessionSecretCount,
   getSessionSecrets,
+  getLockEpoch,
+  getRememberedSecretsFor,
   getUsableSignerKeys,
   hasSessionSecrets,
   InsecureCryptoContextError,
+  rememberAfterSuccess,
   rememberSessionSecrets,
   setSessionSecrets,
 } from '../sessionSecrets.js';
@@ -312,5 +315,111 @@ describe('sessionSecrets (Bindung ans Netz)', () => {
     expect(clearAllSessionSecrets()).toBe(true);
     expect(sessionStorage.getItem(`stm.session.secrets.PUBLIC.${ACCOUNT}`)).toBeNull();
     expect(sessionStorage.getItem(`stm.session.secrets.TESTNET.${ACCOUNT}`)).toBeNull();
+  });
+});
+
+describe('sessionSecrets (Vorbelegung und Merken nach Erfolg)', () => {
+  const OTHER = 'GD5KJP276E7CZT43PAI5KAEXCUDZMFFMV4X5AGFKBR7Q7IAZZ5BXZVKM';
+  const OTHER_SECRET = 'SBFKGXZFIZJ5U2RZTPBZ3EUCKQQGT5APKWAHGTQCJQSLD4CXIIHOVYVO';
+  beforeEach(() => { localStorage.setItem('SKM_NETWORK', 'PUBLIC'); });
+  afterEach(() => { localStorage.removeItem('SKM_NETWORK'); });
+
+  it('findet Signer-Keys, egal unter welchem Konto sie gemerkt wurden, in der Reihenfolge der Signer', async () => {
+    await setSessionSecrets(SIGNER, { [SIGNER]: SECRET });
+    await setSessionSecrets(OTHER, { [OTHER]: OTHER_SECRET });
+    expect(await getRememberedSecretsFor(ACCOUNT, [OTHER, SIGNER])).toEqual([OTHER_SECRET, SECRET]);
+  });
+
+  it('liefert nur Keys der genannten Signer (ein gemerkter Nicht-Signer wird nicht vorbelegt)', async () => {
+    await setSessionSecrets(ACCOUNT, { [SIGNER]: SECRET, [OTHER]: OTHER_SECRET });
+    expect(await getRememberedSecretsFor(ACCOUNT, [SIGNER])).toEqual([SECRET]);
+    expect(await getRememberedSecretsFor(ACCOUNT, [])).toEqual([]);
+    expect(await getRememberedSecretsFor(ACCOUNT, null)).toEqual([]);
+  });
+
+  it('liefert nichts, wenn das Netz des Ablaufs nicht das aktuelle ist', async () => {
+    await setSessionSecrets(ACCOUNT, { [SIGNER]: SECRET });
+    expect(await getRememberedSecretsFor(ACCOUNT, [SIGNER], 'testnet')).toEqual([]);
+    expect(await getRememberedSecretsFor(ACCOUNT, [SIGNER], 'public')).toEqual([SECRET]);
+    expect(await getRememberedSecretsFor(ACCOUNT, [SIGNER], 'kaputt')).toEqual([]);
+  });
+
+  it('ueberspringt unlesbare Eintraege', async () => {
+    sessionStorage.setItem(`stm.session.secrets.PUBLIC.${ACCOUNT}`, JSON.stringify({ [SIGNER]: 'enc1:xx:yy' }));
+    expect(await getRememberedSecretsFor(ACCOUNT, [SIGNER])).toEqual([]);
+  });
+
+  it('rememberAfterSuccess merkt nur mit Haken', async () => {
+    const collected = [{ keypair: fakeKeypair(SIGNER, SECRET) }];
+    expect(await rememberAfterSuccess(ACCOUNT, collected, false)).toBe(false);
+    expect(hasSessionSecrets(ACCOUNT)).toBe(false);
+    expect(await rememberAfterSuccess(ACCOUNT, collected, true, 'PUBLIC')).toBe(true);
+    expect(await getSessionSecret(ACCOUNT, SIGNER)).toBe(SECRET);
+  });
+
+  it('rememberAfterSuccess speichert nichts bei anderem Netz und wirft nie', async () => {
+    const collected = [{ keypair: fakeKeypair(SIGNER, SECRET) }];
+    expect(await rememberAfterSuccess(ACCOUNT, collected, true, 'testnet')).toBe(false);
+    expect(await rememberAfterSuccess('', collected, true)).toBe(false);
+    expect(await rememberAfterSuccess(ACCOUNT, null, true)).toBe(false);
+    expect(hasSessionSecrets(ACCOUNT)).toBe(false);
+  });
+
+  it('rememberAfterSuccess meldet fehlendes Web Crypto als insecure, ohne Klartext zu speichern', async () => {
+    const realSubtle = crypto.subtle;
+    Object.defineProperty(crypto, 'subtle', { value: undefined, configurable: true });
+    try {
+      expect(await rememberAfterSuccess(ACCOUNT, [{ keypair: fakeKeypair(SIGNER, SECRET) }], true)).toBe('insecure');
+      expect(hasSessionSecrets(ACCOUNT)).toBe(false);
+    } finally {
+      Object.defineProperty(crypto, 'subtle', { value: realSubtle, configurable: true });
+    }
+  });
+});
+
+describe('sessionSecrets (Sperr-Epoche, Review M-1)', () => {
+  beforeEach(() => { localStorage.setItem('SKM_NETWORK', 'PUBLIC'); });
+  afterEach(() => { localStorage.removeItem('SKM_NETWORK'); });
+  const collected = () => [{ keypair: fakeKeypair(SIGNER, SECRET) }];
+
+  it('Sperren zaehlt die Epoche hoch', () => {
+    const before = getLockEpoch();
+    clearAllSessionSecrets();
+    expect(getLockEpoch()).toBe(before + 1);
+  });
+
+  it('nach einer Sperre seit dem Bestaetigen merkt rememberAfterSuccess nichts', async () => {
+    const epoch = getLockEpoch();
+    clearAllSessionSecrets();
+    expect(await rememberAfterSuccess(ACCOUNT, collected(), true, 'PUBLIC', epoch)).toBe(false);
+    expect(hasSessionSecrets(ACCOUNT)).toBe(false);
+  });
+
+  it('Gegenprobe: ohne Sperre wird mit derselben Epoche gemerkt', async () => {
+    const epoch = getLockEpoch();
+    expect(await rememberAfterSuccess(ACCOUNT, collected(), true, 'PUBLIC', epoch)).toBe(true);
+    expect(hasSessionSecrets(ACCOUNT)).toBe(true);
+  });
+
+  it('Sperre waehrend des Verschluesselns: nichts gespeichert', async () => {
+    const pending = setSessionSecrets(ACCOUNT, { [SIGNER]: SECRET });
+    clearAllSessionSecrets();
+    expect(await pending).toBe(false);
+    expect(hasSessionSecrets(ACCOUNT)).toBe(false);
+  });
+
+  it('vor der Sperre gelesene Eintraege sind danach nicht mehr entschluesselbar (neuer AES-Schluessel)', async () => {
+    await setSessionSecrets(ACCOUNT, { [SIGNER]: SECRET });
+    const raw = sessionStorage.getItem(`stm.session.secrets.PUBLIC.${ACCOUNT}`);
+    clearAllSessionSecrets();
+    sessionStorage.setItem(`stm.session.secrets.PUBLIC.${ACCOUNT}`, raw);
+    expect(await getSessionSecret(ACCOUNT, SIGNER)).toBe('');
+  });
+
+  it('Sperre waehrend der Vorbelegung: nichts vorbelegt', async () => {
+    await setSessionSecrets(ACCOUNT, { [SIGNER]: SECRET });
+    const pending = getRememberedSecretsFor(ACCOUNT, [SIGNER]);
+    clearAllSessionSecrets();
+    expect(await pending).toEqual([]);
   });
 });

@@ -16,7 +16,7 @@ import SendLockWaiting from './SendLockWaiting.jsx';
 import { LOAD_IN_LOCK_TIMEOUT_MS } from '../../utils/submitGuard/loadTimeout.js';
 import { getRequiredThreshold } from '../../utils/getRequiredThreshold.js';
 import { formatErrorForUi } from '../../utils/formatErrorForUi.js';
-import { getSessionSecrets, rememberSessionSecrets, InsecureCryptoContextError } from '../../utils/sessionSecrets.js';
+import { getLockEpoch, rememberAfterSuccess } from '../../utils/sessionSecrets.js';
 import { assertHorizonNetwork, collectEffectiveSigners } from '../../utils/multisig/jobRevocation.js';
 import { createMultisigJobFromXdr } from '../../utils/multisigApi.js';
 import { claimJobTimeoutSeconds, classifyClaimableBalances, fetchClaimableBalances } from '../../utils/stellar/claimableBalances.js';
@@ -79,7 +79,6 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
   const [progress, setProgress] = React.useState(null);
   const [results, setResults] = React.useState([]);
   const [showSecretModal, setShowSecretModal] = React.useState(false);
-  const [prefill, setPrefill] = React.useState([]);
   const [preparedJob, setPreparedJob] = React.useState(null);
   const [jobCreated, setJobCreated] = React.useState(false);
   const [quotedAt, setQuotedAt] = React.useState(0);
@@ -105,15 +104,6 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
     return [...list].sort((a, b) => a.code.localeCompare(b.code) || a.issuer.localeCompare(b.issuer));
   }, [trustlineFilter, trustlineTargets]);
 
-  React.useEffect(() => {
-    if (!showSecretModal) {
-      setPrefill([]); // entschluesselte Secrets nicht laenger als noetig im State halten
-      return undefined;
-    }
-    let cancelled = false;
-    getSessionSecrets(publicKey).then((map) => { if (!cancelled) setPrefill(Object.values(map)); }).catch(() => {});
-    return () => { cancelled = true; };
-  }, [showSecretModal, publicKey]);
 
   const selectedQuotes = quotes.filter((q) => q.status === 'ok' && selected.has(q.item.id));
   const targetStatus = quotedTarget ? targetTrustlineStatus(account, quotedTarget) : 'native';
@@ -232,6 +222,7 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
   // Lokal signieren und alle Transaktionen nacheinander senden. Bricht beim ersten Fehler ab:
   // jede Transaktion ist fuer sich atomar, bereits bestaetigte bleiben gueltig.
   const runLocal = async (collected, remember) => {
+    const lockEpoch = getLockEpoch();
     if (inFlightRef.current || !chunks.length) return;
     inFlightRef.current = true;
     const controller = new AbortController();
@@ -315,12 +306,9 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
         }
       }
       // Erst nach mindestens einer erfolgreichen Transaktion merken
-      if (remember && out.some((r) => r.status === 'ok')) {
-        try {
-          await rememberSessionSecrets(publicKey, collected);
-        } catch (rememberErr) {
-          if (rememberErr instanceof InsecureCryptoContextError) setError(t('secretKey:remember.insecureContextError'));
-        }
+      if (out.some((r) => r.status === 'ok')
+        && await rememberAfterSuccess(publicKey, collected, remember, network, lockEpoch) === 'insecure') {
+        setError(t('secretKey:remember.insecureContextError'));
       }
     } catch (e) {
       console.error('[SKM] batch convert failed', e);
@@ -641,6 +629,7 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
       {showSecretModal && (
         <SecretKeyModal
           onConfirm={(collected, remember) => { void runLocal(collected, remember); }}
+          network={network}
           onCancel={() => {
             // Beendet die Pruefung bzw. das Warten am Lock: Danach wird nichts gesendet.
             cancelWaiting();
@@ -653,7 +642,6 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
           requiredThreshold={getRequiredThreshold('changeTrust', account?.thresholds)}
           isProcessing={phase === 'running'}
           account={account}
-          initialSecretValues={prefill}
         />
       )}
       {preparedJob && (

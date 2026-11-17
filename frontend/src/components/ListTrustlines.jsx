@@ -20,6 +20,7 @@ import ProgressBar from "../components/ProgressBar.jsx";
 import { formatElapsedMmSs, formatLocalDateTime } from '../utils/datetime';
 import { useSettings } from '../utils/useSettings';
 import { formatErrorForUi } from '../utils/formatErrorForUi.js';
+import { getLockEpoch, rememberAfterSuccess } from '../utils/sessionSecrets.js';
 import { getRequiredThreshold } from '../utils/getRequiredThreshold.js';
 import { getHorizonServerForNetwork } from '../utils/stellar/stellarUtils.js';
 import AddTrustlineModal from './AddTrustlineModal.jsx';
@@ -386,7 +387,8 @@ function ListTrustlines({
    * Führt eine echte Trustline-Löschung durch, nach Validierung der gesammelten Signer.
    * Zeigt Erfolg oder Fehler im UI an.
    */
-  const handleDeleteReal = async (signerKeypairs) => {
+  const handleDeleteReal = async (signerKeypairs, { collected = [], remember = false } = {}) => {
+    const lockEpoch = getLockEpoch();
     try {
       delStartedAtRef.current = Date.now();
       const signerList = Array.isArray(signerKeypairs) ? signerKeypairs : [signerKeypairs];
@@ -468,6 +470,10 @@ function ListTrustlines({
         network: viewNetwork,
         server: getHorizonServerForNetwork(viewNetwork),
       });
+      // Gesendet: Keys merken, wenn der Haken gesetzt war (scheitert das Merken, bleibt das Loeschen gueltig).
+      if (await rememberAfterSuccess(publicKey, collected, remember, viewNetwork, lockEpoch) === 'insecure') {
+        setInfoMessage(t('secretKey:remember.insecureContextError'));
+      }
       await reloadTrustlinesForCurrentAccount();
 
       // Erfolgsmeldung anzeigen
@@ -541,7 +547,8 @@ function ListTrustlines({
     }
   };
 
-  const handleCreateTrustline = async (collectedSigners) => {
+  const handleCreateTrustline = async (collectedSigners, remember = false) => {
+    const lockEpoch = getLockEpoch();
     try {
       setIsProcessing(true);
       setModalError('');
@@ -559,6 +566,9 @@ function ListTrustlines({
       }
       const asset = new Asset(codeStr, issuerStr);
       await submitChangeTrustTx({ asset, limit: String(limitStr), collectedSigners });
+      if (await rememberAfterSuccess(publicKey, collectedSigners, remember, viewNetwork, lockEpoch) === 'insecure') {
+        setInfoMessage(t('secretKey:remember.insecureContextError'));
+      }
 
       setStatusMessages([t('trustline:add.success', { code: codeStr, issuer: issuerStr, count: 1 })]);
       setResults([]);
@@ -888,11 +898,11 @@ function ListTrustlines({
 
       {showSecretModal && (
         <SecretKeyModal
-          onConfirm={(collected) => {
+          onConfirm={(collected, remember) => {
             if (pendingAction === 'add') {
-              handleCreateTrustline(collected);
+              handleCreateTrustline(collected, remember);
             } else {
-              handleDeleteReal(collected.map((s) => s.keypair));
+              handleDeleteReal(collected.map((s) => s.keypair), { collected, remember });
             }
           }}
           onCancel={() => { setShowSecretModal(false); setPendingAction(null); }}
@@ -902,6 +912,7 @@ function ListTrustlines({
           thresholds={thresholdsForModal}
           signers={signersForModal}
           operationType="changeTrust"
+          network={viewNetwork}
           requiredThreshold={requiredThreshold}
           account={accountInfo}
         />

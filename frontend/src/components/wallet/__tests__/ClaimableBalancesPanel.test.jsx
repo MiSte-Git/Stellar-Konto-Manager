@@ -47,7 +47,7 @@ vi.mock('../../../utils/submitGuard/loadTimeout.js', async (importOriginal) => (
 vi.mock('../../../utils/sessionSecrets.js', async (importOriginal) => ({
   ...(await importOriginal()),
   getSessionSecrets: vi.fn(async () => ({})),
-  rememberSessionSecrets: hoisted.rememberMock,
+  rememberAfterSuccess: hoisted.rememberMock,
 }));
 
 const COSIGNER = Keypair.random().publicKey();

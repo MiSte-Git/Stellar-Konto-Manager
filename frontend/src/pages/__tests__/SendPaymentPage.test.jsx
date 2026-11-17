@@ -1883,10 +1883,9 @@ describe('spaete Ablaeufe nach dem Netzwechsel (N4)', () => {
     expect(screen.queryByRole('button', { name: 'Bist du sicher?' })).toBeNull();
   });
 
-  it('Key-Abfrage: Merken laeuft noch beim Wechsel, danach kein Pruefdialog und keine Keypairs', async () => {
+  it('Key-Abfrage: merkt nicht schon beim Bestaetigen; Netzwechsel danach: nichts gesendet, nichts gemerkt (Review M-6)', async () => {
     hoisted.getSessionSecretMock.mockResolvedValue('');
-    let releaseRemember;
-    hoisted.rememberImpl.fn = () => new Promise((r) => { releaseRemember = r; });
+    clearAllSessionSecrets();
     renderPage();
     fill();
     fireEvent.click(screen.getByRole('button', { name: 'Senden' }));
@@ -1894,19 +1893,16 @@ describe('spaete Ablaeufe nach dem Netzwechsel (N4)', () => {
     const modal = heading.parentElement;
     fireEvent.change(within(modal).getAllByPlaceholderText('z.B.')[0], { target: { value: SENDER.secret } });
     fireEvent.click(within(modal).getByRole('button', { name: 'Senden' }));
-    await waitFor(() => expect(releaseRemember).toBeTypeOf('function'));
+    await screen.findByText('Transaktion bestätigen');
+    const { getSessionSecrets } = await import('../../utils/sessionSecrets.js');
+    // Vorher wurde hier schon gemerkt; jetzt erst nach erfolgreichem Senden.
+    expect(await getSessionSecrets(SENDER.publicKey)).toEqual({});
 
     await switchTo('TESTNET');
-    await act(async () => { releaseRemember(); await new Promise((r) => setTimeout(r, 0)); });
-    expect(screen.queryByText('Transaktion bestätigen')).toBeNull();
-
-    // Keine Keypairs im State: ein spaeterer Klick kann nichts mit ihnen senden.
-    fill();
-    hoisted.getSessionSecretMock.mockResolvedValue('');
-    fireEvent.click(screen.getByRole('button', { name: 'Senden' }));
-    await screen.findByText('Geben Sie den Quell-Secret-Key (S-Key) ein');
-    expect(screen.queryByText('Transaktion bestätigen')).toBeNull();
+    await act(async () => { await new Promise((r) => setTimeout(r, 0)); });
     expect(hoisted.submitTransactionSafelyMock).not.toHaveBeenCalled();
+    window.localStorage.setItem('SKM_NETWORK', 'PUBLIC');
+    expect(await getSessionSecrets(SENDER.publicKey)).toEqual({});
   });
 });
 

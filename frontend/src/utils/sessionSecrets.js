@@ -63,6 +63,13 @@ function base64ToBytes(b64) {
   return bytes;
 }
 
+// Sperr-Epoche (Review M-1/M-2): jedes Sperren (Schloss, Inaktivitaet, Seitenstart) zaehlt hoch. Ein Ablauf, der vor
+// der Sperre begann, darf danach weder merken noch vorbelegen. Nie ein Secret, nur ein Zaehler.
+let _lockEpoch = 0;
+export function getLockEpoch() {
+  return _lockEpoch;
+}
+
 function getEncryptionKey() {
   if (!_encryptionKeyPromise) {
     // extractable: false - this key is never meant to leave memory, not even via export.
@@ -236,6 +243,7 @@ export function getUsableSignerKeys(accountPublicKey) {
 // ein anderes, wird nichts gespeichert (false), damit ein Key nie unter dem falschen Netz landet.
 export async function setSessionSecrets(accountPublicKey, secretsMap, network) {
   if (!accountPublicKey) return false;
+  const epoch = _lockEpoch;
   const net = currentNetwork();
   if (network !== undefined && normalizeNetworkId(network) !== net) return false;
   const entries = Object.entries(secretsMap || {}).filter(([pk, sec]) => pk && sec);
@@ -249,8 +257,8 @@ export async function setSessionSecrets(accountPublicKey, secretsMap, network) {
     const encryptedEntries = await Promise.all(
       entries.map(async ([pk, sec]) => [pk, await encryptSecret(sec)])
     );
-    // Das Verschluesseln ist asynchron: Netz zwischenzeitlich gewechselt, dann nichts speichern.
-    if (currentNetwork() !== net) return false;
+    // Das Verschluesseln ist asynchron: Netz zwischenzeitlich gewechselt oder gesperrt, dann nichts speichern.
+    if (currentNetwork() !== net || _lockEpoch !== epoch) return false;
     sessionStorage.setItem(mapKey, JSON.stringify(Object.fromEntries(encryptedEntries)));
     emitSecretChanged(accountPublicKey);
     return true;
@@ -277,6 +285,53 @@ export async function rememberSessionSecrets(accountPublicKey, collected, networ
   return setSessionSecrets(accountPublicKey, { ...current, ...next }, network);
 }
 
+/**
+ * Gemerkte Secrets fuer genau diese Signer, egal unter welchem Konto sie gemerkt wurden (ein Signer-Key ist
+ * derselbe, ob er unter dem Multisig-Konto oder unter seinem eigenen Konto gemerkt wurde). Reihenfolge wie
+ * signerKeys (Aufrufer sortieren nach Gewicht). Fuer die Vorbelegung des Key-Dialogs: Welche Signer zaehlen
+ * (interaktiv, Gewicht > 0), entscheidet der Aufrufer; der Dialog prueft jeden Key vor dem Signieren erneut.
+ * network (optional): Netz des Ablaufs. Ist es nicht das aktuelle Netz, kommt nichts zurueck (gemerkte Keys
+ * sind ans Netz gebunden). Unlesbare Eintraege fallen weg. Nie wirft die Funktion.
+ */
+export async function getRememberedSecretsFor(accountPublicKey, signerKeys, network) {
+  const epoch = _lockEpoch;
+  try {
+    if (network !== undefined && normalizeNetworkId(network) !== currentNetwork()) return [];
+    const keys = [...new Set((Array.isArray(signerKeys) ? signerKeys : []).filter((k) => typeof k === 'string' && k))];
+    const out = [];
+    for (const signerKey of keys) {
+      const enc = findEncryptedSignerSecret(accountPublicKey, signerKey);
+      if (!enc) continue;
+      const sec = await decryptSecret(enc);
+      if (sec) out.push(sec);
+    }
+    if (network !== undefined && normalizeNetworkId(network) !== currentNetwork()) return [];
+    // Waehrend des Entschluesselns gesperrt: nichts vorbelegen.
+    if (_lockEpoch !== epoch) return [];
+    return out;
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Merkt die Keys eines erfolgreichen Ablaufs, wenn der Haken gesetzt war. Wirft nie: Scheitert das Merken,
+ * ist der Ablauf trotzdem erfolgreich. Rueckgabe 'insecure', wenn Web Crypto fehlt (kein Klartext-Fallback,
+ * der Aufrufer zeigt secretKey:remember.insecureContextError), sonst true oder false.
+ * network: Netz des Ablaufs; null (unbekannt) merkt nichts, ohne Angabe das aktuelle Netz.
+ * lockEpoch: getLockEpoch() beim Bestaetigen. Wurde seither gesperrt, wird nichts gemerkt (Review M-1).
+ */
+export async function rememberAfterSuccess(accountPublicKey, collected, remember, network, lockEpoch) {
+  if (!remember) return false;
+  if (lockEpoch !== undefined && lockEpoch !== _lockEpoch) return false;
+  try {
+    return !!(await rememberSessionSecrets(accountPublicKey, collected, network));
+  } catch (e) {
+    if (e instanceof InsecureCryptoContextError) return 'insecure';
+    return false;
+  }
+}
+
 // Number of accounts that currently have at least one secret remembered in this
 // session. Counts an account only if its entry actually holds signer entries
 // (same check as hasSessionSecrets), so empty or malformed entries under the
@@ -296,6 +351,10 @@ export const SESSION_LOCKED_EVENT = 'skm:session-locked';
 export function clearAllSessionSecrets() {
   // Gesperrt heisst auch: kein Zahlungsentwurf kommt nach dem naechsten Einhaengen zurueck.
   clearSendPaymentDraft();
+  // Vor dem Event: Wer darauf reagiert, sieht schon die neue Epoche. Neuer AES-Schluessel ab jetzt, damit vor der
+  // Sperre gelesene Eintraege nicht mehr entschluesselbar sind.
+  _lockEpoch += 1;
+  _encryptionKeyPromise = null;
   try {
     if (typeof window !== 'undefined') window.dispatchEvent(new CustomEvent(SESSION_LOCKED_EVENT));
   } catch { /* noop */ }

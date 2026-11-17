@@ -48,7 +48,7 @@ vi.mock('../../../utils/stellar/submitTransactionSafely.js', async (importOrigin
 vi.mock('../../../utils/sessionSecrets.js', async (importOriginal) => ({
   ...(await importOriginal()),
   getSessionSecrets: vi.fn(async () => ({})),
-  rememberSessionSecrets: hoisted.rememberMock,
+  rememberAfterSuccess: hoisted.rememberMock,
 }));
 
 function makeAccount({ multisig = false } = {}) {

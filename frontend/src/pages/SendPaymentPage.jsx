@@ -10,7 +10,6 @@ import MultisigResultDialog from '../components/multisig/MultisigResultDialog.js
 import { openMultisigJob } from '../components/multisig/multisigNavigation.js';
 import ClearInputButton from '../components/ClearInputButton.jsx';
 import { computeJobSigningState } from '../utils/multisig/jobSigningState.js';
-import { getSessionSecrets } from '../utils/sessionSecrets.js';
 import { needsMultipleSignatures } from '../utils/stellar/isMultisigAccount.js';
 import { apiUrl } from '../utils/apiBase.js';
 import { backendErrorMessage } from '../utils/multisigErrors.js';
@@ -25,7 +24,7 @@ import { isTestnetAccount } from '../utils/stellar/accountUtils.js';
 import AddressDropdown from '../components/AddressDropdown.jsx';
 import { useTrustedWallets } from '../utils/useTrustedWallets.js';
 import { createWalletInfoMap, findWalletInfo } from '../utils/walletInfo.js';
-import { getSessionSecret, rememberSessionSecrets, InsecureCryptoContextError } from '../utils/sessionSecrets.js';
+import { getLockEpoch, getSessionSecret, rememberAfterSuccess } from '../utils/sessionSecrets.js';
 import {
   INPUT_HISTORY_CHANGED_EVENT,
   PAYMENT_AMOUNT_HISTORY_KEY,
@@ -309,7 +308,6 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     }, draftGen);
   });
   const [showSecretModal, setShowSecretModal] = useState(false);
-  const [secretModalPrefill, setSecretModalPrefill] = useState([]);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [confirmChoice, setConfirmChoice] = useState('job');
   const [resultDialog, setResultDialog] = useState(null);
@@ -355,22 +353,6 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     setLastResultDialog(null);
   }, []);
 
-  // Pre-fills the secret modal's inputs with any secret(s) already remembered
-  // for this account/session. Decryption is async (Web Crypto), so this can't
-  // happen inline in the render below - it resolves into state just before/as
-  // the modal becomes visible instead.
-  useEffect(() => {
-    let cancelled = false;
-    if (!showSecretModal || !publicKey) {
-      setSecretModalPrefill([]);
-      return undefined;
-    }
-    (async () => {
-      const map = await getSessionSecrets(publicKey);
-      if (!cancelled) setSecretModalPrefill(Object.values(map));
-    })();
-    return () => { cancelled = true; };
-  }, [showSecretModal, publicKey]);
 
   const [status, setStatus] = useState('');
   const [sentInfo, setSentInfo] = useState(null);
@@ -792,7 +774,19 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       && readStoredNetworkId() === current;
   }, []);
 
+  // Review M-6: Keys aus dem Key-Dialog werden erst nach Erfolg gemerkt (gesendet, Job angelegt oder Signatur
+  // angenommen), nicht schon beim Bestaetigen. Bis dahin liegt hier, was gemerkt werden soll; Abbrechen verwirft es.
+  const pendingRememberRef = useRef(null);
+  const rememberPendingKeys = useCallback(async () => {
+    const pending = pendingRememberRef.current;
+    pendingRememberRef.current = null;
+    if (!pending) return;
+    const res = await rememberAfterSuccess(pending.account, pending.collected, pending.remember, pending.network, pending.lockEpoch);
+    if (res === 'insecure') setError(t('secretKey:remember.insecureContextError'));
+  }, [t]);
+
   const closeReviewDialog = useCallback(() => {
+    pendingRememberRef.current = null;
     setReviewDialog({ open: false, signers: [], preflight: null, snapshot: null });
     setReviewError('');
     setReviewProcessing(false);
@@ -1488,6 +1482,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
             // Lokal bekannte Werte, nicht aus der Backend-Antwort: Dagegen prueft "Jetzt signieren".
             expectedJob: { network: getNetworkConfig(netLabel).backendId, accountId: publicKey, txHash: hashHex },
           });
+          await rememberPendingKeys();
           closeConfirmDialogs();
         } catch (err) {
           // Sperre oder Pin (guardedUnsignedBuild): gleiche Behandlung wie im XDR-Weg, nie der Rohschluessel.
@@ -1505,7 +1500,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       showErrorMessage(detail || '');
       closeConfirmDialogs();
     }
-  }, [accountInfo, buildUnsignedGuarded, runPreSubmitChecks, closeConfirmDialogs, handlePaymentError, isCurrentEpoch, masterWeight, netLabel, openSecretModal, preflight, publicKey, requiredThreshold, showErrorMessage, t]);
+  }, [accountInfo, buildUnsignedGuarded, runPreSubmitChecks, closeConfirmDialogs, handlePaymentError, isCurrentEpoch, masterWeight, netLabel, openSecretModal, preflight, publicKey, rememberPendingKeys, requiredThreshold, showErrorMessage, t]);
 
   const handleConfirmProceed = useCallback(async () => {
     if (confirmChoice === 'local') {
@@ -1517,6 +1512,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       await handleExportXdr();
       return;
     }
+    pendingRememberRef.current = null;
     await handlePrepareMultisig([], { allowUnsigned: true });
   }, [closeConfirmDialogs, confirmChoice, handleExportXdr, handlePrepareMultisig, openSecretModal]);
 
@@ -1821,6 +1817,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
           recipientLabel: reviewSnapshot.recipientLabel,
         };
         markSent(sentKey, { hash: result.hash, status: 'success' });
+        await rememberPendingKeys();
         applySendResult(resultWithWalletInfo);
         openSentResultDialog(resultWithWalletInfo);
         closeReviewDialog();
@@ -1863,7 +1860,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     } finally {
       setReviewProcessing(false);
     }
-  }, [applySendResult, runPreSubmitChecks, closeReviewDialog, handlePaymentError, markSent, netLabel, openSentResultDialog, refreshBalancesAfterSend, reviewDialog, setError, submitPayment, t]);
+  }, [applySendResult, runPreSubmitChecks, closeReviewDialog, handlePaymentError, markSent, netLabel, openSentResultDialog, refreshBalancesAfterSend, rememberPendingKeys, reviewDialog, setError, submitPayment, t]);
 
   // Klaerung ueber Horizon: angewendet -> wie nach einem normalen Erfolg (Vermerk, Ergebnis,
   // Saldo), nicht erneut senden. Nicht ausgefuehrt -> unklaren Vermerk entfernen.
@@ -1933,6 +1930,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
         return;
       }
       try {
+        pendingRememberRef.current = null; // gemerkter Key, nichts neu zu merken
         openReviewDialog([savedKeypair], preflightResult, epoch);
         return;
       } catch (err) {
@@ -2882,7 +2880,6 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
 
       {showSecretModal && (
         <SecretKeyModal
-          initialSecretValues={secretModalPrefill}
           errorMessage={secretError}
           onCancel={closeSecretModal}
           thresholds={thresholdsForModal}
@@ -2890,6 +2887,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
           operationType="payment"
           requiredThreshold={requiredThreshold}
           forceSignerCount={forceSignerCount}
+          network={netLabel}
           allowedSigners={signersForModal}
           isProcessing={isProcessing}
           account={accountInfo}
@@ -2908,6 +2906,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
           onConfirm={async (collected, remember, options = {}) => {
             // Netzwechsel waehrend der Awaits unten: Ergebnis verwerfen (siehe networkEpochRef).
             const epoch = networkEpochRef.current;
+            const lockEpoch = getLockEpoch();
             try {
               setError('');
               setStatus('');
@@ -3011,6 +3010,10 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                   setSecretError('');
                   closeSecretModal();
                   setLastResultDialog(null);
+                  // Signatur angenommen: merken, wenn der Haken gesetzt war.
+                  if (await rememberAfterSuccess(publicKey, collected, remember, netLabel, lockEpoch) === 'insecure') {
+                    setError(t('secretKey:remember.insecureContextError'));
+                  }
                 } catch (mergeErr) {
                   let detail = mergeErr?.message || 'multisig.jobs.merge_failed';
                   if (mergeErr?.code === JOB_INTEGRITY_ERROR) detail = t('multisig:detail.integrity.title');
@@ -3024,21 +3027,11 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                 return;
               }
 
-              if (remember) {
-                try {
-                  // setSessionSecrets meldet die Aenderung selbst (stm-session-secret-changed)
-                  await rememberSessionSecrets(publicKey, collected, netLabel);
-                } catch (rememberErr) {
-                  // Fail-closed: crypto.subtle is unavailable (non-secure origin),
-                  // so the secret was NOT stored in plaintext - tell the user
-                  // clearly instead of silently pretending "remember" worked.
-                  if (rememberErr instanceof InsecureCryptoContextError) {
-                    showErrorMessage(t('secretKey:remember.insecureContextError'));
-                  }
-                }
-              }
+              // Gemerkt wird erst nach Erfolg (rememberPendingKeys: gesendet oder Job angelegt). Vorgemerkt erst direkt
+              // vor dem jeweiligen Schritt, damit ein abgebrochener Weg nichts liegen laesst.
+              pendingRememberRef.current = null;
+              const pendingRemember = { account: publicKey, collected, remember, network: netLabel, lockEpoch };
               const collectLocally = !!options.collectAllSignaturesLocally;
-              // Waehrend rememberSessionSecrets das Netz gewechselt: nichts mehr oeffnen.
               if (!isCurrentEpoch(epoch)) return;
               if (!isMultisig) {
                 const preflightResult = pendingLocalPreflight || await runPreflight();
@@ -3048,13 +3041,17 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                   return;
                 }
                 setPendingLocalPreflight(preflightResult);
+                pendingRememberRef.current = pendingRemember;
                 openReviewDialog(collected.map((s) => s.keypair), preflightResult, epoch);
                 setSecretError('');
                 closeSecretModal();
                 return;
               }
               if (isMultisig && !collectLocally) {
+                pendingRememberRef.current = pendingRemember;
                 await handlePrepareMultisig(collected.map((s) => s.keypair));
+                // Gemerkt wurde nur bei angelegtem Job; danach nichts fuer einen spaeteren Ablauf liegen lassen.
+                pendingRememberRef.current = null;
                 setSecretError('');
                 closeSecretModal();
                 return;
@@ -3072,11 +3069,13 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                 setSecretError(preflight.err || t('errors:unknown', 'Unbekannter Fehler'));
                 return;
               }
+              pendingRememberRef.current = pendingRemember;
               openReviewDialog(collected.map((s) => s.keypair), preflight, epoch);
               setSecretError('');
               closeSecretModal();
               return;
             } catch (e) {
+              pendingRememberRef.current = null;
               if (e instanceof AmbiguousSubmitResultError) {
                 // Eintrag ist gespeichert; der Kasten oben zeigt ihn.
                 bumpSendGuard();

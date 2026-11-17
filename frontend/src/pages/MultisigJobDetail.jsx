@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { getPendingMultisigJob, mergeSignedXdr, getMultisigJobChallenge, signMultisigJobChallenge, getMultisigJobAccessToken, declineMultisigJob } from '../utils/multisigApi.js';
 import MultisigJobStatusBadge from '../components/MultisigJobStatusBadge.jsx';
 import { Keypair, extractBaseAddress } from '@stellar/stellar-sdk';
-import { SESSION_LOCKED_EVENT, getSessionSecret, rememberSessionSecrets } from '../utils/sessionSecrets.js';
+import { SESSION_LOCKED_EVENT, getLockEpoch, getSessionSecret, rememberAfterSuccess } from '../utils/sessionSecrets.js';
 import { submitReasonText } from '../utils/multisig/submitReason.js';
 import { takeMultisigJobToken } from '../components/multisig/multisigNavigation.js';
 import { describeOperations, findOperationWarnings, formatAsset } from '../utils/multisig/describeOperations.js';
@@ -92,11 +92,16 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
   // Toter Job laut Liste: Secret-Key-Abfrage erst auf ausdruecklichen Wunsch zeigen.
   const [showUnlockAnyway, setShowUnlockAnyway] = useState(false);
   const [unlockInput, setUnlockInput] = useState('');
-  const [unlockRemember, setUnlockRemember] = useState(false);
+  // Merken ist in allen Key-Eingaben standardmaessig an (SECURITY.md, Entscheidung 14.11.); gemerkt wird erst
+  // nach Erfolg. Gilt fuer Oeffnen, Signieren und Ablehnen; der Widerruf nutzt den Haken im SecretKeyModal.
+  const [unlockRemember, setUnlockRemember] = useState(true);
+  const [signRemember, setSignRemember] = useState(true);
+  const [declineRemember, setDeclineRemember] = useState(true);
   const [unlockError, setUnlockError] = useState('');
   const [unlocking, setUnlocking] = useState(false);
   const [hasUnlockedKey, setHasUnlockedKey] = useState(false);
   const unlockedKeypairRef = useRef(null);
+  const pendingUnlockRememberRef = useRef(null);
   const forgetUnlockedKey = useCallback(() => {
     unlockedKeypairRef.current = null;
     setHasUnlockedKey(false);
@@ -242,32 +247,48 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
     }
     const scope = scopeRef.current;
     const key = tokenKey;
+    const lockEpoch = getLockEpoch();
     setUnlocking(true);
     try {
       const token = await requestToken(kp.secret());
       if (scope !== scopeRef.current) return;
       fetchedTokenRef.current = { key, token };
-      let remembered = false;
-      if (unlockRemember) {
-        try { remembered = !!(await rememberSessionSecrets(currentPublicKey, [{ keypair: kp }])); } catch { remembered = false; }
-      }
-      if (scope !== scopeRef.current) return;
-      if (!remembered) {
-        unlockedKeypairRef.current = kp;
-        setHasUnlockedKey(true);
-      }
+      // Der Key bleibt zuerst nur im Speicher dieser Ansicht. Gemerkt wird erst, wenn der Job geladen ist, und nur
+      // im Netz des Jobs (Review M-4: ein Testnet-Job, auf Mainnet geoeffnet, darf keinen Mainnet-Eintrag erzeugen).
+      unlockedKeypairRef.current = kp;
+      setHasUnlockedKey(true);
+      pendingUnlockRememberRef.current = unlockRemember ? { kp, scope, lockEpoch } : null;
       setUnlockInput('');
       setNeedsUnlock(false);
       await fetchJob();
-      if (unlockRemember && !remembered && scope === scopeRef.current) {
-        setInfo(t('multisig:detail.unlock.rememberFailed', 'Der Key konnte nicht in der Session gemerkt werden. Er bleibt nur in dieser Ansicht.'));
-      }
     } catch (e) {
       if (scope === scopeRef.current) setUnlockError(accessErrorText(e));
     } finally {
       if (scope === scopeRef.current) setUnlocking(false);
     }
   }, [unlocking, unlockInput, unlockRemember, currentPublicKey, tokenKey, requestToken, fetchJob, accessErrorText, t]);
+
+  // Merken nach dem Oeffnen (Haken beim Oeffnen), sobald der Job mit seinem Netz geladen ist. Unbekanntes Netz,
+  // Sperre seit dem Oeffnen oder anderer Job: nichts gemerkt, der Key bleibt nur in dieser Ansicht.
+  useEffect(() => {
+    const pending = pendingUnlockRememberRef.current;
+    if (!pending || !job) return;
+    pendingUnlockRememberRef.current = null;
+    if (pending.scope !== scopeRef.current) return;
+    let cancelled = false;
+    (async () => {
+      const res = await rememberAfterSuccess(currentPublicKey, [{ keypair: pending.kp }], true, parseJobNetwork(job.network), pending.lockEpoch);
+      if (cancelled || pending.scope !== scopeRef.current) return;
+      if (res === true) {
+        if (unlockedKeypairRef.current === pending.kp) forgetUnlockedKey();
+      } else if (res === 'insecure') {
+        setInfo(t('secretKey:remember.insecureContextError'));
+      } else {
+        setInfo(t('multisig:detail.unlock.rememberFailed', 'Der Key konnte nicht in der Session gemerkt werden. Er bleibt nur in dieser Ansicht.'));
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [job, currentPublicKey, forgetUnlockedKey, t]);
 
   const collectedSet = useMemo(() => new Set((job?.collectedSigners || []).map((s) => s.publicKey)), [job]);
   const shortPk = useCallback((pk) => {
@@ -405,6 +426,21 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
     const s = String(job?.status || '').toLowerCase();
     return s !== 'expired' && s !== 'obsolete_seq';
   }, [job]);
+  // Abgelehnt ist ein Endzustand nur in SKM: der Job nimmt keine Signaturen mehr an, die Transaktion bleibt im
+  // Netz aber gueltig, bis ihre Sequence verbraucht ist (Text job.statusHelp.rejected). Deshalb bleibt der
+  // Widerruf hier moeglich; ob die Sequence noch frei ist, prueft startRevoke vor dem Signieren. Meldet das
+  // Backend ledgerCheckPending (ADR 0014), ist die Sequence schon verbraucht: dann kein Widerruf.
+  // Review M-3: bei rejected nur, solange die Transaktion noch ausfuehrbar sein kann. Ist maxTime vorbei oder hat das
+  // Backend den Job schon geklaert (ledgerCheckedAt), wuerde ein Widerruf nur die naechste Sequence verbrauchen und
+  // damit z. B. einen neu angelegten Ersatz-Job ungueltig machen.
+  const rejectedTxExpired = useMemo(() => {
+    const tb = decodedTx ? (decodedTx.innerTransaction || decodedTx).timeBounds : null;
+    const maxTime = Number(tb?.maxTime || 0);
+    return maxTime > 0 && Date.now() / 1000 >= maxTime;
+  }, [decodedTx]);
+  const isRejected = String(job?.status || '').toLowerCase() === 'rejected';
+  const rejectedRevocable = isRejected && job?.ledgerCheckPending !== true && !job?.ledgerCheckedAt && !rejectedTxExpired;
+  const revokeAvailable = !isFinalState || rejectedRevocable;
 
   const jobNetwork = parseJobNetwork(job?.network);
 
@@ -518,6 +554,10 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
       setRevokeError(t(REVOKE_BLOCKING_ISSUES[blocking.code]));
       return;
     }
+    if (isFinalState && !rejectedRevocable) {
+      setRevokeError(t('multisig:detail.revoke.rejectedExpired'));
+      return;
+    }
     const seqInfo = getJobSequenceInfo(decodedTx);
     // Alles aus dem Netz des Jobs, nie aus dem globalen Netz: Server mit explizitem Netz
     // (getHorizonServer(Mainnet-URL) wuerde das Netz aus localStorage nehmen).
@@ -553,13 +593,14 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
     } finally {
       setRevoking(false);
     }
-  }, [decodedTx, describeRevokeError, job, jobCheck, jobNetwork, reportConsumed, t]);
+  }, [decodedTx, describeRevokeError, isFinalState, job, jobCheck, jobNetwork, rejectedRevocable, reportConsumed, t]);
 
   // Schritt 2: mit den im SecretKeyModal gesammelten Signern signieren und senden.
   // Die Secrets bleiben im Speicher dieses Aufrufs, sie werden weder gespeichert noch
   // an das Backend geschickt - nur die signierte Transaktion geht an Horizon.
-  const executeRevoke = useCallback(async (collected) => {
+  const executeRevoke = useCallback(async (collected, remember = false) => {
     if (!revokePrep || revokeInFlightRef.current) return;
+    const lockEpoch = getLockEpoch();
     revokeInFlightRef.current = true;
     try {
       setRevoking(true);
@@ -595,8 +636,11 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
       setRevokedHash(hash);
       setShowRevokeSecretModal(false);
       setRevokePrep(null);
+      // Widerruf gesendet: Keys merken, wenn der Haken gesetzt war (nur im Netz des Jobs).
+      const rememberResult = await rememberAfterSuccess(revokePrep.sourceAccountId, collected, remember, revokePrep.network, lockEpoch);
       await fetchJob();
       setInfo(t('multisig:detail.revoke.success', { hash }));
+      if (rememberResult === 'insecure') setError(t('secretKey:remember.insecureContextError'));
     } catch (e) {
       console.error('[SKM] multisig job revocation failed', e);
       setRevokeError(describeRevokeError(e));
@@ -641,8 +685,9 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
     }
   }, [importXdr, importBlocked, jobId, resolveToken, t]);
 
-  const signWithSecret = useCallback(async (secret) => {
+  const signWithSecret = useCallback(async (secret, remember = false) => {
     if (!job || signingBlocked) return;
+    const lockEpoch = getLockEpoch();
     if (!canCurrentSign) {
       setError(t('multisig:detail.signatures.missing', 'fehlt'));
       return;
@@ -698,6 +743,13 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
       setShowSecretPrompt(false);
       setSecretInput('');
       forgetUnlockedKey();
+      // Signatur angenommen: eingegebenen Key merken, wenn der Haken gesetzt war, nur im Netz des Jobs (unbekannt:
+      // nichts) und nur, wenn er Signer des Jobs mit Gewicht ist (Review M-13). Erfolg heisst hier: Signatur
+      // angenommen, auch wenn das danach ausgeloeste Senden scheitert oder unklar ist.
+      const isJobSigner = (job.signers || []).some((sg) => sg.publicKey === kp.publicKey() && Number(sg.weight || 0) > 0);
+      if (isJobSigner && await rememberAfterSuccess(currentPublicKey, [{ keypair: kp }], remember, jobNetwork, lockEpoch) === 'insecure') {
+        setError(t('secretKey:remember.insecureContextError'));
+      }
     } catch (e) {
       if (e?.code === 'no_public_key') {
         setError(t('multisig:detail.noAccessToken', 'Kein Zugriffstoken verfügbar. Bitte zuerst das Konto laden, das Signer dieses Auftrags ist.'));
@@ -718,7 +770,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
     } finally {
       setLoading(false);
     }
-  }, [job, jobId, canCurrentSign, signingBlocked, t, resolveToken, liquiditySubmitText, forgetUnlockedKey]);
+  }, [job, jobId, canCurrentSign, signingBlocked, t, resolveToken, liquiditySubmitText, forgetUnlockedKey, currentPublicKey, jobNetwork]);
 
   const handleSignWithSession = useCallback(async () => {
     if (!job || signingBlocked) return;
@@ -750,6 +802,16 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
   const [declineError, setDeclineError] = useState('');
   // Sofortige Sperre gegen Doppelklick: der State greift erst nach dem naechsten Render.
   const declineInFlightRef = useRef(false);
+  // Sperren leert auch eingetippte Keys in den Eingabefeldern dieser Ansicht (wie im Key-Dialog, Review M-2).
+  useEffect(() => {
+    const onLocked = () => {
+      setSecretInput('');
+      setDeclineInput('');
+      setUnlockInput('');
+    };
+    window.addEventListener(SESSION_LOCKED_EVENT, onLocked);
+    return () => window.removeEventListener(SESSION_LOCKED_EVENT, onLocked);
+  }, []);
   useEffect(() => {
     setShowDecline(false);
     setDeclineInput('');
@@ -792,12 +854,18 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
       return;
     }
     const scope = scopeRef.current;
+    const lockEpoch = getLockEpoch();
     setDeclining(true);
     try {
       const { challenge, signature } = await signFreshChallenge(kp.secret(), 'decline');
       const result = await withTimeout(declineMultisigJob(jobId, currentPublicKey, signature, challenge));
       if (scope !== scopeRef.current) return;
       if (!stored) forgetUnlockedKey();
+      // Nur ein hier eingetippter Key wird gemerkt (gemerkte und beim Oeffnen eingegebene sind schon behandelt).
+      const typed = !stored && !!declineInput.trim();
+      if (typed && await rememberAfterSuccess(currentPublicKey, [{ keypair: kp }], declineRemember, jobNetwork, lockEpoch) === 'insecure') {
+        setDeclineError(t('secretKey:remember.insecureContextError'));
+      }
       setShowDecline(false);
       setDeclineInput('');
       await fetchJob();
@@ -1230,6 +1298,10 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
                 autoComplete="off"
                 spellCheck="false"
               />
+              <label className="flex items-center gap-2 text-xs">
+                <input type="checkbox" checked={signRemember} onChange={(e) => setSignRemember(e.target.checked)} />
+                {t('multisig:detail.unlock.remember', 'In dieser Session merken (verschlüsselt, gelöscht nach Sperren, Inaktivität oder Neuladen)')}
+              </label>
               <div className="flex justify-end gap-2">
                 <button
                   type="button"
@@ -1242,7 +1314,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
                 <button
                   type="button"
                   className="px-3 py-1 rounded-sm bg-green-600 text-white hover:bg-green-700 text-sm disabled:opacity-50"
-                  onClick={() => signWithSecret(secretInput.trim())}
+                  onClick={() => signWithSecret(secretInput.trim(), signRemember)}
                   disabled={loading || !secretInput.trim() || signingBlocked}
                 >
                   {t('multisig:detail.secretPrompt.signNow', 'Jetzt signieren')}
@@ -1297,6 +1369,12 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
                   spellCheck="false"
                 />
               )}
+              {declineNeedsKey && (
+                <label className="flex items-center gap-2 text-xs">
+                  <input type="checkbox" checked={declineRemember} onChange={(e) => setDeclineRemember(e.target.checked)} />
+                  {t('multisig:detail.unlock.remember', 'In dieser Session merken (verschlüsselt, gelöscht nach Sperren, Inaktivität oder Neuladen)')}
+                </label>
+              )}
               {declineError && <div className="text-xs text-red-700 dark:text-red-300" role="alert">{declineError}</div>}
               <div className="flex justify-end gap-2">
                 <button
@@ -1317,7 +1395,10 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
               </div>
             </form>
           )}
-          {canCurrentSign && !isFinalState && sequenceLooksAlive && !revokedHash && decodedTx && (
+          {canCurrentSign && isRejected && !rejectedRevocable && job?.ledgerCheckPending !== true && (
+            <p className="text-xs text-gray-700 dark:text-gray-300" data-testid="revoke-not-needed">{t('multisig:detail.revoke.rejectedExpired')}</p>
+          )}
+          {canCurrentSign && revokeAvailable && sequenceLooksAlive && !revokedHash && decodedTx && (
             <div className="border border-red-300 dark:border-red-700 rounded-sm p-3 space-y-2">
               <div className="text-sm font-semibold">{t('multisig:detail.revoke.title')}</div>
               <p className="text-xs text-gray-700 dark:text-gray-300">{t('multisig:detail.revoke.description')}</p>
@@ -1376,7 +1457,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
           )}
           {showRevokeSecretModal && revokePrep && (
             <SecretKeyModal
-              onConfirm={(collected) => { void executeRevoke(collected); }}
+              onConfirm={(collected, remember) => { void executeRevoke(collected, remember); }}
               onCancel={() => { setShowRevokeSecretModal(false); setRevokeError(''); }}
               errorMessage={revokeError}
               thresholds={revokePrep.account?.thresholds}
@@ -1385,7 +1466,8 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey, listS
               requiredThreshold={revokePrep.requiredThreshold}
               isProcessing={revoking}
               account={revokePrep.account}
-              allowRememberSession={false}
+              accountId={revokePrep.sourceAccountId}
+              network={revokePrep.network}
             />
           )}
           {isSubmitUnclear && (

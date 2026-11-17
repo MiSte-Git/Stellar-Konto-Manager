@@ -11,7 +11,11 @@ import { SESSION_LOCKED_EVENT } from '../../utils/sessionSecrets.js';
 // Review N21-1 bis N21-4 und Sicherung des Secret Keys auf "Neues Konto erstellen".
 // Grundsatz: Der Secret Key eines Kontos, fuer das eine Aktivierung gesendet wurde oder
 // gesendet worden sein koennte, verschwindet nicht, bevor der Nutzer die Sicherung bestaetigt.
-const hoisted = vi.hoisted(() => ({}));
+const hoisted = vi.hoisted(() => ({ rememberMock: vi.fn() }));
+vi.mock('../../utils/sessionSecrets.js', async (importOriginal) => ({
+  ...(await importOriginal()),
+  rememberAfterSuccess: (...args) => hoisted.rememberMock(...args),
+}));
 vi.mock('../../utils/stellar/stellarUtils.js', async (importOriginal) => (await import('../../test/horizonMock.js')).withNetworkServer({
   ...(await importOriginal()),
   getHorizonServer: () => ({
@@ -42,22 +46,26 @@ vi.mock('../../utils/stellar/stellarUtils.js', async (importOriginal) => (await 
 vi.mock('../../components/SecretKeyModal.jsx', async () => {
   const { Keypair } = await import('@stellar/stellar-sdk');
   return {
-    default: ({ onConfirm, onCancel }) => (
+    default: (props) => {
+      const { onConfirm, onCancel } = props;
+      hoisted.modalProps = props;
+      return (
       <div>
         <button
           type="button"
           data-testid="funder-confirm"
           onClick={() => {
-            const kp = Keypair.random();
+            const kp = hoisted.funderSecret ? Keypair.fromSecret(hoisted.funderSecret) : Keypair.random();
             hoisted.funderPub = kp.publicKey();
-            onConfirm([{ keypair: kp, publicKey: kp.publicKey(), weight: 1 }]);
+            onConfirm([{ keypair: kp, publicKey: kp.publicKey(), weight: 1 }], true);
           }}
         >
           confirm
         </button>
         <button type="button" data-testid="funder-cancel" onClick={onCancel}>cancel</button>
       </div>
-    ),
+      );
+    },
   };
 });
 
@@ -130,6 +138,10 @@ beforeEach(() => {
   hoisted.loadGate = null;
   hoisted.loadError = null;
   hoisted.txs = [];
+  hoisted.modalProps = null;
+  hoisted.funderSecret = '';
+  hoisted.rememberMock.mockReset();
+  hoisted.rememberMock.mockResolvedValue(true);
   vi.spyOn(globalThis, 'fetch');
   // Rueckfragen (neue Schluessel ersetzen) bestaetigen
   vi.spyOn(window, 'confirm').mockReturnValue(true);
@@ -338,6 +350,84 @@ describe('N21-1: Vermerk bleibt, kein zweiter Versand nach unklarem Ausgang', ()
     await act(async () => { fireEvent.click(createButton(view)); });
     await waitFor(() => expect(hoisted.submitted).toBe(2));
     expect(friendbotCalls()).toHaveLength(1);
+  });
+});
+
+describe('Funder-Key (17.11.)', () => {
+  it('Mainnet: Funder-Dialog prueft nicht gegen die Signer des neuen Kontos und merkt den Funder-Key nach Erfolg', async () => {
+    window.localStorage.setItem('SKM_NETWORK', 'PUBLIC');
+    const view = renderPage();
+    await chooseMode(view, 'multisig');
+    await generate(view);
+    await enterCosigner(view);
+    await confirmBackup(view);
+    await act(async () => { fireEvent.click(createButton(view)); });
+    await act(async () => { fireEvent.click(await view.findByTestId('funder-confirm')); });
+    // Vorher bekam der Dialog Master und Co-Signer des neuen Kontos und lehnte jeden anderen Funder ab.
+    expect(hoisted.modalProps.signers).toEqual([]);
+    expect(hoisted.modalProps.account).toBeUndefined();
+    expect(hoisted.modalProps.network).toBe('PUBLIC');
+    // Die Aktivierung (Funder-Transaktion) ist erfolgreich; nur danach wird der Funder-Key gemerkt.
+    await waitFor(() => expect(view.getByTestId('create-activation').textContent).toContain(tx('multisigCreate:activation.statusSuccess')));
+    await waitFor(() => expect(hoisted.rememberMock).toHaveBeenCalledTimes(1));
+    const [account, collected, remember, network] = hoisted.rememberMock.mock.calls[0];
+    expect(account).toBe(hoisted.funderPub);
+    expect(collected).toHaveLength(1);
+    expect(collected[0].publicKey).toBe(hoisted.funderPub);
+    expect(remember).toBe(true);
+    expect(network).toBe('PUBLIC');
+  });
+
+  const alreadyExists = () => { throw Object.assign(new Error('http 400'), { response: { status: 400, data: { extras: { result_codes: { transaction: 'tx_failed', operations: ['op_already_exists'] } } } } }); };
+
+  it('Review M-6: Konto existierte schon (op_already_exists), Funder-Key wird nicht gemerkt', async () => {
+    window.localStorage.setItem('SKM_NETWORK', 'PUBLIC');
+    hoisted.submitImpl = async () => alreadyExists();
+    const view = renderPage();
+    await generate(view);
+    await confirmBackup(view);
+    await clickActivateOnly(view);
+    await act(async () => { fireEvent.click(await view.findByTestId('funder-confirm')); });
+    await waitFor(() => expect(view.container.textContent).toContain(tx('multisigCreate:alreadyActive')));
+    expect(hoisted.rememberMock).not.toHaveBeenCalled();
+  });
+
+  it('Review M-7: der Schluessel des neuen Kontos als Funder wird nie gemerkt', async () => {
+    window.localStorage.setItem('SKM_NETWORK', 'PUBLIC');
+    const view = renderPage();
+    const { sec } = await generate(view);
+    hoisted.funderSecret = sec;
+    await confirmBackup(view);
+    await clickActivateOnly(view);
+    await act(async () => { fireEvent.click(await view.findByTestId('funder-confirm')); });
+    await waitFor(() => expect(hoisted.submitted).toBeGreaterThanOrEqual(1));
+    await act(async () => { await new Promise((r) => setTimeout(r, 20)); });
+    expect(hoisted.rememberMock).not.toHaveBeenCalled();
+  });
+
+  it('Review M-8: Funder-Dialog nennt den Zweck; tx_bad_auth erscheint verstaendlich', async () => {
+    window.localStorage.setItem('SKM_NETWORK', 'PUBLIC');
+    hoisted.submitImpl = async () => { throw Object.assign(new Error('http 400'), { response: { status: 400, data: { extras: { result_codes: { transaction: 'tx_bad_auth' } } } } }); };
+    const view = renderPage();
+    await generate(view);
+    await confirmBackup(view);
+    await clickActivateOnly(view);
+    await act(async () => { fireEvent.click(await view.findByTestId('funder-confirm')); });
+    expect(hoisted.modalProps.subtitle).toBe(tx('multisigCreate:funder.subtitle'));
+    await waitFor(() => expect(view.container.textContent).toContain(tx('multisigCreate:funder.badAuth')));
+    expect(hoisted.rememberMock).not.toHaveBeenCalled();
+  });
+
+  it('Gegenprobe: Aktivierung scheitert, Funder-Key wird nicht gemerkt', async () => {
+    window.localStorage.setItem('SKM_NETWORK', 'PUBLIC');
+    hoisted.submitImpl = async () => { throw new Error('timeout'); };
+    const view = renderPage();
+    await generate(view);
+    await confirmBackup(view);
+    await clickActivateOnly(view);
+    await act(async () => { fireEvent.click(await view.findByTestId('funder-confirm')); });
+    await waitFor(() => expect(view.getByTestId('create-activation').textContent).toContain(tx('multisigCreate:activation.statusAmbiguous')));
+    expect(hoisted.rememberMock).not.toHaveBeenCalled();
   });
 });
 

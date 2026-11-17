@@ -4,7 +4,11 @@ import useLiquidityAction from '../useLiquidityAction.js';
 import { resetServerNetworkCalls, serverNetworkCalls } from '../../../../test/horizonMock.js';
 import { resetAccountSendGuardMemory } from '../../../../utils/submitGuard/accountSendGuard.js';
 
-const hoisted = vi.hoisted(() => ({ submit: vi.fn() }));
+const hoisted = vi.hoisted(() => ({ submit: vi.fn(), remember: vi.fn() }));
+vi.mock('../../../../utils/sessionSecrets.js', async (importOriginal) => ({
+  ...(await importOriginal()),
+  rememberAfterSuccess: (...args) => hoisted.remember(...args),
+}));
 
 vi.mock('../../../../utils/stellar/stellarUtils.js', async (importOriginal) => (await import('../../../../test/horizonMock.js')).withNetworkServer({
   ...(await importOriginal()),
@@ -37,6 +41,26 @@ describe('useLiquidityAction send', () => {
   beforeEach(() => {
     hoisted.submit.mockReset();
     hoisted.submit.mockResolvedValue({ hash: 'first' });
+    hoisted.remember.mockReset();
+    hoisted.remember.mockResolvedValue(true);
+  });
+
+  it('merkt die Keys nach erfolgreichem Senden mit dem Haken aus dem Dialog, im Netz des Dialogs', async () => {
+    const { result } = renderHook(() => useLiquidityAction(hookProps));
+    expect(result.current.modalProps.network).toBe('PUBLIC');
+    expect(result.current.modalProps.accountId).toBe(owner.publicKey());
+    act(() => { result.current.begin({}, async () => ({ tx: buildTx() })); });
+    const collected = [{ keypair: owner }];
+    await act(async () => { await result.current.modalProps.onConfirm(collected, true); });
+    expect(hoisted.remember).toHaveBeenCalledWith(owner.publicKey(), collected, true, 'PUBLIC', expect.any(Number));
+  });
+
+  it('Gegenprobe: eindeutig abgelehnt, nichts gemerkt', async () => {
+    const { result } = renderHook(() => useLiquidityAction(hookProps));
+    hoisted.submit.mockRejectedValueOnce(Object.assign(new Error('rejected'), { response: { status: 400, data: { extras: { result_codes: { transaction: 'tx_bad_seq' } } } } }));
+    act(() => { result.current.begin({}, async () => ({ tx: buildTx() })); });
+    await act(async () => { await result.current.modalProps.onConfirm([{ keypair: owner }], true); });
+    expect(hoisted.remember).not.toHaveBeenCalled();
   });
 
   it('sendet bei zwei gleichzeitigen Bestaetigungen (Doppelklick) genau einmal: work laeuft nur einmal, nur eine Transaktion wird signiert', async () => {

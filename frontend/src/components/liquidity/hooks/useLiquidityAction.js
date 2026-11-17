@@ -1,3 +1,4 @@
+import { getLockEpoch, rememberAfterSuccess } from '../../../utils/sessionSecrets.js';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { passphraseFor } from '../../../config/networks.js';
 import { getHorizonServerForNetwork } from '../../../utils/stellar/stellarUtils.js';
@@ -156,8 +157,9 @@ export default function useLiquidityAction({ publicKey, network, poolId, operati
     setModalError('');
     setNotice('');
     setSigningMode({ local, onBackToSelection });
-    beginAction(operationType, payload, async (collected) => {
+    beginAction(operationType, payload, async (collected, remember = false) => {
       if (inFlightRef.current) return;
+      const lockEpoch = getLockEpoch();
       inFlightRef.current = true;
       setProcessing(true);
       setModalError('');
@@ -196,12 +198,15 @@ export default function useLiquidityAction({ publicKey, network, poolId, operati
         });
         const outcomeHash = res?.hash || res?.id || '';
         guardRef.current?.bump?.();
+        // Gesendet: Keys merken, wenn der Haken gesetzt war (bei unklarem Ergebnis nicht, siehe catch).
+        const rememberResult = await rememberAfterSuccess(publicKey, collected, remember, network, lockEpoch);
         if (!mountedRef.current) {
           reportInBackground({ type: 'success', hash: outcomeHash });
           return;
         }
         closeModal();
         setResult({ hash: outcomeHash });
+        if (rememberResult === 'insecure') setNotice(t('secretKey:remember.insecureContextError'));
         onDoneRef.current?.();
       } catch (err) {
         if (err instanceof WorkAbandoned) return;
@@ -310,7 +315,7 @@ export default function useLiquidityAction({ publicKey, network, poolId, operati
   const clearExportedXdr = useCallback(() => setExportedXdr(null), []);
 
   const modalProps = {
-    onConfirm: (collected) => pendingAction?.execute?.(collected),
+    onConfirm: (collected, remember) => pendingAction?.execute?.(collected, remember),
     onCancel: () => {
       // Beendet das Warten am Lock; ein schon laufendes Senden (POST) laesst sich nicht abbrechen.
       cancelWaiting();
@@ -323,6 +328,8 @@ export default function useLiquidityAction({ publicKey, network, poolId, operati
     thresholds: data.account?.thresholds || null,
     signers: data.account?.signers || [],
     account: data.account,
+    accountId: publicKey,
+    network,
     operationType,
     requiredThreshold: getRequiredThreshold(operationType, data.account?.thresholds || {}),
     // Multisig-Option "Alle Signaturen lokal eingeben": wie SendPayment im Kontext 'local'.

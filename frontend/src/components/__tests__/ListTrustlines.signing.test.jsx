@@ -14,7 +14,11 @@ const ISSUER = 'GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN';
 
 const other = Keypair.random();
 // F-15: Signer des Kontos laut Horizon und die im Key-Dialog eingegebenen Keys, je Test einstellbar.
-const hoisted = vi.hoisted(() => ({ failSigning: false, submits: [], extraSigners: [], collected: null }));
+const hoisted = vi.hoisted(() => ({ failSigning: false, submits: [], extraSigners: [], collected: null, rememberMock: vi.fn() }));
+vi.mock('../../utils/sessionSecrets.js', async (importOriginal) => ({
+  ...(await importOriginal()),
+  rememberAfterSuccess: hoisted.rememberMock,
+}));
 vi.mock('../../utils/signers/signTransaction.js', async (importOriginal) => {
   const orig = await importOriginal();
   return {
@@ -44,7 +48,7 @@ vi.mock('../../utils/stellar/fees.js', async (importOriginal) => ({
 }));
 vi.mock('../SecretKeyModal.jsx', () => ({
   default: ({ onConfirm }) => (
-    <button type="button" data-testid="secret-confirm" onClick={() => onConfirm(hoisted.collected || [{ keypair: master, publicKey: PK, weight: 1 }])}>confirm</button>
+    <button type="button" data-testid="secret-confirm" onClick={() => onConfirm(hoisted.collected || [{ keypair: master, publicKey: PK, weight: 1 }], true)}>confirm</button>
   ),
 }));
 
@@ -78,6 +82,7 @@ describe('ListTrustlines: Signierfehler beim Anlegen (K3)', () => {
     hoisted.submits.length = 0;
     hoisted.extraSigners = [];
     hoisted.collected = null;
+    hoisted.rememberMock.mockReset().mockResolvedValue(true);
   });
   afterEach(() => {
     setMainMounted(false);
@@ -99,6 +104,20 @@ describe('ListTrustlines: Signierfehler beim Anlegen (K3)', () => {
     await addTrustline();
     await waitFor(() => expect(hoisted.submits).toHaveLength(1));
     expect(hoisted.submits[0].signatures).toHaveLength(1);
+    // Merken nach Erfolg (17.11.): Haken wird an den Helfer weitergegeben, im Netz der Ansicht.
+    await waitFor(() => expect(hoisted.rememberMock).toHaveBeenCalledTimes(1));
+    expect(hoisted.rememberMock.mock.calls[0][0]).toBe(PK);
+    expect(hoisted.rememberMock.mock.calls[0][2]).toBe(true);
+    expect(hoisted.rememberMock.mock.calls[0][3]).toBe('TESTNET');
+  });
+
+  it('Gegenprobe Merken: Signierfehler, nichts gemerkt', async () => {
+    hoisted.failSigning = true;
+    const err = vi.spyOn(console, 'error').mockImplementation(() => {});
+    await addTrustline();
+    await screen.findAllByText(i18n.t('errors:submitTransaction.failed.signingFailed'), { exact: false });
+    expect(hoisted.rememberMock).not.toHaveBeenCalled();
+    err.mockRestore();
   });
 
   // F-15 (Review Fable): Angehaengt werden nur Signaturen von Keys mit Gewicht (collectEffectiveSigners aus

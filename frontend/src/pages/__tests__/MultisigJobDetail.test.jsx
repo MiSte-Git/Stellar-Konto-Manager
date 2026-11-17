@@ -25,6 +25,8 @@ const hoisted = vi.hoisted(() => ({
   getJobMock: vi.fn(),
   mergeMock: vi.fn(),
   sessionSecretMock: vi.fn(),
+  rememberedMock: vi.fn(),
+  rememberMock: vi.fn(),
   loadAccountMock: vi.fn(),
   submitMock: vi.fn(),
   rootMock: vi.fn(),
@@ -47,6 +49,8 @@ vi.mock('../../utils/multisigApi.js', async (importOriginal) => ({
 vi.mock('../../utils/sessionSecrets.js', async (importOriginal) => ({
   ...(await importOriginal()),
   getSessionSecret: hoisted.sessionSecretMock,
+  getRememberedSecretsFor: hoisted.rememberedMock,
+  rememberAfterSuccess: hoisted.rememberMock,
 }));
 
 vi.mock('../../utils/stellar/stellarUtils.js', async (importOriginal) => (await import('../../test/horizonMock.js')).withNetworkServer({
@@ -134,6 +138,8 @@ beforeEach(() => {
   hoisted.submitMock.mockResolvedValue({ hash: 'revokehash' });
   hoisted.rootMock.mockResolvedValue({ network_passphrase: Networks.TESTNET });
   hoisted.sessionSecretMock.mockResolvedValue('');
+  hoisted.rememberedMock.mockResolvedValue([]);
+  hoisted.rememberMock.mockResolvedValue(true);
   hoisted.mergeMock.mockImplementation(async () => makeJob());
 });
 
@@ -218,6 +224,73 @@ describe('Multisig-Job widerrufen (P2.3)', () => {
     expect(screen.queryByRole('button', { name: 'Job widerrufen' })).not.toBeInTheDocument();
   });
 
+  it('bietet den Widerruf auch fuer abgelehnte Jobs an und sendet bumpSequence', async () => {
+    hoisted.getJobMock.mockImplementation(async () => makeJob({ status: 'rejected', collectedWeight: 1, declinedSigners: [{ publicKey: SIGNER_B.publicKey }] }));
+    await openSecretModal();
+    typeSecrets(SIGNER_A.secret);
+    submitSecretModal();
+    await waitFor(() => expect(hoisted.submitMock).toHaveBeenCalledTimes(1));
+    const tx = hoisted.submitMock.mock.calls[0][1];
+    expect(tx.operations[0].type).toBe('bumpSequence');
+    expect(tx.operations[0].bumpTo).toBe('101');
+  });
+
+  it.each([
+    ['expired', {}],
+    ['submitted_success', {}],
+    ['submitted_failed', {}],
+    ['rejected', { ledgerCheckPending: true }],
+  ])('Gegenprobe: kein Widerruf bei %s %j', async (status, extra) => {
+    hoisted.getJobMock.mockImplementation(async () => ({ ...makeJob({ status }), ...extra }));
+    renderPage();
+    await waitFor(() => expect(hoisted.getJobMock).toHaveBeenCalled());
+    await screen.findByText(/^Status:/);
+    expect(screen.queryByRole('button', { name: 'Job widerrufen' })).not.toBeInTheDocument();
+  });
+
+  it('Review M-3: abgelehnt mit abgelaufener maxTime: kein Widerruf, Hinweis statt Knopf', async () => {
+    const past = Math.floor(Date.now() / 1000) - 3600;
+    const tx = new TransactionBuilder(new Account(SOURCE, '100'), { fee: '1000', networkPassphrase: Networks.TESTNET, timebounds: { minTime: 0, maxTime: past } })
+      .addOperation(Operation.payment({ destination: SIGNER_A.publicKey, asset: Asset.native(), amount: '1' }))
+      .build();
+    hoisted.getJobMock.mockImplementation(async () => makeJob({ status: 'rejected', txXdr: tx.toXDR(), txHash: txHashHex(tx) }));
+    renderPage();
+    expect(await screen.findByTestId('revoke-not-needed')).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Job widerrufen' })).not.toBeInTheDocument();
+  });
+
+  it('Review M-3: abgelehnt und vom Backend schon geklaert (ledgerCheckedAt): kein Widerruf', async () => {
+    hoisted.getJobMock.mockImplementation(async () => makeJob({ status: 'rejected', ledgerCheckedAt: '2026-11-17T10:00:00Z' }));
+    renderPage();
+    expect(await screen.findByTestId('revoke-not-needed')).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Job widerrufen' })).not.toBeInTheDocument();
+  });
+
+  it('Gegenprobe M-3: abgelehnt, gueltig, nicht geklaert: Widerruf ohne Hinweis', async () => {
+    hoisted.getJobMock.mockImplementation(async () => makeJob({ status: 'rejected' }));
+    renderPage();
+    expect(await screen.findByRole('button', { name: 'Job widerrufen' })).toBeInTheDocument();
+    expect(screen.queryByTestId('revoke-not-needed')).toBeNull();
+  });
+
+  it('Review M-1: Sperre waehrend des Widerrufs: nicht gemerkt (Epoche vom Bestaetigen)', async () => {
+    let release;
+    hoisted.submitMock.mockImplementation(() => new Promise((resolve) => { release = () => resolve({ hash: 'revokehash' }); }));
+    await openSecretModal();
+    typeSecrets(SIGNER_A.secret);
+    submitSecretModal();
+    await waitFor(() => expect(release).toBeTypeOf('function'));
+    const { getLockEpoch } = await import('../../utils/sessionSecrets.js');
+    const epochAtConfirm = getLockEpoch();
+    const { clearAllSessionSecrets } = await import('../../utils/sessionSecrets.js');
+    act(() => { clearAllSessionSecrets(); });
+    release();
+    await waitFor(() => expect(hoisted.rememberMock).toHaveBeenCalledTimes(1));
+    // Uebergeben wird die Epoche vom Bestaetigen; rememberAfterSuccess merkt damit nichts (Unit-Test sessionSecrets).
+    expect(hoisted.rememberMock.mock.calls[0][4]).toBe(epochAtConfirm);
+    expect(getLockEpoch()).toBe(epochAtConfirm + 1);
+  });
+
   it('zaehlt denselben Key nur einmal (kein doppeltes Gewicht)', async () => {
     hoisted.loadAccountMock.mockImplementation(async () => horizonAccount('100', 2));
     await openSecretModal();
@@ -262,9 +335,47 @@ describe('Multisig-Job widerrufen (P2.3)', () => {
     expect(hoisted.submitMock).toHaveBeenCalledTimes(1);
   });
 
-  it('bietet im Widerruf kein Merken des Secret Keys an', async () => {
+  it('bietet im Widerruf Merken an (standardmaessig an) und belegt gemerkte Keys vor', async () => {
+    hoisted.rememberedMock.mockResolvedValue([SIGNER_A.secret]);
     await openSecretModal();
-    expect(screen.queryByText(/Für diese Sitzung merken|Remember for this session/i)).not.toBeInTheDocument();
+    expect(screen.getByRole('checkbox', { name: /Für diese Sitzung merken|Remember for this session/i })).toBeChecked();
+    await waitFor(() => expect(document.querySelector('input[type="password"]').value).toBe(SIGNER_A.secret));
+    // Gesucht wird im Netz des Jobs, nur unter den aktiven Signern des Kontos (schwerste zuerst).
+    const [account, keys, network] = hoisted.rememberedMock.mock.calls.at(-1);
+    expect(account).toBe(SOURCE);
+    expect(keys).toEqual(expect.arrayContaining([SIGNER_A.publicKey, SIGNER_B.publicKey]));
+    expect(keys).not.toContain(SOURCE);
+    expect(network).toBe('testnet');
+    submitSecretModal();
+    await waitFor(() => expect(hoisted.submitMock).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(hoisted.rememberMock).toHaveBeenCalledTimes(1));
+    expect(hoisted.rememberMock.mock.calls[0][0]).toBe(SOURCE);
+    expect(hoisted.rememberMock.mock.calls[0][1][0].keypair.publicKey()).toBe(SIGNER_A.publicKey);
+    expect(hoisted.rememberMock.mock.calls[0][2]).toBe(true);
+    expect(hoisted.rememberMock.mock.calls[0][3]).toBe('testnet');
+  });
+
+  it('merkt im Widerruf nichts, wenn der Haken entfernt ist oder das Senden scheitert', async () => {
+    await openSecretModal();
+    fireEvent.click(screen.getByRole('checkbox', { name: /Für diese Sitzung merken|Remember for this session/i }));
+    typeSecrets(SIGNER_A.secret);
+    submitSecretModal();
+    await waitFor(() => expect(hoisted.submitMock).toHaveBeenCalledTimes(1));
+    await screen.findByText(/Job widerrufen\. Transaktion revokehash/);
+    // rememberAfterSuccess merkt bei remember=false nichts (Unit-Test in sessionSecrets.test.js).
+    expect(hoisted.rememberMock.mock.calls.every((c) => c[2] === false)).toBe(true);
+  });
+
+  it('Gegenprobe: Senden scheitert, Key wird trotz Haken nicht gemerkt', async () => {
+    hoisted.submitMock.mockRejectedValue(new Error('boom'));
+    const errSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    await openSecretModal();
+    typeSecrets(SIGNER_A.secret);
+    submitSecretModal();
+    await waitFor(() => expect(hoisted.submitMock).toHaveBeenCalledTimes(1));
+    await screen.findByText(/boom|Widerruf fehlgeschlagen/i);
+    expect(hoisted.rememberMock).not.toHaveBeenCalled();
+    errSpy.mockRestore();
   });
 
   it('sperrt den Widerruf bei unbekanntem Netzwerk oder falschem Hash', async () => {
@@ -813,6 +924,34 @@ describe('Fremdes Quellkonto einer Operation', () => {
     expect(signButton()).toBeEnabled();
     fireEvent.click(signButton());
     await waitFor(() => expect(hoisted.mergeMock).toHaveBeenCalledTimes(1));
+  });
+
+  it('merkt einen beim Signieren eingetippten Key standardmaessig erst nach dem Merge', async () => {
+    renderPage();
+    fireEvent.click(await screen.findAllByRole('button', { name: 'Jetzt signieren' }).then((b) => b[0]));
+    await waitFor(() => expect(document.querySelector('input[type="password"]')).not.toBeNull());
+    expect(screen.getByRole('checkbox', { name: /In dieser Session merken/ })).toBeChecked();
+    fireEvent.change(document.querySelector('input[type="password"]'), { target: { value: SIGNER_A.secret } });
+    fireEvent.click(screen.getAllByRole('button', { name: 'Jetzt signieren' })[1]);
+    await waitFor(() => expect(hoisted.mergeMock).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(hoisted.rememberMock).toHaveBeenCalledTimes(1));
+    const [account, collected, remember, network] = hoisted.rememberMock.mock.calls[0];
+    expect(account).toBe(SIGNER_A.publicKey);
+    expect(collected[0].keypair.publicKey()).toBe(SIGNER_A.publicKey);
+    expect(remember).toBe(true);
+    expect(network).toBe('testnet');
+  });
+
+  it('Gegenprobe: Merge scheitert, eingetippter Key wird nicht gemerkt', async () => {
+    hoisted.mergeMock.mockRejectedValue(new Error('multisig.jobs.merge_failed'));
+    renderPage();
+    fireEvent.click(await screen.findAllByRole('button', { name: 'Jetzt signieren' }).then((b) => b[0]));
+    await waitFor(() => expect(document.querySelector('input[type="password"]')).not.toBeNull());
+    fireEvent.change(document.querySelector('input[type="password"]'), { target: { value: SIGNER_A.secret } });
+    fireEvent.click(screen.getAllByRole('button', { name: 'Jetzt signieren' })[1]);
+    await waitFor(() => expect(hoisted.mergeMock).toHaveBeenCalledTimes(1));
+    await new Promise((r) => setTimeout(r, 20));
+    expect(hoisted.rememberMock).not.toHaveBeenCalled();
   });
 
   it('sperrt die Secret-Eingabe wieder, wenn die Bestaetigung zurueckgenommen wird', async () => {
@@ -1453,9 +1592,11 @@ describe('Job ohne Token oeffnen und signieren', () => {
       <MultisigJobDetail jobId={jobId} currentPublicKey={SIGNER_A.publicKey} onBack={() => {}} />
     </I18nextProvider>
   );
+  // Ohne Merken: der Key bleibt nur im Speicher (Haken ist standardmaessig an und wird hier entfernt).
   const unlock = async () => {
     await screen.findByTestId('job-unlock');
     fireEvent.change(screen.getByLabelText('Secret Key'), { target: { value: SIGNER_A.secret } });
+    fireEvent.click(screen.getByRole('checkbox', { name: /In dieser Session merken/ }));
     fireEvent.click(screen.getByRole('button', { name: 'Job öffnen und prüfen' }));
   };
   const signButton = () => screen.getAllByRole('button', { name: 'Jetzt signieren' })[0];
@@ -1526,6 +1667,47 @@ describe('Job ablehnen', () => {
     expect(await screen.findByText('Abgelehnt. Die anderen Signer sehen deine Ablehnung.')).toBeInTheDocument();
     expect(hoisted.getJobMock.mock.calls.length).toBeGreaterThanOrEqual(2);
     expect(hoisted.mergeMock).not.toHaveBeenCalled();
+  });
+
+  it('merkt einen beim Ablehnen eingetippten Key standardmaessig, nach Erfolg, im Netz des Jobs', async () => {
+    renderPage();
+    await openDecline();
+    const input = await screen.findByLabelText('Secret Key zum Ablehnen');
+    expect(within(screen.getByTestId('job-decline')).getByRole('checkbox', { name: /In dieser Session merken/ })).toBeChecked();
+    fireEvent.change(input, { target: { value: SIGNER_A.secret } });
+    confirm();
+    await waitFor(() => expect(hoisted.declineMock).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(hoisted.rememberMock).toHaveBeenCalledTimes(1));
+    const [account, collected, remember, network] = hoisted.rememberMock.mock.calls[0];
+    expect(account).toBe(SIGNER_A.publicKey);
+    expect(collected[0].keypair.publicKey()).toBe(SIGNER_A.publicKey);
+    expect(remember).toBe(true);
+    expect(network).toBe('testnet');
+  });
+
+  it('Gegenprobe: Ablehnen scheitert, nichts gemerkt; ohne Haken kein Merken', async () => {
+    hoisted.declineMock.mockRejectedValueOnce(Object.assign(new Error('already_signed'), { status: 409 }));
+    renderPage();
+    await openDecline();
+    fireEvent.change(await screen.findByLabelText('Secret Key zum Ablehnen'), { target: { value: SIGNER_A.secret } });
+    confirm();
+    await screen.findByText('Du hast bereits signiert und kannst nicht mehr ablehnen.');
+    expect(hoisted.rememberMock).not.toHaveBeenCalled();
+    fireEvent.click(within(screen.getByTestId('job-decline')).getByRole('checkbox', { name: /In dieser Session merken/ }));
+    confirm();
+    await waitFor(() => expect(hoisted.declineMock).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(screen.queryByTestId('job-decline')).toBeNull());
+    expect(hoisted.rememberMock.mock.calls.every((c) => c[2] === false)).toBe(true);
+  });
+
+  it('merkt beim Ablehnen mit gemerktem Key nichts erneut', async () => {
+    hoisted.sessionSecretMock.mockResolvedValue(SIGNER_A.secret);
+    renderPage();
+    await openDecline();
+    confirm();
+    await waitFor(() => expect(hoisted.declineMock).toHaveBeenCalledTimes(1));
+    await screen.findByText('Abgelehnt. Die anderen Signer sehen deine Ablehnung.');
+    expect(hoisted.rememberMock).not.toHaveBeenCalled();
   });
 
   it('fragt ohne gemerkten Key nach dem Key und lehnt einen fremden ab', async () => {

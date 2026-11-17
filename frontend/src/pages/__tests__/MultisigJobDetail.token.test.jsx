@@ -27,7 +27,7 @@ vi.mock('../../utils/multisigApi.js', async (importOriginal) => ({
 vi.mock('../../utils/sessionSecrets.js', async (importOriginal) => ({
   ...(await importOriginal()),
   getSessionSecret: hoisted.sessionSecret,
-  rememberSessionSecrets: hoisted.remember,
+  rememberAfterSuccess: hoisted.remember,
 }));
 
 function renderDetail(props) {
@@ -104,10 +104,11 @@ describe('MultisigJobDetail: Zugriffstoken', () => {
       expect(screen.getByTestId('job-unlock')).toBeInTheDocument();
     });
 
-    it('oeffnet den Job mit dem eingegebenen Key ueber die Challenge, ohne ihn zu merken', async () => {
+    it('oeffnet den Job mit dem eingegebenen Key ueber die Challenge, ohne ihn zu merken, wenn der Haken entfernt ist', async () => {
       renderDetail({ jobId: 'd-reload', currentPublicKey: SIGNER });
       await screen.findByTestId('job-unlock');
       fireEvent.change(unlockInput(), { target: { value: SECRET } });
+      fireEvent.click(screen.getByRole('checkbox', { name: /In dieser Session merken/ }));
       fireEvent.click(openButton());
       await waitFor(() => expect(hoisted.getJob).toHaveBeenCalledWith('d-reload', 'tok-challenge'));
       expect(hoisted.challenge).toHaveBeenCalledWith('d-reload', SIGNER);
@@ -116,15 +117,44 @@ describe('MultisigJobDetail: Zugriffstoken', () => {
       expect(screen.queryByTestId('job-unlock')).toBeNull();
     });
 
-    it('merkt den Key nur, wenn ausdruecklich gewaehlt', async () => {
+    const loadedJob = (network) => ({ id: 'd-reload', accountId: SIGNER, network, status: 'pending_signatures', signers: [{ publicKey: SIGNER, weight: 1 }], txXdr: '' });
+
+    it('merkt den Key standardmaessig (Haken an), erst mit geladenem Job und im Netz des Jobs (Review M-4)', async () => {
+      hoisted.remember.mockResolvedValue(true);
+      hoisted.getJob.mockResolvedValue(loadedJob('testnet'));
+      renderDetail({ jobId: 'd-reload', currentPublicKey: SIGNER });
+      await screen.findByTestId('job-unlock');
+      expect(screen.getByRole('checkbox', { name: /In dieser Session merken/ })).toBeChecked();
+      fireEvent.change(unlockInput(), { target: { value: SECRET } });
+      fireEvent.click(openButton());
+      await waitFor(() => expect(hoisted.remember).toHaveBeenCalledTimes(1));
+      const [account, collected, remember, network, epoch] = hoisted.remember.mock.calls[0];
+      expect(account).toBe(SIGNER);
+      expect(collected[0].keypair.publicKey()).toBe(SIGNER);
+      expect(remember).toBe(true);
+      expect(network).toBe('testnet');
+      expect(typeof epoch).toBe('number');
+    });
+
+    it('Gegenprobe: unbekanntes Netz des Jobs merkt mit Netz null (also nichts); ohne geladenen Job kein Merken', async () => {
+      hoisted.remember.mockResolvedValue(false);
+      hoisted.getJob.mockResolvedValue(loadedJob('futurenet'));
       renderDetail({ jobId: 'd-reload', currentPublicKey: SIGNER });
       await screen.findByTestId('job-unlock');
       fireEvent.change(unlockInput(), { target: { value: SECRET } });
-      fireEvent.click(screen.getByRole('checkbox', { name: /In dieser Session merken/ }));
       fireEvent.click(openButton());
       await waitFor(() => expect(hoisted.remember).toHaveBeenCalledTimes(1));
-      expect(hoisted.remember.mock.calls[0][0]).toBe(SIGNER);
-      expect(hoisted.remember.mock.calls[0][1][0].keypair.publicKey()).toBe(SIGNER);
+      expect(hoisted.remember.mock.calls[0][3]).toBeNull();
+    });
+
+    it('Gegenprobe: Job laesst sich nicht laden, nichts gemerkt', async () => {
+      renderDetail({ jobId: 'd-reload', currentPublicKey: SIGNER });
+      await screen.findByTestId('job-unlock');
+      fireEvent.change(unlockInput(), { target: { value: SECRET } });
+      fireEvent.click(openButton());
+      await waitFor(() => expect(hoisted.getJob).toHaveBeenCalledWith('d-reload', 'tok-challenge'));
+      await new Promise((r) => setTimeout(r, 20));
+      expect(hoisted.remember).not.toHaveBeenCalled();
     });
 
     it('lehnt einen Key eines anderen Kontos und ungueltige Eingaben ab, ohne Challenge', async () => {

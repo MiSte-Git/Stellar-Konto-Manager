@@ -83,6 +83,19 @@ Folgen daraus:
   (bewusste Entscheidung 14.11.2026, Opus-Review #11: einheitlich wie in den anderen Abläufen). Die Sammelzahlung merkt
   den Key schon beim Bestätigen im Dialog, weil sie danach mehrere Zahlungen mit ihm sendet; die anderen Abläufe erst
   nach erfolgreichem Senden.
+  Seit 17.11.2026 gilt das tatsächlich überall: Vorher zeigten Trustlines, Multisig verwalten, Konto erstellen
+  (Funder) und Liquidity den Haken, merkten aber nichts, und im Job-Detail war er beim Öffnen aus, fehlte beim
+  Signieren und Ablehnen und war im Widerruf abgeschaltet. Der Key-Dialog belegt gemerkte Keys selbst vor, aber nur
+  für aktive Signer des Kontos (Gewicht > 0) und nur im Netz des Ablaufs; ein Key, der unter einem anderen Konto
+  gemerkt wurde, wird für dieses Konto mit genutzt, wenn er dort Signer ist; unter dem Feld steht sein Public Key.
+  „Zahlung senden“ merkt jetzt erst nach dem Senden (vorher schon beim Bestätigen des Keys). Ohne Key-Dialog signieren
+  mit einem gemerkten Key: Trading (Key erreicht die Schwelle allein), Sammelzahlung (Master-Key gemerkt), Job-Detail
+  „Jetzt signieren“ und Ablehnen, das Holen des Job-Tokens per Challenge sowie „Zahlung senden“ und „Multisig
+  verwalten“ mit gemerktem Master-Key; jeder dieser Wege hat eine eigene Bestätigung oder ist nur ein Besitznachweis.
+- Sperren (Schloss, Inaktivität) zählt eine Sperr-Epoche hoch und erzeugt einen neuen AES-Schlüssel (Review M-1,
+  M-2, 17.11.2026). Ein Ablauf, der vor der Sperre bestätigt wurde und danach Erfolg hat, merkt nichts; eine laufende
+  Vorbelegung wird verworfen; ein offener Key-Dialog und die Key-Felder im Job-Detail werden geleert. Vorher schrieb ein
+  erfolgreicher Ablauf die Keys nach dem Sperren neu, voll nutzbar.
 - Eingegebene Secrets werden in Entwürfen, Listen und der Eingabe-Historie nicht gespeichert (`containsSecretKey` in
   `frontend/src/utils/secretKeyDetection.js`, mit Prüfsumme, auch über Trennzeichen). Die Eingabe-Historie
   (`utils/inputHistory.js`, alle `TEXT_INPUT_HISTORY_KEYS`: Empfänger, Beträge, Memos, `recentWallets`) lässt beim

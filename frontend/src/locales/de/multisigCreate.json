@@ -137,5 +137,9 @@
     "ask": "Ohne den Secret Key ist der Zugang verloren. Hast du ihn sicher gesichert?",
     "confirm": "Ja, Key gesichert, Schlüssel verwerfen",
     "cancel": "Abbrechen, Schlüssel behalten"
+  },
+  "funder": {
+    "subtitle": "Secret Key des Kontos, das die Aktivierung bezahlt (Startguthaben und Gebühr). Es braucht einen Key, der die mittlere Schwelle dieses Kontos allein erreicht. Gemerkte Keys werden hier nicht vorbelegt, weil das Konto vorher nicht bekannt ist.",
+    "badAuth": "Das bezahlende Konto hat die Aktivierung abgelehnt (tx_bad_auth): Das Gewicht des eingegebenen Keys reicht für dieses Konto nicht. Nutze einen Key, der die mittlere Schwelle allein erreicht, oder ein anderes Konto."
   }
 }

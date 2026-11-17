@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { act, render, screen, fireEvent } from '@testing-library/react';
 import { I18nextProvider } from 'react-i18next';
 import i18n from '../../i18n.js';
 import SecretKeyModal from '../SecretKeyModal.jsx';
@@ -226,5 +226,127 @@ describe('SecretKeyModal: Signer-Regeln aus signerRules.js (K2, K7)', () => {
       expect(onConfirm).toHaveBeenCalledTimes(1);
       expect(onConfirm.mock.calls[0][0][0].publicKey).toBe(SIGNER_A.publicKey);
     });
+  });
+});
+
+// Gemerkte Keys belegt der Dialog selbst vor (Entscheidung 17.11.: in allen Key-Dialogen gleich).
+describe('SecretKeyModal: Vorbelegung mit gemerkten Keys', () => {
+  const ACCOUNT_ID = 'GAQ6JRJ4IUIXUVZRMGYUGUXFUHYYBRQTWFON4IZEHRS2RY4FCPTEEMWE';
+  let sessionModule;
+  beforeEach(async () => {
+    sessionStorage.clear();
+    localStorage.setItem('SKM_NETWORK', 'PUBLIC');
+    sessionModule = await import('../../utils/sessionSecrets.js');
+  });
+  afterEach(() => {
+    sessionStorage.clear();
+    localStorage.removeItem('SKM_NETWORK');
+  });
+  const firstInput = () => document.querySelector('input[type="password"], input[type="text"]');
+
+  it('belegt einen unter einem anderen Konto gemerkten Signer-Key vor', async () => {
+    await sessionModule.setSessionSecrets(SIGNER_A.publicKey, { [SIGNER_A.publicKey]: SIGNER_A.secret });
+    renderModal({ accountId: ACCOUNT_ID });
+    await vi.waitFor(() => expect(firstInput().value).toBe(SIGNER_A.secret));
+  });
+
+  it('Gegenprobe: ein gemerkter Signer mit Gewicht 0 wird nicht vorbelegt', async () => {
+    await sessionModule.setSessionSecrets(ACCOUNT_ID, { [SIGNER_B_ZERO_WEIGHT.publicKey]: SIGNER_B_ZERO_WEIGHT.secret });
+    renderModal({ accountId: ACCOUNT_ID });
+    await new Promise((r) => setTimeout(r, 50));
+    expect(firstInput().value).toBe('');
+  });
+
+  it('Gegenprobe: anderes Netz des Ablaufs, nichts vorbelegt', async () => {
+    await sessionModule.setSessionSecrets(SIGNER_A.publicKey, { [SIGNER_A.publicKey]: SIGNER_A.secret });
+    renderModal({ accountId: ACCOUNT_ID, network: 'testnet' });
+    await new Promise((r) => setTimeout(r, 50));
+    expect(firstInput().value).toBe('');
+  });
+
+  it('Merken-Haken ist standardmaessig an und wird an onConfirm gemeldet', async () => {
+    const onConfirm = vi.fn();
+    renderModal({ onConfirm });
+    expect(screen.getByRole('checkbox', { name: /Für diese Sitzung merken|Remember for this session/i })).toBeChecked();
+    typeSecret(SIGNER_A.secret);
+    submit();
+    expect(onConfirm.mock.calls[0][1]).toBe(true);
+  });
+
+  it('ueberschreibt keine schon begonnene Eingabe', async () => {
+    await sessionModule.setSessionSecrets(SIGNER_A.publicKey, { [SIGNER_A.publicKey]: SIGNER_A.secret });
+    renderModal({ accountId: ACCOUNT_ID });
+    // Entschluesseln ist asynchron: die Eingabe kommt vor der Vorbelegung.
+    typeSecret('SANGEFANGEN');
+    await new Promise((r) => setTimeout(r, 50));
+    expect(firstInput().value).toBe('SANGEFANGEN');
+  });
+});
+
+describe('SecretKeyModal: Sperre, Anzeige der Vorbelegung, nur ein Signer (Review M-2, M-9, M-10)', () => {
+  const ACCOUNT_ID = 'GAQ6JRJ4IUIXUVZRMGYUGUXFUHYYBRQTWFON4IZEHRS2RY4FCPTEEMWE';
+  let sessionModule;
+  beforeEach(async () => {
+    sessionStorage.clear();
+    localStorage.setItem('SKM_NETWORK', 'PUBLIC');
+    sessionModule = await import('../../utils/sessionSecrets.js');
+  });
+  afterEach(() => {
+    sessionStorage.clear();
+    localStorage.removeItem('SKM_NETWORK');
+  });
+  const firstInput = () => document.querySelector('input[type="password"], input[type="text"]');
+
+  it('zeigt den Public Key des vorbelegten Keys, nicht mehr nach einer Aenderung', async () => {
+    await sessionModule.setSessionSecrets(SIGNER_A.publicKey, { [SIGNER_A.publicKey]: SIGNER_A.secret });
+    renderModal({ accountId: ACCOUNT_ID });
+    expect(await screen.findByTestId('secret-prefilled')).toHaveTextContent(SIGNER_A.publicKey);
+    expect(screen.getByTestId('secret-prefilled')).not.toHaveTextContent(SIGNER_A.secret);
+    typeSecret('SANDERS');
+    expect(screen.queryByTestId('secret-prefilled')).toBeNull();
+  });
+
+  it('Sperre leert vorbelegte und eingetippte Keys und zeigt einen Hinweis', async () => {
+    await sessionModule.setSessionSecrets(SIGNER_A.publicKey, { [SIGNER_A.publicKey]: SIGNER_A.secret });
+    const onConfirm = vi.fn();
+    renderModal({ accountId: ACCOUNT_ID, onConfirm });
+    await vi.waitFor(() => expect(firstInput().value).toBe(SIGNER_A.secret));
+    act(() => { sessionModule.clearAllSessionSecrets(); });
+    expect(firstInput().value).toBe('');
+    expect(screen.getByTestId('secret-modal-locked')).toBeInTheDocument();
+    submit();
+    expect(onConfirm).not.toHaveBeenCalled();
+  });
+
+  it('Sperre vor dem Ende der Vorbelegung: keine spaete Vorbelegung', async () => {
+    await sessionModule.setSessionSecrets(SIGNER_A.publicKey, { [SIGNER_A.publicKey]: SIGNER_A.secret });
+    renderModal({ accountId: ACCOUNT_ID });
+    act(() => { sessionModule.clearAllSessionSecrets(); });
+    await new Promise((r) => setTimeout(r, 50));
+    expect(firstInput().value).toBe('');
+  });
+
+  it('onlySignerKey: nur dieser Signer zaehlt, ein anderer gueltiger Signer wird abgelehnt', () => {
+    const onConfirm = vi.fn();
+    render(
+      <I18nextProvider i18n={i18n}>
+        <SecretKeyModal
+          onConfirm={onConfirm}
+          onCancel={() => {}}
+          signers={[
+            { public_key: SIGNER_A.publicKey, weight: 1 },
+            { public_key: SIGNER_B_ZERO_WEIGHT.publicKey, weight: 2 },
+          ]}
+          onlySignerKey={SIGNER_B_ZERO_WEIGHT.publicKey}
+        />
+      </I18nextProvider>
+    );
+    typeSecret(SIGNER_A.secret);
+    submit();
+    expect(onConfirm).not.toHaveBeenCalled();
+    typeSecret(SIGNER_B_ZERO_WEIGHT.secret);
+    submit();
+    expect(onConfirm).toHaveBeenCalledTimes(1);
+    expect(onConfirm.mock.calls[0][0][0].publicKey).toBe(SIGNER_B_ZERO_WEIGHT.publicKey);
   });
 });

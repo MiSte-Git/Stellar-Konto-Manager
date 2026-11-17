@@ -17,7 +17,7 @@ import { findInvalidSignerKey, isInteractiveSigner, isValidSignerKey } from '../
 import { apiUrl } from '../utils/apiBase.js';
 import { backendErrorMessage } from '../utils/multisigErrors.js';
 import { useRecentWalletOptions } from '../utils/useRecentWalletOptions.js';
-import { getSessionSecret } from '../utils/sessionSecrets.js';
+import { getLockEpoch, getSessionSecret, rememberAfterSuccess } from '../utils/sessionSecrets.js';
 import { useSettings } from '../utils/useSettings.js';
 import { formatValidUntil } from '../utils/multisig/formatValidUntil.js';
 import { resolveFeePerOp } from '../utils/stellar/fees.js';
@@ -347,7 +347,8 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
     return { tx, plannedThresholds, plannedMaster, plannedSigners, currentMaster: clampByte(currentMaster) };
   }, [defaultPublicKey, hasSafetyErrors, highT, lowT, masterWeight, medT, multisigTimeoutSeconds, network, passphrase, server, signers, t]);
 
-  async function submitChanges(collectedSigners) {
+  async function submitChanges(collectedSigners, remember = false) {
+    const lockEpoch = getLockEpoch();
     setShowSecretModal(false);
     setLoading(true);
     setError('');
@@ -356,7 +357,13 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
       const planned = buildPlannedChanges();
       const { tx } = await buildSetOptionsTx(collectedSigners, { signTx: true, requireSigners: true, immediateSubmit: true });
       const res = await server.submitTransaction(tx);
-      setInfo(t('common:multisigEdit.saved', { hash: res?.hash || res?.id || '' }));
+      const savedText = t('common:multisigEdit.saved', { hash: res?.hash || res?.id || '' });
+      setInfo(savedText);
+      // Gespeichert: Keys merken, wenn der Haken gesetzt war. Ein Key, der gerade entfernt wurde, wird im
+      // Key-Dialog nicht mehr vorbelegt (nur aktuelle Signer mit Gewicht).
+      if (await rememberAfterSuccess(defaultPublicKey, collectedSigners, remember, network, lockEpoch) === 'insecure') {
+        setInfo(`${savedText} ${t('secretKey:remember.insecureContextError')}`);
+      }
       // Update local snapshot so new signers/weights are recognized for further actions
       const pk = (defaultPublicKey || '').trim();
       const updatedSigners = [
@@ -760,13 +767,15 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
 
       {showSecretModal && (
         <SecretKeyModal
-          onConfirm={(collected)=>{ if (pendingAction==='save') submitChanges(collected); }}
+          onConfirm={(collected, remember)=>{ if (pendingAction==='save') submitChanges(collected, remember); }}
           onCancel={()=>{ setShowSecretModal(false); setPendingAction(null); }}
           thresholds={currentAccount?.thresholds || thresholdsForModal}
           signers={currentAccount?.signers || signersForModal}
           operationType="setOptions"
           requiredThreshold={requiredThreshold}
           account={currentAccount || { signers: signersForModal, thresholds: thresholdsForModal }}
+          accountId={defaultPublicKey}
+          network={network}
         />
       )}
       {preparedTx && (

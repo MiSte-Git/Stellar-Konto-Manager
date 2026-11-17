@@ -36,7 +36,7 @@ const hoisted = vi.hoisted(() => ({
 vi.mock('../../../utils/sessionSecrets.js', async (importOriginal) => {
   const actual = await importOriginal();
   // Das Merken laeuft nach dem Senden asynchron: mitzaehlen, damit die Tests es abwarten koennen.
-  return { ...actual, rememberSessionSecrets: (...args) => { const p = actual.rememberSessionSecrets(...args); hoisted.pendingRemember.push(p); return p; } };
+  return { ...actual, rememberAfterSuccess: (...args) => { const p = actual.rememberAfterSuccess(...args); hoisted.pendingRemember.push(p); return p; } };
 });
 
 vi.mock('../../../utils/multisigApi.js', async (importOriginal) => ({

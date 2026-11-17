@@ -6,6 +6,7 @@ import { isInteractiveSigner, isMultisigAccount as isMultisigAccountRule } from 
 import { formatErrorForUi } from '../utils/formatErrorForUi.js';
 import SendLockWaiting from './wallet/SendLockWaiting.jsx';
 import { keypairFromSecret } from '../utils/signers/keyMaterial.js';
+import { getRememberedSecretsFor, SESSION_LOCKED_EVENT } from '../utils/sessionSecrets.js';
 
 function SecretKeyModal({
   onConfirm,
@@ -29,6 +30,11 @@ function SecretKeyModal({
   accountId = '',
   // Der Vorgang wartet auf einen anderen Sendevorgang (Sende-Lock). "Abbrechen" beendet das Warten.
   waitingForLock = false,
+  // Netz des Ablaufs. Gemerkte Keys werden nur vorbelegt, wenn es das aktuelle Netz ist. Ohne Angabe das
+  // aktuelle Netz.
+  network = undefined,
+  // Nur dieser Signer zaehlt (Felder, Pruefung, Vorbelegung), z. B. die Sammelzahlung, die den Master-Key verlangt.
+  onlySignerKey = '',
 }) {
   const { t } = useTranslation(['secretKey', 'trustline', 'common', 'publicKey']);
   const [secretInputs, setSecretInputs] = useState(
@@ -80,8 +86,11 @@ function SecretKeyModal({
     if (secretContext === 'job' && masterWeight > 0 && masterPublicKey) {
       filtered = base.filter((s) => s.public_key === masterPublicKey);
     }
+    if (onlySignerKey) {
+      filtered = filtered.filter((s) => s.public_key === onlySignerKey);
+    }
     return [...filtered].sort((a, b) => (b.weight || 0) - (a.weight || 0));
-  }, [allSigners, secretContext, masterWeight, masterPublicKey]);
+  }, [allSigners, secretContext, masterWeight, masterPublicKey, onlySignerKey]);
   const minSignerCount = useMemo(() => {
     if (forceSignerCount && Number(forceSignerCount) > 0) {
       return Number(forceSignerCount);
@@ -147,15 +156,68 @@ function SecretKeyModal({
   // silently show empty inputs instead of prefilling them. Runs once (prefillAppliedRef)
   // rather than on every value change, and only overwrites still-empty inputs, so it can't
   // clobber a secret the user already started typing during that async window.
+  //
+  // Ohne initialSecretValues belegt der Dialog selbst vor: alle in dieser Sitzung gemerkten Keys der Signer,
+  // die hier zaehlen (effectiveSigners: interaktiv, Gewicht > 0, im Job-Kontext ggf. nur der Master), egal
+  // unter welchem Konto sie gemerkt wurden. Schwerster Signer zuerst. Ohne bekannte Signer nur der eigene
+  // Key des Kontos (Einzelsignatur). Geprueft wird jeder Key wie eingetippt erst beim Bestaetigen.
+  const [rememberedValues, setRememberedValues] = useState([]);
+  const rememberedLookupKey = useMemo(() => {
+    const keys = effectiveSigners.length
+      ? effectiveSigners.map((s) => s.public_key)
+      : (displayAccountId ? [displayAccountId] : []);
+    return keys.join(',');
+  }, [effectiveSigners, displayAccountId]);
+  useEffect(() => {
+    if (initialSecretValues.length || !rememberedLookupKey) return undefined;
+    let cancelled = false;
+    getRememberedSecretsFor(displayAccountId, rememberedLookupKey.split(','), network)
+      .then((values) => { if (!cancelled && values.length) setRememberedValues(values); })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, [initialSecretValues.length, rememberedLookupKey, displayAccountId, network]);
+  const prefillValues = initialSecretValues.length ? initialSecretValues : rememberedValues;
+
+  // Je Feld der vorbelegte Wert und sein Public Key, damit sichtbar ist, mit welchem gemerkten Key signiert wird
+  // (Review M-10). Nur Public Keys werden angezeigt; der Wert dient dem Vergleich, ob das Feld noch unveraendert ist.
+  const [prefilled, setPrefilled] = useState([]);
+  const secretInputsRef = useRef(secretInputs);
+  secretInputsRef.current = secretInputs;
   const prefillAppliedRef = useRef(false);
   useEffect(() => {
-    if (prefillAppliedRef.current || !initialSecretValues.length) return;
+    if (prefillAppliedRef.current || !prefillValues.length) return;
     prefillAppliedRef.current = true;
-    setSecretInputs((prev) => {
-      if (prev.some((v) => v)) return prev;
-      return prev.map((_, i) => initialSecretValues[i] || '');
-    });
-  }, [initialSecretValues]);
+    const prev = secretInputsRef.current;
+    if (!prev.some((v) => v)) {
+      const next = prev.map((_, i) => prefillValues[i] || '');
+      setSecretInputs(next);
+      setPrefilled(next.map((value) => {
+        if (!value) return null;
+        try {
+          return { value, publicKey: keypairFromSecret(value).publicKey() };
+        } catch {
+          return null;
+        }
+      }));
+    }
+    // Entschluesselte Werte nicht laenger als noetig im State halten (Review M-12).
+    setRememberedValues([]);
+  }, [prefillValues]);
+
+  // Review M-2: Sperren (Schloss, Inaktivitaet) leert jeden Key im offenen Dialog, eingetippt oder vorbelegt, und
+  // verhindert eine spaete Vorbelegung. Bestaetigen geht danach nur mit neu eingegebenem Key.
+  const [lockedNotice, setLockedNotice] = useState(false);
+  useEffect(() => {
+    const onLocked = () => {
+      prefillAppliedRef.current = true;
+      setRememberedValues([]);
+      setPrefilled([]);
+      setSecretInputs((prev) => prev.map(() => ''));
+      setLockedNotice(true);
+    };
+    window.addEventListener(SESSION_LOCKED_EVENT, onLocked);
+    return () => window.removeEventListener(SESSION_LOCKED_EVENT, onLocked);
+  }, []);
 
   React.useEffect(() => {
     setError(errorMessage || '');
@@ -333,20 +395,31 @@ function SecretKeyModal({
         )}
 
         <div className="space-y-2">
+          {lockedNotice && (
+            <p className="text-xs text-amber-700 dark:text-amber-300" role="status" data-testid="secret-modal-locked">
+              {t('secretKey:remember.lockedCleared')}
+            </p>
+          )}
           {secretInputs.map((val, idx) => (
-            <input
-              key={idx}
-              ref={idx === 0 ? firstSecretInputRef : undefined}
-              type={showSecret ? 'text' : 'password'}
-              value={val}
-              onChange={(e) => {
-                const next = [...secretInputs];
-                next[idx] = e.target.value;
-                setSecretInputs(next);
-              }}
-              placeholder={t('secretKey:placeholder', 'Enter your secret key')}
-              className={`w-full px-4 py-2 border rounded-sm dark:bg-gray-700 dark:text-white ${error ? 'border-red-500 ring-1 ring-red-400' : ''}`}
-            />
+            <React.Fragment key={idx}>
+              <input
+                ref={idx === 0 ? firstSecretInputRef : undefined}
+                type={showSecret ? 'text' : 'password'}
+                value={val}
+                onChange={(e) => {
+                  const next = [...secretInputs];
+                  next[idx] = e.target.value;
+                  setSecretInputs(next);
+                }}
+                placeholder={t('secretKey:placeholder', 'Enter your secret key')}
+                className={`w-full px-4 py-2 border rounded-sm dark:bg-gray-700 dark:text-white ${error ? 'border-red-500 ring-1 ring-red-400' : ''}`}
+              />
+              {prefilled[idx] && val && prefilled[idx].value === val && (
+                <p className="text-xs text-gray-600 dark:text-gray-400 break-all" data-testid="secret-prefilled">
+                  {t('secretKey:remember.prefilled', { key: prefilled[idx].publicKey })}
+                </p>
+              )}
+            </React.Fragment>
           ))}
         </div>
         {isMultisigAccount && (

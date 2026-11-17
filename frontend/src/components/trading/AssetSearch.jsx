@@ -5,7 +5,7 @@ import { Asset } from '@stellar/stellar-sdk';
 import { getHorizonServerForNetwork, loadTrustlines } from '../../utils/stellar/stellarUtils.js';
 import { assertTxMatchesFlow } from '../../utils/multisig/unsignedTx.js';
 import SecretKeyModal from '../SecretKeyModal.jsx';
-import { rememberSessionSecrets, InsecureCryptoContextError, SESSION_LOCKED_EVENT } from '../../utils/sessionSecrets.js';
+import { getLockEpoch, rememberAfterSuccess, SESSION_LOCKED_EVENT } from '../../utils/sessionSecrets.js';
 import { formatErrorForUi } from '../../utils/formatErrorForUi.js';
 import { apiUrl } from '../../utils/apiBase.js';
 import {
@@ -1729,16 +1729,11 @@ export default function AssetSearch() {
         <SecretKeyModal
           onConfirm={async (collected, remember) => {
             if (pendingAction?.execute) {
+              const lockEpoch = getLockEpoch();
               const done = await pendingAction.execute(collected);
               // Merken (Haken im Dialog) erst nach erfolgreichem Senden, wie bei Claimable Balances.
-              if (done === true && remember) {
-                try {
-                  await rememberSessionSecrets(flowRef.current?.accountId || accountId, collected, flowRef.current?.network || network);
-                } catch (rememberErr) {
-                  if (rememberErr instanceof InsecureCryptoContextError) {
-                    setActionMessage((prev) => `${prev} ${t('secretKey:remember.insecureContextError')}`.trim());
-                  }
-                }
+              if (done === true && await rememberAfterSuccess(flowRef.current?.accountId || accountId, collected, remember, flowRef.current?.network || network, lockEpoch) === 'insecure') {
+                setActionMessage((prev) => `${prev} ${t('secretKey:remember.insecureContextError')}`.trim());
               }
               return done;
             }
@@ -1762,6 +1757,7 @@ export default function AssetSearch() {
           signers={accountInfo?.signers || []}
           accountId={accountId}
           operationType={modalOperationType}
+          network={flowRef.current?.network || network}
           requiredThreshold={requiredThreshold}
           account={accountInfo}
           {...multisig.localModalProps}

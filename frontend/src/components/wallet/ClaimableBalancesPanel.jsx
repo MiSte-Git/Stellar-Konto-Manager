@@ -23,7 +23,7 @@ import SendLockWaiting from './SendLockWaiting.jsx';
 import { LOAD_IN_LOCK_TIMEOUT_MS } from '../../utils/submitGuard/loadTimeout.js';
 import { getRequiredThreshold } from '../../utils/getRequiredThreshold.js';
 import { formatErrorForUi } from '../../utils/formatErrorForUi.js';
-import { getSessionSecrets, rememberSessionSecrets, InsecureCryptoContextError } from '../../utils/sessionSecrets.js';
+import { getLockEpoch, rememberAfterSuccess } from '../../utils/sessionSecrets.js';
 import { assertHorizonNetwork, collectEffectiveSigners } from '../../utils/multisig/jobRevocation.js';
 import {
   buildClaimTx,
@@ -70,7 +70,6 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
   const [showHidden, setShowHidden] = React.useState(false);
   const [showNoTrust, setShowNoTrust] = React.useState(false);
   const [claimItem, setClaimItem] = React.useState(null);
-  const [prefill, setPrefill] = React.useState([]);
   const [claiming, setClaiming] = React.useState(false);
   const [claimError, setClaimError] = React.useState('');
   const [info, setInfo] = React.useState('');
@@ -122,16 +121,6 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
     return () => { cancelled = true; };
   }, [publicKey, horizonUrl, reloadToken, t]);
 
-  // Session-Secrets wie beim Senden vorbelegen
-  React.useEffect(() => {
-    if (!claimItem || !publicKey) {
-      setPrefill([]);
-      return undefined;
-    }
-    let cancelled = false;
-    getSessionSecrets(publicKey).then((map) => { if (!cancelled) setPrefill(Object.values(map)); }).catch(() => {});
-    return () => { cancelled = true; };
-  }, [claimItem, publicKey]);
 
   const items = React.useMemo(() => classifyClaimableBalances(records, account), [records, account]);
   const visible = items.filter((it) => showHidden || !hiddenIds.includes(it.id));
@@ -271,6 +260,7 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
 
   const executeClaim = async (collected, remember) => {
     if (!claimItem || inFlightRef.current) return;
+    const lockEpoch = getLockEpoch();
     inFlightRef.current = true;
     const controller = new AbortController();
     lockAbortRef.current = controller;
@@ -334,12 +324,8 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
       setClaimItem(null);
       setInfo(t('wallet:claimable.success', { amount: item.amount, code: item.asset.code, hash }));
       // Erst nach erfolgreicher Signatur und Einreichung merken
-      if (remember) {
-        try {
-          await rememberSessionSecrets(publicKey, collected);
-        } catch (rememberErr) {
-          if (rememberErr instanceof InsecureCryptoContextError) setClaimError(t('secretKey:remember.insecureContextError'));
-        }
+      if (await rememberAfterSuccess(publicKey, collected, remember, network, lockEpoch) === 'insecure') {
+        setClaimError(t('secretKey:remember.insecureContextError'));
       }
       onClaimed?.();
     } catch (e) {
@@ -553,6 +539,7 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
       {claimItem && (
         <SecretKeyModal
           onConfirm={(collected, remember) => { void executeClaim(collected, remember); }}
+          network={network}
           onCancel={() => {
             // Beendet das Warten am Lock: danach wird nichts gesendet. Ein laufender POST bleibt.
             cancelWaiting();
@@ -570,7 +557,6 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
           isProcessing={claiming}
           waitingForLock={lockWaiting}
           account={account}
-          initialSecretValues={prefill}
         />
       )}
     </section>

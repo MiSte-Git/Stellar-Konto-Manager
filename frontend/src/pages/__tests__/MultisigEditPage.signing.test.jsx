@@ -1,5 +1,5 @@
 import React from 'react';
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { I18nextProvider } from 'react-i18next';
 import { Account, Keypair, Networks, Transaction } from '@stellar/stellar-sdk';
 import i18n from '../../i18n.js';
@@ -12,7 +12,7 @@ const master = Keypair.random();
 const PK = master.publicKey();
 const OTHER = Keypair.random().publicKey();
 
-const hoisted = vi.hoisted(() => ({ failSigning: false, sessionSecret: '', submits: [], thresholds: null }));
+const hoisted = vi.hoisted(() => ({ failSigning: false, sessionSecret: '', submits: [], thresholds: null, rememberMock: vi.fn() }));
 vi.mock('../../utils/signers/signTransaction.js', async (importOriginal) => {
   const orig = await importOriginal();
   return {
@@ -46,6 +46,7 @@ vi.mock('../../utils/stellar/fees.js', async (importOriginal) => ({
 vi.mock('../../utils/sessionSecrets.js', async (importOriginal) => ({
   ...(await importOriginal()),
   getSessionSecret: async () => hoisted.sessionSecret,
+  rememberAfterSuccess: hoisted.rememberMock,
 }));
 vi.mock('../../components/MultisigPrepareDialog.jsx', () => ({
   default: ({ hash, jobStatus, submitReason }) => (
@@ -89,6 +90,7 @@ describe('MultisigEditPage: Signieren (Teilschritt 3)', () => {
     hoisted.sessionSecret = '';
     hoisted.submits.length = 0;
     hoisted.thresholds = null;
+    hoisted.rememberMock.mockReset().mockResolvedValue(true);
     globalThis.fetch = vi.fn(async () => ({ ok: true, json: async () => ({ id: 'job-1' }) }));
   });
 
@@ -156,6 +158,7 @@ describe('MultisigEditPage: Signieren (Teilschritt 3)', () => {
     expect(await screen.findByText(i18n.t('errors:submitTransaction.failed.signingFailed'), { exact: false })).toBeInTheDocument();
     expect(screen.queryByText(/submitTransaction\.failed/)).toBeNull();
     expect(hoisted.submits).toHaveLength(0);
+    expect(hoisted.rememberMock).not.toHaveBeenCalled();
   });
 
   it('K3 Gegenprobe: ohne Fehler wird signiert gesendet', async () => {
@@ -167,6 +170,13 @@ describe('MultisigEditPage: Signieren (Teilschritt 3)', () => {
     await screen.findByText(i18n.t('common:multisigEdit.saved', { hash: 'h' }));
     expect(hoisted.submits).toHaveLength(1);
     expect(hoisted.submits[0].signatures).toHaveLength(1);
+    // Merken nach Erfolg (17.11.): Haken standardmaessig an, Netz des Ablaufs.
+    await waitFor(() => expect(hoisted.rememberMock).toHaveBeenCalledTimes(1));
+    const [account, collected, remember, network] = hoisted.rememberMock.mock.calls[0];
+    expect(account).toBe(PK);
+    expect(collected[0].keypair.publicKey()).toBe(PK);
+    expect(remember).toBe(true);
+    expect(network).toBe('TESTNET');
   });
 
   it('B1: Fehler mit Praefix (zu wenig Gewicht) erscheinen uebersetzt, nicht als roher Schluessel', async () => {
