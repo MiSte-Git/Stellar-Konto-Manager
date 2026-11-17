@@ -6,11 +6,13 @@ import { getHorizonServerForNetwork } from '../utils/stellar/stellarUtils.js';
 import { parseAssetDetailPath } from '../utils/assetDetailRoute.js';
 import { looksLikeNativeCode } from '../utils/stellar/activity.js';
 import { FakeNativeBadge } from '../components/wallet/ActivityWarnings.jsx';
+import AssetMarketCard from '../components/assetDetail/AssetMarketCard.jsx';
 
 /**
  * Asset-Detailseite (/assets/CODE-ISSUER), verlinkbar.
  * Zeigt das Asset im geladenen Konto (Saldo, Limit, gebundene Betraege, Autorisierung) und die
- * Fakten zum Issuer (gleiche TokenFactsSummary wie Trading und Liquidity). Nur Anzeige und Links:
+ * Fakten zum Issuer (gleiche TokenFactsSummary wie Trading und Liquidity), dazu Kurs gegen XLM mit Kennzahlen,
+ * Kursverlauf und Orderbuch (AssetMarketCard). Nur Anzeige und Links:
  * Handeln oeffnet Token suchen und handeln mit vorbelegtem Asset, gesendet wird hier nichts.
  */
 
@@ -178,6 +180,9 @@ export default function AssetDetailPage({ publicKey = '', network = 'PUBLIC', on
           )}
         </div>
       </section>
+
+      {/* key: ein anderes Asset oder Netz bekommt eine frische Karte (Zeitraum, Auswahl, Daten), Review AM-1 */}
+      <AssetMarketCard key={`${network}|${code}|${issuer}`} code={code} issuer={issuer} network={network} balance={balance ? balance.balance : null} />
 
       <section className={cardCls}>
         <h2 className="mb-3 text-sm font-semibold text-gray-900 dark:text-white">{t('wallet:assetDetail.facts', 'Fakten zum Asset')}</h2>

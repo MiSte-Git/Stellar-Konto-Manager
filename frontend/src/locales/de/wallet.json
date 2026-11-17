@@ -317,6 +317,65 @@
       "authorized": "Vom Issuer autorisiert",
       "yes": "Ja",
       "no": "Nein"
+    },
+    "market": {
+      "title": "Kurs {{code}} in XLM",
+      "reload": "Aktualisieren",
+      "loading": "Lädt …",
+      "loadError": "Marktdaten konnten nicht geladen werden.",
+      "unavailable": "nicht verfügbar",
+      "noTrade": "kein Handel",
+      "noOffers": "kein Angebot",
+      "noPath": "kein Pfad",
+      "lastTrade": "Letzter Handel",
+      "mid": "Orderbuch-Mitte",
+      "spread": "Spread",
+      "sendOne": "Tausch 1 {{code}} ergibt jetzt",
+      "holding": "Dein Bestand {{amount}} {{code}} entspricht zur Orderbuch-Mitte etwa {{value}} XLM. Ein Verkauf der ganzen Menge kann weniger ergeben.",
+      "thin": "Das Orderbuch für dieses Paar ist dünn: wenige Preisstufen oder ein großer Abstand zwischen Kauf- und Verkaufspreis. Schon kleine Aufträge können den Kurs stark bewegen, und der letzte Handel kann weit vom erzielbaren Preis entfernt sein.",
+      "last24h": "Letzte 24 Stunden",
+      "last7d": "Letzte 7 Tage",
+      "volume": "Volumen",
+      "change": "Änderung",
+      "high": "Hoch",
+      "low": "Tief",
+      "range": {
+        "label": "Zeitraum",
+        "24h": "24 h",
+        "7d": "7 Tage",
+        "30d": "30 Tage"
+      },
+      "chart": {
+        "title": "Kursverlauf (XLM)",
+        "aria": "Kursverlauf {{code}} in XLM, {{range}}",
+        "tooFew": "Zu wenig Handel in diesem Zeitraum für einen Verlauf.",
+        "volume": "Volumen {{value}} XLM",
+        "table": "Werte als Tabelle",
+        "time": "Zeit",
+        "close": "Schlusskurs (XLM)",
+        "volumeCol": "Volumen (XLM)",
+        "keyboardHint": "Pfeiltasten, Pos1 und Ende wählen einen Punkt. Die Werte gibt es auch als Tabelle unter der Grafik.",
+        "single": "Nur ein Handelszeitraum: {{time}}, Schlusskurs {{price}} XLM."
+      },
+      "book": {
+        "title": "Orderbuch",
+        "bids": "Kaufangebote ({{count}} Preisstufen)",
+        "asks": "Verkaufsangebote ({{count}} Preisstufen)",
+        "price": "Preis (XLM)",
+        "amount": "Menge ({{code}})",
+        "total": "Summe (XLM)",
+        "empty": "Keine Angebote"
+      },
+      "disclaimer": "Kurse vom Stellar-DEX und aus Liquidity Pools laut Horizon, keine Bewertung des Tokens. Der Wert deines Bestands nutzt nur die Orderbuch-Mitte und nur bei ausreichendem Orderbuch; größere Beträge können zu einem schlechteren Kurs ausgeführt werden. Kennzahlen aus Stundenwerten (UTC), deshalb können sie leicht von anderen Seiten abweichen.",
+      "updated": "Stand {{time}}.",
+      "holdingNo": {
+        "none": "Für deinen Bestand gibt es keinen Richtkurs: Im Orderbuch stehen keine Angebote.",
+        "thin": "Für deinen Bestand zeigt SKM keinen Wert: Das Orderbuch ist zu dünn für einen belastbaren Richtkurs.",
+        "unavailable": "Für deinen Bestand gibt es gerade keinen Richtkurs: Das Orderbuch ist nicht verfügbar."
+      },
+      "trades": "Trades",
+      "changeSinceFirst": "Änderung seit dem ersten Handel im Zeitraum (davor kein Handel bekannt).",
+      "rateLimited": "Horizon begrenzt gerade die Anfragen von deiner Verbindung, ein Teil der Marktdaten fehlt deshalb. Bitte in einigen Minuten aktualisieren."
     }
   }
 }
