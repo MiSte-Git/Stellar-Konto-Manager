@@ -6,15 +6,17 @@
 // Code und Issuer -> dessen image (nur https) -> Bild ueber fetch_url (SSRF-Schutz) laden. Der Browser laedt
 // nie direkt von der Domain des Issuers (CSP img-src bleibt 'self').
 //
-// Ausgeliefert wird nur PNG, JPEG oder WebP, erkannt an den ersten Bytes (nie am Content-Type oder an der
-// Endung des Issuers), also nie SVG. Hoechstens ASSET_LOGO_MAX_BYTES, der Abruf bricht beim Lesen ab
-// (CURLOPT_WRITEFUNCTION in fetch_url). Breite und Hoehe kommen aus dem Bildkopf, je hoechstens
-// ASSET_LOGO_MAX_DIMENSION. Die Antwort-Header setzen wir selbst, von der Gegenseite wird keiner uebernommen.
+// Ausgeliefert wird PNG, JPEG oder WebP, erkannt an den ersten Bytes (nie am Content-Type oder an der Endung des
+// Issuers), Breite und Hoehe aus dem Bildkopf, je hoechstens ASSET_LOGO_MAX_DIMENSION; dazu SVG nur nach der
+// strengen Pruefung in api/svgLogo.php (Bytes unveraendert, ohne Abmessungspruefung). Hoechstens
+// ASSET_LOGO_MAX_BYTES, der Abruf bricht beim Lesen ab (CURLOPT_WRITEFUNCTION in fetch_url). Die Antwort-Header
+// setzen wir selbst, von der Gegenseite wird keiner uebernommen.
 declare(strict_types=1);
 
 require_once __DIR__ . '/ssrfGuard.php';
 require_once __DIR__ . '/stellarToml.php';
 require_once __DIR__ . '/rateLimit.php';
+require_once __DIR__ . '/svgLogo.php';
 
 const ASSET_LOGO_MAX_BYTES = 256 * 1024;
 const ASSET_LOGO_MAX_DIMENSION = 1024;
@@ -41,7 +43,10 @@ const ASSET_LOGO_ERROR_STATUS = [
     'unsupportedType' => 502,
     'invalidImage' => 502,
     'dimensionsTooLarge' => 502,
+    'unsafeSvg' => 502,
 ];
+
+const ASSET_LOGO_SVG_MIME = 'image/svg+xml; charset=utf-8';
 
 // Jede Anfrage kann bis zu drei Abrufe nach aussen ausloesen (Horizon, stellar.toml, Bild): eigenes Budget.
 function asset_logo_rate_limit_check_and_record(string $ip): int {
@@ -117,9 +122,10 @@ function asset_logo_webp_size(string $b): ?array {
 
 /**
  * Bildtyp und Groesse aus den ersten Bytes. ['ok' => true, mime, ext, width, height] oder ['ok' => false, error].
- * Gleiche Fehler wie sniffLogoImage in services/assetLogo.js.
+ * Gleiche Fehler wie sniffLogoImage in services/assetLogo.js, auch fuer SVG (width/height null).
+ * $svgDisabledRules nur fuer die Gegenprobe in den Tests.
  */
-function asset_logo_sniff(string $b): array {
+function asset_logo_sniff(string $b, array $svgDisabledRules = []): array {
     if (strlen($b) > ASSET_LOGO_MAX_BYTES) return ['ok' => false, 'error' => 'tooLarge'];
     if (strncmp($b, "\x89PNG\r\n\x1a\n", 8) === 0) {
         $type = ['mime' => 'image/png', 'ext' => 'png'];
@@ -131,7 +137,10 @@ function asset_logo_sniff(string $b): array {
         $type = ['mime' => 'image/webp', 'ext' => 'webp'];
         $size = asset_logo_webp_size($b);
     } else {
-        return ['ok' => false, 'error' => 'unsupportedType'];
+        // Weder PNG noch JPEG noch WebP: SVG nur nach strenger Pruefung (Anlass: Circle USDC/EURC liefern nur SVG).
+        $svg = skm_check_svg_logo($b, $svgDisabledRules);
+        if ($svg !== 'ok') return ['ok' => false, 'error' => $svg];
+        return ['ok' => true, 'mime' => ASSET_LOGO_SVG_MIME, 'ext' => 'svg', 'width' => null, 'height' => null];
     }
     if ($size === null || $size['width'] < 1 || $size['height'] < 1) return ['ok' => false, 'error' => 'invalidImage'];
     if ($size['width'] > ASSET_LOGO_MAX_DIMENSION || $size['height'] > ASSET_LOGO_MAX_DIMENSION) {
@@ -142,7 +151,7 @@ function asset_logo_sniff(string $b): array {
 
 // Bild ueber den SSRF-Schutz: nur https (auch nach jeder Weiterleitung), Abbruch beim Lesen ab ASSET_LOGO_MAX_BYTES.
 function asset_logo_fetch_image(string $url): string {
-    return fetch_url($url, 'image/png, image/jpeg, image/webp', ASSET_LOGO_FETCH_TIMEOUT_SECONDS, [
+    return fetch_url($url, 'image/png, image/jpeg, image/webp, image/svg+xml', ASSET_LOGO_FETCH_TIMEOUT_SECONDS, [
         'httpsOnly' => true,
         'maxBytes' => ASSET_LOGO_MAX_BYTES,
         'headers' => [ASSET_LOGO_HOP_HEADER . ': 1'],

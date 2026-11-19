@@ -5,12 +5,13 @@
 // Code und Issuer -> dessen image (nur https) -> Bild ueber den SSRF-Schutz laden. Der Browser laedt nie
 // direkt von der Domain des Issuers (CSP img-src bleibt 'self').
 //
-// Ausgeliefert wird nur PNG, JPEG oder WebP, erkannt an den ersten Bytes (nie am Content-Type oder an der
-// Endung des Issuers), also nie SVG. Hoechstens MAX_BYTES, der Abruf bricht beim Lesen ab. Breite und Hoehe
-// kommen aus dem Bildkopf, je hoechstens MAX_DIMENSION. Die Antwort-Header setzen wir selbst, von der
-// Gegenseite wird kein Header uebernommen.
+// Ausgeliefert wird PNG, JPEG oder WebP, erkannt an den ersten Bytes (nie am Content-Type oder an der Endung des
+// Issuers), Breite und Hoehe aus dem Bildkopf, je hoechstens MAX_DIMENSION; dazu SVG nur nach der strengen
+// Pruefung in services/svgLogo.js (Bytes unveraendert, ohne Abmessungspruefung). Hoechstens MAX_BYTES, der Abruf
+// bricht beim Lesen ab. Die Antwort-Header setzen wir selbst, von der Gegenseite wird kein Header uebernommen.
 const { assertSafeScheme, ssrfSafeAgent, nextRedirectUrl, readBytesWithLimit } = require('./ssrfGuard.js');
 const { asciiTrim } = require('./addressKind.js');
+const { checkSvgLogo } = require('./svgLogo.js');
 const {
   normalizeAssetIdentity,
   buildTomlUrl,
@@ -46,7 +47,10 @@ const ERROR_STATUS = Object.freeze({
   unsupportedType: 502,
   invalidImage: 502,
   dimensionsTooLarge: 502,
+  unsafeSvg: 502,
 });
+
+const SVG_MIME = 'image/svg+xml; charset=utf-8';
 
 // Nur ASCII, nur https, Host aus Labels (keine Zugangsdaten, kein IP-Literal in Klammern, kein IDN), optional
 // Port, danach druckbare Zeichen ohne Leerzeichen und Backslash. Gleicher Ausdruck in api/assetLogo.php.
@@ -123,10 +127,12 @@ function webpSize(b) {
 
 /**
  * Bildtyp und Groesse aus den ersten Bytes. { ok, mime, ext, width, height } oder { ok: false, error }.
- * Fehler: tooLarge (Bytes), unsupportedType (keine PNG/JPEG/WebP-Signatur), invalidImage (Kopf kaputt oder
- * 0 Pixel), dimensionsTooLarge (Breite oder Hoehe ueber MAX_DIMENSION).
+ * Fehler: tooLarge (Bytes), unsupportedType (weder PNG/JPEG/WebP-Signatur noch SVG), invalidImage (Kopf kaputt,
+ * 0 Pixel oder SVG ohne gueltiges UTF-8), dimensionsTooLarge (Breite oder Hoehe ueber MAX_DIMENSION), unsafeSvg
+ * (SVG besteht die Pruefung in services/svgLogo.js nicht). SVG ohne Abmessungspruefung: width und height null.
+ * options.svgDisabledRules nur fuer die Gegenprobe in den Tests.
  */
-function sniffLogoImage(input) {
+function sniffLogoImage(input, options = {}) {
   const b = Buffer.isBuffer(input) ? input : Buffer.from(input || []);
   if (b.length > MAX_BYTES) return fail('tooLarge');
   let type;
@@ -141,7 +147,10 @@ function sniffLogoImage(input) {
     type = { mime: 'image/webp', ext: 'webp' };
     size = webpSize(b);
   } else {
-    return fail('unsupportedType');
+    // Weder PNG noch JPEG noch WebP: SVG nur nach strenger Pruefung (Anlass: Circle USDC/EURC liefern nur SVG).
+    const svg = checkSvgLogo(b, options.svgDisabledRules);
+    if (svg !== 'ok') return fail(svg);
+    return { ok: true, mime: SVG_MIME, ext: 'svg', width: null, height: null };
   }
   if (!size || size.width < 1 || size.height < 1) return fail('invalidImage');
   if (size.width > MAX_DIMENSION || size.height > MAX_DIMENSION) return fail('dimensionsTooLarge');
@@ -158,7 +167,7 @@ async function fetchImageBytes(url) {
     for (let redirects = 0; redirects <= MAX_IMAGE_REDIRECTS; redirects += 1) {
       if (assertSafeScheme(currentUrl).protocol !== 'https:') throw new Error('ssrf.blocked:scheme');
       const response = await fetch(currentUrl, {
-        headers: { accept: 'image/png, image/jpeg, image/webp', 'accept-encoding': 'identity', [HOP_HEADER]: '1' },
+        headers: { accept: 'image/png, image/jpeg, image/webp, image/svg+xml', 'accept-encoding': 'identity', [HOP_HEADER]: '1' },
         signal: controller.signal,
         redirect: 'manual',
         dispatcher: ssrfSafeAgent,

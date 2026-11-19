@@ -118,7 +118,7 @@ test('Header: Erfolg und Fehler wie in der Fixture, Typ aus der Erkennung', () =
 
 // Voruebergehend (no-store) gegen dauerhaft (eine Stunde). Die Liste kommt aus der Fixture, die Gegenprobe
 // stellt sicher, dass jede Gruppe nur ihren eigenen Header bekommt.
-const PERMANENT_ERRORS = ['noHomeDomain', 'notListed', 'noImage', 'tooLarge', 'unsupportedType', 'invalidImage', 'dimensionsTooLarge'];
+const PERMANENT_ERRORS = ['noHomeDomain', 'notListed', 'noImage', 'tooLarge', 'unsupportedType', 'invalidImage', 'dimensionsTooLarge', 'unsafeSvg'];
 
 test('Fehlergruppen: Fixture teilt alle Fehler in genau zwei Gruppen', () => {
   assert.deepEqual([...logo.TRANSIENT_ERRORS], fixture.transientErrors);
@@ -390,4 +390,68 @@ test('UTF-8: Node dekodiert wie in utf8Cases (Massstab fuer PHP skm_utf8_scrub)'
   for (const c of fixture.utf8Cases) {
     assert.equal(Buffer.from(Buffer.from(c.hex, 'hex').toString('utf8')).toString('hex'), c.expectHex, c.hex);
   }
+});
+
+// --- SVG (services/svgLogo.js, svgCases) -----------------------------------------------------------------
+
+const { SVG_RULES, SVG_ELEMENTS } = require('../services/svgLogo.js');
+const svgBytes = (c) => {
+  if (c.hex !== undefined) return Buffer.from(c.hex, 'hex');
+  if (c.build) return Buffer.from(c.build.prefix + c.build.repeat.repeat(c.build.times) + c.build.suffix, 'utf8');
+  return Buffer.from(c.svg, 'utf8');
+};
+const svgResult = (c, disabled) => {
+  const r = logo.sniffLogoImage(svgBytes(c), { svgDisabledRules: disabled });
+  return r.ok ? 'ok' : r.error;
+};
+
+test('SVG: Regeln und Erlaubtliste wie in der Fixture', () => {
+  assert.deepEqual([...SVG_RULES], fixture.svgRules);
+  assert.deepEqual([...SVG_ELEMENTS], fixture.svgElements);
+});
+
+for (const c of fixture.svgCases) {
+  test(`SVG: ${c.name}`, () => {
+    const r = logo.sniffLogoImage(svgBytes(c));
+    assert.equal(r.ok ? 'ok' : r.error, c.expect);
+    if (r.ok) assert.deepEqual(r, { ok: true, mime: 'image/svg+xml; charset=utf-8', ext: 'svg', width: null, height: null });
+  });
+}
+
+// Gegenprobe: jede Regel einzeln abschalten, mindestens ein Fall muss dann anders ausgehen.
+for (const rule of fixture.svgRules) {
+  test(`SVG Gegenprobe: ohne Regel ${rule} kippt mindestens ein Fall`, () => {
+    const flipped = fixture.svgCases.filter((c) => svgResult(c, [rule]) !== c.expect);
+    assert.ok(flipped.length >= 1, rule);
+  });
+}
+
+for (const c of fixture.svgPerfCases) {
+  test(`SVG Laufzeit: ${c.name}`, () => {
+    const bytes = svgBytes(c);
+    assert.ok(bytes.length <= fixture.limits.maxBytes);
+    const started = process.hrtime.bigint();
+    assert.equal(svgResult(c), c.expect);
+    assert.ok(Number(process.hrtime.bigint() - started) / 1e6 < 500, 'unter 500 ms');
+  });
+}
+
+test('SVG: Header mit charset, Bytes unveraendert, Accept um image/svg+xml erweitert', async () => {
+  const bytes = svgBytes(fixture.svgCases[0]);
+  const r = logo.sniffLogoImage(bytes);
+  assert.deepEqual(logo.logoSuccessHeaders({ ...r, bytes }), {
+    ...fixture.headers.success,
+    'Content-Type': 'image/svg+xml; charset=utf-8',
+    'Content-Length': String(bytes.length),
+    'Content-Disposition': 'inline; filename="logo.svg"',
+  });
+  const seen = [];
+  const original = global.fetch;
+  global.fetch = async (url, init) => { seen.push(init.headers.accept); return new Response(bytes, { status: 200 }); };
+  try {
+    assert.deepEqual(await logo.fetchImageBytes('https://203.0.113.10/a.svg'), bytes);
+  } finally {
+    global.fetch = original;
+  }
+  assert.equal(seen[0], 'image/png, image/jpeg, image/webp, image/svg+xml');
 });

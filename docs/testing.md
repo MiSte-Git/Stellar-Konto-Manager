@@ -82,6 +82,14 @@ dass jede Spec in dieser Tabelle steht und jede genannte Datei existiert.
   einen tropfenden Server (`skm_stream_read_limited`). Ablehnung nach Hop-Header und `Sec-Fetch-Dest` sowie Code und
   Issuer aus der Anfrage: Fixture-Abschnitte `refusals` und `identityInputs`, über HTTP in
   `test/assetLogoRoute.test.js` und `test/rateLimitRoutes.test.php` (vor dem Limiter, kein Budget verbraucht).
+- SVG im Logo-Proxy: `svgCases` (gültige Logos wie Circle USDC mit `mask` und `url(#m)`, Gradienten, `style` mit
+  Klassen; Umgehungsversuche mit Groß-/Kleinschreibung, Präfixen, Entities, CSS-Escapes und -Kommentaren, CDATA, PI,
+  DOCTYPE, ungültigem UTF-8, 256 KB plus 1) und `svgPerfCases` (256 KB böswillige Eingaben, unter 500 ms) in
+  `test/assetLogo.test.js` und `test/assetLogo.test.php`. Gegenprobe: jede Regel aus `svgRules` wird im Produktivcode
+  einzeln abgeschaltet (`sniffLogoImage(bytes, { svgDisabledRules })` bzw. `asset_logo_sniff($bytes, $rules)`),
+  mindestens ein Fall muss dann kippen. Die Fälle `F-1` bis `F-3` stammen aus `review_svg_logo_opus.md`
+  (CSS-Kommentare als Versteck, Verweisketten, Attributnamen mit leerem Präfix). Ob akzeptierte SVGs den Browser
+  belasten, prüfen die Tests nicht; gemessen wurde von Hand mit Playwright und Chromium (Werte in `docs/SECURITY.md`).
 - stellar.toml in Node und PHP gleich gelesen (Review LP-4): Fixture-Abschnitt `tomlCases` (Probefälle aus dem Review
   mit `probe: true`, Grenzfälle zu Datum, Zahlen, Escapes, Tabellen, ungültigem UTF-8 als `tomlHex`). Je Fall das
   gelesene Ergebnis als JSON und das Ergebnis von `/logo`, in `test/assetLogo.test.js` und `test/assetLogo.test.php`.

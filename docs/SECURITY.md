@@ -317,8 +317,8 @@ Ein Job ist eine unsignierte oder teilsignierte Transaktion, die mehrere Signer 
 - Logo-Proxy (`GET /api/trade/assets/logo`, `services/assetLogo.js`, `api/assetLogo.php`): Das Bild nennt der Issuer
   in seiner stellar.toml, das Ziel bestimmt also ein Dritter. Abruf nur über den SSRF-Schutz oben, nur https (auch
   jede Weiterleitung), URL nur ASCII ohne Zugangsdaten und ohne IP-Literal in Klammern. Der Browser lädt nie vom
-  Issuer (`img-src 'self'` bleibt). Ausgeliefert wird nur PNG, JPEG oder WebP nach den ersten Bytes, nie SVG (Skript
-  im Bild) und nie nach dem Content-Type der Gegenseite; höchstens 256 KB, Abbruch beim Lesen (Node
+  Issuer (`img-src 'self'` bleibt). Ausgeliefert wird PNG, JPEG oder WebP nach den ersten Bytes und SVG nur nach der
+  strengen Prüfung unten, nie nach dem Content-Type der Gegenseite; höchstens 256 KB, Abbruch beim Lesen (Node
   `readBytesWithLimit`, PHP `skm_curl_size_limit_callbacks`), höchstens 1024 × 1024 Pixel laut Bildkopf (begrenzt
   den Speicher beim Dekodieren im Browser). Antwort-Header setzt das Backend selbst (`nosniff`, CSP mit `sandbox`,
   `Cross-Origin-Resource-Policy: same-site`), keiner wird durchgereicht. Das Logo ist dekorativ (`alt=""`) und keine
@@ -333,10 +333,53 @@ Ein Job ist eine unsignierte oder teilsignierte Transaktion, die mehrere Signer 
   **Restrisiko (Entscheidung Review LP-3):** Geprüft wird nur der Bildkopf, eine Strukturprüfung der ganzen Datei gibt
   es bewusst nicht. Hinter einem gültigen Bildkopf können bis 256 KB beliebige Daten stehen, die SKM unter der eigenen
   Domain ausliefert (ein Testnet-Issuer reicht dafür). Ausgeliefert wird das nur mit dem Typ aus der Erkennung
-  (`image/png`, `image/jpeg`, `image/webp`), `nosniff`, `Content-Security-Policy` mit `sandbox` und nur bei
+  (`image/png`, `image/jpeg`, `image/webp`, bei SVG nach der Prüfung unten `image/svg+xml`), `nosniff`, `Content-Security-Policy` mit `sandbox` und nur bei
   `Sec-Fetch-Dest: image` oder ohne diesen Header; als Dokument, per fetch oder im iframe kommt 404. Damit erscheinen
   die Bytes nie als HTML oder Skript. Eine Strukturprüfung (PNG bis IEND, JPEG-Ende, RIFF-Länge) hätte echte Logos
   mit angehängten Bytes abgelehnt und Daten in gültigen Chunks trotzdem nicht verhindert.
+  **SVG** (`services/svgLogo.js`, `api/svgLogo.php`): zugelassen, weil wichtige Issuer nur SVG liefern (Circle USDC und
+  EURC: `image` leitet auf eine SVG-Datei mit `mask` und `url(#…)` um), ohne SVG fehlte ihr Logo. Erkannt am Inhalt:
+  nach optionalem BOM, ASCII-Leerraum, genau einer XML-Deklaration am Anfang (Angabe `encoding` nur UTF-8) und
+  Kommentaren muss das Element `svg` stehen; sonst `unsupportedType`, oder `unsafeSvg`, wenn `<svg` erst später kommt
+  (DOCTYPE, PI oder HTML davor). Nur gültiges UTF-8 (sonst `invalidImage`), keine Abmessungsprüfung. Kein XML-Parser
+  (keine Entity-Auflösung, keine externen Ressourcen), sondern ein eigener Tag-Scanner in einem Durchlauf ohne
+  Rekursion, in beiden Backends gleich, auf den Bytes, Groß-/Kleinschreibung nur für ASCII. Abgelehnt (`unsafeSvg`,
+  502, Cache eine Stunde) wird, wenn irgendwo vorkommt: DOCTYPE, ENTITY, CDATA oder eine Processing Instruction; ein
+  Element außerhalb der Erlaubtliste (svg, g, defs, symbol, use, title, desc, path, rect, circle, ellipse, line,
+  polyline, polygon, linearGradient, radialGradient, stop, clipPath, mask, style, text, tspan; ohne
+  Namespace-Präfix), also auch script, foreignObject, image, a, animate, set, Filter und pattern; ein Attribut, das mit
+  `on` beginnt (auch hinter einem Präfix); `href` mit beliebigem Präfix, dessen Wert nicht mit `#` beginnt; ein
+  Attributname mit mehr als einem oder leerem Präfix (`href:=`, `:href=`, Review `review_svg_logo_opus.md` F-3); ein
+  Attribut ohne Anführungszeichen, ohne Wert, doppelt, ohne Leerraum davor oder mit `<` im Wert; eine Zeichenreferenz `&#` oder eine
+  andere Entity als amp, lt, gt, quot, apos; ein offener Kommentar oder `--` darin; ein offener Tag oder ein Element,
+  das am Ende offen ist; ein schließender Tag, der nicht passt; Tags oder Kommentare in `style`; Steuerzeichen außer
+  Tab, LF, CR; ein zweites Wurzelelement oder Inhalt nach dem schließenden `svg` außer Leerraum und Kommentaren. Jeder
+  Attributwert und jeder `style`-Inhalt wird außerdem ohne ASCII-Leerraum und ASCII-klein geprüft: kein CSS-Kommentar
+  `/*` (auch `/ *`; Review F-1: vorher wurden Kommentare entfernt, der Browser liest `/*` in einem CSS-String oder
+  `/ *` aber nicht als Kommentar, so ließ sich `mask:url(https://…)` oder `@import` verstecken; Chromium lud die
+  fremde Ressource, wenn die Datei ohne unsere Header geöffnet wurde), kein `javascript:`, `vbscript:`, `data:`,
+  `@import`, `expression(`, `var(`, Backslash (CSS-Escapes), keine CSS-Funktion, die fremde Bilder lädt
+  (`image-set(`, `image(`, `src(`, `cross-fade(`, `element(`), und `url(` nur mit einem Ziel, das nach optionalem
+  Anführungszeichen mit `#` beginnt. Verweise sind begrenzt (Review F-2: kleine SVGs mit Verweisketten legten Chromium
+  im `<img>` lahm, eine `use`-Kette 6 × 10 mit 1,2 KB brachte den Tab nach etwa 60 s zum Absturz, `mask`- und
+  `clipPath`-Ketten zeigten nach 20 s kein Bild; die Pixelgrenze der Rasterbilder hat für SVG keinen Ersatz): in CSS
+  steht `url(` nur direkt nach `fill:` oder `stroke:`; als Attribut nur in `fill`, `stroke`, `mask`, `clip-path` und
+  `style`; in `mask`, `clipPath` und `symbol` kein `use`, kein `mask`/`clip-path` und kein `url(` außer bei
+  `fill`/`stroke`; höchstens 8 `use` und 64 `mask`/`clip-path` mit `url(` je Datei. `pattern` ist nicht erlaubt: ein
+  schweres `pattern` als `fill` vieler Elemente per Klasse blockierte Chromium 6 bis 16 s, Gradienten auf 9000
+  Elementen dagegen nur rund 130 ms. Gemessen mit den schlimmsten Dateien, die der Scanner noch annimmt (64 Verweise
+  auf eine Maske mit rund 5800 Elementen, dieselben 64 über 8 `use`, ein `symbol` mit 8 `use`): höchstens rund 250 ms
+  in Chromium. Abgelehnt werden damit auch harmlose Dateien mit CSS-Kommentaren oder `pattern`; dann fehlt nur das
+  Logo. Text in title,
+  desc und text wird nicht auf CSS geprüft, er ist nur Text. Ausgeliefert werden die Original-Bytes mit
+  `image/svg+xml; charset=utf-8` und denselben Headern wie bei Rasterbildern. Grenzen: Die Prüfung ist eine
+  zusätzliche Linie. Das Frontend zeigt das Logo nur als `<img>`, und dort führt der Browser in SVG nie Skripte aus und
+  lädt keine externen Ressourcen. Für einen direkten Aufruf der URL gelten `Sec-Fetch-Dest` (404 außer bei `image`)
+  und die CSP `default-src 'none'; sandbox`. Die Erlaubtliste lässt Fälle durch, die der Browser als SVG gar nicht
+  darstellt (etwa `<SVG>` in Großbuchstaben); das ist ungefährlich, das Logo bleibt dann leer. Abgelehnt werden im
+  Zweifel auch harmlose Dateien (etwa `data:` in einer ID); dann fehlt nur das Logo. Ein Issuer kann über SVG wie über
+  ein Rasterbild jedes Aussehen wählen, auch das eines bekannten Tokens; das Logo bleibt dekorativ. Gemeinsame Fälle:
+  `svgCases` und `svgPerfCases` in `test/assets/asset-logo.json`, je Regel eine Gegenprobe.
 - stellar.toml in beiden Backends gleich gelesen (Review LP-4): Node nutzt die Bibliothek `toml` (5.0.1), PHP einen
   eigenen Parser in `api/stellarToml.php` ohne Abhängigkeit, der dieselben Regeln umsetzt (TOML 1.0, dazu `\e`,
   `\xHH` und Uhrzeiten ohne Sekunden wie die Bibliothek). Gilt für `/facts` und `/logo`. Ein Fehler irgendwo in der

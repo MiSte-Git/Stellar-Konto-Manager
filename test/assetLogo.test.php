@@ -104,7 +104,7 @@ ksort($headers);
 ksort($expected);
 check('Header: Erfolg wie in der Fixture, Typ aus der Erkennung', $headers === $expected);
 // Voruebergehend (no-store) gegen dauerhaft (eine Stunde), mit Gegenprobe je Gruppe.
-$permanentErrors = ['noHomeDomain', 'notListed', 'noImage', 'tooLarge', 'unsupportedType', 'invalidImage', 'dimensionsTooLarge'];
+$permanentErrors = ['noHomeDomain', 'notListed', 'noImage', 'tooLarge', 'unsupportedType', 'invalidImage', 'dimensionsTooLarge', 'unsafeSvg'];
 $sorted = function (array $a): array { ksort($a); return $a; };
 $allErrors = array_keys($fx['errors']);
 $groups = array_merge($fx['transientErrors'], $permanentErrors);
@@ -279,6 +279,52 @@ if (trim((string)$out) === '-1') {
 } else {
     check('UTF-8: ohne mbstring (php -n) wie Node', trim((string)$out) === '0');
 }
+
+// --- SVG (api/svgLogo.php, svgCases) ---
+$svgBytes = function (array $c): string {
+    if (isset($c['hex'])) return (string)hex2bin($c['hex']);
+    if (isset($c['build'])) return $c['build']['prefix'] . str_repeat($c['build']['repeat'], $c['build']['times']) . $c['build']['suffix'];
+    return $c['svg'];
+};
+$svgResult = function (array $c, array $off = []) use ($svgBytes): string {
+    $r = asset_logo_sniff($svgBytes($c), $off);
+    return $r['ok'] ? 'ok' : $r['error'];
+};
+check('SVG: Regeln und Erlaubtliste wie in der Fixture', SKM_SVG_RULES === $fx['svgRules'] && SKM_SVG_ELEMENTS === $fx['svgElements']);
+foreach ($fx['svgCases'] as $c) {
+    $r = asset_logo_sniff($svgBytes($c));
+    $got = $r['ok'] ? 'ok' : $r['error'];
+    $okShape = !$r['ok'] || $r === ['ok' => true, 'mime' => 'image/svg+xml; charset=utf-8', 'ext' => 'svg', 'width' => null, 'height' => null];
+    check("SVG: {$c['name']}", $got === $c['expect'] && $okShape);
+    if ($got !== $c['expect']) echo "   erhalten: {$got}\n";
+}
+foreach ($fx['svgRules'] as $rule) {
+    $flipped = 0;
+    foreach ($fx['svgCases'] as $c) if ($svgResult($c, [$rule]) !== $c['expect']) $flipped++;
+    check("SVG Gegenprobe: ohne Regel {$rule} kippt mindestens ein Fall", $flipped >= 1);
+}
+foreach ($fx['svgPerfCases'] as $c) {
+    $b = $svgBytes($c);
+    $t0 = microtime(true);
+    $got = $svgResult($c);
+    $ms = (microtime(true) - $t0) * 1000;
+    check(sprintf('SVG Laufzeit: %s (%.1f ms)', $c['name'], $ms), strlen($b) <= $fx['limits']['maxBytes'] && $got === $c['expect'] && $ms < 500);
+}
+$svgOne = $svgBytes($fx['svgCases'][0]);
+$h = asset_logo_success_headers(asset_logo_sniff($svgOne) + ['bytes' => $svgOne]);
+$want = $fx['headers']['success'] + ['Content-Type' => 'image/svg+xml; charset=utf-8', 'Content-Length' => (string)strlen($svgOne), 'Content-Disposition' => 'inline; filename="logo.svg"'];
+ksort($h);
+ksort($want);
+check('SVG: Header mit charset wie Node', $h === $want);
+check('SVG: Accept um image/svg+xml erweitert', strpos($src, "fetch_url(\$url, 'image/png, image/jpeg, image/webp, image/svg+xml',") !== false);
+// Nur Code, ohne Kommentare (die nennen DOMDocument/simplexml ausdruecklich als nicht benutzt).
+$svgCode = '';
+foreach (token_get_all((string)file_get_contents(__DIR__ . '/../api/svgLogo.php')) as $tok) {
+    if (is_array($tok) && in_array($tok[0], [T_COMMENT, T_DOC_COMMENT], true)) continue;
+    $svgCode .= is_array($tok) ? $tok[1] : $tok;
+}
+check('SVG: kein XML-Parser im Scanner', !preg_match('/DOMDocument|simplexml|XMLReader|xml_parser_create/i', $svgCode)
+    && preg_match('/DOMDocument/', (string)file_get_contents(__DIR__ . '/../api/svgLogo.php')) === 1);
 
 echo "\n{$passed} passed, {$failed} failed\n";
 exit($failed > 0 ? 1 : 0);

@@ -64,7 +64,7 @@ Zwei Varianten mit gleichem Verhalten ([ADR 0003](adr/0003-dual-backend-paritaet
 | Signaturen | `txSignatures.js` | `txSignatures.php` |
 | Federation | `federationService.js` | `federation.php`, `federationService.php` |
 | Token-Suche/Trading | `tradeService.js` | `trade.php`, `assetIdentity.php`, `stellarToml.php`, `trade/` |
-| Logo-Proxy | `assetLogo.js` | `assetLogo.php` (Route in `trade.php`) |
+| Logo-Proxy | `assetLogo.js`, `svgLogo.js` | `assetLogo.php`, `svgLogo.php` (Route in `trade.php`) |
 | Bugtracker, Admin | `server.js`, `requestGuard.js` | `bugreport.php`, `admin.php`, `admin_session.php`, `requestGuard.php` |
 | SSRF-Schutz | `ssrfGuard.js` | `ssrfGuard.php` |
 | CORS, Header | `corsConfig.js`, `securityHeaders.js` | `cors.php`, `securityHeaders.php` |
