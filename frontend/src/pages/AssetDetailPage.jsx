@@ -10,6 +10,7 @@ import AssetMarketCard from '../components/assetDetail/AssetMarketCard.jsx';
 import IssuerTomlCard from '../components/assetDetail/IssuerTomlCard.jsx';
 import AssetLogo from '../components/assetDetail/AssetLogo.jsx';
 import AssetSupplyCard from '../components/assetDetail/AssetSupplyCard.jsx';
+import TrustlineSince from '../components/assetDetail/TrustlineSince.jsx';
 import { issuerTomlInfo } from '../utils/stellar/issuerToml.js';
 
 /**
@@ -98,6 +99,14 @@ export default function AssetDetailPage({ publicKey = '', network = 'PUBLIC', on
     };
   }, [i18n.language]);
 
+  const fmtDate = useMemo(() => {
+    const df = new Intl.DateTimeFormat(i18n.language, { dateStyle: 'medium', timeStyle: 'short' });
+    return (v) => {
+      const d = new Date(v);
+      return Number.isNaN(d.getTime()) ? '–' : df.format(d);
+    };
+  }, [i18n.language]);
+
   if (!valid) {
     return (
       <div className="mx-auto max-w-4xl px-4 pb-10" data-testid="asset-detail-invalid">
@@ -146,6 +155,7 @@ export default function AssetDetailPage({ publicKey = '', network = 'PUBLIC', on
             ? t('wallet:assetDetail.account.no', 'Nein')
             : t('wallet:assetDetail.account.yes', 'Ja')}
         </Row>
+        <TrustlineSince key={`${network}|${publicKey}|${code}|${issuer}`} account={publicKey} code={code} issuer={issuer} network={network} formatDate={fmtDate} />
       </dl>
     );
   }

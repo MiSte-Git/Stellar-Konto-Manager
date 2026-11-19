@@ -9,7 +9,7 @@ import { clearAggregationCache } from '../../utils/stellar/assetMarket.js';
 const PK = 'GATHPDLDMA5UAHHUUBFAQNW7B3573IUMEGPZGXMT25CNUPY4BOYFAV7F';
 const ISSUER = 'GD5KJP276E7CZT43PAI5KAEXCUDZMFFMV4X5AGFKBR7Q7IAZZ5BXZVKM';
 
-const hoisted = vi.hoisted(() => ({ loadAccount: vi.fn(), book: vi.fn(), trades: vi.fn(), paths: vi.fn(), aggs: vi.fn(), assets: vi.fn() }));
+const hoisted = vi.hoisted(() => ({ loadAccount: vi.fn(), book: vi.fn(), trades: vi.fn(), paths: vi.fn(), aggs: vi.fn(), assets: vi.fn(), effects: vi.fn() }));
 vi.mock('../../utils/stellar/stellarUtils.js', async (orig) => (await import('../../test/horizonMock.js')).withNetworkServer({
   ...(await orig()),
   getHorizonServer: () => {
@@ -23,6 +23,7 @@ vi.mock('../../utils/stellar/stellarUtils.js', async (orig) => (await import('..
       trades: () => ({ forAssetPair: (...a) => chain(hoisted.trades, a) }),
       strictSendPaths: (...a) => ({ call: () => hoisted.paths(...a) }),
       tradeAggregation: (...a) => chain(hoisted.aggs, a),
+      effects: () => { const c = { forAccount: () => c, order: () => c, limit: () => c, cursor: () => c, call: () => hoisted.effects() }; return c; },
       assets: () => { const c = { forCode: () => c, forIssuer: () => c, limit: () => c, call: () => hoisted.assets() }; return c; },
     };
   },
@@ -52,6 +53,7 @@ beforeEach(() => {
   hoisted.paths.mockReset().mockResolvedValue({ records: [] });
   hoisted.aggs.mockReset().mockResolvedValue({ records: [] });
   hoisted.assets.mockReset().mockResolvedValue({ records: [] });
+  hoisted.effects.mockReset().mockResolvedValue({ records: [] });
   vi.stubGlobal('fetch', vi.fn(async () => ({
     ok: true,
     json: async () => ({ issuerAccount: { home_domain: 'lumendex.online', flags: {} }, toml: { status: 'notChecked', currencies: [], matches: [] } }),
@@ -432,5 +434,32 @@ describe('AssetDetailPage: Angaben des Issuers und Logo', () => {
     renderAt(`/assets/LDEX-${ISSUER}`);
     expect(await screen.findByTestId('asset-supply-error')).toBeTruthy();
     expect(screen.queryByTestId('asset-supply-holders')).toBeNull();
+  });
+});
+
+describe('AssetDetailPage: Trustline-Datum', () => {
+  it('sucht erst auf Knopfdruck und zeigt das Datum der Anlage', async () => {
+    hoisted.loadAccount.mockResolvedValue(account([
+      { asset_type: 'credit_alphanum4', asset_code: 'LDEX', asset_issuer: ISSUER, balance: '1', limit: '10', selling_liabilities: '0', buying_liabilities: '0' },
+    ]));
+    hoisted.effects.mockResolvedValue({ records: [{ type: 'trustline_created', asset_code: 'LDEX', asset_issuer: ISSUER, created_at: '2025-03-04T05:06:07Z', paging_token: 'x' }] });
+    renderAt(`/assets/LDEX-${ISSUER}`);
+    const btn = await screen.findByTestId('trustline-since-search');
+    expect(hoisted.effects).not.toHaveBeenCalled();
+    fireEvent.click(btn);
+    const el = await screen.findByTestId('trustline-since-date');
+    expect(el.textContent).toBe(new Intl.DateTimeFormat('de', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date('2025-03-04T05:06:07Z')));
+    expect(screen.queryByTestId('trustline-since-search')).toBeNull();
+  });
+
+  it('Fehler: Hinweis und erneut suchen', async () => {
+    hoisted.loadAccount.mockResolvedValue(account([
+      { asset_type: 'credit_alphanum4', asset_code: 'LDEX', asset_issuer: ISSUER, balance: '1', limit: '10', selling_liabilities: '0', buying_liabilities: '0' },
+    ]));
+    hoisted.effects.mockRejectedValue(new Error('down'));
+    renderAt(`/assets/LDEX-${ISSUER}`);
+    fireEvent.click(await screen.findByTestId('trustline-since-search'));
+    expect(await screen.findByTestId('trustline-since-error')).toBeTruthy();
+    expect(screen.getByTestId('trustline-since-search')).toHaveTextContent('Erneut suchen');
   });
 });

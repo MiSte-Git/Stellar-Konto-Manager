@@ -424,6 +424,16 @@
       "none": "Noch kein Konto hält eine Trustline zu diesem Asset.",
       "error": "Holder und Menge konnten nicht geladen werden.",
       "loading": "Lade Holder und Menge …"
+    },
+    "trustlineSince": {
+      "label": "Trustline angelegt",
+      "search": "Datum suchen",
+      "retry": "Erneut suchen",
+      "loading": "Suche im Verlauf … (Seite {{page}} von höchstens {{max}})",
+      "olderThan": "älter als {{date}}",
+      "notInHistory": "nicht im verfügbaren Verlauf (ältester Eintrag {{date}})",
+      "noHistory": "nicht im verfügbaren Verlauf",
+      "error": "konnte nicht geladen werden"
     }
   }
 }
