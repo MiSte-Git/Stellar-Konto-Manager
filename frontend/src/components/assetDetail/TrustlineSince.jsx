@@ -44,7 +44,7 @@ export default function TrustlineSince({ account, code, issuer, network, formatD
       content = (
         <span data-testid="trustline-since-none">
           {state.oldest
-            ? t('wallet:assetDetail.trustlineSince.notInHistory', { date: date(state.oldest), defaultValue: 'nicht im verfügbaren Verlauf (ältester Eintrag {{date}})' })
+            ? t('wallet:assetDetail.trustlineSince.notInHistory', { date: date(state.oldest), defaultValue: 'vor dem {{date}} (älterer Verlauf ist bei Horizon nicht verfügbar)' })
             : t('wallet:assetDetail.trustlineSince.noHistory', 'nicht im verfügbaren Verlauf')}
         </span>
       );

@@ -431,7 +431,7 @@
       "retry": "Erneut suchen",
       "loading": "Suche im Verlauf … (Seite {{page}} von höchstens {{max}})",
       "olderThan": "älter als {{date}}",
-      "notInHistory": "nicht im verfügbaren Verlauf (ältester Eintrag {{date}})",
+      "notInHistory": "vor dem {{date}} (älterer Verlauf ist bei Horizon nicht verfügbar)",
       "noHistory": "nicht im verfügbaren Verlauf",
       "error": "konnte nicht geladen werden"
     }
