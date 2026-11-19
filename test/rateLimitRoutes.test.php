@@ -1,7 +1,7 @@
 <?php
 // R-8: Rate-Limits an den PHP-Routen (php -S gegen eine Kopie von api/). Je Route: das Budget
 // aus test/assets/rate-limits.json greift, Status, Fehlercode und Retry-After stimmen.
-// Federation (federation.php), Job anlegen und Jobliste (multisig.php), Admin-Login mit
+// Federation (federation.php), Logo (trade.php), Job anlegen und Jobliste (multisig.php), Admin-Login mit
 // Sperre und Freigabe (admin.php). Bugreport anlegen braucht vor dem Limit eine
 // DB-Verbindung; dort prueft der Test die Einbindung im Quelltext, das Budget prueft
 // test/rateLimitAreas.test.php. IPv6 je /64 laesst sich ueber Loopback nicht per HTTP
@@ -30,24 +30,26 @@ const BASE = 'http://127.0.0.1:' . TEST_PORT . '/api';
 const GOOD_ORIGIN = 'http://localhost:5173';
 const SECRET = 'rate-limit-test-secret';
 
-function send(string $method, string $url, ?array $body = null): array {
+function send(string $method, string $url, ?array $body = null, array $extraHeaders = []): array {
     $ch = curl_init($url);
-    $headers = ['Origin: ' . GOOD_ORIGIN];
+    $headers = array_merge(['Origin: ' . GOOD_ORIGIN], $extraHeaders);
     if ($body !== null) {
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($body));
         $headers[] = 'Content-Type: application/json';
     }
     $retryAfter = null;
+    $cacheControl = null;
     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
     curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-    curl_setopt($ch, CURLOPT_HEADERFUNCTION, function ($ch, string $line) use (&$retryAfter): int {
+    curl_setopt($ch, CURLOPT_HEADERFUNCTION, function ($ch, string $line) use (&$retryAfter, &$cacheControl): int {
         if (stripos($line, 'Retry-After:') === 0) $retryAfter = (int)trim(substr($line, strlen('Retry-After:')));
+        if (stripos($line, 'Cache-Control:') === 0) $cacheControl = trim(substr($line, strlen('Cache-Control:')));
         return strlen($line);
     });
     $raw = curl_exec($ch);
-    return ['status' => (int)curl_getinfo($ch, CURLINFO_HTTP_CODE), 'body' => json_decode((string)$raw, true) ?? [], 'retryAfter' => $retryAfter];
+    return ['status' => (int)curl_getinfo($ch, CURLINFO_HTTP_CODE), 'body' => json_decode((string)$raw, true) ?? [], 'retryAfter' => $retryAfter, 'cacheControl' => $cacheControl];
 }
 
 // 429 mit Fehlercode und Retry-After wie in der Fixture.
@@ -75,6 +77,7 @@ file_put_contents($apiDir . '/router.php', <<<'PHP'
 $path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '/';
 if (preg_match('#^/api/admin($|/)#', $path)) { require __DIR__ . '/admin.php'; return true; }
 if ($path === '/api/federation') { require __DIR__ . '/federation.php'; return true; }
+if (preg_match('#^/api/trade($|/)#', $path)) { require __DIR__ . '/trade.php'; return true; }
 if (preg_match('#^/api/multisig($|/)#', $path)) { require __DIR__ . '/multisig.php'; return true; }
 http_response_code(404);
 echo '{}';
@@ -92,6 +95,7 @@ $server = proc_open(
         'MULTISIG_JOB_RATE_LIMIT_PATH' => $apiDir . '/data/multisig_job_rate_limit.json',
         'MULTISIG_JOB_LIST_RATE_LIMIT_PATH' => $apiDir . '/data/multisig_job_list_rate_limit.json',
         'ADMIN_LOGIN_ATTEMPTS_PATH' => $attemptsFile,
+        'ASSET_LOGO_RATE_LIMIT_PATH' => $apiDir . '/data/asset_logo_rate_limit.json',
     ])
 );
 
@@ -111,6 +115,32 @@ try {
     }
     check("Federation: {$area['max']} Anfragen ohne 429", $within);
     check("Federation: die naechste -> 429 {$area['error']} mit Retry-After", isLimited(send('GET', BASE . '/federation'), $area));
+
+    // Logo: ungueltiger Code ergibt 400 ohne Abruf nach aussen, gezaehlt wird vorher; 400 und 429 no-store.
+    $area = $limits['areas']['assetLogo'];
+    $logoUrl = BASE . '/trade/assets/logo?code=!!&issuer=GABC&network=testnet';
+    // Review LP-2/LP-3/LP-6: Hop-Header, Sec-Fetch-Dest ausser image und andere Methoden werden vor dem Limiter
+    // abgewiesen. Danach muss das volle Budget noch frei sein (Schleife unten).
+    $refusedOk = true;
+    for ($i = 0; $i < 3; $i++) {
+        $hop = send('GET', $logoUrl, null, ['X-SKM-Logo-Hop: 1', 'Sec-Fetch-Dest: image']);
+        $doc = send('GET', $logoUrl, null, ['Sec-Fetch-Dest: document']);
+        $post = send('POST', $logoUrl, []);
+        if ($hop['status'] !== 404 || ($hop['body']['error'] ?? '') !== 'assetLogo.hopRefused' || $hop['cacheControl'] !== 'no-store') $refusedOk = false;
+        if ($doc['status'] !== 404 || ($doc['body']['error'] ?? '') !== 'assetLogo.notImageRequest' || $doc['cacheControl'] !== 'no-store') $refusedOk = false;
+        if ($post['status'] !== 404 || ($post['body']['error'] ?? '') !== 'trade.notFound') $refusedOk = false;
+    }
+    check('Logo: Hop-Header 404 hopRefused, Dokument 404 notImageRequest (no-store), POST 404 trade.notFound', $refusedOk);
+    check('Logo: Sec-Fetch-Dest image laeuft bis zur Pruefung (400)', send('GET', $logoUrl, null, ['Sec-Fetch-Dest: image'])['status'] === 400);
+    $within = true;
+    for ($i = 0; $i < $area['max'] - 1; $i++) {
+        $res = send('GET', $logoUrl);
+        if ($res['status'] !== 400 || ($res['body']['error'] ?? '') !== 'assetSearch.invalidInput:codeInvalid') $within = false;
+    }
+    check("Logo: {$area['max']} Anfragen ohne 429", $within);
+    $res = send('GET', $logoUrl);
+    check("Logo: die naechste -> 429 {$area['error']} mit retryAfter und Retry-After", isLimited($res, $area));
+    check('Logo: 400 und 429 no-store', $res['cacheControl'] === 'no-store');
 
     // Job anlegen: leerer Body ergibt 400 invalid_network, gezaehlt wird vorher.
     $area = $limits['areas']['jobCreate'];

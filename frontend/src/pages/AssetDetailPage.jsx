@@ -7,6 +7,9 @@ import { parseAssetDetailPath } from '../utils/assetDetailRoute.js';
 import { looksLikeNativeCode } from '../utils/stellar/activity.js';
 import { FakeNativeBadge } from '../components/wallet/ActivityWarnings.jsx';
 import AssetMarketCard from '../components/assetDetail/AssetMarketCard.jsx';
+import IssuerTomlCard from '../components/assetDetail/IssuerTomlCard.jsx';
+import AssetLogo from '../components/assetDetail/AssetLogo.jsx';
+import { issuerTomlInfo } from '../utils/stellar/issuerToml.js';
 
 /**
  * Asset-Detailseite (/assets/CODE-ISSUER), verlinkbar.
@@ -84,6 +87,7 @@ export default function AssetDetailPage({ publicKey = '', network = 'PUBLIC', on
   // useAssetFacts braucht ein stabiles Objekt, sonst laedt es bei jedem Render neu
   const factsAsset = useMemo(() => (valid ? { assetCode: code, assetIssuer: issuer } : null), [valid, code, issuer]);
   const { assetFacts } = useAssetFacts({ selectedAsset: factsAsset, network, targetStellarAsset: null, swapDirection: '' });
+  const tomlInfo = useMemo(() => issuerTomlInfo(assetFacts), [assetFacts]);
 
   const fmt = useMemo(() => {
     const nf = new Intl.NumberFormat(i18n.language, { minimumFractionDigits: 0, maximumFractionDigits: 7 });
@@ -152,7 +156,11 @@ export default function AssetDetailPage({ publicKey = '', network = 'PUBLIC', on
           <div className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
             {t('wallet:assetDetail.title', 'Asset-Details')} · {netLabel}
           </div>
-          <h1 className="mt-1 text-2xl font-bold text-gray-900 dark:text-white" data-testid="asset-detail-code">{code}</h1>
+          <div className="mt-1 flex items-center gap-3">
+            {/* key: anderes Asset setzt den Fehlerzustand des Logos zurueck */}
+            {tomlInfo.hasImage && <AssetLogo key={`${network}|${code}|${issuer}`} code={code} issuer={issuer} network={network} />}
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white" data-testid="asset-detail-code">{code}</h1>
+          </div>
           {looksLikeNativeCode({ code, isNative: false }) && <div className="mt-1"><FakeNativeBadge /></div>}
           <div className="mt-1 flex flex-wrap items-center gap-2">
             <span className="break-all font-mono text-xs text-gray-600 dark:text-gray-300" data-testid="asset-detail-issuer">{issuer}</span>
@@ -183,6 +191,8 @@ export default function AssetDetailPage({ publicKey = '', network = 'PUBLIC', on
 
       {/* key: ein anderes Asset oder Netz bekommt eine frische Karte (Zeitraum, Auswahl, Daten), Review AM-1 */}
       <AssetMarketCard key={`${network}|${code}|${issuer}`} code={code} issuer={issuer} network={network} balance={balance ? balance.balance : null} />
+
+      <IssuerTomlCard info={tomlInfo} tomlUrl={assetFacts?.toml?.url || ''} cardCls={cardCls} />
 
       <section className={cardCls}>
         <h2 className="mb-3 text-sm font-semibold text-gray-900 dark:text-white">{t('wallet:assetDetail.facts', 'Fakten zum Asset')}</h2>

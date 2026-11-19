@@ -30,4 +30,21 @@ function createJobListLimiter() {
   return createJsonRateLimiter({ windowMs: JOB_LIST_RATE_LIMIT_WINDOW_MS, limit: JOB_LIST_RATE_LIMIT_MAX });
 }
 
-module.exports = { createJsonRateLimiter, createJobListLimiter, JOB_LIST_RATE_LIMIT_MAX, JOB_LIST_RATE_LIMIT_WINDOW_MS };
+// GET /api/trade/assets/logo, gleiches Budget wie ASSET_LOGO_RATE_LIMIT_* in api/assetLogo.php. Jede Anfrage
+// kann bis zu drei Abrufe nach aussen ausloesen (Horizon, stellar.toml, Bild), darum ein eigenes Budget.
+const ASSET_LOGO_RATE_LIMIT_MAX = 60;
+const ASSET_LOGO_RATE_LIMIT_WINDOW_MS = 60 * 1000;
+
+function createAssetLogoLimiter() {
+  return createJsonRateLimiter({ windowMs: ASSET_LOGO_RATE_LIMIT_WINDOW_MS, limit: ASSET_LOGO_RATE_LIMIT_MAX });
+}
+
+module.exports = {
+  createJsonRateLimiter,
+  createJobListLimiter,
+  JOB_LIST_RATE_LIMIT_MAX,
+  JOB_LIST_RATE_LIMIT_WINDOW_MS,
+  createAssetLogoLimiter,
+  ASSET_LOGO_RATE_LIMIT_MAX,
+  ASSET_LOGO_RATE_LIMIT_WINDOW_MS,
+};

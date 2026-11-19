@@ -16,7 +16,8 @@ const { handleFederationRequest, HOP_HEADER: FEDERATION_HOP_HEADER } = require('
 const { writeJsonFileLocked } = require('./services/jsonFileStore.js');
 const { createChallenge, consumeChallenge, verifyChallengeSignature } = require('./services/challengeStore.js');
 const { createChallengeLimiter } = require('./services/challengeRateLimit.js');
-const { createJobListLimiter } = require('./services/rateLimit.js');
+const { createJobListLimiter, createAssetLogoLimiter } = require('./services/rateLimit.js');
+const { fetchAssetLogo, logoSuccessHeaders, logoErrorHeaders, logoRequestRefusal, HOP_HEADER: LOGO_HOP_HEADER } = require('./services/assetLogo.js');
 const { filterValidSignatures, foreignOpSourcesOf, requiredWeightForOperations, signatureKey, txSourceBaseAccount, verifyCollected } = require('./services/txSignatures.js');
 const { isInteractiveSigner, normalizeHorizonSigners } = require('./services/signerAuth.js');
 const { isLocalRequest } = require('./services/network.js');
@@ -1672,6 +1673,39 @@ app.get('/api/trade/assets/expert', async (req, res) => {
     const status = String(message).startsWith('assetSearch.invalidInput') ? 400 : 502;
     res.status(status).json({ ok: false, error: message });
   }
+});
+
+// Logo aus der stellar.toml des Issuers (services/assetLogo.js, Gegenstueck api/assetLogo.php). Eigenes
+// Rate-Limit vor allen Pruefungen, der globale Limiter gilt zusaetzlich. Ungueltige Eingabe, 429 und
+// voruebergehende Fehler werden nicht zwischengespeichert, die uebrigen Fehler eine Stunde, ein Logo 24 Stunden.
+// Hop-Header (eigener Abruf, Schleife) und Sec-Fetch-Dest ausser image werden vor dem Limiter mit 404 no-store
+// abgelehnt, ohne Abruf nach aussen und ohne Budget zu verbrauchen.
+const assetLogoLimiter = createAssetLogoLimiter();
+function refuseLogoRequest(req, res, next) {
+  res.set('Cache-Control', 'no-store');
+  const refusal = logoRequestRefusal(req.get(LOGO_HOP_HEADER), req.get('sec-fetch-dest'));
+  if (!refusal) return next();
+  return res.status(refusal.status).json({ ok: false, error: `assetLogo.${refusal.error}` });
+}
+app.get('/api/trade/assets/logo', refuseLogoRequest, assetLogoLimiter, async (req, res) => {
+  const { code, issuer, network } = req.query;
+  let result;
+  try {
+    result = await fetchAssetLogo({ assetCode: code, issuer, horizon: getTradeHorizon(network) });
+  } catch (error) {
+    const message = String(error?.message || '');
+    if (message.startsWith('assetSearch.invalidInput')) return res.status(400).json({ ok: false, error: message });
+    result = { ok: false, error: 'fetchFailed', status: 502 };
+  }
+  if (!result.ok) {
+    res.set(logoErrorHeaders(result.error));
+    return res.status(result.status).send(JSON.stringify({ ok: false, error: `assetLogo.${result.error}` }));
+  }
+  res.set(logoSuccessHeaders(result));
+  // Ein gecachtes Logo darf nicht fuer einen Aufruf als Dokument dienen (Sec-Fetch-Dest). vary haengt an,
+  // Vary: Origin der CORS-Middleware bleibt.
+  res.vary('Sec-Fetch-Dest');
+  return res.status(200).end(result.bytes);
 });
 
 // Proxy for StellarExpert Explorer API (Full-History) to avoid CORS in dev/prod

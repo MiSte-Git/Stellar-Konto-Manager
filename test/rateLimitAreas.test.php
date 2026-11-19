@@ -16,6 +16,7 @@ require __DIR__ . '/../api/bugreportGuard.php';
 require __DIR__ . '/../api/multisigJobsGuard.php';
 require __DIR__ . '/../api/federationService.php';
 require __DIR__ . '/../api/challengeStore.php';
+require __DIR__ . '/../api/assetLogo.php';
 
 $passed = 0;
 $failed = 0;
@@ -39,6 +40,7 @@ $areas = [
     'bugreport' => ['BUGREPORT_RATE_LIMIT_PATH', 'bugReportRateLimitCheckAndRecord', BUGREPORT_RATE_LIMIT_MAX, BUGREPORT_RATE_LIMIT_WINDOW_SECONDS],
     'jobCreate' => ['MULTISIG_JOB_RATE_LIMIT_PATH', 'multisigJobRateLimitCheckAndRecord', MULTISIG_JOB_RATE_LIMIT_MAX, MULTISIG_JOB_RATE_LIMIT_WINDOW_SECONDS],
     'jobList' => ['MULTISIG_JOB_LIST_RATE_LIMIT_PATH', 'multisigJobListRateLimitCheckAndRecord', MULTISIG_JOB_LIST_RATE_LIMIT_MAX, MULTISIG_JOB_LIST_RATE_LIMIT_WINDOW_SECONDS],
+    'assetLogo' => ['ASSET_LOGO_RATE_LIMIT_PATH', 'asset_logo_rate_limit_check_and_record', ASSET_LOGO_RATE_LIMIT_MAX, ASSET_LOGO_RATE_LIMIT_WINDOW_SECONDS],
 ];
 check('challenge: Budget wie in der Fixture', MULTISIG_CHALLENGE_RATE_LIMIT_MAX === $limits['areas']['challenge']['max']
     && MULTISIG_CHALLENGE_RATE_LIMIT_WINDOW_SECONDS === $limits['areas']['challenge']['windowSeconds']);

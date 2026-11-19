@@ -376,6 +376,39 @@
       "trades": "Trades",
       "changeSinceFirst": "Änderung seit dem ersten Handel im Zeitraum (davor kein Handel bekannt).",
       "rateLimited": "Horizon begrenzt gerade die Anfragen von deiner Verbindung, ein Teil der Marktdaten fehlt deshalb. Bitte in einigen Minuten aktualisieren."
+    },
+    "issuerToml": {
+      "title": "Angaben des Issuers",
+      "unverified": "Aus der stellar.toml des Issuers, nicht geprüft. Der Issuer kann hier alles eintragen.",
+      "loading": "Angaben werden geladen …",
+      "unavailable": "Keine Angaben: Die stellar.toml des Issuers konnte nicht geladen werden oder es gibt keine.",
+      "notListed": "Dieses Asset steht nicht in der stellar.toml des Issuers.",
+      "empty": "Der Eintrag in der stellar.toml enthält keine weiteren Angaben.",
+      "multiple": "Das Asset ist mehrfach eingetragen. Gezeigt wird der erste Eintrag.",
+      "yes": "Ja",
+      "no": "Nein",
+      "status": {
+        "live": "Aktiv",
+        "dead": "Eingestellt",
+        "test": "Test",
+        "private": "Privat"
+      },
+      "fields": {
+        "name": "Name",
+        "desc": "Beschreibung",
+        "status": "Status",
+        "anchorAssetType": "Art des hinterlegten Werts",
+        "anchorAsset": "Hinterlegter Wert",
+        "isAssetAnchored": "Durch einen Wert außerhalb von Stellar gedeckt",
+        "displayDecimals": "Nachkommastellen zur Anzeige",
+        "isUnlimited": "Menge unbegrenzt",
+        "fixedNumber": "Feste Menge",
+        "maxNumber": "Höchstmenge",
+        "regulated": "Reguliert (Issuer muss Zahlungen freigeben)",
+        "conditions": "Bedingungen",
+        "redemption": "Einlösung",
+        "attestation": "Nachweis der Reserven (Adresse)"
+      }
     }
   }
 }

@@ -13,10 +13,10 @@
 //   to exercise the DNS-based path end-to-end (gethostbynamel()/
 //   dns_get_record() are plain global functions, not mockable without a
 //   namespace-override setup this project doesn't otherwise use).
-// - N2 (response size limit): covered structurally by asserting the relevant
-//   curl/stream options are present in fetch_url() - actually exceeding the
-//   limit needs a real HTTP server, exercised via manual verification
-//   instead (see the fix's summary), not from this offline script.
+// - N2 (response size limit): die curl-Callbacks aus skm_curl_size_limit_callbacks() mit echtem curl gegen
+//   einen lokalen php -S, der ohne Content-Length in Stuecken streamt (Abbruch beim Lesen) bzw. ein zu grosses
+//   Content-Length meldet (Abbruch vor dem Body). fetch_url selbst erreicht 127.0.0.1 nicht (SSRF-Schutz),
+//   darum die Callbacks direkt; dass fetch_url sie nutzt, prueft eine Quelltextpruefung.
 //
 // Run with: php test/ssrfGuard.test.php
 
@@ -188,6 +188,107 @@ check('F-7: curl nur mit https-Protokoll fuer Weiterleitungen (CURLOPT_REDIR_PRO
     strpos($guardSource, 'CURLOPT_REDIR_PROTOCOLS') !== false && strpos($guardSource, 'CURLOPT_PROTOCOLS') !== false);
 check('F-7: beide Wege (curl und Stream) folgen Weiterleitungen nur ueber skm_next_redirect_url',
     substr_count($guardSource, 'skm_next_redirect_url($currentUrl, $location)') === 2);
+
+// N2: Abbruch beim Lesen mit echtem curl (Logo-Proxy: 256 KB, api/assetLogo.php).
+$n2Dir = sys_get_temp_dir() . '/skm-ssrf-n2-' . bin2hex(random_bytes(4));
+mkdir($n2Dir, 0775, true);
+file_put_contents($n2Dir . '/router.php', <<<'PHP'
+<?php
+// /stream: 64 Stuecke zu 16 KB (1 MB) ohne Content-Length. /declared: Content-Length 10 MB, kurzer Body.
+$path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
+$log = __DIR__ . '/sent.txt';
+if ($path === '/declared') { header('Content-Length: 10000000'); echo 'x'; return true; }
+if ($path === '/drip') {
+    // 1 Byte alle 200 ms, 50 Sekunden lang: jedes einzelne Lesen ist schnell, nur die Gesamtzeit ist zu lang.
+    for ($i = 0; $i < 250; $i++) { echo 'd'; flush(); usleep(200000); }
+    return true;
+}
+file_put_contents($log, '0');
+for ($i = 1; $i <= 64; $i++) {
+    echo str_repeat('a', 16384);
+    flush();
+    file_put_contents($log, (string)$i);
+    usleep(20000);
+}
+return true;
+PHP);
+$n2Port = 3977;
+$n2Server = proc_open([PHP_BINARY, '-S', '127.0.0.1:' . $n2Port, $n2Dir . '/router.php'],
+    [1 => ['file', '/dev/null', 'w'], 2 => ['file', '/dev/null', 'w']], $n2Pipes, $n2Dir);
+try {
+    $ready = false;
+    for ($i = 0; $i < 100 && !$ready; $i++) {
+        $sock = @fsockopen('127.0.0.1', $n2Port);
+        if ($sock) { fclose($sock); $ready = true; } else { usleep(50000); }
+    }
+    check('N2: lokaler Testserver laeuft', $ready);
+    $limit = 256 * 1024;
+    $run = function (string $path) use ($n2Port, $limit): array {
+        $chunks = [];
+        $tooLarge = false;
+        $ch = curl_init('http://127.0.0.1:' . $n2Port . $path);
+        curl_setopt_array($ch, [CURLOPT_TIMEOUT => 20] + skm_curl_size_limit_callbacks($limit, $chunks, $tooLarge));
+        $ok = curl_exec($ch);
+        $errno = curl_errno($ch);
+        curl_close($ch);
+        return ['ok' => $ok, 'errno' => $errno, 'tooLarge' => $tooLarge, 'bytes' => strlen(implode('', $chunks))];
+    };
+    $r = $run('/stream');
+    usleep(300000);
+    $sent = (int)@file_get_contents($n2Dir . '/sent.txt');
+    check('N2: Stream ueber der Grenze -> tooLarge, curl bricht ab', $r['ok'] === false && $r['tooLarge'] === true && $r['errno'] === CURLE_WRITE_ERROR);
+    check('N2: behalten werden hoechstens maxBytes', $r['bytes'] <= $limit);
+    check("N2: Abbruch beim Lesen, nicht erst am Ende (Server kam bis Stueck {$sent} von 64)", $sent > 0 && $sent < 64);
+    $r = $run('/declared');
+    check('N2: zu grosses Content-Length -> Abbruch vor dem Body', $r['ok'] === false && $r['tooLarge'] === true && $r['bytes'] === 0);
+
+    // LP-1: Stream-Fallback mit Gesamtfrist. Ein tropfender Server haelt den Lesevorgang nicht ueber die Frist.
+    $fp = fopen('http://127.0.0.1:' . $n2Port . '/drip', 'rb', false, stream_context_create(['http' => ['timeout' => 5]]));
+    $started = microtime(true);
+    $msg = '';
+    try {
+        skm_stream_read_limited($fp, 1000, $started + 1.0);
+    } catch (Throwable $e) {
+        $msg = $e->getMessage();
+    } finally {
+        fclose($fp);
+    }
+    $elapsed = microtime(true) - $started;
+    check(sprintf('LP-1: tropfender Server -> timeout nach der Frist (%.2f s)', $elapsed), $msg === 'timeout' && $elapsed >= 0.9 && $elapsed < 2.5);
+    $fp = fopen('http://127.0.0.1:' . $n2Port . '/stream', 'rb');
+    $msg = '';
+    try {
+        skm_stream_read_limited($fp, 256 * 1024, microtime(true) + 20);
+    } catch (Throwable $e) {
+        $msg = $e->getMessage();
+    } finally {
+        fclose($fp);
+    }
+    check('LP-1/N2: Stream-Fallback bricht ueber maxBytes ab', $msg === 'ssrf_blocked_response_too_large');
+} finally {
+    proc_terminate($n2Server);
+    proc_close($n2Server);
+    array_map('unlink', glob($n2Dir . '/*') ?: []);
+    @rmdir($n2Dir);
+}
+$expired = '';
+try { skm_fetch_remaining_ms(microtime(true) - 0.001); } catch (Throwable $e) { $expired = $e->getMessage(); }
+check('LP-1: abgelaufene Frist -> timeout', $expired === 'timeout');
+$ms = skm_fetch_remaining_ms(microtime(true) + 2.0);
+check('LP-1: Restzeit in ms', $ms > 1900 && $ms <= 2000);
+check('LP-1: curl bekommt die Restzeit, nicht die volle Frist je Weiterleitung',
+    strpos($guardSource, 'CURLOPT_TIMEOUT_MS => $remainingMs') !== false
+    && strpos($guardSource, 'CURLOPT_CONNECTTIMEOUT_MS => $remainingMs') !== false
+    && strpos($guardSource, 'CURLOPT_TIMEOUT => $timeoutSeconds') === false
+    && substr_count($guardSource, '$deadline = microtime(true) + $timeoutSeconds;') === 1);
+check('LP-1: Stream-Fallback liest ueber skm_stream_read_limited, nicht file_get_contents',
+    strpos($guardSource, 'skm_stream_read_limited($fp, $maxBytes, $deadline)') !== false
+    && strpos($guardSource, 'file_get_contents($pinnedUrl') === false);
+check('LP-5: beide Wege lehnen uebrige 3xx mit HTTP nnn ab',
+    substr_count($guardSource, "&& \$status >= 300 && \$status < 400) {\n                throw new RuntimeException('HTTP ' . \$status);") === 1
+    && substr_count($guardSource, "&& \$status >= 300 && \$status < 400) {\n            throw new RuntimeException('HTTP ' . \$status);") === 1);
+check('N2: fetch_url nutzt skm_curl_size_limit_callbacks mit maxBytes',
+    strpos($guardSource, '+ skm_curl_size_limit_callbacks($maxBytes, $bodyChunks, $tooLarge)') !== false);
 
 echo "\n{$passed} passed, {$failed} failed\n";
 exit($failed > 0 ? 1 : 0);

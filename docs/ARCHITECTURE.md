@@ -60,10 +60,11 @@ Zwei Varianten mit gleichem Verhalten ([ADR 0003](adr/0003-dual-backend-paritaet
 |---|---|---|
 | Multisig-Jobs | `server.js`, `multisigLifecycle.js`, `multisigJobsGuard.js`, `multisigJobLock.js`, `multisigDecline.js`, `submitResult.js`, `submitUnclear.js` | `multisig.php`, `multisigLifecycle.php`, `multisigJobsGuard.php`, `multisigDecline.php`, `submitResult.php`, `submitUnclear.php` |
 | Challenges | `challengeStore.js`, `challengeRateLimit.js` | `challengeStore.php` |
-| Rate-Limits je IP | `rateLimit.js` (Jobliste, Challenge), Federation und global in `server.js` | `rateLimit.php` (alle Bereiche, Admin-Login mit Fehlversuchen) |
+| Rate-Limits je IP | `rateLimit.js` (Jobliste, Challenge, Logo), Federation und global in `server.js` | `rateLimit.php` (alle Bereiche, Admin-Login mit Fehlversuchen) |
 | Signaturen | `txSignatures.js` | `txSignatures.php` |
 | Federation | `federationService.js` | `federation.php`, `federationService.php` |
-| Token-Suche/Trading | `tradeService.js` | `trade.php`, `trade/` |
+| Token-Suche/Trading | `tradeService.js` | `trade.php`, `assetIdentity.php`, `stellarToml.php`, `trade/` |
+| Logo-Proxy | `assetLogo.js` | `assetLogo.php` (Route in `trade.php`) |
 | Bugtracker, Admin | `server.js`, `requestGuard.js` | `bugreport.php`, `admin.php`, `admin_session.php`, `requestGuard.php` |
 | SSRF-Schutz | `ssrfGuard.js` | `ssrfGuard.php` |
 | CORS, Header | `corsConfig.js`, `securityHeaders.js` | `cors.php`, `securityHeaders.php` |

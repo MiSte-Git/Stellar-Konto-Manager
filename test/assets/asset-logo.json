@@ -1,0 +1,1905 @@
+{
+  "_comment": "Logo-Proxy GET /api/trade/assets/logo (services/assetLogo.js, api/assetLogo.php). Geprueft in test/assetLogo.test.js und test/assetLogo.test.php. images: Bildkoepfe als hex, erkannt wird nur an den ersten Bytes, die Groesse kommt aus dem Bildkopf. imageUrls: image-Feld aus der stellar.toml, null = kein Logo. flows: ganzer Ablauf mit Stubs fuer Horizon, stellar.toml und Bildabruf; imageError tooLarge/network wird je Backend auf die eigene Fehlermeldung abgebildet.",
+  "issuer": "GD4N5BOA54ZHPRNY4CKKHKVV3R63HUXBSCIXGGGEJJJIDBTEG5XZITUB",
+  "code": "USDX",
+  "limits": {
+    "maxBytes": 262144,
+    "maxDimension": 1024,
+    "maxUrlLength": 2048,
+    "cacheSeconds": 86400,
+    "errorCacheSeconds": 3600,
+    "horizonTimeoutSeconds": 8,
+    "tomlTimeoutSeconds": 6,
+    "imageTimeoutSeconds": 6,
+    "tomlMaxDepth": 500,
+    "tomlMaxStructureDepth": 1000
+  },
+  "errors": {
+    "noHomeDomain": 404,
+    "notListed": 404,
+    "noImage": 404,
+    "issuerUnavailable": 502,
+    "tomlUnavailable": 502,
+    "fetchFailed": 502,
+    "tooLarge": 502,
+    "unsupportedType": 502,
+    "invalidImage": 502,
+    "dimensionsTooLarge": 502
+  },
+  "headers": {
+    "success": {
+      "Cache-Control": "public, max-age=86400",
+      "X-Content-Type-Options": "nosniff",
+      "Content-Security-Policy": "default-src 'none'; frame-ancestors 'none'; sandbox",
+      "Cross-Origin-Resource-Policy": "same-site"
+    },
+    "error": {
+      "Content-Type": "application/json; charset=utf-8",
+      "Cache-Control": "public, max-age=3600",
+      "X-Content-Type-Options": "nosniff"
+    },
+    "transientError": {
+      "Content-Type": "application/json; charset=utf-8",
+      "Cache-Control": "no-store",
+      "X-Content-Type-Options": "nosniff"
+    }
+  },
+  "_transientComment": "Voruebergehende Fehler (Horizon, stellar.toml oder Bild nicht erreichbar) bekommen headers.transientError (no-store), alle uebrigen Fehler headers.error (eine Stunde).",
+  "transientErrors": [
+    "issuerUnavailable",
+    "tomlUnavailable",
+    "fetchFailed"
+  ],
+  "hopHeader": "X-SKM-Logo-Hop",
+  "_refusalsComment": "Ablehnung vor dem Rate-Limit (Review LP-2, LP-3): hop = X-SKM-Logo-Hop, dest = Sec-Fetch-Dest, null = Header fehlt. Antwort 404 assetLogo.<error> mit no-store.",
+  "refusals": [
+    {
+      "hop": null,
+      "dest": null,
+      "expect": null
+    },
+    {
+      "hop": null,
+      "dest": "image",
+      "expect": null
+    },
+    {
+      "hop": null,
+      "dest": "",
+      "expect": null
+    },
+    {
+      "hop": "",
+      "dest": "image",
+      "expect": null
+    },
+    {
+      "hop": "1",
+      "dest": "image",
+      "expect": "hopRefused"
+    },
+    {
+      "hop": "0",
+      "dest": null,
+      "expect": "hopRefused"
+    },
+    {
+      "hop": "1",
+      "dest": "document",
+      "expect": "hopRefused"
+    },
+    {
+      "hop": null,
+      "dest": "document",
+      "expect": "notImageRequest"
+    },
+    {
+      "hop": null,
+      "dest": "iframe",
+      "expect": "notImageRequest"
+    },
+    {
+      "hop": null,
+      "dest": "empty",
+      "expect": "notImageRequest"
+    },
+    {
+      "hop": null,
+      "dest": "IMAGE",
+      "expect": "notImageRequest"
+    },
+    {
+      "hop": null,
+      "dest": "image ",
+      "expect": "notImageRequest"
+    }
+  ],
+  "_identityComment": "Code und Issuer aus der Anfrage (Review LP-6), gilt fuer /facts und /logo. code/issuer: \"__ISSUER__\" wird ersetzt, ein Array steht fuer code[]=..., null fuer fehlend. expect: ok oder Fehlercode.",
+  "identityInputs": [
+    {
+      "code": "USDX",
+      "issuer": "__ISSUER__",
+      "expect": "ok"
+    },
+    {
+      "code": " USDX\t",
+      "issuer": "__ISSUER__\n",
+      "expect": "ok"
+    },
+    {
+      "code": "\u00a0USDX",
+      "issuer": "__ISSUER__",
+      "expect": "assetSearch.invalidInput:codeInvalid"
+    },
+    {
+      "code": "\ufeffUSDX",
+      "issuer": "__ISSUER__",
+      "expect": "assetSearch.invalidInput:codeInvalid"
+    },
+    {
+      "code": "USDX",
+      "issuer": "\u00a0__ISSUER__",
+      "expect": "assetSearch.invalidInput:issuerInvalid"
+    },
+    {
+      "code": [
+        "USDX"
+      ],
+      "issuer": "__ISSUER__",
+      "expect": "assetSearch.invalidInput:codeInvalid"
+    },
+    {
+      "code": "USDX",
+      "issuer": [
+        "__ISSUER__"
+      ],
+      "expect": "assetSearch.invalidInput:issuerInvalid"
+    },
+    {
+      "code": null,
+      "issuer": "__ISSUER__",
+      "expect": "assetSearch.invalidInput:codeInvalid"
+    },
+    {
+      "code": "USDX",
+      "issuer": null,
+      "expect": "assetSearch.invalidInput:issuerInvalid"
+    },
+    {
+      "code": "TOOLONGCODE123",
+      "issuer": "__ISSUER__",
+      "expect": "assetSearch.invalidInput:codeInvalid"
+    },
+    {
+      "code": "US-DX",
+      "issuer": "__ISSUER__",
+      "expect": "assetSearch.invalidInput:codeInvalid"
+    }
+  ],
+  "images": [
+    {
+      "name": "PNG 64x32",
+      "hex": "89504e470d0a1a0a0000000d494844520000004000000020080600000000",
+      "expect": {
+        "ok": true,
+        "mime": "image/png",
+        "ext": "png",
+        "width": 64,
+        "height": 32
+      }
+    },
+    {
+      "name": "PNG 1024x1024 (Grenze)",
+      "hex": "89504e470d0a1a0a0000000d494844520000040000000400080600000000",
+      "expect": {
+        "ok": true,
+        "mime": "image/png",
+        "ext": "png",
+        "width": 1024,
+        "height": 1024
+      }
+    },
+    {
+      "name": "PNG 1025 breit",
+      "hex": "89504e470d0a1a0a0000000d494844520000040100000010080600000000",
+      "expect": {
+        "ok": false,
+        "error": "dimensionsTooLarge"
+      }
+    },
+    {
+      "name": "PNG 10x1025 hoch",
+      "hex": "89504e470d0a1a0a0000000d494844520000000a00000401080600000000",
+      "expect": {
+        "ok": false,
+        "error": "dimensionsTooLarge"
+      }
+    },
+    {
+      "name": "PNG riesige Breite (32 Bit)",
+      "hex": "89504e470d0a1a0a0000000d49484452ffffffff00000010080600000000",
+      "expect": {
+        "ok": false,
+        "error": "dimensionsTooLarge"
+      }
+    },
+    {
+      "name": "PNG Breite 0",
+      "hex": "89504e470d0a1a0a0000000d494844520000000000000010080600000000",
+      "expect": {
+        "ok": false,
+        "error": "invalidImage"
+      }
+    },
+    {
+      "name": "PNG nur Signatur",
+      "hex": "89504e470d0a1a0a",
+      "expect": {
+        "ok": false,
+        "error": "invalidImage"
+      }
+    },
+    {
+      "name": "PNG ohne IHDR zuerst",
+      "hex": "89504e470d0a1a0a0000000d494441540000004000000020080600000000",
+      "expect": {
+        "ok": false,
+        "error": "invalidImage"
+      }
+    },
+    {
+      "name": "PNG IHDR falsche Laenge",
+      "hex": "89504e470d0a1a0a0000000c494844520000004000000020080600000000",
+      "expect": {
+        "ok": false,
+        "error": "invalidImage"
+      }
+    },
+    {
+      "name": "JPEG Baseline 200x100 nach APP0",
+      "hex": "ffd8ffe000104a46494600010100000100010000ffc0001108006400c803012200021101031101",
+      "expect": {
+        "ok": true,
+        "mime": "image/jpeg",
+        "ext": "jpg",
+        "width": 200,
+        "height": 100
+      }
+    },
+    {
+      "name": "JPEG progressiv 1024x768",
+      "hex": "ffd8ffc20011080300040003012200021101031101",
+      "expect": {
+        "ok": true,
+        "mime": "image/jpeg",
+        "ext": "jpg",
+        "width": 1024,
+        "height": 768
+      }
+    },
+    {
+      "name": "JPEG DHT (C4) vor SOF wird uebersprungen",
+      "hex": "ffd8ffc4000300ffc00011080020001003012200021101031101",
+      "expect": {
+        "ok": true,
+        "mime": "image/jpeg",
+        "ext": "jpg",
+        "width": 16,
+        "height": 32
+      }
+    },
+    {
+      "name": "JPEG Fuellbytes vor dem Marker",
+      "hex": "ffd8ffffffc00011080020001003012200021101031101",
+      "expect": {
+        "ok": true,
+        "mime": "image/jpeg",
+        "ext": "jpg",
+        "width": 16,
+        "height": 32
+      }
+    },
+    {
+      "name": "JPEG RST/Standalone-Marker vor SOF",
+      "hex": "ffd8ffd0ffc00011080020001003012200021101031101",
+      "expect": {
+        "ok": true,
+        "mime": "image/jpeg",
+        "ext": "jpg",
+        "width": 16,
+        "height": 32
+      }
+    },
+    {
+      "name": "JPEG 2000x1000",
+      "hex": "ffd8ffc000110803e807d003012200021101031101",
+      "expect": {
+        "ok": false,
+        "error": "dimensionsTooLarge"
+      }
+    },
+    {
+      "name": "JPEG Hoehe 0 (DNL)",
+      "hex": "ffd8ffc00011080000001003012200021101031101",
+      "expect": {
+        "ok": false,
+        "error": "invalidImage"
+      }
+    },
+    {
+      "name": "JPEG SOS vor SOF",
+      "hex": "ffd8ffda0002",
+      "expect": {
+        "ok": false,
+        "error": "invalidImage"
+      }
+    },
+    {
+      "name": "JPEG EOI vor SOF",
+      "hex": "ffd8ffd9",
+      "expect": {
+        "ok": false,
+        "error": "invalidImage"
+      }
+    },
+    {
+      "name": "JPEG abgeschnitten im APP0",
+      "hex": "ffd8ffe000104a46",
+      "expect": {
+        "ok": false,
+        "error": "invalidImage"
+      }
+    },
+    {
+      "name": "JPEG abgeschnitten im SOF",
+      "hex": "ffd8ffc000110800",
+      "expect": {
+        "ok": false,
+        "error": "invalidImage"
+      }
+    },
+    {
+      "name": "JPEG Segmentlaenge unter 2",
+      "hex": "ffd8ffe00001ffc00011080020001003012200021101031101",
+      "expect": {
+        "ok": false,
+        "error": "invalidImage"
+      }
+    },
+    {
+      "name": "JPEG kein Marker nach Segment",
+      "hex": "ffd8ffe00004000000c00011080020001003012200021101031101",
+      "expect": {
+        "ok": false,
+        "error": "invalidImage"
+      }
+    },
+    {
+      "name": "WebP VP8 320x240",
+      "hex": "524946461a00000057454250565038200e0000003001009d012a4001f000",
+      "expect": {
+        "ok": true,
+        "mime": "image/webp",
+        "ext": "webp",
+        "width": 320,
+        "height": 240
+      }
+    },
+    {
+      "name": "WebP VP8 Skalierungsbits werden ignoriert",
+      "hex": "524946461a00000057454250565038200e0000003001009d012a40c1f0c0",
+      "expect": {
+        "ok": true,
+        "mime": "image/webp",
+        "ext": "webp",
+        "width": 320,
+        "height": 240
+      }
+    },
+    {
+      "name": "WebP VP8 falscher Startcode",
+      "hex": "524946461a00000057454250565038200e0000003001009d012b4001f000",
+      "expect": {
+        "ok": false,
+        "error": "invalidImage"
+      }
+    },
+    {
+      "name": "WebP VP8L 100x50",
+      "hex": "524946461a000000574542505650384c0d0000002f63400c00",
+      "expect": {
+        "ok": true,
+        "mime": "image/webp",
+        "ext": "webp",
+        "width": 100,
+        "height": 50
+      }
+    },
+    {
+      "name": "WebP VP8L falsche Signatur",
+      "hex": "524946461a000000574542505650384c0d0000002e63400c00",
+      "expect": {
+        "ok": false,
+        "error": "invalidImage"
+      }
+    },
+    {
+      "name": "WebP VP8X 512x256",
+      "hex": "524946461a00000057454250565038580a00000000000000ff0100ff0000",
+      "expect": {
+        "ok": true,
+        "mime": "image/webp",
+        "ext": "webp",
+        "width": 512,
+        "height": 256
+      }
+    },
+    {
+      "name": "WebP VP8X 4096x10",
+      "hex": "524946461a00000057454250565038580a00000000000000ff0f00090000",
+      "expect": {
+        "ok": false,
+        "error": "dimensionsTooLarge"
+      }
+    },
+    {
+      "name": "WebP unbekannter Chunk",
+      "hex": "524946461a00000057454250414c50480a00000000000000ff0100ff0000",
+      "expect": {
+        "ok": false,
+        "error": "invalidImage"
+      }
+    },
+    {
+      "name": "WebP abgeschnitten",
+      "hex": "524946461a0000005745425056503858",
+      "expect": {
+        "ok": false,
+        "error": "invalidImage"
+      }
+    },
+    {
+      "name": "SVG",
+      "hex": "3c7376672f3e",
+      "expect": {
+        "ok": false,
+        "error": "unsupportedType"
+      }
+    },
+    {
+      "name": "SVG mit BOM",
+      "hex": "efbbbf3c7376672f3e",
+      "expect": {
+        "ok": false,
+        "error": "unsupportedType"
+      }
+    },
+    {
+      "name": "SVG mit XML-Kopf",
+      "hex": "3c3f786d6c2076657273696f6e3d22312e30223f3e3c7376672f3e",
+      "expect": {
+        "ok": false,
+        "error": "unsupportedType"
+      }
+    },
+    {
+      "name": "HTML",
+      "hex": "3c68746d6c3e",
+      "expect": {
+        "ok": false,
+        "error": "unsupportedType"
+      }
+    },
+    {
+      "name": "GIF",
+      "hex": "47494638396101000100",
+      "expect": {
+        "ok": false,
+        "error": "unsupportedType"
+      }
+    },
+    {
+      "name": "RIFF, aber WAVE",
+      "hex": "524946462400000057415645",
+      "expect": {
+        "ok": false,
+        "error": "unsupportedType"
+      }
+    },
+    {
+      "name": "Leer",
+      "hex": "",
+      "expect": {
+        "ok": false,
+        "error": "unsupportedType"
+      }
+    },
+    {
+      "name": "PNG-Signatur nicht am Anfang",
+      "hex": "0089504e470d0a1a0a0000000d494844520000004000000020",
+      "expect": {
+        "ok": false,
+        "error": "unsupportedType"
+      }
+    }
+  ],
+  "imageUrls": [
+    {
+      "image": "https://example.com/logo.png",
+      "expect": "https://example.com/logo.png"
+    },
+    {
+      "image": "  https://example.com/logo.png\n",
+      "expect": "https://example.com/logo.png"
+    },
+    {
+      "image": "HTTPS://Example.com/Logo.PNG",
+      "expect": "HTTPS://Example.com/Logo.PNG"
+    },
+    {
+      "image": "https://cdn.example.com:8443/a/b.webp?v=2#x",
+      "expect": "https://cdn.example.com:8443/a/b.webp?v=2#x"
+    },
+    {
+      "image": "https://example.com",
+      "expect": "https://example.com"
+    },
+    {
+      "image": "https://example.com/l%C3%B6go.png",
+      "expect": "https://example.com/l%C3%B6go.png"
+    },
+    {
+      "image": "http://example.com/logo.png",
+      "expect": null
+    },
+    {
+      "image": "//example.com/logo.png",
+      "expect": null
+    },
+    {
+      "image": "/logo.png",
+      "expect": null
+    },
+    {
+      "image": "data:image/png;base64,iVBORw0KGgo=",
+      "expect": null
+    },
+    {
+      "image": "javascript:alert(1)",
+      "expect": null
+    },
+    {
+      "image": "ftp://example.com/logo.png",
+      "expect": null
+    },
+    {
+      "image": "https:///logo.png",
+      "expect": null
+    },
+    {
+      "image": "https:/example.com/logo.png",
+      "expect": null
+    },
+    {
+      "image": "https://user:pw@example.com/logo.png",
+      "expect": null
+    },
+    {
+      "image": "https://example.com@evil.example/logo.png",
+      "expect": null
+    },
+    {
+      "image": "https://exa mple.com/logo.png",
+      "expect": null
+    },
+    {
+      "image": "https://example.com/lo go.png",
+      "expect": null
+    },
+    {
+      "image": "https://example.com/logo.png\nX",
+      "expect": null
+    },
+    {
+      "image": "https://example.com/l\u00f6we.png",
+      "expect": null
+    },
+    {
+      "image": "https://b\u00fccher.example/logo.png",
+      "expect": null
+    },
+    {
+      "image": "https://[::1]/logo.png",
+      "expect": null
+    },
+    {
+      "image": "https://example.com:99999/logo.png",
+      "expect": null
+    },
+    {
+      "image": "https://example.com\\@evil.example/",
+      "expect": null
+    },
+    {
+      "image": "\u00a0https://example.com/logo.png",
+      "expect": null
+    },
+    {
+      "image": "https://example.com/logo.png\u2028",
+      "expect": null
+    },
+    {
+      "image": "\t https://example.com/logo.png \u000b",
+      "expect": "https://example.com/logo.png"
+    },
+    {
+      "image": "",
+      "expect": null
+    },
+    {
+      "image": 42,
+      "expect": null
+    },
+    {
+      "image": [
+        "https://example.com/logo.png"
+      ],
+      "expect": null
+    },
+    {
+      "image": null,
+      "expect": null
+    }
+  ],
+  "flows": [
+    {
+      "name": "PNG aus dem ersten passenden Eintrag",
+      "homeDomain": "example.com",
+      "toml": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/usdx.png\"\n",
+      "images": {
+        "https://example.com/usdx.png": "89504e470d0a1a0a0000000d494844520000004000000020080600000000"
+      },
+      "expect": {
+        "status": 200,
+        "mime": "image/png",
+        "width": 64,
+        "height": 32,
+        "requested": [
+          "https://example.com/usdx.png"
+        ]
+      }
+    },
+    {
+      "name": "zwei Eintraege, der erste zaehlt",
+      "homeDomain": "example.com",
+      "toml": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/first.webp\"\n\n[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/second.png\"\n",
+      "images": {
+        "https://example.com/first.webp": "524946461a00000057454250565038580a00000000000000ff0100ff0000",
+        "https://example.com/second.png": "89504e470d0a1a0a0000000d494844520000004000000020080600000000"
+      },
+      "expect": {
+        "status": 200,
+        "mime": "image/webp",
+        "width": 512,
+        "height": 256,
+        "requested": [
+          "https://example.com/first.webp"
+        ]
+      }
+    },
+    {
+      "name": "erster Eintrag ohne Bild, kein Rueckgriff auf den zweiten",
+      "homeDomain": "example.com",
+      "toml": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\n\n[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/second.png\"\n",
+      "images": {
+        "https://example.com/second.png": "89504e470d0a1a0a0000000d494844520000004000000020080600000000"
+      },
+      "expect": {
+        "status": 404,
+        "error": "noImage",
+        "requested": []
+      }
+    },
+    {
+      "name": "anderer Eintrag mit Bild, Asset selbst nicht gelistet",
+      "homeDomain": "example.com",
+      "toml": "[[CURRENCIES]]\ncode = \"OTHER\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/other.png\"\n",
+      "images": {},
+      "expect": {
+        "status": 404,
+        "error": "notListed",
+        "requested": []
+      }
+    },
+    {
+      "name": "Code anders geschrieben zaehlt nicht",
+      "homeDomain": "example.com",
+      "toml": "[[CURRENCIES]]\ncode = \"usdx\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/usdx.png\"\n",
+      "images": {},
+      "expect": {
+        "status": 404,
+        "error": "notListed",
+        "requested": []
+      }
+    },
+    {
+      "name": "anderer Issuer zaehlt nicht",
+      "homeDomain": "example.com",
+      "toml": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"GBBBB\"\nimage = \"https://example.com/usdx.png\"\n",
+      "images": {},
+      "expect": {
+        "status": 404,
+        "error": "notListed",
+        "requested": []
+      }
+    },
+    {
+      "name": "Bild ueber http",
+      "homeDomain": "example.com",
+      "toml": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"http://example.com/usdx.png\"\n",
+      "images": {},
+      "expect": {
+        "status": 404,
+        "error": "noImage",
+        "requested": []
+      }
+    },
+    {
+      "name": "keine home_domain",
+      "homeDomain": "",
+      "toml": null,
+      "images": {},
+      "expect": {
+        "status": 404,
+        "error": "noHomeDomain",
+        "requested": []
+      }
+    },
+    {
+      "name": "Horizon nicht erreichbar",
+      "horizonError": true,
+      "homeDomain": "example.com",
+      "toml": null,
+      "images": {},
+      "expect": {
+        "status": 502,
+        "error": "issuerUnavailable",
+        "requested": []
+      }
+    },
+    {
+      "name": "stellar.toml nicht erreichbar",
+      "homeDomain": "example.com",
+      "toml": null,
+      "tomlError": true,
+      "images": {},
+      "expect": {
+        "status": 502,
+        "error": "tomlUnavailable",
+        "requested": []
+      }
+    },
+    {
+      "name": "stellar.toml ist HTML",
+      "homeDomain": "example.com",
+      "toml": "<!doctype html><html><body>blocked</body></html>",
+      "images": {},
+      "expect": {
+        "status": 502,
+        "error": "tomlUnavailable",
+        "requested": []
+      }
+    },
+    {
+      "name": "Bildabruf scheitert",
+      "homeDomain": "example.com",
+      "toml": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/usdx.png\"\n",
+      "images": {},
+      "imageError": "network",
+      "expect": {
+        "status": 502,
+        "error": "fetchFailed",
+        "requested": [
+          "https://example.com/usdx.png"
+        ]
+      }
+    },
+    {
+      "name": "Bild zu gross beim Lesen",
+      "homeDomain": "example.com",
+      "toml": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/usdx.png\"\n",
+      "images": {},
+      "imageError": "tooLarge",
+      "expect": {
+        "status": 502,
+        "error": "tooLarge",
+        "requested": [
+          "https://example.com/usdx.png"
+        ]
+      }
+    },
+    {
+      "name": "SVG statt Bild",
+      "homeDomain": "example.com",
+      "toml": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/usdx.png\"\n",
+      "images": {
+        "https://example.com/usdx.png": "3c7376672f3e"
+      },
+      "expect": {
+        "status": 502,
+        "error": "unsupportedType",
+        "requested": [
+          "https://example.com/usdx.png"
+        ]
+      }
+    },
+    {
+      "name": "JPEG zu gross in Pixeln",
+      "homeDomain": "example.com",
+      "toml": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/usdx.jpg\"\n",
+      "images": {
+        "https://example.com/usdx.jpg": "ffd8ffc000110803e807d003012200021101031101"
+      },
+      "expect": {
+        "status": 502,
+        "error": "dimensionsTooLarge",
+        "requested": [
+          "https://example.com/usdx.jpg"
+        ]
+      }
+    }
+  ],
+  "_tomlComment": "Review LP-4: dieselbe stellar.toml liest Node (Bibliothek toml) und PHP (api/stellarToml.php) gleich. probe: die 15 Probefaelle aus dem Review. toml oder tomlHex (rohe Bytes), __ISSUER__ wird ersetzt. expect.currencies: Ergebnis von parseCurrencySectionsFromToml bzw. parse_currency_sections_from_toml als JSON; expect.invalid: die Datei ist ungueltig. logo: Ergebnis von /logo fuer code USDX mit einem PNG unter jeder Bild-URL (ok oder Fehlercode).",
+  "tomlCases": [
+    {
+      "name": "Grundfall",
+      "probe": true,
+      "toml": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\n",
+      "logo": "ok",
+      "expect": {
+        "currencies": [
+          {
+            "code": "USDX",
+            "issuer": "__ISSUER__",
+            "image": "https://example.com/a.png"
+          }
+        ]
+      }
+    },
+    {
+      "name": "\\u-Escape in image",
+      "probe": true,
+      "toml": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https:\\u002F\\u002Fexample.com/a.png\"\n",
+      "logo": "ok",
+      "expect": {
+        "currencies": [
+          {
+            "code": "USDX",
+            "issuer": "__ISSUER__",
+            "image": "https://example.com/a.png"
+          }
+        ]
+      }
+    },
+    {
+      "name": "\\U-Escape in image",
+      "probe": true,
+      "toml": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https:\\U0000002F\\U0000002Fexample.com/a.png\"\n",
+      "logo": "ok",
+      "expect": {
+        "currencies": [
+          {
+            "code": "USDX",
+            "issuer": "__ISSUER__",
+            "image": "https://example.com/a.png"
+          }
+        ]
+      }
+    },
+    {
+      "name": "image doppelt im Eintrag",
+      "probe": true,
+      "toml": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\nimage = \"https://example.com/b.png\"\n",
+      "logo": "tomlUnavailable",
+      "expect": {
+        "invalid": true
+      }
+    },
+    {
+      "name": "Syntaxfehler an anderer Stelle (VERSION=2.0.0)",
+      "probe": true,
+      "toml": "VERSION=2.0.0\n[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\n",
+      "logo": "tomlUnavailable",
+      "expect": {
+        "invalid": true
+      }
+    },
+    {
+      "name": "[[Currencies]]",
+      "probe": true,
+      "toml": "[[Currencies]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\n",
+      "logo": "ok",
+      "expect": {
+        "currencies": [
+          {
+            "code": "USDX",
+            "issuer": "__ISSUER__",
+            "image": "https://example.com/a.png"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Key in Anfuehrungszeichen",
+      "probe": true,
+      "toml": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\n\"image\" = \"https://example.com/a.png\"\n",
+      "logo": "ok",
+      "expect": {
+        "currencies": [
+          {
+            "code": "USDX",
+            "issuer": "__ISSUER__",
+            "image": "https://example.com/a.png"
+          }
+        ]
+      }
+    },
+    {
+      "name": "image als \"\"\"-String",
+      "probe": true,
+      "toml": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"\"\"https://example.com/a.png\"\"\"\n",
+      "logo": "ok",
+      "expect": {
+        "currencies": [
+          {
+            "code": "USDX",
+            "issuer": "__ISSUER__",
+            "image": "https://example.com/a.png"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Inline-Tabelle",
+      "probe": true,
+      "toml": "CURRENCIES = [{code = \"USDX\", issuer = \"__ISSUER__\", image = \"https://example.com/a.png\"}]\n",
+      "logo": "ok",
+      "expect": {
+        "currencies": [
+          {
+            "code": "USDX",
+            "issuer": "__ISSUER__",
+            "image": "https://example.com/a.png"
+          }
+        ]
+      }
+    },
+    {
+      "name": "BOM am Dateianfang",
+      "probe": true,
+      "toml": "\ufeff[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\n",
+      "logo": "ok",
+      "expect": {
+        "currencies": [
+          {
+            "code": "USDX",
+            "issuer": "__ISSUER__",
+            "image": "https://example.com/a.png"
+          }
+        ]
+      }
+    },
+    {
+      "name": "[[currencies]]",
+      "probe": true,
+      "toml": "[[currencies]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\n",
+      "logo": "ok",
+      "expect": {
+        "currencies": [
+          {
+            "code": "USDX",
+            "issuer": "__ISSUER__",
+            "image": "https://example.com/a.png"
+          }
+        ]
+      }
+    },
+    {
+      "name": "IMAGE gross geschrieben",
+      "probe": true,
+      "toml": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nIMAGE = \"https://example.com/a.png\"\n",
+      "logo": "ok",
+      "expect": {
+        "currencies": [
+          {
+            "code": "USDX",
+            "issuer": "__ISSUER__",
+            "image": "https://example.com/a.png"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CRLF",
+      "probe": true,
+      "toml": "[[CURRENCIES]]\r\ncode = \"USDX\"\r\nissuer = \"__ISSUER__\"\r\nimage = \"https://example.com/a.png\"\r\n",
+      "logo": "ok",
+      "expect": {
+        "currencies": [
+          {
+            "code": "USDX",
+            "issuer": "__ISSUER__",
+            "image": "https://example.com/a.png"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Kommentar hinter dem Wert",
+      "probe": true,
+      "toml": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\" # Logo\n",
+      "logo": "ok",
+      "expect": {
+        "currencies": [
+          {
+            "code": "USDX",
+            "issuer": "__ISSUER__",
+            "image": "https://example.com/a.png"
+          }
+        ]
+      }
+    },
+    {
+      "name": "\\t-Escape in desc",
+      "probe": true,
+      "toml": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\ndesc = \"a\\tb\"\n",
+      "logo": "ok",
+      "expect": {
+        "currencies": [
+          {
+            "code": "USDX",
+            "issuer": "__ISSUER__",
+            "image": "https://example.com/a.png",
+            "desc": "a\tb"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Leerzeichen im Code",
+      "probe": true,
+      "toml": "[[CURRENCIES]]\ncode = \" USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\n",
+      "logo": "notListed",
+      "expect": {
+        "currencies": [
+          {
+            "code": " USDX",
+            "issuer": "__ISSUER__",
+            "image": "https://example.com/a.png"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Datum mit Zeitzone wird UTC",
+      "toml": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\nsince = 1979-05-27T07:32:00+02:00\n",
+      "logo": "ok",
+      "expect": {
+        "currencies": [
+          {
+            "code": "USDX",
+            "issuer": "__ISSUER__",
+            "image": "https://example.com/a.png",
+            "since": "1979-05-27T05:32:00.000Z"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Datum mit Bruchteil und t, Leerzeichen",
+      "toml": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\na = 1979-05-27t07:32:00.5Z\nb = 1979-05-27 07:32:00Z\n",
+      "logo": "ok",
+      "expect": {
+        "currencies": [
+          {
+            "code": "USDX",
+            "issuer": "__ISSUER__",
+            "image": "https://example.com/a.png",
+            "a": "1979-05-27T07:32:00.500Z",
+            "b": "1979-05-27T07:32:00.000Z"
+          }
+        ]
+      }
+    },
+    {
+      "name": "lokales Datum, Datum-Uhrzeit, Uhrzeit",
+      "toml": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\na = 1979-05-27\nb = 1979-05-27T07:32:00\nc = 07:32:00\n",
+      "logo": "ok",
+      "expect": {
+        "currencies": [
+          {
+            "code": "USDX",
+            "issuer": "__ISSUER__",
+            "image": "https://example.com/a.png",
+            "a": "1979-05-27",
+            "b": "1979-05-27T07:32:00",
+            "c": "07:32:00"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ungueltiges Datum 30. Februar",
+      "toml": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\na = 1979-02-30\n",
+      "logo": "tomlUnavailable",
+      "expect": {
+        "invalid": true
+      }
+    },
+    {
+      "name": "ungueltige Stunde 24",
+      "toml": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\na = 24:00:00\n",
+      "logo": "tomlUnavailable",
+      "expect": {
+        "invalid": true
+      }
+    },
+    {
+      "name": "Zahlen",
+      "toml": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\na = 1_000\nb = 1e3\nc = 1.5e-3\nd = 0x1F\ne = 0o17\nf = 0b101\ng = -0.0\nh = 3.0e2\ni = +1\nj = -0\n",
+      "logo": "ok",
+      "expect": {
+        "currencies": [
+          {
+            "code": "USDX",
+            "issuer": "__ISSUER__",
+            "image": "https://example.com/a.png",
+            "a": 1000,
+            "b": 1000,
+            "c": 0.0015,
+            "d": 31,
+            "e": 15,
+            "f": 5,
+            "g": 0,
+            "h": 300,
+            "i": 1,
+            "j": 0
+          }
+        ]
+      }
+    },
+    {
+      "name": "inf, nan, Ueberlauf als null",
+      "toml": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\na = inf\nb = -inf\nc = nan\nd = 1e400\n",
+      "logo": "ok",
+      "expect": {
+        "currencies": [
+          {
+            "code": "USDX",
+            "issuer": "__ISSUER__",
+            "image": "https://example.com/a.png",
+            "a": null,
+            "b": null,
+            "c": null,
+            "d": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "ganze Zahl ueber 2^53",
+      "toml": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\na = 9007199254740993\n",
+      "logo": "tomlUnavailable",
+      "expect": {
+        "invalid": true
+      }
+    },
+    {
+      "name": "ganze Zahl 2^53 - 1",
+      "toml": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\na = 9007199254740991\n",
+      "logo": "ok",
+      "expect": {
+        "currencies": [
+          {
+            "code": "USDX",
+            "issuer": "__ISSUER__",
+            "image": "https://example.com/a.png",
+            "a": 9007199254740991
+          }
+        ]
+      }
+    },
+    {
+      "name": "fuehrende Null",
+      "toml": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\na = 01\n",
+      "logo": "tomlUnavailable",
+      "expect": {
+        "invalid": true
+      }
+    },
+    {
+      "name": "doppelter Unterstrich",
+      "toml": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\na = 1__2\n",
+      "logo": "tomlUnavailable",
+      "expect": {
+        "invalid": true
+      }
+    },
+    {
+      "name": "Escapes \\e und \\x",
+      "toml": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\na = \"\\e\\x41\"\n",
+      "logo": "ok",
+      "expect": {
+        "currencies": [
+          {
+            "code": "USDX",
+            "issuer": "__ISSUER__",
+            "image": "https://example.com/a.png",
+            "a": "\u001bA"
+          }
+        ]
+      }
+    },
+    {
+      "name": "unbekanntes Escape",
+      "toml": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\na = \"\\z\"\n",
+      "logo": "tomlUnavailable",
+      "expect": {
+        "invalid": true
+      }
+    },
+    {
+      "name": "Surrogat-Escape",
+      "toml": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\na = \"\\uD800\"\n",
+      "logo": "tomlUnavailable",
+      "expect": {
+        "invalid": true
+      }
+    },
+    {
+      "name": "Zeilenumbruch im einfachen String",
+      "toml": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\na = \"x\ny\"\n",
+      "logo": "tomlUnavailable",
+      "expect": {
+        "invalid": true
+      }
+    },
+    {
+      "name": "Tab im String erlaubt",
+      "toml": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\na = \"x\ty\"\nb = 'x\ty'\n",
+      "logo": "ok",
+      "expect": {
+        "currencies": [
+          {
+            "code": "USDX",
+            "issuer": "__ISSUER__",
+            "image": "https://example.com/a.png",
+            "a": "x\ty",
+            "b": "x\ty"
+          }
+        ]
+      }
+    },
+    {
+      "name": "mehrzeilig mit Backslash am Zeilenende",
+      "toml": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\na = \"\"\"x\\ \n   y\"\"\"\nb = \"\"\"\nz\"\"\"\nc = \"\"\"a\"\"b\"\"\"\n",
+      "logo": "ok",
+      "expect": {
+        "currencies": [
+          {
+            "code": "USDX",
+            "issuer": "__ISSUER__",
+            "image": "https://example.com/a.png",
+            "a": "xy",
+            "b": "z",
+            "c": "a\"\"b"
+          }
+        ]
+      }
+    },
+    {
+      "name": "mehrzeilig literal",
+      "toml": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\na = '''\nx\ny'''\n",
+      "logo": "ok",
+      "expect": {
+        "currencies": [
+          {
+            "code": "USDX",
+            "issuer": "__ISSUER__",
+            "image": "https://example.com/a.png",
+            "a": "x\ny"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Inline-Tabelle mit Umbruch und Komma am Ende",
+      "toml": "CURRENCIES = [{\n code = \"USDX\", issuer = \"__ISSUER__\", image = \"https://example.com/a.png\",\n}]\n",
+      "logo": "ok",
+      "expect": {
+        "currencies": [
+          {
+            "code": "USDX",
+            "issuer": "__ISSUER__",
+            "image": "https://example.com/a.png"
+          }
+        ]
+      }
+    },
+    {
+      "name": "[CURRENCIES] als einzelne Tabelle",
+      "toml": "[CURRENCIES]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\n",
+      "logo": "ok",
+      "expect": {
+        "currencies": [
+          {
+            "code": "USDX",
+            "issuer": "__ISSUER__",
+            "image": "https://example.com/a.png"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CURRENCIES als Text",
+      "toml": "CURRENCIES = \"x\"\n",
+      "logo": "notListed",
+      "expect": {
+        "currencies": []
+      }
+    },
+    {
+      "name": "CURRENCIES als Zahlenliste",
+      "toml": "CURRENCIES = [1, 2]\n",
+      "logo": "notListed",
+      "expect": {
+        "currencies": []
+      }
+    },
+    {
+      "name": "CURRENCIES und currencies, Reihenfolge der Keys",
+      "toml": "[[currencies]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/first.png\"\n[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/second.png\"\n[[currencies]]\ncode = \"OTHER\"\n",
+      "logo": "ok",
+      "expect": {
+        "currencies": [
+          {
+            "code": "USDX",
+            "issuer": "__ISSUER__",
+            "image": "https://example.com/first.png"
+          },
+          {
+            "code": "OTHER"
+          },
+          {
+            "code": "USDX",
+            "issuer": "__ISSUER__",
+            "image": "https://example.com/second.png"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Punkt-Key im Eintrag",
+      "toml": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\nlogo.url = \"x\"\nlogo.size = 1\n",
+      "logo": "ok",
+      "expect": {
+        "currencies": [
+          {
+            "code": "USDX",
+            "issuer": "__ISSUER__",
+            "image": "https://example.com/a.png",
+            "logo": {
+              "url": "x",
+              "size": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Tabelle doppelt",
+      "toml": "[a]\nx=1\n[a]\ny=2\n[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\n",
+      "logo": "tomlUnavailable",
+      "expect": {
+        "invalid": true
+      }
+    },
+    {
+      "name": "Punkt-Key, dann Kopf derselben Tabelle",
+      "toml": "a.b = 1\n[a]\nc = 2\n[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\n",
+      "logo": "tomlUnavailable",
+      "expect": {
+        "invalid": true
+      }
+    },
+    {
+      "name": "Kopf mit Untertabelle, dann Kopf der Elterntabelle",
+      "toml": "[a.b]\nc=1\n[a]\nd=2\n[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\n",
+      "logo": "ok",
+      "expect": {
+        "currencies": [
+          {
+            "code": "USDX",
+            "issuer": "__ISSUER__",
+            "image": "https://example.com/a.png"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Liste, dann [[...]] mit demselben Namen",
+      "toml": "CURRENCIES = []\n[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\n",
+      "logo": "tomlUnavailable",
+      "expect": {
+        "invalid": true
+      }
+    },
+    {
+      "name": "Inline-Tabelle, dann Kopf",
+      "toml": "a = {b=1}\n[a]\nc=1\n[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\n",
+      "logo": "tomlUnavailable",
+      "expect": {
+        "invalid": true
+      }
+    },
+    {
+      "name": "Untertabelle im Eintrag",
+      "toml": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\n[CURRENCIES.extra]\nx = 1\n",
+      "logo": "ok",
+      "expect": {
+        "currencies": [
+          {
+            "code": "USDX",
+            "issuer": "__ISSUER__",
+            "image": "https://example.com/a.png",
+            "extra": {
+              "x": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "CR allein",
+      "toml": "[[CURRENCIES]]\rcode = \"USDX\"\rissuer = \"__ISSUER__\"\rimage = \"https://example.com/a.png\"\r",
+      "logo": "tomlUnavailable",
+      "expect": {
+        "invalid": true
+      }
+    },
+    {
+      "name": "Key ohne Wert",
+      "toml": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\na =\n",
+      "logo": "tomlUnavailable",
+      "expect": {
+        "invalid": true
+      }
+    },
+    {
+      "name": "zwei Key-Werte in einer Zeile",
+      "toml": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\na=1 b=2\n",
+      "logo": "tomlUnavailable",
+      "expect": {
+        "invalid": true
+      }
+    },
+    {
+      "name": "Text hinter dem Tabellenkopf",
+      "toml": "[a]x\n[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\n",
+      "logo": "tomlUnavailable",
+      "expect": {
+        "invalid": true
+      }
+    },
+    {
+      "name": "Liste ohne Komma",
+      "toml": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\na = [1 2]\n",
+      "logo": "tomlUnavailable",
+      "expect": {
+        "invalid": true
+      }
+    },
+    {
+      "name": "Liste mit Kommentaren und Komma am Ende",
+      "toml": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\na = [\n1, # eins\n2,\n]\n",
+      "logo": "ok",
+      "expect": {
+        "currencies": [
+          {
+            "code": "USDX",
+            "issuer": "__ISSUER__",
+            "image": "https://example.com/a.png",
+            "a": [
+              1,
+              2
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "leerer Key in Anfuehrungszeichen",
+      "toml": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\n\"\" = 1\n",
+      "logo": "ok",
+      "expect": {
+        "currencies": [
+          {
+            "code": "USDX",
+            "issuer": "__ISSUER__",
+            "image": "https://example.com/a.png",
+            "": 1
+          }
+        ]
+      }
+    },
+    {
+      "name": "Unicode-Key klein",
+      "toml": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\n\"\u00c4BC\" = 1\n",
+      "logo": "ok",
+      "expect": {
+        "currencies": [
+          {
+            "code": "USDX",
+            "issuer": "__ISSUER__",
+            "image": "https://example.com/a.png",
+            "\u00e4bc": 1
+          }
+        ]
+      }
+    },
+    {
+      "name": "leerer Eintrag",
+      "toml": "[[CURRENCIES]]\n[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\n",
+      "logo": "ok",
+      "expect": {
+        "currencies": [
+          {},
+          {
+            "code": "USDX",
+            "issuer": "__ISSUER__",
+            "image": "https://example.com/a.png"
+          }
+        ]
+      }
+    },
+    {
+      "name": "code als true",
+      "toml": "[[CURRENCIES]]\ncode = true\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\n",
+      "logo": "notListed",
+      "expect": {
+        "currencies": [
+          {
+            "code": true,
+            "issuer": "__ISSUER__",
+            "image": "https://example.com/a.png"
+          }
+        ]
+      }
+    },
+    {
+      "name": "code als Zahl",
+      "toml": "[[CURRENCIES]]\ncode = 123\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\n",
+      "logo": "notListed",
+      "expect": {
+        "currencies": [
+          {
+            "code": 123,
+            "issuer": "__ISSUER__",
+            "image": "https://example.com/a.png"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Steuerzeichen im Kommentar",
+      "toml": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\n# a\u0001b\n",
+      "logo": "tomlUnavailable",
+      "expect": {
+        "invalid": true
+      }
+    },
+    {
+      "name": "BOM mitten in der Datei",
+      "toml": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\n\ufeffa = 1\n",
+      "logo": "tomlUnavailable",
+      "expect": {
+        "invalid": true
+      }
+    },
+    {
+      "name": "Kopf mit Leerraum und Anfuehrungszeichen",
+      "toml": "[[ \"CURRENCIES\" ]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\n",
+      "logo": "ok",
+      "expect": {
+        "currencies": [
+          {
+            "code": "USDX",
+            "issuer": "__ISSUER__",
+            "image": "https://example.com/a.png"
+          }
+        ]
+      }
+    },
+    {
+      "name": "nur Leerzeilen und Kommentare",
+      "toml": "\n# x\n\n",
+      "logo": "notListed",
+      "expect": {
+        "currencies": []
+      }
+    },
+    {
+      "name": "leere Datei",
+      "toml": "",
+      "logo": "notListed",
+      "expect": {
+        "currencies": []
+      }
+    },
+    {
+      "name": "Wert true mit Anhang",
+      "toml": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\na = trueish\n",
+      "logo": "tomlUnavailable",
+      "expect": {
+        "invalid": true
+      }
+    },
+    {
+      "name": "ungueltiges UTF-8 in desc",
+      "tomlHex": "5b5b43555252454e434945535d5d0a636f6465203d202255534458220a697373756572203d20225f5f4953535545525f5f220a696d616765203d202268747470733a2f2f6578616d706c652e636f6d2f612e706e67220a64657363203d202261fffe62220a",
+      "logo": "ok",
+      "expect": {
+        "currencies": [
+          {
+            "code": "USDX",
+            "issuer": "__ISSUER__",
+            "image": "https://example.com/a.png",
+            "desc": "a\ufffd\ufffdb"
+          }
+        ]
+      }
+    }
+  ],
+  "_tomlDepthComment": "Verschachtelung der stellar.toml. tomlMaxDepth: Grenze der Node-Bibliothek toml fuer verschachtelte Werte, jeder Wert zaehlt eine Ebene, auch der innerste Skalar (500 leere Arrays gehen, 500 Arrays um eine Zahl nicht). tomlMaxStructureDepth: Ebenen der gelesenen Struktur (Tabellen und Arrays, Wurzel = 1), auch ueber Tabellenkoepfe und Punkt-Keys. build: text, oder prefix + repeat x times + middle + (suffix oder suffixRepeat x times); __ISSUER__ wird ersetzt. logo: Ergebnis von /logo. withoutLimit: Ergebnis mit aufgehobenen Grenzen (Gegenprobe, nur fuer Faelle ohne 1 MB).",
+  "tomlDepthCases": [
+    {
+      "name": "500 leere Arrays (an der Grenze)",
+      "build": {
+        "prefix": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\na = ",
+        "repeat": "[",
+        "times": 500,
+        "middle": "",
+        "suffixRepeat": "]"
+      },
+      "logo": "ok",
+      "withoutLimit": "ok"
+    },
+    {
+      "name": "501 leere Arrays (eins darueber)",
+      "build": {
+        "prefix": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\na = ",
+        "repeat": "[",
+        "times": 501,
+        "middle": "",
+        "suffixRepeat": "]"
+      },
+      "logo": "tomlUnavailable",
+      "withoutLimit": "ok"
+    },
+    {
+      "name": "499 Arrays um eine Zahl (an der Grenze)",
+      "build": {
+        "prefix": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\na = ",
+        "repeat": "[",
+        "times": 499,
+        "middle": "1",
+        "suffixRepeat": "]"
+      },
+      "logo": "ok",
+      "withoutLimit": "ok"
+    },
+    {
+      "name": "500 Arrays um eine Zahl (eins darueber)",
+      "build": {
+        "prefix": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\na = ",
+        "repeat": "[",
+        "times": 500,
+        "middle": "1",
+        "suffixRepeat": "]"
+      },
+      "logo": "tomlUnavailable",
+      "withoutLimit": "ok"
+    },
+    {
+      "name": "499 Inline-Tabellen um eine Zahl (an der Grenze)",
+      "build": {
+        "prefix": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\na = ",
+        "repeat": "{b=",
+        "times": 499,
+        "middle": "1",
+        "suffixRepeat": "}"
+      },
+      "logo": "ok",
+      "withoutLimit": "ok"
+    },
+    {
+      "name": "500 Inline-Tabellen um eine Zahl (eins darueber)",
+      "build": {
+        "prefix": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\na = ",
+        "repeat": "{b=",
+        "times": 500,
+        "middle": "1",
+        "suffixRepeat": "}"
+      },
+      "logo": "tomlUnavailable",
+      "withoutLimit": "ok"
+    },
+    {
+      "name": "gemischt 498 + [1] (an der Grenze)",
+      "build": {
+        "prefix": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\na = ",
+        "repeat": "[{b=",
+        "times": 249,
+        "middle": "[1]",
+        "suffix": "}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]"
+      },
+      "logo": "ok",
+      "withoutLimit": "ok"
+    },
+    {
+      "name": "gemischt 500 + 1 (eins darueber)",
+      "build": {
+        "prefix": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\na = ",
+        "repeat": "[{b=",
+        "times": 250,
+        "middle": "1",
+        "suffix": "}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]"
+      },
+      "logo": "tomlUnavailable",
+      "withoutLimit": "ok"
+    },
+    {
+      "name": "zwei Werte je 500 leere Arrays (Zaehler je Wert)",
+      "build": {
+        "text": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\na = [[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]\nb = [[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]\n"
+      },
+      "logo": "ok",
+      "withoutLimit": "ok"
+    },
+    {
+      "name": "1 MB nur [",
+      "build": {
+        "prefix": "a = ",
+        "repeat": "[",
+        "times": 1000000,
+        "middle": "",
+        "suffix": ""
+      },
+      "logo": "tomlUnavailable"
+    },
+    {
+      "name": "1 MB nur { ",
+      "build": {
+        "prefix": "a = ",
+        "repeat": "{",
+        "times": 1000000,
+        "middle": "",
+        "suffix": ""
+      },
+      "logo": "tomlUnavailable"
+    },
+    {
+      "name": "1 MB [{a= im Wechsel",
+      "build": {
+        "prefix": "a = ",
+        "repeat": "[{a=",
+        "times": 250000,
+        "middle": "",
+        "suffix": ""
+      },
+      "logo": "tomlUnavailable"
+    },
+    {
+      "name": "Tabellenkopf 999 Teile (Ebene 1000)",
+      "build": {
+        "text": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\n[k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8]\n"
+      },
+      "logo": "ok",
+      "withoutLimit": "ok"
+    },
+    {
+      "name": "Tabellenkopf 1000 Teile (Ebene 1001)",
+      "build": {
+        "text": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\n[k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9]\n"
+      },
+      "logo": "tomlUnavailable",
+      "withoutLimit": "ok"
+    },
+    {
+      "name": "Punkt-Key 1000 Teile (Ebene 1000)",
+      "build": {
+        "text": "k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9 = 1\n[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\n"
+      },
+      "logo": "ok",
+      "withoutLimit": "ok"
+    },
+    {
+      "name": "Punkt-Key 1001 Teile (Ebene 1001)",
+      "build": {
+        "text": "k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0 = 1\n[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\n"
+      },
+      "logo": "tomlUnavailable",
+      "withoutLimit": "ok"
+    },
+    {
+      "name": "Untertabelle im Eintrag bis Ebene 1000",
+      "build": {
+        "text": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\n[CURRENCIES.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6]\n"
+      },
+      "logo": "ok",
+      "withoutLimit": "ok"
+    },
+    {
+      "name": "Untertabelle im Eintrag Ebene 1001",
+      "build": {
+        "text": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\n[CURRENCIES.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7]\n"
+      },
+      "logo": "tomlUnavailable",
+      "withoutLimit": "ok"
+    },
+    {
+      "name": "Kopf 900 + 100 Arrays (Ebene 1000)",
+      "build": {
+        "text": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\n[k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8]\nx = [[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]\n"
+      },
+      "logo": "ok",
+      "withoutLimit": "ok"
+    },
+    {
+      "name": "Kopf 900 + 101 Arrays (Ebene 1001)",
+      "build": {
+        "text": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\n[k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8.k9.k0.k1.k2.k3.k4.k5.k6.k7.k8]\nx = [[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]\n"
+      },
+      "logo": "tomlUnavailable",
+      "withoutLimit": "ok"
+    },
+    {
+      "name": "Punkt-Keys in Inline-Tabellen",
+      "build": {
+        "text": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\nx = {k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8=1}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}\n"
+      },
+      "logo": "tomlUnavailable",
+      "withoutLimit": "ok"
+    },
+    {
+      "name": "Punkt-Keys in Inline-Tabellen an der Grenze",
+      "build": {
+        "text": "[[CURRENCIES]]\ncode = \"USDX\"\nissuer = \"__ISSUER__\"\nimage = \"https://example.com/a.png\"\nx = {k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8={k0.k1.k2.k3.k4.k5.k6.k7.k8=1}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}\n"
+      },
+      "logo": "ok",
+      "withoutLimit": "ok"
+    },
+    {
+      "name": "1 MB Tabellenkopf",
+      "build": {
+        "prefix": "[k",
+        "repeat": ".k",
+        "times": 500000,
+        "middle": "]\n",
+        "suffix": ""
+      },
+      "logo": "tomlUnavailable"
+    },
+    {
+      "name": "1 MB Punkt-Key",
+      "build": {
+        "prefix": "k",
+        "repeat": ".k",
+        "times": 500000,
+        "middle": " = 1\n",
+        "suffix": ""
+      },
+      "logo": "tomlUnavailable"
+    }
+  ]
+}

@@ -5,6 +5,7 @@
 // - GET /api/trade/assets/search
 // - GET /api/trade/assets/facts
 // - GET /api/trade/assets/expert
+// - GET /api/trade/assets/logo (api/assetLogo.php)
 
 declare(strict_types=1);
 
@@ -12,6 +13,9 @@ require __DIR__ . '/cors.php';
 require __DIR__ . '/ssrfGuard.php';
 require_once __DIR__ . '/stellarNetworks.php';
 require_once __DIR__ . '/addressKind.php';
+require_once __DIR__ . '/stellarToml.php';
+require_once __DIR__ . '/assetIdentity.php';
+require_once __DIR__ . '/assetLogo.php';
 
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
@@ -28,9 +32,18 @@ if (strtoupper((string)($_SERVER['REQUEST_METHOD'] ?? 'GET')) === 'OPTIONS') {
 
 const ASSET_CODE_RE = '/^[A-Za-z0-9]{1,12}$/';
 
+// Review LP-6: nur lesende Routen. Andere Methoden wie in Node (nur app.get) 404 statt wie GET behandelt.
+if (!in_array(strtoupper((string)($_SERVER['REQUEST_METHOD'] ?? 'GET')), ['GET', 'HEAD'], true)) {
+    http_response_code(404);
+    echo json_encode(['ok' => false, 'error' => 'trade.notFound']);
+    exit;
+}
+
 function json_out(array $payload, int $status = 200): void {
     http_response_code($status);
-    echo json_encode($payload);
+    // Tiefe ueber dem Standard 512: Eintraege der stellar.toml duerfen bis SKM_TOML_MAX_STRUCTURE_DEPTH (1000)
+    // Ebenen haben, wie in Node. Mit 512 lieferte json_encode false und die Antwort war leer.
+    echo json_encode($payload, 0, 1100);
     exit;
 }
 
@@ -68,17 +81,9 @@ function case_insensitive_code_variants(string $code): array {
 }
 
 function normalize_asset_identity(): array {
-    $code = trim((string)($_GET['code'] ?? ''));
-    $issuer = trim((string)($_GET['issuer'] ?? ''));
-
-    if ($code === '' || !preg_match(ASSET_CODE_RE, $code)) {
-        json_out(['ok' => false, 'error' => 'assetSearch.invalidInput:codeInvalid'], 400);
-    }
-    if ($issuer === '' || !skm_is_classic_account($issuer)) {
-        json_out(['ok' => false, 'error' => 'assetSearch.invalidInput:issuerInvalid'], 400);
-    }
-
-    return ['code' => $code, 'issuer' => $issuer];
+    $asset = asset_identity_from_input($_GET['code'] ?? null, $_GET['issuer'] ?? null);
+    if (!$asset['ok']) json_out(['ok' => false, 'error' => $asset['error']], 400);
+    return ['code' => $asset['code'], 'issuer' => $asset['issuer']];
 }
 
 function search_assets(): void {
@@ -132,114 +137,6 @@ function search_assets(): void {
     } catch (Throwable $e) {
         json_out(['ok' => false, 'error' => 'assetSearch.failed:' . $e->getMessage()], 502);
     }
-}
-
-function normalize_home_domain(string $domain): string {
-    $domain = trim($domain);
-    $domain = preg_replace('/^https?:\/\//i', '', $domain) ?? $domain;
-    $domain = preg_replace('/\/.*$/', '', $domain) ?? $domain;
-    return $domain;
-}
-
-function strip_toml_comment(string $value): string {
-    $quote = '';
-    $escaped = false;
-    $out = '';
-    $chars = preg_split('//u', $value, -1, PREG_SPLIT_NO_EMPTY) ?: [];
-    foreach ($chars as $char) {
-        if ($escaped) {
-            $out .= $char;
-            $escaped = false;
-            continue;
-        }
-        if ($quote === '"' && $char === '\\') {
-            $out .= $char;
-            $escaped = true;
-            continue;
-        }
-        if ($char === '"' || $char === "'") {
-            if ($quote === '') $quote = $char;
-            elseif ($quote === $char) $quote = '';
-            $out .= $char;
-            continue;
-        }
-        if ($char === '#' && $quote === '') break;
-        $out .= $char;
-    }
-    return trim($out);
-}
-
-function split_toml_array(string $value): array {
-    $items = [];
-    $quote = '';
-    $escaped = false;
-    $current = '';
-    $chars = preg_split('//u', $value, -1, PREG_SPLIT_NO_EMPTY) ?: [];
-    foreach ($chars as $char) {
-        if ($escaped) {
-            $current .= $char;
-            $escaped = false;
-            continue;
-        }
-        if ($quote === '"' && $char === '\\') {
-            $current .= $char;
-            $escaped = true;
-            continue;
-        }
-        if ($char === '"' || $char === "'") {
-            if ($quote === '') $quote = $char;
-            elseif ($quote === $char) $quote = '';
-            $current .= $char;
-            continue;
-        }
-        if ($char === ',' && $quote === '') {
-            $items[] = trim($current);
-            $current = '';
-            continue;
-        }
-        $current .= $char;
-    }
-    if (trim($current) !== '') $items[] = trim($current);
-    return $items;
-}
-
-function parse_toml_value(string $value) {
-    $trimmed = strip_toml_comment($value);
-    if ($trimmed === '') return '';
-    if (substr($trimmed, 0, 1) === '[' && substr($trimmed, -1) === ']') {
-        return array_map('parse_toml_value', split_toml_array(substr($trimmed, 1, -1)));
-    }
-    if (preg_match('/^([\'"])([\s\S]*)\1$/', $trimmed, $m)) {
-        if ($m[1] === '"') {
-            return str_replace(['\\n', '\\t', '\\"', '\\\\'], ["\n", "\t", '"', '\\'], $m[2]);
-        }
-        return $m[2];
-    }
-    if (preg_match('/^(true|false)$/i', $trimmed)) return strtolower($trimmed) === 'true';
-    if (preg_match('/^[+-]?\d+(?:\.\d+)?$/', $trimmed)) return strpos($trimmed, '.') !== false ? (float)$trimmed : (int)$trimmed;
-    return $trimmed;
-}
-
-function parse_currency_sections_from_toml(string $tomlText): array {
-    $currencies = [];
-    $currentIndex = null;
-    foreach (preg_split('/\r?\n/', $tomlText) ?: [] as $rawLine) {
-        $line = trim(strip_toml_comment((string)$rawLine));
-        if ($line === '' || substr($line, 0, 1) === '#') continue;
-        if (preg_match('/^\[\[\s*CURRENCIES\s*\]\]$/i', $line)) {
-            $currencies[] = [];
-            $currentIndex = count($currencies) - 1;
-            continue;
-        }
-        if (preg_match('/^\[/', $line)) {
-            $currentIndex = null;
-            continue;
-        }
-        if ($currentIndex === null) continue;
-        if (!preg_match('/^([A-Za-z0-9_]+)\s*=\s*(.+)$/', $line, $m)) continue;
-        $currencies[$currentIndex][strtolower($m[1])] = parse_toml_value($m[2]);
-    }
-    return $currencies;
 }
 
 function simplify_issuer_account(array $account, string $issuer): array {
@@ -331,16 +228,12 @@ function asset_facts(): void {
             // different assets even for the same issuer), so this must not
             // upcase either side - a differently-cased fake would otherwise
             // be confirmed as "listed in the issuer's stellar.toml".
-            $matches = array_values(array_filter($currencies, function ($currency) use ($asset): bool {
-                if (!is_array($currency)) return false;
-                return (string)($currency['code'] ?? '') === $asset['code']
-                    && (string)($currency['issuer'] ?? '') === $asset['issuer'];
-            }));
+            $matches = array_values(array_filter($currencies, fn($currency): bool => skm_currency_matches($currency, $asset)));
             $facts['toml'] = [
                 'status' => 'loaded',
                 'url' => $tomlUrl,
-                'currencies' => $currencies,
-                'matches' => $matches,
+                'currencies' => skm_currencies_for_json($currencies),
+                'matches' => skm_currencies_for_json($matches),
                 'error' => '',
             ];
             json_out($facts);
@@ -404,6 +297,36 @@ function expert_directory(): void {
     }
 }
 
+// GET /api/trade/assets/logo: Logo aus der stellar.toml des Issuers (api/assetLogo.php). Rate-Limit vor allen
+// Pruefungen wie in Node. Ungueltige Eingabe, 429 und voruebergehende Fehler bleiben no-store, die uebrigen
+// Fehler eine Stunde, ein Logo 24 Stunden. Header der Gegenseite werden nie weitergereicht.
+function asset_logo_route(): void {
+    $refusal = asset_logo_request_refusal($_SERVER['HTTP_X_SKM_LOGO_HOP'] ?? null, $_SERVER['HTTP_SEC_FETCH_DEST'] ?? null);
+    if ($refusal !== null) json_out(['ok' => false, 'error' => 'assetLogo.' . $refusal['error']], $refusal['status']);
+    $retryAfter = asset_logo_rate_limit_check_and_record((string)($_SERVER['REMOTE_ADDR'] ?? 'unknown'));
+    if ($retryAfter > 0) {
+        header('Retry-After: ' . $retryAfter);
+        json_out(['ok' => false, 'error' => 'too_many_requests', 'retryAfter' => $retryAfter], 429);
+    }
+    $asset = normalize_asset_identity();
+    $result = asset_logo_fetch(
+        $asset,
+        fn(string $issuer) => fetch_json(horizon_base_url() . '/accounts/' . rawurlencode($issuer)),
+        fn(string $url) => fetch_text($url, [ASSET_LOGO_HOP_HEADER . ': 1']),
+        fn(string $url) => asset_logo_fetch_image($url)
+    );
+    if (!$result['ok']) {
+        foreach (asset_logo_error_headers((string)$result['error']) as $name => $value) header($name . ': ' . $value);
+        json_out(['ok' => false, 'error' => 'assetLogo.' . $result['error']], (int)$result['status']);
+    }
+    foreach (asset_logo_success_headers($result) as $name => $value) header($name . ': ' . $value);
+    // Ein gecachtes Logo darf nicht fuer einen Aufruf als Dokument dienen. false: Vary: Origin aus cors.php bleibt.
+    header('Vary: Sec-Fetch-Dest', false);
+    http_response_code(200);
+    echo $result['bytes'];
+    exit;
+}
+
 $path = request_path();
 if (preg_match('#/api/trade/assets/search$#', $path)) {
     search_assets();
@@ -413,6 +336,9 @@ if (preg_match('#/api/trade/assets/facts$#', $path)) {
 }
 if (preg_match('#/api/trade/assets/expert$#', $path)) {
     expert_directory();
+}
+if (preg_match('#/api/trade/assets/logo$#', $path)) {
+    asset_logo_route();
 }
 
 json_out(['ok' => false, 'error' => 'trade.notFound'], 404);

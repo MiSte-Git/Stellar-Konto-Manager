@@ -72,7 +72,24 @@ dass jede Spec in dieser Tabelle steht und jede genannte Datei existiert.
   `test/rateLimitRoutes.test.php` Status, Fehlercode und `Retry-After` an Federation, Job anlegen, Jobliste und
   Admin-Login (Sperre und Freigabe) per HTTP, `test/jobListRateLimit.test.js` dasselbe Budget für die Liste in Node
   (IPv6 in-process, Einbindung über `server.js`). Bugreport anlegen nur über die Funktion und den Quelltext, weil
-  vor dem Limit die DB-Verbindung steht.
+  vor dem Limit die DB-Verbindung steht. Logo: Budget in `rateLimitAreas.test.php` und `rateLimitRoutes.test.php`,
+  in Node `test/assetLogoRoute.test.js` (IPv6 in-process, Einbindung über `server.js`, 400 und 429 `no-store`).
+- Logo-Proxy: gemeinsame Fälle in `test/assets/asset-logo.json` (Bildköpfe als hex, image-URLs, ganzer Ablauf mit
+  Stubs, Header, Grenzwerte, `transientErrors` für die Fehlergruppen no-store gegen eine Stunde mit Gegenprobe je
+  Gruppe), geprüft von `test/assetLogo.test.js` und `test/assetLogo.test.php` ohne Netz. Abbruch
+  beim Lesen: Node mit gestreamtem Mock (`readBytesWithLimit`), PHP mit echtem curl gegen einen lokalen `php -S` in
+  `test/ssrfGuard.test.php` (`skm_curl_size_limit_callbacks`); dort auch die Gesamtfrist des Stream-Fallbacks gegen
+  einen tropfenden Server (`skm_stream_read_limited`). Ablehnung nach Hop-Header und `Sec-Fetch-Dest` sowie Code und
+  Issuer aus der Anfrage: Fixture-Abschnitte `refusals` und `identityInputs`, über HTTP in
+  `test/assetLogoRoute.test.js` und `test/rateLimitRoutes.test.php` (vor dem Limiter, kein Budget verbraucht).
+- stellar.toml in Node und PHP gleich gelesen (Review LP-4): Fixture-Abschnitt `tomlCases` (Probefälle aus dem Review
+  mit `probe: true`, Grenzfälle zu Datum, Zahlen, Escapes, Tabellen, ungültigem UTF-8 als `tomlHex`). Je Fall das
+  gelesene Ergebnis als JSON und das Ergebnis von `/logo`, in `test/assetLogo.test.js` und `test/assetLogo.test.php`.
+  Neue Fälle: Ergebnis zuerst mit der Node-Bibliothek erzeugen, dann prüfen, dass PHP dasselbe liefert.
+  Verschachtelung: `tomlDepthCases` (genau an der Grenze, eins darüber, gemischt, 1 MB nur `[`, tiefe Tabellenköpfe
+  und Punkt-Keys) als Bauvorschrift; `withoutLimit` ist die Gegenprobe mit aufgehobenen Grenzen
+  (`parseCurrencySectionsFromToml(text, { maxDepth, maxStructureDepth })` bzw. die Parameter von
+  `parse_currency_sections_from_toml`).
 - Sperren in `api/.htaccess` (F-14): `test/apiHtaccess.test.js` startet einen lokalen Apache (`/usr/sbin/apache2` mit
   `mod_rewrite`, `mod_headers`, `mod_authz_core`, ohne PHP) gegen eine Kopie von `api/`; ohne Apache wird der Test
   übersprungen. `test/deployApiHtaccess.test.js` prüft die Abbruchregel im Deploy.

@@ -175,12 +175,32 @@ function nextRedirectUrl(currentUrl, location) {
 // response). Falls back to response.text() for response shapes without a
 // real streaming body (e.g. plain-object mocks in tests).
 async function readTextWithLimit(response, maxBytes) {
+  // Nur pruefen, ob ein Reader moeglich ist; holen tut ihn readBytesWithLimit (ein zweites getReader() auf
+  // demselben Stream wirft "ReadableStream is locked").
+  if (typeof response.body?.getReader !== 'function') {
+    assertDeclaredLength(response, maxBytes);
+    return response.text();
+  }
+  return (await readBytesWithLimit(response, maxBytes)).toString('utf8');
+}
+
+function assertDeclaredLength(response, maxBytes) {
   const declaredLength = Number(response.headers?.get?.('content-length'));
   if (Number.isFinite(declaredLength) && declaredLength > maxBytes) {
     throw new Error('ssrf.blocked:responseTooLarge');
   }
+}
+
+// Wie readTextWithLimit, liefert aber die Bytes (Logo-Proxy). Bricht ab, sobald mehr als maxBytes gelesen
+// sind, und schon vorher bei zu grossem Content-Length. Ohne lesbaren Body (Mocks): arrayBuffer, dann Pruefung.
+async function readBytesWithLimit(response, maxBytes) {
+  assertDeclaredLength(response, maxBytes);
   const reader = response.body?.getReader?.();
-  if (!reader) return response.text();
+  if (!reader) {
+    const buf = Buffer.from(await response.arrayBuffer());
+    if (buf.length > maxBytes) throw new Error('ssrf.blocked:responseTooLarge');
+    return buf;
+  }
 
   const chunks = [];
   let total = 0;
@@ -194,7 +214,7 @@ async function readTextWithLimit(response, maxBytes) {
     }
     chunks.push(value);
   }
-  return Buffer.concat(chunks.map((chunk) => Buffer.from(chunk))).toString('utf8');
+  return Buffer.concat(chunks.map((chunk) => Buffer.from(chunk)));
 }
 
 module.exports = {
@@ -205,4 +225,5 @@ module.exports = {
   ssrfSafeAgent,
   nextRedirectUrl,
   readTextWithLimit,
+  readBytesWithLimit,
 };

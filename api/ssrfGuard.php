@@ -190,26 +190,86 @@ function resolve_safe_fetch_target(string $url): array {
     ];
 }
 
+// curl-Callbacks fuer die Groessengrenze (N2), aus fetch_url ausgelagert, damit test/ssrfGuard.test.php den
+// Abbruch beim Lesen mit echtem curl pruefen kann. $bodyChunks und $tooLarge werden per Referenz gefuellt.
+function skm_curl_size_limit_callbacks(int $maxBytes, array &$bodyChunks, bool &$tooLarge): array {
+    $bytesWritten = 0;
+    return [
+        // N2: reject as soon as a declared Content-Length is too large,
+        // without waiting for the body to start arriving.
+        CURLOPT_HEADERFUNCTION => function ($handle, $headerLine) use (&$tooLarge, $maxBytes) {
+            if (preg_match('/^content-length:\s*(\d+)/i', $headerLine, $m) && (int)$m[1] > $maxBytes) {
+                $tooLarge = true;
+                return -1; // any value != strlen($headerLine) aborts the transfer
+            }
+            return strlen($headerLine);
+        },
+        // N2: also enforced while streaming, in case Content-Length was
+        // absent, chunked, or understated.
+        CURLOPT_WRITEFUNCTION => function ($handle, $chunk) use (&$bodyChunks, &$bytesWritten, &$tooLarge, $maxBytes) {
+            $bytesWritten += strlen($chunk);
+            if ($bytesWritten > $maxBytes) {
+                $tooLarge = true;
+                return 0; // any value != strlen($chunk) aborts the transfer
+            }
+            $bodyChunks[] = $chunk;
+            return strlen($chunk);
+        },
+    ];
+}
+
+// Restzeit bis $deadline (microtime) in Millisekunden, mindestens 1. Abgelaufen: 'timeout'.
+function skm_fetch_remaining_ms(float $deadline): int {
+    $ms = (int)floor(($deadline - microtime(true)) * 1000);
+    if ($ms <= 0) throw new RuntimeException('timeout');
+    return $ms;
+}
+
+// Liest einen offenen Stream bis zum Ende, hoechstens $maxBytes (sonst 'ssrf_blocked_response_too_large'),
+// und nie ueber $deadline hinaus ('timeout'). Jeder Lesevorgang wartet hoechstens die Restzeit.
+function skm_stream_read_limited($fp, int $maxBytes, float $deadline): string {
+    $body = '';
+    while (!feof($fp)) {
+        $ms = skm_fetch_remaining_ms($deadline);
+        stream_set_timeout($fp, intdiv($ms, 1000), ($ms % 1000) * 1000);
+        $chunk = fread($fp, 8192);
+        if (stream_get_meta_data($fp)['timed_out'] ?? false) throw new RuntimeException('timeout');
+        if ($chunk === false) break;
+        $body .= $chunk;
+        if (strlen($body) > $maxBytes) throw new RuntimeException('ssrf_blocked_response_too_large');
+    }
+    return $body;
+}
+
 // $options (all optional, defaults = previous behavior used by trade.php):
 //   httpsOnly    => bool, reject any non-https URL (also on redirects)
 //   maxRedirects => int, 0 turns every 3xx into 'too_many_redirects'
 //   maxBytes     => int, response size cap
 //   headers      => string[], extra request headers ("Name: value")
 // With maxRedirects 0 every 3xx status is a failure, not only the five
-// redirect codes (a 300/304/305 body is never returned).
+// redirect codes (a 300/304/305 body is never returned). Mit Weiterleitungen ist
+// jeder andere 3xx-Status ein Fehler ('HTTP nnn'), wie in Node (Review LP-5).
 // Used by api/federationService.php with httpsOnly + maxRedirects 0.
+//
+// $timeoutSeconds gilt fuer den ganzen Abruf, ueber alle Weiterleitungen (Review LP-1): vor jedem
+// Schritt wird die Restzeit neu berechnet, curl bekommt sie als CURLOPT_TIMEOUT_MS, der Stream-Fallback
+// liest in einer Schleife mit derselben Frist. Vorher galt die Frist je Weiterleitung (bis 6 x).
+// Nicht begrenzt bleibt die DNS-Aufloesung in resolve_safe_host (gethostbynamel hat keine Frist).
 function fetch_url(string $url, string $acceptHeader, int $timeoutSeconds, array $options = []): string {
     $httpsOnly = (bool)($options['httpsOnly'] ?? false);
     $maxRedirects = (int)($options['maxRedirects'] ?? MAX_FETCH_REDIRECTS);
     $maxBytes = (int)($options['maxBytes'] ?? MAX_FETCH_RESPONSE_BYTES);
     $extraHeaders = array_values(array_filter((array)($options['headers'] ?? []), 'is_string'));
+    $deadline = microtime(true) + $timeoutSeconds;
     $currentUrl = $url;
     for ($redirect = 0; $redirect <= $maxRedirects; $redirect++) {
         // Before any DNS resolution, so a non-https target never causes a lookup.
         if ($httpsOnly && strtolower((string)parse_url($currentUrl, PHP_URL_SCHEME)) !== 'https') {
             throw new RuntimeException('ssrf_blocked_scheme');
         }
+        skm_fetch_remaining_ms($deadline);
         $target = resolve_safe_fetch_target($currentUrl);
+        $remainingMs = skm_fetch_remaining_ms($deadline);
 
         if (function_exists('curl_init')) {
             $ch = curl_init();
@@ -217,7 +277,6 @@ function fetch_url(string $url, string $acceptHeader, int $timeoutSeconds, array
                 throw new RuntimeException('curl_init_failed');
             }
             $bodyChunks = [];
-            $bytesWritten = 0;
             $tooLarge = false;
             curl_setopt_array($ch, [
                 CURLOPT_URL => $currentUrl,
@@ -233,33 +292,14 @@ function fetch_url(string $url, string $acceptHeader, int $timeoutSeconds, array
                 // nie auf etwas anderes als https.
                 CURLOPT_PROTOCOLS => $httpsOnly ? CURLPROTO_HTTPS : (CURLPROTO_HTTP | CURLPROTO_HTTPS),
                 CURLOPT_REDIR_PROTOCOLS => CURLPROTO_HTTPS,
-                CURLOPT_CONNECTTIMEOUT => $timeoutSeconds,
-                CURLOPT_TIMEOUT => $timeoutSeconds,
+                CURLOPT_CONNECTTIMEOUT_MS => $remainingMs,
+                CURLOPT_TIMEOUT_MS => $remainingMs,
+                CURLOPT_NOSIGNAL => true, // Millisekunden-Timeouts ohne SIGALRM
                 CURLOPT_HTTPHEADER => array_merge([
                     'Accept: ' . $acceptHeader,
                     'User-Agent: Stellar-Konto-Manager/1.0',
                 ], $extraHeaders),
-                // N2: reject as soon as a declared Content-Length is too large,
-                // without waiting for the body to start arriving.
-                CURLOPT_HEADERFUNCTION => function ($handle, $headerLine) use (&$tooLarge, $maxBytes) {
-                    if (preg_match('/^content-length:\s*(\d+)/i', $headerLine, $m) && (int)$m[1] > $maxBytes) {
-                        $tooLarge = true;
-                        return -1; // any value != strlen($headerLine) aborts the transfer
-                    }
-                    return strlen($headerLine);
-                },
-                // N2: also enforced while streaming, in case Content-Length was
-                // absent, chunked, or understated.
-                CURLOPT_WRITEFUNCTION => function ($handle, $chunk) use (&$bodyChunks, &$bytesWritten, &$tooLarge, $maxBytes) {
-                    $bytesWritten += strlen($chunk);
-                    if ($bytesWritten > $maxBytes) {
-                        $tooLarge = true;
-                        return 0; // any value != strlen($chunk) aborts the transfer
-                    }
-                    $bodyChunks[] = $chunk;
-                    return strlen($chunk);
-                },
-            ]);
+            ] + skm_curl_size_limit_callbacks($maxBytes, $bodyChunks, $tooLarge));
             $ok = curl_exec($ch);
             $status = (int)curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
             $errno = curl_errno($ch);
@@ -276,6 +316,9 @@ function fetch_url(string $url, string $acceptHeader, int $timeoutSeconds, array
             curl_close($ch);
             if ($maxRedirects === 0 && $status >= 300 && $status < 400) {
                 throw new RuntimeException('too_many_redirects');
+            }
+            if ($ok !== false && $status >= 300 && $status < 400) {
+                throw new RuntimeException('HTTP ' . $status);
             }
             // curl_errno() (not the locale-dependent curl_error() text) tells
             // a real timeout apart from every other connection-level failure
@@ -300,7 +343,7 @@ function fetch_url(string $url, string $acceptHeader, int $timeoutSeconds, array
         $context = stream_context_create([
             'http' => [
                 'method' => 'GET',
-                'timeout' => $timeoutSeconds,
+                'timeout' => $remainingMs / 1000,
                 'header' => "Accept: {$acceptHeader}\r\nUser-Agent: Stellar-Konto-Manager/1.0\r\nHost: {$target['hostHeader']}\r\n"
                     . implode('', array_map(fn($h) => $h . "\r\n", $extraHeaders)),
                 'ignore_errors' => true,
@@ -313,13 +356,23 @@ function fetch_url(string $url, string $acceptHeader, int $timeoutSeconds, array
                 'SNI_enabled' => true,
             ],
         ]);
-        // N2: maxlen caps how many bytes PHP ever buffers for this call,
-        // regardless of what the (possibly lying) remote end declares or how
-        // much it actually sends.
-        $body = @file_get_contents($pinnedUrl, false, $context, 0, $maxBytes + 1);
+        // N2 und LP-1: skm_stream_read_limited liest hoechstens $maxBytes + 1 Bytes und bricht an der Frist ab,
+        // auch wenn die Gegenseite langsam tropft (das 'timeout' des Kontexts gilt nur je Lesevorgang).
+        $fp = @fopen($pinnedUrl, 'rb', false, $context);
+        $body = false;
+        $responseHeaders = [];
+        if ($fp !== false) {
+            $responseHeaders = (array)(stream_get_meta_data($fp)['wrapper_data'] ?? []);
+            try {
+                $body = skm_stream_read_limited($fp, $maxBytes, $deadline);
+            } finally {
+                fclose($fp);
+            }
+        }
         $status = 0;
         $location = null;
-        foreach (($http_response_header ?? []) as $header) {
+        foreach ($responseHeaders as $header) {
+            if (!is_string($header)) continue;
             if (preg_match('/^HTTP\/\S+\s+(\d+)/', $header, $m)) {
                 $status = (int)$m[1];
             }
@@ -333,6 +386,9 @@ function fetch_url(string $url, string $acceptHeader, int $timeoutSeconds, array
         }
         if ($maxRedirects === 0 && $status >= 300 && $status < 400) {
             throw new RuntimeException('too_many_redirects');
+        }
+        if ($body !== false && $status >= 300 && $status < 400) {
+            throw new RuntimeException('HTTP ' . $status);
         }
         if ($body === false) {
             // No curl_errno() equivalent is available here (rare fallback
@@ -353,8 +409,11 @@ function fetch_url(string $url, string $acceptHeader, int $timeoutSeconds, array
     throw new RuntimeException('too_many_redirects');
 }
 
+const SKM_JSON_FETCH_TIMEOUT_SECONDS = 8;
+const SKM_TOML_FETCH_TIMEOUT_SECONDS = 6;
+
 function fetch_json(string $url): array {
-    $body = fetch_url($url, 'application/json', 8);
+    $body = fetch_url($url, 'application/json', SKM_JSON_FETCH_TIMEOUT_SECONDS);
     $data = json_decode($body, true);
     if (!is_array($data)) {
         throw new RuntimeException('invalid_json');
@@ -363,8 +422,12 @@ function fetch_json(string $url): array {
 }
 
 // F-7: stellar.toml nur ueber https (auch jede Weiterleitung), wie Node fetchTextWithTimeout.
-function fetch_text(string $url): string {
-    return fetch_url($url, 'text/plain, application/toml, */*', 6, ['httpsOnly' => true]);
+// $extraHeaders: z. B. der Hop-Header des Logo-Proxys (api/assetLogo.php).
+function fetch_text(string $url, array $extraHeaders = []): string {
+    return fetch_url($url, 'text/plain, application/toml, */*', SKM_TOML_FETCH_TIMEOUT_SECONDS, [
+        'httpsOnly' => true,
+        'headers' => $extraHeaders,
+    ]);
 }
 
 // A server answering with an HTML error/redirect page instead of the TOML

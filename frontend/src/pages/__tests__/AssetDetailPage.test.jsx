@@ -293,3 +293,54 @@ describe('AssetDetailPage: Kurs, Kennzahlen, Verlauf, Orderbuch', () => {
     await waitFor(() => expect(hoisted.book).toHaveBeenCalledTimes(2));
   });
 });
+
+describe('AssetDetailPage: Angaben des Issuers und Logo', () => {
+  function stubFacts(toml) {
+    vi.stubGlobal('fetch', vi.fn(async () => ({
+      ok: true,
+      json: async () => ({ issuerAccount: { home_domain: 'lumendex.online', flags: {} }, toml }),
+    })));
+  }
+  beforeEach(() => { hoisted.loadAccount.mockResolvedValue(account([])); });
+
+  it('zeigt die Angaben als Text, URL nicht klickbar, Logo ueber unser Backend', async () => {
+    stubFacts({
+      status: 'loaded', url: 'https://lumendex.online/.well-known/stellar.toml', currencies: [], error: '',
+      matches: [{ code: 'LDEX', issuer: ISSUER, name: 'LumenDex', desc: 'Token der Börse', status: 'live',
+        is_asset_anchored: false, attestation_of_reserve: 'https://evil.example/login', image: 'https://lumendex.online/logo.png' }],
+    });
+    renderAt(`/assets/LDEX-${ISSUER}`);
+    await screen.findByTestId('issuer-toml-fields');
+    expect(screen.getByText('Aus der stellar.toml des Issuers, nicht geprüft. Der Issuer kann hier alles eintragen.')).toBeTruthy();
+    expect(screen.getByTestId('issuer-toml-name').textContent).toContain('LumenDex');
+    expect(screen.getByTestId('issuer-toml-status').textContent).toContain('Aktiv');
+    expect(screen.getByTestId('issuer-toml-is_asset_anchored').textContent).toContain('Nein');
+    const att = screen.getByTestId('issuer-toml-attestation_of_reserve');
+    expect(att.textContent).toContain('https://evil.example/login');
+    expect(att.querySelector('a')).toBeNull();
+    const logo = screen.getByTestId('asset-logo');
+    const src = logo.getAttribute('src');
+    expect(src).toContain('/api/trade/assets/logo?');
+    expect(src).toContain('code=LDEX');
+    expect(src).toContain(`issuer=${ISSUER}`);
+    expect(src).toContain('network=PUBLIC');
+    expect(src).not.toContain('lumendex.online');
+    expect(logo.getAttribute('alt')).toBe('');
+    fireEvent.error(logo);
+    expect(screen.queryByTestId('asset-logo')).toBeNull();
+  });
+
+  it('nicht in der TOML gelistet: Hinweis, kein Logo', async () => {
+    stubFacts({ status: 'loaded', url: 'https://lumendex.online/.well-known/stellar.toml', currencies: [], matches: [], error: '' });
+    renderAt(`/assets/LDEX-${ISSUER}`);
+    await screen.findByTestId('issuer-toml-not-listed');
+    expect(screen.queryByTestId('asset-logo')).toBeNull();
+  });
+
+  it('TOML nicht geladen: Hinweis, kein Logo', async () => {
+    stubFacts({ status: 'failed', url: '', currencies: [], matches: [], error: 'timeout' });
+    renderAt(`/assets/LDEX-${ISSUER}`);
+    await screen.findByText('Keine Angaben: Die stellar.toml des Issuers konnte nicht geladen werden oder es gibt keine.');
+    expect(screen.queryByTestId('asset-logo')).toBeNull();
+  });
+});

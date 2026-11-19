@@ -2,7 +2,7 @@ const toml = require('toml');
 // F-7: SSRF-Schutz an einer Stelle, auch fuer federationService.js (Gegenstueck zu api/ssrfGuard.php).
 const { assertSafeScheme, ssrfSafeLookup, ssrfSafeAgent, nextRedirectUrl, readTextWithLimit } = require('./ssrfGuard.js');
 const { networkFromQuery } = require('./stellarNetworks.js');
-const { isClassicAccount } = require('./addressKind.js');
+const { isClassicAccount, asciiTrim } = require('./addressKind.js');
 
 const ASSET_CODE_RE = /^[A-Za-z0-9]{1,12}$/;
 const TOML_FETCH_TIMEOUT_MS = 6000;
@@ -27,9 +27,13 @@ function normalizeAssetSearchInput({ assetCode, issuer, limit }) {
   return { code, issuer: assetIssuer, limit: pageLimit };
 }
 
+// Review LP-6: nur Strings (code[]=x ist ungueltig, nicht "x") und nur ASCII-Leerraum trimmen, wie
+// asset_identity_from_input in api/assetIdentity.php. Gilt fuer /facts und /logo.
 function normalizeAssetIdentity({ assetCode, issuer }) {
-  const code = String(assetCode || '').trim();
-  const assetIssuer = String(issuer || '').trim();
+  if (assetCode !== undefined && typeof assetCode !== 'string') throw new Error('assetSearch.invalidInput:codeInvalid');
+  if (issuer !== undefined && typeof issuer !== 'string') throw new Error('assetSearch.invalidInput:issuerInvalid');
+  const code = asciiTrim(assetCode ?? '');
+  const assetIssuer = asciiTrim(issuer ?? '');
 
   if (!code || !ASSET_CODE_RE.test(code)) {
     throw new Error('assetSearch.invalidInput:codeInvalid');
@@ -50,19 +54,63 @@ function buildTomlUrl(homeDomain) {
   return domain ? `https://${domain}/.well-known/stellar.toml` : '';
 }
 
+// Nur echte Tabellen zaehlen als Eintrag (kein Array, kein Date), wie in api/stellarToml.php.
+function isPlainTable(value) {
+  return Object.prototype.toString.call(value) === '[object Object]';
+}
+
 function normalizeCurrencyEntry(entry) {
-  if (!entry || typeof entry !== 'object') return null;
+  if (!isPlainTable(entry)) return null;
   return Object.entries(entry).reduce((acc, [key, value]) => {
     acc[String(key).toLowerCase()] = value;
     return acc;
   }, {});
 }
 
-function parseCurrencySectionsFromToml(tomlText) {
-  const parsed = toml.parse(String(tomlText || ''));
-  const rawCurrencies = parsed?.CURRENCIES || parsed?.currencies || [];
-  const list = Array.isArray(rawCurrencies) ? rawCurrencies : [rawCurrencies];
-  return list.map(normalizeCurrencyEntry).filter(Boolean);
+// Review LP-4: alle Top-Level-Keys, die ohne Gross-/Kleinschreibung "currencies" heissen ([[CURRENCIES]],
+// [[Currencies]], ...), in der Reihenfolge der Keys, wie parse_currency_sections_from_toml in
+// api/stellarToml.php. Vorher nur CURRENCIES oder currencies. Gemeinsame Faelle: tomlCases in
+// test/assets/asset-logo.json.
+/** Eintrag gehoert zu genau diesem Asset (Text-Werte, Schreibweise zaehlt). Gleich wie skm_currency_matches. */
+function currencyMatches(currency, asset) {
+  return typeof currency?.code === 'string' && currency.code === asset.code
+    && typeof currency?.issuer === 'string' && currency.issuer === asset.issuer;
+}
+
+// Hoechstens so viele Ebenen in der gelesenen Struktur (Tabellen und Arrays, Wurzel = 1, Skalare zaehlen nicht),
+// gleich wie SKM_TOML_MAX_STRUCTURE_DEPTH in api/stellarToml.php. Die Bibliothek begrenzt nur verschachtelte
+// Werte (500); Tabellenkoepfe und Punkt-Keys ([k.k.k...]) bauen beliebig tiefe Tabellen, an denen JSON.stringify
+// fuer /facts scheiterte (und PHP abstuerzte). Zaehlung ohne Rekursion.
+const TOML_MAX_STRUCTURE_DEPTH = 1000;
+
+function assertStructureDepth(root, maxStructureDepth = TOML_MAX_STRUCTURE_DEPTH) {
+  const stack = [[root, 1]];
+  while (stack.length) {
+    const [value, level] = stack.pop();
+    if (level > maxStructureDepth) throw new Error('toml.invalidFormat');
+    const children = Array.isArray(value) ? value : (isPlainTable(value) ? Object.values(value) : null);
+    if (!children) continue;
+    for (const child of children) {
+      if (Array.isArray(child) || isPlainTable(child)) stack.push([child, level + 1]);
+    }
+  }
+}
+
+// limits nur fuer Tests (Gegenprobe ohne Grenze): { maxDepth, maxStructureDepth }. maxDepth geht an die Bibliothek
+// (Standard 500, wie SKM_TOML_MAX_DEPTH in PHP).
+function parseCurrencySectionsFromToml(tomlText, limits = {}) {
+  const parsed = toml.parse(String(tomlText || ''), limits.maxDepth != null ? { maxDepth: limits.maxDepth } : undefined);
+  assertStructureDepth(parsed, limits.maxStructureDepth);
+  const out = [];
+  for (const [key, raw] of Object.entries(parsed || {})) {
+    if (key.toLowerCase() !== 'currencies') continue;
+    const list = Array.isArray(raw) ? raw : [raw];
+    for (const entry of list) {
+      const normalized = normalizeCurrencyEntry(entry);
+      if (normalized) out.push(normalized);
+    }
+  }
+  return out;
 }
 
 // A server that answers with an HTML error/redirect page instead of the
@@ -145,7 +193,9 @@ function simplifyIssuerAccount(account, issuer) {
   };
 }
 
-async function fetchTextWithTimeout(url) {
+// extraHeaders: z. B. der Hop-Header des Logo-Proxys (services/assetLogo.js). accept-encoding identity wie
+// PHP (curl fragt ohne Accept-Encoding an und entpackt nicht), Review LP-5.
+async function fetchTextWithTimeout(url, extraHeaders = {}) {
   const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
   const timer = controller ? setTimeout(() => controller.abort(), TOML_FETCH_TIMEOUT_MS) : null;
   try {
@@ -154,7 +204,7 @@ async function fetchTextWithTimeout(url) {
       // F-7: stellar.toml nur ueber https, auch nach jeder Weiterleitung (nextRedirectUrl).
       if (assertSafeScheme(currentUrl).protocol !== 'https:') throw new Error('ssrf.blocked:scheme');
       const response = await fetch(currentUrl, {
-        headers: { accept: 'text/plain, application/toml, */*' },
+        headers: { ...extraHeaders, accept: 'text/plain, application/toml, */*', 'accept-encoding': 'identity' },
         signal: controller?.signal,
         redirect: 'manual',
         dispatcher: ssrfSafeAgent,
@@ -289,10 +339,8 @@ async function fetchAssetFacts({ assetCode, issuer, horizon }) {
       // different assets even for the same issuer), so this must not
       // upcase either side - a differently-cased fake would otherwise be
       // confirmed as "listed in the issuer's stellar.toml".
-      const matches = currencies.filter((currency) =>
-        String(currency.code || '') === asset.code &&
-        String(currency.issuer || '') === asset.issuer
-      );
+      // Nur Text-Werte: code = true ergaebe sonst in Node "true", in PHP "1" (Review LP-4).
+      const matches = currencies.filter((currency) => currencyMatches(currency, asset));
       return {
         ...facts,
         toml: {
@@ -420,4 +468,12 @@ module.exports = {
   ssrfSafeAgent,
   MAX_TOML_RESPONSE_BYTES,
   classifyTomlError,
+  // Fuer services/assetLogo.js (gleicher TOML-Weg wie /facts).
+  normalizeAssetIdentity,
+  buildTomlUrl,
+  fetchTextWithTimeout,
+  looksLikeHtml,
+  currencyMatches,
+  TOML_FETCH_TIMEOUT_MS,
+  TOML_MAX_STRUCTURE_DEPTH,
 };

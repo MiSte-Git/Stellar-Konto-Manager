@@ -314,6 +314,62 @@ Ein Job ist eine unsignierte oder teilsignierte Transaktion, die mehrere Signer 
   (Review Fable, F-7). Die stellar.toml und jede von Hand verfolgte Weiterleitung gehen nur über https
   (`nextRedirectUrl` bzw. `skm_next_redirect_url`, in PHP zusätzlich `CURLOPT_PROTOCOLS` und
   `CURLOPT_REDIR_PROTOCOLS`); Federation folgt keinen Weiterleitungen.
+- Logo-Proxy (`GET /api/trade/assets/logo`, `services/assetLogo.js`, `api/assetLogo.php`): Das Bild nennt der Issuer
+  in seiner stellar.toml, das Ziel bestimmt also ein Dritter. Abruf nur über den SSRF-Schutz oben, nur https (auch
+  jede Weiterleitung), URL nur ASCII ohne Zugangsdaten und ohne IP-Literal in Klammern. Der Browser lädt nie vom
+  Issuer (`img-src 'self'` bleibt). Ausgeliefert wird nur PNG, JPEG oder WebP nach den ersten Bytes, nie SVG (Skript
+  im Bild) und nie nach dem Content-Type der Gegenseite; höchstens 256 KB, Abbruch beim Lesen (Node
+  `readBytesWithLimit`, PHP `skm_curl_size_limit_callbacks`), höchstens 1024 × 1024 Pixel laut Bildkopf (begrenzt
+  den Speicher beim Dekodieren im Browser). Antwort-Header setzt das Backend selbst (`nosniff`, CSP mit `sandbox`,
+  `Cross-Origin-Resource-Policy: same-site`), keiner wird durchgereicht. Das Logo ist dekorativ (`alt=""`) und keine
+  Aussage über das Token: jeder Issuer kann jedes Bild eintragen, auch das eines bekannten Tokens.
+  Schleifenschutz (Review LP-2): Abrufe von stellar.toml und Bild tragen `X-SKM-Logo-Hop: 1`, eine Anfrage mit diesem
+  Header lehnt der Endpunkt vor dem Rate-Limit mit 404 `assetLogo.hopRefused` ab; sonst könnte das `image` eines
+  Assets auf den eigenen Logo-Endpunkt für ein anderes Asset zeigen und zurück. Aufruf nur als Bild (Review LP-3): ein
+  vorhandenes `Sec-Fetch-Dest` außer `image` (Dokument, fetch, iframe) ergibt 404 `assetLogo.notImageRequest`
+  `no-store`, ebenfalls vor dem Rate-Limit; das Logo trägt `Vary: Sec-Fetch-Dest`, damit ein gecachtes Bild nicht
+  für einen Aufruf als Dokument dient. Andere Methoden als GET/HEAD: 404 in beiden Backends. Code und Issuer nur als
+  String, getrimmt nur ASCII-Leerraum (`normalizeAssetIdentity`, `api/assetIdentity.php`, auch für `/facts`).
+  **Restrisiko (Entscheidung Review LP-3):** Geprüft wird nur der Bildkopf, eine Strukturprüfung der ganzen Datei gibt
+  es bewusst nicht. Hinter einem gültigen Bildkopf können bis 256 KB beliebige Daten stehen, die SKM unter der eigenen
+  Domain ausliefert (ein Testnet-Issuer reicht dafür). Ausgeliefert wird das nur mit dem Typ aus der Erkennung
+  (`image/png`, `image/jpeg`, `image/webp`), `nosniff`, `Content-Security-Policy` mit `sandbox` und nur bei
+  `Sec-Fetch-Dest: image` oder ohne diesen Header; als Dokument, per fetch oder im iframe kommt 404. Damit erscheinen
+  die Bytes nie als HTML oder Skript. Eine Strukturprüfung (PNG bis IEND, JPEG-Ende, RIFF-Länge) hätte echte Logos
+  mit angehängten Bytes abgelehnt und Daten in gültigen Chunks trotzdem nicht verhindert.
+- stellar.toml in beiden Backends gleich gelesen (Review LP-4): Node nutzt die Bibliothek `toml` (5.0.1), PHP einen
+  eigenen Parser in `api/stellarToml.php` ohne Abhängigkeit, der dieselben Regeln umsetzt (TOML 1.0, dazu `\e`,
+  `\xHH` und Uhrzeiten ohne Sekunden wie die Bibliothek). Gilt für `/facts` und `/logo`. Ein Fehler irgendwo in der
+  Datei macht die ganze Datei ungültig, auch ein doppelter Key im selben Eintrag (`/facts`: `invalidFormat`, `/logo`:
+  `tomlUnavailable`); vorher übersprang PHP alles, was es nicht verstand, und zeigte trotzdem Einträge. Ein BOM am
+  Anfang wird überlesen, `\u`/`\U` dekodiert, der Tabellenname `CURRENCIES` ohne Groß-/Kleinschreibung erkannt (in
+  Node vorher nur `CURRENCIES`/`currencies`). Code und Issuer treffen nur als Text (`code = true` wäre sonst in Node
+  `"true"`, in PHP `"1"`). Verschachtelung: höchstens 500 verschachtelte Werte wie die Bibliothek (jeder Wert zählt
+  eine Ebene, auch der innerste Skalar; Arrays und Inline-Tabellen gleich), dazu in beiden Backends höchstens 1000
+  Ebenen der gelesenen Struktur (Tabellen und Arrays, auch über Tabellenköpfe und Punkt-Keys). Ohne die zweite
+  Grenze stürzte PHP bei einem Tabellenkopf mit 100 000 Teilen ab (Speicherzugriffsfehler), und Node scheiterte bei
+  `/facts` an `JSON.stringify`. PHP prüft beim Anlegen und bricht bei einem Key-Pfad mit mehr als 1000 Teilen sofort
+  ab (1 MB böswillige Eingabe unter 1 ms); `json_out` in `trade.php` schreibt mit Tiefe 1100 statt 512. Gemeinsame Fälle: `tomlCases` in `test/assets/asset-logo.json` (die Probefälle aus dem Review
+  und Grenzfälle); dazu ein Mutations-Fuzzer über 180 000 Varianten ohne Abweichung im gelesenen Inhalt. Bekannte
+  Reste: sehr große Gleitkommazahlen (über 2^53) schreibt JSON in Node ohne, in PHP mit Exponent, der Wert ist
+  derselbe; ohne die PHP-Erweiterung `mbstring` (vom Stellar-SDK ohnehin verlangt) würden Keys nur ASCII-klein
+  geschrieben und ungültiges UTF-8 je Byte statt je Sequenz ersetzt.
+  **Entscheidung: kein Server-Cache, nur HTTP-Cache-Header.** Ein Logo ist 24 Stunden cachebar, ein dauerhafter Fehler
+  (`noHomeDomain`, `notListed`, `noImage`, `tooLarge`, `unsupportedType`, `invalidImage`, `dimensionsTooLarge`) eine
+  Stunde. Vorübergehende Fehler (`issuerUnavailable`, `tomlUnavailable`, `fetchFailed`: Horizon, stellar.toml oder
+  Bild gerade nicht erreichbar) haben `no-store`, damit das Logo nach einem Ausfall sofort wieder erscheint;
+  ungültige Eingabe (400) und 429 ebenso. Folge: Jede Anfrage, die nicht aus einem Browser-Cache kommt, löst bis zu
+  drei Abrufe nach außen aus (Horizon, stellar.toml, Bild). Begrenzt wird das allein durch den Rate-Limit-Bereich
+  `assetLogo` (60 je 60 s und IP, gezählt vor jeder Prüfung), dazu die Fristen der Abrufe und die 256 KB. Die Fristen
+  gelten je Abruf über alle Weiterleitungen (Review LP-1): Horizon 8 s, stellar.toml 6 s, Bild 6 s, zusammen höchstens
+  etwa 20 s je Anfrage. PHP rechnet in `fetch_url` vor jedem Schritt die Restzeit neu (`CURLOPT_TIMEOUT_MS`, im
+  Stream-Fallback `skm_stream_read_limited`, auch gegen langsam tropfende Antworten); vorher galt die Frist je
+  Weiterleitung. Nicht begrenzt ist die DNS-Auflösung in PHP (`gethostbynamel` ohne Frist). Für alle Abrufe über
+  `fetch_url` gilt außerdem: ein 3xx ohne Weiterleitung ist ein Fehler, wie in Node (Review LP-5); Node fragt TOML und
+  Bild mit `accept-encoding: identity` an, wie PHP. Ein
+  Server-Cache bräuchte in PHP eine weitere Datei mit Lock, Größengrenze und Ablauf; der Nutzen (weniger Abrufe bei
+  vielen Clients) wiegt das für einen Hilfsendpunkt nicht auf. Gemeinsame Werte: `test/assets/asset-logo.json`
+  (`headers`, `transientErrors`).
 - CORS-Allowlist (`services/corsConfig.js`, `api/cors.php`). Fremde Origins werden abgewiesen (Review Runde 2,
   Befund G3): Hat ein Request einen `Origin`-Header außerhalb der Allowlist (auch leer oder `null`), antworten beide
   Backends sofort mit 403 `forbidden_origin`, auch beim Preflight, bevor Body-Parser, Session oder Handler laufen.
@@ -336,12 +392,13 @@ Ein Job ist eine unsignierte oder teilsignierte Transaktion, die mehrere Signer 
   Einträge je Datei (die ältesten Fenster fallen zuerst weg), fail open nur für den Limiter selbst (beim
   Admin-Login nur beim Schreiben: eine gespeicherte Sperre gilt auch ohne öffenbare Lock-Datei). Budgets:
   Federation 30 je 60 s (429 `federation.rateLimited`, nur Header `Retry-After`), Bugreport anlegen 10 je 60 s,
-  Job anlegen 20 je 300 s, Jobliste (`GET /api/multisig/jobs`) 60 je 60 s, `POST /challenge` 20 je 60 s (alle
+  Job anlegen 20 je 300 s, Jobliste (`GET /api/multisig/jobs`) 60 je 60 s, `POST /challenge` 20 je 60 s, Logo
+  (`GET /api/trade/assets/logo`, bis zu drei Abrufe nach außen je Anfrage) 60 je 60 s (alle
   429 `too_many_requests` mit `retryAfter` und `Retry-After`). Admin-Login zählt nur Fehlversuche: nach 5 im
   Fenster von 15 Minuten ist die IP 15 Minuten gesperrt (429 `too_many_attempts`), ein Erfolg löscht den Zähler
   (`rateLimitFailureCheck`, `rateLimitFailureRecord`). Vorher zählten Bugreport, Job anlegen und Admin-Login
   jede IPv6-Adresse einzeln und waren per Adresswechsel im eigenen /64 umgehbar; die Jobliste hatte kein
-  Limit. Node: eigener Limiter für Jobliste und Challenge (`services/rateLimit.js`, gleiches Budget und gleiche
+  Limit. Node: eigener Limiter für Jobliste, Challenge und Logo (`services/rateLimit.js`, gleiches Budget und gleiche
   Antwort) und für Federation, alles andere nur über den globalen Limiter (100 je 15 min); alle Node-Limiter zählen
   IPv6 je /64 (`ipv6Subnet: 64`, Default der Bibliothek wäre /56). Das
   Budget der Liste: Das Frontend pollt nicht, es lädt beim Öffnen, bei Filterwechsel, Aktualisieren, nach dem

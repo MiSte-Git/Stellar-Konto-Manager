@@ -736,6 +736,15 @@ test('readTextWithLimit returns the full text when under the limit', async () =>
   assert.equal(text, 'hello world');
 });
 
+// Regression: readTextWithLimit holte einen Reader und readBytesWithLimit danach einen zweiten. Ein echter
+// Stream ist dann gesperrt ("ReadableStream is locked"), jeder echte TOML-Abruf waere gescheitert. Der Mock oben
+// liefert je getReader() einen neuen Reader und hat das nicht gezeigt, darum hier ein echtes Response.
+test('readTextWithLimit liest einen echten Response-Stream (nur ein Reader)', async () => {
+  const text = await readTextWithLimit(new Response('[[CURRENCIES]]\ncode = "X"\n'), MAX_TOML_RESPONSE_BYTES);
+  assert.equal(text, '[[CURRENCIES]]\ncode = "X"\n');
+  await assert.rejects(() => readTextWithLimit(new Response('a'.repeat(2000)), 1500), /ssrf\.blocked:responseTooLarge/);
+});
+
 test('readTextWithLimit falls back to response.text() for a response with no streaming body (e.g. a simple mock)', async () => {
   const response = { ok: true, async text() { return 'plain body'; } };
   const text = await readTextWithLimit(response, MAX_TOML_RESPONSE_BYTES);
