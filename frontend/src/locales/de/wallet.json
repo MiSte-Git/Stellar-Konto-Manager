@@ -409,6 +409,16 @@
         "redemption": "Einlösung",
         "attestation": "Nachweis der Reserven (Adresse)"
       }
+    },
+    "supply": {
+      "title": "Verbreitung im Netz",
+      "holders": "Konten mit Trustline (auch mit Saldo 0)",
+      "holdersSplit": "{{authorized}} autorisiert, {{maintain}} nur bestehende Verpflichtungen, {{unauthorized}} nicht autorisiert",
+      "amount": "Ausgegebene Menge",
+      "issuerNote": "Ohne den Bestand des Issuers. Solange sein Konto nicht gesperrt ist, kann der Issuer weitere Einheiten ausgeben.",
+      "none": "Noch kein Konto hält eine Trustline zu diesem Asset.",
+      "error": "Holder und Menge konnten nicht geladen werden.",
+      "loading": "Lade Holder und Menge …"
     }
   }
 }

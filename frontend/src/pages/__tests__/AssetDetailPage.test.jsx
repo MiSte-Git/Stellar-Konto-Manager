@@ -9,7 +9,7 @@ import { clearAggregationCache } from '../../utils/stellar/assetMarket.js';
 const PK = 'GATHPDLDMA5UAHHUUBFAQNW7B3573IUMEGPZGXMT25CNUPY4BOYFAV7F';
 const ISSUER = 'GD5KJP276E7CZT43PAI5KAEXCUDZMFFMV4X5AGFKBR7Q7IAZZ5BXZVKM';
 
-const hoisted = vi.hoisted(() => ({ loadAccount: vi.fn(), book: vi.fn(), trades: vi.fn(), paths: vi.fn(), aggs: vi.fn() }));
+const hoisted = vi.hoisted(() => ({ loadAccount: vi.fn(), book: vi.fn(), trades: vi.fn(), paths: vi.fn(), aggs: vi.fn(), assets: vi.fn() }));
 vi.mock('../../utils/stellar/stellarUtils.js', async (orig) => (await import('../../test/horizonMock.js')).withNetworkServer({
   ...(await orig()),
   getHorizonServer: () => {
@@ -23,6 +23,7 @@ vi.mock('../../utils/stellar/stellarUtils.js', async (orig) => (await import('..
       trades: () => ({ forAssetPair: (...a) => chain(hoisted.trades, a) }),
       strictSendPaths: (...a) => ({ call: () => hoisted.paths(...a) }),
       tradeAggregation: (...a) => chain(hoisted.aggs, a),
+      assets: () => { const c = { forCode: () => c, forIssuer: () => c, limit: () => c, call: () => hoisted.assets() }; return c; },
     };
   },
 }));
@@ -50,6 +51,7 @@ beforeEach(() => {
   hoisted.trades.mockReset().mockResolvedValue({ records: [] });
   hoisted.paths.mockReset().mockResolvedValue({ records: [] });
   hoisted.aggs.mockReset().mockResolvedValue({ records: [] });
+  hoisted.assets.mockReset().mockResolvedValue({ records: [] });
   vi.stubGlobal('fetch', vi.fn(async () => ({
     ok: true,
     json: async () => ({ issuerAccount: { home_domain: 'lumendex.online', flags: {} }, toml: { status: 'notChecked', currencies: [], matches: [] } }),
@@ -342,5 +344,39 @@ describe('AssetDetailPage: Angaben des Issuers und Logo', () => {
     renderAt(`/assets/LDEX-${ISSUER}`);
     await screen.findByText('Keine Angaben: Die stellar.toml des Issuers konnte nicht geladen werden oder es gibt keine.');
     expect(screen.queryByTestId('asset-logo')).toBeNull();
+  });
+
+  it('zeigt Holder und ausgegebene Menge aus Horizon /assets, mit Aufteilung', async () => {
+    hoisted.loadAccount.mockResolvedValue(account([]));
+    hoisted.assets.mockResolvedValue({ records: [
+      { asset_code: 'ldex', asset_issuer: ISSUER, accounts: { authorized: 1, authorized_to_maintain_liabilities: 0, unauthorized: 0 }, balances: { authorized: '1', authorized_to_maintain_liabilities: '0', unauthorized: '0' } },
+      { asset_code: 'LDEX', asset_issuer: ISSUER, accounts: { authorized: 1200, authorized_to_maintain_liabilities: 3, unauthorized: 2 },
+        balances: { authorized: '1000.5', authorized_to_maintain_liabilities: '0.25', unauthorized: '0' },
+        claimable_balances_amount: '10', liquidity_pools_amount: '0.0000001', contracts_amount: '0' },
+    ] });
+    renderAt(`/assets/LDEX-${ISSUER}`);
+    const nf = new Intl.NumberFormat('de', { maximumFractionDigits: 7 });
+    expect((await screen.findByTestId('asset-supply-holders')).textContent).toBe(nf.format(1205));
+    expect(screen.getByTestId('asset-supply-holders-split').textContent).toContain(nf.format(1200));
+    expect(screen.getByTestId('asset-supply-amount').textContent).toBe(`${nf.format(1010.7500001)} LDEX`);
+    const breakdown = screen.getByTestId('asset-supply-breakdown').textContent;
+    expect(breakdown).toContain(nf.format(1000.75));
+    expect(breakdown).toContain(nf.format(10));
+    expect(breakdown).not.toContain('Contracts');
+  });
+
+  it('ohne Datensatz: Hinweis, dass kein Konto eine Trustline haelt', async () => {
+    hoisted.loadAccount.mockResolvedValue(account([]));
+    renderAt(`/assets/LDEX-${ISSUER}`);
+    expect(await screen.findByTestId('asset-supply-none')).toBeTruthy();
+    expect(screen.queryByTestId('asset-supply-amount')).toBeNull();
+  });
+
+  it('Abruffehler zeigt keinen Wert', async () => {
+    hoisted.loadAccount.mockResolvedValue(account([]));
+    hoisted.assets.mockRejectedValue(new Error('net'));
+    renderAt(`/assets/LDEX-${ISSUER}`);
+    expect(await screen.findByTestId('asset-supply-error')).toBeTruthy();
+    expect(screen.queryByTestId('asset-supply-holders')).toBeNull();
   });
 });

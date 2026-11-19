@@ -9,13 +9,14 @@ import { FakeNativeBadge } from '../components/wallet/ActivityWarnings.jsx';
 import AssetMarketCard from '../components/assetDetail/AssetMarketCard.jsx';
 import IssuerTomlCard from '../components/assetDetail/IssuerTomlCard.jsx';
 import AssetLogo from '../components/assetDetail/AssetLogo.jsx';
+import AssetSupplyCard from '../components/assetDetail/AssetSupplyCard.jsx';
 import { issuerTomlInfo } from '../utils/stellar/issuerToml.js';
 
 /**
  * Asset-Detailseite (/assets/CODE-ISSUER), verlinkbar.
  * Zeigt das Asset im geladenen Konto (Saldo, Limit, gebundene Betraege, Autorisierung) und die
  * Fakten zum Issuer (gleiche TokenFactsSummary wie Trading und Liquidity), dazu Kurs gegen XLM mit Kennzahlen,
- * Kursverlauf und Orderbuch (AssetMarketCard). Nur Anzeige und Links:
+ * Kursverlauf und Orderbuch (AssetMarketCard), Holder und ausgegebene Menge (AssetSupplyCard). Nur Anzeige und Links:
  * Handeln oeffnet Token suchen und handeln mit vorbelegtem Asset, gesendet wird hier nichts.
  */
 
@@ -191,6 +192,8 @@ export default function AssetDetailPage({ publicKey = '', network = 'PUBLIC', on
 
       {/* key: ein anderes Asset oder Netz bekommt eine frische Karte (Zeitraum, Auswahl, Daten), Review AM-1 */}
       <AssetMarketCard key={`${network}|${code}|${issuer}`} code={code} issuer={issuer} network={network} balance={balance ? balance.balance : null} />
+
+      <AssetSupplyCard key={`supply|${network}|${code}|${issuer}`} code={code} issuer={issuer} network={network} fmt={fmt} cardCls={cardCls} />
 
       <IssuerTomlCard info={tomlInfo} tomlUrl={assetFacts?.toml?.url || ''} cardCls={cardCls} />
 
