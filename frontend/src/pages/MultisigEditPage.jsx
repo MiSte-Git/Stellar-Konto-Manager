@@ -384,7 +384,13 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
       });
     } catch (e) {
       const msg = String(e?.message || e);
-      if (msg.includes('tx_bad_auth')) {
+      // Horizon liefert den Grund nur in result_codes, nicht in der Meldung des SDK.
+      const codes = e?.response?.data?.extras?.result_codes;
+      const opCodes = Array.isArray(codes?.operations) ? codes.operations : [];
+      const txCode = typeof codes?.transaction === 'string' ? codes.transaction : '';
+      if (opCodes.includes('op_low_reserve')) {
+        setError(t('errors:submitTransaction.failed.multisig.lowReserve'));
+      } else if (msg.includes('tx_bad_auth') || txCode.startsWith('tx_bad_auth')) {
         setError(t('errors:submitTransaction.failed.multisig.txBadAuth'));
       } else {
         // Schluessel mit Praefix submitTransaction.failed: (z. B. signingFailed, insufficientWeight)

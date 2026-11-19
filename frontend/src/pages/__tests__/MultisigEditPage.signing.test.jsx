@@ -36,7 +36,7 @@ vi.mock('../../utils/stellar/stellarUtils.js', async (importOriginal) => (await 
       acct.thresholds = hoisted.thresholds || { low_threshold: 1, med_threshold: 1, high_threshold: 1 };
       return acct;
     },
-    submitTransaction: async (tx) => { hoisted.submits.push(tx); return { hash: 'h' }; },
+    submitTransaction: async (tx) => { hoisted.submits.push(tx); if (hoisted.submitError) throw hoisted.submitError; return { hash: 'h' }; },
   }),
 }));
 vi.mock('../../utils/stellar/fees.js', async (importOriginal) => ({
@@ -177,6 +177,23 @@ describe('MultisigEditPage: Signieren (Teilschritt 3)', () => {
     expect(collected[0].keypair.publicKey()).toBe(PK);
     expect(remember).toBe(true);
     expect(network).toBe('TESTNET');
+  });
+
+  it('op_low_reserve von Horizon erscheint als Hinweis auf die Reserve, nicht als 400 Bad Request', async () => {
+    const err = new Error('Transaction submission failed. Server responded: 400 Bad Request');
+    err.response = { data: { extras: { result_codes: { transaction: 'tx_failed', operations: ['op_success', 'op_low_reserve', 'op_success'] } } } };
+    hoisted.submitError = err;
+    try {
+      await renderAndChangeLow();
+      await act(async () => { fireEvent.click(screen.getByRole('button', { name: i18n.t('multisig:confirm.testModeButton') })); });
+      const input = document.querySelector('input[type="password"]');
+      await act(async () => { fireEvent.change(input, { target: { value: master.secret() } }); });
+      await act(async () => { fireEvent.click(screen.getByRole('button', { name: i18n.t('publicKey:submit.button') })); });
+      expect(await screen.findByText(i18n.t('errors:submitTransaction.failed.multisig.lowReserve'))).toBeInTheDocument();
+      expect(screen.queryByText(/400 Bad Request/)).toBeNull();
+    } finally {
+      hoisted.submitError = null;
+    }
   });
 
   it('B1: Fehler mit Praefix (zu wenig Gewicht) erscheinen uebersetzt, nicht als roher Schluessel', async () => {

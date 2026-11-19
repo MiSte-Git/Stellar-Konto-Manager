@@ -61,6 +61,7 @@
         "noKeysProvided": "Es wurden keine gültigen Secret Keys eingegeben.",
         "insufficientWeight": "Die gesammelten Signaturen reichen nicht aus, um diese Änderung zu autorisieren. Benötigt: {{required}}, vorhanden: {{current}}.",
         "txBadAuth": "Transaktion abgelehnt: Signaturen reichen nicht aus (tx_bad_auth).",
+        "lowReserve": "Nicht gespeichert: Das Konto hat zu wenig freie XLM. Jeder zusätzliche Signer bindet 0,5 XLM Reserve. Lade das Konto auf und speichere erneut (op_low_reserve).",
         "zeroWeightSigner": "Der eingegebene Secret Key gehört zu einem Signer mit Gewicht 0 und kann keine Transaktion autorisieren.",
         "invalidConfig": "Die geplante Konfiguration der Signer und Thresholds ist nicht signierbar. Bitte überprüfen Sie Gewichte und Thresholds.",
         "trustlines": {
