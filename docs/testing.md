@@ -89,7 +89,9 @@ dass jede Spec in dieser Tabelle steht und jede genannte Datei existiert.
   Verschachtelung: `tomlDepthCases` (genau an der Grenze, eins darüber, gemischt, 1 MB nur `[`, tiefe Tabellenköpfe
   und Punkt-Keys) als Bauvorschrift; `withoutLimit` ist die Gegenprobe mit aufgehobenen Grenzen
   (`parseCurrencySectionsFromToml(text, { maxDepth, maxStructureDepth })` bzw. die Parameter von
-  `parse_currency_sections_from_toml`).
+  `parse_currency_sections_from_toml`), auch für Knoten- und Key-Grenze. `utf8Cases`: ungültiges UTF-8 wie
+  `Buffer.toString('utf8')`; der PHP-Test prüft den Ersatzweg ohne mbstring in einem Unterprozess mit `php -n`.
+  Der PHP-Vergleich der TOML-Ergebnisse unterscheidet `{}` von `[]` (Erwartung als Objekte gelesen).
 - Sperren in `api/.htaccess` (F-14): `test/apiHtaccess.test.js` startet einen lokalen Apache (`/usr/sbin/apache2` mit
   `mod_rewrite`, `mod_headers`, `mod_authz_core`, ohne PHP) gegen eine Kopie von `api/`; ohne Apache wird der Test
   übersprungen. `test/deployApiHtaccess.test.js` prüft die Abbruchregel im Deploy.

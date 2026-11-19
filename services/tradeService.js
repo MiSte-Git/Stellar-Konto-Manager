@@ -59,12 +59,12 @@ function isPlainTable(value) {
   return Object.prototype.toString.call(value) === '[object Object]';
 }
 
+// Object.fromEntries legt jeden Key als eigene Eigenschaft an. Vorher setzte acc[key] = value bei "__proto__" den
+// Prototyp: der Key fehlte im JSON, currencyMatches fand code/issuer aber ueber den Prototyp (Review ST-8).
+// Spaeterer Key gewinnt bei gleicher Kleinschreibung, wie in PHP.
 function normalizeCurrencyEntry(entry) {
   if (!isPlainTable(entry)) return null;
-  return Object.entries(entry).reduce((acc, [key, value]) => {
-    acc[String(key).toLowerCase()] = value;
-    return acc;
-  }, {});
+  return Object.fromEntries(Object.entries(entry).map(([key, value]) => [String(key).toLowerCase(), value]));
 }
 
 // Review LP-4: alle Top-Level-Keys, die ohne Gross-/Kleinschreibung "currencies" heissen ([[CURRENCIES]],
@@ -82,25 +82,37 @@ function currencyMatches(currency, asset) {
 // Werte (500); Tabellenkoepfe und Punkt-Keys ([k.k.k...]) bauen beliebig tiefe Tabellen, an denen JSON.stringify
 // fuer /facts scheiterte (und PHP abstuerzte). Zaehlung ohne Rekursion.
 const TOML_MAX_STRUCTURE_DEPTH = 1000;
+// Review ST-1/ST-3: hoechstens 50000 Knoten (Wurzel, Tabellen, Arrays, Skalare) und 2000 Keys je Tabelle, gleich
+// wie SKM_TOML_MAX_NODES und SKM_TOML_MAX_KEYS_PER_TABLE in api/stellarToml.php (dort Speicher- und Hash-Schutz).
+const TOML_MAX_NODES = 50000;
+const TOML_MAX_KEYS_PER_TABLE = 2000;
 
-function assertStructureDepth(root, maxStructureDepth = TOML_MAX_STRUCTURE_DEPTH) {
+function assertStructureDepth(root, maxStructureDepth = TOML_MAX_STRUCTURE_DEPTH, maxNodes = TOML_MAX_NODES, maxKeysPerTable = TOML_MAX_KEYS_PER_TABLE) {
   const stack = [[root, 1]];
+  let nodes = 1;
   while (stack.length) {
     const [value, level] = stack.pop();
     if (level > maxStructureDepth) throw new Error('toml.invalidFormat');
-    const children = Array.isArray(value) ? value : (isPlainTable(value) ? Object.values(value) : null);
+    let children = null;
+    if (Array.isArray(value)) children = value;
+    else if (isPlainTable(value)) {
+      children = Object.values(value);
+      if (children.length > maxKeysPerTable) throw new Error('toml.invalidFormat');
+    }
     if (!children) continue;
+    nodes += children.length;
+    if (nodes > maxNodes) throw new Error('toml.invalidFormat');
     for (const child of children) {
       if (Array.isArray(child) || isPlainTable(child)) stack.push([child, level + 1]);
     }
   }
 }
 
-// limits nur fuer Tests (Gegenprobe ohne Grenze): { maxDepth, maxStructureDepth }. maxDepth geht an die Bibliothek
+// limits nur fuer Tests (Gegenprobe ohne Grenze): { maxDepth, maxStructureDepth, maxNodes, maxKeysPerTable }. maxDepth geht an die Bibliothek
 // (Standard 500, wie SKM_TOML_MAX_DEPTH in PHP).
 function parseCurrencySectionsFromToml(tomlText, limits = {}) {
   const parsed = toml.parse(String(tomlText || ''), limits.maxDepth != null ? { maxDepth: limits.maxDepth } : undefined);
-  assertStructureDepth(parsed, limits.maxStructureDepth);
+  assertStructureDepth(parsed, limits.maxStructureDepth, limits.maxNodes, limits.maxKeysPerTable);
   const out = [];
   for (const [key, raw] of Object.entries(parsed || {})) {
     if (key.toLowerCase() !== 'currencies') continue;
@@ -476,4 +488,6 @@ module.exports = {
   currencyMatches,
   TOML_FETCH_TIMEOUT_MS,
   TOML_MAX_STRUCTURE_DEPTH,
+  TOML_MAX_NODES,
+  TOML_MAX_KEYS_PER_TABLE,
 };

@@ -59,3 +59,10 @@ describe('issuerTomlInfo', () => {
     expect(info.hasImage).toBe(false);
   });
 });
+
+describe('issuerTomlInfo Trennzeichen', () => {
+  it('entfernt Zeilen- und Absatztrenner sowie das arabische Richtungszeichen', () => {
+    const info = issuerTomlInfo(loaded([{ code: 'ABC', issuer: ISSUER, name: 'A B C؜D' }]));
+    expect(info.entries.find((e) => e.key === 'name').value).toBe('ABCD');
+  });
+});

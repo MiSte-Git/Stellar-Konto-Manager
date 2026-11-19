@@ -149,7 +149,7 @@ function sniffLogoImage(input) {
 }
 
 // Bild ueber den SSRF-Schutz laden: nur https (auch nach jeder Weiterleitung), Abbruch beim Lesen ab
-// MAX_BYTES. Kein Accept-Encoding-Zwang: undici entpackt, die Grenze gilt fuer die entpackten Bytes.
+// MAX_BYTES. Wir verlangen identity; entpackt undici trotzdem, gilt die Grenze fuer die entpackten Bytes.
 async function fetchImageBytes(url) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), IMAGE_FETCH_TIMEOUT_MS);

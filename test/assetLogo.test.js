@@ -355,8 +355,10 @@ const logoFor = async (text) => {
 };
 
 test('Verschachtelung: Grenzen wie in der Fixture und in der Bibliothek', () => {
-  const { TOML_MAX_STRUCTURE_DEPTH } = require('../services/tradeService.js');
+  const { TOML_MAX_STRUCTURE_DEPTH, TOML_MAX_NODES, TOML_MAX_KEYS_PER_TABLE } = require('../services/tradeService.js');
   assert.equal(TOML_MAX_STRUCTURE_DEPTH, fixture.limits.tomlMaxStructureDepth);
+  assert.equal(TOML_MAX_NODES, fixture.limits.tomlMaxNodes);
+  assert.equal(TOML_MAX_KEYS_PER_TABLE, fixture.limits.tomlMaxKeysPerTable);
   const lib = require('fs').readFileSync(require.resolve('toml/lib/parser.js'), 'utf8');
   assert.match(lib, new RegExp(`options\\.maxDepth : ${fixture.limits.tomlMaxDepth};`));
 });
@@ -370,7 +372,7 @@ for (const c of fixture.tomlDepthCases) {
     // Gegenprobe ohne Grenze: der Fall ist sonst gueltig, abgelehnt wird er nur wegen der Grenze.
     if (c.withoutLimit !== undefined) {
       const { parseCurrencySectionsFromToml } = require('../services/tradeService.js');
-      const list = parseCurrencySectionsFromToml(text, { maxDepth: 100000, maxStructureDepth: 100000 });
+      const list = parseCurrencySectionsFromToml(text, { maxDepth: 100000, maxStructureDepth: 100000, maxNodes: 1e9, maxKeysPerTable: 1e9 });
       assert.equal(list.some((e) => e.code === 'USDX') ? 'ok' : 'notListed', c.withoutLimit);
     }
   });
@@ -382,4 +384,10 @@ test('Verschachtelung: an der Grenze und darueber liegen je beide Faelle vor', (
     assert.ok(names.includes(n), n);
   }
   assert.ok(fixture.tomlDepthCases.some((c) => c.withoutLimit === 'ok' && c.logo === 'tomlUnavailable'));
+});
+
+test('UTF-8: Node dekodiert wie in utf8Cases (Massstab fuer PHP skm_utf8_scrub)', () => {
+  for (const c of fixture.utf8Cases) {
+    assert.equal(Buffer.from(Buffer.from(c.hex, 'hex').toString('utf8')).toString('hex'), c.expectHex, c.hex);
+  }
 });

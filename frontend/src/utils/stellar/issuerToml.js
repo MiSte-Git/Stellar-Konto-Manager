@@ -29,7 +29,7 @@ const KNOWN_STATUS = new Set(['live', 'dead', 'test', 'private']);
 // damit niemand mit RTL-Override oder Nullbreite-Zeichen einen anderen Text vortäuscht.
 function cleanText(value, max, allowNewlines) {
   if (typeof value !== 'string') return '';
-  let s = value.replace(/[\u200B-\u200F\u202A-\u202E\u2066-\u2069\uFEFF]/g, '');
+  let s = value.replace(/[\u061C\u200B-\u200F\u2028-\u202E\u2066-\u2069\uFEFF]/g, '');
   /* eslint-disable no-control-regex -- Steuerzeichen sollen hier gerade gefunden werden */
   s = allowNewlines
     ? s.replace(/\r\n?/g, '\n').replace(/[\u0000-\u0009\u000B-\u001F\u007F]/g, '').replace(/\n{3,}/g, '\n\n')

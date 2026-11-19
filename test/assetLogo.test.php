@@ -187,24 +187,32 @@ $subDeep = function ($v) use (&$subDeep, $fx) {
     if (is_array($v)) return array_map($subDeep, $v);
     return is_string($v) ? str_replace('__ISSUER__', $fx['issuer'], $v) : $v;
 };
-// Vergleich auf JSON-Ebene wie die Antwort von /facts: {} und [] bleiben unterschieden.
+// Vergleich auf JSON-Ebene wie die Antwort von /facts: {} und [] bleiben unterschieden, auch bei Keys "0", "1"
+// (Review ST-7: die fruehere Fassung machte aus jedem Objekt ein Array und uebersah das).
 $jsonCanon = function ($v) use (&$jsonCanon) {
-    if ($v instanceof stdClass) $v = (array)$v;
-    if (!is_array($v)) return $v;
-    if (array_is_list($v)) return array_map($jsonCanon, $v);
-    ksort($v);
-    return array_map($jsonCanon, $v);
+    if ($v instanceof stdClass) {
+        $a = (array)$v;
+        ksort($a, SORT_STRING);
+        return ['{}' => array_map($jsonCanon, $a)];
+    }
+    return is_array($v) ? array_map($jsonCanon, $v) : $v;
 };
 $pngBytes = (string)hex2bin($fx['images'][0]['hex']);
 $probeCount = 0;
-foreach ($fx['tomlCases'] as $c) {
+// Erwartung als Objekte lesen: mit assoc=true wuerde {"0":"a"} schon hier zur Liste.
+$fxObj = json_decode((string)file_get_contents(__DIR__ . '/assets/asset-logo.json'), false);
+$subObj = function ($v) use (&$subObj, $fx) {
+    if ($v instanceof stdClass) { $o = new stdClass(); foreach ($v as $k => $x) $o->{$k} = $subObj($x); return $o; }
+    if (is_array($v)) return array_map($subObj, $v);
+    return is_string($v) ? str_replace('__ISSUER__', $fx['issuer'], $v) : $v;
+};
+foreach ($fx['tomlCases'] as $idx => $c) {
     if (!empty($c['probe'])) $probeCount++;
     $text = $subDeep(isset($c['tomlHex']) ? (string)hex2bin($c['tomlHex']) : $c['toml']);
     try {
         $got = json_decode((string)json_encode(skm_currencies_for_json(parse_currency_sections_from_toml($text))), false);
-        $want = json_decode((string)json_encode($subDeep($c['expect']['currencies'] ?? null)), false);
-        $okParse = empty($c['expect']['invalid']) && $jsonCanon($got) === $jsonCanon($want)
-            && json_encode($jsonCanon($got)) === json_encode($jsonCanon($want));
+        $want = $subObj($fxObj->tomlCases[$idx]->expect->currencies ?? null);
+        $okParse = empty($c['expect']['invalid']) && $jsonCanon($got) === $jsonCanon($want);
     } catch (RuntimeException $e) {
         $okParse = !empty($c['expect']['invalid']) && $e->getMessage() === 'toml_invalid_format';
     }
@@ -229,7 +237,11 @@ $buildToml = function (array $b) use ($subDeep): string {
         . ($b['suffix'] ?? str_repeat($b['suffixRepeat'], $b['times'])));
 };
 check('Verschachtelung: Grenzen wie in der Fixture', SKM_TOML_MAX_DEPTH === $fx['limits']['tomlMaxDepth']
-    && SKM_TOML_MAX_STRUCTURE_DEPTH === $fx['limits']['tomlMaxStructureDepth']);
+    && SKM_TOML_MAX_STRUCTURE_DEPTH === $fx['limits']['tomlMaxStructureDepth']
+    && SKM_TOML_MAX_NODES === $fx['limits']['tomlMaxNodes']
+    && SKM_TOML_MAX_KEYS_PER_TABLE === $fx['limits']['tomlMaxKeysPerTable']);
+check('Vergleich unterscheidet {} von [] (Gegenprobe zum Vergleich selbst)',
+    $jsonCanon(json_decode('{"0":"a"}', false)) !== $jsonCanon(json_decode('["a"]', false)));
 foreach ($fx['tomlDepthCases'] as $c) {
     $text = $buildToml($c['build']);
     $t0 = microtime(true);
@@ -239,7 +251,7 @@ foreach ($fx['tomlDepthCases'] as $c) {
     $ok = $got === $c['logo'] && $elapsed < 5;
     if (isset($c['withoutLimit'])) {
         // Gegenprobe ohne Grenze: der Fall ist sonst gueltig, abgelehnt wird er nur wegen der Grenze.
-        $list = parse_currency_sections_from_toml($text, 100000, 100000);
+        $list = parse_currency_sections_from_toml($text, 100000, 100000, PHP_INT_MAX, PHP_INT_MAX);
         $found = 'notListed';
         foreach ($list as $e) if (($e['code'] ?? null) === 'USDX') $found = 'ok';
         $ok = $ok && $found === $c['withoutLimit'];
@@ -251,6 +263,22 @@ foreach ($fx['tomlDepthCases'] as $c) {
 $deep = parse_currency_sections_from_toml($buildToml(['text' => "[[CURRENCIES]]\ncode = \"USDX\"\n[CURRENCIES." . implode('.', array_fill(0, 997, 'k')) . "]\n"]));
 check('Verschachtelung: tiefer Eintrag laesst sich wie in json_out schreiben', json_encode(['toml' => ['currencies' => skm_currencies_for_json($deep)]], 0, 1100) !== false);
 check('Verschachtelung: json_out schreibt mit Tiefe 1100', strpos($tradeSrc, 'echo json_encode($payload, 0, 1100);') !== false);
+
+// --- UTF-8 wie Buffer.toString('utf8') in Node (utf8Cases), mit mbstring und ohne (php -n im Unterprozess) ---
+$utf8Ok = true;
+foreach ($fx['utf8Cases'] as $c) {
+    if (bin2hex(skm_utf8_scrub((string)hex2bin($c['hex']))) !== $c['expectHex']) $utf8Ok = false;
+}
+check('UTF-8: mit mbstring wie Node (' . count($fx['utf8Cases']) . ' Faelle)', $utf8Ok);
+$probe = 'require ' . var_export(__DIR__ . '/../api/stellarToml.php', true) . '; $c = json_decode(file_get_contents('
+    . var_export(__DIR__ . '/assets/asset-logo.json', true) . '), true)["utf8Cases"]; $bad = function_exists("mb_scrub") ? -1 : 0;'
+    . ' foreach ($c as $x) if (bin2hex(skm_utf8_scrub(hex2bin($x["hex"]))) !== $x["expectHex"]) $bad++; echo $bad;';
+$out = shell_exec(escapeshellarg(PHP_BINARY) . ' -n -r ' . escapeshellarg($probe) . ' 2>&1');
+if (trim((string)$out) === '-1') {
+    echo "   (php -n hat mbstring eingebaut, Ersatzweg hier nicht pruefbar)\n";
+} else {
+    check('UTF-8: ohne mbstring (php -n) wie Node', trim((string)$out) === '0');
+}
 
 echo "\n{$passed} passed, {$failed} failed\n";
 exit($failed > 0 ? 1 : 0);

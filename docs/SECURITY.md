@@ -349,11 +349,20 @@ Ein Job ist eine unsignierte oder teilsignierte Transaktion, die mehrere Signer 
   Ebenen der gelesenen Struktur (Tabellen und Arrays, auch über Tabellenköpfe und Punkt-Keys). Ohne die zweite
   Grenze stürzte PHP bei einem Tabellenkopf mit 100 000 Teilen ab (Speicherzugriffsfehler), und Node scheiterte bei
   `/facts` an `JSON.stringify`. PHP prüft beim Anlegen und bricht bei einem Key-Pfad mit mehr als 1000 Teilen sofort
-  ab (1 MB böswillige Eingabe unter 1 ms); `json_out` in `trade.php` schreibt mit Tiefe 1100 statt 512. Gemeinsame Fälle: `tomlCases` in `test/assets/asset-logo.json` (die Probefälle aus dem Review
+  ab (1 MB böswillige Eingabe unter 1 ms); `json_out` in `trade.php` schreibt mit Tiefe 1100 statt 512. Dazu in beiden
+  Backends höchstens 50 000 Knoten (Wurzel, Tabellen, Arrays, Skalare) und 2000 Keys je Tabelle (Review
+  `review_stellartoml_opus.md`, ST-1/ST-3): ohne Knotengrenze brach PHP bei 1 MB tief verschachtelter Arrays mit
+  „Allowed memory size exhausted“ ab (nicht abfangbar, HTTP 500), ohne Key-Grenze brauchten 32 768 Keys mit gleichem
+  PHP-Hash mehrere Sekunden. Gemessen mit 1 MB böswilliger Eingabe: PHP höchstens rund 160 ms und 25 MB. Weitere
+  Angleichungen aus dem Review: Tabellenkopf unter einer per Punkt-Key angelegten Tabelle gültig (TOML 1.0, ST-4),
+  Hex/Oktal/Binär-Längen ohne führende Nullen und Zahlen über 400 Zeichen (ST-5), Jahre 0000 bis 0099 und Jahre
+  außerhalb 0 bis 9999 wie `Date.toISOString` (ST-6), Tabellen mit Keys `0`, `1` als JSON-Objekt (ST-7), `__proto__`
+  in Node als normaler Key, vorher setzte er den Prototyp (ST-8), Ersatzweg ohne mbstring wie Node (`utf8Cases`).
+  Gemeinsame Fälle: `tomlCases` in `test/assets/asset-logo.json` (die Probefälle aus dem Review
   und Grenzfälle); dazu ein Mutations-Fuzzer über 180 000 Varianten ohne Abweichung im gelesenen Inhalt. Bekannte
   Reste: sehr große Gleitkommazahlen (über 2^53) schreibt JSON in Node ohne, in PHP mit Exponent, der Wert ist
   derselbe; ohne die PHP-Erweiterung `mbstring` (vom Stellar-SDK ohnehin verlangt) würden Keys nur ASCII-klein
-  geschrieben und ungültiges UTF-8 je Byte statt je Sequenz ersetzt.
+  geschrieben.
   **Entscheidung: kein Server-Cache, nur HTTP-Cache-Header.** Ein Logo ist 24 Stunden cachebar, ein dauerhafter Fehler
   (`noHomeDomain`, `notListed`, `noImage`, `tooLarge`, `unsupportedType`, `invalidImage`, `dimensionsTooLarge`) eine
   Stunde. Vorübergehende Fehler (`issuerUnavailable`, `tomlUnavailable`, `fetchFailed`: Horizon, stellar.toml oder

@@ -44,21 +44,33 @@ const SKM_TOML_MAX_DEPTH = 500;
 // (Speicherzugriffsfehler beim Umwandeln und Aufraeumen), Node scheiterte an JSON.stringify. Hier wird schon beim
 // Anlegen geprueft, damit keine tiefere Struktur entsteht.
 const SKM_TOML_MAX_STRUCTURE_DEPTH = 1000;
+// Review ST-1/ST-3 (stellarToml): hoechstens 50000 Knoten (Wurzel, Tabellen, Arrays und Skalare, jeder Wert einmal) und
+// hoechstens 2000 Keys je Tabelle, in Node in assertStructureDepth gleich gezaehlt. Ohne Knotengrenze fuehrten
+// 1 MB tief verschachtelter Arrays zu "Allowed memory size exhausted" (nicht fangbar, HTTP 500); ohne Key-Grenze
+// brauchten 32768 Keys mit gleichem PHP-Hash (DJBX33A) mehrere Sekunden.
+const SKM_TOML_MAX_NODES = 50000;
+const SKM_TOML_MAX_KEYS_PER_TABLE = 2000;
 
 final class SkmTomlParser {
     private string $s;
     private int $depth = 0;
+    private int $nodes = 1; // Wurzel
     private int $maxDepth;
     private int $maxStructureDepth;
+    private int $maxNodes;
+    private int $maxKeysPerTable;
     private int $n;
     private int $i = 0;
     private SkmTomlTable $root;
     private SkmTomlTable $current;
 
     // Grenzen nur fuer Tests (Gegenprobe ohne Grenze) aenderbar.
-    public function __construct(string $text, int $maxDepth = SKM_TOML_MAX_DEPTH, int $maxStructureDepth = SKM_TOML_MAX_STRUCTURE_DEPTH) {
+    public function __construct(string $text, int $maxDepth = SKM_TOML_MAX_DEPTH, int $maxStructureDepth = SKM_TOML_MAX_STRUCTURE_DEPTH,
+            int $maxNodes = SKM_TOML_MAX_NODES, int $maxKeysPerTable = SKM_TOML_MAX_KEYS_PER_TABLE) {
         $this->maxDepth = $maxDepth;
         $this->maxStructureDepth = $maxStructureDepth;
+        $this->maxNodes = $maxNodes;
+        $this->maxKeysPerTable = $maxKeysPerTable;
         // BOM am Anfang wie die Node-Bibliothek ueberspringen.
         if (strncmp($text, "\xEF\xBB\xBF", 3) === 0) $text = substr($text, 3);
         $text = skm_utf8_scrub($text);
@@ -73,8 +85,19 @@ final class SkmTomlParser {
         throw new RuntimeException('toml_invalid_format');
     }
 
+    private function countNode(): void {
+        if (++$this->nodes > $this->maxNodes) $this->fail();
+    }
+
+    // Neuer Key in einer Tabelle: Key-Grenze je Tabelle.
+    private function addItem(SkmTomlTable $t, string $k, $v): void {
+        if (count($t->items) >= $this->maxKeysPerTable) $this->fail();
+        $t->items[$k] = $v;
+    }
+
     private function newTable(int $level): SkmTomlTable {
         if ($level > $this->maxStructureDepth) $this->fail();
+        $this->countNode();
         $t = new SkmTomlTable();
         $t->level = $level;
         return $t;
@@ -117,7 +140,7 @@ final class SkmTomlParser {
         if (!$this->eatNewline()) $this->fail();
     }
 
-    public function parse(): array {
+    public function parse(): stdClass {
         return skm_toml_plain_item($this->parseRaw());
     }
 
@@ -192,14 +215,14 @@ final class SkmTomlParser {
         if (!array_key_exists($k, $t->items)) {
             $nt = $this->newTable($t->level + 1);
             if ($forDotted) $nt->dotted = true;
-            $t->items[$k] = $nt;
+            $this->addItem($t, $k, $nt);
             return $nt;
         }
         $v = $t->items[$k];
         if ($v instanceof SkmTomlTable) {
             if ($v->frozen) $this->fail();
-            // Per Punkt-Key angelegte Tabellen kann ein [kopf] nicht erweitern, ein weiterer Punkt-Key schon.
-            if (!$forDotted && $v->dotted) $this->fail();
+            // Ein [kopf] darf unter einer per Punkt-Key angelegten Tabelle eine Untertabelle oeffnen (TOML 1.0, wie
+            // Node, Review ST-4); die Tabelle selbst wiederzuoeffnen lehnt openTable ab.
             if ($forDotted && $v->explicit && !$v->dotted) $this->fail();
             return $v;
         }
@@ -220,7 +243,7 @@ final class SkmTomlParser {
         }
         $nt = $this->newTable($t->level + 1);
         $nt->explicit = true;
-        $t->items[$last] = $nt;
+        $this->addItem($t, $last, $nt);
         $this->current = $nt;
     }
 
@@ -230,9 +253,10 @@ final class SkmTomlParser {
         foreach ($path as $k) $t = $this->descend($t, $k);
         if (!array_key_exists($last, $t->items)) {
             if ($t->level + 1 > $this->maxStructureDepth) $this->fail();
+            $this->countNode();
             $aot = new SkmTomlArrayOfTables();
             $aot->level = $t->level + 1;
-            $t->items[$last] = $aot;
+            $this->addItem($t, $last, $aot);
         } else {
             $aot = $t->items[$last];
             if (!($aot instanceof SkmTomlArrayOfTables)) $this->fail();
@@ -256,7 +280,7 @@ final class SkmTomlParser {
         $value = $this->parseValue($t->level + 1);
         // Doppelter Key im selben Eintrag (oder Key, der eine Tabelle ueberschreibt): ungueltig, wie Node.
         if (array_key_exists($last, $t->items)) $this->fail();
-        $t->items[$last] = $value;
+        $this->addItem($t, $last, $value);
     }
 
     // $level: Ebene, die ein Array oder eine Inline-Tabelle an dieser Stelle haette.
@@ -271,6 +295,8 @@ final class SkmTomlParser {
 
     private function parseValueBody(int $level) {
         $c = $this->peek();
+        // Arrays und Inline-Tabellen zaehlen in parseArray bzw. newTable, alles andere hier.
+        if ($c !== '[' && $c !== '{') $this->countNode();
         if ($c === '"') return $this->startsWith('"""') ? $this->parseMultilineBasic() : $this->parseBasicString();
         if ($c === "'") return $this->startsWith("'''") ? $this->parseMultilineLiteral() : $this->parseLiteralString();
         if ($c === '[') return $this->parseArray($level);
@@ -284,6 +310,7 @@ final class SkmTomlParser {
 
     private function parseArray(int $level): array {
         if ($level > $this->maxStructureDepth) $this->fail();
+        $this->countNode();
         $this->i++; // [
         $out = [];
         while (true) {
@@ -324,7 +351,8 @@ final class SkmTomlParser {
 
     private static function freeze(SkmTomlTable $t): void {
         $t->frozen = true;
-        foreach ($t->items as $v) if ($v instanceof SkmTomlTable) self::freeze($v);
+        // Schon eingefrorene (innere Inline-Tabellen) nicht erneut durchlaufen, sonst quadratisch (Review ST-2).
+        foreach ($t->items as $v) if ($v instanceof SkmTomlTable && !$v->frozen) self::freeze($v);
     }
 
     private function checkStringChar(int $c, bool $allowNewline): void {
@@ -450,7 +478,8 @@ final class SkmTomlParser {
             // "1979-05-27 x": das Leerzeichen gehoert nicht zum Datum, wenn keine Uhrzeit folgt.
             $len = strlen($m[0]);
             [$y, $mo, $d] = [(int)$m[1], (int)$m[2], (int)$m[3]];
-            if ($mo < 1 || $mo > 12 || $d < 1 || $d > 31 || !checkdate($mo, $d, $y)) $this->fail();
+            // Eigene Pruefung statt checkdate (das lehnt Jahr 0000 ab, Review ST-6).
+            if ($mo < 1 || $mo > 12 || $d < 1 || $d > skm_days_in_month($y, $mo)) $this->fail();
             $this->i += $len;
             if ($m[4] === null) return sprintf('%s-%s-%s', $m[1], $m[2], $m[3]);
             $m[7] ??= '00';
@@ -464,8 +493,13 @@ final class SkmTomlParser {
             $offset = strtoupper($m[9]) === 'Z' ? 0 : ((int)substr($m[9], 1, 2) * 60 + (int)substr($m[9], 4, 2)) * ($m[9][0] === '-' ? -1 : 1);
             if ($m[9] !== 'Z' && $m[9] !== 'z' && ((int)substr($m[9], 1, 2) > 23 || (int)substr($m[9], 4, 2) > 59)) $this->fail();
             $ms = $frac === '' ? 0 : (int)substr(str_pad(substr($frac, 1), 3, '0'), 0, 3);
-            $ts = gmmktime($h, $mi, $se, $mo, $d, $y) - $offset * 60;
-            return gmdate('Y-m-d\TH:i:s', $ts) . sprintf('.%03dZ', $ms);
+            // Ueber DateTimeImmutable statt gmmktime: gmmktime macht aus 0050 das Jahr 2050 (Review ST-6).
+            $dt = (new DateTimeImmutable('@0'))->setDate($y, $mo, $d)->setTime($h, $mi, $se);
+            if ($offset !== 0) $dt = $dt->modify(($offset > 0 ? '-' : '+') . abs($offset) . ' minutes');
+            // Wie Date.toISOString: Jahr 0..9999 vierstellig, sonst mit Vorzeichen und sechs Stellen.
+            $yy = (int)$dt->format('Y');
+            $year = ($yy >= 0 && $yy <= 9999) ? sprintf('%04d', $yy) : sprintf('%+07d', $yy);
+            return $year . $dt->format('-m-d\TH:i:s') . sprintf('.%03dZ', $ms);
         }
         if (preg_match('/\G(\d{2}):(\d{2})(?::(\d{2})(\.\d+)?)?/', $this->s, $m, PREG_UNMATCHED_AS_NULL, $this->i)) {
             if ((int)$m[1] > 23 || (int)$m[2] > 59 || (int)($m[3] ?? 0) > 59) $this->fail();
@@ -475,16 +509,34 @@ final class SkmTomlParser {
         return null;
     }
 
+    // Muster mit \G direkt auf der Eingabe (vorher ein Ausschnitt von 400 Zeichen, laengere Zahlen fielen durch,
+    // Review ST-5).
+    private function matchAt(string $re, ?array &$m): bool {
+        $r = preg_match($re, $this->s, $m, 0, $this->i);
+        if ($r === false) $this->fail();
+        return $r === 1;
+    }
+
     private function parseNumber() {
-        $rest = substr($this->s, $this->i, 400);
-        if (preg_match('/\A[+-]?(?:inf|nan)/', $rest, $m)) {
+        if ($this->matchAt('/\G[+-]?(?:inf|nan)/', $m)) {
             $this->i += strlen($m[0]);
             return null; // wie JSON.stringify(Infinity/NaN) in Node
         }
-        if (preg_match('/\A0x([0-9A-Fa-f](?:_?[0-9A-Fa-f])*)/', $rest, $m)) return $this->intFrom($m[0], hexdec(str_replace('_', '', $m[1])), strlen($m[1]) > 13);
-        if (preg_match('/\A0o([0-7](?:_?[0-7])*)/', $rest, $m)) return $this->intFrom($m[0], octdec(str_replace('_', '', $m[1])), strlen($m[1]) > 17);
-        if (preg_match('/\A0b([01](?:_?[01])*)/', $rest, $m)) return $this->intFrom($m[0], bindec(str_replace('_', '', $m[1])), strlen($m[1]) > 53);
-        if (!preg_match('/\A[+-]?(?:0|[1-9](?:_?\d)*)(\.\d(?:_?\d)*)?([eE][+-]?\d(?:_?\d)*)?/', $rest, $m)) $this->fail();
+        // Laenge ohne fuehrende Nullen: 2^53 - 1 hat 14 Hex-, 18 Oktal- und 53 Binaerstellen (Review ST-5).
+        $digits = fn(string $raw): string => ltrim(str_replace('_', '', $raw), '0');
+        if ($this->matchAt('/\G0x([0-9A-Fa-f](?:_?[0-9A-Fa-f])*)/', $m)) {
+            $d = $digits($m[1]);
+            return $this->intFrom($m[0], strlen($d) > 14 ? null : hexdec($d === '' ? '0' : $d));
+        }
+        if ($this->matchAt('/\G0o([0-7](?:_?[0-7])*)/', $m)) {
+            $d = $digits($m[1]);
+            return $this->intFrom($m[0], strlen($d) > 18 ? null : octdec($d === '' ? '0' : $d));
+        }
+        if ($this->matchAt('/\G0b([01](?:_?[01])*)/', $m)) {
+            $d = $digits($m[1]);
+            return $this->intFrom($m[0], strlen($d) > 53 ? null : bindec($d === '' ? '0' : $d));
+        }
+        if (!$this->matchAt('/\G[+-]?(?:0|[1-9](?:_?\d)*)(\.\d(?:_?\d)*)?([eE][+-]?\d(?:_?\d)*)?/', $m)) $this->fail();
         $text = str_replace('_', '', $m[0]);
         $this->i += strlen($m[0]);
         if (($m[1] ?? '') === '' && ($m[2] ?? '') === '') {
@@ -500,9 +552,9 @@ final class SkmTomlParser {
         return $f == 0.0 ? 0 : $f;
     }
 
-    private function intFrom(string $raw, $value, bool $tooLong) {
+    private function intFrom(string $raw, $value) {
         $this->i += strlen($raw);
-        if ($tooLong || !is_int($value) || $value > 9007199254740991) $this->fail();
+        if (!is_int($value) || $value > 9007199254740991) $this->fail();
         return $value;
     }
 }
@@ -517,7 +569,19 @@ function skm_utf8_scrub(string $s): string {
         mb_substitute_character($prev);
         return $out;
     }
-    return (string)preg_replace('/[\x80-\xFF]/', "\u{FFFD}", $s);
+    // Ohne mbstring: gueltige Folgen behalten; der laengste gueltige Anfang einer abgebrochenen Folge oder ein
+    // einzelnes ungueltiges Byte wird je ein U+FFFD, wie Buffer.toString('utf8') in Node (Review-Hinweis: vorher
+    // wurden auch gueltige Umlaute ersetzt). Gruppe 1 = ersetzen.
+    $valid = '/[\x00-\x7F]|[\xC2-\xDF][\x80-\xBF]|\xE0[\xA0-\xBF][\x80-\xBF]|[\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}'
+        . '|\xED[\x80-\x9F][\x80-\xBF]|\xF0[\x90-\xBF][\x80-\xBF]{2}|[\xF1-\xF3][\x80-\xBF]{3}|\xF4[\x80-\x8F][\x80-\xBF]{2}'
+        . '|(\xE0[\xA0-\xBF]|[\xE1-\xEC\xEE\xEF][\x80-\xBF]|\xED[\x80-\x9F]|\xF0[\x90-\xBF][\x80-\xBF]?'
+        . '|[\xF1-\xF3][\x80-\xBF]{1,2}|\xF4[\x80-\x8F][\x80-\xBF]?|[\x80-\xFF])/s';
+    return (string)preg_replace_callback($valid, fn($m) => isset($m[1]) ? "\u{FFFD}" : $m[0], $s);
+}
+
+function skm_days_in_month(int $y, int $mo): int {
+    if ($mo === 2) return ($y % 4 === 0 && ($y % 100 !== 0 || $y % 400 === 0)) ? 29 : 28;
+    return in_array($mo, [4, 6, 9, 11], true) ? 30 : 31;
 }
 
 function mb_chr_compat(int $cp): string {
@@ -525,8 +589,8 @@ function mb_chr_compat(int $cp): string {
     return (string)iconv('UTF-32BE', 'UTF-8', pack('N', $cp));
 }
 
-/** Ganze stellar.toml als Arrays. RuntimeException 'toml_invalid_format' bei jedem Fehler in der Datei. */
-function skm_toml_parse(string $text): array {
+/** Ganze stellar.toml (Tabellen als stdClass). RuntimeException 'toml_invalid_format' bei jedem Fehler in der Datei. */
+function skm_toml_parse(string $text): stdClass {
     return (new SkmTomlParser($text))->parse();
 }
 
@@ -535,14 +599,11 @@ function skm_toml_lower_key(string $k): string {
 }
 
 /**
- * Eintraege aus allen Top-Level-Keys, die ohne Gross-/Kleinschreibung "currencies" heissen, in der Reihenfolge
- * ihres ersten Auftretens (wie Object.keys in Node). Ein Array (auch [[...]]) liefert seine Elemente, eine
- * Tabelle sich selbst; nur Tabellen zaehlen als Eintrag, ihre Keys werden kleingeschrieben (spaeterer Key
- * gewinnt bei Gleichheit, wie in Node). Gleich wie parseCurrencySectionsFromToml in services/tradeService.js.
+ * Eintraege fuer JSON: jeder Eintrag als Objekt wie in Node, auch leer oder mit Keys "0", "1" (als Array waere
+ * das sonst [...] statt {...}, Review ST-7). Innere Tabellen sind schon Objekte (skm_toml_plain_item).
  */
-/** Eintraege fuer JSON: ein leerer Eintrag als {} wie in Node. */
 function skm_currencies_for_json(array $currencies): array {
-    return array_map(fn($c) => $c === [] ? new stdClass() : $c, $currencies);
+    return array_map(fn($c) => (object)$c, $currencies);
 }
 
 /** Eintrag gehoert zu genau diesem Asset (Text-Werte, Schreibweise zaehlt). Gleich wie currencyMatches in Node. */
@@ -552,8 +613,16 @@ function skm_currency_matches($currency, array $asset): bool {
         && is_string($currency['issuer'] ?? null) && $currency['issuer'] === $asset['issuer'];
 }
 
-function parse_currency_sections_from_toml(string $tomlText, int $maxDepth = SKM_TOML_MAX_DEPTH, int $maxStructureDepth = SKM_TOML_MAX_STRUCTURE_DEPTH): array {
-    $root = (new SkmTomlParser($tomlText, $maxDepth, $maxStructureDepth))->parseRaw();
+/**
+ * Eintraege aus allen Top-Level-Keys, die ohne Gross-/Kleinschreibung "currencies" heissen, in der Reihenfolge
+ * ihres ersten Auftretens (wie Object.keys in Node). Ein Array (auch [[...]]) liefert seine Elemente, eine
+ * Tabelle sich selbst; nur Tabellen zaehlen als Eintrag, ihre Keys werden kleingeschrieben (spaeterer Key
+ * gewinnt bei Gleichheit, wie in Node). Ein Eintrag ist ein Array (Zugriff $c['code']), fuer JSON
+ * skm_currencies_for_json. Gleich wie parseCurrencySectionsFromToml in services/tradeService.js.
+ */
+function parse_currency_sections_from_toml(string $tomlText, int $maxDepth = SKM_TOML_MAX_DEPTH, int $maxStructureDepth = SKM_TOML_MAX_STRUCTURE_DEPTH,
+        int $maxNodes = SKM_TOML_MAX_NODES, int $maxKeysPerTable = SKM_TOML_MAX_KEYS_PER_TABLE): array {
+    $root = (new SkmTomlParser($tomlText, $maxDepth, $maxStructureDepth, $maxNodes, $maxKeysPerTable))->parseRaw();
     $currencies = [];
     foreach ($root->items as $key => $node) {
         if (skm_toml_lower_key((string)$key) !== 'currencies') continue;
@@ -568,14 +637,15 @@ function parse_currency_sections_from_toml(string $tomlText, int $maxDepth = SKM
     return $currencies;
 }
 
-/** SkmTomlTable/SkmTomlArrayOfTables rekursiv in Arrays; ganzzahlige Gleitkommawerte als int wie in JSON von Node. */
+/**
+ * SkmTomlTable rekursiv als stdClass (JSON {} wie in Node, auch leer oder mit Keys "0", "1"), Arrays als Listen;
+ * ganzzahlige Gleitkommawerte als int wie in JSON von Node.
+ */
 function skm_toml_plain_item($v) {
     if ($v instanceof SkmTomlTable) {
-        // Leere Tabelle als Objekt, damit JSON {} ergibt wie in Node (ein leeres Array waere []).
-        if ($v->items === []) return new stdClass();
         $out = [];
         foreach ($v->items as $k => $item) $out[(string)$k] = skm_toml_plain_item($item);
-        return $out;
+        return (object)$out;
     }
     if ($v instanceof SkmTomlArrayOfTables) return array_map('skm_toml_plain_item', $v->tables);
     if (is_array($v)) return array_map('skm_toml_plain_item', $v);
