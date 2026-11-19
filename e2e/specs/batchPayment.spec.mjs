@@ -71,3 +71,20 @@ test('Sammelzahlung anhalten: laufende Zahlung endet, die zweite wird nicht gese
   await page.waitForTimeout(5000);
   expect(xlmOf(await accountBalances(fx.cb.public))).toBe(cbBefore);
 });
+
+test('Sammelzahlung CSV-Import: Vorschau mit Fehlerzeile, anhaengen, Pruefen besteht (ohne Senden)', async ({ page }) => {
+  test.setTimeout(120000);
+  const fx = readFixtures();
+  await openApp(page);
+  await loadAccount(page, fx.main.public);
+  await openMenuItem(page, 'Zahlung senden');
+  await page.getByRole('button', { name: 'Sammelzahlung', exact: true }).click();
+  const csv = `Sender;Empfänger;Betrag;Memo\n${fx.main.public};${fx.lp.public};1,5;e2e-csv-${Date.now() % 100000}\n${fx.main.public};${fx.cb.public};1.000;x\n`;
+  await page.getByTestId('batch-csv-input').setInputFiles({ name: 'liste.csv', mimeType: 'text/csv', buffer: Buffer.from(csv, 'utf8') });
+  await expect(page.getByTestId('batch-csv-summary')).toContainText('1 Zeilen übernehmbar, 1 mit Fehler');
+  await expect(page.getByTestId('batch-csv-errors')).toContainText('Zeile 3:');
+  await page.getByTestId('batch-csv-append').click();
+  await expect(page.getByTestId('batch-csv-preview')).toBeHidden();
+  await page.getByRole('button', { name: 'Prüfen', exact: true }).click();
+  await expect(page.getByRole('button', { name: '1 Zahlung senden' })).toBeEnabled({ timeout: 60000 });
+});

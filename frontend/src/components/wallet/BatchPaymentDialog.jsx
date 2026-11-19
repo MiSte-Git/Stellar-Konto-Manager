@@ -25,6 +25,7 @@ import {
   sentEntryKey, writeSentEntry, writeSentEntryByKey,
 } from '../../utils/batchPayment/batchPaymentStore.js';
 import { containsSecretKey } from '../../utils/secretKeyDetection.js';
+import BatchCsvImport from './BatchCsvImport.jsx';
 import {
   AMBIGUOUS_LEDGER_BUFFER_SECONDS, ambiguousClearAt, assetDisplay, buildSignedRowTx,
   checkRowOnNetwork, checkSourceAccount, computeSourceTotals, describeSubmitError, findAnyTransaction,
@@ -135,6 +136,11 @@ function HashLinks({ hash, links }) {
  * - Secret Keys werden vor der ersten Zahlung fuer alle Sender eingesammelt, nur fuer
  *   diesen Lauf im Speicher gehalten und danach verworfen.
  */
+// Zeile mit Inhalt (eine leere Startzeile zaehlt beim Anhaengen nicht).
+function isFilledRow(row) {
+  return ['source', 'dest', 'amount', 'memoVal'].some((f) => String(row?.[f] || '').trim());
+}
+
 export default function BatchPaymentDialog({ onClose, onNetworkChangeClose }) {
   const { t } = useTranslation(['batchPayment', 'common']);
   const [network] = useState(() => readStoredNetworkId());
@@ -291,6 +297,17 @@ export default function BatchPaymentDialog({ onClose, onNetworkChangeClose }) {
   const updateRow = (id, patch) => {
     setRows((prev) => prev.map((r) => (r.id === id ? { ...r, ...patch } : r)));
     setInputErrors((prev) => (prev[id] ? { ...prev, [id]: null } : prev));
+  };
+  // CSV-Import: anhaengen (leere Zeilen der Liste fallen weg) oder ersetzen, nie mehr als MAX_ROWS.
+  // Importierte Zeilen sind gewoehnliche Eintraege und laufen durch dieselbe Pruefung (Pruefen).
+  const applyImport = (imported, mode) => {
+    if (phaseRef.current !== 'edit') return;
+    setRows((prev) => {
+      const base = mode === 'replace' ? [] : prev.filter(isFilledRow);
+      const next = [...base, ...imported].slice(0, MAX_ROWS);
+      return next.length ? next : [createEmptyRow()];
+    });
+    setInputErrors({});
   };
   const addRow = () => setRows((prev) => (prev.length >= MAX_ROWS ? prev : [...prev, createEmptyRow()]));
   const duplicateRow = (row) => setRows((prev) => {
@@ -1181,6 +1198,13 @@ export default function BatchPaymentDialog({ onClose, onNetworkChangeClose }) {
                 </div>
               ))}
             </div>
+            <BatchCsvImport
+              existingRows={rows.filter(isFilledRow)}
+              disabled={locked}
+              onApply={applyImport}
+              btnCls={btnCls}
+              primaryBtnCls={primaryBtnCls}
+            />
             <div className="flex flex-wrap justify-between gap-2">
               <button type="button" className={btnCls} onClick={addRow} disabled={locked || rows.length >= MAX_ROWS}>{t('batchPayment:actions.addRow')}</button>
               <div className="flex gap-2">

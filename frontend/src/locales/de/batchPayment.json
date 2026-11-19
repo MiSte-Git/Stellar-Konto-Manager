@@ -134,7 +134,24 @@
     "sourceAmbiguous": "Von diesem Sender ist eine andere Zahlung mit unklarem Status offen. Unklar sperrt das Konto: erst über Horizon klären, dann die Liste erneut prüfen.",
     "logUnreadable": "Ein Eintrag im Sende-Protokoll ist unlesbar und lässt sich keinem Konto zuordnen. Bis er geklärt ist, ist Senden in diesem Netz gesperrt.",
     "pinBadSeqAccount": "Nicht gesendet: Das Netz hat die Sequence einer früheren, nicht ausgeführten Transaktion dieses Kontos abgelehnt. Sie wird erneut über Horizon geprüft, bis dahin ist Senden von diesem Konto gesperrt.",
-    "stoppedByUser": "Von dir angehalten, nicht gesendet"
+    "stoppedByUser": "Von dir angehalten, nicht gesendet",
+    "importTooLarge": "Die Datei ist zu groß (höchstens 200 KB).",
+    "importNotUtf8": "Die Datei ist nicht in UTF-8 gespeichert. Bitte als CSV UTF-8 speichern.",
+    "importEmpty": "Die Datei ist leer oder hat keine Kopfzeile.",
+    "importTooManyLines": "Die Datei hat zu viele Zeilen (höchstens 1000).",
+    "importMissingColumns": "In der Kopfzeile fehlen Spalten: {{columns}}.",
+    "importBadQuotes": "Anführungszeichen in Zeile {{line}} sind nicht korrekt geschlossen.",
+    "importReadFailed": "Die Datei konnte nicht gelesen werden.",
+    "importAmountAmbiguous": "Betrag mit Tausendertrennzeichen (z. B. 1.000 oder 1,000) ist mehrdeutig. Ohne Trennzeichen oder mit Apostroph schreiben (1000 oder 1'000), Dezimalstellen wie 1,5.",
+    "importMemoTypeInvalid": "Unbekannter Memo Typ (erlaubt: kein, text, id, hash, return).",
+    "importMemoWithoutType": "Memo Typ ist kein, aber ein Memo ist angegeben.",
+    "importColumnCount": "Die Zeile hat {{cells}} Spalten, die Kopfzeile {{width}}. Werte könnten in falsche Spalten rutschen, die Zeile wird nicht übernommen.",
+    "importUnknownColumns": "Unbekannte Spalten mit Inhalt: {{columns}}. Sie könnten Asset oder Memo enthalten und werden nicht still übergangen. Bitte entfernen oder umbenennen (Sender, Empfänger, Asset, Betrag, Memo Typ, Memo; oder asset_code und asset_issuer).",
+    "importAssetColumns": "Asset-Spalten passen nicht zusammen: entweder eine Spalte Asset oder beide Spalten asset_code und asset_issuer.",
+    "importHeaderInvalid": "Die Kopfzeile ist ungültig (Spaltenname zu lang).",
+    "importFieldTooLong": "Ein Feld ist länger als 200 Zeichen.",
+    "importInvalidCharacters": "Ein Feld enthält Steuer- oder unsichtbare Zeichen.",
+    "importMemoFormulaPrefix": "Das Memo beginnt mit einem Apostroph vor =, +, - oder @ (Formelschutz eines Exports). Bitte das Apostroph entfernen, falls es nicht gemeint ist."
   },
   "flags": {
     "compromised": "Warnung: Dieser Empfänger ist in der Vertrauensliste als kompromittiert markiert.",
@@ -176,5 +193,24 @@
   "unreadableLog": {
     "blocked": "Im Sende-Protokoll dieses Netzes steht ein unlesbarer Eintrag. Er lässt sich keinem Konto zuordnen, daher ist Senden in diesem Netz gesperrt, auch in „Zahlung senden“. SKM kann ihn über Horizon klären: lesbarer Hash im Ledger oder sicher abgelaufen (Ledger-Zeit).",
     "released": "Der unlesbare Eintrag ist laut Horizon geklärt (im Ledger oder sicher abgelaufen). Ob die Zahlung damals angekommen ist, kann unbekannt sein: Bitte vor erneutem Senden im Kontoverlauf prüfen."
+  },
+  "import": {
+    "button": "CSV importieren",
+    "title": "Import aus {{name}}",
+    "summary": "{{valid}} Zeilen übernehmbar, {{invalid}} mit Fehler (werden nicht übernommen)",
+    "lineError": "Zeile {{line}}: {{message}}",
+    "capHint": "Die Liste fasst höchstens {{max}} Zahlungen. Beim Anhängen passen noch {{append}}, ab Dateizeile {{appendLine}} wird nichts übernommen.",
+    "checkHint": "Übernommene Zeilen werden wie von Hand eingegebene beim Prüfen gegen das Netz geprüft. Gesendet wird erst danach.",
+    "append": "An Liste anhängen ({{count}})",
+    "replace": "Liste ersetzen ({{count}})",
+    "cancel": "Abbrechen",
+    "column": {
+      "source": "Sender",
+      "dest": "Empfänger",
+      "amount": "Betrag"
+    },
+    "capHintReplace": "Beim Ersetzen wird ab Dateizeile {{line}} nichts übernommen.",
+    "noAssetColumn": "Keine Asset-Spalte: alle Zeilen werden als XLM übernommen.",
+    "duplicates": "{{count}} Zeilen haben dieselben Angaben wie eine andere Zeile (Liste oder Datei). Beim Prüfen werden doppelte Zahlungen nicht vorgewählt."
   }
 }

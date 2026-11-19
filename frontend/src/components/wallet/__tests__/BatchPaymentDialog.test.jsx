@@ -1688,3 +1688,74 @@ describe('BatchPaymentDialog: Pruefung abbrechen (N4)', () => {
     expect(hoisted.submitMock).not.toHaveBeenCalled();
   });
 });
+
+describe('BatchPaymentDialog: CSV-Import', () => {
+  const upload = async (text) => {
+    const input = screen.getByTestId('batch-csv-input');
+    const file = new File([text], 'liste.csv', { type: 'text/csv' });
+    await act(async () => { fireEvent.change(input, { target: { files: [file] } }); });
+    return screen.findByTestId('batch-csv-preview');
+  };
+  const stored = () => JSON.parse(window.localStorage.getItem(BATCH_PAYMENT_STORAGE_KEY)).networks.PUBLIC;
+
+  it('Vorschau mit Fehlerliste, Anhaengen behaelt die bestehende Liste, nichts gesendet', async () => {
+    saveBatchRows('PUBLIC', [rowA()]);
+    renderDialog();
+    await upload(`Sender;Empfänger;Betrag;Memo\n${SENDER2.publicKey()};${DEST_B};2,5;csv\nkaputt;${DEST_B};1;\n`);
+    expect(screen.getByTestId('batch-csv-summary')).toHaveTextContent('1 Zeilen übernehmbar, 1 mit Fehler');
+    expect(screen.getByTestId('batch-csv-errors')).toHaveTextContent('Zeile 3:');
+    fireEvent.click(screen.getByTestId('batch-csv-append'));
+    await waitFor(() => expect(stored()).toHaveLength(2));
+    expect(stored().map((r) => r.dest)).toEqual([DEST_A, DEST_B]);
+    expect(stored()[1]).toMatchObject({ source: SENDER2.publicKey(), amount: '2,5', memoType: 'text', memoVal: 'csv' });
+    expect(screen.queryByTestId('batch-csv-preview')).toBeNull();
+    expect(hoisted.submitMock).not.toHaveBeenCalled();
+  });
+
+  it('Ersetzen tauscht die Liste aus; Abbrechen aendert nichts', async () => {
+    saveBatchRows('PUBLIC', [rowA()]);
+    renderDialog();
+    await upload(`Sender,Empfänger,Betrag\n${SENDER2.publicKey()},${DEST_B},1\n`);
+    fireEvent.click(screen.getByRole('button', { name: 'Abbrechen' }));
+    expect(stored().map((r) => r.dest)).toEqual([DEST_A]);
+    await upload(`Sender,Empfänger,Betrag\n${SENDER2.publicKey()},${DEST_B},1\n`);
+    fireEvent.click(screen.getByTestId('batch-csv-replace'));
+    await waitFor(() => expect(stored().map((r) => r.dest)).toEqual([DEST_B]));
+  });
+
+  it('CI-11: Hinweis auf doppelte Zeilen (Liste und Datei); CI-10: abgeschnittene Dateizeile benannt', async () => {
+    saveBatchRows('PUBLIC', [rowA()]);
+    renderDialog();
+    const lines = [`Sender;Empfänger;Betrag;Memo`, `${SENDER.publicKey()};${DEST_A};5;a`];
+    for (let i = 0; i < 50; i += 1) lines.push(`${SENDER2.publicKey()};${DEST_B};${i + 1};m${i}`);
+    await upload(`${lines.join('\n')}\n`);
+    expect(screen.getByTestId('batch-csv-duplicates')).toHaveTextContent('1 Zeilen haben dieselben Angaben');
+    // 51 gueltige Zeilen, 1 in der Liste: anhaengen passt 49 (ab Dateizeile 51), ersetzen 50 (ab Dateizeile 52)
+    expect(screen.getByTestId('batch-csv-cap')).toHaveTextContent('ab Dateizeile 51');
+    expect(screen.getByTestId('batch-csv-cap')).toHaveTextContent('Beim Ersetzen wird ab Dateizeile 52');
+  });
+
+  it('CI-9: waehrend Pruefen sind Anhaengen und Ersetzen gesperrt', async () => {
+    saveBatchRows('PUBLIC', [rowA()]);
+    renderDialog();
+    await upload(`Sender;Empfänger;Betrag\n${SENDER2.publicKey()};${DEST_B};1\n`);
+    const orig = hoisted.loadAccountMock.getMockImplementation();
+    let release;
+    hoisted.loadAccountMock.mockImplementation((id) => new Promise((resolve) => { release = () => resolve(orig(id)); }));
+    fireEvent.click(screen.getByRole('button', { name: 'Prüfen' }));
+    await waitFor(() => expect(screen.getByTestId('batch-csv-append')).toBeDisabled());
+    expect(screen.getByTestId('batch-csv-replace')).toBeDisabled();
+    fireEvent.click(screen.getByTestId('batch-csv-append'));
+    expect(stored().map((r) => r.dest)).toEqual([DEST_A]);
+    hoisted.loadAccountMock.mockImplementation(orig);
+    await act(async () => { release?.(); await new Promise((r) => setTimeout(r, 0)); });
+  });
+
+  it('Dateifehler: keine Knoepfe zum Uebernehmen', async () => {
+    renderDialog();
+    await upload('Sender;Betrag\nx;1\n');
+    expect(screen.getByTestId('batch-csv-file-error')).toHaveTextContent('Empfänger');
+    expect(screen.queryByTestId('batch-csv-append')).toBeNull();
+    expect(screen.queryByTestId('batch-csv-replace')).toBeNull();
+  });
+});
