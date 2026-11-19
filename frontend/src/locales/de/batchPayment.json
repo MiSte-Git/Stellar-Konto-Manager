@@ -44,7 +44,8 @@
     "cancelWaiting": "Warten abbrechen",
     "checkStatusNow": "Status jetzt prüfen",
     "checkingStatus": "Prüfe Status …",
-    "resend": "Erneut senden"
+    "resend": "Erneut senden",
+    "stopAfterCurrent": "Anhalten"
   },
   "review": {
     "include": "Senden",
@@ -75,7 +76,8 @@
     "cause": "Ursache",
     "notSent": "Nicht gesendet",
     "maybeSent": "Möglicherweise gesendet – nicht erneut senden",
-    "logMissing": "Status unklar – Eintrag im Sende-Protokoll fehlt"
+    "logMissing": "Status unklar – Eintrag im Sende-Protokoll fehlt",
+    "stopRequested": "Wird angehalten. Eine Zahlung, die schon an das Netz geht, läuft zu Ende."
   },
   "done": {
     "summary": "{{sent}} von {{total}} Zahlungen gesendet",
@@ -131,7 +133,8 @@
     "accountAmbiguous": "Von diesem Sender ist eine Einzelzahlung (Zahlung senden) mit unklarem Status offen. Erst dort über Horizon klären.",
     "sourceAmbiguous": "Von diesem Sender ist eine andere Zahlung mit unklarem Status offen. Unklar sperrt das Konto: erst über Horizon klären, dann die Liste erneut prüfen.",
     "logUnreadable": "Ein Eintrag im Sende-Protokoll ist unlesbar und lässt sich keinem Konto zuordnen. Bis er geklärt ist, ist Senden in diesem Netz gesperrt.",
-    "pinBadSeqAccount": "Nicht gesendet: Das Netz hat die Sequence einer früheren, nicht ausgeführten Transaktion dieses Kontos abgelehnt. Sie wird erneut über Horizon geprüft, bis dahin ist Senden von diesem Konto gesperrt."
+    "pinBadSeqAccount": "Nicht gesendet: Das Netz hat die Sequence einer früheren, nicht ausgeführten Transaktion dieses Kontos abgelehnt. Sie wird erneut über Horizon geprüft, bis dahin ist Senden von diesem Konto gesperrt.",
+    "stoppedByUser": "Von dir angehalten, nicht gesendet"
   },
   "flags": {
     "compromised": "Warnung: Dieser Empfänger ist in der Vertrauensliste als kompromittiert markiert.",

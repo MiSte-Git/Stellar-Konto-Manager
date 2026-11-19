@@ -48,13 +48,14 @@ dass jede Spec in dieser Tabelle steht und jede genannte Datei existiert.
 | Konto erstellen: Guards für ungesicherte Schlüssel, Netzwechsel | `e2e/specs/accountGuards.spec.mjs` |
 | Einstellungen: Verläufe löschen, Scam-Statistik zurücksetzen | `e2e/specs/settings.spec.mjs` |
 | Sendesperre über Tabs, Warten abbrechen | `e2e/specs/sendLock.spec.mjs` |
+| Sammelzahlung: Liste prüfen und zwei Zahlungen senden (Ergebnis, Guthaben der Empfänger); Anhalten nach der laufenden Zahlung, die zweite wird nicht gesendet (erstes Senden per `page.route` verzögert, Liste im localStorage vorbelegt) | `e2e/specs/batchPayment.spec.mjs` |
 | Trading mit gemerktem Session-Key: Limit-Order und Swap ohne Key-Dialog, ohne Haken Merken fragt der Dialog wieder (die Asset-Suche des Backends ist im Spec nachgebildet, Senden läuft echt gegen Testnet) | `e2e/specs/trading.spec.mjs` |
 | Wallet-Assets: Pool-Anteile mit Paar und Gegenwert, Filter nach Code. Asset-Detailseite: Wallet → Details zeigt Saldo und Fakten, Handeln öffnet Token suchen und handeln mit vorbelegtem Asset, kaputter Link zeigt Hinweis. Token suchen und handeln: Kontoliste (Modus Im Konto) mit Filter und den Modi Alle zeigen, Ausblenden, Nur diese zeigen, Pool-Karte ohne Aufklappen, Handeln öffnet die Detailansicht (Asset-Suche, Fakten und StellarExpert des Backends nachgebildet) | `e2e/specs/assetDetail.spec.mjs` |
 | Smoke-Crawl: jeder Menüpunkt öffnet ohne Absturz (Konto mit Trustlines/Pool-Shares und Konto mit Offers) | `e2e/specs/smoke.spec.mjs` |
 
 ### Noch nicht abgedeckt (bewusst, bei Bedarf ergänzen)
 
-- Zahlung senden und Sammelzahlung mit Ergebnis, unklarer Status (Netz sperren), Trading mit Multisig, Multisig-Job mit
+- Zahlung senden mit Ergebnis, unklarer Status (Netz sperren), Trading mit Multisig, Multisig-Job mit
   zweitem Signer, Xdr-Export, Bugreport (sendet echte Mail), Mainnet (nie automatisch).
 - Memo-Pflicht und Fee-Bump-Ablehnung sind als Unit-Tests abgedeckt (`memoRequired.test.js`, Multisig-Tests).
 - SSRF-Schutz (Review Fable F-7): gemeinsame Fälle in `test/assets/ssrf-addresses.json`, geprüft von

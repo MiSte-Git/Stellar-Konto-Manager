@@ -87,6 +87,10 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
   // Warten am Sende-Lock (anderer Tab sendet): Anzeige und Abbruch. Ein Controller je Lauf bzw. Job.
   const [lockWaiting, setLockWaiting] = React.useState(false);
   const lockAbortRef = React.useRef(null);
+  // Anhalten durch den Nutzer: die laufende Transaktion laeuft zu Ende (kein Abbruch der Anfrage, sonst waere
+  // ihr Ausgang unklar), danach wird keine weitere gesendet.
+  const stopRequestedRef = React.useRef(false);
+  const [stopRequested, setStopRequested] = React.useState(false);
   const cancelWaiting = () => { lockAbortRef.current?.abort(); };
   // Sperre pro Konto bei unklarem Sendestatus: von der Seite geteilt oder eigene.
   const guard = useSharedSendBlock(sendGuard, { network, account: publicKey, onApplied: () => onDone?.(), onNotApplied: () => onDone?.() });
@@ -249,10 +253,16 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
         return;
       }
       setShowSecretModal(false);
+      stopRequestedRef.current = false;
+      setStopRequested(false);
       setPhase('running');
       started = true;
       let includeTargetTrustline = needTargetTrustline;
       for (let i = 0; i < chunks.length; i += 1) {
+        if (stopRequestedRef.current) {
+          for (let j = i; j < chunks.length; j += 1) out.push({ status: 'notSent', count: chunks[j].length, byUser: true });
+          break;
+        }
         setProgress({ current: i + 1, total: chunks.length });
         const count = chunks[i].length;
         try {
@@ -296,6 +306,10 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
           includeTargetTrustline = false;
         } catch (e) {
           console.error('[SKM] batch convert transaction failed', e);
+          if (e instanceof SendBlockedError && e.reason === 'lockCancelled' && stopRequestedRef.current) {
+            for (let j = i; j < chunks.length; j += 1) out.push({ status: 'notSent', count: chunks[j].length, byUser: true });
+            break;
+          }
           if (e instanceof AmbiguousSubmitResultError) out.push({ status: 'ambiguous', hash: e.hash, count });
           else if (e instanceof SendBlockedError) out.push({ status: 'blocked', count, reason: t(`common:payment.send.ambiguousResult.blockedReason.${e.reason}`) });
           else out.push({ status: 'failed', count, reason: describeError(e) });
@@ -598,9 +612,30 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
         )}
 
         {phase === 'running' && (
-          <p role="status" className="mt-4 text-sm text-blue-700 dark:text-blue-300">
-            {t('wallet:batchConvert.running', { current: progress?.current || 1, total: progress?.total || chunks.length })}
-          </p>
+          <div className="mt-4 flex flex-wrap items-center gap-2">
+            <p role="status" className="text-sm text-blue-700 dark:text-blue-300">
+              {t('wallet:batchConvert.running', { current: progress?.current || 1, total: progress?.total || chunks.length })}
+            </p>
+            {chunks.length > 1 && (
+              <button
+                type="button"
+                className="rounded-md border border-gray-300 px-3 py-1 text-sm disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-600"
+                onClick={() => {
+                  stopRequestedRef.current = true;
+                  setStopRequested(true);
+                  // Wie in der Sammelzahlung: wartet die naechste Transaktion am Lock oder wird sie geladen, nicht
+                  // mehr senden. guardedSubmit bricht bis unmittelbar vor dem Eintrag fail-closed ab
+                  // (SendBlockedError lockCancelled), danach liest es das Signal nicht mehr, der POST laeuft zu Ende
+                  // (Review AH-1).
+                  lockAbortRef.current?.abort();
+                }}
+                disabled={stopRequested}
+                data-testid="batch-convert-stop"
+              >
+                {stopRequested ? t('wallet:batchConvert.stopRequested') : t('wallet:batchConvert.stopAfterCurrent')}
+              </button>
+            )}
+          </div>
         )}
 
         {phase === 'done' && (
@@ -612,7 +647,9 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
                   {r.status === 'ambiguous' && t('wallet:batchConvert.txAmbiguous', { index: i + 1, count: r.count, hash: r.hash })}
                   {r.status === 'failed' && t('wallet:batchConvert.txFailed', { index: i + 1, count: r.count, reason: r.reason })}
                   {r.status === 'blocked' && t('wallet:batchConvert.txBlocked', { index: i + 1, count: r.count, reason: r.reason })}
-                  {r.status === 'notSent' && t('wallet:batchConvert.txNotSent', { index: i + 1, count: r.count })}
+                  {r.status === 'notSent' && (r.byUser
+                    ? t('wallet:batchConvert.txStoppedByUser', { index: i + 1, count: r.count })
+                    : t('wallet:batchConvert.txNotSent', { index: i + 1, count: r.count }))}
                 </li>
               ))}
             </ul>

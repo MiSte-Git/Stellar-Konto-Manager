@@ -263,7 +263,10 @@
       "quoteFailed": "Abfrage fehlgeschlagen",
       "trustlineNotAuthorized": "Trustline nicht freigegeben",
       "trustlineLimit": "Trustline-Limit reicht nicht"
-    }
+    },
+    "stopAfterCurrent": "Anhalten",
+    "stopRequested": "Wird angehalten. Eine Transaktion, die schon an das Netz geht, läuft zu Ende.",
+    "txStoppedByUser": "Transaktion {{index}} mit {{count}} Einträgen nicht gesendet (von dir angehalten)."
   },
   "qrScan": {
     "button": "QR-Code scannen",

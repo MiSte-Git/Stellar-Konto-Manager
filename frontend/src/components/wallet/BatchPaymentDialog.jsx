@@ -195,6 +195,10 @@ export default function BatchPaymentDialog({ onClose, onNetworkChangeClose }) {
   // Liste dieses Netzes bleibt erhalten.
   const networkChangedRef = useRef(false);
   const [networkStopped, setNetworkStopped] = useState(false);
+  // Anhalten durch den Nutzer: wie beim Netzwechsel laeuft die laufende Zahlung zu Ende (kein Abbruch der
+  // Anfrage, sonst waere ihr Ausgang unklar), danach wird keine weitere gesendet.
+  const stopRequestedRef = useRef(false);
+  const [stopRequested, setStopRequested] = useState(false);
   const onNetworkChangeCloseRef = useRef(onNetworkChangeClose);
   onNetworkChangeCloseRef.current = onNetworkChangeClose;
   const onCloseRef = useRef(onClose);
@@ -306,6 +310,22 @@ export default function BatchPaymentDialog({ onClose, onNetworkChangeClose }) {
   });
 
   const errorText = useCallback((code, params) => t(`batchPayment:errors.${code}`, params || {}), [t]);
+
+  // Anhalten: wirkt nur vor dem Protokolleintrag der naechsten Zahlung; eine Zahlung, die schon an das Netz geht,
+  // und ihre Klaerung laufen zu Ende (die Anfrage wird nie abgebrochen). Der Knopf ist waehrend der Key-Abfrage
+  // (Modal) und des Lock-Wartens nicht sichtbar; dort beenden Abbrechen bzw. Warten abbrechen den Lauf. Die Zeilen
+  // unten sichern dieselben Wege im Code ab, falls der Klick genau beim Wechsel ankommt (Review AH-2, AH-4).
+  const requestStop = () => {
+    if (phaseRef.current !== 'sending' || stopRequestedRef.current) return;
+    stopRequestedRef.current = true;
+    setStopRequested(true);
+    const resolve = secretResolveRef.current;
+    secretResolveRef.current = null;
+    if (resolve) { setSecretPrompt(null); resolve(null); }
+    // Immer abbrechen wie beim Netzwechsel: mit Web Locks wirkt ein Abbruch nach der Vergabe nicht, im
+    // localStorage-Fallback wird das Signal nur vor der Vergabe gelesen, runRows liest es nie (Review AH-4).
+    lockAbortRef.current?.abort();
+  };
 
   // Eintrag lesen und einen unklaren Status ueber Horizon aufloesen (und speichern).
   // outcome: success | failed | expired | pending | unknown oder null, wenn nichts
@@ -675,9 +695,9 @@ export default function BatchPaymentDialog({ onClose, onNetworkChangeClose }) {
       }
     } catch { /* dann per Dialog */ }
     if (!mountedRef.current) return null;
-    // Netz gewechselt, waehrend die Session-Secrets gelesen wurden: Lauf ist gestoppt,
-    // also nicht mehr nach einem Secret Key fragen.
-    if (networkChangedRef.current) return null;
+    // Netz gewechselt oder angehalten, waehrend die Session-Secrets gelesen wurden: Lauf ist gestoppt,
+    // also nicht mehr nach einem Secret Key fragen (Review AH-3, AGENTS.md Regel 2).
+    if (networkChangedRef.current || stopRequestedRef.current) return null;
     setSecretError('');
     return new Promise((resolve) => {
       const once = (value) => { secretResolveRef.current = null; resolve(value); };
@@ -738,6 +758,8 @@ export default function BatchPaymentDialog({ onClose, onNetworkChangeClose }) {
     });
     const setResult = (id, value) => { if (mountedRef.current) setResults((prev) => ({ ...prev, [id]: value })); };
     setResults(Object.fromEntries(items.map((i) => [i.row.id, { status: 'pending' }])));
+    stopRequestedRef.current = false;
+    setStopRequested(false);
     setPhase('sending');
     const keys = new Map();
     let stopReason = '';
@@ -745,8 +767,9 @@ export default function BatchPaymentDialog({ onClose, onNetworkChangeClose }) {
       // 1. Alle Keys vor der ersten Zahlung, damit ein Abbruch nichts halb sendet.
       for (const source of new Set(items.map((i) => i.row.source.trim()))) {
         const kp = await obtainKeypair(source, review.accounts.get(source));
-        if (!kp) { stopReason = networkChangedRef.current ? 'networkChanged' : (mountedRef.current ? 'cancelled' : 'aborted'); break; }
+        if (!kp) { stopReason = networkChangedRef.current ? 'networkChanged' : (stopRequestedRef.current ? 'stoppedByUser' : (mountedRef.current ? 'cancelled' : 'aborted')); break; }
         if (networkChangedRef.current) { stopReason = 'networkChanged'; break; }
+        if (stopRequestedRef.current) { stopReason = 'stoppedByUser'; break; }
         keys.set(source, kp);
       }
       const keysOk = !stopReason;
@@ -761,6 +784,8 @@ export default function BatchPaymentDialog({ onClose, onNetworkChangeClose }) {
           if (!stopReason && !mountedRef.current) stopReason = 'aborted';
           // Netz gewechselt: keine weitere Zahlung (die laufende ist schon fertig).
           if (!stopReason && networkChangedRef.current) stopReason = 'networkChanged';
+          // Vom Nutzer angehalten: keine weitere Zahlung (die laufende ist schon fertig).
+          if (!stopReason && stopRequestedRef.current) stopReason = 'stoppedByUser';
           // Lock vor jeder Zahlung erneuern; ging er verloren (Tab gedrosselt oder
           // eingefroren, anderer Tab hat uebernommen), sofort stoppen.
           if (!stopReason && !lock.touch()) stopReason = 'lockLost';
@@ -863,6 +888,12 @@ export default function BatchPaymentDialog({ onClose, onNetworkChangeClose }) {
               setResult(row.id, { status: 'skipped', message: errorText(stopReason) });
               continue;
             }
+            // Angehalten waehrend Konto laden/Bauen: noch nicht gesendet, also nicht mehr senden.
+            if (stopRequestedRef.current) {
+              stopReason = 'stoppedByUser';
+              setResult(row.id, { status: 'skipped', message: errorText(stopReason) });
+              continue;
+            }
             // Vor dem Submit als unklar vermerken (Haupt- und Routing-Eintrag) und
             // zuruecklesen: Bricht der Tab jetzt ab, bleibt die Zahlung gesperrt, bis
             // Horizon den Ausgang zeigt. Steht danach ein fremder Hash dort, sendet gerade
@@ -958,7 +989,7 @@ export default function BatchPaymentDialog({ onClose, onNetworkChangeClose }) {
           });
         } catch (err) {
           if (err?.name !== 'AbortError') throw err;
-          const reason = networkChangedRef.current ? 'networkChanged' : (mountedRef.current ? 'lockCancelled' : 'aborted');
+          const reason = networkChangedRef.current ? 'networkChanged' : (stopRequestedRef.current ? 'stoppedByUser' : (mountedRef.current ? 'lockCancelled' : 'aborted'));
           items.forEach((i) => setResult(i.row.id, { status: 'skipped', message: errorText(reason) }));
         } finally {
           lockAbortRef.current = null;
@@ -1276,7 +1307,16 @@ export default function BatchPaymentDialog({ onClose, onNetworkChangeClose }) {
                   </button>
                 </>
               )}
-              {phase === 'sending' && !waitingForLock && <div className="text-sm text-blue-700 dark:text-blue-300">{t('batchPayment:status.running')}</div>}
+              {phase === 'sending' && !waitingForLock && (
+                <div className="flex flex-wrap items-center gap-2 text-sm text-blue-700 dark:text-blue-300">
+                  <span>{t('batchPayment:status.running')}</span>
+                  {Object.keys(results).length > 1 && (
+                  <button type="button" className={btnCls} onClick={requestStop} disabled={stopRequested || networkStopped} data-testid="batch-stop">
+                    {stopRequested ? t('batchPayment:status.stopRequested') : t('batchPayment:actions.stopAfterCurrent')}
+                  </button>
+                  )}
+                </div>
+              )}
               {phase === 'sending' && waitingForLock && (
                 <div className="flex flex-wrap items-center gap-2 text-sm text-amber-700 dark:text-amber-300" data-testid="batch-waiting-lock">
                   <span>{t('batchPayment:status.waitingForLock')}</span>

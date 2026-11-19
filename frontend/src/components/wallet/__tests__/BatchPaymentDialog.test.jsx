@@ -774,6 +774,102 @@ describe('BatchPaymentDialog: Netzwechsel', () => {
     expect(window.localStorage.getItem(BATCH_PAYMENT_STORAGE_KEY)).toContain(DEST_B);
   });
 
+  it('Anhalten: laufende Zahlung endet und wird ausgewertet, keine weitere, Knopf gesperrt, Liste bleibt', async () => {
+    const a = rowA(); const b = rowB();
+    let release;
+    hoisted.submitMock.mockImplementationOnce((_s, tx) => new Promise((resolve) => { release = () => resolve({ hash: hashOf(tx) }); }));
+    saveBatchRows('PUBLIC', [a, b]);
+    renderWith({});
+    await checkAndWait(2);
+    fireEvent.click(screen.getByRole('button', { name: '2 Zahlungen senden' }));
+    await waitFor(() => expect(hoisted.submitMock).toHaveBeenCalledTimes(1));
+
+    const stop = screen.getByTestId('batch-stop');
+    expect(stop).toHaveTextContent(i18n.t('batchPayment:actions.stopAfterCurrent'));
+    fireEvent.click(stop);
+    expect(screen.getByTestId('batch-stop')).toBeDisabled();
+    expect(screen.getByTestId('batch-stop')).toHaveTextContent(i18n.t('batchPayment:status.stopRequested'));
+    await act(async () => { release(); await new Promise((r) => setTimeout(r, 0)); });
+
+    await waitFor(() => expect(screen.getByTestId('batch-summary')).toBeInTheDocument());
+    expect(hoisted.submitMock).toHaveBeenCalledTimes(1);
+    expect(readSentEntry('PUBLIC', fpOf(a, DEST_A)).status).toBe('success');
+    expect(readSentEntry('PUBLIC', fpOf(b, DEST_B))).toBeNull();
+    expect(screen.getByText(new RegExp(i18n.t('batchPayment:errors.stoppedByUser')))).toBeInTheDocument();
+    expect(window.localStorage.getItem(BATCH_PAYMENT_STORAGE_KEY)).toContain(DEST_B);
+  });
+
+  it('AH-7: Anhalten waehrend Konto laden: kein Eintrag, kein Submit, beide von dir angehalten', async () => {
+    const a = rowA(); const b = rowB();
+    saveBatchRows('PUBLIC', [a, b]);
+    renderWith({});
+    await checkAndWait(2);
+    let releaseLoad;
+    const orig = hoisted.loadAccountMock.getMockImplementation();
+    hoisted.loadAccountMock.mockImplementation((id) => new Promise((resolve) => { releaseLoad = () => resolve(orig(id)); }));
+    fireEvent.click(screen.getByRole('button', { name: '2 Zahlungen senden' }));
+    await waitFor(() => expect(releaseLoad).toBeTypeOf('function'));
+    fireEvent.click(screen.getByTestId('batch-stop'));
+    hoisted.loadAccountMock.mockImplementation(orig);
+    await act(async () => { releaseLoad(); await new Promise((r) => setTimeout(r, 0)); });
+    await waitFor(() => expect(screen.getByTestId('batch-summary')).toBeInTheDocument());
+    expect(hoisted.submitMock).not.toHaveBeenCalled();
+    expect(readSentEntry('PUBLIC', fpOf(a, DEST_A))).toBeNull();
+    expect(readSentEntry('PUBLIC', fpOf(b, DEST_B))).toBeNull();
+    expect(screen.getAllByText(new RegExp(i18n.t('batchPayment:errors.stoppedByUser')))).toHaveLength(2);
+  });
+
+  it('AH-7: wird die laufende Zahlung unklar, gilt fuer den Rest der unklare Status, nicht das Anhalten', async () => {
+    const a = rowA(); const b = rowB();
+    let fail;
+    hoisted.submitMock.mockImplementationOnce((_s, tx) => new Promise((_r, reject) => { fail = () => reject(new AmbiguousSubmitResultError(hashOf(tx), new Error('t'))); }));
+    saveBatchRows('PUBLIC', [a, b]);
+    renderWith({});
+    await checkAndWait(2);
+    fireEvent.click(screen.getByRole('button', { name: '2 Zahlungen senden' }));
+    await waitFor(() => expect(hoisted.submitMock).toHaveBeenCalledTimes(1));
+    fireEvent.click(screen.getByTestId('batch-stop'));
+    await act(async () => { fail(); await new Promise((r) => setTimeout(r, 0)); });
+    await waitFor(() => expect(screen.getByTestId('batch-summary')).toBeInTheDocument());
+    expect(readSentEntry('PUBLIC', fpOf(a, DEST_A)).status).toBe('ambiguous');
+    expect(readSentEntry('PUBLIC', fpOf(b, DEST_B))).toBeNull();
+    expect(screen.getByText(new RegExp(i18n.t('batchPayment:errors.stoppedAmbiguous')))).toBeInTheDocument();
+    expect(screen.queryByText(new RegExp(i18n.t('batchPayment:errors.stoppedByUser')))).toBeNull();
+  });
+
+  it('AH-3: angehalten, waehrend der gemerkte Key des naechsten Senders gelesen wird: keine Key-Abfrage mehr', async () => {
+    let releaseSecret;
+    hoisted.getSessionSecretMock.mockImplementation((acc) => (acc === SENDER.publicKey()
+      ? Promise.resolve(SENDER.secret())
+      : new Promise((resolve) => { releaseSecret = () => resolve(''); })));
+    saveBatchRows('PUBLIC', [rowA(), createEmptyRow({ source: SENDER2.publicKey(), dest: DEST_B, amount: '1', memoVal: 'x' })]);
+    renderWith({});
+    await checkAndWait(2);
+    fireEvent.click(screen.getByRole('button', { name: '2 Zahlungen senden' }));
+    await waitFor(() => expect(releaseSecret).toBeTypeOf('function'));
+    fireEvent.click(screen.getByTestId('batch-stop'));
+    await act(async () => { releaseSecret(); await new Promise((r) => setTimeout(r, 0)); });
+    await waitFor(() => expect(screen.getByTestId('batch-summary')).toBeInTheDocument());
+    expect(document.querySelector('input[type="password"]')).toBeNull();
+    expect(hoisted.submitMock).not.toHaveBeenCalled();
+    expect(screen.getAllByText(new RegExp(i18n.t('batchPayment:errors.stoppedByUser')))).toHaveLength(2);
+  });
+
+  // Absicherung des Codepfads (Review AH-2): in der Oberflaeche verdeckt das Key-Modal den Knopf, der Klick kann nur
+  // genau beim Wechsel ankommen. Der Lauf endet dann ohne Senden mit dem Grund des Nutzers.
+  it('Codepfad: Anhalten bei offener Key-Abfrage sendet nichts', async () => {
+    hoisted.getSessionSecretMock.mockImplementation(async () => '');
+    saveBatchRows('PUBLIC', [rowA(), rowB()]);
+    renderWith({});
+    await checkAndWait(2);
+    fireEvent.click(screen.getByRole('button', { name: '2 Zahlungen senden' }));
+    await waitFor(() => expect(document.querySelector('input[type="password"], input[placeholder="z.B."]')).not.toBeNull());
+    fireEvent.click(screen.getByTestId('batch-stop'));
+    await waitFor(() => expect(screen.getByTestId('batch-summary')).toBeInTheDocument());
+    expect(hoisted.submitMock).not.toHaveBeenCalled();
+    expect(screen.getAllByText(new RegExp(i18n.t('batchPayment:errors.stoppedByUser')))).toHaveLength(2);
+  });
+
   it('Wechsel waehrend der Key-Abfrage: nichts gesendet', async () => {
     hoisted.getSessionSecretMock.mockImplementation(async () => '');
     saveBatchRows('PUBLIC', [rowA()]);
@@ -1217,6 +1313,30 @@ describe('BatchPaymentDialog: Sequence beim erneuten Senden (F1)', () => {
     expect(readSentEntry('PUBLIC', fpOf(a, DEST_A))).toMatchObject({ status: 'ambiguous', hash: OLD, seq: '105' });
     expect(readSentEntry('PUBLIC', fpOf(b, DEST_B))).toBeNull();
     expect(screen.queryByRole('button', { name: 'Erneut senden' })).toBeNull();
+  }, 15000);
+
+  it('AH-7: Anhalten waehrend der tx_bad_seq-Klaerung: Klaerung schreibt zu Ende, Rest bleibt wegen unklar gestoppt', async () => {
+    const a = rowA(); const b = rowB();
+    writeSentEntry('PUBLIC', fpOf(a, DEST_A), pinned());
+    hoisted.submitMock.mockImplementationOnce(async () => { throw badSeq(); });
+    let releaseLookup;
+    const origLookup = hoisted.txLookupMock.getMockImplementation();
+    hoisted.txLookupMock.mockImplementation((hash) => new Promise((resolve, reject) => {
+      releaseLookup = () => Promise.resolve().then(() => origLookup(hash)).then(resolve, reject);
+    }));
+    saveBatchRows('PUBLIC', [a, b]);
+    renderDialog();
+    await checkAndWait(2);
+    fireEvent.click(screen.getByRole('button', { name: '2 Zahlungen senden' }));
+    await waitFor(() => expect(releaseLookup).toBeTypeOf('function'), { timeout: 8000 });
+    fireEvent.click(screen.getByTestId('batch-stop'));
+    hoisted.txLookupMock.mockImplementation(origLookup);
+    await act(async () => { releaseLookup(); await new Promise((r) => setTimeout(r, 0)); });
+    await waitFor(() => expect(screen.getByTestId('batch-summary')).toBeInTheDocument(), { timeout: 8000 });
+    expect(hoisted.submitMock).toHaveBeenCalledTimes(1);
+    expect(readSentEntry('PUBLIC', fpOf(a, DEST_A))).toMatchObject({ status: 'ambiguous', hash: OLD });
+    expect(readSentEntry('PUBLIC', fpOf(b, DEST_B))).toBeNull();
+    expect(screen.getByText(new RegExp(i18n.t('batchPayment:errors.stoppedAmbiguous')))).toBeInTheDocument();
   }, 15000);
 
   it('Gegenprobe tx_bad_seq: fruehere Transaktion gefunden -> gesendet mit deren Hash, Lauf geht weiter', async () => {

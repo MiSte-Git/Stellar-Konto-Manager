@@ -1,5 +1,5 @@
 import React from 'react';
-import { cleanup, render, screen, waitFor, fireEvent, within } from '@testing-library/react';
+import { act, cleanup, render, screen, waitFor, fireEvent, within } from '@testing-library/react';
 import { I18nextProvider } from 'react-i18next';
 import { Account, Keypair, Networks, TransactionBuilder } from '@stellar/stellar-sdk';
 import { AmbiguousSubmitResultError } from '../../../utils/stellar/submitTransactionSafely.js';
@@ -162,6 +162,59 @@ describe('BatchConvertDialog', () => {
     await waitFor(() => expect(hoisted.submitMock).toHaveBeenCalledTimes(2));
     expect(hoisted.submitMock.mock.calls[0][1].operations).toHaveLength(100);
     expect(hoisted.submitMock.mock.calls[1][1].operations).toHaveLength(20);
+  });
+
+  it('Anhalten: laufende Transaktion endet, keine weitere, Rest als von dir angehalten', async () => {
+    let release;
+    hoisted.submitMock.mockImplementationOnce(() => new Promise((resolve) => { release = () => resolve({ hash: 'first' }); }));
+    renderDialog({ items: Array.from({ length: 30 }, (_, i) => tokenItem(i + 1, `T${i}`)) });
+    await loadPreview();
+    await startAndSign();
+    await waitFor(() => expect(hoisted.submitMock).toHaveBeenCalledTimes(1));
+    const stop = screen.getByTestId('batch-convert-stop');
+    expect(stop).toHaveTextContent(i18n.t('wallet:batchConvert.stopAfterCurrent'));
+    fireEvent.click(stop);
+    expect(screen.getByTestId('batch-convert-stop')).toBeDisabled();
+    expect(screen.getByTestId('batch-convert-stop')).toHaveTextContent(i18n.t('wallet:batchConvert.stopRequested'));
+    await act(async () => { release(); await new Promise((r) => setTimeout(r, 0)); });
+    await screen.findByText(/Transaktion 1: \d+ Einträge umgewandelt/);
+    expect(screen.getByText(/Transaktion 2 mit \d+ Einträgen nicht gesendet \(von dir angehalten\)/)).toBeInTheDocument();
+    expect(hoisted.submitMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('AH-1: Anhalten, waehrend die naechste Transaktion geladen wird: sie wird nicht mehr gesendet', async () => {
+    const errSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    renderDialog({ items: Array.from({ length: 30 }, (_, i) => tokenItem(i + 1, `T${i}`)) });
+    await loadPreview();
+    const orig = hoisted.loadAccountMock.getMockImplementation();
+    let releaseLoad;
+    hoisted.submitMock.mockImplementationOnce(async () => {
+      // Nach der ersten Transaktion: das Laden fuer die zweite haengt
+      hoisted.loadAccountMock.mockImplementation((pk) => (pk === ME.publicKey
+        ? new Promise((resolve) => { releaseLoad = () => resolve(orig(pk)); })
+        : orig(pk)));
+      return { hash: 'first' };
+    });
+    await startAndSign();
+    await waitFor(() => expect(releaseLoad).toBeTypeOf('function'));
+    fireEvent.click(screen.getByTestId('batch-convert-stop'));
+    hoisted.loadAccountMock.mockImplementation(orig);
+    await act(async () => { releaseLoad(); await new Promise((r) => setTimeout(r, 0)); });
+    await screen.findByText(/Transaktion 1: \d+ Einträge umgewandelt/);
+    expect(screen.getByText(/Transaktion 2 mit \d+ Einträgen nicht gesendet \(von dir angehalten\)/)).toBeInTheDocument();
+    expect(hoisted.submitMock).toHaveBeenCalledTimes(1);
+    errSpy.mockRestore();
+  });
+
+  it('ohne Aufteilung kein Anhalten-Knopf', async () => {
+    let release;
+    hoisted.submitMock.mockImplementationOnce(() => new Promise((resolve) => { release = () => resolve({ hash: 'one' }); }));
+    renderDialog();
+    await loadPreview();
+    await startAndSign();
+    await waitFor(() => expect(hoisted.submitMock).toHaveBeenCalledTimes(1));
+    expect(screen.queryByTestId('batch-convert-stop')).toBeNull();
+    await act(async () => { release(); await new Promise((r) => setTimeout(r, 0)); });
   });
 
   it('Server mit dem Netz des Dialogs; nach einem Wechsel in einem anderen Tab keine weitere Transaktion', async () => {
