@@ -73,7 +73,7 @@ node scripts/i18n_ci_check.js       # i18n-Prüfung
 - Commit-Texte ohne Anführungszeichen, damit sie sich problemlos ins Terminal einfügen lassen.
 - Vor jeder Sitzung prüfen, ob der lokale Stand aktuell ist:
   `git fetch origin && git log --oneline HEAD..origin/main` muss leer sein.
-- Analyse- und Review-Dateien (`analyse_*.md`, `review_*.md`) im Repo-Root sind lokal und nicht versioniert.
+- Lokale Arbeitsdateien liegen in `lokal/` (nicht versioniert): `lokal/backlog.md` (offene Punkte, Stand, i18n), `lokal/reviews/review_*.md`, `lokal/analysen/`, Plaene.
   Frühere Reviews können veraltet oder falsch sein, immer am aktuellen Code prüfen.
 - Projektsprache ist Deutsch.
 

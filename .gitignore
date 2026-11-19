@@ -19,9 +19,8 @@ ChatGPT - Stellar Trustline Manager_files/
 !/docs/**/*.md
 # Aeltere Content-Doku, noch nicht geprueft, vorerst lokal
 /docs/CONTRIBUTING_CONTENT*.md
-# lokaler Arbeitsplan, veraltet mit jeder Aenderung
-/docs/plan-signer-buendelung.md
-/docs/backlog.md
+# Lokale Arbeitsdateien (Backlog, Plaene, Reviews, Analysen), nie veroeffentlichen
+/lokal/
 dist/
 # Ignoriere sensible Umgebungsdateien
 .env

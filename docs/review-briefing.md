@@ -37,7 +37,7 @@ Begründung nicht greift.
 
 ## Form des Ergebnisses
 
-Datei `review_<thema>_<modell>.md` im Repo-Root (wird nicht versioniert).
+Datei `lokal/reviews/review_<thema>_<modell>.md` (wird nicht versioniert).
 
 1. **Kurzurteil:** zwei bis vier Sätze.
 2. **Befunde**, je Befund:
