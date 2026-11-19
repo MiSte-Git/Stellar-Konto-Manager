@@ -24,7 +24,20 @@ export const CHART_RANGES = Object.freeze({
   '24h': { spanMs: DAY_MS, resolution: HOUR_MS },
   '7d': { spanMs: 7 * DAY_MS, resolution: HOUR_MS },
   '30d': { spanMs: 30 * DAY_MS, resolution: DAY_MS },
+  '90d': { spanMs: 90 * DAY_MS, resolution: DAY_MS },
+  '180d': { spanMs: 180 * DAY_MS, resolution: DAY_MS },
+  '365d': { spanMs: 365 * DAY_MS, resolution: DAY_MS },
 });
+
+// Zeitraeume mit Tageswerten: eigene Abfrage, erst bei Auswahl (24 h und 7 Tage kommen aus den Stundenwerten).
+export const LONG_RANGES = Object.freeze(['30d', '90d', '180d', '365d']);
+const AGG_PAGE_LIMIT = 200;
+
+/** Kehrwert einer Kursreihe: Token je 1 XLM statt XLM je 1 Token. Volumen bleibt in XLM. */
+export function invertSeries(series) {
+  if (!Array.isArray(series)) return series;
+  return series.filter((p) => p && p.price > 0).map((p) => ({ ...p, price: 1 / p.price }));
+}
 
 function num(value) {
   if (value === '' || value == null) return null;
@@ -44,13 +57,13 @@ function priceOf(item) {
   return ratio(item?.price_r);
 }
 
-// Kurswert einer Aggregation: der String hat 7 Nachkommastellen und kann bei sehr kleinen Preisen 0.0000000 sein,
-// dann der genaue Bruch (*_r).
+// Kurswert einer Aggregation: zuerst der genaue Bruch (*_r). Der String hat nur 7 Nachkommastellen; bei kleinen
+// Preisen ist er stark gerundet (1e-7 statt 1,43e-7), und der Kehrwert im umgekehrten Verlauf verstaerkt das
+// (Review KV-1). Der String nur als Rueckfall.
 function aggPrice(record, key) {
-  const direct = num(record?.[key]);
-  if (direct != null && direct > 0) return direct;
   const r = ratio(record?.[`${key}_r`]);
-  return r != null && r > 0 ? r : direct;
+  if (r != null && r > 0) return r;
+  return num(record?.[key]);
 }
 
 /** Horizon-404 (Asset nie gehandelt): leer statt Fehler. */
@@ -141,7 +154,10 @@ export function priceFromTrade(trade, token) {
 }
 
 function aggRows(records) {
-  return (Array.isArray(records) ? records : [])
+  // Je Zeitstempel ein Bucket (Review KV-4: ueberlappende Seiten), der letzte gewinnt.
+  const byTime = new Map();
+  for (const r of Array.isArray(records) ? records : []) byTime.set(num(r?.timestamp), r);
+  return [...byTime.values()]
     .map((r) => ({
       t: num(r?.timestamp),
       open: aggPrice(r, 'open'),
@@ -229,17 +245,34 @@ async function loadAggregations(server, tokenAsset, nativeAsset, range, now, ext
 
 async function fetchAggregations(server, tokenAsset, nativeAsset, range, now, extraMs) {
   const { spanMs, resolution } = CHART_RANGES[range];
+  // 1 Jahr in Tageswerten braucht 2 Seiten zu 200 (365 plus hoechstens 2 angeschnittene Buckets), mehr Seiten als
+  // noetig werden nie abgefragt. Wer CHART_RANGES aendert (z. B. Stundenwerte fuer laengere Zeitraeume), muss
+  // pruefen, dass maxPages reicht; eine volle letzte Seite wuerde sonst still abgeschnitten (Review KV-5).
+  const maxPages = Math.max(1, Math.ceil((spanMs + extraMs) / resolution / AGG_PAGE_LIMIT));
+  let res;
   try {
-    const res = await server
+    res = await server
       .tradeAggregation(tokenAsset, nativeAsset, now - spanMs - extraMs, now, resolution, 0)
-      .limit(200)
+      .limit(AGG_PAGE_LIMIT)
       .order('asc')
       .call();
-    return Array.isArray(res?.records) ? res.records : [];
   } catch (err) {
     if (isNotFound(err)) return [];
     throw err;
   }
+  let records = Array.isArray(res?.records) ? res.records : [];
+  for (let page = 1; page < maxPages && res?.records?.length === AGG_PAGE_LIMIT && typeof res.next === 'function'; page += 1) {
+    try {
+      res = await res.next();
+    } catch (err) {
+      // 404 auf einer Folgeseite: keine weiteren Daten, Seite 1 bleibt (Review KV-5). Andere Fehler wie bisher.
+      if (isNotFound(err)) break;
+      throw err;
+    }
+    if (!Array.isArray(res?.records) || res.records.length === 0) break;
+    records = records.concat(res.records);
+  }
+  return records;
 }
 
 async function loadLastTrade(server, tokenAsset, nativeAsset) {
@@ -286,8 +319,13 @@ export async function loadAssetMarket({ server, tokenAsset, nativeAsset, token, 
   };
 }
 
-/** Kursverlauf fuer einen Zeitraum ('24h', '7d', '30d'). */
+/**
+ * Kursverlauf fuer einen Zeitraum aus CHART_RANGES. Alle Zeitraeume mit Tageswerten kommen aus einer Abfrage fuer
+ * 1 Jahr (ein Cache-Eintrag), zugeschnitten auf den Zeitraum: spart Aufrufe bei dem eng begrenzten
+ * trade_aggregations (Review KV-3).
+ */
 export async function loadPriceSeries({ server, tokenAsset, nativeAsset, range, now = Date.now() }) {
-  const records = await loadAggregations(server, tokenAsset, nativeAsset, range, now);
+  const source = LONG_RANGES.includes(range) ? '365d' : range;
+  const records = await loadAggregations(server, tokenAsset, nativeAsset, source, now);
   return aggregationsToSeries(records).filter((p) => p.t >= now - CHART_RANGES[range].spanMs);
 }

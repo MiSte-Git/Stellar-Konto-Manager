@@ -29,7 +29,8 @@ function useWidth(ref) {
  * Tippen und Pfeiltasten (Pos1, Ende, Esc) zeigen Zeit, Kurs und Volumen in einer festen Live-Region; die Werte gibt
  * es zusaetzlich als Tabelle.
  */
-export default function PriceChart({ series, fmtPrice, fmtXlm, rangeLabel, code, dateTimeFormat }) {
+// base: was 1 Einheit ist, unit: worin der Preis steht (normal base = Token, unit = XLM; umgekehrt XLM und Token).
+export default function PriceChart({ series, fmtPrice, fmtXlm, rangeLabel, base, unit = 'XLM', dateTimeFormat }) {
   const { t } = useTranslation(['wallet']);
   const [active, setActive] = useState(null);
   const boxRef = useRef(null);
@@ -63,7 +64,7 @@ export default function PriceChart({ series, fmtPrice, fmtXlm, rangeLabel, code,
           <thead>
             <tr className="text-gray-500 dark:text-gray-400">
               <th className="py-1 font-medium">{t('wallet:assetDetail.market.chart.time', 'Zeit')}</th>
-              <th className="py-1 text-right font-medium">{t('wallet:assetDetail.market.chart.close', 'Schlusskurs (XLM)')}</th>
+              <th className="py-1 text-right font-medium">{t('wallet:assetDetail.market.chart.close', { unit, defaultValue: 'Schlusskurs ({{unit}})' })}</th>
               <th className="py-1 text-right font-medium">{t('wallet:assetDetail.market.chart.volumeCol', 'Volumen (XLM)')}</th>
             </tr>
           </thead>
@@ -92,7 +93,7 @@ export default function PriceChart({ series, fmtPrice, fmtXlm, rangeLabel, code,
     return (
       <div className="space-y-2" data-testid="asset-chart-single">
         <p className="text-sm text-gray-600 dark:text-gray-300">
-          {t('wallet:assetDetail.market.chart.single', { time: dateTimeFormat(points[0].t), price: fmtPrice(points[0].price), defaultValue: 'Nur ein Handelszeitraum: {{time}}, Schlusskurs {{price}} XLM.' })}
+          {t('wallet:assetDetail.market.chart.single', { time: dateTimeFormat(points[0].t), price: fmtPrice(points[0].price), unit, defaultValue: 'Nur ein Handelszeitraum: {{time}}, Schlusskurs {{price}} {{unit}}.' })}
         </p>
         {table}
       </div>
@@ -109,7 +110,7 @@ export default function PriceChart({ series, fmtPrice, fmtXlm, rangeLabel, code,
     setActive(best);
   };
   const point = active != null ? geo.pts[Math.min(active, count - 1)] : null;
-  const label = t('wallet:assetDetail.market.chart.aria', { code, range: rangeLabel, defaultValue: 'Kursverlauf {{code}} in XLM, {{range}}' });
+  const label = t('wallet:assetDetail.market.chart.aria', { code: base, unit, range: rangeLabel, defaultValue: 'Kursverlauf {{code}} in {{unit}}, {{range}}' });
 
   return (
     <div className="space-y-2">
@@ -166,14 +167,14 @@ export default function PriceChart({ series, fmtPrice, fmtXlm, rangeLabel, code,
             data-testid="asset-chart-tooltip"
           >
             <div className="text-gray-500 dark:text-gray-400">{dateTimeFormat(point.t)}</div>
-            <div className="font-mono text-gray-900 dark:text-gray-100">{fmtPrice(point.price)} XLM</div>
+            <div className="font-mono text-gray-900 dark:text-gray-100">{fmtPrice(point.price)} {unit}</div>
             <div className="text-gray-500 dark:text-gray-400">{t('wallet:assetDetail.market.chart.volume', { value: fmtXlm(point.xlm), defaultValue: 'Volumen {{value}} XLM' })}</div>
           </div>
         )}
       </div>
       {/* Feste Live-Region: nur der Inhalt wechselt, damit Screenreader den gewaehlten Punkt ansagen (AM-6). */}
       <div className="sr-only" aria-live="polite" data-testid="asset-chart-live">
-        {point ? `${dateTimeFormat(point.t)}: ${fmtPrice(point.price)} XLM` : ''}
+        {point ? `${dateTimeFormat(point.t)}: ${fmtPrice(point.price)} ${unit}` : ''}
       </div>
       {table}
     </div>

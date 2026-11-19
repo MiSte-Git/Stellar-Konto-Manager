@@ -294,6 +294,60 @@ describe('AssetDetailPage: Kurs, Kennzahlen, Verlauf, Orderbuch', () => {
     fireEvent.click(screen.getByTestId('asset-market-reload'));
     await waitFor(() => expect(hoisted.book).toHaveBeenCalledTimes(2));
   });
+
+  it('Verlauf umkehren: Token je 1 XLM, zurueck zu XLM je Token; 1 Jahr laedt Tageswerte', async () => {
+    withMarket();
+    hoisted.loadAccount.mockResolvedValue(account([]));
+    renderAt(`/assets/LDEX-${ISSUER}`);
+    const chart = await screen.findByTestId('asset-chart');
+    expect(screen.getByTestId('asset-chart-title')).toHaveTextContent('XLM je 1 LDEX');
+    fireEvent.click(screen.getByTestId('asset-chart-invert'));
+    expect(screen.getByTestId('asset-chart-title')).toHaveTextContent('LDEX je 1 XLM');
+    expect(screen.getByTestId('asset-chart-invert')).toHaveTextContent('In XLM anzeigen');
+    fireEvent.keyDown(screen.getByTestId('asset-chart'), { key: 'End' });
+    const live = screen.getByTestId('asset-chart-live').textContent;
+    expect(live).toContain('LDEX');
+    expect(live).not.toContain(nf7(0.0000114));
+    fireEvent.click(screen.getByTestId('asset-chart-invert'));
+    expect(screen.getByTestId('asset-chart-title')).toHaveTextContent('XLM je 1 LDEX');
+    expect(chart).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: '1 Jahr' }));
+    await waitFor(() => expect(hoisted.aggs).toHaveBeenCalledTimes(2));
+    expect(hoisted.aggs.mock.calls[1][4]).toBe(24 * HOUR);
+    expect(hoisted.aggs.mock.calls[1][3] - hoisted.aggs.mock.calls[1][2]).toBe(365 * 24 * HOUR);
+    // KV-7: Knopf ohne aria-pressed, Zeichen nicht vorgelesen; KV-9: Hinweis zum Volumen nur umgekehrt
+    expect(screen.getByTestId('asset-chart-invert')).not.toHaveAttribute('aria-pressed');
+    expect(screen.queryByTestId('asset-chart-volume-note')).toBeNull();
+    fireEvent.click(screen.getByTestId('asset-chart-invert'));
+    expect(screen.getByTestId('asset-chart-volume-note')).toBeInTheDocument();
+  });
+
+  it('KV-2: nach Aktualisieren holt der lange Verlauf den neuen Stand; KV-6: Fehler wird bei erneuter Auswahl wiederholt', async () => {
+    withMarket();
+    hoisted.loadAccount.mockResolvedValue(account([]));
+    const t0 = Date.now();
+    const nowSpy = vi.spyOn(Date, 'now').mockReturnValue(t0);
+    try {
+      renderAt(`/assets/LDEX-${ISSUER}`);
+      await screen.findByTestId('asset-chart');
+      fireEvent.click(screen.getByRole('button', { name: '3 Monate' }));
+      await waitFor(() => expect(hoisted.aggs).toHaveBeenCalledTimes(2));
+      nowSpy.mockReturnValue(t0 + 10 * 60 * 1000);
+      fireEvent.click(screen.getByTestId('asset-market-reload'));
+      await waitFor(() => expect(hoisted.aggs).toHaveBeenCalledTimes(4));
+      expect(hoisted.aggs.mock.calls[3][3]).toBe(t0 + 10 * 60 * 1000);
+
+      hoisted.aggs.mockRejectedValue(new Error('down'));
+      clearAggregationCache();
+      fireEvent.click(screen.getByRole('button', { name: '6 Monate' }));
+      await waitFor(() => expect(hoisted.aggs).toHaveBeenCalledTimes(5));
+      await screen.findByText('nicht verfügbar');
+      fireEvent.click(screen.getByRole('button', { name: '6 Monate' }));
+      await waitFor(() => expect(hoisted.aggs).toHaveBeenCalledTimes(6));
+    } finally {
+      nowSpy.mockRestore();
+    }
+  });
 });
 
 describe('AssetDetailPage: Angaben des Issuers und Logo', () => {

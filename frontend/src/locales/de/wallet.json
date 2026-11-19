@@ -343,19 +343,24 @@
         "label": "Zeitraum",
         "24h": "24 h",
         "7d": "7 Tage",
-        "30d": "30 Tage"
+        "30d": "30 Tage",
+        "90d": "3 Monate",
+        "180d": "6 Monate",
+        "365d": "1 Jahr"
       },
       "chart": {
-        "title": "Kursverlauf (XLM)",
-        "aria": "Kursverlauf {{code}} in XLM, {{range}}",
+        "title": "Kursverlauf ({{unit}} je 1 {{base}})",
+        "aria": "Kursverlauf {{code}} in {{unit}}, {{range}}",
         "tooFew": "Zu wenig Handel in diesem Zeitraum für einen Verlauf.",
         "volume": "Volumen {{value}} XLM",
         "table": "Werte als Tabelle",
         "time": "Zeit",
-        "close": "Schlusskurs (XLM)",
+        "close": "Schlusskurs ({{unit}})",
         "volumeCol": "Volumen (XLM)",
         "keyboardHint": "Pfeiltasten, Pos1 und Ende wählen einen Punkt. Die Werte gibt es auch als Tabelle unter der Grafik.",
-        "single": "Nur ein Handelszeitraum: {{time}}, Schlusskurs {{price}} XLM."
+        "single": "Nur ein Handelszeitraum: {{time}}, Schlusskurs {{price}} {{unit}}.",
+        "showIn": "In {{unit}} anzeigen",
+        "volumeStaysXlm": "Das Volumen bleibt in XLM."
       },
       "book": {
         "title": "Orderbuch",

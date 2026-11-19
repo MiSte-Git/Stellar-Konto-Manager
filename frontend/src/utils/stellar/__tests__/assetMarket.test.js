@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import {
-  aggregationsToSeries, bestSendResult, clearAggregationCache, DAY_MS, HOUR_MS, loadAssetMarket, loadPriceSeries, priceFromTrade, referencePrice,
+  aggregationsToSeries, bestSendResult, invertSeries, CHART_RANGES, clearAggregationCache, DAY_MS, HOUR_MS, loadAssetMarket, loadPriceSeries, priceFromTrade, referencePrice,
   summarizeAggregations, summarizeOrderbook,
 } from '../assetMarket.js';
 import fixture from './fixtures/horizon-usdc-xlm.json';
@@ -135,7 +135,9 @@ describe('echte Horizon-Antworten (Fixture USDC/XLM, AM-12)', () => {
   });
   it('Aggregationen: Preise XLM je USDC, Volumen in XLM', () => {
     const series = aggregationsToSeries(fixture.tradeAggregations);
-    expect(series.map((p) => p.price)).toEqual([7.1164855, 7.1176657]);
+    // Aus dem genauen Bruch close_r (KV-1), auf 7 Stellen gleich dem gerundeten Text
+    expect(series[0].price).toBeCloseTo(7.1164855, 6);
+    expect(series[1].price).toBeCloseTo(7.1176657, 6);
     expect(series[0].xlm).toBeCloseTo(428066.4065136);
   });
   it('Trade mit XLM als Basis wird invertiert', () => {
@@ -218,6 +220,59 @@ describe('loadAssetMarket', () => {
     expect(m.stats24h).toBeNull();
     expect(m.series7d).toEqual([]);
     expect(await loadPriceSeries({ server, tokenAsset: {}, nativeAsset: {}, range: '30d', now })).toEqual([]);
+  });
+  it('1 Jahr in Tageswerten: zweite Seite per next, nie mehr als noetig', async () => {
+    clearAggregationCache();
+    const now = Date.UTC(2026, 10, 19, 12);
+    const rec = (i) => ({ timestamp: String(now - (365 - i) * DAY_MS), open: '1', close: String(1 + i / 1000), high: '1', low: '1', counter_volume: '1' });
+    const page2 = { records: Array.from({ length: 165 }, (_, i) => rec(200 + i)), next: vi.fn(async () => { throw new Error('dritte Seite'); }) };
+    const page1 = { records: Array.from({ length: 200 }, (_, i) => rec(i)), next: vi.fn(async () => page2) };
+    let args;
+    const server = { tradeAggregation: (...a) => { args = a; return chain(async () => page1); } };
+    const series = await loadPriceSeries({ server, tokenAsset: {}, nativeAsset: {}, range: '365d', now });
+    expect(args[4]).toBe(DAY_MS);
+    expect(page1.next).toHaveBeenCalledTimes(1);
+    expect(page2.next).not.toHaveBeenCalled();
+    expect(series).toHaveLength(365);
+    expect(CHART_RANGES['90d'].spanMs).toBe(90 * DAY_MS);
+  });
+  it('alle Zeitraeume mit Tageswerten teilen eine Jahresabfrage (KV-3), zugeschnitten', async () => {
+    clearAggregationCache();
+    const now = Date.UTC(2026, 10, 19, 12);
+    const records = Array.from({ length: 100 }, (_, i) => ({ timestamp: String(now - (100 - i) * DAY_MS), close: '1', counter_volume: '1' }));
+    const calls = [];
+    const server = { tradeAggregation: (...a) => { calls.push(a); return chain(async () => ({ records })); } };
+    expect(await loadPriceSeries({ server, tokenAsset: {}, nativeAsset: {}, range: '30d', now })).toHaveLength(30);
+    expect(await loadPriceSeries({ server, tokenAsset: {}, nativeAsset: {}, range: '90d', now })).toHaveLength(90);
+    expect(await loadPriceSeries({ server, tokenAsset: {}, nativeAsset: {}, range: '365d', now })).toHaveLength(100);
+    expect(calls).toHaveLength(1);
+    expect(calls[0][3] - calls[0][2]).toBe(365 * DAY_MS);
+  });
+  it('genauer Bruch statt gerundetem Text (KV-1), Doppelte je Zeitstempel einmal (KV-4)', () => {
+    const rows = aggregationsToSeries([
+      { timestamp: '1000', close: '0.0000001', close_r: { n: '1', d: '7000000' }, counter_volume: '1' },
+      { timestamp: '2000', close: '0.0000002', close_r: { n: '3', d: '14000000' }, counter_volume: '1' },
+      { timestamp: '2000', close: '0.0000002', close_r: { n: '3', d: '14000000' }, counter_volume: '2' },
+    ]);
+    expect(rows).toHaveLength(2);
+    expect(rows[0].price).toBeCloseTo(1 / 7000000, 15);
+    expect(rows[1].xlm).toBe(2);
+    expect(invertSeries(rows)[0].price).toBeCloseTo(7000000, 3);
+  });
+  it('404 auf der zweiten Seite behaelt Seite 1 (KV-5), anderer Fehler scheitert', async () => {
+    const now = Date.UTC(2026, 10, 19, 12);
+    const mk = (err) => {
+      const page1 = { records: Array.from({ length: 200 }, (_, i) => ({ timestamp: String(now - (365 - i) * DAY_MS), close: '1', counter_volume: '1' })), next: async () => { throw err; } };
+      return { tradeAggregation: () => chain(async () => page1) };
+    };
+    clearAggregationCache();
+    expect(await loadPriceSeries({ server: mk(notFound()), tokenAsset: {}, nativeAsset: {}, range: '365d', now })).toHaveLength(200);
+    clearAggregationCache();
+    await expect(loadPriceSeries({ server: mk(new Error('down')), tokenAsset: {}, nativeAsset: {}, range: '365d', now })).rejects.toThrow('down');
+  });
+  it('invertSeries: Kehrwert des Preises, Volumen bleibt, Preis 0 faellt weg', () => {
+    expect(invertSeries([{ t: 1, price: 4, xlm: 9 }, { t: 2, price: 0, xlm: 1 }])).toEqual([{ t: 1, price: 0.25, xlm: 9 }]);
+    expect(invertSeries(null)).toBeNull();
   });
   it('alle Teile scheitern: allFailed; ein synchroner Fehler trifft nur seinen Teil', async () => {
     const boom = () => { throw new Error('down'); };

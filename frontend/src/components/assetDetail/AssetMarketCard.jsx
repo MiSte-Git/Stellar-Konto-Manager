@@ -1,8 +1,8 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import PriceChart from './PriceChart.jsx';
 import useAssetMarket from './useAssetMarket.js';
-import { referencePrice } from '../../utils/stellar/assetMarket.js';
+import { invertSeries, referencePrice } from '../../utils/stellar/assetMarket.js';
 
 const cardCls = 'rounded-xl border border-gray-200 bg-white p-4 shadow-xs dark:border-gray-700 dark:bg-gray-800';
 const btnCls = 'rounded-md border border-gray-300 bg-white px-3 py-1 text-sm font-medium text-gray-800 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:hover:bg-gray-700';
@@ -24,6 +24,8 @@ function Stat({ label, children, testId }) {
 export default function AssetMarketCard({ code, issuer, network, balance }) {
   const { t, i18n } = useTranslation(['wallet']);
   const market = useAssetMarket({ code, issuer, network, enabled: !!code && !!issuer });
+  const [inverted, setInverted] = useState(false);
+  const chartSeries = useMemo(() => (inverted ? invertSeries(market.series) : market.series), [inverted, market.series]);
   const { data } = market;
 
   const fmt = useMemo(() => {
@@ -34,10 +36,14 @@ export default function AssetMarketCard({ code, issuer, network, balance }) {
     const tiny = new Intl.NumberFormat(i18n.language, { maximumFractionDigits: 2 }).format(0.01);
     const pct = new Intl.NumberFormat(i18n.language, { maximumFractionDigits: 2, signDisplay: 'exceptZero' });
     const pctPlain = new Intl.NumberFormat(i18n.language, { maximumFractionDigits: 2 });
+    const bigPrice = new Intl.NumberFormat(i18n.language, { maximumFractionDigits: 2 });
     const date = new Intl.DateTimeFormat(i18n.language, { dateStyle: 'short', timeStyle: 'short' });
+    // Tageswerte von Horizon beginnen um 00:00 UTC: nur das Datum in UTC, sonst zeigt UTC-5 den Vortag (Review KV-8).
+    const day = new Intl.DateTimeFormat(i18n.language, { dateStyle: 'short', timeZone: 'UTC' });
     return {
       price: (v) => {
         if (!Number.isFinite(v)) return '–';
+        if (v >= 1000) return bigPrice.format(v); // Kehrwert sehr kleiner Kurse nicht genauer zeigen als die Daten
         return v > 0 && v < 1 ? smallPrice.format(v) : price.format(v);
       },
       amount: (v) => {
@@ -49,6 +55,10 @@ export default function AssetMarketCard({ code, issuer, network, balance }) {
       date: (v) => {
         const d = new Date(v);
         return Number.isNaN(d.getTime()) ? '–' : date.format(d);
+      },
+      day: (v) => {
+        const d = new Date(v);
+        return Number.isNaN(d.getTime()) ? '–' : day.format(d);
       },
     };
   }, [i18n.language]);
@@ -62,7 +72,13 @@ export default function AssetMarketCard({ code, issuer, network, balance }) {
     ['24h', t('wallet:assetDetail.market.range.24h', '24 h')],
     ['7d', t('wallet:assetDetail.market.range.7d', '7 Tage')],
     ['30d', t('wallet:assetDetail.market.range.30d', '30 Tage')],
+    ['90d', t('wallet:assetDetail.market.range.90d', '3 Monate')],
+    ['180d', t('wallet:assetDetail.market.range.180d', '6 Monate')],
+    ['365d', t('wallet:assetDetail.market.range.365d', '1 Jahr')],
   ];
+  // Umkehren (nur der Verlauf): XLM je 1 Token oder Token je 1 XLM, z. B. bei USDC der Kurs von XLM in USDC.
+  const base = inverted ? 'XLM' : code;
+  const unit = inverted ? code : 'XLM';
   const rangeLabel = ranges.find(([k]) => k === market.range)?.[1] || '';
   const noTrade = t('wallet:assetDetail.market.noTrade', 'kein Handel');
 
@@ -186,7 +202,17 @@ export default function AssetMarketCard({ code, issuer, network, balance }) {
 
           <div>
             <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
-              <h3 className="text-sm font-semibold text-gray-900 dark:text-white">{t('wallet:assetDetail.market.chart.title', 'Kursverlauf (XLM)')}</h3>
+              <div className="flex flex-wrap items-center gap-2">
+                <h3 className="text-sm font-semibold text-gray-900 dark:text-white" data-testid="asset-chart-title">{t('wallet:assetDetail.market.chart.title', { base, unit, defaultValue: 'Kursverlauf ({{unit}} je 1 {{base}})' })}</h3>
+                <button
+                  type="button"
+                  onClick={() => setInverted((v) => !v)}
+                  className="rounded-sm border border-gray-300 px-2 py-0.5 text-xs font-medium text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700"
+                  data-testid="asset-chart-invert"
+                >
+                  <span aria-hidden="true">⇄ </span>{t('wallet:assetDetail.market.chart.showIn', { unit: base, defaultValue: 'In {{unit}} anzeigen' })}
+                </button>
+              </div>
               <div className="inline-flex rounded-sm border border-gray-300 p-0.5 text-xs dark:border-gray-600" role="group" aria-label={t('wallet:assetDetail.market.range.label', 'Zeitraum')}>
                 {ranges.map(([key, label]) => (
                   <button
@@ -206,7 +232,10 @@ export default function AssetMarketCard({ code, issuer, network, balance }) {
             ) : market.seriesError ? (
               <p className="text-sm text-gray-600 dark:text-gray-300">{t('wallet:assetDetail.market.unavailable', 'nicht verfügbar')}</p>
             ) : (
-              <PriceChart series={market.series} fmtPrice={fmt.price} fmtXlm={fmt.amount} rangeLabel={rangeLabel} code={code} dateTimeFormat={fmt.date} />
+              <PriceChart series={chartSeries} fmtPrice={fmt.price} fmtXlm={fmt.amount} rangeLabel={rangeLabel} base={base} unit={unit} dateTimeFormat={market.daily ? fmt.day : fmt.date} />
+            )}
+            {inverted && (
+              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400" data-testid="asset-chart-volume-note">{t('wallet:assetDetail.market.chart.volumeStaysXlm', 'Das Volumen bleibt in XLM.')}</p>
             )}
           </div>
 
