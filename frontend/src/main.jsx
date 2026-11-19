@@ -958,7 +958,7 @@ function Main() {
               rightAdornment={walletHeaderInput ? (
                 <button
                   type="button"
-                  onClick={() => { setWalletHeaderInput(''); unloadActiveWallet(); }}
+                  onClick={() => { setWalletHeaderInput(''); unloadActiveWallet(); leaveAccountView(); }}
                   title={t('common:clear')}
                   aria-label={t('common:clear')}
                   className="absolute right-1 top-1/2 -translate-y-1/2 w-7 h-7 md:w-6 md:h-6 rounded-full bg-gray-300 hover:bg-red-500 text-gray-600 hover:text-white text-sm flex items-center justify-center"

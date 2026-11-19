@@ -249,21 +249,27 @@ async function fetchAggregations(server, tokenAsset, nativeAsset, range, now, ex
   // noetig werden nie abgefragt. Wer CHART_RANGES aendert (z. B. Stundenwerte fuer laengere Zeitraeume), muss
   // pruefen, dass maxPages reicht; eine volle letzte Seite wuerde sonst still abgeschnitten (Review KV-5).
   const maxPages = Math.max(1, Math.ceil((spanMs + extraMs) / resolution / AGG_PAGE_LIMIT));
+  // Folgeseiten nicht ueber next(): der Link von Horizon ist absolut (https://horizon.stellar.org/...) und umgeht
+  // damit den konfigurierten Server, im Dev-Betrieb den Vite-Proxy (Sichtpruefung 19.11.: 1 Jahr nicht verfuegbar).
+  // Stattdessen dieselbe Abfrage ab dem Bucket nach dem letzten erhaltenen.
+  const fetchPage = (from) => server
+    .tradeAggregation(tokenAsset, nativeAsset, from, now, resolution, 0)
+    .limit(AGG_PAGE_LIMIT)
+    .order('asc')
+    .call();
   let res;
   try {
-    res = await server
-      .tradeAggregation(tokenAsset, nativeAsset, now - spanMs - extraMs, now, resolution, 0)
-      .limit(AGG_PAGE_LIMIT)
-      .order('asc')
-      .call();
+    res = await fetchPage(now - spanMs - extraMs);
   } catch (err) {
     if (isNotFound(err)) return [];
     throw err;
   }
   let records = Array.isArray(res?.records) ? res.records : [];
-  for (let page = 1; page < maxPages && res?.records?.length === AGG_PAGE_LIMIT && typeof res.next === 'function'; page += 1) {
+  for (let page = 1; page < maxPages && res?.records?.length === AGG_PAGE_LIMIT; page += 1) {
+    const lastT = num(res.records[res.records.length - 1]?.timestamp);
+    if (lastT == null || lastT + resolution >= now) break;
     try {
-      res = await res.next();
+      res = await fetchPage(lastT + resolution);
     } catch (err) {
       // 404 auf einer Folgeseite: keine weiteren Daten, Seite 1 bleibt (Review KV-5). Andere Fehler wie bisher.
       if (isNotFound(err)) break;

@@ -221,18 +221,20 @@ describe('loadAssetMarket', () => {
     expect(m.series7d).toEqual([]);
     expect(await loadPriceSeries({ server, tokenAsset: {}, nativeAsset: {}, range: '30d', now })).toEqual([]);
   });
-  it('1 Jahr in Tageswerten: zweite Seite per next, nie mehr als noetig', async () => {
+  it('1 Jahr in Tageswerten: zweite Seite als eigene Abfrage ab dem naechsten Bucket, nie ueber next()', async () => {
     clearAggregationCache();
     const now = Date.UTC(2026, 10, 19, 12);
     const rec = (i) => ({ timestamp: String(now - (365 - i) * DAY_MS), open: '1', close: String(1 + i / 1000), high: '1', low: '1', counter_volume: '1' });
-    const page2 = { records: Array.from({ length: 165 }, (_, i) => rec(200 + i)), next: vi.fn(async () => { throw new Error('dritte Seite'); }) };
-    const page1 = { records: Array.from({ length: 200 }, (_, i) => rec(i)), next: vi.fn(async () => page2) };
-    let args;
-    const server = { tradeAggregation: (...a) => { args = a; return chain(async () => page1); } };
+    const page1 = { records: Array.from({ length: 200 }, (_, i) => rec(i)), next: vi.fn() };
+    const page2 = { records: Array.from({ length: 165 }, (_, i) => rec(200 + i)), next: vi.fn() };
+    const calls = [];
+    const server = { tradeAggregation: (...a) => { calls.push(a); return chain(async () => (calls.length === 1 ? page1 : page2)); } };
     const series = await loadPriceSeries({ server, tokenAsset: {}, nativeAsset: {}, range: '365d', now });
-    expect(args[4]).toBe(DAY_MS);
-    expect(page1.next).toHaveBeenCalledTimes(1);
-    expect(page2.next).not.toHaveBeenCalled();
+    expect(calls).toHaveLength(2);
+    expect(calls[0][4]).toBe(DAY_MS);
+    expect(calls[1][2]).toBe(Number(rec(199).timestamp) + DAY_MS);
+    expect(calls[1][3]).toBe(now);
+    expect(page1.next).not.toHaveBeenCalled();
     expect(series).toHaveLength(365);
     expect(CHART_RANGES['90d'].spanMs).toBe(90 * DAY_MS);
   });
@@ -262,8 +264,9 @@ describe('loadAssetMarket', () => {
   it('404 auf der zweiten Seite behaelt Seite 1 (KV-5), anderer Fehler scheitert', async () => {
     const now = Date.UTC(2026, 10, 19, 12);
     const mk = (err) => {
-      const page1 = { records: Array.from({ length: 200 }, (_, i) => ({ timestamp: String(now - (365 - i) * DAY_MS), close: '1', counter_volume: '1' })), next: async () => { throw err; } };
-      return { tradeAggregation: () => chain(async () => page1) };
+      const page1 = { records: Array.from({ length: 200 }, (_, i) => ({ timestamp: String(now - (365 - i) * DAY_MS), close: '1', counter_volume: '1' })) };
+      let n = 0;
+      return { tradeAggregation: () => chain(async () => { n += 1; if (n > 1) throw err; return page1; }) };
     };
     clearAggregationCache();
     expect(await loadPriceSeries({ server: mk(notFound()), tokenAsset: {}, nativeAsset: {}, range: '365d', now })).toHaveLength(200);
